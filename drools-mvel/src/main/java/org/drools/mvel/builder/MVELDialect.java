@@ -20,6 +20,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,6 +35,35 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.ImportError;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.rule.builder.AccumulateBuilder;
+import org.drools.compiler.rule.builder.CollectBuilder;
+import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
+import org.drools.compiler.rule.builder.ConsequenceBuilder;
+import org.drools.compiler.rule.builder.EnabledBuilder;
+import org.drools.compiler.rule.builder.EngineElementBuilder;
+import org.drools.compiler.rule.builder.EntryPointBuilder;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
+import org.drools.compiler.rule.builder.ForallBuilder;
+import org.drools.compiler.rule.builder.FromBuilder;
+import org.drools.compiler.rule.builder.GroupElementBuilder;
+import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
+import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.PatternBuilder;
+import org.drools.compiler.rule.builder.PatternBuilderForAbductiveQuery;
+import org.drools.compiler.rule.builder.PatternBuilderForQuery;
+import org.drools.compiler.rule.builder.PredicateBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleClassBuilder;
+import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.compiler.rule.builder.SalienceBuilder;
+import org.drools.compiler.rule.builder.WindowReferenceBuilder;
+import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.QueryImpl;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.LineMappings;
+import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -54,41 +84,12 @@ import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.drl.ast.descr.QueryDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
-import org.drools.compiler.rule.builder.PatternBuilderForAbductiveQuery;
-import org.drools.compiler.rule.builder.AccumulateBuilder;
-import org.drools.compiler.rule.builder.CollectBuilder;
-import org.drools.compiler.rule.builder.ConditionalBranchBuilder;
-import org.drools.compiler.rule.builder.ConsequenceBuilder;
-import org.drools.compiler.rule.builder.EnabledBuilder;
-import org.drools.compiler.rule.builder.EngineElementBuilder;
-import org.drools.compiler.rule.builder.EntryPointBuilder;
-import org.drools.compiler.rule.builder.ForallBuilder;
-import org.drools.compiler.rule.builder.FromBuilder;
-import org.drools.compiler.rule.builder.GroupElementBuilder;
-import org.drools.compiler.rule.builder.NamedConsequenceBuilder;
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.PatternBuilder;
-import org.drools.compiler.rule.builder.PredicateBuilder;
-import org.drools.compiler.rule.builder.PatternBuilderForQuery;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleClassBuilder;
-import org.drools.compiler.rule.builder.RuleConditionBuilder;
-import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.drools.compiler.rule.builder.WindowReferenceBuilder;
-import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.util.TypeResolver;
-import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.LineMappings;
-import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.util.StringUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.java.JavaFunctionBuilder;
+import org.drools.util.StringUtils;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -550,7 +551,7 @@ public class MVELDialect
                                                              Class kcontextClass,
                                                              boolean readLocalsFromTuple,
                                                              MVELCompilationUnit.Scope scope) {
-        Map<String, Class> resolvedInputs = new LinkedHashMap<>();
+        Map<String, Type> resolvedInputs = new LinkedHashMap<>();
         List<String> ids = new ArrayList<>();
 
         if (analysis.getBoundIdentifiers().getThisClass() != null || (localDeclarations != null && localDeclarations.length > 0)) {
@@ -571,7 +572,7 @@ public class MVELDialect
 
         List<String> strList = new ArrayList<>();
         for (String identifier : analysis.getIdentifiers()) {
-            Class<?> type = identifier.equals( WM_ARGUMENT ) ? InternalWorkingMemory.class : analysis.getBoundIdentifiers().resolveVarType(identifier);
+            Type type = identifier.equals( WM_ARGUMENT ) ? InternalWorkingMemory.class : analysis.getBoundIdentifiers().resolveVarType(identifier);
             if (type != null) {
                 strList.add(identifier);
                 ids.add(identifier);
@@ -633,7 +634,8 @@ public class MVELDialect
         int i = 0;
         for (String id : ids) {
             inputIdentifiers[i] = id;
-            inputTypes[i++] = resolvedInputs.get(id).getName();
+            Type inputType = resolvedInputs.get(id);
+            inputTypes[i++] = inputType instanceof Class ? ((Class<?>) inputType).getName() : inputType.getTypeName();
         }
 
         String name;

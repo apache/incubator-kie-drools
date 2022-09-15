@@ -15,6 +15,8 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +35,7 @@ public class RuleUnitDescriptionTest {
 
     @BeforeEach
     public void prepareRuleUnitDescr() {
-        ruleUnitDescr = new ReflectiveRuleUnitDescription(null, TestRuleUnit.class);
+        ruleUnitDescr = new ReflectiveRuleUnitDescription(TestRuleUnit.class);
     }
 
     @Test
@@ -73,13 +75,43 @@ public class RuleUnitDescriptionTest {
 
     @Test
     public void getVarType() {
-        final Optional<Class<?>> varType = ruleUnitDescr.getVarType("nonexisting");
+        final Optional<Type> varType = ruleUnitDescr.getVarType("nonexisting");
         assertThat(varType).isNotPresent();
 
         assertVarType("number", BigDecimal.class);
         assertVarType("numbersArray", Integer[].class);
-        assertVarType("stringList", List.class);
-        assertVarType("simpleFactList", List.class);
+        assertVarType("stringList", new ParameterizedType() {
+            @Override
+            public Type[] getActualTypeArguments() {
+                return new Type[] { String.class };
+            }
+
+            @Override
+            public Type getRawType() {
+                return List.class;
+            }
+
+            @Override
+            public Type getOwnerType() {
+                return null;
+            }
+        });
+        assertVarType("simpleFactList", new ParameterizedType() {
+            @Override
+            public Type[] getActualTypeArguments() {
+                return new Type[] { SimpleFact.class };
+            }
+
+            @Override
+            public Type getRawType() {
+                return List.class;
+            }
+
+            @Override
+            public Type getOwnerType() {
+                return null;
+            }
+        });
     }
 
     @Test
@@ -129,9 +161,9 @@ public class RuleUnitDescriptionTest {
         assertThat(expectedType).isEqualTo(dataSourceType.get());
     }
 
-    private void assertVarType(final String varName, final Class<?> expectedType) {
-        final Optional<Class<?>> variableTable = ruleUnitDescr.getVarType(varName);
+    private void assertVarType(final String varName, final Type expectedType) {
+        final Optional<Type> variableTable = ruleUnitDescr.getVarType(varName);
         assertThat(variableTable).isPresent();
-        assertThat(expectedType).isEqualTo(variableTable.get());
+        assertThat(variableTable.get()).isEqualTo(expectedType);
     }
 }

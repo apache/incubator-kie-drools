@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,7 +150,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
                         switch (change.getType()) {
                             case GLOBAL:
                                 globalsCounter.computeIfAbsent( changedItemName, name -> ctx.kBase.getGlobals().get(name) == null ? new AtomicInteger( 1 ) : new AtomicInteger( 0 ) ).incrementAndGet();
-                                Class<?> globalClass = kpkg.getGlobals().get(changedItemName);
+                                Type globalClass = kpkg.getGlobals().get(changedItemName);
                                 oldKpkg.addGlobal( changedItemName, globalClass );
                                 ctx.kBase.addGlobal( changedItemName, globalClass );
                                 break;

@@ -13,23 +13,17 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.builder.impl;
+package org.drools.model;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+public class TypeReference<T> {
 
-public class GlobalVariableContextImpl implements GlobalVariableContext {
-    private final Map<String, Type> globals = new HashMap<>();
+    public final Class<?> rawType;
 
-    @Override
-    public Map<String, Type> getGlobals() {
-        return this.globals;
+    public TypeReference(Class<?> rawType) {
+        this.rawType = rawType;
     }
 
-    @Override
-    public void addGlobal(String name, Type type) {
-        globals.put(name, type);
+    public Class<T> getType() {
+        return (Class<T>) rawType;
     }
-
 }

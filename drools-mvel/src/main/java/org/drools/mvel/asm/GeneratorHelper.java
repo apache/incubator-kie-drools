@@ -300,16 +300,21 @@ public final class GeneratorHelper {
 
         protected void parseGlobals(String[] globals, String[] globalTypes, int wmReg, StringBuilder methodDescr) {
             for (int i = 0; i < globals.length; i++) {
+                String globalType = globalTypes[i];
+                if (globalType.indexOf('<') > 0) {
+                    globalType = globalType.substring(0, globalType.indexOf('<')).trim();
+                }
+
                 mv.visitVarInsn(ALOAD, wmReg); // workingMemory
                 push(globals[i]);
                 invokeInterface(ReteEvaluator.class, "getGlobal", Object.class, String.class);
-                Class<?> primitiveType = convertPrimitiveNameToType(globalTypes[i]);
+                Class<?> primitiveType = convertPrimitiveNameToType(globalType);
                 if (primitiveType != null) {
                     cast(convertFromPrimitiveType(primitiveType), primitiveType);
                 } else {
-                    mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
+                    mv.visitTypeInsn(CHECKCAST, internalName(globalType));
                 }
-                methodDescr.append(typeDescr(globalTypes[i]));
+                methodDescr.append(typeDescr(globalType));
             }
         }
 

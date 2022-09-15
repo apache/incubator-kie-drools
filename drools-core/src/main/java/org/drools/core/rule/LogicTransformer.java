@@ -16,6 +16,7 @@
 
 package org.drools.core.rule;
 
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -68,7 +69,7 @@ public class LogicTransformer {
                                     method );
     }
 
-    public GroupElement[] transform( final GroupElement cloned, Map<String, Class<?>> globals ) throws InvalidPatternException {
+    public GroupElement[] transform( final GroupElement cloned, Map<String, Type> globals ) throws InvalidPatternException {
         //moved cloned to up
         //final GroupElement cloned = (GroupElement) and.clone();
 
@@ -143,10 +144,9 @@ public class LogicTransformer {
      * specially patterns and corresponding declarations. So now
      * we need to fix any references to cloned declarations.
      */
-    protected void fixClonedDeclarations( GroupElement and, Map<String, Class<?>> globals ) {
+    protected void fixClonedDeclarations( GroupElement and, Map<String, Type> globals ) {
         Deque<RuleConditionElement> contextList = new ArrayDeque<>();
-        DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals,
-                                                                          contextList );
+        DeclarationScopeResolver resolver = new DeclarationScopeResolver( globals, contextList );
 
         contextList.push( and );
         processElement( resolver,

@@ -15,11 +15,10 @@
 
 package org.drools.compiler.builder.impl;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -96,6 +95,8 @@ import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
 
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
 
@@ -630,11 +631,11 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         // merge globals
         if (newPkg.getGlobals() != null && !newPkg.getGlobals().isEmpty()) {
-            Map<String, Class<?>> pkgGlobals = pkg.getGlobals();
+            Map<String, Type> pkgGlobals = pkg.getGlobals();
             // Add globals
-            for (final Map.Entry<String, Class<?>> entry : newPkg.getGlobals().entrySet()) {
+            for (final Map.Entry<String, Type> entry : newPkg.getGlobals().entrySet()) {
                 final String identifier = entry.getKey();
-                final Class<?> type = entry.getValue();
+                final Type type = entry.getValue();
                 if (pkgGlobals.containsKey(identifier) && !pkgGlobals.get(identifier).equals(type)) {
                     throw new RuntimeException(pkg.getName() + " cannot be integrated");
                 } else {
@@ -740,11 +741,13 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         return expander;
     }
 
-    public Map<String, Class<?>> getGlobals() {
+    @Override
+    public Map<String, Type> getGlobals() {
         return this.globals.getGlobals();
     }
 
-    public void addGlobal(String name, Class<?> type) {
+    @Override
+    public void addGlobal(String name, Type type) {
         this.globals.addGlobal(name, type);
     }
 

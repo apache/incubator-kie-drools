@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayDeque;
@@ -38,6 +39,7 @@ import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Dialectable;
@@ -46,13 +48,12 @@ import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.accessor.Enabled;
 import org.drools.core.rule.accessor.Salience;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Wireable;
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.time.impl.Timer;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
@@ -592,11 +593,9 @@ public class RuleImpl implements Externalizable,
      * @return
      * @throws org.drools.core.rule.InvalidPatternException
      */
-    public GroupElement[] getTransformedLhs( LogicTransformer transformer, Map<String, Class<?>> globals ) throws InvalidPatternException {
+    public GroupElement[] getTransformedLhs( LogicTransformer transformer, Map<String, Type> globals ) throws InvalidPatternException {
         //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
-        return transformer.transform( getExtendedLhs( this,
-                                                      null ),
-                                      globals );
+        return transformer.transform( getExtendedLhs( this, null ), globals );
     }
 
     public void wire(Object object) {

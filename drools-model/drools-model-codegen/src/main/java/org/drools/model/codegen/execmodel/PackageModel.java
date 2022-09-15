@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
@@ -72,6 +73,7 @@ import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
+import org.drools.model.TypeReference;
 import org.drools.model.WindowReference;
 import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
@@ -104,6 +106,7 @@ import static org.drools.model.codegen.execmodel.generator.DslMethodNames.create
 import static org.drools.model.codegen.execmodel.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessiblePropertiesIncludingNonGetterValueMethod;
+import static org.drools.util.ClassUtils.rawType;
 
 public class PackageModel {
 
@@ -126,7 +129,7 @@ public class PackageModel {
     private final Set<String> entryPoints = new HashSet<>();
     private Map<String, Method> staticMethods;
 
-    private final Map<String, Class<?>> globals = new HashMap<>();
+    private final Map<String, java.lang.reflect.Type> globals = new HashMap<>();
 
     private final Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
 
@@ -336,11 +339,11 @@ public class PackageModel {
         globals.putAll( pkg.getGlobals() );
     }
 
-    public void addGlobal(String name, Class<?> type) {
+    public void addGlobal(String name, java.lang.reflect.Type type) {
         globals.put( name, type );
     }
 
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, java.lang.reflect.Type> getGlobals() {
         return globals;
     }
 
@@ -554,7 +557,7 @@ public class PackageModel {
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
 
-        for ( Map.Entry<String, Class<?>> g : getGlobals().entrySet() ) {
+        for ( Map.Entry<String, java.lang.reflect.Type> g : getGlobals().entrySet() ) {
             addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
         }
 
@@ -833,13 +836,23 @@ public class PackageModel {
         }
     }
 
-    private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, Class<?> globalClass) {
+    private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, java.lang.reflect.Type globalType) {
         ClassOrInterfaceType varType = toClassOrInterfaceType(Global.class);
-        varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
-        Type declType = DrlxParseUtil.classToReferenceType(globalClass);
-
         MethodCallExpr declarationOfCall = createDslTopLevelMethod(GLOBAL_OF_CALL);
-        declarationOfCall.addArgument(new ClassExpr(declType ));
+
+        if (globalType instanceof Class) {
+            Class<?> globalClass = (Class<?>) globalType;
+            varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
+            Type declType = DrlxParseUtil.classToReferenceType(globalClass);
+            declarationOfCall.addArgument(new ClassExpr(declType ));
+        } else {
+            ClassOrInterfaceType jpType = StaticJavaParser.parseClassOrInterfaceType(globalType.getTypeName());
+            varType.setTypeArguments(jpType);
+            Type declType = DrlxParseUtil.classToReferenceType(rawType(globalType));
+            ClassOrInterfaceType refType = new ClassOrInterfaceType(null, new SimpleName(TypeReference.class.getCanonicalName()), new NodeList<>(jpType));
+            declarationOfCall.addArgument(new ObjectCreationExpr(null, refType, new NodeList<>(new ClassExpr(declType))));
+        }
+
         declarationOfCall.addArgument(toStringLiteral(packageName));
         declarationOfCall.addArgument(toStringLiteral(globalName));
 

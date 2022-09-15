@@ -18,14 +18,13 @@ package org.drools.ruleunits.impl.factory;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
 import org.kie.api.definition.KiePackage;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
-import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.api.RuleUnitData;
 
 public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
 
@@ -37,7 +36,7 @@ public class RuleUnitComponentFactoryImpl implements RuleUnitComponentFactory {
 
     @Override
     public RuleUnitDescription createRuleUnitDescription(KiePackage pkg, Class<?> ruleUnitClass) {
-        return new ReflectiveRuleUnitDescription((InternalKnowledgePackage) pkg, (Class<? extends RuleUnitData>) ruleUnitClass);
+        return new ReflectiveRuleUnitDescription((Class<? extends RuleUnitData>) ruleUnitClass);
     }
 
     @Override

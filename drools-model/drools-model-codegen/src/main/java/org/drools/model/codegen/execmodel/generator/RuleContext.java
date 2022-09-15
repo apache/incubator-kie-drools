@@ -17,6 +17,23 @@
 
 package org.drools.model.codegen.execmodel.generator;
 
+import java.lang.reflect.Method;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -48,28 +65,12 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
-import java.lang.reflect.Method;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.drools.model.codegen.execmodel.generator.QueryGenerator.toQueryArg;
+import static org.drools.util.ClassUtils.rawType;
 
 public class RuleContext {
 
@@ -160,7 +161,7 @@ public class RuleContext {
     private RuleUnitDescription processRuleUnit(RuleUnitDescription ruleUnitDescr) {
         for (RuleUnitVariable unitVar : ruleUnitDescr.getUnitVarDeclarations()) {
             String unitVarName = unitVar.getName();
-            Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : unitVar.getType();
+            Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : rawType( unitVar.getType() );
             addRuleUnitVar( unitVarName, resolvedType );
 
             packageModel.addGlobal( unitVarName, unitVar.getType() );
@@ -273,7 +274,7 @@ public class RuleContext {
     }
 
     public void addGlobalDeclarations() {
-        Map<String, Class<?>> globals = packageModel.getGlobals();
+        Map<String, java.lang.reflect.Type> globals = packageModel.getGlobals();
 
         // also takes globals defined in different packages imported with a wildcard
         packageModel.getImports().stream()
@@ -284,7 +285,7 @@ public class RuleContext {
                 .map( pkgRegistry -> pkgRegistry.getPackage().getGlobals() )
                 .forEach( globals::putAll );
         
-        for (Map.Entry<String, Class<?>> ks : globals.entrySet()) {
+        for (Map.Entry<String, java.lang.reflect.Type> ks : globals.entrySet()) {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue(), true));
         }

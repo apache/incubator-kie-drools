@@ -16,6 +16,7 @@
 
 package org.kie.internal.ruleunit;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public interface RuleUnitDescription {
 
     Optional<Class<?>> getDatasourceType(String name );
 
-    Optional<Class<?>> getVarType( String name );
+    Optional<Type> getVarType(String name );
 
     RuleUnitVariable getVar(String name);
 

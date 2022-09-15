@@ -1,5 +1,7 @@
 package org.kie.internal.ruleunit;
 
+import java.lang.reflect.Type;
+
 public interface RuleUnitVariable {
 
     boolean isDataSource();
@@ -10,7 +12,7 @@ public interface RuleUnitVariable {
 
     String setter();
 
-    Class<?> getType();
+    Type getType();
 
     Class<?> getDataSourceParameterType();
 

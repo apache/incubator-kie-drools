@@ -16,7 +16,14 @@
 package org.drools.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.drools.util.StringUtils.splitArgumentsList;
 
 public interface TypeResolver {
     Set<String> getImports();
@@ -65,6 +72,64 @@ public interface TypeResolver {
         @Override
         public boolean accept(Class<?> clazz) {
             return Annotation.class.isAssignableFrom(clazz);
+        }
+    }
+
+    default Type resolveParametrizedType( String typeName ) throws ClassNotFoundException {
+        int genericsStart = typeName.indexOf('<');
+        if (typeName.indexOf('<') < 0) {
+            return resolveType(typeName);
+        }
+        String rawName = typeName.substring(0, genericsStart).trim();
+        Type rawType = resolveType(rawName);
+
+        String typeArguments = typeName.substring(genericsStart+1, typeName.lastIndexOf('>')).trim();
+        List<String> args = splitArgumentsList(typeArguments);
+        Type[] types = new Type[args.size()];
+        for (int i = 0; i < types.length; i++) {
+            try {
+                types[i] = resolveParametrizedType(args.get(i));
+            } catch (ClassNotFoundException cnfe) {
+                // parametric types with wildcards are not managed, so fallback to the rawType if it meets one
+                return rawType;
+            }
+        }
+        return new ParsedParameterizedType(rawType, types);
+    }
+
+    class ParsedParameterizedType implements ParameterizedType {
+
+        private final Type rawType;
+        private final Type[] typeArguments;
+
+        public ParsedParameterizedType(Type rawType, Type[] typeArguments) {
+            this.rawType = rawType;
+            this.typeArguments = typeArguments;
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return typeArguments;
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            String argsString = Stream.of(typeArguments).map(this::getCanonicalTypeName).collect(Collectors.joining(", "));
+            return getCanonicalTypeName(rawType) + "<" + argsString + ">";
+        }
+
+        private String getCanonicalTypeName(Type type) {
+            return type instanceof Class ? ((Class<?>) type).getCanonicalName() : type.getTypeName();
         }
     }
 }

@@ -17,25 +17,27 @@
 
 package org.drools.model.codegen.execmodel.generator;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.type.Type;
-import org.drools.drl.ast.descr.BehaviorDescr;
-import org.drools.drl.ast.descr.EntryPointDescr;
-import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.PatternExtractor;
-import com.github.javaparser.ast.expr.Expression;
+import org.drools.drl.ast.descr.BehaviorDescr;
+import org.drools.drl.ast.descr.EntryPointDescr;
+import org.drools.drl.ast.descr.PatternDescr;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.util.ClassUtils.rawType;
 
 public class DeclarationSpec {
     private final String bindingId;
-    private final Class<?> declarationClass;
+    private final Type declarationType;
     private final Optional<PatternDescr> optPattern;
     private final Optional<Expression> declarationSource;
     private final Optional<String> variableName;
@@ -46,25 +48,25 @@ public class DeclarationSpec {
     private boolean boxed = false;
     private Optional<PatternDescr> belongingPatternDescr;
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), false);
+    public DeclarationSpec(String bindingId, Type declarationType) {
+        this(bindingId, declarationType, Optional.empty(), Optional.empty(), Optional.empty(), false);
     }
 
-    public DeclarationSpec(String bindingId, Class<?> declarationClass, boolean isGlobal) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.empty(), isGlobal);
+    public DeclarationSpec(String bindingId, Type declarationType, boolean isGlobal) {
+        this(bindingId, declarationType, Optional.empty(), Optional.empty(), Optional.empty(), isGlobal);
     }
 
-    DeclarationSpec(String bindingId, Class<?> declarationClass, String variableName) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.empty(), Optional.of(variableName), false);
+    DeclarationSpec(String bindingId, Type declarationType, String variableName) {
+        this(bindingId, declarationType, Optional.empty(), Optional.empty(), Optional.of(variableName), false);
     }
 
-    DeclarationSpec(String bindingId, Class<?> declarationClass, Expression declarationSource) {
-        this(bindingId, declarationClass, Optional.empty(), Optional.of(declarationSource), Optional.empty(), false);
+    DeclarationSpec(String bindingId, Type declarationType, Expression declarationSource) {
+        this(bindingId, declarationType, Optional.empty(), Optional.of(declarationSource), Optional.empty(), false);
     }
 
-    DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, boolean isGlobal) {
+    DeclarationSpec(String bindingId, Type declarationType, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, boolean isGlobal) {
         this.bindingId = bindingId;
-        this.declarationClass = declarationClass;
+        this.declarationType = declarationType;
         this.optPattern = pattern;
         this.declarationSource = declarationSource;
         this.variableName = variableName;
@@ -87,7 +89,15 @@ public class DeclarationSpec {
     }
 
     public Class<?> getDeclarationClass() {
-        return declarationClass;
+        return rawType( declarationType );
+    }
+
+    public Type getDeclarationType() {
+        return declarationType;
+    }
+
+    public boolean isParametrizedType() {
+        return declarationType instanceof ParameterizedType;
     }
 
     public Optional<Expression> getDeclarationSource() {
@@ -98,11 +108,11 @@ public class DeclarationSpec {
         return variableName;
     }
 
-    public Type getBoxedType() {
+    public com.github.javaparser.ast.type.Type getBoxedType() {
         return DrlxParseUtil.classToReferenceType(this);
     }
 
-    public Type getRawType() {
+    public com.github.javaparser.ast.type.Type getRawType() {
         return toClassOrInterfaceType(getDeclarationClass());
     }
 
@@ -130,15 +140,16 @@ public class DeclarationSpec {
     public String toString() {
         return "DeclarationSpec{" +
                 "bindingId='" + bindingId + '\'' +
-                ", declarationClass=" + declarationClass +
+                ", declarationClass=" + declarationType +
                 ", isGlobal=" + isGlobal +
                 ", boxed=" + boxed +
                 '}';
     }
 
     public Declaration asDeclaration() {
-        Declaration decl = new Declaration( bindingId, new PatternExtractor( new ClassObjectType( declarationClass ) ), null );
-        decl.setDeclarationClass( declarationClass );
+        Class<?> declarationClass = getDeclarationClass();
+        Declaration decl = new Declaration( bindingId, new PatternExtractor( new ClassObjectType(declarationClass) ), null );
+        decl.setDeclarationClass(declarationClass);
         return decl;
     }
 

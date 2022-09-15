@@ -16,6 +16,7 @@
 
 package org.drools.kiesession.rulebase;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,8 +57,8 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
@@ -550,8 +551,8 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     @Override
-    public void addGlobal(String identifier, Class clazz) {
-        delegate.addGlobal(identifier, clazz);
+    public void addGlobal(String identifier, Type type) {
+        delegate.addGlobal(identifier, type);
     }
 
     @Override
@@ -605,7 +606,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     @Override
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Type> getGlobals() {
         return delegate.getGlobals();
     }
 

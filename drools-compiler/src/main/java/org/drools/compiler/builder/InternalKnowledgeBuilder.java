@@ -14,6 +14,7 @@
 
 package org.drools.compiler.builder;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +29,10 @@ import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.base.ObjectType;
-import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.drl.ast.descr.PackageDescr;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.internal.io.ResourceTypePackage;
@@ -139,7 +140,7 @@ public interface InternalKnowledgeBuilder extends KnowledgeBuilder, DroolsAssemb
         }
 
         @Override
-        public Map<String, Class<?>> getGlobals() {
+        public Map<String, Type> getGlobals() {
             return withKnowledgeBuilder(InternalKnowledgeBuilder::getGlobals, Collections.emptyMap());
         }
 
