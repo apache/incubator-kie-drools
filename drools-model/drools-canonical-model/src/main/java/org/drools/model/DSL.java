@@ -201,6 +201,10 @@ public class DSL {
         return new GlobalImpl<>( type, pkg, name );
     }
 
+    public static <T> Global<T> globalOf( TypeReference<T> type, String pkg, String name ) {
+        return new GlobalImpl<>( type.getType(), pkg, name );
+    }
+
     public static EntryPoint entryPoint( String name ) {
         return new EntryPointImpl( name );
     }

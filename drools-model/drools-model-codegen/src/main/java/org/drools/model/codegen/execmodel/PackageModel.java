@@ -44,7 +44,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.AssignExpr;
-import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -74,6 +73,7 @@ import org.drools.model.Model;
 import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.RulesSupplier;
+import org.drools.model.TypeReference;
 import org.drools.model.WindowReference;
 import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
@@ -849,8 +849,8 @@ public class PackageModel {
             ClassOrInterfaceType jpType = StaticJavaParser.parseClassOrInterfaceType(globalType.getTypeName());
             varType.setTypeArguments(jpType);
             Type declType = DrlxParseUtil.classToReferenceType(rawType(globalType));
-            ClassOrInterfaceType classType = new ClassOrInterfaceType(null, new SimpleName("Class"), new NodeList<>(jpType));
-            declarationOfCall.addArgument(new CastExpr(classType, new CastExpr(DrlxParseUtil.classToReferenceType(Object.class), new ClassExpr(declType))));
+            ClassOrInterfaceType refType = new ClassOrInterfaceType(null, new SimpleName(TypeReference.class.getCanonicalName()), new NodeList<>(jpType));
+            declarationOfCall.addArgument(new ObjectCreationExpr(null, refType, new NodeList<>(new ClassExpr(declType))));
         }
 
         declarationOfCall.addArgument(toStringLiteral(packageName));
