@@ -17,19 +17,20 @@
 
 package org.drools.compiler.builder;
 
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.builder.impl.BuilderConfigurationProvider;
 import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.base.ObjectType;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * This interface solely exist to make work legacy package processing
@@ -39,7 +40,7 @@ import java.util.Map;
 public interface DroolsAssemblerContext
         extends BuilderConfigurationProvider, InternalKnowledgeBaseProvider, RootClassLoaderProvider {
 
-    Map<String, Class<?>> getGlobals();
+    Map<String, Type> getGlobals();
 
     TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String name);
 

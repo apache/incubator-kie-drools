@@ -16,14 +16,16 @@
 package org.drools.core.definitions;
 
 import java.io.Externalizable;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.util.TypeResolver;
+import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ObjectType;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.impl.RuleBase;
@@ -32,11 +34,10 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
-import org.drools.core.base.AcceptsClassObjectType;
 import org.drools.core.rule.accessor.AcceptsReadAccessor;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.base.ObjectType;
+import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
+import org.drools.util.TypeResolver;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
@@ -61,7 +62,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     ResourceTypePackageRegistry getResourceTypePackages();
 
-    Map<String, Class<?>> getGlobals();
+    Map<String, Type> getGlobals();
 
     @Deprecated
     Map<String, Process> getRuleFlows();
@@ -82,7 +83,7 @@ public interface InternalKnowledgePackage extends KiePackage,
 
     void addFunction(Function function);
 
-    void addGlobal(String identifier, Class<?> clazz);
+    void addGlobal(String identifier, Type type);
 
     void addEntryPointId(String id);
 

@@ -25,6 +25,8 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
@@ -496,5 +498,39 @@ public class GlobalTest extends BaseModelTest {
         List<String> globalList = (List<String>)ks.getGlobal("globalList");
         assertThat(globalList.size()).isEqualTo(1);
         assertThat(globalList.get(0)).isEqualTo("FOO matched");
+    }
+
+    @Test
+    public void testGenericOnGlobal() {
+        // DROOLS-7155
+        String def =
+                "package org.drools.reproducer\n" +
+                "global java.util.List<String> globalList;\n" +
+                "rule R when\n" +
+                "then\n" +
+                "    globalList.add(\"test\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( def );
+        ksession.setGlobal("globalList", new ArrayList<String>());
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testWrongGenericOnGlobal() {
+        // DROOLS-7155
+        String def =
+                "package org.drools.reproducer\n" +
+                "global java.util.List<Integer> globalList;\n" +
+                "rule R when\n" +
+                "then\n" +
+                "    globalList.add(\"test\");\n" +
+                "end\n";
+
+        Results results = createKieBuilder(def).getResults();
+        assertThat(results.getMessages(Message.Level.ERROR)).isNotEmpty();
+        assertThat(results.getMessages(Message.Level.ERROR).stream().map(Message::getText)
+                .anyMatch(s -> s.contains("The method add(Integer) in the type List<Integer> is not applicable for the arguments (String)"))).isTrue();
     }
 }

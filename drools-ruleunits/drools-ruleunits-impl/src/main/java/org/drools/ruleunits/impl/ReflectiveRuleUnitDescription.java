@@ -18,9 +18,9 @@ package org.drools.ruleunits.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Optional;
 
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitConfig;
@@ -37,7 +37,7 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
     private final Class<? extends RuleUnitData> ruleUnitClass;
     private final AssignableChecker assignableChecker;
 
-    public ReflectiveRuleUnitDescription(InternalKnowledgePackage pkg, Class<? extends RuleUnitData> ruleUnitClass) {
+    public ReflectiveRuleUnitDescription(Class<? extends RuleUnitData> ruleUnitClass) {
         this.ruleUnitClass = ruleUnitClass;
         this.assignableChecker = AssignableChecker.create(ruleUnitClass.getClassLoader());
         indexUnitVars();
@@ -76,16 +76,18 @@ public class ReflectiveRuleUnitDescription extends AbstractRuleUnitDescription {
     }
 
     private void indexUnitVars() {
-        for (Method m : ruleUnitClass.getMethods()) {
-            if (m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0) {
-                String id = getter2property(m.getName());
-                if (id != null && !id.equals("class")) {
-                    Class<?> parametricType = getUnitVarType(m);
-                    Method setter = getSetter(m.getDeclaringClass(), id, m.getReturnType());
-                    putRuleUnitVariable(
-                            new SimpleRuleUnitVariable(id, m.getReturnType(), parametricType, setter != null));
-                }
-            }
+        Arrays.stream(ruleUnitClass.getMethods())
+                .filter( m -> m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 )
+                .forEach( this::registerRuleUnitVariable );
+    }
+
+    private void registerRuleUnitVariable(Method m) {
+        String id = getter2property(m.getName());
+        if (id != null && !id.equals("class")) {
+            Class<?> parametricType = getUnitVarType(m);
+            Method setter = getSetter(m.getDeclaringClass(), id, m.getReturnType());
+            String setterName = setter != null ? setter.getName() : null;
+            putRuleUnitVariable( new SimpleRuleUnitVariable(id, m.getGenericReturnType(), parametricType, setterName) );
         }
     }
 

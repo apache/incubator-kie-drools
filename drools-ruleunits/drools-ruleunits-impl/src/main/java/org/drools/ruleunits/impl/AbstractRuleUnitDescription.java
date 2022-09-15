@@ -15,14 +15,15 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.drools.ruleunits.api.RuleUnitConfig;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.drools.ruleunits.api.RuleUnitConfig;
 
 public abstract class AbstractRuleUnitDescription implements RuleUnitDescription {
 
@@ -37,7 +38,7 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     }
 
     @Override
-    public Optional<Class<?>> getVarType(String name) {
+    public Optional<Type> getVarType(String name) {
         return Optional.ofNullable(varDeclarations.get(name)).map(RuleUnitVariable::getType);
     }
 

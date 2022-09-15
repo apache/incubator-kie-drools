@@ -19,6 +19,7 @@ package org.drools.compiler.rule.builder;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
@@ -159,7 +160,7 @@ public class RuleBuildContext extends PackageBuildContext {
     }
 
     @Override
-    public Class<?> resolveVarType(String identifier) {
+    public Type resolveVarType(String identifier) {
         return getDeclarationResolver().resolveVarType(identifier);
     }
 

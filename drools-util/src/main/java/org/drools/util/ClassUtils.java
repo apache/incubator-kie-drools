@@ -23,6 +23,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -542,6 +543,13 @@ public final class ClassUtils {
             }
         }
         throw new RuntimeException("No generic type");
+    }
+
+    public static Class<?> rawType(Type type) {
+        if (type == null) {
+            return null;
+        }
+        return type instanceof Class ? (Class<?>) type : rawType( ((ParameterizedType) type).getRawType() );
     }
 
     public static boolean isTypeCompatibleWithArgumentType( Class<?> actual, Class<?> formal ) {

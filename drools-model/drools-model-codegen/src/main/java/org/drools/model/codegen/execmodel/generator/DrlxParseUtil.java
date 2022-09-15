@@ -290,7 +290,7 @@ public class DrlxParseUtil {
         if (usedDeclarations != null) {
             usedDeclarations.add(name);
         }
-        Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass );
+        Optional<java.lang.reflect.Type> type = context.getDeclarationById( name ).map(DeclarationSpec::getDeclarationClass);
         return type.orElseThrow(() -> new NoSuchElementException("Cannot get expression type by name " + name + "!"));
     }
 
@@ -574,6 +574,9 @@ public class DrlxParseUtil {
     }
 
     public static Type classToReferenceType(DeclarationSpec declaration) {
+        if (declaration.isParametrizedType()) {
+            return StaticJavaParser.parseClassOrInterfaceType(declaration.getDeclarationType().getTypeName());
+        }
         Class<?> declarationClass = declaration.getDeclarationClass();
         ReferenceType parsedType = classNameToReferenceTypeWithBoxing(declarationClass);
         declaration.setBoxed(parsedType.wasBoxed);

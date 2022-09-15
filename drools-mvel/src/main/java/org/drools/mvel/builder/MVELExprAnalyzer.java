@@ -14,6 +14,7 @@
 
 package org.drools.mvel.builder;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,13 +25,13 @@ import java.util.Set;
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.asm.AsmUtil;
 import org.kie.api.definition.rule.Rule;
@@ -248,7 +249,7 @@ public class MVELExprAnalyzer {
         final Set<String> notBound = new HashSet<>( identifiers );
         notBound.remove( "this" );
         Map<String, Class< ? >> usedDecls = new HashMap<>();
-        Map<String, Class< ? >> usedGlobals = new HashMap<>();
+        Map<String, Type> usedGlobals = new HashMap<>();
         Map<String, EvaluatorWrapper> usedOperators = new HashMap<>();
 
         for ( Entry<String, Class< ? >> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
@@ -260,7 +261,7 @@ public class MVELExprAnalyzer {
         }
 
         for ( String identifier : identifiers ) {
-            Class<?> type = availableIdentifiers.resolveVarType( identifier );
+            Type type = availableIdentifiers.resolveVarType( identifier );
             if (type != null) {
                 usedGlobals.put( identifier, type );
                 notBound.remove( identifier );

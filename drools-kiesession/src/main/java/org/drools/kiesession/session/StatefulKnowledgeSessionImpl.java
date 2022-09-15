@@ -21,6 +21,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +62,7 @@ import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectStoreWrapper;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -87,13 +89,12 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.rule.accessor.GlobalResolver;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
 import org.drools.core.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
-import org.drools.core.rule.consequence.Activation;
-import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.rule.accessor.GlobalResolver;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
@@ -137,6 +138,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.base.ClassObjectType.InitialFact_ObjectType;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.util.ClassUtils.rawType;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -959,11 +961,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.readLock();
             startOperation();
             // Make sure the global has been declared in the RuleBase
-            Class type = this.kBase.getGlobals().get( identifier );
+            Type type = this.kBase.getGlobals().get( identifier );
             if ( (type == null) ) {
                 throw new RuntimeException( "Unexpected global [" + identifier + "]" );
-            } else if ( !type.isInstance( value ) ) {
-                throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
+            } else if ( !rawType( type ).isInstance( value ) ) {
+                throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getTypeName() + "], " + "found [" + value.getClass().getName() + "]." );
 
             } else {
                 this.globalResolver.setGlobal( identifier,

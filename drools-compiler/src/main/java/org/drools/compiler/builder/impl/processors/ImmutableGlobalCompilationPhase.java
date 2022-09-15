@@ -17,6 +17,10 @@
 
 package org.drools.compiler.builder.impl.processors;
 
+import java.lang.reflect.Type;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -25,9 +29,6 @@ import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class ImmutableGlobalCompilationPhase extends AbstractPackageCompilationPhase {
     protected static final transient Logger logger = LoggerFactory.getLogger(ImmutableGlobalCompilationPhase.class);
@@ -48,18 +49,13 @@ public class ImmutableGlobalCompilationPhase extends AbstractPackageCompilationP
             existingGlobals.remove(identifier);
             String className = global.getType();
 
-            // JBRULES-3039: can't handle type name with generic params
-            while (className.indexOf('<') >= 0) {
-                className = className.replaceAll("<[^<>]+?>", "");
-            }
-
             try {
-                Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(className);
-                if (clazz.isPrimitive()) {
+                Type globalType = pkgRegistry.getTypeResolver().resolveParametrizedType(className);
+                if (globalType instanceof Class && ((Class<?>) globalType).isPrimitive()) {
                     this.results.add(new GlobalError(global, " Primitive types are not allowed in globals : " + className));
                     return;
                 }
-                addGlobal(pkg, identifier, clazz);
+                addGlobal(pkg, identifier, globalType);
             } catch (final ClassNotFoundException e) {
                 this.results.add(new GlobalError(global, e.getMessage()));
                 logger.warn("ClassNotFoundException occured!", e);
@@ -71,9 +67,9 @@ public class ImmutableGlobalCompilationPhase extends AbstractPackageCompilationP
         }
     }
 
-    protected void addGlobal(InternalKnowledgePackage pkg, String identifier, Class<?> clazz) {
-        pkg.addGlobal(identifier, clazz);
-        globalVariableContext.addGlobal(identifier, clazz);
+    protected void addGlobal(InternalKnowledgePackage pkg, String identifier, Type globalType) {
+        pkg.addGlobal(identifier, globalType);
+        globalVariableContext.addGlobal(identifier, globalType);
     }
 
     protected void removeGlobal(InternalKnowledgePackage pkg, String toBeRemoved) {

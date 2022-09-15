@@ -3,6 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.api.builder;
 
-package org.drools.compiler.builder.impl;
+import java.util.List;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+public class CompilationErrorsException extends RuntimeException {
 
-public class GlobalVariableContextImpl implements GlobalVariableContext {
-    private final Map<String, Type> globals = new HashMap<>();
+    private final List<Message> errorMessages;
 
-    @Override
-    public Map<String, Type> getGlobals() {
-        return this.globals;
+    public CompilationErrorsException(List<Message> errorMessages) {
+        super("Unable to create KieModule, Errors Existed: " + errorMessages);
+        this.errorMessages = errorMessages;
     }
 
-    @Override
-    public void addGlobal(String name, Type type) {
-        globals.put(name, type);
+    public List<Message> getErrorMessages() {
+        return errorMessages;
     }
-
 }

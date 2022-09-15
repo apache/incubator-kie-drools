@@ -16,6 +16,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -254,7 +255,7 @@ public class PackageBuildContext {
         this.typesafe = stricttype;
     }
 
-    public Class< ? > resolveVarType(String identifier) {
+    public Type resolveVarType(String identifier) {
         return getKnowledgeBuilder().getGlobals().get( identifier );
     }
 }

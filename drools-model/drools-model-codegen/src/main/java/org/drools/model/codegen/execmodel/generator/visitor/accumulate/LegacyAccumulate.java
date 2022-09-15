@@ -17,6 +17,7 @@
 
 package org.drools.model.codegen.execmodel.generator.visitor.accumulate;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,9 +34,6 @@ import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.drl.ast.descr.AccumulateDescr;
-import org.drools.drl.ast.descr.PatternDescr;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.compiler.rule.builder.JavaRuleClassBuilder;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -46,10 +44,13 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.util.StringUtils;
+import org.drools.drl.ast.descr.AccumulateDescr;
+import org.drools.drl.ast.descr.PatternDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.model.codegen.execmodel.GeneratedClassWithPackage;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.generator.RuleContext;
+import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
@@ -201,7 +202,7 @@ public class LegacyAccumulate {
         }
 
         @Override
-        public Class<?> resolveVarType( String identifier ) {
+        public Type resolveVarType(String identifier ) {
             return delegate.resolveVarType( identifier );
         }
 

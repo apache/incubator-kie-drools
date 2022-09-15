@@ -28,16 +28,18 @@ import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
-import org.drools.io.ResourceConfigurationImpl;
+import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.io.InternalResource;
+import org.drools.io.ResourceConfigurationImpl;
 import org.drools.util.IoUtils;
+import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
 import org.kie.api.KieServices;
+import org.kie.api.builder.CompilationErrorsException;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -60,7 +62,6 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
-import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
@@ -520,7 +521,7 @@ public class KieBuilderImpl
         }
 
         if ( !ignoreErrors && ( getResults().hasMessages( Level.ERROR ) || kModule == null ) ) {
-            throw new RuntimeException( "Unable to get KieModule, Errors Existed: " + getResults() );
+            throw new CompilationErrorsException( getResults().getMessages( Level.ERROR ) );
         }
         return kModule;
     }

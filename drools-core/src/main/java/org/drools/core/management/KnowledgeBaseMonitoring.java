@@ -16,6 +16,7 @@
 
 package org.drools.core.management;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -193,8 +194,8 @@ public class KnowledgeBaseMonitoring
     @SuppressWarnings("unchecked")
     public TabularData getGlobals() throws OpenDataException {
         TabularDataSupport globalsTable = new TabularDataSupport( globalsTableType );
-        for ( Map.Entry<String, Class< ? >> global : ((Map<String, Class< ? >>) kbase.getGlobals()).entrySet() ) {
-            Object[] itemValues = {global.getKey(), global.getValue().getName()};
+        for ( Map.Entry<String, Type> global : ((Map<String, Type>) kbase.getGlobals()).entrySet() ) {
+            Object[] itemValues = {global.getKey(), global.getValue().getTypeName()};
             CompositeData result = new CompositeDataSupport( globalsType,
                                                              globalsColNames,
                                                              itemValues );
