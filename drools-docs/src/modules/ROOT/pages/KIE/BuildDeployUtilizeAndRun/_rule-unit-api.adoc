@@ -89,7 +89,7 @@ measurements.remove(mHandle);
 ----
 
 * `SingletonStore`: A writable storage option for setting or clearing a single element and then notifying all subscribers that the element has been modified. Rules can pattern-match against the value and update or clear available values.
-For users familiar with traditional DRL syntax, this option is equivalent to a global. In fact, a `Singleton<Object>` is similar to a traditional-style global, except that when used in conjunction with rules, you can pattern-match against it.
+For users familiar with traditional DRL syntax, this option is similar to a global but reactive to changes. In fact, a `Singleton<Object>` is similar to a traditional-style global, except that when used in conjunction with rules, you can pattern-match against it.
 +
 .Example SingletonStore data source definition
 [source,java]
