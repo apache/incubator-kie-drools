@@ -43,7 +43,7 @@ import static org.drools.util.ClassUtils.findParentClassLoader;
 
 public abstract class ProjectClassLoader extends ClassLoader implements KieTypeResolver, StoreClassLoader, WritableClassLoader {
 
-    private static final boolean CACHE_NON_EXISTING_CLASSES = true;
+    static final boolean CACHE_NON_EXISTING_CLASSES = true;
 
     private static boolean enableStoreFirst = Boolean.valueOf(System.getProperty("drools.projectClassLoader.enableStoreFirst", "true"));
 
