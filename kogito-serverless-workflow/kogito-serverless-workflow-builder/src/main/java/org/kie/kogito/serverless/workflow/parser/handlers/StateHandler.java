@@ -15,14 +15,14 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
@@ -60,6 +60,7 @@ import io.serverlessworkflow.api.filters.StateDataFilter;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
+import io.serverlessworkflow.api.workflow.Errors;
 
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.messageNode;
@@ -221,25 +222,45 @@ public abstract class StateHandler<S extends State> {
         }
     }
 
-    protected final Iterable<ErrorDefinition> getErrorDefinitions(Error error) {
-        Predicate<? super ErrorDefinition> pred;
-        if (error.getErrorRef() != null) {
-            pred = e -> error.getErrorRef().equals(e.getName());
-        } else if (error.getErrorRefs() != null) {
-            pred = e -> error.getErrorRefs().contains(e.getName());
-        } else {
-            throw new IllegalStateException("errorRef or errorRefs should be defined in list of error definitions");
+    private boolean hasCode(ErrorDefinition errorDef) {
+        if (errorDef.getCode() == null) {
+            logger.error("Kogito requires code error to be set. Ignoring {}", errorDef.getName());
+            return false;
         }
-        return workflow.getErrors().getErrorDefs().stream().filter(pred).collect(Collectors.toList());
+        return true;
+    }
+
+    protected final Collection<ErrorDefinition> getErrorDefinitions(Error error) {
+        Errors errors = workflow.getErrors();
+        if (errors == null) {
+            throw new IllegalArgumentException("workflow should contain errors property");
+        }
+        List<ErrorDefinition> errorDefs = errors.getErrorDefs();
+        if (errorDefs == null) {
+            throw new IllegalArgumentException("workflow errors property must contain errorDefs property");
+        }
+
+        if (error.getErrorRef() != null) {
+            return getErrorsDefinitions(errorDefs, Arrays.asList(error.getErrorRef()));
+        } else if (error.getErrorRefs() != null) {
+            return getErrorsDefinitions(errorDefs, error.getErrorRefs());
+        } else {
+            throw new IllegalArgumentException("state errors should contain either errorRef or errorRefs property");
+        }
+    }
+
+    private Collection<ErrorDefinition> getErrorsDefinitions(List<ErrorDefinition> errorDefs, List<String> errorRefs) {
+        Collection<ErrorDefinition> result = new ArrayList<>();
+        for (String errorRef : errorRefs) {
+            result.add(errorDefs.stream().filter(errorDef -> errorDef.getName().equals(errorRef) && hasCode(errorDef)).findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("Cannot find any error definition for errorRef" + errorRef)));
+        }
+        return result;
     }
 
     protected final void handleErrors(RuleFlowNodeContainerFactory<?, ?> factory, RuleFlowNodeContainerFactory<?, ?> targetNode) {
         for (Error error : state.getOnErrors()) {
-            for (ErrorDefinition errorDef : getErrorDefinitions(error)) {
-                if (errorDef.getCode() == null) {
-                    logger.error("Kogito requires code error to be set. Ignoring {}", errorDef.getName());
-                    return;
-                }
+            getErrorDefinitions(error).forEach(errorDef -> {
                 String errorPrefix = RuleFlowProcessFactory.ERROR_TYPE_PREFIX + targetNode.getNode().getMetaData().get("UniqueId") + '-';
                 BoundaryEventNodeFactory<?> boundaryNode = factory.boundaryEventNode(parserContext.newId()).attachedTo(targetNode.getNode().getId())
                         .metaData(Metadata.EVENT_TYPE, Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true).metaData(Metadata.ERROR_EVENT, errorDef.getCode())
@@ -251,7 +272,7 @@ public abstract class StateHandler<S extends State> {
                 } else {
                     handleTransitions(factory, error.getTransition(), boundaryNode.getNode().getId());
                 }
-            }
+            });
         }
     }
 
