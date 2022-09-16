@@ -1,0 +1,237 @@
+[[releaseNotes-8.x]]
+== OptaPlanner 8.x Release Notes
+
+
+[[releaseNotes-8.27.0.Final]]
+=== OptaPlanner 8.27.0.Final
+
+==== Bavet is feature complete
+
+The alternative constraint streams implementation Bavet is feature complete.
+You can now use it as an alternative to Drools (which is still the default).
+
+Bavet will not be supported in Red Hat's support offering.
+Drools intends to catch up performance wise.
+
+
+[[releaseNotes-8.24.0.Final]]
+=== OptaPlanner 8.24.0.Final
+
+==== Optaweb Employee Rostering demo application abandoned
+
+The codebase for Optaweb Employee Rostering demo application has been frozen and will no longer receive any updates.
+
+We encourage users to check out the https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/employee-scheduling[OptaPlanner Employee Rostering Quickstart] for a simple and straight-forward way of integrating OptaPlanner in your application.
+
+
+[[releaseNotes-8.23.0.Final]]
+=== OptaPlanner 8.23.0.Final
+
+==== Score DRL deprecated in favor of Constraint Streams
+
+Support for Score DRL has been deprecated and users are encouraged to migrate to https://www.optaplanner.org/docs/optaplanner/latest/constraint-streams/constraint-streams.html[Constraint Streams] at their earliest convenience.
+link:../upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
+Score DRL is not going away in OptaPlanner 8.
+
+
+[[releaseNotes-8.20.0.Final]]
+=== OptaPlanner 8.20.0.Final
+
+==== `SolverManager.addProblemChange()` now returns `CompletableFuture<Void>`
+
+`SolverManager.addProblemChange()` returns `CompletableFuture<Void>`, which completes when a new best solution containing
+the problem change has been passed to a user-defined `Consumer`.
+
+
+[[releaseNotes-8.17.0.Final]]
+=== OptaPlanner 8.17.0.Final
+
+==== Real-time planning available on the `SolverManager`
+
+The `SolverManager` now accepts problem changes via the `addProblemChange()` method,
+allowing for https://www.optaplanner.org/docs/optaplanner/latest/repeated-planning/repeated-planning.html#realTimePlanning[real-time planning]
+without much boilerplate code.
+
+==== Faster `Solver` creation
+
+`SolverFactory` newly caches some internal data structures, leading to much faster `Solver` creation times.
+This is beneficial if you instantiate multiple `Solver` instances in quick succession.
+
+
+[[releaseNotes-8.12.0.Final]]
+=== OptaPlanner 8.12.0.Final
+
+==== Documentation website
+
+The latest final OptaPlanner documentation is now available on a new
+https://www.optaplanner.org/docs[documentation website] built using https://antora.org[Antora].
+The single-HTML and PDF documentation will continue to be published in the https://docs.optaplanner.org/[archive].
+
+==== Monitoring Support
+
+OptaPlanner now uses Micrometer to monitor key metrics such as active solver count, solve durations, and error count.
+
+
+[[releaseNotes-8.10.0.Final]]
+=== OptaPlanner 8.10.0.Final
+
+==== Support for Quarkus 2.0
+
+OptaPlanner is now fully compatible with the recently released https://quarkus.io/quarkus2/[Quarkus 2.0].
+
+
+[[releaseNotes-8.7.0.Final]]
+=== OptaPlanner 8.7.0.Final
+
+==== OptaPlanner quickstarts repository
+
+There is a new `quarkus-call-center` quickstart that shows https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#realTimePlanning[real-time planning] of incoming calls in a call center.
+
+image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
+
+
+[[releaseNotes-8.5.0.Final]]
+=== OptaPlanner 8.5.0.Final
+
+==== Mapping in Constraint Streams
+
+The link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API] received a major new functionality.
+You can now modify your streams using link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsMappingTuples[mapping functions].
+
+==== Ready for OpenJDK 16
+
+We have made some tweaks under the hood
+so that your experience with the recently released link:https://openjdk.java.net/projects/jdk/16/[OpenJDK 16] continues to be smooth.
+
+==== Inject and Autowire ConstraintVerifier in Quarkus and Spring Boot
+
+You can now link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTestingQuarkus[inject the Constraint Verifier in Quarkus] and
+link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTestingSpringBoot[autowire the Constraint Verifier in Spring Boot], allowing
+you to link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTesting[test your constraint streams] more easily.
+
+==== OptaWebs on Quarkus
+
+OptaWeb Vehicle Routing and OptaWeb Employee Rostering have been migrated from Spring Boot to Quarkus.
+
+Other noteworthy changes done during the migration to Quarkus:
+
+* OptaWeb Vehicle Routing back end has a new RESTful API.
+Client-server communication, that was previously done using WebSockets, now uses a combination of REST calls and Server-Sent Events.
+* OptaWeb Employee Rostering now uses Constraint Streams instead of DRL for score calculation.
+
+==== Faster Domain Accessors and Cloning with Gizmo
+
+We have added link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#domainAccess[Gizmo generated domain accessors and solution
+cloners], which offer better performance than the reflection based
+domain accessors and solution cloners.
+
+==== OptaPlanner quickstarts repository
+
+There is a new `activemq-quarkus-school-timetabling` quickstart that shows how to integrate ActiveMQ with OptaPlanner to horizontally scale when solving multiple data sets.
+
+
+[[releaseNotes-8.3.0.Final]]
+=== OptaPlanner 8.3.0.Final
+
+==== Major performance improvements for Constraint Streams
+
+The default implementation of the link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API]
+has seen major performance improvements.
+Use cases with tri and quad streams may experience order of magnitude speedups.
+Use cases with link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsGroupingAndCollectors[grouping]
+are likely to experience some speedups too, albeit comparatively smaller.
+
+Kudos to the link:https://drools.org/[Drools] team for helping make this possible!
+
+==== Constraint Streams `groupBy()` overloads for multiple collectors
+
+The link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API]
+has been extended to allow using more than 2 collectors in a single link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsGroupingAndCollectors[grouping].
+The following is now possible:
+
+[source,java]
+----
+return constraintFactory.from(ProductPrice.class)
+    .groupBy(min(), max(), sum())
+    .penalize(..., SimpleScore.ONE, (minPrice, maxPrice, sumPrices) -> ...);
+----
+
+
+[[releaseNotes-8.0.0.Final]]
+=== OptaPlanner 8.0.0.Final
+
+==== OptaPlanner quickstarts repository
+
+The new https://github.com/kiegroup/optaplanner-quickstarts[OptaPlanner Quickstarts repository]
+contains pretty web demos for several use cases.
+It also shows you how to integrate OptaPlanner with different technologies:
+
+* *School timetabling*: Assign lessons to timeslots and rooms to produce a better schedule for teachers and students.
++
+This application connects to a relational database and exposes a REST API, rendered by a pretty JavaScript UI.
++
+** `quarkus-school-timetabling`: Java, Maven or Gradle, Quarkus, H2
+** `spring-boot-school-timetabling`: Java, Maven or Gradle, Spring Boot, H2
+** `kotlin-quarkus-school-timetabling`: Kotlin, Maven, Quarkus, H2
+* *Facility location problem (FLP)*: Pick the best geographical locations for new stores, distribution centers, COVID-19 test centers or telco masts.
+** `quarkus-facility-location`: Java, Maven, Quarkus
+* *Factorio layout*: Assign machines to assembly line locations to design the best factory layout.
+** `quarkus-factorio-layout`: Java, Maven, Quarkus
+* Maintenance scheduling: Coming soon
+
+https://github.com/kiegroup/optaplanner-quickstarts[Clone the quickstarts repo now!]
+
+==== Future Java compatibility
+
+The OptaPlanner 8 API has been groomed to maximize compatibility
+with the latest https://openjdk.java.net/[OpenJDK] and https://www.graalvm.org/[GraalVM] releases
+and game-changing platforms such as https://quarkus.io/[Quarkus].
+Meanwhile, we still fully support OpenJDK 11 and platforms such as Spring Boot or plain Java.
+
+For example, when running OptaPlanner in Java 11 or higher with a classpath,
+OptaPlanner no longer triggers `WARNING: An illegal reflective access operation has occurred`
+for XStream.
+
+==== Code completion for solverConfig.xml and benchmarkConfig.xml through XSD
+
+To validate XML configuration during development,
+add the new XML Schema Definition (XSD) on the solver or benchmark configuration:
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  ...
+</solver>
+----
+
+This enables code completion for XML in most IDEs:
+
+image:release-notes/solverConfigCompletion.png[SolverConfigCodeCompletion]
+
+==== Improved Quarkus extension
+
+The OptaPlanner Quarkus extension is now stable
+and displays no warnings when compiling Java to a native executable.
+
+==== ScoreManager now supports score explanation
+
+The `ScoreManager` can now also explain why a solution has a certain score:
+
+[source,java]
+----
+ScoreManager<TimeTable, HardSoftScore> scoreManager = ScoreManager.create(solverFactory);
+...
+ScoreExplanation<TimeTable, HardSoftScore> scoreExplanation = scoreManager.explain(timeTable);
+System.out.println(scoreExplanation.getSummary());
+...
+----
+
+Additionally, use `scoreExplanation.getConstraintMatchTotalMap()` and `scoreExplanation.getIndictmentMap()`
+to extract the `ConstraintMatchTotal<HardSoftScore>` and `Indictment<HardSoftScore>` information without triggering a new score calculation.
+
+==== Various improvements
+
+* The ConstraintStreams API is now richer, more stable with better error messages and faster.
+* The `SolverManager` API now supports to listen to both best solution events and the solving ended event.
+* OptaPlanner no longer depends on Guava or Reflections.

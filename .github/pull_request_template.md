@@ -23,6 +23,7 @@ changes that span multiple kiegroup repositories and depend on each other. -->
 
 ### Checklist
 - [ ] Documentation updated if applicable.
+- [ ] Release notes updated if applicable.
 - [ ] Upgrade recipe provided if applicable.
 
 <details>
