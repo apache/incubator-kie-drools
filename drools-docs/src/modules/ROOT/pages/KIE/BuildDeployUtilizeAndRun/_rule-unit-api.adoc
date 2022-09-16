@@ -128,7 +128,7 @@ public interface DataProcessor<T> {
 }
 ----
 
-The `DataHandle` is an internal reference to an object of a data source. Each callaback method might or might not be invoked, depending on whether the corresponding data source implements the capability. For example, a `DataStream` source invokes only the `insert` callback, whereas a `SingletonStore` source invokes the `insert` callback on `set` and the `delete` callback on `clear` or before an overwriting `set`.
+The `DataHandle` is an internal reference to an object of a data source. Each callback method might or might not be invoked, depending on whether the corresponding data source implements the capability. For example, a `DataStream` source invokes only the `insert` callback, whereas a `SingletonStore` source invokes the `insert` callback on `set` and the `delete` callback on `clear` or before an overwriting `set`.
 
 Note that `DataProcessor` is a little internal detail. If you instantiate `RuleUnitInstance`, `EntryPointDataProcessor` is automatically bound to the rule unit's data sources.
 
