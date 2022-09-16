@@ -97,10 +97,9 @@ public class DrlCompilerHelper {
 
         List<GeneratedFile> modelFiles = new ArrayList<>();
         List<String> generatedRulesModels = new ArrayList<>();
-
         for (KogitoPackageSources pkgSources : packageSources) {
             pkgSources.collectGeneratedFiles(modelFiles);
-            generatedRulesModels.add(pkgSources.getPackageName() + "." + pkgSources.getRulesFileName());
+            generatedRulesModels.addAll(pkgSources.getExecutableRulesClasses());
         }
 
         Map<String, String> sourceCode = modelFiles.stream()

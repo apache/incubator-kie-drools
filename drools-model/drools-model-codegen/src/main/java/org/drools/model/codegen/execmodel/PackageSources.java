@@ -38,6 +38,8 @@ public class PackageSources {
     private Collection<String> modelNames;
     private Collection<String> ruleUnitClassNames = new ArrayList<>();
 
+    protected Collection<String> executableRulesClasses;
+
     public static PackageSources dumpSources(PackageModel pkgModel) {
         PackageSources sources = new PackageSources();
 
@@ -48,6 +50,7 @@ public class PackageSources {
 
         RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
         sources.modelNames = rules.getClassNames();
+        sources.executableRulesClasses = pkgModel.getExecutableRulesClasses();
         return sources;
     }
 
@@ -86,6 +89,10 @@ public class PackageSources {
 
     public Collection<String> getRuleUnitClassNames() {
         return ruleUnitClassNames;
+    }
+
+    public Collection<String> getExecutableRulesClasses() {
+        return executableRulesClasses;
     }
 
     protected static String logSource(String source) {

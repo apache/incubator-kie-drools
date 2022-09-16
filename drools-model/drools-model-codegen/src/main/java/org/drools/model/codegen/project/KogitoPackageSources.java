@@ -78,7 +78,7 @@ public class KogitoPackageSources extends PackageSources {
                 sources.queries.put(ruleUnitCanonicalName, pkgModel.getQueriesInRuleUnit(ruleUnit));
             }
         }
-
+        sources.executableRulesClasses = pkgModel.getExecutableRulesClasses();
         return sources;
     }
 

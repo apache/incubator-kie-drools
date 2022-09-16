@@ -172,6 +172,9 @@ public class PackageModel {
 
     private DroolsModelBuildContext context;
 
+    private final String executableRulesClass;
+    private final Collection<String> executableRulesClasses = new HashSet<>();
+
     private PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
         this(name, configuration, dialectCompiletimeRegistry, exprIdGenerator, getPkgUUID(releaseId, name));
     }
@@ -187,6 +190,8 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+        executableRulesClass = name + "."  + rulesFileName;
+        executableRulesClasses.add(executableRulesClass);
     }
 
     public static PackageModel createPackageModel(KnowledgeBuilderConfigurationImpl configuration, PackageDescr packageDescr, PackageRegistry pkgRegistry, String pkgName, ReleaseId releaseId, DRLIdGenerator exprIdGenerator) {
@@ -357,6 +362,9 @@ public class PackageModel {
 
     public void putRuleUnit(String unitName) {
         ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() ));
+        executableRulesClasses.remove(executableRulesClass);
+        String toAdd = executableRulesClass + "_"  + unitName;
+        executableRulesClasses.add(toAdd);
     }
 
     public void putQueryMethod(MethodDeclaration queryMethod) {
@@ -450,6 +458,10 @@ public class PackageModel {
     public Collection<QueryModel> getQueriesInRuleUnit(RuleUnitDescription ruleUnitDescription) {
         String simpleName = ruleUnitDescription.getSimpleName();
         return getQueriesInRuleUnit(simpleName);
+    }
+
+    public Collection<String> getExecutableRulesClasses() {
+        return Collections.unmodifiableCollection(executableRulesClasses);
     }
 
     private Collection<QueryModel> getQueriesInRuleUnit(String simpleName) {
