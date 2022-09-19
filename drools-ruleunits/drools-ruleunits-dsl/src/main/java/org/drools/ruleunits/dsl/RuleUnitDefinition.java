@@ -19,8 +19,4 @@ import org.drools.ruleunits.api.RuleUnitData;
 
 public interface RuleUnitDefinition extends RuleUnitData {
     void defineRules(RulesFactory rulesFactory);
-
-    default int fire() {
-        return RuleUnitRegistry.get().getOrCreate(this).fire();
-    }
 }
