@@ -42,8 +42,6 @@ public class HomeAlertsBean {
         phones.forEach(homeUnitData.getSmartphones()::add);
 
         RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
-        unitInstance.fire();
-        
         var queryResults = unitInstance.executeQuery("AllAlerts");
         List<Alert> results = queryResults.stream()
                 .flatMap(m -> m.values().stream()
