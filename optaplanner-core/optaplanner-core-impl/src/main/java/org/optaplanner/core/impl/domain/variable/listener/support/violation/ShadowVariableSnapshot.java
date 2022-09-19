@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support.violation;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 
@@ -33,7 +34,9 @@ final class ShadowVariableSnapshot {
                     + "      Maybe the " + VariableListener.class.getSimpleName() + " class ("
                     + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
                     + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                    + ") forgot to update it when one of its sources changed.\n");
+                    + ") forgot to update it when one of its sources changed.\n"
+                    + "      Maybe some of the genuine/shadow variables it depends on are missing in the @"
+                    + CustomShadowVariable.class.getSimpleName() + "'s sources value.");
         }
     }
 
