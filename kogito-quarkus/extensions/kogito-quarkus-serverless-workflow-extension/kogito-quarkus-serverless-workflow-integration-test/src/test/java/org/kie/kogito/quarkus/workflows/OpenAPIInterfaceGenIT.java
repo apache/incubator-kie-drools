@@ -46,9 +46,7 @@ public class OpenAPIInterfaceGenIT {
                 .then()
                 .statusCode(200)
                 // verifies the get path in the helloworld SW
-                .body("paths.'/helloworld'.get.operationId", is("getResources_helloworld"))
-                // verifies the CE listener (knative addressable interface)
-                .body("paths.'/'.post.operationId", is("cloudEventListener"));
+                .body("paths.'/helloworld'.get.operationId", is("getResources_helloworld"));
     }
 
 }

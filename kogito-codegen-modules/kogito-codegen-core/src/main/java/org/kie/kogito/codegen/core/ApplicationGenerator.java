@@ -35,8 +35,6 @@ import org.drools.util.StringUtils;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
-import org.kie.kogito.codegen.core.events.CloudEventsResourceGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,8 +85,6 @@ public class ApplicationGenerator {
 
         DashboardGeneratedFileUtils.list(generatedFiles).ifPresent(generatedFiles::add);
 
-        generateCloudEventsResource().ifPresent(generatedFiles::add);
-
         logGeneratedFiles(generatedFiles);
 
         return generatedFiles;
@@ -131,15 +127,6 @@ public class ApplicationGenerator {
                         getFilePath(section.sectionClassName()),
                         section.compilationUnit().toString()))
                 .collect(Collectors.toList());
-    }
-
-    private Optional<GeneratedFile> generateCloudEventsResource() {
-        // Generic CloudEvents HTTP Endpoint will be handled by https://issues.redhat.com/browse/KOGITO-2956
-        if (context.getAddonsConfig().useCloudEvents() && context.hasRESTGloballyAvailable() && QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context.name())) {
-            final CloudEventsResourceGenerator ceGenerator = new CloudEventsResourceGenerator(context);
-            return Optional.of(new GeneratedFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate()));
-        }
-        return Optional.empty();
     }
 
     /**

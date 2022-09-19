@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.conf.ConfigBean;
 
 import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 import io.quarkus.test.junit.QuarkusTest;
@@ -37,6 +39,25 @@ class CloudEventHttpOutgoingDecoratorTest {
 
     @Produces
     CloudEventHttpOutgoingDecorator decorator = new CloudEventHttpOutgoingDecorator();
+
+    @Produces
+    ConfigBean configBean = new ConfigBean() {
+
+        @Override
+        public boolean useCloudEvents() {
+            return true;
+        }
+
+        @Override
+        public String getServiceUrl() {
+            return null;
+        }
+
+        @Override
+        public Optional<KogitoGAV> getGav() {
+            return Optional.empty();
+        }
+    };
 
     @Test
     void verifyOutgoingHttpMetadataIsSet() {

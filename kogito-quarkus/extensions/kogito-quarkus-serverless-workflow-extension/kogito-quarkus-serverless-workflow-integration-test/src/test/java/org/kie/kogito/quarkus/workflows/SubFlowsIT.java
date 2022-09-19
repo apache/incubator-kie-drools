@@ -68,7 +68,7 @@ class SubFlowsIT {
                 .accept(ContentType.JSON)
                 .post("/")
                 .then()
-                .statusCode(200);
+                .statusCode(202);
 
         String[] eventFlow2Id = new String[1];
         await().timeout(TIMEOUT).untilAsserted(() -> eventFlow2Id[0] = given()
@@ -90,7 +90,7 @@ class SubFlowsIT {
                 .accept(ContentType.JSON)
                 .post("/")
                 .then()
-                .statusCode(200);
+                .statusCode(202);
 
         await().timeout(TIMEOUT).untilAsserted(() -> eventFlow1Id[0] = given()
                 .contentType(ContentType.JSON)
@@ -112,7 +112,7 @@ class SubFlowsIT {
                 .accept(ContentType.JSON)
                 .post("/")
                 .then()
-                .statusCode(200);
+                .statusCode(202);
 
         await().timeout(TIMEOUT).untilAsserted(() -> eventFlow2Id[0] = given()
                 .contentType(ContentType.JSON)
@@ -134,7 +134,7 @@ class SubFlowsIT {
                 .accept(ContentType.JSON)
                 .post("/")
                 .then()
-                .statusCode(200);
+                .statusCode(202);
 
         await().timeout(TIMEOUT).untilAsserted(() -> given()
                 .contentType(ContentType.JSON)

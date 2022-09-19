@@ -33,10 +33,10 @@ import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
-import org.kie.kogito.services.event.impl.DefaultEventUnmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,27 +60,26 @@ public class EventDrivenDecisionController {
     private ConfigBean config;
     private EventEmitter eventEmitter;
     private EventReceiver eventReceiver;
+    private EventUnmarshaller<?> unmarshaller;
 
     protected EventDrivenDecisionController() {
     }
 
-    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
-        this.decisionModels = decisionModels;
-        this.config = config;
-        this.eventEmitter = eventEmitter;
-        this.eventReceiver = eventReceiver;
+    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<?> unmarshaller) {
+        init(decisionModels, config, eventEmitter, eventReceiver, unmarshaller);
     }
 
-    protected void init(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+    protected void init(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<?> unmarshaller) {
         this.decisionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
+        this.unmarshaller = unmarshaller;
     }
 
     protected void subscribe() {
         eventReceiver.subscribe(this::handleRequest,
-                new SubscriptionInfo.SubscriptionInfoBuilder().converter(new DefaultEventUnmarshaller(CloudEventUtils.Mapper.mapper())).outputClass(CloudEvent.class).createSubscriptionInfo());
+                new SubscriptionInfo.SubscriptionInfoBuilder().converter(unmarshaller).outputClass(CloudEvent.class).createSubscriptionInfo());
     }
 
     private CompletionStage<Void> handleRequest(CloudEvent event) {

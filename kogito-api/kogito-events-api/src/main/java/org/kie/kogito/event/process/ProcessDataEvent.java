@@ -166,6 +166,59 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
         return kogitoProcessType;
     }
 
+    public void setKogitoProcessInstanceVersion(String kogitoProcessInstanceVersion) {
+        this.kogitoProcessInstanceVersion = kogitoProcessInstanceVersion;
+    }
+
+    public void setKogitoParentProcessInstanceId(String kogitoParentProcessInstanceId) {
+        this.kogitoParentProcessInstanceId = kogitoParentProcessInstanceId;
+    }
+
+    public void setKogitoProcessInstanceState(String kogitoProcessInstanceState) {
+        this.kogitoProcessInstanceState = kogitoProcessInstanceState;
+    }
+
+    public void setKogitoReferenceId(String kogitoReferenceId) {
+        this.kogitoReferenceId = kogitoReferenceId;
+    }
+
+    public void setKogitoBusinessKey(String kogitoBusinessKey) {
+        this.kogitoBusinessKey = kogitoBusinessKey;
+    }
+
+    public void setKogitoProcessType(String kogitoProcessType) {
+        this.kogitoProcessType = kogitoProcessType;
+    }
+
+    @Override
+    public void addExtensionAttribute(String name, Object value) {
+        switch (name) {
+            case CloudEventExtensionConstants.PROCESS_REFERENCE_ID:
+                this.kogitoReferenceId = (String) value;
+                break;
+            case CloudEventExtensionConstants.PROCESS_INSTANCE_VERSION:
+                this.kogitoProcessInstanceVersion = (String) value;
+                break;
+            case CloudEventExtensionConstants.PROCESS_PARENT_PROCESS_INSTANCE_ID:
+                this.kogitoParentProcessInstanceId = (String) value;
+                break;
+            case CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID:
+                this.kogitoProcessInstanceState = (String) value;
+                break;
+            case CloudEventExtensionConstants.PROCESS_START_FROM_NODE:
+                this.kogitoStartFromNode = (String) value;
+                break;
+            case CloudEventExtensionConstants.PROCESS_TYPE:
+                this.kogitoProcessType = (String) value;
+                break;
+            case CloudEventExtensionConstants.BUSINESS_KEY:
+                this.kogitoBusinessKey = (String) value;
+                break;
+            default:
+                super.addExtensionAttribute(name, value);
+        }
+    }
+
     @Override
     public String toString() {
         return "ProcessDataEvent{" +

@@ -36,9 +36,11 @@ import org.kie.kogito.dmn.DecisionTestUtils;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
+import org.kie.kogito.services.event.impl.DefaultEventUnmarshaller;
 import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -155,6 +157,7 @@ class EventDrivenDecisionControllerTest {
     private EventEmitter eventEmitterMock;
     private DecisionModel decisionModelSpy;
     private DecisionModels decisionModelsMock;
+    private EventUnmarshaller<?> eventUnmarshaller;
 
     @BeforeAll
     static void beforeAll() {
@@ -167,11 +170,12 @@ class EventDrivenDecisionControllerTest {
         testEventReceiver = new TestEventReceiver();
         decisionModelsMock = mock(DecisionModels.class);
         eventEmitterMock = mock(EventEmitter.class);
+        eventUnmarshaller = new DefaultEventUnmarshaller(CloudEventUtils.Mapper.mapper());
 
         // by default there's no execution id supplier, if needed it will be overridden in the specific test
         mockDecisionModel();
 
-        controller = new EventDrivenDecisionController(decisionModelsMock, mock(ConfigBean.class), eventEmitterMock, testEventReceiver);
+        controller = new EventDrivenDecisionController(decisionModelsMock, mock(ConfigBean.class), eventEmitterMock, testEventReceiver, eventUnmarshaller);
         controller.subscribe();
     }
 
@@ -183,7 +187,7 @@ class EventDrivenDecisionControllerTest {
         EventReceiver eventReceiverMock = mock(EventReceiver.class);
 
         // option #1: parameters via constructor + parameterless setup
-        EventDrivenDecisionController controller1 = new EventDrivenDecisionController(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock);
+        EventDrivenDecisionController controller1 = new EventDrivenDecisionController(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock, eventUnmarshaller);
         controller1.subscribe();
         verify(eventReceiverMock).subscribe(any(), any());
 
@@ -191,7 +195,7 @@ class EventDrivenDecisionControllerTest {
 
         // option #2: parameterless via constructor + parameters via setup (introduced for Quarkus CDI)
         EventDrivenDecisionController controller2 = new EventDrivenDecisionController();
-        controller2.init(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock);
+        controller2.init(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock, eventUnmarshaller);
         controller2.subscribe();
         verify(eventReceiverMock).subscribe(any(), any());
     }
