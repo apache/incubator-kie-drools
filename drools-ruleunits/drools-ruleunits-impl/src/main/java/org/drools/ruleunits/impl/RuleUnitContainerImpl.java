@@ -37,10 +37,14 @@ import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.util.IoUtils.readFileAsString;
 
 public class RuleUnitContainerImpl implements RuleUnitContainer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleUnitContainerImpl.class);
 
     private static final boolean USE_EXEC_MODEL = true;
 
@@ -102,6 +106,7 @@ public class RuleUnitContainerImpl implements RuleUnitContainer {
                 Stream.of( new File(path).listFiles() )
                         .filter( f -> f.getPath().endsWith(".drl") )
                         .filter( f -> readFileAsString(f).contains(unitStatement) )
+                        .peek( f -> LOGGER.debug("Found " + f.getPath() + " in " + unitClass.getSimpleName() + " unit") )
                         .map( ks.getResources()::newFileSystemResource )
                         .forEach( resources::add );
             }
