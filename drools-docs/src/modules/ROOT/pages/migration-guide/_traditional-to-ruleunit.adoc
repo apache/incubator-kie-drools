@@ -47,12 +47,7 @@ As introduced in xref:getting-started/index.adoc#first-rule-project_getting-star
 ----
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-engine</artifactId>
-      <version>${version.org.drools}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-impl</artifactId>
+      <artifactId>drools-ruleunits-engine</artifactId>
       <version>${version.org.drools}</version>
     </dependency>
     <dependency>
@@ -62,7 +57,7 @@ As introduced in xref:getting-started/index.adoc#first-rule-project_getting-star
     </dependency>
 ----
 
-`drools-ruleunits-impl` is required for Rule Unit APIs. `drools-model-compiler` is required to generate executable model that is also recommended in {PRODUCT} 8.
+`drools-ruleunits-engine` is required for Rule Unit APIs. `drools-model-compiler` is required to generate executable model that is also recommended in {PRODUCT} 8.
 
 Regarding related Java API usage, in {PRODUCT} 7, you create a `KieSession` from rule assets. Then insert facts and fire rules.
 
