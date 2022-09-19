@@ -18,11 +18,11 @@ package org.drools.model.codegen.project;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.drl.extensions.DecisionTableFactory;
-import org.drools.codegen.common.DroolsModelBuildContext;
+import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,15 +61,15 @@ public class RuleCodegen {
 
     protected Collection<GeneratedFile> internalGenerate() {
 
-        DroolsModelBuilder droolsModelBuilder =
-                new DroolsModelBuilder(context(), resources, decisionTableSupported);
+        DroolsModelBuilder droolsModelBuilder = new DroolsModelBuilder(context(), resources, decisionTableSupported,
+                PackageModelWriter::new);
 
         droolsModelBuilder.build();
         Collection<GeneratedFile> generatedFiles = droolsModelBuilder.generateCanonicalModelSources();
 
         if (!droolsModelBuilder.hasRuleUnits()) {
-            KieSessionModelBuilder kieSessionModelBuilder =
-                    new KieSessionModelBuilder(context(), droolsModelBuilder.packageSources());
+            KieSessionModelBuilder kieSessionModelBuilder = new KieSessionModelBuilder(context(),
+                    droolsModelBuilder.packageSources());
             generatedFiles.addAll(kieSessionModelBuilder.generate());
         }
 

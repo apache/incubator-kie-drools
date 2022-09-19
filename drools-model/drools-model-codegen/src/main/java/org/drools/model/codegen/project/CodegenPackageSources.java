@@ -64,15 +64,9 @@ public class CodegenPackageSources extends PackageSources {
 
     private String pkgName;
 
-    public static CodegenPackageSources dumpSources(PackageModel pkgModel) {
-        CodegenPackageSources sources = dumpPojos(pkgModel);
-
-        PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel) {
-            @Override
-            public List<RuleUnitWriter> getRuleUnitWriters() {
-                return Collections.emptyList();
-            }
-        };
+    public static CodegenPackageSources dumpSources(PackageModelWriter packageModelWriter) {
+        CodegenPackageSources sources = dumpPojos(packageModelWriter);
+        PackageModel pkgModel = packageModelWriter.getPackageModel();
 
         PackageSources.writeRules(pkgModel, sources, packageModelWriter);
         sources.rulesFileName = pkgModel.getRulesFileName();
@@ -89,12 +83,12 @@ public class CodegenPackageSources extends PackageSources {
         return sources;
     }
 
-    private static CodegenPackageSources dumpPojos(PackageModel pkgModel) {
+    private static CodegenPackageSources dumpPojos(PackageModelWriter packageModelWriter) {
         CodegenPackageSources sources = new CodegenPackageSources();
+        PackageModel pkgModel = packageModelWriter.getPackageModel();
         sources.pkgName = pkgModel.getName();
 
         List<String> pojoClasses = new ArrayList<>();
-        PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
             sources.pojoSources.add(new GeneratedFile(declaredType.getName(),
                     PackageSources.logSource(declaredType.getSource())));
