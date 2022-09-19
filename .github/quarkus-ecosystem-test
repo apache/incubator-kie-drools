@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+# TODO: Remove after branching 8.29.x.
+git apply .github/jandex_3.patch
+
+# update the versions
+mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
+
+# run the tests
+mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B clean install -Dnative -Dquarkus.native.container-build=true --fail-at-end

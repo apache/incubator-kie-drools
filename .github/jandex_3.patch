@@ -1,0 +1,76 @@
+From 282eee0646062326c8fccacb8fc30cbaa4bff509 Mon Sep 17 00:00:00 2001
+From: Radovan Synek <rsynek@redhat.com>
+Date: Mon, 19 Sep 2022 20:07:48 +0200
+Subject: [PATCH] Ensure Jandex 3.0 compatibility
+
+---
+ build/optaplanner-build-parent/pom.xml           |  5 +++++
+ .../optaplanner-persistence-jpa/pom.xml          | 16 ++++++++++++++++
+ .../quarkus/deployment/OptaPlannerProcessor.java |  2 +-
+ 3 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/build/optaplanner-build-parent/pom.xml b/build/optaplanner-build-parent/pom.xml
+index 9254e5121f..72fe9a1d9e 100644
+--- a/build/optaplanner-build-parent/pom.xml
++++ b/build/optaplanner-build-parent/pom.xml
+@@ -103,6 +103,11 @@
+         <scope>import</scope>
+       </dependency>
+       <!-- Normal dependencies versions-->
++      <dependency>
++        <groupId>io.smallrye</groupId>
++        <artifactId>jandex</artifactId>
++        <version>3.0.1</version>
++      </dependency>
+       <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-core</artifactId>
+diff --git a/optaplanner-persistence/optaplanner-persistence-jpa/pom.xml b/optaplanner-persistence/optaplanner-persistence-jpa/pom.xml
+index 4feaca12a1..0fa3e1932a 100644
+--- a/optaplanner-persistence/optaplanner-persistence-jpa/pom.xml
++++ b/optaplanner-persistence/optaplanner-persistence-jpa/pom.xml
+@@ -79,6 +79,12 @@
+       <!-- Used at compile time by *ScoreHibernateType -->
+       <optional>true</optional>
+     </dependency>
++    <!-- A transitive dependency of hibernate-core that is excluded in the quarkus-bom. -->
++    <dependency>
++      <groupId>io.smallrye</groupId>
++      <artifactId>jandex</artifactId>
++      <optional>true</optional>
++    </dependency>
+     <dependency>
+       <groupId>jakarta.transaction</groupId>
+       <artifactId>jakarta.transaction-api</artifactId>
+@@ -186,6 +192,16 @@
+           </additionalClasspathElements>
+         </configuration>
+       </plugin>
++      <plugin>
++        <groupId>org.apache.maven.plugins</groupId>
++        <artifactId>maven-dependency-plugin</artifactId>
++        <configuration>
++          <ignoredUnusedDeclaredDependencies>
++            <!-- A transitive dependency that the quarkus-bom excludes from hibernate-core. -->
++            <dependency>io.smallrye:jandex</dependency>
++          </ignoredUnusedDeclaredDependencies>
++        </configuration>
++      </plugin>
+     </plugins>
+   </build>
+
+diff --git a/optaplanner-quarkus-integration/optaplanner-quarkus/deployment/src/main/java/org/optaplanner/quarkus/deployment/OptaPlannerProcessor.java b/optaplanner-quarkus-integration/optaplanner-quarkus/deployment/src/main/java/org/optaplanner/quarkus/deployment/OptaPlannerProcessor.java
+index 750d09aa91..eb820c02b6 100644
+--- a/optaplanner-quarkus-integration/optaplanner-quarkus/deployment/src/main/java/org/optaplanner/quarkus/deployment/OptaPlannerProcessor.java
++++ b/optaplanner-quarkus-integration/optaplanner-quarkus/deployment/src/main/java/org/optaplanner/quarkus/deployment/OptaPlannerProcessor.java
+@@ -443,7 +443,7 @@ class OptaPlannerProcessor {
+                                     ") for @" + annotationInstance.name().withoutPackagePrefix() + ".");
+             }
+
+-            if (!declaringClass.annotations().containsKey(DotNames.PLANNING_ENTITY)) {
++            if (!declaringClass.annotationsMap().containsKey(DotNames.PLANNING_ENTITY)) {
+                 throw new IllegalStateException(prefix + "with a @" +
+                         annotationInstance.name().withoutPackagePrefix() +
+                         " annotation is in a class (" + declaringClass.name()
+--
+2.25.1
