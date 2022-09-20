@@ -313,68 +313,6 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
         }
     }
 
-    static class DecisionTableConfigurationDelegate implements DecisionTableConfiguration {
-
-        private final DecisionTableConfiguration delegate;
-        private final String sheetName;
-
-        DecisionTableConfigurationDelegate( DecisionTableConfiguration delegate, String sheetName ) {
-            this.delegate = delegate;
-            this.sheetName = sheetName;
-        }
-
-        @Override
-        public void setInputType( DecisionTableInputType inputType ) {
-            delegate.setInputType( inputType );
-
-        }
-
-        @Override
-        public DecisionTableInputType getInputType() {
-            return delegate.getInputType();
-        }
-
-        @Override
-        public void setWorksheetName( String name ) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getWorksheetName() {
-            return sheetName;
-        }
-
-        @Override
-        public void addRuleTemplateConfiguration( Resource template, int row, int col ) {
-            delegate.addRuleTemplateConfiguration( template, row, col );
-        }
-
-        @Override
-        public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
-            return delegate.getRuleTemplateConfigurations();
-        }
-
-        @Override
-        public boolean isTrimCell() {
-            return delegate.isTrimCell();
-        }
-
-        @Override
-        public void setTrimCell( boolean trimCell ) {
-            delegate.setTrimCell( trimCell );
-        }
-
-        @Override
-        public Properties toProperties() {
-            return delegate.toProperties();
-        }
-
-        @Override
-        public ResourceConfiguration fromProperties( Properties prop ) {
-            return delegate.fromProperties( prop );
-        }
-    }
-
     public boolean hasResource(String fileName) {
         byte[] bytes = getBytes(fileName);
         return bytes != null && bytes.length > 0;

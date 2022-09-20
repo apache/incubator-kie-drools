@@ -22,6 +22,7 @@ import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
+import org.drools.compiler.kie.builder.impl.DecisionTableConfigurationDelegate;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
@@ -31,6 +32,7 @@ import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +102,9 @@ public class DroolsModelBuilder {
 
         ExplicitCanonicalModelCompiler<CodegenPackageSources> compiler =
                 ExplicitCanonicalModelCompiler.of(
-                packages.values(),
-                knowledgeBuilderConfiguration,
-                packageModelWriterProvider.andThen(CodegenPackageSources::dumpSources))
+                                packages.values(),
+                                knowledgeBuilderConfiguration,
+                                packageModelWriterProvider.andThen(CodegenPackageSources::dumpSources))
                         .setContext(context);
 
         compiler.process();
@@ -122,10 +125,15 @@ public class DroolsModelBuilder {
     }
 
     private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
-        PackageDescr packageDescr = decisionTableHandler.process(resource, loadDtableResourceConfiguration(resource));
-        CompositePackageDescr compositePackageDescr =
-                packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
-        compositePackageDescr.addPackageDescr(resource, packageDescr);
+        Collection<ResourceConfiguration> resourceConfigurations = loadDtableResourceConfiguration(resource);
+        if (resourceConfigurations.isEmpty())
+            throw new IllegalArgumentException("No Decision Table Configuration Found");
+        for (ResourceConfiguration cfg : resourceConfigurations) {
+            PackageDescr packageDescr = decisionTableHandler.process(resource, cfg);
+            CompositePackageDescr compositePackageDescr =
+                    packages.computeIfAbsent(packageDescr.getNamespace(), CompositePackageDescr::new);
+            compositePackageDescr.addPackageDescr(resource, packageDescr);
+        }
     }
 
     private void handleDrl(DrlResourceHandler drlResourceHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException, IOException {
@@ -177,17 +185,34 @@ public class DroolsModelBuilder {
         return modelFiles;
     }
 
-    private ResourceConfiguration loadDtableResourceConfiguration(Resource resource) {
+    private Collection<ResourceConfiguration> loadDtableResourceConfiguration(Resource resource) {
         Resource resourceProps = findPropertiesResource(resource);
-        if (resourceProps == null) return null;
-        return loadResourceConfiguration(resource.getSourcePath(), x -> true, x -> {
-            try {
-                return resourceProps.getInputStream();
-            } catch (IOException ioe) {
-                throw new RuntimeException(ioe);
-            }
-        });
+        if (resourceProps == null) return Collections.emptyList();
+        DecisionTableConfiguration cfg =
+                (DecisionTableConfiguration) loadResourceConfiguration(resource.getSourcePath(), x -> true, x -> {
+                    try {
+                        return resourceProps.getInputStream();
+                    } catch (IOException ioe) {
+                        throw new RuntimeException(ioe);
+                    }
+                });
+        return parseWorksheetConfig(cfg);
     }
+
+    // originally org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler(org.kie.internal.builder.CompositeKnowledgeBuilder, org.kie.api.io.Resource, org.kie.internal.builder.DecisionTableConfiguration, org.kie.internal.builder.ResourceChangeSet)
+    private static Collection<ResourceConfiguration> parseWorksheetConfig(DecisionTableConfiguration dtableConf) {
+        String sheetNames = dtableConf.getWorksheetName();
+        if (sheetNames == null || sheetNames.indexOf(',') < 0) {
+            return Collections.singletonList(dtableConf);
+        } else {
+            ArrayList<ResourceConfiguration> dtConfigs = new ArrayList<>();
+            for (String sheetName : sheetNames.split("\\,")) {
+                dtConfigs.add(new DecisionTableConfigurationDelegate(dtableConf, sheetName));
+            }
+            return dtConfigs;
+        }
+    }
+
 
     private Resource findPropertiesResource(Resource resource) {
         return resources.stream().filter(r -> r.getSourcePath().equals(resource.getSourcePath() + ".properties")).findFirst().orElse(null);
