@@ -18,6 +18,7 @@ package org.drools.model.codegen.project;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
@@ -126,8 +127,6 @@ public class DroolsModelBuilder {
 
     private void handleDtable(DecisionTableResourceHandler decisionTableHandler, Map<String, CompositePackageDescr> packages, Resource resource) throws DroolsParserException {
         Collection<ResourceConfiguration> resourceConfigurations = loadDtableResourceConfiguration(resource);
-        if (resourceConfigurations.isEmpty())
-            throw new IllegalArgumentException("No Decision Table Configuration Found");
         for (ResourceConfiguration cfg : resourceConfigurations) {
             PackageDescr packageDescr = decisionTableHandler.process(resource, cfg);
             CompositePackageDescr compositePackageDescr =
@@ -187,7 +186,7 @@ public class DroolsModelBuilder {
 
     private Collection<ResourceConfiguration> loadDtableResourceConfiguration(Resource resource) {
         Resource resourceProps = findPropertiesResource(resource);
-        if (resourceProps == null) return Collections.emptyList();
+        if (resourceProps == null) return Collections.singletonList(new DecisionTableConfigurationImpl());
         DecisionTableConfiguration cfg =
                 (DecisionTableConfiguration) loadResourceConfiguration(resource.getSourcePath(), x -> true, x -> {
                     try {
