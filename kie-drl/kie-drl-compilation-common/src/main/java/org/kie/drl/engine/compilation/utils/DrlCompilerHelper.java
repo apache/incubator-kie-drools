@@ -33,6 +33,7 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.model.codegen.execmodel.GeneratedFile;
+import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.project.CodegenPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
@@ -81,7 +82,8 @@ public class DrlCompilerHelper {
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, DrlCompilationContext context) {
         ExplicitCanonicalModelCompiler<CodegenPackageSources> compiler =
-                ExplicitCanonicalModelCompiler.of( packages, knowledgeBuilderConfiguration, CodegenPackageSources::dumpSources );
+                ExplicitCanonicalModelCompiler.of(packages, knowledgeBuilderConfiguration,
+                        pkgModel -> CodegenPackageSources.dumpSources(new PackageModelWriter(pkgModel)));
 
         compiler.process();
         BuildResultCollector buildResults = compiler.getBuildResults();
