@@ -32,7 +32,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.CanonicalModelKieProject;
 import org.drools.ruleunits.api.RuleUnit;
-import org.drools.ruleunits.api.RuleUnitContainer;
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -42,15 +42,15 @@ import org.slf4j.LoggerFactory;
 
 import static org.drools.util.IoUtils.readFileAsString;
 
-public class RuleUnitContainerImpl implements RuleUnitContainer {
+public class RuleUnitProviderImpl implements RuleUnitProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RuleUnitContainerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleUnitProviderImpl.class);
 
     private static final boolean USE_EXEC_MODEL = true;
 
     private final Map<String, RuleUnit> ruleUnitMap;
 
-    public RuleUnitContainerImpl() {
+    public RuleUnitProviderImpl() {
         this.ruleUnitMap = loadRuleUnits(Thread.currentThread().getContextClassLoader());
     }
 
@@ -97,6 +97,7 @@ public class RuleUnitContainerImpl implements RuleUnitContainer {
     }
 
     private static Collection<Resource> drlResourcesForUnitClass(KieServices ks, Class<?> unitClass) {
+        // TODO use regexp
         String unitStatement = "unit " + unitClass.getSimpleName();
         Collection<Resource> resources = new HashSet<>();
         try {

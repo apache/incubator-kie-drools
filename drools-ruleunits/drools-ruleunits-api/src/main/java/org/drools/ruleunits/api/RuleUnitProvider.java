@@ -17,7 +17,7 @@ package org.drools.ruleunits.api;
 
 import org.kie.api.internal.utils.KieService;
 
-public interface RuleUnitContainer extends KieService {
+public interface RuleUnitProvider extends KieService {
 
     <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData);
 
@@ -29,18 +29,18 @@ public interface RuleUnitContainer extends KieService {
         return ruleUnit.createInstance(ruleUnitData);
     }
 
-    static RuleUnitContainer get() {
-        return RuleUnitContainer.Factory.get();
+    static RuleUnitProvider get() {
+        return RuleUnitProvider.Factory.get();
     }
 
     class Factory {
 
         private static class LazyHolder {
-            private static RuleUnitContainer INSTANCE = KieService.load(RuleUnitContainer.class);
+            private static RuleUnitProvider INSTANCE = KieService.load(RuleUnitProvider.class);
         }
 
-        public static RuleUnitContainer get() {
-            return RuleUnitContainer.Factory.LazyHolder.INSTANCE;
+        public static RuleUnitProvider get() {
+            return RuleUnitProvider.Factory.LazyHolder.INSTANCE;
         }
     }
 }

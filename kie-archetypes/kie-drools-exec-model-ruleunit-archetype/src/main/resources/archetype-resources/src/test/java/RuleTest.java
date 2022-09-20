@@ -19,7 +19,7 @@ package ${package};
 
 import java.util.List;
 
-import org.drools.ruleunits.api.RuleUnitContainer;
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class RuleTest {
         LOG.info("Creating RuleUnit");
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitContainer.get().createRuleUnitInstance(measurementUnit);
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
         try {
             LOG.info("Insert data");
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));

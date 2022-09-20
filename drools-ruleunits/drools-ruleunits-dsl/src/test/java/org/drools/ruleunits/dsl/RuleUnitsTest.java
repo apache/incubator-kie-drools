@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
-import org.drools.ruleunits.api.RuleUnitContainer;
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.dsl.domain.Cheese;
 import org.drools.ruleunits.dsl.domain.Person;
@@ -36,7 +36,7 @@ public class RuleUnitsTest {
         HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         assertThat(unitInstance.fire()).isEqualTo(2);
         assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
@@ -52,7 +52,7 @@ public class RuleUnitsTest {
         InferenceUnit unit = new InferenceUnit();
         unit.getStrings().add("test");
 
-        RuleUnitInstance<InferenceUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<InferenceUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         assertThat(unitInstance.fire()).isEqualTo(0);
 
@@ -89,7 +89,7 @@ public class RuleUnitsTest {
         unit.getStrings().add("bcd");
         unit.getStrings().add("xyz");
 
-        RuleUnitInstance<SelfJoinUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<SelfJoinUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("Found 'abc' and 'bcd'");
     }
@@ -104,7 +104,7 @@ public class RuleUnitsTest {
         unit.getStrings().add("BCDEF");
         unit.getStrings().add("Cx");
 
-        RuleUnitInstance<AccumulateUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<AccumulateUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         int fireNr = unitInstance.fire();
         assertThat(fireNr).isEqualTo(3);
@@ -137,7 +137,7 @@ public class RuleUnitsTest {
         unit.getPersons().add(new Person("Mark", 45));
         unit.getPersons().add(new Person("Daniele", 13));
 
-        RuleUnitInstance<GroupByUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<GroupByUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         assertThat(unitInstance.fire()).isEqualTo(2);
         assertThat(unit.getResults().keySet()).containsExactlyInAnyOrder("M", "E");
@@ -158,7 +158,7 @@ public class RuleUnitsTest {
     public void testExistential() {
         ExistentialUnit unit = new ExistentialUnit();
 
-        RuleUnitInstance<ExistentialUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<ExistentialUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).contains("There's no Hello World");
@@ -187,7 +187,7 @@ public class RuleUnitsTest {
     public void testMultiJoin() {
         MultiJoinUnit unit = new MultiJoinUnit();
 
-        RuleUnitInstance<MultiJoinUnit> unitInstance = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<MultiJoinUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         unit.getStrings().add("Hello World");
         unit.getInts().add(11);
@@ -210,8 +210,8 @@ public class RuleUnitsTest {
         UnitOne unitOne = new UnitOne();
         UnitTwo unitTwo = new UnitTwo(unitOne.getInts());
 
-        RuleUnitInstance<UnitOne> unitInstanceOne = RuleUnitContainer.get().createRuleUnitInstance(unitOne);
-        RuleUnitInstance<UnitTwo> unitInstanceTwo = RuleUnitContainer.get().createRuleUnitInstance(unitTwo);
+        RuleUnitInstance<UnitOne> unitInstanceOne = RuleUnitProvider.get().createRuleUnitInstance(unitOne);
+        RuleUnitInstance<UnitTwo> unitInstanceTwo = RuleUnitProvider.get().createRuleUnitInstance(unitTwo);
 
         unitOne.getStrings().add("Hello World");
         assertThat(unitInstanceOne.fire()).isEqualTo(1);
@@ -225,7 +225,7 @@ public class RuleUnitsTest {
         unit.getStrings().add("abc");
         unit.getStrings().add("axy");
 
-        RuleUnitInstance<SelfJoinWithInferenceAndNotUnit> unitInstanceOne = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<SelfJoinWithInferenceAndNotUnit> unitInstanceOne = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertThat(unitInstanceOne.fire()).isEqualTo(1);
     }
 
@@ -234,7 +234,7 @@ public class RuleUnitsTest {
         LogicalAddUnit unit = new LogicalAddUnit();
         DataHandle dh = unit.getStrings().add("abc");
 
-        RuleUnitInstance<LogicalAddUnit> unitInstanceOne = RuleUnitContainer.get().createRuleUnitInstance(unit);
+        RuleUnitInstance<LogicalAddUnit> unitInstanceOne = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         assertThat(unitInstanceOne.fire()).isEqualTo(2);
         assertThat(unit.getResults()).containsExactly("exists");

@@ -28,13 +28,13 @@ import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.impl.EntryPointDataProcessor;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
-import org.drools.ruleunits.impl.RuleUnitContainerImpl;
+import org.drools.ruleunits.impl.RuleUnitProviderImpl;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.runtime.rule.EntryPoint;
 
-public class RuleUnitContainerForDSL extends RuleUnitContainerImpl {
+public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 
     private static final boolean DUMP_GENERATED_RETE = false;
 

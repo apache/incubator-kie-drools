@@ -28,8 +28,8 @@ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.builder.Message;
 
 import static org.drools.compiler.kproject.models.KieBaseModelImpl.defaultKieBaseModel;
-import static org.drools.ruleunits.impl.RuleUnitContainerImpl.createRuleUnitKieModule;
-import static org.drools.ruleunits.impl.RuleUnitContainerImpl.createRuleUnitKieProject;
+import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieModule;
+import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieProject;
 
 /**
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
