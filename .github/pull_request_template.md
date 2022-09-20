@@ -91,7 +91,7 @@ How to retest this PR or trigger a specific build:
 
  - for <b>mandrel lts checks</b>  
   Run native checks against Mandrel image and quarkus lts branch
-  Please add comment: <b>Jenkins run mandrel</b>
+  Please add comment: <b>Jenkins run mandrel-lts</b>
 
 - for a <b>specific mandrel lts check</b>  
   Run native checks against Mandrel image and quarkus lts branch
