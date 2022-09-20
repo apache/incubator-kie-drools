@@ -52,8 +52,14 @@ setupInitBranchJob()
 
 // Nightly jobs
 setupDeployJob(Folder.NIGHTLY)
-setupNativeJob()
-setupMandrelJob()
+setupSpecificNightlyJob(Folder.NIGHTLY_NATIVE)
+
+setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN)
+setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_BRANCH)
+
+setupSpecificNightlyJob(Folder.NIGHTLY_MANDREL)
+setupSpecificNightlyJob(Folder.NIGHTLY_MANDREL_LTS)
+setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_LTS)
 
 // Release jobs
 setupDeployJob(Folder.RELEASE)
@@ -73,6 +79,23 @@ if (Utils.isMainBranch(this)) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
+void setupSpecificNightlyJob(Folder specificNightlyFolder) {
+    String envName = specificNightlyFolder.environment.toName()
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', specificNightlyFolder, "${jenkins_path}/Jenkinsfile.specific_nightly", "Kogito Apps Nightly ${envName}")
+    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    jobParams.triggers = [ cron : '@midnight' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: "${envName} check"
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
+
 void setupSonarCloudJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_SONARCLOUD, "${jenkins_path}/Jenkinsfile.sonarcloud", 'Kogito Apps Daily Sonar')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
@@ -80,38 +103,6 @@ void setupSonarCloudJob() {
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Sonarcloud check',
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-    }
-}
-
-void setupNativeJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Kogito Apps Native Testing')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.triggers = [ cron : 'H 6 * * *' ]
-    jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        NOTIFICATION_JOB_NAME: 'Native check',
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-    }
-}
-
-void setupMandrelJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-apps', Folder.NIGHTLY_MANDREL, "${jenkins_path}/Jenkinsfile.native", 'Kogito Apps Mandrel Testing')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.triggers = [ cron : 'H 8 * * *' ]
-    jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        NOTIFICATION_JOB_NAME: 'Mandrel check',
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
