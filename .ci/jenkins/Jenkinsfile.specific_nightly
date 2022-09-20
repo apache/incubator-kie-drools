@@ -1,0 +1,170 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+droolsRepo = 'drools'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g && !master'
+    }
+    tools {
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+    }
+    environment {
+        // QUARKUS_BRANCH should be defined directly into the job environment
+
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        MAVEN_OPTS = '-Xms1024m -Xmx6g -XX:PermSize=128m -XX:MaxPermSize=512m'
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutDroolsRepo()
+                }
+            }
+        }
+
+        stage('Build quarkus') {
+            when {
+                expression { env.QUARKUS_BRANCH }
+            }
+            steps {
+                script {
+                    checkoutQuarkusRepo()
+                    getBasicMavenCommand('quarkus')
+                        .withProperty('quickly')
+                        .run('clean install')
+
+                    // Update downstream repositories dependencies
+                    mavenCompareQuarkusDependencies(droolsRepo, 'drools-build-parent')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
+        stage('Build Drools') {
+            steps {
+                script {
+                    getFullMavenCommand(droolsRepo)
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        always {
+            script {
+                junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                util.archiveConsoleLog()
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+}
+
+void checkoutDroolsRepo() {
+    dir(droolsRepo) {
+        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getBuildBranch(), false))
+    }
+}
+
+void checkoutQuarkusRepo() {
+    dir('quarkus') {
+        checkout(githubscm.resolveRepository('quarkus', 'quarkusio', getQuarkusBranch(), false))
+    }
+}
+
+MavenCommand getBasicMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae', '-ntp'])
+                .withSettingsXmlId('kogito_release_settings')
+                .inDirectory(directory)
+}
+
+MavenCommand getEcosystemMavenCommand(String directory) {
+    def mvnCmd = getBasicMavenCommand(directory)
+
+    if (getQuarkusBranch()) {
+        mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
+                .withProperty('version.io.quarkus.quarkus-test', '999-SNAPSHOT')
+                .withProperty('quarkus-plugin.version', '999-SNAPSHOT')
+                .withProperty('quarkus.platform.version', '999-SNAPSHOT')
+    }
+    
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
+    }
+
+    return mvnCmd
+}
+
+MavenCommand getFullMavenCommand(String directory) {
+    def mvnCmd = getEcosystemMavenCommand(directory)
+    if (isNative()) {
+        mvnCmd.withProfiles(['native'])
+                .withProperty('quarkus.native.container-build', true)
+                .withProperty('quarkus.native.container-runtime', 'docker')
+                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+
+        String builderImage = getNativeBuilderImage()
+        if (builderImage) {
+            mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
+        }
+    }
+    return mvnCmd
+}
+
+void mavenCompareQuarkusDependencies(String repo, String artifactId) {
+    maven.mvnCompareDependencies(getBasicMavenCommand(repo), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ":${artifactId}", true, true)
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}
+
+boolean isNative() {
+    return env.NATIVE ? env.NATIVE.toBoolean() : false
+}
+
+String getNativeBuilderImage() {
+    return env.NATIVE_BUILDER_IMAGE
+}
+
+String getQuarkusBranch() {
+    return env['QUARKUS_BRANCH'] ?: ''
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
