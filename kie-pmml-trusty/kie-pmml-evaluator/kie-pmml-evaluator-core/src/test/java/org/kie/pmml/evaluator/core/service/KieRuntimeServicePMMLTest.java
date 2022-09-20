@@ -100,18 +100,14 @@ class KieRuntimeServicePMMLTest {
     }
 
     @Test
-    void evaluateWrongEfestoRuntimeContext() {
+    void evaluateEfestoRuntimeContext() {
         EfestoRuntimeContext runtimeContext =
                 EfestoRuntimeContext.buildWithParentClassLoader(memoryCompilerClassLoader);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                memoryCompilerClassLoader));
-        KieRuntimeServiceException thrown = assertThrows(
-                KieRuntimeServiceException.class,
-                () -> kieRuntimeServicePMML.evaluateInput(darInputPMML,
-                                                          runtimeContext),
-                "Expected evaluateInput() to throw, but it didn't"
-        );
-        String expectedMessage = "Expecting PMMLRuntimeContext, received " + runtimeContext.getClass();
-        assertThat(thrown.getMessage()).isEqualTo(expectedMessage);
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(darInputPMML,
+                                                                                   runtimeContext);
+        assertThat(retrieved).isNotNull().isPresent();
+        commonEvaluateEfestoOutputPMML(retrieved.get(), darInputPMML);
     }
 }

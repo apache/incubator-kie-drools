@@ -19,11 +19,9 @@ import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
@@ -40,9 +38,6 @@ public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLR
     @Override
     public Optional<EfestoOutputPMML> evaluateInput(EfestoInput<PMMLRequestData> toEvaluate,
                                                     EfestoRuntimeContext context) {
-        if (context instanceof PMMLRuntimeContext) {
-            throw new KieRuntimeServiceException("Unexpected PMMLRuntimeContext received");
-        }
         return executeEfestoInput(toEvaluate, context);
     }
 
