@@ -24,6 +24,7 @@
     <module>drools-ruleunits-api</module>
     <module>drools-ruleunits-impl</module>
     <module>drools-ruleunits-dsl</module>
+    <module>drools-ruleunits-engine</module>
   </modules>
 
   <!-- Logging -->
