@@ -15,9 +15,11 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
+import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
@@ -30,6 +32,11 @@ import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoI
 
 public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML,
         EfestoOutputPMML, EfestoRuntimeContext> {
+
+    @Override
+    public EfestoClassKey getEfestoClassKeyIdentifier() {
+        return new EfestoClassKey(EfestoInputPMML.class, Collections.emptyList());
+    }
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
