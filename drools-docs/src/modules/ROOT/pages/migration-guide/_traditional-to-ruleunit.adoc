@@ -25,7 +25,7 @@ Typical {PRODUCT} 6 or early 7 projects have pom dependencies like this.
   </dependencied>
 ----
 
-But since {PRODUCT} 7.45.0, `drools-engine` and `drools-engine-classic` have been introduced as aggregator dependencies. If there is no specific reason, use `drools-engine`.
+But since {PRODUCT} 7.45.0, `drools-engine` and `drools-engine-classic` have been introduced as aggregator dependencies. The dependencies `drools-engine-classic`, `drools-mvel` are deprecated starting with {PRODUCT} 8. Hence, use `drools-engine`.
 
 [xml]
 ----
