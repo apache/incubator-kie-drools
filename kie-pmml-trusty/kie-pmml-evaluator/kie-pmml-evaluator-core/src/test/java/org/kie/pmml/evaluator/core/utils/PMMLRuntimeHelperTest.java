@@ -25,10 +25,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -55,7 +54,6 @@ import static org.kie.pmml.TestingHelper.commonEvaluatePMML4Result;
 import static org.kie.pmml.TestingHelper.commonValuateStep;
 import static org.kie.pmml.TestingHelper.getPMMLContext;
 import static org.kie.pmml.TestingHelper.getPMMLRequestData;
-import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -80,29 +78,12 @@ class PMMLRuntimeHelperTest {
     }
 
     @Test
-    void canManageEfestoInputPMML() {
-        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
-        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isTrue();
-        assertThat(PMMLRuntimeHelper.canManageEfestoInput(darInputPMML, context)).isFalse();
-        darInputPMML = new AbstractEfestoInput<>(modelLocalUriId, "") {
-        };
-        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
-        ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/" + PMML_STRING + "/darfoo"));
-        context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
-        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(darInputPMML, context)).isFalse();
-    }
-
-    @Test
     void canManageEfestoInput() {
         EfestoRuntimeContext runtimeContext =
                 EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
-        };
+        EfestoInput<PMMLRequestData> inputPMML = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
         assertThat(PMMLRuntimeHelper.canManageEfestoInput(inputPMML, runtimeContext)).isTrue();
-        assertThat(PMMLRuntimeHelper.canManageEfestoInputPMML(inputPMML, runtimeContext)).isFalse();
     }
 
     @Test

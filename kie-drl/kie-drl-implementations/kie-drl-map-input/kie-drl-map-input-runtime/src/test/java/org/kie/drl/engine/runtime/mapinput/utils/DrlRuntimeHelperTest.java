@@ -29,7 +29,7 @@ import org.kie.drl.engine.runtime.mapinput.model.EfestoInputDrlMap;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
@@ -43,13 +43,10 @@ class DrlRuntimeHelperTest {
     void canManage() {
         ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/" + basePath));
         EfestoRuntimeContext context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
-        AbstractEfestoInput darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, new EfestoMapInputDTO(null, null,
-                                                                                                          null, null,
-                                                                                                          null, null));
+        BaseEfestoInput darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, new EfestoMapInputDTO(null, null,
+                                                                                                      null, null,
+                                                                                                      null, null));
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isTrue();
-        darInputDrlMap = new AbstractEfestoInput(modelLocalUriId, "") {
-        };
-        assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();
         modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/drl/notexisting"));
         darInputDrlMap = new EfestoInputDrlMap(modelLocalUriId, null);
         assertThat(DrlRuntimeHelper.canManage(darInputDrlMap, context)).isFalse();

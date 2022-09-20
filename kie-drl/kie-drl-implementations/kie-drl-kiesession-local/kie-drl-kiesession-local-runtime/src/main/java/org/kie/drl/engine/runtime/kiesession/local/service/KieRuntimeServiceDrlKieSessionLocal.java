@@ -32,7 +32,7 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(EfestoInputDrlKieSessionLocal.class, Collections.emptyList());
+        return new EfestoClassKey(EfestoInputDrlKieSessionLocal.class, Collections.singletonList(String.class));
     }
 
     @Override

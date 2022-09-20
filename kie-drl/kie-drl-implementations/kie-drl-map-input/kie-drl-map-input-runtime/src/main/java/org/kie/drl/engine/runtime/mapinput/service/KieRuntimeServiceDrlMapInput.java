@@ -22,18 +22,18 @@ import java.util.Optional;
 import org.kie.drl.engine.runtime.mapinput.model.EfestoOutputDrlMap;
 import org.kie.drl.engine.runtime.mapinput.utils.DrlRuntimeHelper;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
 public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMapInputDTO, Map<String, Object>,
-        AbstractEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap, EfestoRuntimeContext> {
+        BaseEfestoInput<EfestoMapInputDTO>, EfestoOutputDrlMap, EfestoRuntimeContext> {
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(AbstractEfestoInput.class, Collections.singletonList(EfestoMapInputDTO.class));
+        return new EfestoClassKey(BaseEfestoInput.class, Collections.singletonList(EfestoMapInputDTO.class));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMap
     }
 
     @Override
-    public Optional<EfestoOutputDrlMap> evaluateInput(AbstractEfestoInput<EfestoMapInputDTO> toEvaluate,
+    public Optional<EfestoOutputDrlMap> evaluateInput(BaseEfestoInput<EfestoMapInputDTO> toEvaluate,
                                                       EfestoRuntimeContext context) {
         return DrlRuntimeHelper.execute(toEvaluate, context);
     }

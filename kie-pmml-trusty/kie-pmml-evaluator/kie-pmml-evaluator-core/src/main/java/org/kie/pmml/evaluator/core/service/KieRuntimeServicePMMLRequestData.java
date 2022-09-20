@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
@@ -35,7 +35,7 @@ public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLR
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(AbstractEfestoInput.class, Collections.singletonList(PMMLRequestData.class));
+        return new EfestoClassKey(BaseEfestoInput.class, Collections.singletonList(PMMLRequestData.class));
     }
 
     @Override

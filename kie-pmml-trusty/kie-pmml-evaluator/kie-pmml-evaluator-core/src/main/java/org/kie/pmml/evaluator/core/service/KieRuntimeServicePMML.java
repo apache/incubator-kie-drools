@@ -28,7 +28,7 @@ import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInputPMML;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputPMML;
 
 public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML,
@@ -41,7 +41,7 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return canManageEfestoInputPMML(toEvaluate, context);
+        return canManageEfestoInput(toEvaluate, context);
     }
 
     @Override
