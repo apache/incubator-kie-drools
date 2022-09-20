@@ -18,6 +18,7 @@ package org.drools.ruleunits.impl;
 import java.util.Objects;
 
 import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.CompilationErrorsException;
@@ -32,7 +33,7 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit, false);
+        RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit);
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("it worked!");
     }
@@ -42,7 +43,7 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit, true);
+        RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("it worked!");
     }
@@ -52,7 +53,7 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+        RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("it worked!");
     }
@@ -61,7 +62,7 @@ public class InterpretedRuleUnitTest {
     public void testNotWithAndWithoutSingleQuote() {
         NotTestUnit unit = new NotTestUnit();
 
-        RuleUnitInstance<NotTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+        RuleUnitInstance<NotTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertThat(unitInstance.fire()).isEqualTo(2);
     }
 
@@ -70,7 +71,7 @@ public class InterpretedRuleUnitTest {
         // KOGITO-6466
         LogicalAddTestUnit unit = new LogicalAddTestUnit();
 
-        RuleUnitInstance<LogicalAddTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+        RuleUnitInstance<LogicalAddTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         DataHandle dh = unit.getStrings().add("abc");
 
@@ -88,7 +89,7 @@ public class InterpretedRuleUnitTest {
     public void testUpdate() {
         UpdateTestUnit unit = new UpdateTestUnit();
 
-        RuleUnitInstance<UpdateTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit);
+        RuleUnitInstance<UpdateTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
 
         unit.getPersons().add(new Person("Mario", 17));
 
@@ -99,7 +100,7 @@ public class InterpretedRuleUnitTest {
     @Test
     public void testWrongType() {
         try {
-            InMemoryRuleUnitInstanceFactory.generateAndInstance(new WronglyTypedUnit());
+            RuleUnitProvider.get().createRuleUnitInstance(new WronglyTypedUnit());
             fail("Compilation should fail");
         } catch (CompilationErrorsException e) {
             assertThat(

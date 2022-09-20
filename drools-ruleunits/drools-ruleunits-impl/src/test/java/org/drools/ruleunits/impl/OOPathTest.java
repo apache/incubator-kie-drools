@@ -15,6 +15,7 @@
  */
 package org.drools.ruleunits.impl;
 
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ public class OOPathTest {
         OOPathTestUnit unit = new OOPathTestUnit();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<OOPathTestUnit> unitInstance = InMemoryRuleUnitInstanceFactory.generateAndInstance(unit, "OOPathTest");
+        RuleUnitInstance<OOPathTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
         assertEquals(1, unitInstance.fire());
         assertTrue(unit.getResults().contains("it worked!"));
     }
