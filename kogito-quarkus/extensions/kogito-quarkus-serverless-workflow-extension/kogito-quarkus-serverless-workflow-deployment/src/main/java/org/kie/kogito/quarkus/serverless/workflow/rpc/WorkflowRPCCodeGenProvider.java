@@ -102,7 +102,7 @@ public class WorkflowRPCCodeGenProvider implements CodeGenProvider {
 
     private Path fromURL(URL url) {
         try {
-            return Path.of(url.toURI().getPath());
+            return Path.of(url.toURI());
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException("Invalid URI " + url, e);
         }
