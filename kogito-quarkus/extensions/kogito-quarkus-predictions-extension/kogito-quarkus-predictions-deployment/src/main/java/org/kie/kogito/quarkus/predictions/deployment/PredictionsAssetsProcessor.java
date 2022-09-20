@@ -61,7 +61,7 @@ public class PredictionsAssetsProcessor {
 
     @BuildStep
     public List<ReflectiveClassBuildItem> reflectiveEfestoPredictions() {
-        logger.info("reflectiveEfestoPredictions()");
+        logger.debug("reflectiveEfestoPredictions()");
         final List<ReflectiveClassBuildItem> toReturn = new ArrayList<>();
         toReturn.add(new ReflectiveClassBuildItem(true, true, KieRuntimeServicePMML.class));
         toReturn.add(new ReflectiveClassBuildItem(true, true, KieCompilerServicePMMLFile.class));
@@ -72,13 +72,13 @@ public class PredictionsAssetsProcessor {
 
     @BuildStep
     public NativeImageResourceBuildItem predictionSPIEvaluator() {
-        logger.info("predictionSPIEvaluator()");
+        logger.debug("predictionSPIEvaluator()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator");
     }
 
     @BuildStep
     public NativeImageResourceBuildItem predictionSPIRuntime() {
-        logger.info("predictionSPIRuntime()");
+        logger.debug("predictionSPIRuntime()");
         return new NativeImageResourceBuildItem("META-INF/services/org.kie.pmml.api.runtime.PMMLRuntime");
     }
 
