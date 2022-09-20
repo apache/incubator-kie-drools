@@ -45,8 +45,16 @@ How to retest this PR or trigger a specific build:
 
 - for a <b>specific quarkus main check</b>  
   Run checks against Quarkus main branch  
-  Please add comment: <b>Jenkins (re)run [kogito-apps|kogito-examples] quarkus-branch</b>
+  Please add comment: <b>Jenkins (re)run [kogito-apps|kogito-examples] quarkus-main</b>
 
+- for <b>quarkus lts checks</b>  
+  Run checks against Quarkus lts branch  
+  Please add comment: <b>Jenkins run quarkus-lts</b>
+
+- for a <b>specific quarkus lts check</b>  
+  Run checks against Quarkus lts branch  
+  Please add comment: <b>Jenkins (re)run [kogito-apps|kogito-examples] quarkus-lts</b>
+ 
 - for <b>native checks</b>  
   Run native checks  
   Please add comment: <b>Jenkins run native</b>
@@ -63,4 +71,12 @@ How to retest this PR or trigger a specific build:
   Run native checks against Mandrel image  
   Please add comment: <b>Jenkins (re)run [kogito-apps|kogito-examples] mandrel</b>
 
+- for <b>mandrel lts checks</b>  
+  Run native checks against Mandrel image and quarkus lts branch
+  Please add comment: <b>Jenkins run mandrel-lts</b>
+
+- for a <b>specific mandrel lts check</b>  
+  Run native checks against Mandrel image and quarkus lts branch
+  Please add comment: <b>Jenkins (re)run [kogito-apps|kogito-examples] mandrel-lts</b>
+ 
 </details>
