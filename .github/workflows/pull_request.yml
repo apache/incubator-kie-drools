@@ -14,7 +14,7 @@ on:
       - '*.txt'
       - '.ci/**'
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened, labeled]
     branches:
       - main
       - 8.*
@@ -31,13 +31,22 @@ defaults:
     shell: bash
 
 jobs:
+  os-prep:
+    runs-on: ubuntu-latest
+    outputs:
+      os: ${{ steps.set-os.outputs.operating-systems }}
+    steps:
+      - name: OS Preparation
+        id: set-os
+        uses: kiegroup/kogito-pipelines/.ci/actions/os-preparation@main
   build-chain:
+    needs: os-prep
     concurrency:
       group: pull_request-${{ github.event_name }}-${{ github.head_ref }}-${{ matrix.os }}-${{ matrix.java-version }}
       cancel-in-progress: true
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: ${{ fromJSON(needs.os-prep.outputs.os) }}
         java-version: [ 11, 17, 18 ]
         maven-version: [ '3.8.6' ]
       fail-fast: false
