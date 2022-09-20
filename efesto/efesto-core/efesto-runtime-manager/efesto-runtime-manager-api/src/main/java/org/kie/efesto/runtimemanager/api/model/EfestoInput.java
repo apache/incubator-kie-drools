@@ -15,6 +15,10 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
@@ -29,4 +33,9 @@ public interface EfestoInput<T> {
     ModelLocalUriId getModelLocalUriId();
 
     T getInputData();
+
+    default EfestoClassKey getEfestoClassKeyIdentifier() {
+        List<Class> generics = getInputData() != null ? Collections.singletonList(getInputData().getClass()) : Collections.emptyList();
+        return new EfestoClassKey(this.getClass(), generics);
+    }
 }

@@ -18,11 +18,15 @@ package org.kie.efesto.runtimemanager.core.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputA;
@@ -37,6 +41,8 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class RuntimeManagerImplTest {
 
@@ -52,6 +58,37 @@ class RuntimeManagerImplTest {
     static void setUp() {
         runtimeManager = new RuntimeManagerImpl();
         context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+    }
+
+    @Test
+    void populateFirstLevelCache() {
+        KieRuntimeService kieRuntimeServiceA = mock(KieRuntimeService.class);
+        EfestoClassKey efestoClassKeyA = new EfestoClassKey(String.class, Collections.emptyList());
+        when(kieRuntimeServiceA.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyA);
+        KieRuntimeService kieRuntimeServiceB = mock(KieRuntimeService.class);
+        EfestoClassKey efestoClassKeyB = new EfestoClassKey(String.class, Collections.emptyList());
+        when(kieRuntimeServiceB.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyB);
+        KieRuntimeService kieRuntimeServiceC = mock(KieRuntimeService.class);
+        EfestoClassKey efestoClassKeyC = new EfestoClassKey(List.class, Collections.singletonList(String.class));
+        when(kieRuntimeServiceC.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyC);
+        List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA, kieRuntimeServiceB, kieRuntimeServiceC);
+        final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
+        ((RuntimeManagerImpl)runtimeManager).populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
+        assertThat(toPopulate.size()).isEqualTo(2);
+        assertThat(toPopulate.containsKey(efestoClassKeyA)).isTrue(); // Those two are the same
+        assertThat(toPopulate.containsKey(efestoClassKeyB)).isTrue(); // Those two are the same
+        assertThat(toPopulate.containsKey(efestoClassKeyC)).isTrue();
+        List<KieRuntimeService> servicesA = toPopulate.get(efestoClassKeyA);
+        List<KieRuntimeService> servicesB = toPopulate.get(efestoClassKeyB);
+        assertThat(servicesA).isEqualTo(servicesB);
+        assertThat(servicesA.size()).isEqualTo(2);
+        assertThat(servicesA).contains(kieRuntimeServiceA);
+        assertThat(servicesA).contains(kieRuntimeServiceB);
+        List<KieRuntimeService> servicesC = toPopulate.get(efestoClassKeyC);
+        assertThat(servicesC.size()).isEqualTo(1);
+        assertThat(servicesC).contains(kieRuntimeServiceC);
+
+
     }
 
     @Test

@@ -45,12 +45,16 @@ public class SPIUtils {
 
     private static List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(kieRuntimeServiceLoader);
 
-    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, EfestoRuntimeContext context) {
+    public static List<KieRuntimeService> getDiscoveredKieRuntimeServices() {
+        return kieRuntimeServices;
+    }
+
+    public static Optional<KieRuntimeService> getKieRuntimeService(List<KieRuntimeService> discoveredServices,  EfestoInput<?> input, EfestoRuntimeContext context) {
         if ( logger.isTraceEnabled() ) {
-            logger.trace("getKieRuntimeService {} {}", input, refresh);
+            logger.trace("getKieRuntimeService {} {} {}", discoveredServices, input, context);
         }
-        return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, context),
-                (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
+        return findAtMostOne(discoveredServices, service -> service.canManageInput(input, context),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContext(EfestoInput<?> input, EfestoRuntimeContext context) {

@@ -15,13 +15,19 @@
  */
 package org.kie.efesto.runtimemanager.core.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -30,11 +36,20 @@ import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getDiscoveredKieRuntimeServices;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeServiceFromEfestoRuntimeContext;
 
 public class RuntimeManagerImpl implements RuntimeManager {
+
     private static final Logger logger = LoggerFactory.getLogger(RuntimeManagerImpl.class.getName());
+
+    private static final Map<EfestoClassKey, List<KieRuntimeService>> firstLevelCache = new HashMap<>();
+    private static final Map<ModelLocalUriId, KieRuntimeService> secondLevelCache = new HashMap<>();
+
+    static {
+        populateFirstLevelCache(firstLevelCache);
+    }
 
     @Override
     public Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context, EfestoInput... toEvaluate) {
@@ -46,20 +61,55 @@ public class RuntimeManagerImpl implements RuntimeManager {
                 .collect(Collectors.toList());
     }
 
+    static void populateFirstLevelCache(final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate) {
+        List<KieRuntimeService> discoveredKieRuntimeServices = getDiscoveredKieRuntimeServices();
+        populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
+    }
+
+    static void populateFirstLevelCache(final List<KieRuntimeService> discoveredKieRuntimeServices,
+                                        final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate) {
+        discoveredKieRuntimeServices.forEach(kieRuntimeService -> {
+            EfestoClassKey efestoClassKey = kieRuntimeService.getEfestoClassKeyIdentifier();
+            toPopulate.merge(efestoClassKey, List.of(kieRuntimeService), (previous,
+                                                                          toAdd) -> {
+                List<KieRuntimeService> toReturn = new ArrayList<>();
+                toReturn.addAll(previous);
+                toReturn.addAll(toAdd);
+                return toReturn;
+            });
+        });
+    }
+
     static Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
         Optional<KieRuntimeService> retrieved = getKieRuntimeServiceLocal(context, input);
-        return retrieved.isPresent() ? retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input, context)) : Optional.empty();
+        return retrieved.isPresent() ? retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input,
+                                                                                                              context)) : Optional.empty();
     }
 
     static Optional<KieRuntimeService> getKieRuntimeServiceLocal(EfestoRuntimeContext context, EfestoInput input) {
-        Optional<KieRuntimeService> retrieved = getKieRuntimeService(input, false, context);
+        if(secondLevelCache.containsKey(input.getModelLocalUriId())) {
+            return Optional.of(secondLevelCache.get(input.getModelLocalUriId()));
+        }
+        List<KieRuntimeService> discoveredServices = firstLevelCache.get(input.getEfestoClassKeyIdentifier());
+        Optional<KieRuntimeService> retrieved = (discoveredServices != null && !discoveredServices.isEmpty()) ?
+                getKieRuntimeService(discoveredServices, input, context) :
+                Optional.empty();
         if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieRuntimeService for {}, looking inside context classloader",
                         input.getModelLocalUriId());
             retrieved = getKieRuntimeServiceFromEfestoRuntimeContext(input, context);
+            retrieved.ifPresent(kieRuntimeService -> firstLevelCache.merge(input.getEfestoClassKeyIdentifier(), List.of(kieRuntimeService), (previous,
+                                                                                                                        toAdd) -> {
+                List<KieRuntimeService> toReturn = new ArrayList<>();
+                toReturn.addAll(previous);
+                toReturn.addAll(toAdd);
+                return toReturn;
+            }));
         }
         if (retrieved.isEmpty()) {
             logger.warn("Cannot find KieRuntimeService for {}", input.getModelLocalUriId());
+        } else {
+            secondLevelCache.put(input.getModelLocalUriId(), retrieved.get());
         }
         return retrieved;
     }

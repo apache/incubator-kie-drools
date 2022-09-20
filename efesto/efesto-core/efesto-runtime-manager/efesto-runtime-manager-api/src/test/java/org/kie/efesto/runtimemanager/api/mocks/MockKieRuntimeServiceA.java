@@ -15,7 +15,9 @@
  */
 package org.kie.efesto.runtimemanager.api.mocks;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
@@ -23,18 +25,21 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
-public class MockKieRuntimeServiceC extends AbstractMockKieRuntimeService {
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
-    private final static ModelLocalUriId modelLocalUriIdC =
-            new ModelLocalUriId(LocalUri.parse("/" + MockEfestoInputC.class.getSimpleName() + "/" + MockEfestoInputC.class.getPackage().getName()));
+public class MockKieRuntimeServiceA extends AbstractMockKieRuntimeService {
+
+    private static List<ModelLocalUriId> managedResources =
+            Collections.singletonList(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputA.class.getSimpleName() + SLASH + MockEfestoInputA.class.getPackage().getName())));
+
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(MockEfestoInputC.class, Collections.singletonList(String.class));
+        return new EfestoClassKey(MockEfestoInputA.class, Collections.singletonList(String.class));
     }
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return toEvaluate.getModelLocalUriId().equals(modelLocalUriIdC);
+        return managedResources.contains(toEvaluate.getModelLocalUriId());
     }
 }
