@@ -1,0 +1,73 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: solvers.org.optaplanner.solver
+spec:
+  group: org.optaplanner.solver
+  names:
+    kind: Solver
+    plural: solvers
+    singular: solver
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              amqBroker:
+                properties:
+                  port:
+                    type: integer
+                  managementHost:
+                    type: string
+                  host:
+                    type: string
+                  usernameSecretRef:
+                    properties:
+                      optional:
+                        type: boolean
+                      key:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                  managementPort:
+                    type: integer
+                  passwordSecretRef:
+                    properties:
+                      optional:
+                        type: boolean
+                      key:
+                        type: string
+                      name:
+                        type: string
+                    type: object
+                  brokerName:
+                    type: string
+                type: object
+              solverImage:
+                type: string
+              scaling:
+                properties:
+                  dynamic:
+                    type: boolean
+                  replicas:
+                    type: integer
+                type: object
+            type: object
+          status:
+            properties:
+              outputMessageAddress:
+                type: string
+              inputMessageAddress:
+                type: string
+              errorMessage:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

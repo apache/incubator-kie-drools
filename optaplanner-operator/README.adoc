@@ -30,11 +30,10 @@ Login as a user with the `cluster-admin` role.
 === Deploy the OptaPlanner Operator
 
 . Create the `optaplanner-operator` project by running `oc new-project optaplanner-operator`.
-. Run `mvn clean package -Dopenshift`.
-. Apply the generated CRD by running `oc create -f target/kubernetes/solvers.org.optaplanner.solver-v1.yml`.
-. Apply the prepared template by running `oc apply -f src/k8s/openshift.yml`.
-
-TIP: If you encounter the `Caused by: javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed` exception due to self-signed certificate during the build, add the `-Dquarkus.kubernetes-client.trust-certs=true` property.
+. Download the https://download.jboss.org/optaplanner/release/latestFinal[optaplanner-distribution].
+. Extract the archive and change directory to `extra/optaplanner-operator`.
+. Apply the CRD by running `oc apply -f crd-solver.yml`.
+. Apply the prepared deployment template by running `oc apply -f optaplanner-operator.yml`.
 
 == Try the OptaPlanner Operator
 

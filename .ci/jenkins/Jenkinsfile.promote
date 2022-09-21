@@ -10,6 +10,8 @@ String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String quickstartsRepository = 'optaplanner-quickstarts'
 
+imageUtils = null
+
 pipeline {
     agent {
         label 'kie-rhel7 && !master'
@@ -56,6 +58,9 @@ pipeline {
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
+
+                    checkout scm // To make sure the repository containing the script is available on the Jenkins node.
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
                 }
             }
         }
@@ -197,6 +202,18 @@ pipeline {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
+                }
+            }
+        }
+
+        stage('Push the final OptaPlanner operator image') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    pushOperatorFinalImage()
+                    removeOperatorImageTemporaryTag()
                 }
             }
         }
@@ -431,4 +448,53 @@ void updateQuickstartsVersions(String newVersion) {
 
 void gradleVersionsUpdate(String newVersion) {
     sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
+}
+
+/* OptaPlanner Operator */
+
+String getOperatorImageRegistry() {
+    return params.OPERATOR_IMAGE_REGISTRY
+}
+
+String getOperatorImageNamespace() {
+    return params.OPERATOR_IMAGE_NAMESPACE
+}
+
+String getOperatorImageName() {
+    return getDeployProperty('operator.image.name')
+}
+
+String getOperatorImageTag() {
+    return getDeployProperty('operator.image.tag')
+}
+
+String getOperatorImageTemporaryTag() {
+    return getDeployProperty('operator.image.temporary_tag')
+}
+
+void pushOperatorFinalImage() {
+    imageUtils.loginRegistry()
+
+    String temporaryImage = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
+            getOperatorImageNamespace(), getOperatorImageName(), getOperatorImageTemporaryTag())
+    imageUtils.pullImage(temporaryImage)
+
+    String finalImageName = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
+            getOperatorImageNamespace(), getOperatorImageName(), getOperatorImageTag())
+    imageUtils.tagImage(temporaryImage, finalImageName)
+    imageUtils.pushImage(finalImageName)
+
+    String finalImageLatestName = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
+            getOperatorImageNamespace(), getOperatorImageName(), 'latest')
+    imageUtils.tagImage(finalImageName, finalImageLatestName)
+    imageUtils.pushImage(finalImageLatestName)
+}
+
+void removeOperatorImageTemporaryTag() {
+    if (!imageUtils.removeQuayTag(getOperatorImageNamespace(), getOperatorImageName(), getOperatorImageTemporaryTag())) {
+        String temporaryImageName = imageUtils.getImageFullName(getOperatorImageNamespace(), getOperatorImageName(),
+                getOperatorImageTemporaryTag())
+        error "Cannot remove the OptaPlanner Operator temporary image tag (${temporaryImageName}) from quay.io. "
+                + "The tag should be removed manually."
+    }
 }

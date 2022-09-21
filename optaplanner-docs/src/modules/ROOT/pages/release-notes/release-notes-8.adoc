@@ -1,6 +1,14 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.29.0.Final]]
+=== OptaPlanner 8.29.0.Final
+
+==== OptaPlanner operator (experimental) is available in the distribution
+
+While the OptaPlanner operator remains experimental, it has now become a part of the https://download.jboss.org/optaplanner/release/latestFinal[OptaPlanner distribution].
+
+If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo]
 
 [[releaseNotes-8.27.0.Final]]
 === OptaPlanner 8.27.0.Final

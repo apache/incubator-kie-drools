@@ -53,6 +53,11 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
+    <!-- OptaPlanner Operator distribution. -->
+    <fileSet>
+      <directory>../../optaplanner-operator/target/install</directory>
+      <outputDirectory>extra/optaplanner-operator</outputDirectory>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
@@ -61,6 +66,7 @@
         <include>org.optaplanner:*:jar</include>
       </includes>
       <excludes>
+        <exclude>org.optaplanner:optaplanner-operator:jar</exclude>
         <exclude>*:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>

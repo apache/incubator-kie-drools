@@ -126,7 +126,8 @@
         <artifactId>optaplanner-constraint-streams-bavet</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>javadoc</classifier>
-      </dependency>      <dependency>
+      </dependency>
+      <dependency>
         <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-constraint-streams-drools</artifactId>
         <version>${version.org.optaplanner}</version>
@@ -568,6 +569,30 @@
         <artifactId>optaplanner-distribution-internal</artifactId>
         <version>${version.org.optaplanner}</version>
         <type>zip</type>
+      </dependency>
+      <!-- OptaPlanner operator -->
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>javadoc</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -66,6 +66,25 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/application.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/k8s</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>crd-solver.yml</include>
+          <include>optaplanner-operator.yml</include>
+        </includes>
+        <targetPath>${project.build.directory}/install</targetPath>
+      </resource>
+    </resources>
+
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
@@ -157,6 +176,24 @@
         <dependency>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-openshift</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <!-- The image build does not work on Windows GHA, thus it cannot be a part of the full profile. -->
+      <id>image</id>
+      <activation>
+        <property>
+          <name>operator.image.build</name>
+        </property>
+      </activation>
+      <properties>
+        <quarkus.profile>image</quarkus.profile>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-container-image-jib</artifactId>
         </dependency>
       </dependencies>
     </profile>

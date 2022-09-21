@@ -10,6 +10,8 @@ optaplannerRepository = 'optaplanner'
 quickstartsRepository = 'optaplanner-quickstarts'
 vehicleRoutingRepository = 'optaweb-vehicle-routing'
 
+imageUtils = null
+
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g && !master'
@@ -62,6 +64,9 @@ pipeline {
                             assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                         }
                     }
+
+                    checkout scm // To make sure the repository containing the script is available on the Jenkins node.
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
                 }
             }
             post {
@@ -112,10 +117,15 @@ pipeline {
                 }
             }
         }
+
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    getOptaplannerMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptaplannerMavenCommand()
+                            .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('operator.image.build')
+                            .skipTests(params.SKIP_TESTS)
+                            .run('clean install')
                     if (isRelease()) {
                         updateAntoraYaml(optaplannerRepository)
                     }
@@ -214,7 +224,7 @@ pipeline {
 
         stage('Create PRs') {
             when {
-                expression { return isRelease() || isCreatePr()  }
+                expression { return isRelease() || isCreatePr() }
             }
             steps {
                 commitAndCreatePR(optaplannerRepository, getBuildBranch())
@@ -237,11 +247,27 @@ pipeline {
                 }
             }
         }
+
+        stage('Push a temporary operator image to a registry') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    pushOperatorTemporaryImage()
+
+                    // Store image deployment information
+                    setDeployPropertyIfNeeded('operator.image.name', getOperatorImageName())
+                    setDeployPropertyIfNeeded('operator.image.tag', getOperatorImageTag())
+                    setDeployPropertyIfNeeded('operator.image.temporary_tag', getOperatorImageTemporaryTag())
+                }
+            }
+        }
     }
     post {
         always {
             script {
-                def propertiesStr = deployProperties.collect { entry ->  "${entry.key}=${entry.value}" }.join('\n')
+                def propertiesStr = deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
                 writeFile(text: propertiesStr, file: env.PROPERTIES_FILE_NAME)
                 archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
             }
@@ -292,18 +318,18 @@ void updateQuickstartsVersions() {
 
     if (isRelease()) {
         dir(quickstartsRepository) {
-            assert !sh (script:
+            assert !sh(script:
                     'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
-                    'grep -v -e "1.0-SNAPSHOT" | ' +
-                    'cat', returnStdout: true)
+                            'grep -v -e "1.0-SNAPSHOT" | ' +
+                            'cat', returnStdout: true)
         }
     }
     if (isCreatePr()) {
         dir(quickstartsRepository) {
-            assert !sh (script:
+            assert !sh(script:
                     'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
-                    'grep -v -e "${getProjectVersion()}" | ' +
-                    'cat', returnStdout: true)
+                            'grep -v -e "${getProjectVersion()}" | ' +
+                            'cat', returnStdout: true)
         }
     }
 }
@@ -320,7 +346,7 @@ void archiveJUnitTestResults() {
     }
 }
 
-void checkoutRepo(String repo, String dirName=repo) {
+void checkoutRepo(String repo, String dirName = repo) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
@@ -331,7 +357,7 @@ void checkoutRepo(String repo, String dirName=repo) {
     }
 }
 
-void checkoutQuickstarts(String dirName=quickstartsRepository) {
+void checkoutQuickstarts(String dirName = quickstartsRepository) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
@@ -371,8 +397,8 @@ void commitAndCreatePR(String repo, String buildBranch) {
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
         deployProperties["${repo}.pr.link"] = isRelease() ?
-                                                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
-                                                githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
+                githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
+                githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
     }
 }
 
@@ -409,9 +435,9 @@ MavenCommand getOptawebVehicleRoutingMavenCommand() {
  */
 void mavenCleanInstallOptaPlannerParents() {
     getOptaplannerMavenCommand()
-        .skipTests(true)
-        .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
-        .run('clean install')
+            .skipTests(true)
+            .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+            .run('clean install')
 }
 
 void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
@@ -438,8 +464,8 @@ void runMavenStage(MavenCommand mvnCmd, String localDeployId) {
 
 MavenStagingHelper getStagingHelper(MavenCommand mvnCmd) {
     return new MavenStagingHelper(this, mvnCmd)
-                .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
-                .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
+            .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
+            .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
 }
 
 String getLocalDeploymentFolder(String localDeployId) {
@@ -524,4 +550,35 @@ void updateAntoraYaml(String directory) {
     } else {
         echo 'No updateAntoraYaml due to testing build'
     }
+}
+
+/* OptaPlanner Operator */
+
+String getOperatorImageRegistry() {
+    return params.OPERATOR_IMAGE_REGISTRY
+}
+
+String getOperatorImageNamespace() {
+    return params.OPERATOR_IMAGE_NAMESPACE
+}
+
+String getOperatorImageName() {
+    return env.OPERATOR_IMAGE_NAME
+}
+
+String getOperatorImageTag() {
+    return params.OPERATOR_IMAGE_TAG ?: getProjectVersion()
+}
+
+String getOperatorImageTemporaryTag() {
+    return "${getOperatorImageTag()}-temporary"
+}
+
+void pushOperatorTemporaryImage() {
+    String localImage = "${getOperatorImageName()}:latest"
+    String temporaryImageTag = getOperatorImageTemporaryTag()
+    String temporaryImageFullName = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
+            getOperatorImageNamespace(), getOperatorImageName(), temporaryImageTag)
+    imageUtils.tagImage(localImage, temporaryImageFullName)
+    imageUtils.pushImage(temporaryImageFullName)
 }

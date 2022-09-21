@@ -128,7 +128,8 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
                     .inNamespace(solver.getMetadata().getNamespace())
                     .withName(solver.getMetadata().getName())
                     .get();
-            assertThat(updatedSolver.getStatus()).isNotNull();
+            assertThat(updatedSolver.getStatus().getConditions().get(0).getStatus())
+                    .isNotEqualTo(OptaPlannerSolverStatus.ConditionStatus.UNKNOWN.getName());
         });
 
         ScaledObject scaledObject = getClient()

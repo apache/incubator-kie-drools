@@ -19,12 +19,12 @@ productized_branch: true
 disable:
   triggers: false
 repositories:
-- name: optaplanner
-  branch: main
-- name: optaweb-vehicle-routing
-  branch: main
-- name: optaplanner-quickstarts
-  branch: development
+  - name: optaplanner
+    branch: main
+  - name: optaweb-vehicle-routing
+    branch: main
+  - name: optaplanner-quickstarts
+    branch: development
 git:
   author:
     name: kiegroup
@@ -49,8 +49,7 @@ maven:
       creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials_nightly: nightly_kogito
-    registry_credentials_release: release_kogito
+    registry_credentials: optaplanner-quay-token
     registry: quay.io
     namespace: kiegroup
     latest_git_branch: main
@@ -59,3 +58,4 @@ jenkins:
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.6
+
