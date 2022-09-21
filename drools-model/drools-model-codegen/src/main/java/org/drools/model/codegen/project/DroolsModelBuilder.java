@@ -74,7 +74,7 @@ public class DroolsModelBuilder {
         this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
-        this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl();
+        this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl(context.getClassLoader());
         this.packageModelWriterProvider = packageModelWriterProvider;
 
         checkDependencyTableSupport();
