@@ -30,10 +30,17 @@ public class TestdataListEntityWithShadowHistory extends TestdataObject {
     }
 
     TestdataListEntityWithShadowHistory setUpShadowVariables() {
-        valueList.forEach(testdataListValue -> {
-            testdataListValue.setEntity(this);
-            testdataListValue.setIndex(valueList.indexOf(testdataListValue));
-        });
+        for (int i = 0; i < valueList.size(); i++) {
+            TestdataListValueWithShadowHistory value = valueList.get(i);
+            value.setEntity(this);
+            value.setIndex(i);
+            if (i > 0) {
+                value.setPrevious(valueList.get(i - 1));
+            }
+            if (i < valueList.size() - 1) {
+                value.setNext(valueList.get(i + 1));
+            }
+        }
         return this;
     }
 

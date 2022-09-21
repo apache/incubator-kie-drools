@@ -284,20 +284,58 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     // List variable
     // ************************************************************************
 
-    void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex);
+    /**
+     * Notify the score director before a subList of a list variable changes. The subList is a continuous sequence of
+     * the list variable elements starting at {@code fromIndex} (inclusive) and ending at {@code toIndex} (exclusive).
+     * <p>
+     * The subList has to comply with the following contract:
+     * <ol>
+     * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
+     * size.</li>
+     * <li>{@code toIndex} must be greater than or equal to {@code fromIndex}.</li>
+     * <li>The subList must contain all elements that are going to be changed by the move.</li>
+     * <li>The subList is allowed to contain elements that are not going to be changed by the move.</li>
+     * <li>The subList may be empty ({@code fromIndex} equals {@code toIndex}) if none of the existing list variable elements
+     * are going to be changed by the move.</li>
+     * </ol>
+     *
+     * @param variableDescriptor descriptor of the variable being changed
+     * @param entity the entity owning the variable being changed
+     * @param fromIndex low endpoint (inclusive) of the subList
+     * @param toIndex high endpoint (exclusive) of the subList
+     */
+    void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex);
 
-    void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex);
+    /**
+     * Notify the score director after a subList of a list variable has changed. The subList is a continuous sequence of
+     * the list variable elements starting at {@code fromIndex} (inclusive) and ending at {@code toIndex} (exclusive).
+     * <p>
+     * The subList has to comply with the following contract:
+     * <ol>
+     * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
+     * size.</li>
+     * <li>{@code toIndex} must be greater than or equal to {@code fromIndex}.</li>
+     * <li>The subList must contain all elements that have been changed by the move.</li>
+     * <li>The subList is allowed to contain elements that have not been changed by the move.</li>
+     * <li>The subList may be empty ({@code fromIndex} equals {@code toIndex}) if all of the changed elements have been
+     * moved to another list variable.</li>
+     * </ol>
+     *
+     * @param variableDescriptor descriptor of the variable being changed
+     * @param entity the entity owning the variable being changed
+     * @param fromIndex low endpoint (inclusive) of the subList
+     * @param toIndex high endpoint (exclusive) of the subList
+     */
+    void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex);
 
 }

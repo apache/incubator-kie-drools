@@ -2,10 +2,11 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -16,17 +17,18 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
 class ListSwapMoveTest {
 
+    private final TestdataListValue v1 = new TestdataListValue("1");
+    private final TestdataListValue v2 = new TestdataListValue("2");
+    private final TestdataListValue v3 = new TestdataListValue("3");
+
+    private final InnerScoreDirector<TestdataListSolution, ?> scoreDirector = mock(InnerScoreDirector.class);
+    private final ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+            TestdataListEntity.buildVariableDescriptorForValueList();
+
     @Test
     void isMoveDoable() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
-
-        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, same index => not doable because the move doesn't change anything
         assertThat(new ListSwapMove<>(variableDescriptor, e1, 1, e1, 1).isMoveDoable(scoreDirector)).isFalse();
@@ -38,15 +40,8 @@ class ListSwapMoveTest {
 
     @Test
     void doMove() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         // Swap Move 1: between two entities
         ListSwapMove<TestdataListSolution> move1 = new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0);
@@ -54,6 +49,13 @@ class ListSwapMoveTest {
         AbstractMove<TestdataListSolution> undoMove1 = move1.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v3, v2);
         assertThat(e2.getValueList()).containsExactly(v1);
+
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
 
         // undo
         undoMove1.doMove(scoreDirector);
@@ -73,9 +75,6 @@ class ListSwapMoveTest {
 
     @Test
     void rebase() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
@@ -84,9 +83,6 @@ class ListSwapMoveTest {
         TestdataListValue destinationV3 = new TestdataListValue("3");
         TestdataListEntity destinationE1 = new TestdataListEntity("e1", destinationV1, destinationV2);
         TestdataListEntity destinationE2 = new TestdataListEntity("e2", destinationV3);
-
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
@@ -120,37 +116,32 @@ class ListSwapMoveTest {
     }
 
     @Test
-    void tabuIntrospection() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
+    void tabuIntrospection_twoEntities() {
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
+        ListSwapMove<TestdataListSolution> moveTwoEntities = new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0);
+        // Do the move first because that might affect the returned values.
+        moveTwoEntities.doMoveOnGenuineVariables(scoreDirector);
+        assertThat(moveTwoEntities.getPlanningEntities()).containsExactly(e1, e2);
+        assertThat(moveTwoEntities.getPlanningValues()).containsExactlyInAnyOrder(v3, v1);
+    }
 
-        // Swap Move 1: between two entities
-        ListSwapMove<TestdataListSolution> move1 = new ListSwapMove<>(variableDescriptor, e1, 0, e2, 0);
-        assertThat(move1.getPlanningEntities()).containsExactly(e1, e2);
-        assertThat(move1.getPlanningValues()).containsExactly(v1, v3);
+    @Test
+    void tabuIntrospection_oneEntity() {
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
 
-        // Swap Move 2: same entity
-        ListSwapMove<TestdataListSolution> move2 = new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1);
-        assertThat(move2.getPlanningEntities()).containsExactly(e1);
-        assertThat(move2.getPlanningValues()).containsExactly(v1, v2);
+        ListSwapMove<TestdataListSolution> moveOneEntity = new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1);
+        // Do the move first because that might affect the returned values.
+        moveOneEntity.doMoveOnGenuineVariables(scoreDirector);
+        assertThat(moveOneEntity.getPlanningEntities()).containsExactly(e1);
+        assertThat(moveOneEntity.getPlanningValues()).containsExactly(v2, v1);
     }
 
     @Test
     void toStringTest() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
-
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         assertThat(new ListSwapMove<>(variableDescriptor, e1, 0, e1, 1)).hasToString("1 {e1[0]} <-> 2 {e1[1]}");
         assertThat(new ListSwapMove<>(variableDescriptor, e1, 1, e2, 0)).hasToString("2 {e1[1]} <-> 3 {e2[0]}");

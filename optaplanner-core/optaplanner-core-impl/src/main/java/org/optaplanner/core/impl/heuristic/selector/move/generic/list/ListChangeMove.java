@@ -30,6 +30,8 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
+    private Object planningValue;
+
     /**
      * The move removes a planning value element from {@code sourceEntity.listVariable[sourceIndex]}
      * and inserts the planning value at {@code destinationEntity.listVariable[destinationIndex]}.
@@ -139,12 +141,26 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
 
-        innerScoreDirector.beforeElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
-        Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
-        variableDescriptor.addElement(destinationEntity, destinationIndex, element);
-        innerScoreDirector.afterElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+        if (sourceEntity == destinationEntity) {
+            int fromIndex = Math.min(sourceIndex, destinationIndex);
+            int toIndex = Math.max(sourceIndex, destinationIndex) + 1;
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+            variableDescriptor.addElement(destinationEntity, destinationIndex, element);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            planningValue = element;
+        } else {
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
+            Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex);
+            variableDescriptor.addElement(destinationEntity, destinationIndex, element);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex + 1);
+            planningValue = element;
+        }
     }
 
     @Override
@@ -175,7 +191,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<Object> getPlanningValues() {
-        return Collections.singleton(getMovedValue());
+        return Collections.singleton(planningValue);
     }
 
     @Override

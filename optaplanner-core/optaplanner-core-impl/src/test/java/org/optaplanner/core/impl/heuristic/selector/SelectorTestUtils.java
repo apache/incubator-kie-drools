@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -20,6 +22,11 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 
@@ -177,6 +184,35 @@ public class SelectorTestUtils {
             }
             chainedObject = chainedEntity;
         }
+    }
+
+    // ************************************************************************
+    // Lifecycle
+    // ************************************************************************
+
+    public static <Solution_, Score_ extends Score<Score_>> SolverScope<Solution_> solvingStarted(
+            PhaseLifecycleListener<Solution_> listener, InnerScoreDirector<Solution_, Score_> scoreDirector, Random random) {
+        SolverScope<Solution_> solverScope = mock(SolverScope.class);
+        when(solverScope.<Score_> getScoreDirector()).thenReturn(scoreDirector);
+        when(solverScope.getWorkingRandom()).thenReturn(random);
+        listener.solvingStarted(solverScope);
+        return solverScope;
+    }
+
+    public static <Solution_> AbstractPhaseScope<Solution_> phaseStarted(PhaseLifecycleListener<Solution_> listener,
+            SolverScope<Solution_> solverScope) {
+        AbstractPhaseScope<Solution_> phaseScope = mock(AbstractPhaseScope.class);
+        when(phaseScope.getSolverScope()).thenReturn(solverScope);
+        listener.phaseStarted(phaseScope);
+        return phaseScope;
+    }
+
+    public static <Solution_> AbstractStepScope<Solution_> stepStarted(PhaseLifecycleListener<Solution_> listener,
+            AbstractPhaseScope<Solution_> phaseScope) {
+        AbstractStepScope<Solution_> stepScope = mock(AbstractStepScope.class);
+        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        listener.stepStarted(stepScope);
+        return stepScope;
     }
 
     private SelectorTestUtils() {

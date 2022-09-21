@@ -36,23 +36,6 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>First Fit</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>First Fit Decreasing</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
     <name>Late Acceptance</name>
     <solver>
     </solver>

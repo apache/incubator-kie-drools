@@ -1,9 +1,9 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
+import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
@@ -17,17 +17,15 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 @XStreamInclude({
         TimeWindowedCustomer.class
 })
-public class Customer extends AbstractPersistable implements Standstill {
+public class Customer extends AbstractPersistable {
 
     protected Location location;
     protected int demand;
 
-    // Planning variables: changes during planning, between score calculations.
-    protected Standstill previousStandstill;
-
     // Shadow variables
-    protected Customer nextCustomer;
     protected Vehicle vehicle;
+    protected Customer previousCustomer;
+    protected Customer nextCustomer;
 
     public Customer() {
     }
@@ -38,7 +36,6 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    @Override
     public Location getLocation() {
         return location;
     }
@@ -55,28 +52,7 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.demand = demand;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "vehicleRange",
-            "customerRange" }, graphType = PlanningVariableGraphType.CHAINED)
-    public Standstill getPreviousStandstill() {
-        return previousStandstill;
-    }
-
-    public void setPreviousStandstill(Standstill previousStandstill) {
-        this.previousStandstill = previousStandstill;
-    }
-
-    @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
-    }
-
-    @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
-    }
-
-    @Override
-    @AnchorShadowVariable(sourceVariableName = "previousStandstill")
+    @InverseRelationShadowVariable(sourceVariableName = "customers")
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -85,35 +61,41 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.vehicle = vehicle;
     }
 
+    @PreviousElementShadowVariable(sourceVariableName = "customers")
+    public Customer getPreviousCustomer() {
+        return previousCustomer;
+    }
+
+    public void setPreviousCustomer(Customer previousCustomer) {
+        this.previousCustomer = previousCustomer;
+    }
+
+    @NextElementShadowVariable(sourceVariableName = "customers")
+    public Customer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(Customer nextCustomer) {
+        this.nextCustomer = nextCustomer;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    /**
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
     public long getDistanceFromPreviousStandstill() {
-        if (previousStandstill == null) {
-            throw new IllegalStateException("This method must not be called when the previousStandstill ("
-                    + previousStandstill + ") is not initialized yet.");
+        if (vehicle == null) {
+            throw new IllegalStateException(
+                    "This method must not be called when the shadow variables are not initialized yet.");
         }
-        return getDistanceFrom(previousStandstill);
+        if (previousCustomer == null) {
+            return vehicle.getLocation().getDistanceTo(location);
+        }
+        return previousCustomer.getLocation().getDistanceTo(location);
     }
 
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceFrom(Standstill standstill) {
-        return standstill.getLocation().getDistanceTo(location);
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceTo(Standstill standstill) {
-        return location.getDistanceTo(standstill.getLocation());
+    public long getDistanceToDepot() {
+        return location.getDistanceTo(vehicle.getLocation());
     }
 
     @Override

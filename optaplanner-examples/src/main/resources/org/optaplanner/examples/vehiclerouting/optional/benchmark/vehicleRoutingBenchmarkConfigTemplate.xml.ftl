@@ -102,7 +102,7 @@
     <solver>
       <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
@@ -121,7 +121,6 @@
     <name>Tabu Search ${entityTabuSize} Nearby</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -171,7 +170,6 @@
     <name>Late Acceptance ${lateAcceptanceSize} Nearby</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

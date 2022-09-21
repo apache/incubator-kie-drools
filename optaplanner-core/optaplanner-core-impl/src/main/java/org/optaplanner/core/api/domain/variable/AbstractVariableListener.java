@@ -24,17 +24,6 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 public interface AbstractVariableListener<Solution_, Entity_> extends Closeable {
 
     /**
-     * When set to {@code true}, this has a slight performance loss in Planner.
-     * When set to {@code false}, it's often easier to make the listener implementation correct and fast.
-     *
-     * @return true to guarantee that each of the before/after methods will only be called once per entity instance
-     *         per operation type (add, change or remove).
-     */
-    default boolean requiresUniqueEntityEvents() {
-        return false;
-    }
-
-    /**
      * @param scoreDirector never null
      * @param entity never null
      */

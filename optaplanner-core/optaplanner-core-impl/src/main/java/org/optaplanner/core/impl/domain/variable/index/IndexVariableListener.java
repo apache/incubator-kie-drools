@@ -13,6 +13,8 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     protected final IndexShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
+    private static final int NEVER_QUIT_EARLY = Integer.MAX_VALUE;
+
     public IndexVariableListener(
             IndexShadowVariableDescriptor<Solution_> shadowVariableDescriptor,
             ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
@@ -27,7 +29,7 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, 0);
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, 0, NEVER_QUIT_EARLY);
     }
 
     @Override
@@ -47,17 +49,17 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     }
 
     @Override
-    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Do nothing
     }
 
     @Override
-    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
+    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index, NEVER_QUIT_EARLY);
     }
 
     @Override
-    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         Object element = sourceVariableDescriptor.getElement(entity, index);
         innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
@@ -66,40 +68,36 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     }
 
     @Override
-    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
+    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index, NEVER_QUIT_EARLY);
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
+    public void beforeListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }
 
     @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
+    public void afterListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
-        updateIndexes(innerScoreDirector, sourceEntity, sourceIndex);
-        updateIndexes(innerScoreDirector, destinationEntity, destinationIndex);
+        updateIndexes(innerScoreDirector, entity, fromIndex, toIndex);
     }
 
-    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int startIndex) {
+    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int fromIndex, int toIndex) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (int i = startIndex; i < listVariable.size(); i++) {
+        for (int i = fromIndex; i < listVariable.size(); i++) {
             Object element = listVariable.get(i);
             Integer oldIndex = shadowVariableDescriptor.getValue(element);
             if (!Objects.equals(oldIndex, i)) {
                 scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
                 shadowVariableDescriptor.setValue(element, i);
                 scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
-            } else if (i != startIndex) {
-                // It is possible to quit early when an element with the expected index is encountered
-                // and **if it's not the moved element**. For example, when X is moved from Ann[3] to Beth[3],
-                // we need to start updating Beth's elements at index 3 where X already has the expected index, but quitting
-                // there would be incorrect because all the elements after X need their indexes incremented.
+            } else if (i >= toIndex) {
+                // Do not quit early while inside the affected subList range.
+                // Example 1. When X is moved from Ann[3] to Beth[3], we need to start updating Beth's elements at index 3
+                // where X already has the expected index, but quitting there would be incorrect because all the elements
+                // above X need their indexes incremented.
+                // Example 2. After ListSwapMove(Ann, 5, 9), the listener must not quit at index 6, but it can quit at index 10.
                 return;
             }
         }

@@ -61,12 +61,8 @@ public interface Notification<Solution_, T extends AbstractVariableListener<Solu
         return new ElementRemovedNotification<>(entity, index);
     }
 
-    /**
-     * An element was moved from {@code sourceEntity[sourceIndex]} to {@code destinationEntity[destinationIndex]}.
-     */
-    static <Solution_> ListVariableNotification<Solution_> elementMoved(
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        return new ElementMovedNotification<>(sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    static <Solution_> ListVariableNotification<Solution_> listVariableChanged(Object entity, int fromIndex, int toIndex) {
+        return new ListVariableChangedNotification<>(entity, fromIndex, toIndex);
     }
 
     /**

@@ -131,12 +131,21 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         Object leftElement = variableDescriptor.getElement(leftEntity, leftIndex);
         Object rightElement = variableDescriptor.getElement(rightEntity, rightIndex);
 
-        innerScoreDirector.beforeElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-        innerScoreDirector.beforeElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
-        variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
-        variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-        innerScoreDirector.afterElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-        innerScoreDirector.afterElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
+        if (leftEntity == rightEntity) {
+            int fromIndex = Math.min(leftIndex, rightIndex);
+            int toIndex = Math.max(leftIndex, rightIndex) + 1;
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
+            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+        } else {
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
+            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
+            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
+        }
     }
 
     @Override

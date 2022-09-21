@@ -20,9 +20,9 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
         implements EntityNotifiable<Solution_> {
 
     private final ScoreDirector<Solution_> scoreDirector;
-    private final int globalOrder;
     private final T variableListener;
     private final Collection<Notification<Solution_, ? super T>> notificationQueue;
+    private final int globalOrder;
 
     static <Solution_> EntityNotifiable<Solution_> buildNotifiable(
             ScoreDirector<Solution_> scoreDirector,
@@ -32,40 +32,42 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
             return new ListVariableListenerNotifiable<>(
                     scoreDirector,
                     ((ListVariableListener<Solution_, Object>) variableListener),
-                    globalOrder);
+                    new ArrayDeque<>(), globalOrder);
         } else {
+            VariableListener<Solution_, Object> basicVariableListener = (VariableListener<Solution_, Object>) variableListener;
             return new VariableListenerNotifiable<>(
                     scoreDirector,
-                    ((VariableListener<Solution_, Object>) variableListener),
+                    basicVariableListener,
+                    basicVariableListener.requiresUniqueEntityEvents()
+                            ? new ListBasedScalingOrderedSet<>()
+                            : new ArrayDeque<>(),
                     globalOrder);
         }
     }
 
-    protected AbstractNotifiable(
-            ScoreDirector<Solution_> scoreDirector,
+    AbstractNotifiable(ScoreDirector<Solution_> scoreDirector,
             T variableListener,
+            Collection<Notification<Solution_, ? super T>> notificationQueue,
             int globalOrder) {
         this.scoreDirector = scoreDirector;
-        this.globalOrder = globalOrder;
         this.variableListener = variableListener;
-        if (variableListener.requiresUniqueEntityEvents()) {
-            notificationQueue = new ListBasedScalingOrderedSet<>();
-        } else {
-            notificationQueue = new ArrayDeque<>();
-        }
+        this.notificationQueue = notificationQueue;
+        this.globalOrder = globalOrder;
     }
 
     @Override
-    public void addNotification(EntityNotification<Solution_> notification) {
+    public void notifyBefore(EntityNotification<Solution_> notification) {
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
     }
 
-    public void addNotification(Notification<Solution_, T> notification) {
-        if (notificationQueue.add(notification)) {
-            notification.triggerBefore(variableListener, scoreDirector);
-        }
+    protected boolean storeForLater(Notification<Solution_, T> notification) {
+        return notificationQueue.add(notification);
+    }
+
+    protected void triggerBefore(Notification<Solution_, T> notification) {
+        notification.triggerBefore(variableListener, scoreDirector);
     }
 
     @Override

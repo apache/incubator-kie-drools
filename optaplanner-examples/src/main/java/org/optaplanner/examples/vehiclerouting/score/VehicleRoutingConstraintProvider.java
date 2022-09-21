@@ -27,6 +27,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint vehicleCapacity(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
                 .penalizeLong(HardSoftLongScore.ONE_HARD,
@@ -40,6 +41,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
                 .penalizeLong(HardSoftLongScore.ONE_SOFT,
                         Customer::getDistanceFromPreviousStandstill)
                 .asConstraint("distanceToPreviousStandstill");
@@ -47,9 +49,9 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
-                .filter(customer -> customer.getNextCustomer() == null)
+                .filter(customer -> customer.getVehicle() != null && customer.getNextCustomer() == null)
                 .penalizeLong(HardSoftLongScore.ONE_SOFT,
-                        customer -> customer.getDistanceTo(customer.getVehicle()))
+                        Customer::getDistanceToDepot)
                 .asConstraint("distanceFromLastCustomerToDepot");
     }
 
@@ -59,7 +61,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
         return factory.forEach(TimeWindowedCustomer.class)
-                .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
+                .filter(customer -> customer.getVehicle() != null && customer.getArrivalTime() > customer.getDueTime())
                 .penalizeLong(HardSoftLongScore.ONE_HARD,
                         customer -> customer.getArrivalTime() - customer.getDueTime())
                 .asConstraint("arrivalAfterDueTime");

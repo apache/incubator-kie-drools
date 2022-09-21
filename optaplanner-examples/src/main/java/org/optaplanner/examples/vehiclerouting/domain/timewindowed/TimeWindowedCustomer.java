@@ -70,7 +70,10 @@ public class TimeWindowedCustomer extends Customer {
     @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextCustomer should also be a source,
             // because this shadow must be triggered after nextCustomer (but there is no need to be triggered by nextCustomer)
-            sources = { @PlanningVariableReference(variableName = "previousStandstill") })
+            sources = {
+                    @PlanningVariableReference(variableName = "vehicle"),
+                    @PlanningVariableReference(variableName = "previousCustomer")
+            })
     public Long getArrivalTime() {
         return arrivalTime;
     }
@@ -101,11 +104,6 @@ public class TimeWindowedCustomer extends Customer {
     public boolean isArrivalAfterDueTime() {
         return arrivalTime != null
                 && dueTime < arrivalTime;
-    }
-
-    @Override
-    public TimeWindowedCustomer getNextCustomer() {
-        return (TimeWindowedCustomer) super.getNextCustomer();
     }
 
     /**

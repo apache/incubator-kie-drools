@@ -9,9 +9,9 @@ import org.optaplanner.core.config.AbstractConfig;
  */
 
 @XmlSeeAlso({
+        PooledEntityPlacerConfig.class,
         QueuedEntityPlacerConfig.class,
-        QueuedValuePlacerConfig.class,
-        PooledEntityPlacerConfig.class
+        QueuedValuePlacerConfig.class
 })
 public abstract class EntityPlacerConfig<Config_ extends EntityPlacerConfig<Config_>> extends AbstractConfig<Config_> {
 

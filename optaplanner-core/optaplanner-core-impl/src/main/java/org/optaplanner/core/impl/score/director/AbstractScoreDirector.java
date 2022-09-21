@@ -384,36 +384,41 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int index) {
         variableListenerSupport.beforeElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int index) {
         workingInitScore++;
+        variableListenerSupport.afterElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int index) {
         variableListenerSupport.beforeElementRemoved(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int index) {
         workingInitScore--;
+        variableListenerSupport.afterElementRemoved(variableDescriptor, entity, index);
     }
 
     @Override
-    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        variableListenerSupport.beforeElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    public void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int fromIndex, int toIndex) {
+        variableListenerSupport.beforeListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        // Do nothing
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int fromIndex, int toIndex) {
+        variableListenerSupport.afterListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {

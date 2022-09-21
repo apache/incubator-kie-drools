@@ -117,25 +117,23 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     }
 
     @Override
-    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         session.update(entity);
-        super.afterElementAdded(variableDescriptor, entity, index);
+        super.afterListVariableElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
+            int index) {
         session.update(entity);
-        super.afterElementRemoved(variableDescriptor, entity, index);
+        super.afterListVariableElementRemoved(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        session.update(sourceEntity);
-        if (sourceEntity != destinationEntity) {
-            session.update(destinationEntity);
-        }
-        super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        session.update(entity);
+        super.afterListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing

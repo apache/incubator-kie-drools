@@ -10,5 +10,5 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  */
 public interface EntityNotifiable<Solution_> extends Notifiable {
 
-    void addNotification(EntityNotification<Solution_> notification);
+    void notifyBefore(EntityNotification<Solution_> notification);
 }

@@ -111,7 +111,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         if (!notifiables.isEmpty()) {
             EntityNotification<Solution_> notification = Notification.entityAdded(entity);
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyBefore(notification);
             }
             notificationQueuesAreEmpty = false;
         }
@@ -122,7 +122,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         if (!notifiables.isEmpty()) {
             EntityNotification<Solution_> notification = Notification.entityRemoved(entity);
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyBefore(notification);
             }
             notificationQueuesAreEmpty = false;
         }
@@ -133,7 +133,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         if (!notifiables.isEmpty()) {
             BasicVariableNotification<Solution_> notification = Notification.variableChanged(entity);
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyBefore(notification);
             }
             notificationQueuesAreEmpty = false;
         }
@@ -144,7 +144,18 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         if (!notifiables.isEmpty()) {
             ListVariableNotification<Solution_> notification = Notification.elementAdded(entity, index);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyBefore(notification);
+            }
+            notificationQueuesAreEmpty = false;
+        }
+    }
+
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = Notification.elementAdded(entity, index);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.notifyAfter(notification);
             }
             notificationQueuesAreEmpty = false;
         }
@@ -155,21 +166,42 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         if (!notifiables.isEmpty()) {
             ListVariableNotification<Solution_> notification = Notification.elementRemoved(entity, index);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyBefore(notification);
             }
             notificationQueuesAreEmpty = false;
         }
     }
 
-    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification =
-                    Notification.elementMoved(sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+            ListVariableNotification<Solution_> notification = Notification.elementRemoved(entity, index);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.addNotification(notification);
+                notifiable.notifyAfter(notification);
+            }
+            notificationQueuesAreEmpty = false;
+        }
+    }
+
+    public void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity, fromIndex, toIndex);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.notifyBefore(notification);
+            }
+            notificationQueuesAreEmpty = false;
+        }
+    }
+
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity, fromIndex, toIndex);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.notifyAfter(notification);
             }
             notificationQueuesAreEmpty = false;
         }

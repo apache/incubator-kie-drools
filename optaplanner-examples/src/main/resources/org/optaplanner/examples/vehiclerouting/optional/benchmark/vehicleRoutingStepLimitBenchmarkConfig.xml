@@ -8,7 +8,7 @@
     <solver>
       <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
@@ -26,7 +26,6 @@
   <solverBenchmark>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <termination>
@@ -35,12 +34,12 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
-          <subChainChangeMoveSelector>
+          <subListChangeMoveSelector>
             <selectReversingMoveToo>false</selectReversingMoveToo>
-          </subChainChangeMoveSelector>
-          <subChainSwapMoveSelector>
+          </subListChangeMoveSelector>
+          <subListSwapMoveSelector>
             <selectReversingMoveToo>false</selectReversingMoveToo>
-          </subChainSwapMoveSelector>
+          </subListSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>9</entityTabuSize>

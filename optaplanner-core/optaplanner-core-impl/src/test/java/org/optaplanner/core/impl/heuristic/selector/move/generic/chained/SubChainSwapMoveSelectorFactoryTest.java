@@ -1,8 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -24,13 +23,13 @@ class SubChainSwapMoveSelectorFactoryTest {
         SubChainSwapMoveSelectorConfig config = new SubChainSwapMoveSelectorConfig();
         config.setSubChainSelectorConfig(leftSubChainSelectorConfig);
         config.setSecondarySubChainSelectorConfig(rightSubChainSelectorConfig);
-        SubChainSwapMoveSelectorFactory factory = new SubChainSwapMoveSelectorFactory(config);
+        SubChainSwapMoveSelectorFactory<TestdataChainedSolution> factory = new SubChainSwapMoveSelectorFactory<>(config);
 
-        HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
-        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataChainedSolution.buildSolutionDescriptor());
+        HeuristicConfigPolicy<TestdataChainedSolution> heuristicConfigPolicy =
+                buildHeuristicConfigPolicy(TestdataChainedSolution.buildSolutionDescriptor());
 
-        SubChainSwapMoveSelector selector = (SubChainSwapMoveSelector) factory.buildBaseMoveSelector(heuristicConfigPolicy,
-                SelectionCacheType.JUST_IN_TIME, true);
+        SubChainSwapMoveSelector<TestdataChainedSolution> selector = (SubChainSwapMoveSelector<TestdataChainedSolution>) factory
+                .buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true);
         assertThat(selector.leftSubChainSelector).isNotNull();
         assertThat(selector.rightSubChainSelector).isNotNull();
         assertThat(selector.variableDescriptor).isNotNull();

@@ -5,8 +5,6 @@ import java.util.Objects;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
-import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
@@ -50,11 +48,23 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Veh
 
     protected void updateArrivalTime(ScoreDirector<VehicleRoutingSolution> scoreDirector,
             TimeWindowedCustomer sourceCustomer) {
-        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        Long departureTime = previousStandstill == null ? null
-                : (previousStandstill instanceof TimeWindowedCustomer)
-                        ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime()
-                        : ((TimeWindowedDepot) ((Vehicle) previousStandstill).getDepot()).getReadyTime();
+
+        if (sourceCustomer.getVehicle() == null) {
+            if (sourceCustomer.getArrivalTime() != null) {
+                scoreDirector.beforeVariableChanged(sourceCustomer, "arrivalTime");
+                sourceCustomer.setArrivalTime(null);
+                scoreDirector.afterVariableChanged(sourceCustomer, "arrivalTime");
+            }
+            return;
+        }
+
+        Customer previousCustomer = sourceCustomer.getPreviousCustomer();
+        Long departureTime;
+        if (previousCustomer == null) {
+            departureTime = ((TimeWindowedDepot) sourceCustomer.getVehicle().getDepot()).getReadyTime();
+        } else {
+            departureTime = ((TimeWindowedCustomer) previousCustomer).getDepartureTime();
+        }
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
         Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
@@ -62,19 +72,14 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Veh
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
             departureTime = shadowCustomer.getDepartureTime();
-            shadowCustomer = shadowCustomer.getNextCustomer();
+            shadowCustomer = (TimeWindowedCustomer) shadowCustomer.getNextCustomer();
             arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         }
     }
 
     private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime) {
-        if (customer == null || customer.getPreviousStandstill() == null) {
+        if (customer == null || previousDepartureTime == null) {
             return null;
-        }
-        if (customer.getPreviousStandstill() instanceof Vehicle) {
-            // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
-            return Math.max(customer.getReadyTime(),
-                    previousDepartureTime + customer.getDistanceFromPreviousStandstill());
         }
         return previousDepartureTime + customer.getDistanceFromPreviousStandstill();
     }

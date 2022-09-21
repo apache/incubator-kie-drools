@@ -165,34 +165,36 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
     // TODO Add support for list variable (https://issues.redhat.com/browse/PLANNER-2711).
 
     @Override
-    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+    public void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
+            int index) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
+            int index) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 

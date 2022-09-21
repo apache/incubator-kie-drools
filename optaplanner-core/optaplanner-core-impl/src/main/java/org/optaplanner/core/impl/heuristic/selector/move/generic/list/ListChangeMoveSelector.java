@@ -95,4 +95,9 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public boolean isNeverEnding() {
         return randomSelection || entitySelector.isNeverEnding() || valueSelector.isNeverEnding();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + entitySelector + ", " + valueSelector + ")";
+    }
 }

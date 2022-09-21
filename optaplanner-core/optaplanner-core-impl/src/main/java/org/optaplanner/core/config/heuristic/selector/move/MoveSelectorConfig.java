@@ -22,6 +22,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -33,10 +35,20 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  */
 
 @XmlSeeAlso({
-        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class, ChangeMoveSelectorConfig.class,
-        SwapMoveSelectorConfig.class, PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        TailChainSwapMoveSelectorConfig.class, SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
-        MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
+        CartesianProductMoveSelectorConfig.class,
+        ChangeMoveSelectorConfig.class,
+        MoveIteratorFactoryConfig.class,
+        MoveListFactoryConfig.class,
+        PillarChangeMoveSelectorConfig.class,
+        PillarSwapMoveSelectorConfig.class,
+        SubChainChangeMoveSelectorConfig.class,
+        SubChainSwapMoveSelectorConfig.class,
+        SubListChangeMoveSelectorConfig.class,
+        SubListSwapMoveSelectorConfig.class,
+        SwapMoveSelectorConfig.class,
+        TailChainSwapMoveSelectorConfig.class,
+        UnionMoveSelectorConfig.class
+})
 @XmlType(propOrder = {
         "cacheType",
         "selectionOrder",

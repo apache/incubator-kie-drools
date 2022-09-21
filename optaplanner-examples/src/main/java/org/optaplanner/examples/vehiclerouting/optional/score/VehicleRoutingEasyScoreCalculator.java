@@ -7,7 +7,6 @@ import java.util.Map;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
@@ -28,9 +27,8 @@ public class VehicleRoutingEasyScoreCalculator
         long hardScore = 0L;
         long softScore = 0L;
         for (Customer customer : customerList) {
-            Standstill previousStandstill = customer.getPreviousStandstill();
-            if (previousStandstill != null) {
-                Vehicle vehicle = customer.getVehicle();
+            Vehicle vehicle = customer.getVehicle();
+            if (vehicle != null) {
                 vehicleDemandMap.put(vehicle, vehicleDemandMap.get(vehicle) + customer.getDemand());
                 // Score constraint distanceToPreviousStandstill
                 softScore -= customer.getDistanceFromPreviousStandstill();

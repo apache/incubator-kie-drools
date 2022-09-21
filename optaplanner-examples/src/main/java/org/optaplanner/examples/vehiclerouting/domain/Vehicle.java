@@ -1,18 +1,24 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+@PlanningEntity
 @XStreamAlias("VrpVehicle")
-public class Vehicle extends AbstractPersistable implements Standstill {
+public class Vehicle extends AbstractPersistable {
 
     protected int capacity;
     protected Depot depot;
 
-    // Shadow variables
-    protected Customer nextCustomer;
+    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    protected List<Customer> customers = new ArrayList<>();
 
     public Vehicle() {
     }
@@ -39,36 +45,20 @@ public class Vehicle extends AbstractPersistable implements Standstill {
         this.depot = depot;
     }
 
-    @Override
-    public Customer getNextCustomer() {
-        return nextCustomer;
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    @Override
-    public void setNextCustomer(Customer nextCustomer) {
-        this.nextCustomer = nextCustomer;
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    @Override
-    public Vehicle getVehicle() {
-        return this;
-    }
-
-    @Override
     public Location getLocation() {
         return depot.getLocation();
-    }
-
-    /**
-     * @param standstill never null
-     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
-     */
-    public long getDistanceTo(Standstill standstill) {
-        return depot.getDistanceTo(standstill);
     }
 
     @Override
@@ -79,5 +69,4 @@ public class Vehicle extends AbstractPersistable implements Standstill {
         }
         return location.getName() + "/" + super.toString();
     }
-
 }

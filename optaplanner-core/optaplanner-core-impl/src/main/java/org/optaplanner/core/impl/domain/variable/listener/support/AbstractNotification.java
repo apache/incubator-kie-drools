@@ -8,15 +8,9 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 abstract class AbstractNotification {
 
     protected final Object entity;
-    protected final int index;
-
-    protected AbstractNotification(Object entity, int index) {
-        this.entity = entity;
-        this.index = index;
-    }
 
     protected AbstractNotification(Object entity) {
-        this(entity, -1);
+        this.entity = entity;
     }
 
     /**

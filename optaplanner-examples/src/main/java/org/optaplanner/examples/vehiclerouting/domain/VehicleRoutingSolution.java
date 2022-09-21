@@ -81,7 +81,6 @@ public class VehicleRoutingSolution extends AbstractPersistable {
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "vehicleRange")
     public List<Vehicle> getVehicleList() {
         return vehicleList;
     }
@@ -90,7 +89,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         this.vehicleList = vehicleList;
     }
 
-    @PlanningEntityCollectionProperty
+    @ProblemFactCollectionProperty
     @ValueRangeProvider(id = "customerRange")
     public List<Customer> getCustomerList() {
         return customerList;

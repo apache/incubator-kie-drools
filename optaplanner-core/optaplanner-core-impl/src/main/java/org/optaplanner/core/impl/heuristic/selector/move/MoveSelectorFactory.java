@@ -15,6 +15,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptM
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelectorFactory;
@@ -28,6 +30,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMov
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMoveSelectorFactory;
 
 public interface MoveSelectorFactory<Solution_> {
 
@@ -43,8 +47,11 @@ public interface MoveSelectorFactory<Solution_> {
         } else if (UnionMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new UnionMoveSelectorFactory<>((UnionMoveSelectorConfig) moveSelectorConfig);
         } else if (CartesianProductMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
-            return new CartesianProductMoveSelectorFactory<>(
-                    (CartesianProductMoveSelectorConfig) moveSelectorConfig);
+            return new CartesianProductMoveSelectorFactory<>((CartesianProductMoveSelectorConfig) moveSelectorConfig);
+        } else if (SubListChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
+            return new SubListChangeMoveSelectorFactory<>((SubListChangeMoveSelectorConfig) moveSelectorConfig);
+        } else if (SubListSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
+            return new SubListSwapMoveSelectorFactory<>((SubListSwapMoveSelectorConfig) moveSelectorConfig);
         } else if (SubChainChangeMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new SubChainChangeMoveSelectorFactory<>((SubChainChangeMoveSelectorConfig) moveSelectorConfig);
         } else if (SubChainSwapMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {

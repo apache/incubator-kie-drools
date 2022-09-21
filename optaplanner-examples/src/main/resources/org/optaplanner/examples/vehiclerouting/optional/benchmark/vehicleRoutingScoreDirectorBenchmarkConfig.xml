@@ -7,7 +7,7 @@
   <inheritedSolverBenchmark>
     <solver>
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
-      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
@@ -37,14 +37,15 @@
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>Incremental java</name>
-    <solver>
-      <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
+  <!-- FIXME restore when IncrementalScoreCalculator supports list variable: https://issues.redhat.com/browse/PLANNER-2711 -->
+  <!--<solverBenchmark>-->
+  <!--  <name>Incremental java</name>-->
+  <!--  <solver>-->
+  <!--    <scoreDirectorFactory>-->
+  <!--      <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+  <!--    </scoreDirectorFactory>-->
+  <!--  </solver>-->
+  <!--</solverBenchmark>-->
   <solverBenchmark>
     <name>ConstraintStreams</name>
     <solver>

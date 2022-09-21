@@ -55,17 +55,17 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Do nothing
     }
 
     @Override
-    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         updateIndexes(entity, index);
     }
 
     @Override
-    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         Object element = sourceVariableDescriptor.getElement(entity, index);
         Integer oldIndex = indexMap.remove(element);
         if (oldIndex == null) {
@@ -78,21 +78,18 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         updateIndexes(entity, index);
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+    public void beforeListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }
 
     @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        updateIndexes(sourceEntity, sourceIndex);
-        updateIndexes(destinationEntity, destinationIndex);
+    public void afterListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        updateIndexes(entity, fromIndex);
     }
 
     @Override

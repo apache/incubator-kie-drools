@@ -56,7 +56,7 @@ public class SubChain {
         return new SubChain(entityList.subList(fromIndex, toIndex));
     }
 
-    public <Solution_> SubChain rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+    public SubChain rebase(ScoreDirector<?> destinationScoreDirector) {
         return new SubChain(AbstractMove.rebaseList(entityList, destinationScoreDirector));
     }
 

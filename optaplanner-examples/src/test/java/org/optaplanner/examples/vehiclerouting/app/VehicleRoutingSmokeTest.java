@@ -21,16 +21,16 @@ class VehicleRoutingSmokeTest extends SolverSmokeTest<VehicleRoutingSolution, Ha
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML,
-                        HardSoftLongScore.ofSoft(-746191),
-                        HardSoftLongScore.ofSoft(-749916)),
+                        HardSoftLongScore.ofSoft(-743441),
+                        HardSoftLongScore.ofSoft(-796413)),
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML,
-                        HardSoftLongScore.ofSoft(-1834031),
-                        HardSoftLongScore.ofSoft(-1843785)),
+                        HardSoftLongScore.ofSoft(-2113238),
+                        HardSoftLongScore.ofSoft(-2156060)),
                 TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML,
-                        HardSoftLongScore.ofSoft(-744242),
-                        HardSoftLongScore.ofSoft(-744242)),
+                        HardSoftLongScore.ofSoft(-743441),
+                        HardSoftLongScore.ofSoft(-743441)),
                 TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML,
-                        HardSoftLongScore.ofSoft(-1780513),
-                        HardSoftLongScore.ofSoft(-1823204)));
+                        HardSoftLongScore.ofSoft(-1965310),
+                        HardSoftLongScore.ofSoft(-2112382)));
     }
 }

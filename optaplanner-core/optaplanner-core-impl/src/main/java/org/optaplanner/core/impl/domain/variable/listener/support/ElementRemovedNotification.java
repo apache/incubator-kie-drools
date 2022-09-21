@@ -5,20 +5,23 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 final class ElementRemovedNotification<Solution_> extends AbstractNotification implements ListVariableNotification<Solution_> {
 
+    private final int index;
+
     ElementRemovedNotification(Object entity, int index) {
-        super(entity, index);
+        super(entity);
+        this.index = index;
     }
 
     @Override
     public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeElementRemoved(scoreDirector, entity, index);
+        variableListener.beforeListVariableElementRemoved(scoreDirector, entity, index);
     }
 
     @Override
     public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterElementRemoved(scoreDirector, entity, index);
+        variableListener.afterListVariableElementRemoved(scoreDirector, entity, index);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -14,7 +16,14 @@ final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Sol
     VariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
             VariableListener<Solution_, Object> variableListener,
+            Collection<Notification<Solution_, ? super VariableListener<Solution_, Object>>> notificationQueue,
             int globalOrder) {
-        super(scoreDirector, variableListener, globalOrder);
+        super(scoreDirector, variableListener, notificationQueue, globalOrder);
+    }
+
+    public void notifyBefore(BasicVariableNotification<Solution_> notification) {
+        if (storeForLater(notification)) {
+            triggerBefore(notification);
+        }
     }
 }

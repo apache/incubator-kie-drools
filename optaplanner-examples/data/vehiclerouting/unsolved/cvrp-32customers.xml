@@ -181,190 +181,196 @@
       <id>0</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="40"/>
     </VrpVehicle>
-    <VrpVehicle id="40">
+    <VrpVehicle id="41">
       <id>1</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="42"/>
     </VrpVehicle>
-    <VrpVehicle id="41">
+    <VrpVehicle id="43">
       <id>2</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="44"/>
     </VrpVehicle>
-    <VrpVehicle id="42">
+    <VrpVehicle id="45">
       <id>3</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="46"/>
     </VrpVehicle>
-    <VrpVehicle id="43">
+    <VrpVehicle id="47">
       <id>4</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="48"/>
     </VrpVehicle>
-    <VrpVehicle id="44">
+    <VrpVehicle id="49">
       <id>5</id>
       <capacity>100</capacity>
       <depot reference="37"/>
+      <customers id="50"/>
     </VrpVehicle>
   </vehicleList>
-  <customerList id="45">
-    <VrpCustomer id="46">
+  <customerList id="51">
+    <VrpCustomer id="52">
       <id>2</id>
       <location class="VrpAirLocation" reference="4"/>
       <demand>26</demand>
     </VrpCustomer>
-    <VrpCustomer id="47">
+    <VrpCustomer id="53">
       <id>3</id>
       <location class="VrpAirLocation" reference="5"/>
       <demand>17</demand>
     </VrpCustomer>
-    <VrpCustomer id="48">
+    <VrpCustomer id="54">
       <id>4</id>
       <location class="VrpAirLocation" reference="6"/>
       <demand>6</demand>
     </VrpCustomer>
-    <VrpCustomer id="49">
+    <VrpCustomer id="55">
       <id>5</id>
       <location class="VrpAirLocation" reference="7"/>
       <demand>15</demand>
     </VrpCustomer>
-    <VrpCustomer id="50">
+    <VrpCustomer id="56">
       <id>6</id>
       <location class="VrpAirLocation" reference="8"/>
       <demand>7</demand>
     </VrpCustomer>
-    <VrpCustomer id="51">
+    <VrpCustomer id="57">
       <id>7</id>
       <location class="VrpAirLocation" reference="9"/>
       <demand>5</demand>
     </VrpCustomer>
-    <VrpCustomer id="52">
+    <VrpCustomer id="58">
       <id>8</id>
       <location class="VrpAirLocation" reference="10"/>
       <demand>15</demand>
     </VrpCustomer>
-    <VrpCustomer id="53">
+    <VrpCustomer id="59">
       <id>9</id>
       <location class="VrpAirLocation" reference="11"/>
       <demand>16</demand>
     </VrpCustomer>
-    <VrpCustomer id="54">
+    <VrpCustomer id="60">
       <id>10</id>
       <location class="VrpAirLocation" reference="12"/>
       <demand>17</demand>
     </VrpCustomer>
-    <VrpCustomer id="55">
+    <VrpCustomer id="61">
       <id>11</id>
       <location class="VrpAirLocation" reference="13"/>
       <demand>1</demand>
     </VrpCustomer>
-    <VrpCustomer id="56">
+    <VrpCustomer id="62">
       <id>12</id>
       <location class="VrpAirLocation" reference="14"/>
       <demand>21</demand>
     </VrpCustomer>
-    <VrpCustomer id="57">
+    <VrpCustomer id="63">
       <id>13</id>
       <location class="VrpAirLocation" reference="15"/>
       <demand>66</demand>
     </VrpCustomer>
-    <VrpCustomer id="58">
+    <VrpCustomer id="64">
       <id>14</id>
       <location class="VrpAirLocation" reference="16"/>
       <demand>25</demand>
     </VrpCustomer>
-    <VrpCustomer id="59">
+    <VrpCustomer id="65">
       <id>15</id>
       <location class="VrpAirLocation" reference="17"/>
       <demand>16</demand>
     </VrpCustomer>
-    <VrpCustomer id="60">
+    <VrpCustomer id="66">
       <id>16</id>
       <location class="VrpAirLocation" reference="18"/>
       <demand>11</demand>
     </VrpCustomer>
-    <VrpCustomer id="61">
+    <VrpCustomer id="67">
       <id>17</id>
       <location class="VrpAirLocation" reference="19"/>
       <demand>7</demand>
     </VrpCustomer>
-    <VrpCustomer id="62">
+    <VrpCustomer id="68">
       <id>18</id>
       <location class="VrpAirLocation" reference="20"/>
       <demand>17</demand>
     </VrpCustomer>
-    <VrpCustomer id="63">
+    <VrpCustomer id="69">
       <id>19</id>
       <location class="VrpAirLocation" reference="21"/>
       <demand>17</demand>
     </VrpCustomer>
-    <VrpCustomer id="64">
+    <VrpCustomer id="70">
       <id>20</id>
       <location class="VrpAirLocation" reference="22"/>
       <demand>22</demand>
     </VrpCustomer>
-    <VrpCustomer id="65">
+    <VrpCustomer id="71">
       <id>21</id>
       <location class="VrpAirLocation" reference="23"/>
       <demand>10</demand>
     </VrpCustomer>
-    <VrpCustomer id="66">
+    <VrpCustomer id="72">
       <id>22</id>
       <location class="VrpAirLocation" reference="24"/>
       <demand>25</demand>
     </VrpCustomer>
-    <VrpCustomer id="67">
+    <VrpCustomer id="73">
       <id>23</id>
       <location class="VrpAirLocation" reference="25"/>
       <demand>16</demand>
     </VrpCustomer>
-    <VrpCustomer id="68">
+    <VrpCustomer id="74">
       <id>24</id>
       <location class="VrpAirLocation" reference="26"/>
       <demand>7</demand>
     </VrpCustomer>
-    <VrpCustomer id="69">
+    <VrpCustomer id="75">
       <id>25</id>
       <location class="VrpAirLocation" reference="27"/>
       <demand>21</demand>
     </VrpCustomer>
-    <VrpCustomer id="70">
+    <VrpCustomer id="76">
       <id>26</id>
       <location class="VrpAirLocation" reference="28"/>
       <demand>11</demand>
     </VrpCustomer>
-    <VrpCustomer id="71">
+    <VrpCustomer id="77">
       <id>27</id>
       <location class="VrpAirLocation" reference="29"/>
       <demand>21</demand>
     </VrpCustomer>
-    <VrpCustomer id="72">
+    <VrpCustomer id="78">
       <id>28</id>
       <location class="VrpAirLocation" reference="30"/>
       <demand>11</demand>
     </VrpCustomer>
-    <VrpCustomer id="73">
+    <VrpCustomer id="79">
       <id>29</id>
       <location class="VrpAirLocation" reference="31"/>
       <demand>21</demand>
     </VrpCustomer>
-    <VrpCustomer id="74">
+    <VrpCustomer id="80">
       <id>30</id>
       <location class="VrpAirLocation" reference="32"/>
       <demand>22</demand>
     </VrpCustomer>
-    <VrpCustomer id="75">
+    <VrpCustomer id="81">
       <id>31</id>
       <location class="VrpAirLocation" reference="33"/>
       <demand>25</demand>
     </VrpCustomer>
-    <VrpCustomer id="76">
+    <VrpCustomer id="82">
       <id>32</id>
       <location class="VrpAirLocation" reference="34"/>
       <demand>2</demand>
     </VrpCustomer>
-    <VrpCustomer id="77">
+    <VrpCustomer id="83">
       <id>33</id>
       <location class="VrpAirLocation" reference="35"/>
       <demand>22</demand>

@@ -43,17 +43,19 @@ class ExternalizedIndexVariableSupplyTest {
         assertThat(supply.getIndex(v3)).isEqualTo(0);
 
         // Move v3 from e2[0] to e1[2].
-        supply.beforeElementMoved(scoreDirector, e2, 0, e1, 2);
+        supply.beforeListVariableChanged(scoreDirector, e2, 0, 1);
         e2.getValueList().remove(v3);
+        supply.afterListVariableChanged(scoreDirector, e2, 0, 0);
+        supply.beforeListVariableChanged(scoreDirector, e1, 2, 2);
         e1.getValueList().add(v3);
-        supply.afterElementMoved(scoreDirector, e2, 0, e1, 2);
+        supply.afterListVariableChanged(scoreDirector, e1, 2, 3);
 
         assertThat(supply.getIndex(v3)).isEqualTo(2);
 
         // Unassign v1 from e1.
-        supply.beforeElementRemoved(scoreDirector, e1, 0);
+        supply.beforeListVariableElementRemoved(scoreDirector, e1, 0);
         e1.getValueList().remove(v1);
-        supply.afterElementRemoved(scoreDirector, e1, 0);
+        supply.afterListVariableElementRemoved(scoreDirector, e1, 0);
 
         assertThat(supply.getIndex(v1)).isNull();
         assertThat(supply.getIndex(v2)).isEqualTo(0);
@@ -68,11 +70,31 @@ class ExternalizedIndexVariableSupplyTest {
         assertThat(supply.getIndex(v3)).isNull();
 
         // Assign v1 to e2.
-        supply.beforeElementAdded(scoreDirector, e2, 0);
+        supply.beforeListVariableElementAdded(scoreDirector, e2, 0);
         e2.getValueList().add(0, v1);
-        supply.afterElementAdded(scoreDirector, e2, 0);
+        supply.afterListVariableElementAdded(scoreDirector, e2, 0);
 
         assertThat(supply.getIndex(v1)).isEqualTo(0);
+
+        // Return e1.
+        supply.beforeEntityAdded(scoreDirector, e1);
+        solution.getEntityList().add(e1);
+        supply.afterEntityAdded(scoreDirector, e1);
+
+        assertThat(supply.getIndex(v2)).isEqualTo(0);
+        assertThat(supply.getIndex(v3)).isEqualTo(1);
+
+        // Move subList e1[0..2] to e2[1].
+        supply.beforeListVariableChanged(scoreDirector, e1, 0, 0);
+        supply.beforeListVariableChanged(scoreDirector, e2, 1, 3);
+        e2.getValueList().addAll(e1.getValueList());
+        e1.getValueList().clear();
+        supply.afterListVariableChanged(scoreDirector, e1, 0, 0);
+        supply.afterListVariableChanged(scoreDirector, e2, 1, 3);
+
+        assertThat(supply.getIndex(v1)).isEqualTo(0);
+        assertThat(supply.getIndex(v2)).isEqualTo(1);
+        assertThat(supply.getIndex(v3)).isEqualTo(2);
 
         supply.close();
     }

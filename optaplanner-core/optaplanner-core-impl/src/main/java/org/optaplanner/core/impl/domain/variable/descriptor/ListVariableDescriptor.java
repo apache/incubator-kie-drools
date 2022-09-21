@@ -75,11 +75,14 @@ public class ListVariableDescriptor<Solution_> extends GenuineVariableDescriptor
 
     @Override
     public boolean acceptsValueType(Class<?> valueType) {
-        Class<?> variableTypeArgument = ConfigUtils.extractCollectionGenericTypeParameterStrictly(
+        return getElementType().isAssignableFrom(valueType);
+    }
+
+    public Class<?> getElementType() {
+        return ConfigUtils.extractCollectionGenericTypeParameterStrictly(
                 "entityClass", entityDescriptor.getEntityClass(),
                 variableMemberAccessor.getType(), variableMemberAccessor.getGenericType(),
                 PlanningListVariable.class, variableMemberAccessor.getName());
-        return variableTypeArgument.isAssignableFrom(valueType);
     }
 
     // ************************************************************************

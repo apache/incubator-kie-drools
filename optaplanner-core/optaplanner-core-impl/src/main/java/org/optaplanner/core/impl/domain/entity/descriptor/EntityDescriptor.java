@@ -24,8 +24,10 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -43,6 +45,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.nextprev.NextElementShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.nextprev.PreviousElementShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -64,6 +68,8 @@ public class EntityDescriptor<Solution_> {
             InverseRelationShadowVariable.class,
             AnchorShadowVariable.class,
             IndexShadowVariable.class,
+            PreviousElementShadowVariable.class,
+            NextElementShadowVariable.class,
             CustomShadowVariable.class };
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityDescriptor.class);
@@ -268,6 +274,14 @@ public class EntityDescriptor<Solution_> {
         } else if (variableAnnotationClass.equals(IndexShadowVariable.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new IndexShadowVariableDescriptor<>(
                     this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(PreviousElementShadowVariable.class)) {
+            PreviousElementShadowVariableDescriptor<Solution_> variableDescriptor =
+                    new PreviousElementShadowVariableDescriptor<>(this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(NextElementShadowVariable.class)) {
+            NextElementShadowVariableDescriptor<Solution_> variableDescriptor =
+                    new NextElementShadowVariableDescriptor<>(this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new CustomShadowVariableDescriptor<>(

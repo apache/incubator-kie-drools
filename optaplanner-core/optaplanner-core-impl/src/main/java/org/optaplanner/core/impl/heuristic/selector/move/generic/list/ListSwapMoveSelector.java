@@ -87,4 +87,9 @@ public class ListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     public long getSize() {
         return leftValueSelector.getSize() * rightValueSelector.getSize();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + leftValueSelector + ", " + rightValueSelector + ")";
+    }
 }
