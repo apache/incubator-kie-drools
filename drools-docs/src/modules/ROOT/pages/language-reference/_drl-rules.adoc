@@ -119,7 +119,7 @@ To define a rule unit, you need to write a Java class that implements `RuleUnitD
 package org.mortgages;
 unit MortgageRules;
 
-import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.DataStream;
 
 declare Person
@@ -129,7 +129,7 @@ declare Person
 end
 
 declare MortgageRules extends RuleUnitData
-  persons: DataStream<Person> = DataSource.createStream()
+  persons: DataStream<Person>
 end
 
 rule "Using a rule unit with a declared type"
@@ -162,11 +162,11 @@ end
 package org.mortgages;
 unit MortgageRules;
 
-import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.DataStream;
 
 declare MortgageRules extends RuleUnitData
-  persons: DataStream<Person> = DataSource.createStream()
+  persons: DataStream<Person>
 end
 
 rule "Using a rule unit with a declared type"
@@ -181,7 +181,7 @@ end
 
 In this example, `persons` is a `DataStream` data source for facts of type `Person`. Data sources are typed sources of data that rule units can subscribe to for updates. You interact with the rule unit through the data sources it exposes. A data source can be a `DataStream` source for append-only storage, a `DataStore` source for writable storage to add or remove data, or a `SingletonStore` source for writable storage to set and clear a single element.
 
-As part of your data source declaration, you also import `org.drools.ruleunits.api.DataSource` and the relevant data source support, such as `import org.drools.ruleunits.api.DataStream` in this example.
+As part of your data source declaration, you also import `org.drools.ruleunits.api.RuleUnitData` and the relevant data source support, such as `import org.drools.ruleunits.api.DataStream` in this example.
 
 You can add several rules to the same DRL file, or further break down the rule set and type declarations by creating more files. However you construct your rule sets, ensure that all DRL rule files exist in the same directory and start with the correct `package` and `unit` declarations.
 
@@ -218,12 +218,12 @@ The example service uses the following `MonitoringService.drl` file in the same 
 package com.acme;
 unit MonitoringService;
 
-import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.DataStream;
 
 declare MonitoringService extends RuleUnitData
-  temperatures: DataStream<Temperature> = DataSource.createStream()
-  alertData: DataStream<Alert> = DataSource.createStream()
+  temperatures: DataStream<Temperature>
+  alertData: DataStream<Alert>
 end
 
 rule "tooHot"
@@ -3286,13 +3286,13 @@ end
 package org.mortgages;
 unit MortgageRules;
 
-import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
-  applicants: DataStore<Applicant> = DataSource.createStore()
-  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
 end
 
 rule "Bankruptcy history"
@@ -3365,13 +3365,13 @@ This example defines the following fact types:
 package org.mortgages;
 unit MortgageRules;
 
-import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.DataStore;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
-  applicants: DataStore<Applicant> = DataSource.createStore()
-  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
 end
 ...
 ----
@@ -3391,13 +3391,13 @@ This example uses the `DataStore` data source to enable application data to be a
 package org.mortgages;
 unit MortgageRules;
 
-import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
 
 declare MortgageRules extends RuleUnitData
-  bankruptcies: DataStore<Bankruptcy> = DataSource.createStore()
-  applicants: DataStore<Applicant> = DataSource.createStore()
-  loanApplications: DataStore<LoanApplication> = DataSource.createStore()
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
 end
 
 rule "Bankruptcy history"
