@@ -19,13 +19,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoContext;
 import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedRedirectResource;
+import org.kie.efesto.common.api.model.GeneratedResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.slf4j.Logger;
@@ -41,10 +40,8 @@ public class GeneratedResourceUtils {
     }
 
     public static boolean isPresentExecutableOrRedirect(ModelLocalUriId modelLocalUriId, EfestoContext context) {
-        return Stream
-                .of(getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()),
-                    getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap()))
-                .anyMatch(Optional::isPresent);
+        return  getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
+                getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent();
     }
 
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, Map<String, GeneratedResources> generatedResourcesMap) {
@@ -59,11 +56,7 @@ public class GeneratedResourceUtils {
      * find GeneratedExecutableResource from GeneratedResources without IndexFile
      */
     public static Optional<GeneratedExecutableResource> getGeneratedExecutableResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
-        Collection<GeneratedExecutableResource> allExecutableResources = new HashSet<>();
-        allExecutableResources.addAll(generatedResources.stream()
-                                    .filter(GeneratedExecutableResource.class::isInstance)
-                                    .map(GeneratedExecutableResource.class::cast)
-                                    .collect(Collectors.toSet()));
+        Collection<GeneratedExecutableResource> allExecutableResources = getAllGeneratedExecutableResources(generatedResources);
         return findAtMostOne(allExecutableResources,
                              generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one Executable Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
@@ -79,10 +72,11 @@ public class GeneratedResourceUtils {
 
     public static Optional<GeneratedRedirectResource> getGeneratedRedirectResource(ModelLocalUriId modelLocalUriId, GeneratedResources generatedResources) {
         Collection<GeneratedRedirectResource> allExecutableResources = new HashSet<>();
-        allExecutableResources.addAll(generatedResources.stream()
-                                              .filter(GeneratedRedirectResource.class::isInstance)
-                                              .map(GeneratedRedirectResource.class::cast)
-                                              .collect(Collectors.toSet()));
+        for (GeneratedResource generatedResource : generatedResources) {
+            if (generatedResource instanceof GeneratedRedirectResource) {
+                allExecutableResources.add((GeneratedRedirectResource) generatedResource);
+            }
+        }
         return findAtMostOne(allExecutableResources,
                              generatedResource -> generatedResource.getModelLocalUriId().equals(modelLocalUriId),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one Redirect Resource (" + s1 + " and " + s2 + ") for " + modelLocalUriId));
@@ -91,11 +85,12 @@ public class GeneratedResourceUtils {
     public static Collection<GeneratedExecutableResource> getAllGeneratedExecutableResources(GeneratedResources generatedResources) {
         Collection<GeneratedExecutableResource> toReturn = new HashSet<>();
         try {
-            logger.debug("generatedResources {}", generatedResources);
-            toReturn.addAll(generatedResources.stream()
-                                              .filter(GeneratedExecutableResource.class::isInstance)
-                                              .map(GeneratedExecutableResource.class::cast)
-                                              .collect(Collectors.toSet()));
+            logger.debug("getAllGeneratedExecutableResources {}", generatedResources);
+            for (GeneratedResource generatedResource : generatedResources) {
+                if (generatedResource instanceof GeneratedExecutableResource) {
+                    toReturn.add((GeneratedExecutableResource) generatedResource);
+                }
+            }
         } catch (Exception e) {
             logger.error("Failed to read GeneratedClassResource from context.", e);
         }

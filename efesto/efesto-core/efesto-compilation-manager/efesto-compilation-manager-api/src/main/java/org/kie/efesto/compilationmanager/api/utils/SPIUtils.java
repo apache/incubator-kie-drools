@@ -69,10 +69,8 @@ public class SPIUtils {
 
     public static Optional<CompilationManager> getCompilationManager(boolean refresh) {
         logger.debug("getCompilationManager {}", refresh);
-        List<CompilationManager> toReturn = new ArrayList<>();
         Iterable<CompilationManager> managers = getManagers(refresh);
-        managers.forEach(toReturn::add);
-        return toReturn.stream().findFirst();
+        return managers.iterator().hasNext() ? Optional.of(managers.iterator().next()) : Optional.empty();
     }
 
     private static Iterable<KieCompilerService> getServices(boolean refresh) {
