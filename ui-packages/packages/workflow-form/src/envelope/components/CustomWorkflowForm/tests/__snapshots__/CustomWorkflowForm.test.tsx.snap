@@ -1,0 +1,98 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomWorkflowForm Test Custom Workflow Form rendering 1`] = `
+<CustomWorkflowForm
+  customFormSchema={
+    Object {
+      "description": "Schema for expression test",
+      "properties": Object {
+        "numbers": Object {
+          "description": "The array of numbers to be operated with",
+          "items": Object {
+            "properties": Object {
+              "x": Object {
+                "type": "number",
+              },
+              "y": Object {
+                "type": "number",
+              },
+            },
+            "type": "object",
+          },
+          "type": "array",
+        },
+      },
+      "required": Array [
+        "numbers",
+      ],
+      "title": "Expression",
+      "type": "object",
+    }
+  }
+  driver={
+    Object {
+      "getCustomWorkflowSchema": [MockFunction],
+      "resetBusinessKey": [MockFunction],
+      "startWorkflow": [MockFunction],
+      "startWorkflowRest": [MockFunction],
+    }
+  }
+  workflowDefinition={
+    Object {
+      "endpoint": "http://localhost:4000/hiring",
+      "workflowName": "workflow1",
+    }
+  }
+>
+  <div
+    data-ouia-component-type="custom-workflow-form"
+    data-ouia-safe={true}
+  >
+    <FormRenderer
+      formActions={
+        Array [
+          Object {
+            "name": "Start",
+          },
+          Object {
+            "actionType": "reset",
+            "execute": [Function],
+            "name": "Reset",
+          },
+        ]
+      }
+      formSchema={
+        Object {
+          "description": "Schema for expression test",
+          "properties": Object {
+            "numbers": Object {
+              "description": "The array of numbers to be operated with",
+              "items": Object {
+                "properties": Object {
+                  "x": Object {
+                    "type": "number",
+                  },
+                  "y": Object {
+                    "type": "number",
+                  },
+                },
+                "type": "object",
+              },
+              "type": "array",
+            },
+          },
+          "required": Array [
+            "numbers",
+          ],
+          "title": "Expression",
+          "type": "object",
+        }
+      }
+      onSubmit={[Function]}
+      readOnly={false}
+    >
+      <MockedComponent />
+    </FormRenderer>
+  </div>
+</CustomWorkflowForm>
+`;

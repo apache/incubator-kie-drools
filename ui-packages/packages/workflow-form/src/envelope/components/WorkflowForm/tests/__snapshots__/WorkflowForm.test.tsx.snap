@@ -4,8 +4,10 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
 <WorkflowForm
   driver={
     Object {
+      "getCustomWorkflowSchema": [MockFunction],
       "resetBusinessKey": [MockFunction],
       "startWorkflow": [MockFunction],
+      "startWorkflowRest": [MockFunction],
     }
   }
   workflowDefinition={

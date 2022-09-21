@@ -18,7 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { ActionList, Button } from '@patternfly/react-core';
 import FormFooter from '../FormFooter';
-import { FormAction } from '../../utils';
+import { ActionType, FormAction } from '../../utils';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -116,7 +116,8 @@ describe('Form Footer test', () => {
 
   it('showing empty actions', () => {
     const props = {
-      actions: []
+      actions: [],
+      actionType: ActionType.SUBMIT
     };
 
     const wrapper = mount(<FormFooter {...props} />);
@@ -131,12 +132,14 @@ describe('Form Footer test', () => {
   it('action click', () => {
     const releaseAction = {
       name: 'Release',
-      execute: jest.fn()
+      execute: jest.fn(),
+      actionType: ActionType.SUBMIT
     };
 
     const completeAction = {
       name: 'Complete',
-      execute: jest.fn()
+      execute: jest.fn(),
+      actionType: ActionType.SUBMIT
     };
 
     const props = {
@@ -158,7 +161,7 @@ describe('Form Footer test', () => {
       node => node.key() === 'submit-Complete'
     );
     completeButton.props().onClick();
-
+    
     expect(completeAction.execute).toBeCalledTimes(1);
     expect(props.onSubmitForm).toHaveBeenCalled();
   });

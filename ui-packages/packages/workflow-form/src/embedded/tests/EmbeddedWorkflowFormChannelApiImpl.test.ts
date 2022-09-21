@@ -36,4 +36,25 @@ describe('EmbeddedWorkflowFormChannelApiImpl tests', () => {
 
     expect(driver.startWorkflow).toHaveBeenCalledWith(formJSON);
   });
+
+  it('WorkflowForm__getCustomWorkflowSchema', () => {
+
+    api.workflowForm__getCustomWorkflowSchema();
+
+    expect(driver.getCustomWorkflowSchema).toHaveBeenCalled();
+  });
+
+  it('WorkflowForm__startWorkflowRest', () => {
+
+    api.workflowForm__startWorkflowRest({name:'John'}, 'http://localhost:8080/test');
+
+    expect(driver.startWorkflowRest).toHaveBeenCalledWith({name:'John'}, 'http://localhost:8080/test');
+  });
+
+  it('WorkflowForm__resetBusinessKey', () => {
+
+    api.workflowForm__resetBusinessKey();
+
+    expect(driver.resetBusinessKey).toHaveBeenCalled();
+  });
 });

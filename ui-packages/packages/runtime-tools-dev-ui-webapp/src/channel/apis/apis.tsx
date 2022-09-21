@@ -464,3 +464,24 @@ export const getCustomDashboardContent = (name: string): Promise<string> => {
       .catch(error => reject(error));
   });
 };
+
+export const getCustomWorkflowSchema = (devUIUrl: string, openApiPath: string): Promise<Record<string, any>> => {
+  return new Promise((resolve, reject) => {
+    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`).then((response: any) => {
+      const schema = response.components.schemas.workflowdata
+      if (schema) {
+        resolve(schema);
+      } else {
+        resolve(null);
+      }
+    }).catch((err) => reject(err))
+  })
+}
+
+export const startWorkflowRest = (data: Record<string, any>, endpoint: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    axios.post(endpoint, { workflowdata: data }).then((response:any) => {
+      resolve(response.data.id)
+    }).catch((err) => reject(err))
+  })
+}

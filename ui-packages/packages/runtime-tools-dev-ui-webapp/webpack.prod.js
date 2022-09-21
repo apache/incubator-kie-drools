@@ -102,7 +102,10 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/monaco-editor'
-          )
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/workflow-form/dist/styles/styles.css'
+          ),
         ],
         loaders: ['style-loader', 'css-loader']
       }

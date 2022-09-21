@@ -4,8 +4,10 @@ exports[`EmbeddedWorkflowForm tests Snapshot 1`] = `
 <ForwardRef
   driver={
     Object {
+      "getCustomWorkflowSchema": [MockFunction],
       "resetBusinessKey": [MockFunction],
       "startWorkflow": [MockFunction],
+      "startWorkflowRest": [MockFunction],
     }
   }
   targetOrigin="origin"

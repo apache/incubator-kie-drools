@@ -1,13 +1,151 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WorkflowFormEnvelopeView tests Snapshot 1`] = `
+exports[`WorkflowFormEnvelopeView tests Custom Workflow Form 1`] = `
 <ForwardRef
   channelApi={
     Object {
       "notifications": Object {},
       "requests": Object {
+        "workflowForm__getCustomWorkflowSchema": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": Promise {},
+            },
+          ],
+        },
         "workflowForm__resetBusinessKey": [MockFunction],
         "workflowForm__startWorkflow": [MockFunction],
+        "workflowForm__startWorkflowRest": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedCustomWorkflowForm
+    customFormSchema={
+      Object {
+        "description": "Schema for expression test",
+        "properties": Object {
+          "numbers": Object {
+            "description": "The array of numbers to be operated with",
+            "items": Object {
+              "properties": Object {
+                "x": Object {
+                  "type": "number",
+                },
+                "y": Object {
+                  "type": "number",
+                },
+              },
+              "type": "object",
+            },
+            "type": "array",
+          },
+        },
+        "required": Array [
+          "numbers",
+        ],
+        "title": "Expression",
+        "type": "object",
+      }
+    }
+    driver={
+      WorkflowFormEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": Object {},
+          "requests": Object {
+            "workflowForm__getCustomWorkflowSchema": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": Promise {},
+                },
+              ],
+            },
+            "workflowForm__resetBusinessKey": [MockFunction],
+            "workflowForm__startWorkflow": [MockFunction],
+            "workflowForm__startWorkflowRest": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    workflowDefinition={
+      Object {
+        "endpoint": "http://localhost:4000",
+        "workflowName": "workflow1",
+      }
+    }
+  />
+</ForwardRef>
+`;
+
+exports[`WorkflowFormEnvelopeView tests Loading 1`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": Object {},
+      "requests": Object {
+        "workflowForm__getCustomWorkflowSchema": [MockFunction],
+        "workflowForm__resetBusinessKey": [MockFunction],
+        "workflowForm__startWorkflow": [MockFunction],
+        "workflowForm__startWorkflowRest": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <Bullseye
+    data-ouia-component-id="workflow-form-envelope-view-loading-spinner"
+    data-ouia-component-type="workflow-form"
+    data-ouia-safe={true}
+  >
+    <div
+      className="pf-l-bullseye"
+      data-ouia-component-id="workflow-form-envelope-view-loading-spinner"
+      data-ouia-component-type="workflow-form"
+      data-ouia-safe={true}
+    >
+      <KogitoSpinner
+        spinnerText="Loading workflow form..."
+      >
+        <MockedComponent />
+      </KogitoSpinner>
+    </div>
+  </Bullseye>
+</ForwardRef>
+`;
+
+exports[`WorkflowFormEnvelopeView tests Workflow Form 1`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": Object {},
+      "requests": Object {
+        "workflowForm__getCustomWorkflowSchema": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": Promise {},
+            },
+          ],
+        },
+        "workflowForm__resetBusinessKey": [MockFunction],
+        "workflowForm__startWorkflow": [MockFunction],
+        "workflowForm__startWorkflowRest": [MockFunction],
       },
       "subscribe": [MockFunction],
       "unsubscribe": [MockFunction],
@@ -20,8 +158,20 @@ exports[`WorkflowFormEnvelopeView tests Snapshot 1`] = `
         "channelApi": Object {
           "notifications": Object {},
           "requests": Object {
+            "workflowForm__getCustomWorkflowSchema": [MockFunction] {
+              "calls": Array [
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": Promise {},
+                },
+              ],
+            },
             "workflowForm__resetBusinessKey": [MockFunction],
             "workflowForm__startWorkflow": [MockFunction],
+            "workflowForm__startWorkflowRest": [MockFunction],
           },
           "subscribe": [MockFunction],
           "unsubscribe": [MockFunction],

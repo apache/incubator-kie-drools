@@ -23,12 +23,38 @@ import { EnvelopeBusController } from '@kogito-tooling/envelope-bus/dist/envelop
 import { WorkflowFormChannelApi, WorkflowFormEnvelopeApi } from '../../../api';
 import { WorkflowFormEnvelopeViewApi } from '../../WorkflowFormEnvelopeView';
 
+export const workflowForm__startWorkflow = jest.fn();
+export const workflowForm__resetBusinessKey = jest.fn();
+export const workflowForm__getCustomWorkflowSchema = jest.fn();
+export const workflowForm__startWorkflowRest = jest.fn();
+
+export const workflowSchema = {
+  title: "Expression",
+  description: "Schema for expression test",
+  type: "object",
+  properties: {
+    numbers: {
+      description: "The array of numbers to be operated with",
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          x: { "type": "number" },
+          y: { "type": "number" }
+        }
+      }
+    }
+  },
+  "required": ["numbers"]
+}
 export const MockedApiRequests = jest.fn<
   Pick<WorkflowFormChannelApi, RequestPropertyNames<WorkflowFormChannelApi>>,
   []
 >(() => ({
-  workflowForm__startWorkflow: jest.fn(),
-  workflowForm__resetBusinessKey: jest.fn()
+  workflowForm__startWorkflow: workflowForm__startWorkflow,
+  workflowForm__resetBusinessKey: workflowForm__resetBusinessKey,
+  workflowForm__getCustomWorkflowSchema: workflowForm__getCustomWorkflowSchema,
+  workflowForm__startWorkflowRest: workflowForm__startWorkflowRest
 }));
 
 export const MockedApiNotifications = jest.fn<

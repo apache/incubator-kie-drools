@@ -20,8 +20,9 @@ import { ProcessDefinition, ProcessFormDriver } from '../../../api';
 import {
   FormRenderer,
   KogitoSpinner,
-  DoResetAction,
-  ServerErrors
+  FormRendererApi,
+  ServerErrors,
+  FormAction
 } from '@kogito-apps/components-common';
 import { Bullseye } from '@patternfly/react-core';
 export interface ProcessFormProps {
@@ -37,12 +38,12 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const doResetAction = React.useRef<DoResetAction>();
+  const formRendererApi = React.useRef<FormRendererApi>();
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>(null);
 
-  const formAction = [
+  const formAction:FormAction[] = [
     {
       name: 'Start'
     }
@@ -69,7 +70,7 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
 
   const onSubmit = (value: any): void => {
     driver.startProcess(value).then(() => {
-      doResetAction?.current?.doReset();
+      formRendererApi?.current?.doReset();
     });
   };
 
@@ -102,7 +103,7 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
         readOnly={false}
         onSubmit={onSubmit}
         formActions={formAction}
-        ref={doResetAction}
+        ref={formRendererApi}
       />
     </div>
   );

@@ -116,7 +116,10 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/form-details/dist/styles/styles.css'
-          )
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/workflow-form/dist/styles/styles.css'
+          ),
         ],
         use: ['style-loader', 'css-loader']
       },

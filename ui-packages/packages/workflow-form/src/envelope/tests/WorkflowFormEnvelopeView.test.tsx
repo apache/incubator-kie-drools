@@ -17,26 +17,64 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { MockedMessageBusClientApi } from './mocks/Mocks';
+import { MockedMessageBusClientApi, workflowForm__getCustomWorkflowSchema, workflowSchema } from './mocks/Mocks';
 import WorkflowFormEnvelopeView, {
   WorkflowFormEnvelopeViewApi
 } from '../WorkflowFormEnvelopeView';
+import {
+  KogitoSpinner
+} from '@kogito-apps/components-common';
+import CustomWorkflowForm from '../components/CustomWorkflowForm/CustomWorkflowForm';
 import WorkflowForm from '../components/WorkflowForm/WorkflowForm';
 
 jest.mock('../components/WorkflowForm/WorkflowForm');
+jest.mock('../components/CustomWorkflowForm/CustomWorkflowForm');
+
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    KogitoSpinner: () => {
+      return <MockedComponent />;
+    }
+  })
+);
 
 describe('WorkflowFormEnvelopeView tests', () => {
-  it('Snapshot', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('Loading', () => {
     const channelApi = MockedMessageBusClientApi();
     const forwardRef = React.createRef<WorkflowFormEnvelopeViewApi>();
 
+    const wrapper = mount(
+      <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    );
+
+    expect(wrapper).toMatchSnapshot();
+
+    const spinner = wrapper.find(KogitoSpinner);
+    expect(spinner.exists()).toBeTruthy();
+  });
+
+  it('Workflow Form', async () => {
+    const channelApi = MockedMessageBusClientApi();
+    const forwardRef = React.createRef<WorkflowFormEnvelopeViewApi>();
+
+    workflowForm__getCustomWorkflowSchema.mockReturnValue(
+      Promise.resolve(null)
+    );
+
     let wrapper = mount(
       <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
-    ).find('WorkflowFormEnvelopeView');
+    );
 
-    act(() => {
+    await act(async () => {
       if (forwardRef.current) {
-        forwardRef.current.initialize({
+        await forwardRef.current.initialize({
           workflowName: 'workflow1',
           endpoint: 'http://localhost:4000'
         });
@@ -45,11 +83,42 @@ describe('WorkflowFormEnvelopeView tests', () => {
 
     wrapper = wrapper.update();
 
-    expect(wrapper.find(WorkflowFormEnvelopeView)).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
 
     const workflowForm = wrapper.find(WorkflowForm);
-
     expect(workflowForm.exists()).toBeTruthy();
     expect(workflowForm.props().driver).not.toBeNull();
+
+  });
+
+  it('Custom Workflow Form', async () => {
+    const channelApi = MockedMessageBusClientApi();
+    const forwardRef = React.createRef<WorkflowFormEnvelopeViewApi>();
+
+    workflowForm__getCustomWorkflowSchema.mockReturnValue(
+      Promise.resolve(workflowSchema)
+    );
+
+    let wrapper = mount(
+      <WorkflowFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    );
+
+    await act(async () => {
+      if (forwardRef.current) {
+        await forwardRef.current.initialize({
+          workflowName: 'workflow1',
+          endpoint: 'http://localhost:4000'
+        });
+      }
+    });
+
+    wrapper = wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+
+    const customWorkflowForm = wrapper.find(CustomWorkflowForm);
+    expect(customWorkflowForm.exists()).toBeTruthy();
+    expect(customWorkflowForm.props().driver).not.toBeNull();
+
   });
 });

@@ -20,6 +20,7 @@ import wait from 'waait';
 import {
   getCustomDashboard,
   getCustomDashboardContent,
+  getCustomWorkflowSchema,
   getFormContent,
   getForms,
   getProcessDefinitionList,
@@ -37,7 +38,8 @@ import {
   handleProcessVariableUpdate,
   jobCancel,
   performMultipleCancel,
-  startProcessInstance
+  startProcessInstance,
+  startWorkflowRest
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -1029,5 +1031,74 @@ describe('custom dashboard section', () => {
         errorMessage: 'failed to load data'
       });
     }
+  });
+});
+
+describe('swf custom form tests', () => {
+  it('get custom custom workflow schema - success - no workflowdata', async () => {
+    SwaggerParser.parse['mockImplementation'](() =>
+      Promise.resolve({
+        components: {
+          schemas: {
+            // no data
+          }
+        }
+      })
+    );
+    const result = await getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json');
+    expect(result).toEqual(null);
+  });
+
+  it('get custom custom workflow schema - success - with workflowdata', async () => {
+    const schema = {
+      type: "object",
+      properties: {
+        name: {
+          type: "string"
+        }
+      }
+    }
+    SwaggerParser.parse['mockImplementation'](() =>
+      Promise.resolve({
+        components: {
+          schemas: {
+            workflowdata: { ...schema }
+          }
+        }
+      }
+      )
+    );
+    const result = await getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json');
+    expect(result).toEqual(schema);
+  });
+
+  it('get custom custom workflow schema - failure', async () => {
+    SwaggerParser.parse['mockImplementation'](() =>
+      Promise.reject({
+       errorMessage: "No workflow data"
+      })
+    );
+    getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json').catch(error=>{
+      expect(error).toEqual({ errorMessage: 'No workflow data' });
+    })
+  });
+
+  it('start workflow test - success', async () => {
+    mockedAxios.post.mockResolvedValue({
+      data: {
+        id: '1234'
+      }
+    });
+    const result = await startWorkflowRest({ name: "John" }, 'http://localhost:8080/test');
+    expect(result).toEqual('1234');
+  });
+
+  it('start workflow test - failure', async () => {
+    mockedAxios.post.mockRejectedValue({
+      errorMessage: "Failed to start workflow instance"
+    });
+    startWorkflowRest({ name: "John" }, 'http://localhost:8080/test').catch(error => {
+      expect(error).toEqual({ errorMessage: 'Failed to start workflow instance' })
+    })
   });
 });

@@ -23,13 +23,15 @@ module.exports = {
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Runtime tools dev-ui'
     }),
-    new CopyPlugin({ patterns: [
+    new CopyPlugin({
+      patterns: [
         { from: "./resources", to: "./resources" },
         { from: "./src/static", to: "./static" },
         { from: "./src/components/styles.css", to: "./components/styles.css" },
         { from: "../monitoring-webapp/dist/", to: "./monitoring-webapp" },
         { from: "../custom-dashboard-view/dist/", to: "./custom-dashboard-view" }
-    ]}),
+      ]
+    }),
     new FileManagerPlugin({
       events: {
         onEnd: {
@@ -91,7 +93,7 @@ module.exports = {
             '../../node_modules/@kogito-apps/process-details/dist/static'
           ),
           path.resolve(
-                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
+            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/management-console-shared/dist/static'
@@ -115,10 +117,13 @@ module.exports = {
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'
           ),
           path.resolve(
-                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
+            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-monitoring/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/workflow-form/dist/static'
           ),
           path.resolve(
             '../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf'
@@ -213,9 +218,13 @@ module.exports = {
             '../../node_modules/@kogito-apps/process-definition-list/dist/static'
           ),
           path.resolve(
-                  '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
+            '../../node_modules/@kogito-apps/custom-dashboard-view/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/workflow-form/dist/static'
           )
         ],
+
         use: [
           {
             loader: 'url-loader',
