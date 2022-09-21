@@ -25,6 +25,7 @@
     <module>source-files</module>
     <module>knative</module>
     <module>kubernetes</module>
+    <module>events</module>
   </modules>
 
   <profiles>
@@ -36,7 +37,6 @@
         </property>
       </activation>
       <modules>
-        <module>events</module>
         <module>explainability</module>
         <module>jobs</module>
         <module>mail</module>
