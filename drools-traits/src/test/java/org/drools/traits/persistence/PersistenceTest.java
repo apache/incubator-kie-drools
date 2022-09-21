@@ -22,10 +22,10 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.core.factmodel.traits.Traitable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -40,33 +40,23 @@ import static org.drools.traits.persistence.DroolsPersistenceUtil.OPTIMISTIC_LOC
 import static org.drools.traits.persistence.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.traits.persistence.DroolsPersistenceUtil.createEnvironment;
 
-@RunWith(Parameterized.class)
 public class PersistenceTest {
 
     private Map<String, Object> context;
     private Environment env;
-    private boolean locking;
-
-    public PersistenceTest(String locking) {
-        this.locking = PESSIMISTIC_LOCKING.equals(locking);
-    }
-
-    @Parameterized.Parameters(name="{0}")
+    
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] {
-                { OPTIMISTIC_LOCKING },
-                { PESSIMISTIC_LOCKING }
+        Object[][] locking = new Object[][]{
+                {OPTIMISTIC_LOCKING},
+                {PESSIMISTIC_LOCKING}
         };
         return Arrays.asList(locking);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
-        if( locking ) {
-            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
-        }
     }
 
     @Traitable
@@ -79,7 +69,7 @@ public class PersistenceTest {
         private String toLocation;
 
         public Door() {
-            this(null, null);
+        	this(null, null);
         }
 
         public Door(String fromLocation, String toLocation) {
@@ -104,8 +94,12 @@ public class PersistenceTest {
         }
     }
 
-    @Test
-    public void testTraitsSerialization() throws Exception {
+    @MethodSource("persistence")
+    @ParameterizedTest(name = "{0}")
+    void testTraitsSerialization(String locking) throws Exception {
+        if (locking.equals(PESSIMISTIC_LOCKING)) {
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }    	
         String drl = "package org.drools.persistence.kie.persistence.session\n" +
                 "\n" +
                 "import java.util.List\n" +
@@ -128,12 +122,12 @@ public class PersistenceTest {
 
         KieServices ks = KieServices.Factory.get();
 
-        Resource drlResource = ks.getResources().newByteArrayResource(drl.getBytes() );
-        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drlResource );
-        ks.newKieBuilder( kfs ).buildAll();
+        Resource drlResource = ks.getResources().newByteArrayResource(drl.getBytes());
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drlResource);
+        ks.newKieBuilder(kfs).buildAll();
 
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
-        KieSession ksession = ks.getStoreServices().newKieSession(kbase, null, env );
+        KieSession ksession = ks.getStoreServices().newKieSession(kbase, null, env);
 
         ksession.insert(new Door());
         ksession.fireAllRules();

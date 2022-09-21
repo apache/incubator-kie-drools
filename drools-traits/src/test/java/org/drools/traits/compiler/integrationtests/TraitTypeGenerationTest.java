@@ -29,7 +29,8 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
 import org.drools.traits.core.factmodel.Entity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -77,8 +78,9 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testWithDeclaredTypeAndTraitInDifferentPackages() {
+    @Test
+    @Timeout(10000)
+    void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =
                 "package org.pkg1;\n" +
@@ -120,7 +122,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testWithBeanAndTraitInDifferentPackages() {
+    void testWithBeanAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =
                 "package org.drools.compiler.integrationtests;\n" +
@@ -153,7 +155,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testIsAWith2KContainers() {
+    void testIsAWith2KContainers() {
         // BZ-996056
         String str =
                 "import org.drools.traits.compiler.Person\n" +
@@ -184,21 +186,21 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write( "src/main/resources/isA.drl", str );
+        kfs.write("src/main/resources/isA.drl", str);
 
-        KieBuilder kbuilder = ks.newKieBuilder(kfs );
+        KieBuilder kbuilder = ks.newKieBuilder(kfs);
 
         kbuilder.buildAll();
         assertThat(kbuilder.getResults().getMessages().size()).isEqualTo(0);
 
-        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
+        ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
 
-        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
         assertThat(ksession).isNotNull();
 
         List students = new ArrayList();
-        ksession.setGlobal( "students", students );
-        ksession.insert( new Person("tom", 20 ) );
+        ksession.setGlobal("students", students);
+        ksession.insert(new Person("tom", 20 ));
         ksession.fireAllRules();
         assertThat(students.size()).isEqualTo(1);
     }
@@ -219,12 +221,12 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMvelJittingWithTraitProxies() throws Exception {
+    void testMvelJittingWithTraitProxies() throws Exception {
         // DROOLS-291
         String drl = "package org.drools.test; \n" +
                 "" +
                 "import " + FooIntf.class.getCanonicalName() + ";\n" +
-                "import "+ BarKlass.class.getCanonicalName() + ";\n" +
+                "import " + BarKlass.class.getCanonicalName() + ";\n" +
                 "" +
                 "declare BarKlass end \n" +
                 "declare FooIntf end \n" +
@@ -239,24 +241,24 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                 "rule \"In2\" when $s : Integer() then insert( new BarKlass() ); end \n" +
                 "" +
                 "";
-        KieBase kb = loadKnowledgeBaseFromString(drl );
+        KieBase kb = loadKnowledgeBaseFromString(drl);
         KieSession ks = kb.newKieSession();
 
-        for ( int j = 0; j < 21; j++ ) {
-            ks.insert( "x" + j );
+        for (int j = 0; j < 21; j++) {
+            ks.insert("x" + j);
             ks.fireAllRules();
         }
 
         // wait for jitting
-        Thread.sleep( 100 );
+        Thread.sleep(100);
 
-        ks.insert( 0 );
+        ks.insert(0);
         ks.fireAllRules();
     }
 
 
     @Test
-    public void testNeeds() {
+    void testNeeds() {
         // revisiting OPSJ's version of a fragment of the famous monkey&bananas AI problem
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
@@ -285,7 +287,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         "query need( Thing $thing, String $prop, Object $val ) " +
                         "   @Abductive( target=Goal.class ) \n" +
                         "   Thing( this == $thing, fields[ $prop ] != $val ) " +
-                        "end \n "+
+                        "end \n " +
 
                         "rule HandleGoal " +
                         "when " +
@@ -320,30 +322,29 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
 
         /////////////////////////////////////
 
-        KieSession session = loadKnowledgeBaseFromString(droolsSource ).newKieSession();
+        KieSession session = loadKnowledgeBaseFromString(droolsSource).newKieSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
+        session.setGlobal("list", list);
 
         session.fireAllRules();
 
-        for ( Object o : session.getObjects() ) {
-            System.out.println( ">>> " + o );
+        for (Object o : session.getObjects()) {
+            System.out.println(">>> " + o);
         }
 
         assertThat(list).isEqualTo(Arrays.asList(4));
     }
 
 
-
     @Test
-    public void testRedeclareClassAsTrait() {
+    void testRedeclareClassAsTrait() {
         final String s1 = "package test; " +
                 "global java.util.List list; " +
 
                 "declare trait " + SomeClass.class.getCanonicalName() + " end ";
 
         KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
+        kh.addContent(s1, ResourceType.DRL);
 
         assertThat(kh.verify().getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
@@ -351,7 +352,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     public static class SomeClass {}
 
     @Test
-    public void testMultipleInheritanceWithPosition1() throws Exception {
+    void testMultipleInheritanceWithPosition1() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -388,7 +389,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition2() throws Exception {
+    void testMultipleInheritanceWithPosition2() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -424,7 +425,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition3() throws Exception {
+    void testMultipleInheritanceWithPosition3() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -460,7 +461,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition4() throws Exception {
+    void testMultipleInheritanceWithPosition4() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -496,7 +497,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition5() throws Exception {
+    void testMultipleInheritanceWithPosition5() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -532,7 +533,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition6() throws Exception {
+    void testMultipleInheritanceWithPosition6() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +
@@ -575,7 +576,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMultipleInheritanceWithPosition7() throws Exception {
+    void testMultipleInheritanceWithPosition7() throws Exception {
         // DROOLS-249
         String drl =
                 "package org.drools.test\n" +

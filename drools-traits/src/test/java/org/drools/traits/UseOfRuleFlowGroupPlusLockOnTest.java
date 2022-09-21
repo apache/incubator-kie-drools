@@ -2,7 +2,7 @@ package org.drools.traits;
 
 import org.drools.kiesession.agenda.DefaultAgenda;
 import org.drools.core.reteoo.ReteDumper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
@@ -35,12 +35,12 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
             + "end\n";
 
     @Test
-    public void test() {
+    void test() {
         KieHelper kieHelper = new KieHelper().addContent(drl, ResourceType.DRL);
         KieBase kbase = kieHelper.build();
         KieSession ksession = kbase.newKieSession();
         ReteDumper.dumpRete(ksession);
-        ksession.addEventListener( new DebugAgendaEventListener() );
+        ksession.addEventListener(new DebugAgendaEventListener());
         try {
             ksession.insert(new Person());
             ksession.insert(new Cheese("eidam"));

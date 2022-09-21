@@ -26,119 +26,122 @@ import org.drools.traits.core.factmodel.TraitableMap;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TraitMapCoreTest extends CommonTraitTest {
 
-    @Test(timeout=10000)
-    public void testMapCoreManyTraits(  ) {
+    @Test
+    @Timeout(10000)
+    void testMapCoreManyTraits(  ) {
         String source = "package org.drools.test;\n" +
-                        "\n" +
-                        "import java.util.*;\n" +
-                        "import org.drools.core.factmodel.traits.Traitable;\n" +
-                        "" +
-                        "global List list;\n " +
-                        "\n" +
-                        "declare HashMap @Traitable end \n" +
-                        "" +
-                        "\n" +
-                        "global List list; \n" +
-                        "\n" +
-                        "declare trait PersonMap\n" +
-                        "@propertyReactive  \n" +
-                        "   name : String  \n" +
-                        "   age  : int  \n" +
-                        "   height : Double  \n" +
-                        "end\n" +
-                        "\n" +
-                        "declare trait StudentMap\n" +
-                        "@propertyReactive\n" +
-                        "   ID : String\n" +
-                        "   GPA : Double = 3.0\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule Don  \n" +
-                        "no-loop \n" +
-                        "when  \n" +
-                        "  $m : Map( this[ \"age\"] == 18 )\n" +
-                        "then  \n" +
-                        "   Object obj1 = don( $m, PersonMap.class );\n" +
-                        "   Object obj2 = don( obj1, StudentMap.class );\n" +
-                        "   System.out.println( \"done: PersonMap\" );\n" +
-                        "\n" +
-                        "end\n" +
-                        "\n";
+                "\n" +
+                "import java.util.*;\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "" +
+                "global List list;\n " +
+                "\n" +
+                "declare HashMap @Traitable end \n" +
+                "" +
+                "\n" +
+                "global List list; \n" +
+                "\n" +
+                "declare trait PersonMap\n" +
+                "@propertyReactive  \n" +
+                "   name : String  \n" +
+                "   age  : int  \n" +
+                "   height : Double  \n" +
+                "end\n" +
+                "\n" +
+                "declare trait StudentMap\n" +
+                "@propertyReactive\n" +
+                "   ID : String\n" +
+                "   GPA : Double = 3.0\n" +
+                "end\n" +
+                "\n" +
+                "rule Don  \n" +
+                "no-loop \n" +
+                "when  \n" +
+                "  $m : Map( this[ \"age\"] == 18 )\n" +
+                "then  \n" +
+                "   Object obj1 = don( $m, PersonMap.class );\n" +
+                "   Object obj2 = don( obj1, StudentMap.class );\n" +
+                "   System.out.println( \"done: PersonMap\" );\n" +
+                "\n" +
+                "end\n" +
+                "\n";
 
-        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
+        KieSession ks = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase());
 
         List list = new ArrayList();
-        ks.setGlobal( "list", list );
+        ks.setGlobal("list", list);
 
-        Map<String,Object> map = new HashMap<String, Object>(  );
-        map.put( "name", "john" );
-        map.put( "age", 18 );
-        ks.insert( map );
+        Map<String, Object> map = new HashMap<String, Object>(  );
+        map.put("name", "john");
+        map.put("age", 18);
+        ks.insert(map);
 
         ks.fireAllRules();
 
-        for ( Object o : ks.getObjects() ) {
-            System.err.println( o );
+        for (Object o : ks.getObjects()) {
+            System.err.println(o);
         }
 
         assertThat(map.get("GPA")).isEqualTo(3.0);
     }
 
-    @Test(timeout=10000)
-    public void donMapTest() {
+    @Test
+    @Timeout(10000)
+    void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
-                        "import java.util.*\n;" +
-                        "import org.drools.core.factmodel.traits.Traitable;\n" +
-                        "" +
-                        "global List list; \n" +
-                        "" +
-                        "declare HashMap @Traitable end \n" +
-                        "" +
-                        "declare trait PersonMap" +
-                        "@propertyReactive \n" +
-                        "   name : String \n" +
-                        "   age  : int \n" +
-                        "   height : Double \n" +
-                        "end\n" +
-                        "" +
-                        "" +
-                        "rule Don \n" +
-                        "when \n" +
-                        "  $m : Map( this[ \"age\"] == 18 ) " +
-                        "then \n" +
-                        "   don( $m, PersonMap.class );\n" +
-                        "end \n" +
-                        "" +
-                        "rule Log \n" +
-                        "when \n" +
-                        "   $p : PersonMap( name == \"john\", age > 10 ) \n" +
-                        "then \n" +
-                        "   System.out.println( $p ); \n" +
-                        "   modify ( $p ) { \n" +
-                        "       setHeight( 184.0 ); \n" +
-                        "   }" +
-                        "   System.out.println( $p ); " +
-                        "end \n";
+                "import java.util.*\n;" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "" +
+                "global List list; \n" +
+                "" +
+                "declare HashMap @Traitable end \n" +
+                "" +
+                "declare trait PersonMap" +
+                "@propertyReactive \n" +
+                "   name : String \n" +
+                "   age  : int \n" +
+                "   height : Double \n" +
+                "end\n" +
+                "" +
+                "" +
+                "rule Don \n" +
+                "when \n" +
+                "  $m : Map( this[ \"age\"] == 18 ) " +
+                "then \n" +
+                "   don( $m, PersonMap.class );\n" +
+                "end \n" +
+                "" +
+                "rule Log \n" +
+                "when \n" +
+                "   $p : PersonMap( name == \"john\", age > 10 ) \n" +
+                "then \n" +
+                "   System.out.println( $p ); \n" +
+                "   modify ( $p ) { \n" +
+                "       setHeight( 184.0 ); \n" +
+                "   }" +
+                "   System.out.println( $p ); " +
+                "end \n";
 
-        KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase() );
+        KieSession ksession = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
 
         Map map = new HashMap();
-        map.put( "name", "john" );
-        map.put( "age", 18 );
+        map.put("name", "john");
+        map.put("age", 18);
 
-        ksession.insert( map );
+        ksession.insert(map);
         ksession.fireAllRules();
 
         assertThat(map.containsKey("height")).isTrue();
@@ -146,124 +149,125 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
-    public void testMapCore2(  ) {
+    @Test
+    @Timeout(10000)
+    void testMapCore2(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
-                        "\n" +
-                        "import java.util.*;\n" +
-                        "import org.drools.core.factmodel.traits.Traitable;\n" +
-                        "" +
-                        "global List list;\n " +
-                        "" +
-                        "declare HashMap @Traitable end \n" +
-                        "\n" +
-                        "\n" +
-                        "global List list; \n" +
-                        "\n" +
-                        "declare trait PersonMap\n" +
-                        "@propertyReactive  \n" +
-                        "   name : String  \n" +
-                        "   age  : int  \n" +
-                        "   height : Double  \n" +
-                        "end\n" +
-                        "\n" +
-                        "declare trait StudentMap\n" +
-                        "@propertyReactive\n" +
-                        "   ID : String\n" +
-                        "   GPA : Double = 3.0\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule Don  \n" +
-                        "when  \n" +
-                        "  $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" )\n" +
-                        "then  \n" +
-                        "   don( $m, PersonMap.class );\n" +
-                        "   System.out.println( \"done: PersonMap\" );\n" +
-                        "\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule Log  \n" +
-                        "when  \n" +
-                        "   $p : PersonMap( name == \"john\", age > 10 )\n" +
-                        "then  \n" +
-                        "   modify ( $p ) {  \n" +
-                        "       setHeight( 184.0 );  \n" +
-                        "   }\n" +
-                        "   System.out.println(\"Log: \" +  $p );\n" +
-                        "end\n" +
-                        "" +
-                        "" +
-                        "rule Don2\n" +
-                        "salience -1\n" +
-                        "when\n" +
-                        "   $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" ) " +
-                        "then\n" +
-                        "   don( $m, StudentMap.class );\n" +
-                        "   System.out.println( \"done2: StudentMap\" );\n" +
-                        "end\n" +
-                        "" +
-                        "" +
-                        "rule Log2\n" +
-                        "salience -2\n" +
-                        "no-loop\n" +
-                        "when\n" +
-                        "   $p : StudentMap( $h : fields[ \"height\" ], GPA >= 3.0 ) " +
-                        "then\n" +
-                        "   modify ( $p ) {\n" +
-                        "       setGPA( 4.0 ),\n" +
-                        "       setID( \"100\" );\n" +
-                        "   }\n" +
-                        "   System.out.println(\"Log2: \" + $p );\n" +
-                        "end\n" +
-                        "" +
-                        "" +
-                        "\n" +
-                        "rule Shed1\n" +
-                        "salience -5// it seams that the order of shed must be the same as applying don\n" +
-                        "when\n" +
-                        "    $m : PersonMap()\n" +
-                        "then\n" +
-                        "   shed( $m, PersonMap.class );\n" +
-                        "   System.out.println( \"shed: PersonMap\" );\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule Shed2\n" +
-                        "salience -9\n" +
-                        "when\n" +
-                        "    $m : StudentMap()\n" +
-                        "then\n" +
-                        "   shed( $m, StudentMap.class );\n" +
-                        "   System.out.println( \"shed: StudentMap\" );\n" +
-                        "end\n" +
-                        "" +
-                        "rule Last  \n" +
-                        "salience -99 \n" +
-                        "when  \n" +
-                        "  $m : Map( this not isA StudentMap.class )\n" +
-                        "then  \n" +
-                        "   System.out.println( \"Final\" );\n" +
-                        "   $m.put( \"final\", true );" +
-                        "\n" +
-                        "end\n" +
-                        "\n" +
-                        "\n";
+                "\n" +
+                "import java.util.*;\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "" +
+                "global List list;\n " +
+                "" +
+                "declare HashMap @Traitable end \n" +
+                "\n" +
+                "\n" +
+                "global List list; \n" +
+                "\n" +
+                "declare trait PersonMap\n" +
+                "@propertyReactive  \n" +
+                "   name : String  \n" +
+                "   age  : int  \n" +
+                "   height : Double  \n" +
+                "end\n" +
+                "\n" +
+                "declare trait StudentMap\n" +
+                "@propertyReactive\n" +
+                "   ID : String\n" +
+                "   GPA : Double = 3.0\n" +
+                "end\n" +
+                "\n" +
+                "rule Don  \n" +
+                "when  \n" +
+                "  $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" )\n" +
+                "then  \n" +
+                "   don( $m, PersonMap.class );\n" +
+                "   System.out.println( \"done: PersonMap\" );\n" +
+                "\n" +
+                "end\n" +
+                "\n" +
+                "rule Log  \n" +
+                "when  \n" +
+                "   $p : PersonMap( name == \"john\", age > 10 )\n" +
+                "then  \n" +
+                "   modify ( $p ) {  \n" +
+                "       setHeight( 184.0 );  \n" +
+                "   }\n" +
+                "   System.out.println(\"Log: \" +  $p );\n" +
+                "end\n" +
+                "" +
+                "" +
+                "rule Don2\n" +
+                "salience -1\n" +
+                "when\n" +
+                "   $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" ) " +
+                "then\n" +
+                "   don( $m, StudentMap.class );\n" +
+                "   System.out.println( \"done2: StudentMap\" );\n" +
+                "end\n" +
+                "" +
+                "" +
+                "rule Log2\n" +
+                "salience -2\n" +
+                "no-loop\n" +
+                "when\n" +
+                "   $p : StudentMap( $h : fields[ \"height\" ], GPA >= 3.0 ) " +
+                "then\n" +
+                "   modify ( $p ) {\n" +
+                "       setGPA( 4.0 ),\n" +
+                "       setID( \"100\" );\n" +
+                "   }\n" +
+                "   System.out.println(\"Log2: \" + $p );\n" +
+                "end\n" +
+                "" +
+                "" +
+                "\n" +
+                "rule Shed1\n" +
+                "salience -5// it seams that the order of shed must be the same as applying don\n" +
+                "when\n" +
+                "    $m : PersonMap()\n" +
+                "then\n" +
+                "   shed( $m, PersonMap.class );\n" +
+                "   System.out.println( \"shed: PersonMap\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule Shed2\n" +
+                "salience -9\n" +
+                "when\n" +
+                "    $m : StudentMap()\n" +
+                "then\n" +
+                "   shed( $m, StudentMap.class );\n" +
+                "   System.out.println( \"shed: StudentMap\" );\n" +
+                "end\n" +
+                "" +
+                "rule Last  \n" +
+                "salience -99 \n" +
+                "when  \n" +
+                "  $m : Map( this not isA StudentMap.class )\n" +
+                "then  \n" +
+                "   System.out.println( \"Final\" );\n" +
+                "   $m.put( \"final\", true );" +
+                "\n" +
+                "end\n" +
+                "\n" +
+                "\n";
 
-        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
+        KieSession ks = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase());
 
         List list = new ArrayList();
-        ks.setGlobal( "list", list );
+        ks.setGlobal("list", list);
 
-        Map<String,Object> map = new HashMap<String, Object>(  );
-        map.put( "name", "john" );
-        map.put( "age", 18 );
-        ks.insert( map );
+        Map<String, Object> map = new HashMap<String, Object>(  );
+        map.put("name", "john");
+        map.put("age", 18);
+        ks.insert(map);
 
         ks.fireAllRules();
 
 
-        for ( Object o : ks.getObjects() ) {
-            System.err.println( o );
+        for (Object o : ks.getObjects()) {
+            System.err.println(o);
         }
 
         assertThat(map.get("ID")).isEqualTo("100");
@@ -273,65 +277,66 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
-    public void testMapCoreAliasing(  ) {
+    @Test
+    @Timeout(10000)
+    void testMapCoreAliasing(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
-                        "\n" +
-                        "import java.util.*;\n" +
-                        "import org.drools.core.factmodel.traits.*;\n" +
-                        "" +
-                        "global List list;\n " +
-                        "" +
-                        "declare HashMap @Traitable() end \n" +
-                        "\n" +
-                        "global List list; \n" +
-                        "\n" +
-                        "declare trait PersonMap\n" +
-                        "@propertyReactive  \n" +
-                        "   name : String  \n" +
-                        "   age  : Integer  @Alias( \"years\" ) \n" +
-                        "   eta  : Integer  @Alias( \"years\" ) \n" +
-                        "   height : Double  @Alias( \"tall\" ) \n" +
-                        "   sen : String @Alias(\"years\") \n " +
-                        "end\n" +
-                        "\n" +
-                        "rule Don  \n" +
-                        "when  \n" +
-                        "  $m : Map()\n" +
-                        "then  \n" +
-                        "   don( $m, PersonMap.class );\n" +
-                        "\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule Log  \n" +
-                        "when  \n" +
-                        "   $p : PersonMap( name == \"john\", age > 10 && < 35 )\n" +
-                        "then  \n" +
-                        "   modify ( $p ) {  \n" +
-                        "       setHeight( 184.0 ), \n" +
-                        "       setEta( 42 );  \n" +
-                        "   }\n" +
-                        "   System.out.println(\"Log: \" +  $p );\n" +
-                        "end\n" +
-                        "" +
-                        "\n";
+                "\n" +
+                "import java.util.*;\n" +
+                "import org.drools.core.factmodel.traits.*;\n" +
+                "" +
+                "global List list;\n " +
+                "" +
+                "declare HashMap @Traitable() end \n" +
+                "\n" +
+                "global List list; \n" +
+                "\n" +
+                "declare trait PersonMap\n" +
+                "@propertyReactive  \n" +
+                "   name : String  \n" +
+                "   age  : Integer  @Alias( \"years\" ) \n" +
+                "   eta  : Integer  @Alias( \"years\" ) \n" +
+                "   height : Double  @Alias( \"tall\" ) \n" +
+                "   sen : String @Alias(\"years\") \n " +
+                "end\n" +
+                "\n" +
+                "rule Don  \n" +
+                "when  \n" +
+                "  $m : Map()\n" +
+                "then  \n" +
+                "   don( $m, PersonMap.class );\n" +
+                "\n" +
+                "end\n" +
+                "\n" +
+                "rule Log  \n" +
+                "when  \n" +
+                "   $p : PersonMap( name == \"john\", age > 10 && < 35 )\n" +
+                "then  \n" +
+                "   modify ( $p ) {  \n" +
+                "       setHeight( 184.0 ), \n" +
+                "       setEta( 42 );  \n" +
+                "   }\n" +
+                "   System.out.println(\"Log: \" +  $p );\n" +
+                "end\n" +
+                "" +
+                "\n";
 
-        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
+        KieSession ks = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase());
 
         List list = new ArrayList();
-        ks.setGlobal( "list", list );
+        ks.setGlobal("list", list);
 
-        Map<String,Object> map = new HashMap<String, Object>(  );
-        map.put( "name", "john" );
-        map.put( "years", new Integer( 18 ) );
-        ks.insert( map );
+        Map<String, Object> map = new HashMap<String, Object>(  );
+        map.put("name", "john");
+        map.put("years", new Integer( 18 ));
+        ks.insert(map);
 
         ks.fireAllRules();
 
 
-        for ( Object o : ks.getObjects() ) {
-            System.err.println( o );
+        for (Object o : ks.getObjects()) {
+            System.err.println(o);
         }
 
         assertThat(map.get("years")).isEqualTo(42);
@@ -339,51 +344,52 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
-    public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
+    @Test
+    @Timeout(10000)
+    void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.core.factmodel.traits.test;\n" +
-                        "\n" +
-                        "import java.util.*;\n" +
-                        "import org.drools.core.factmodel.traits.*;\n" +
-                        "" +
-                        "global List list;\n " +
-                        "" +
-                        "declare HashMap @Traitable( logical = true ) end \n" +
-                        "\n" +
-                        "global List list; \n" +
-                        "\n" +
-                        "declare trait PersonMap\n" +
-                        "@propertyReactive  \n" +
-                        "   name : String  \n" +
-                        "   age  : Integer  @Alias( \"years\" ) \n" +
-                        "   eta  : Integer  @Alias( \"years\" ) \n" +
-                        "   height : Double  @Alias( \"tall\" ) \n" +
-                        "   sen : String @Alias(\"years\") \n " +
-                        "end\n" +
-                        "\n" +
-                        "rule Don  \n" +
-                        "when  \n" +
-                        "  $m : Map()\n" +
-                        "then  \n" +
-                            // will fail due to the alias "sen", typed String and incompatible with Int
-                        "  PersonMap pm = don( $m, PersonMap.class ); \n" +
-                        "  list.add ( pm ); \n" +
-                        "\n" +
-                        "end\n" +
-                        "\n" +
-                        "" +
-                        "\n";
+                "\n" +
+                "import java.util.*;\n" +
+                "import org.drools.core.factmodel.traits.*;\n" +
+                "" +
+                "global List list;\n " +
+                "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "global List list; \n" +
+                "\n" +
+                "declare trait PersonMap\n" +
+                "@propertyReactive  \n" +
+                "   name : String  \n" +
+                "   age  : Integer  @Alias( \"years\" ) \n" +
+                "   eta  : Integer  @Alias( \"years\" ) \n" +
+                "   height : Double  @Alias( \"tall\" ) \n" +
+                "   sen : String @Alias(\"years\") \n " +
+                "end\n" +
+                "\n" +
+                "rule Don  \n" +
+                "when  \n" +
+                "  $m : Map()\n" +
+                "then  \n" +
+                // will fail due to the alias "sen", typed String and incompatible with Int
+                "  PersonMap pm = don( $m, PersonMap.class ); \n" +
+                "  list.add ( pm ); \n" +
+                "\n" +
+                "end\n" +
+                "\n" +
+                "" +
+                "\n";
 
-        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
+        KieSession ks = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase());
 
         List list = new ArrayList();
-        ks.setGlobal( "list", list );
+        ks.setGlobal("list", list);
 
-        Map<String,Object> map = new HashMap<String, Object>(  );
-        map.put( "name", "john" );
-        map.put( "years", new Integer( 18 ) );
-        ks.insert( map );
+        Map<String, Object> map = new HashMap<String, Object>(  );
+        map.put("name", "john");
+        map.put("years", new Integer( 18 ));
+        ks.insert(map);
 
         ks.fireAllRules();
 
@@ -391,7 +397,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testDrools216(){
+    void testDrools216() {
 
         String drl = "" +
                 "\n" +
@@ -471,7 +477,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.contains("initialized")).isTrue();
@@ -481,7 +487,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testDrools217(){
+    void testDrools217() {
 
         String drl = "" +
                 "\n" +
@@ -569,7 +575,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testDrools218(){
+    void testDrools218() {
 
         String drl = "" +
                 "\n" +
@@ -679,7 +685,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.contains("initialized")).isTrue();
@@ -690,7 +696,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testDrools219(){
+    void testDrools219() {
 
         String drl = "" +
                 "\n" +
@@ -782,7 +788,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.contains("initialized")).isTrue();
@@ -794,61 +800,61 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitsMismatchTypes()
+    void testMapTraitsMismatchTypes()
     {
         String drl = "" +
-                     "package org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" +
-                     "declare org.drools.factmodel.MapCore\n" +
-                     "@Traitable( logical = true )\n" +
-                     "end\n" +
-                     "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "\n" +
-                     "declare trait ParentTrait\n" +
-                     "@propertyReactive\n" +
-                     "    name : String\n" +
-                     "    id : int\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "@propertyReactive\n" +
-                     "    naam : String\n" +
-                     "    id : float \n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"don1\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "    $map : Map()\n" +
-                     "then\n" +
-                          // fails since current value for id is float, incompatible with int
-                     "    ParentTrait pt = don( $map , ParentTrait.class );\n" +
-                          // success
-                     "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     "" +
-                     "  System.out.println( $map ); \n" +
-                     "    list.add( pt );\n" +
-                     "    list.add( ct );\n" +
-                     "end";
+                "package org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare org.drools.factmodel.MapCore\n" +
+                "@Traitable( logical = true )\n" +
+                "end\n" +
+                "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "\n" +
+                "declare trait ParentTrait\n" +
+                "@propertyReactive\n" +
+                "    name : String\n" +
+                "    id : int\n" +
+                "end\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "@propertyReactive\n" +
+                "    naam : String\n" +
+                "    id : float \n" +
+                "end\n" +
+                "\n" +
+                "rule \"don1\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $map : Map()\n" +
+                "then\n" +
+                // fails since current value for id is float, incompatible with int
+                "    ParentTrait pt = don( $map , ParentTrait.class );\n" +
+                // success
+                "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                "" +
+                "  System.out.println( $map ); \n" +
+                "    list.add( pt );\n" +
+                "    list.add( ct );\n" +
+                "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put( "name","hulu" );
-        map.put( "id", 3.4f );
-        ksession.insert( map );
+        ksession.setGlobal("list", list);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("name", "hulu");
+        map.put("id", 3.4f);
+        ksession.insert(map);
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(2);
@@ -857,52 +863,52 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitNoType()
+    void testMapTraitNoType()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" +
-                     "declare HashMap @Traitable end \n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "@propertyReactive\n" +
-                     "    naam : String = \"kudak\"\n" +
-                     "    id : int = 1020\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "    $map : Map()" +    //map is empty
-                     "then\n" +
-                     "    don( $map , ChildTrait.class );\n" +
-                     "    list.add(\"correct1\");\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"check\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "    $c : ChildTrait($n : naam == \"kudak\", id == 1020 )\n" +
-                     "    $p : Map( this[\"naam\"] == $n )\n" +
-                     "then\n" +
-                     "    System.out.println($p);\n" +
-                     "    System.out.println($c);\n" +
-                     "    list.add(\"correct2\");\n" +
-                     "end";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare HashMap @Traitable end \n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "@propertyReactive\n" +
+                "    naam : String = \"kudak\"\n" +
+                "    id : int = 1020\n" +
+                "end\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $map : Map()" +    //map is empty
+                "then\n" +
+                "    don( $map , ChildTrait.class );\n" +
+                "    list.add(\"correct1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"check\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $c : ChildTrait($n : naam == \"kudak\", id == 1020 )\n" +
+                "    $p : Map( this[\"naam\"] == $n )\n" +
+                "then\n" +
+                "    System.out.println($p);\n" +
+                "    System.out.println($c);\n" +
+                "    list.add(\"correct2\");\n" +
+                "end";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
-        Map<String,Object> map = new HashMap<String, Object>();
+        ksession.setGlobal("list", list);
+        Map<String, Object> map = new HashMap<String, Object>();
 //        map.put("name", "hulu");
         ksession.insert(map);
         ksession.fireAllRules();
@@ -911,48 +917,49 @@ public class TraitMapCoreTest extends CommonTraitTest {
         assertThat(list.contains("correct2")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testMapTraitMismatchTypes()
+    @Test
+    @Timeout(10000)
+    void testMapTraitMismatchTypes()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" +                "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "@Trait( logical = true )" +
-                     "@propertyReactive\n" +
-                     "    naam : String = \"kudak\"\n" +
-                     "    id : int = 1020\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "    $map : Map()" +
-                     "then\n" +
-                          // fails because current name is Int, while ChildTrait tries to enforce String
-                     "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     "    list.add( ct );\n" +
-                     "end\n" +
-                     "\n" +
-                     "";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +                "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "@Trait( logical = true )" +
+                "@propertyReactive\n" +
+                "    naam : String = \"kudak\"\n" +
+                "    id : int = 1020\n" +
+                "end\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "    $map : Map()" +
+                "then\n" +
+                // fails because current name is Int, while ChildTrait tries to enforce String
+                "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                "    list.add( ct );\n" +
+                "end\n" +
+                "\n" +
+                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("naam", new Integer(12) );
+        ksession.setGlobal("list", list);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("naam", new Integer(12));
         ksession.insert(map);
         ksession.fireAllRules();
 
@@ -961,65 +968,65 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitPossibilities1()
+    void testMapTraitPossibilities1()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" + "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "declare ESM @Traitable( logical = true )\n" +
-                     " val : String\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " length : Integer\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "//@Trait( logical = true )\n" +
-                     "@propertyReactive\n" +
-                     " name : ESM\n" +
-                     " id : int = 1002\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"init\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "then\n" +
-                     " Map map = new HashMap();\n" +
-                     " ESM esm = new ESM(\"ali\");\n" +
-                     " TName tname = don( esm , TName.class );\n" +
-                     " map.put(\"name\",tname);\n" +
-                     " insert(map);\n" +
-                     "end\n" +
-                     "\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     " $map : Map()" +
-                     "then\n" +
-                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     " list.add( ct );\n" +
-                     " System.out.println(ct);\n" +
-                     "end\n" +
-                     "\n" +
-                     "";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" + "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "declare ESM @Traitable( logical = true )\n" +
+                " val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TName\n" +
+                "//@Trait( logical = true )\n" +
+                " length : Integer\n" +
+                "end\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "//@Trait( logical = true )\n" +
+                "@propertyReactive\n" +
+                " name : ESM\n" +
+                " id : int = 1002\n" +
+                "end\n" +
+                "\n" +
+                "rule \"init\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "then\n" +
+                " Map map = new HashMap();\n" +
+                " ESM esm = new ESM(\"ali\");\n" +
+                " TName tname = don( esm , TName.class );\n" +
+                " map.put(\"name\",tname);\n" +
+                " insert(map);\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $map : Map()" +
+                "then\n" +
+                " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                " list.add( ct );\n" +
+                " System.out.println(ct);\n" +
+                "end\n" +
+                "\n" +
+                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -1027,71 +1034,71 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitPossibilities2()
+    void testMapTraitPossibilities2()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" + "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "declare ESM @Traitable( logical = true )\n" +
-                     " val : String\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " length : Integer\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TEsm extends TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " isValid : boolean\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "//@Trait( logical = true )\n" +
-                     "@propertyReactive\n" +
-                     " name : ESM\n" +
-                     " id : int = 1002\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"init\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "then\n" +
-                     " Map map = new HashMap();\n" +
-                     " ESM esm = new ESM(\"ali\");\n" +
-                     " TName tname = don( esm , TName.class );\n" +
-                     " TEsm tesm = don( esm , TEsm.class );\n" +
-                     " map.put(\"name\",tesm);\n" +
-                     " insert(map);\n" +
-                     "end\n" +
-                     "\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     " $map : Map()" +
-                     "then\n" +
-                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     " list.add( ct );\n" +
-                     " System.out.println(ct);\n" +
-                     "end\n" +
-                     "\n" +
-                     "";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" + "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "declare ESM @Traitable( logical = true )\n" +
+                " val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TName\n" +
+                "//@Trait( logical = true )\n" +
+                " length : Integer\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TEsm extends TName\n" +
+                "//@Trait( logical = true )\n" +
+                " isValid : boolean\n" +
+                "end\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "//@Trait( logical = true )\n" +
+                "@propertyReactive\n" +
+                " name : ESM\n" +
+                " id : int = 1002\n" +
+                "end\n" +
+                "\n" +
+                "rule \"init\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "then\n" +
+                " Map map = new HashMap();\n" +
+                " ESM esm = new ESM(\"ali\");\n" +
+                " TName tname = don( esm , TName.class );\n" +
+                " TEsm tesm = don( esm , TEsm.class );\n" +
+                " map.put(\"name\",tesm);\n" +
+                " insert(map);\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $map : Map()" +
+                "then\n" +
+                " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                " list.add( ct );\n" +
+                " System.out.println(ct);\n" +
+                "end\n" +
+                "\n" +
+                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -1099,71 +1106,71 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitPossibilities3()
+    void testMapTraitPossibilities3()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" + "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "declare ESM @Traitable( logical = true )\n" +
-                     " val : String\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " length : Integer\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TEsm extends TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " isValid : boolean\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "//@Trait( logical = true )\n" +
-                     "@propertyReactive\n" +
-                     " name : TName\n" + //<<<<<
-                     " id : int = 1002\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"init\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "then\n" +
-                     " Map map = new HashMap();\n" +
-                     " ESM esm = new ESM(\"ali\");\n" +
-                     " TName tname = don( esm , TName.class );\n" +
-                     " TEsm tesm = don( esm , TEsm.class );\n" +
-                     " map.put(\"name\",tesm);\n" +
-                     " insert(map);\n" +
-                     "end\n" +
-                     "\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     " $map : Map()" +
-                     "then\n" +
-                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     " list.add( ct );\n" +
-                     " System.out.println(ct);\n" +
-                     "end\n" +
-                     "\n" +
-                     "";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" + "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "declare ESM @Traitable( logical = true )\n" +
+                " val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TName\n" +
+                "//@Trait( logical = true )\n" +
+                " length : Integer\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TEsm extends TName\n" +
+                "//@Trait( logical = true )\n" +
+                " isValid : boolean\n" +
+                "end\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "//@Trait( logical = true )\n" +
+                "@propertyReactive\n" +
+                " name : TName\n" + //<<<<<
+                " id : int = 1002\n" +
+                "end\n" +
+                "\n" +
+                "rule \"init\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "then\n" +
+                " Map map = new HashMap();\n" +
+                " ESM esm = new ESM(\"ali\");\n" +
+                " TName tname = don( esm , TName.class );\n" +
+                " TEsm tesm = don( esm , TEsm.class );\n" +
+                " map.put(\"name\",tesm);\n" +
+                " insert(map);\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $map : Map()" +
+                "then\n" +
+                " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                " list.add( ct );\n" +
+                " System.out.println(ct);\n" +
+                "end\n" +
+                "\n" +
+                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -1171,82 +1178,82 @@ public class TraitMapCoreTest extends CommonTraitTest {
     }
 
     @Test
-    public void testMapTraitPossibilities4()
+    void testMapTraitPossibilities4()
     {
         String drl = "" +
-                     "package openehr.test;//org.drools.core.factmodel.traits;\n" +
-                     "\n" +
-                     "import org.drools.core.factmodel.traits.Traitable;\n" +
-                     "import org.drools.core.factmodel.traits.Trait;\n" +
-                     "import org.drools.core.factmodel.traits.Alias;\n" +
-                     "import java.util.*;\n" +
-                     "\n" +
-                     "global java.util.List list;\n" +
-                     "\n" + "" +
-                     "declare HashMap @Traitable( logical = true ) end \n" +
-                     "\n" +
-                     "declare ESM @Traitable( logical = true )\n" +
-                     " val : String\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare NAAM @Traitable( logical = true )\n" + //<<<<<
-                     " val : String\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TName\n" +
-                     "@Trait( logical = true )\n" + //<<<<<
-                     " length : Integer\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait TEsm //extends TName\n" +
-                     "//@Trait( logical = true )\n" +
-                     " isValid : boolean\n" +
-                     "end\n" +
-                     "\n" +
-                     "declare trait ChildTrait\n" +
-                     "//@Trait( logical = true )\n" +
-                     "@propertyReactive\n" +
-                     " name : TName\n" +
-                     " id : int = 1002\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"init\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     "then\n" +
-                     " Map map = new HashMap();\n" +
-                     " ESM esm = new ESM(\"ali\");\n" +
-                     " TEsm tesm = don( esm , TEsm.class );\n" +
-                     " map.put(\"name\",tesm);\n" +
-                     " insert(map);\n" +
-                     "end\n" +
-                     "\n" +
-                     "\n" +
-                     "rule \"don\"\n" +
-                     "no-loop\n" +
-                     "when\n" +
-                     " $map : Map()" +
-                     "then\n" +
-                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
-                     " list.add( ct );\n" +
-                     " System.out.println(ct);\n" +
-                     "end\n" +
-                     "\n" +
-                     "";
+                "package openehr.test;//org.drools.core.factmodel.traits;\n" +
+                "\n" +
+                "import org.drools.core.factmodel.traits.Traitable;\n" +
+                "import org.drools.core.factmodel.traits.Trait;\n" +
+                "import org.drools.core.factmodel.traits.Alias;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" + "" +
+                "declare HashMap @Traitable( logical = true ) end \n" +
+                "\n" +
+                "declare ESM @Traitable( logical = true )\n" +
+                " val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare NAAM @Traitable( logical = true )\n" + //<<<<<
+                " val : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TName\n" +
+                "@Trait( logical = true )\n" + //<<<<<
+                " length : Integer\n" +
+                "end\n" +
+                "\n" +
+                "declare trait TEsm //extends TName\n" +
+                "//@Trait( logical = true )\n" +
+                " isValid : boolean\n" +
+                "end\n" +
+                "\n" +
+                "declare trait ChildTrait\n" +
+                "//@Trait( logical = true )\n" +
+                "@propertyReactive\n" +
+                " name : TName\n" +
+                " id : int = 1002\n" +
+                "end\n" +
+                "\n" +
+                "rule \"init\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "then\n" +
+                " Map map = new HashMap();\n" +
+                " ESM esm = new ESM(\"ali\");\n" +
+                " TEsm tesm = don( esm , TEsm.class );\n" +
+                " map.put(\"name\",tesm);\n" +
+                " insert(map);\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"don\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                " $map : Map()" +
+                "then\n" +
+                " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                " list.add( ct );\n" +
+                " System.out.println(ct);\n" +
+                "end\n" +
+                "\n" +
+                "";
 
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
+        ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isNotNull();
     }
 
-    @Test()
-    public void donCustomMapTest() {
+    @Test
+    void donCustomMapTest() {
         String source = "package org.drools.traits.test; \n" +
                 "import java.util.*\n;" +
                 "import " + TraitMapCoreTest.DomainMap.class.getCanonicalName() + ";\n" +
@@ -1278,17 +1285,17 @@ public class TraitMapCoreTest extends CommonTraitTest {
                 "   }" +
                 "end \n";
 
-        KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
-        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase() );
+        KieSession ksession = loadKnowledgeBaseFromString(source).newKieSession();
+        TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
 
         HashMap map = new DomainMap();
-        map.put( "name", "john" );
-        map.put( "age", 18 );
+        map.put("name", "john");
+        map.put("age", 18);
 
-        ksession.insert( map );
+        ksession.insert(map);
         ksession.fireAllRules();
 
         assertThat(map.containsKey("height")).isTrue();

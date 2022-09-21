@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +32,7 @@ public class JeneratorTest {
 
 
     @Test
-    public void testRoundTrip() throws Exception {
+    void testRoundTrip() throws Exception {
         Fact f = new Fact();
         f.name = "Foobar";
         Field f1 = new Field();
@@ -55,7 +55,7 @@ public class JeneratorTest {
 
 
         Jenerator jen = new Jenerator();
-        byte[] data = jen.createJar(new Fact[] {f, f_}, "whee.waa");
+        byte[] data = jen.createJar(new Fact[]{f, f_}, "whee.waa");
         JarInputStream jis = new JarInputStream(new ByteArrayInputStream(data));
         JarEntry je = jis.getNextJarEntry();
 
@@ -76,7 +76,6 @@ public class JeneratorTest {
         assertThat(je).isNotNull();
         System.err.println(je.getName());
         assertThat(je.getName()).isEqualTo("whee/waa/Baz.class");
-
 
 
         Fact[] facts = jen.loadMetaModel(new JarInputStream(new ByteArrayInputStream(data)));

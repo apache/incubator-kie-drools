@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,59 +29,59 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TripleStoreTest {
 
     private Variable V = Variable.v;
-    
+
     @Test
-    public void testPutAndGet() {
+    void testPutAndGet() {
         // We know it needs to hold a lot of triples, so instantiate it with huge capacity.
         // A lower capacity ensures a larger capacity per number of triples, i.e. less collision - default is 0.75f
-        TripleStore store = new TripleStore(10*100*1000, 0.6f );
+        TripleStore store = new TripleStore(10 * 100 * 1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
 
         assertThat(store.put(t)).isFalse();
-        
+
         Triple tKey = new TripleImpl(ind, "hasName", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("mark");
     }
-    
+
     @Test
-    public void testPutAndGetWithExisting() {
+    void testPutAndGetWithExisting() {
         // We know it needs to hold a lot of triples, so instantiate it with huge capacity.
         // A lower capacity ensures a larger capacity per number of triples, i.e. less collision - default is 0.75f
-        TripleStore store = new TripleStore(10*100*1000, 0.6f );
+        TripleStore store = new TripleStore(10 * 100 * 1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
 
         assertThat(store.put(t)).isFalse();
-        
+
         Triple tKey = new TripleImpl(ind, "hasName", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("mark");
-        
+
         t = new TripleImpl(ind, "hasName", "davide");
 
         assertThat(store.put(t)).isTrue();
-        
+
         tKey = new TripleImpl(ind, "hasName", V );
-        t = store.get( tKey );
-        assertThat(t.getValue()).isEqualTo("davide");        
-    }  
-    
+        t = store.get(tKey);
+        assertThat(t.getValue()).isEqualTo("davide");
+    }
+
     @Test
-    public void testPutAndGetandRemove() {
+    void testPutAndGetandRemove() {
         // We know it needs to hold a lot of triples, so instantiate it with huge capacity.
         // A lower capacity ensures a larger capacity per number of triples, i.e. less collision - default is 0.75f
-        TripleStore store = new TripleStore(10*100*1000, 0.6f );
+        TripleStore store = new TripleStore(10 * 100 * 1000, 0.6f );
         Individual ind = new Individual();
         Triple t = new TripleImpl(ind, "hasName", "mark");
 
         assertThat(store.put(t)).isFalse();
-        
+
         Triple tKey = new TripleImpl(ind, "hasName", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("mark");
-        
+
         t = new TripleImpl(ind, "hasName", V );
         assertThat(store.removeAll(t)).isEqualTo(1);
 
@@ -89,37 +89,37 @@ public class TripleStoreTest {
         
         
         tKey = new TripleImpl(ind, "hasName", V );
-        assertThat(store.get(tKey)).isNull();        
-    }   
-    
+        assertThat(store.get(tKey)).isNull();
+    }
+
     @Test
-    public void testMassAddRemove() {
+    void testMassAddRemove() {
         TripleStore store = new TripleStore( );
-        
+
         int instanceLength = 1 * 1000 * 30;
         int tripleLength = 70;
-        
+
         Triple t = null;
         List<Individual> inds = new ArrayList<Individual>(instanceLength);
-        for ( int i = 0; i < instanceLength; i++) {
+        for (int i = 0; i < instanceLength; i++) {
             Individual ind = new Individual();
-            inds.add( ind );
-            for (int j = 0; j < tripleLength; j++) {  
-                t = new TripleImpl(ind, getPropertyName(j), i*j);
-                assertThat(store.put(t)).isFalse();                
+            inds.add(ind);
+            for (int j = 0; j < tripleLength; j++) {
+                t = new TripleImpl(ind, getPropertyName(j), i * j);
+                assertThat(store.put(t)).isFalse();
             }
         }
 
         assertThat(store.size()).isEqualTo(instanceLength * tripleLength);
-        
-        for ( int i = 0; i < instanceLength; i++) {
-            for (int j = 0; j < tripleLength; j++) {  
-                t = new TripleImpl(inds.get( i ),getPropertyName(j), V );
-                store.removeAll( t );
+
+        for (int i = 0; i < instanceLength; i++) {
+            for (int j = 0; j < tripleLength; j++) {
+                t = new TripleImpl(inds.get(i), getPropertyName(j), V );
+                store.removeAll(t);
             }
         }
 
-        assertThat(store.size()).isEqualTo(0);    
+        assertThat(store.size()).isEqualTo(0);
     }
     
     public String getPropertyName(int i) {
@@ -129,11 +129,9 @@ public class TripleStoreTest {
     }
 
 
-
-
     @Test
-    public void testQueryVariable() {
-        TripleStore store = new TripleStore(10*100*1000, 0.6f );
+    void testQueryVariable() {
+        TripleStore store = new TripleStore(10 * 100 * 1000, 0.6f );
         Individual ind = new Individual();
 
         Triple t1 = new TripleImpl(ind, "hasName", "mark");
@@ -162,21 +160,20 @@ public class TripleStoreTest {
         Collection<Triple> coll;
 
         tKey = new TripleImpl(ind, "hasName", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("mark");
 
         tKey = new TripleImpl(ind2, "hasCity", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("bologna");
 
         tKey = new TripleImpl(ind, "hasCar", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t).isNull();
 
         tKey = new TripleImpl(ind2, "hasCar", V );
-        t = store.get( tKey );
+        t = store.get(tKey);
         assertThat(t.getValue()).isEqualTo("lancia");
-
 
 
         tKey = new TripleImpl( V, "hasCity", V );
@@ -211,12 +208,8 @@ public class TripleStoreTest {
     }
 
 
-
-
-
-
     @Test
-    public void testAddNary() {
+    void testAddNary() {
         TripleStore store = new TripleStore(200, 0.6f );
         Individual ind = new Individual();
 
@@ -231,15 +224,13 @@ public class TripleStoreTest {
         store.add(t3);
 
         Triple t4 = new TripleImpl(ind, "hasCar", "mini");
-        store.add( t4 );
+        store.add(t4);
 
         Triple t5 = new TripleImpl(ind, "hasName", "oscar");
         store.add(t5);
 
         Triple t6 = new TripleImpl(ind, "hasCar", "ferrari");
-        store.add( t6 );
-
-
+        store.add(t6);
 
 
         Triple tKey;
@@ -266,13 +257,13 @@ public class TripleStoreTest {
         assertThat(coll.containsAll(Arrays.asList(new TripleImpl(ind, "hasCar", "mini"),
                 new TripleImpl(ind, "hasCar", "ferrari")))).isTrue();
 
-        store.remove( new TripleImpl(ind, "hasCar", "mini") );
+        store.remove(new TripleImpl(ind, "hasCar", "mini"));
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
         assertThat(coll.size()).isEqualTo(1);
 
-        store.remove( new TripleImpl(ind, "hasCar", "ferrari") );
+        store.remove(new TripleImpl(ind, "hasCar", "ferrari"));
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);

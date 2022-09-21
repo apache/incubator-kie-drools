@@ -27,7 +27,7 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.wiring.dynamic.PackageClassLoader;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
@@ -67,7 +67,7 @@ public class InstancesHashcodedTest {
     }
 
     @Test
-    public void testInstanceHashcodes() {
+    void testInstanceHashcodes() {
 
         ClassDefinition cd = new ClassDefinition( "br.com.auster.TestClass2", null, new String[]{} );
         cd.addField(new FieldDefinition("cutDate", "java.util.Date", true));
