@@ -80,9 +80,9 @@ public final class JandexTestUtils {
             JacksonData.class,
             ListWithoutType.class);
 
-    private static ClassInfo indexClass(Indexer indexer, Class<?> toIndex) {
+    private static void indexClass(Indexer indexer, Class<?> toIndex) {
         try {
-            return indexer.index(Objects.requireNonNull(JandexProtoGenerator.class.getClassLoader()
+            indexer.index(Objects.requireNonNull(JandexProtoGenerator.class.getClassLoader()
                     .getResourceAsStream(toPath(toIndex))));
         } catch (IOException e) {
             throw new UncheckedIOException(e);

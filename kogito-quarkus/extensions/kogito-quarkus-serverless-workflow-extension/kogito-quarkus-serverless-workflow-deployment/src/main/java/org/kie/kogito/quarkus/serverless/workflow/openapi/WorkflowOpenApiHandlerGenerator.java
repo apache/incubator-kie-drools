@@ -102,7 +102,8 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
         }
         for (int i = 0; i < annotations.length; i++) {
             AnnotationInstance annotation = annotations[i];
-            Type param = m.parameters().get(i);
+            // Using deprecated args method because it is the only way to make it work across Quarkus main and 2.7
+            Type param = m.args()[i];
             if (annotation != null) {
                 methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString()))));
             } else {
