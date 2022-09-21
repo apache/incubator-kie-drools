@@ -3,8 +3,8 @@ package it.pkg;
 
 import java.util.List;
 
+import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnitInstanceFactory;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class RuleTest {
         LOG.info("Creating RuleUnit");
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
         try {
             LOG.info("Insert data");
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));

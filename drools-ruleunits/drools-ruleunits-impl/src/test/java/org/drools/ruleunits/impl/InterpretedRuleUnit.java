@@ -16,43 +16,33 @@
 package org.drools.ruleunits.impl;
 
 import org.drools.compiler.kie.builder.impl.BuildContext;
-import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
-import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.model.codegen.execmodel.CanonicalModelKieProject;
-import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 
 import static org.drools.compiler.kproject.models.KieBaseModelImpl.defaultKieBaseModel;
+import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieModule;
+import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKieProject;
 
 /**
  * A fully-runtime, reflective implementation of a rule unit, useful for testing
  */
 public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
-    private final boolean useExecModel;
-
-    public static <T extends RuleUnitData> RuleUnit<T> of(Class<T> type, boolean useExecModel) {
-        return new InterpretedRuleUnit<>(type.getCanonicalName(), useExecModel);
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnit) {
+        InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>(ruleUnit.getClass().getCanonicalName());
+        return interpretedRuleUnit.createInstance(ruleUnit);
     }
 
-    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnit, boolean useExecModel) {
-        return of((Class<T>) ruleUnit.getClass(), useExecModel).createInstance(ruleUnit);
-    }
-
-    private InterpretedRuleUnit(String id, boolean useExecModel) {
+    private InterpretedRuleUnit(String id) {
         super(id);
-        this.useExecModel = useExecModel;
     }
 
     @Override
@@ -63,8 +53,8 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
     }
 
     private RuleBase createRuleBase(T data) {
-        InternalKieModule kieModule = createRuleUnitKieModule(data.getClass(), useExecModel);
-        KieModuleKieProject kieProject = createRuleUnitKieProject(kieModule, useExecModel);
+        InternalKieModule kieModule = createRuleUnitKieModule(data.getClass(), false);
+        KieModuleKieProject kieProject = createRuleUnitKieProject(kieModule, false);
 
         BuildContext buildContext = new BuildContext();
         RuleBase kBase = kieModule.createKieBase((KieBaseModelImpl) defaultKieBaseModel(), kieProject, buildContext, null);
@@ -73,47 +63,5 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
             throw new RuntimeException("Error while creating KieBase" + buildContext.getMessages().filterMessages(Message.Level.ERROR));
         }
         return kBase;
-    }
-
-    private static KieModuleKieProject createRuleUnitKieProject(InternalKieModule kieModule, boolean useExecModel) {
-        return useExecModel ?
-                new CanonicalModelKieProject(kieModule, kieModule.getModuleClassLoader()) :
-                new KieModuleKieProject(kieModule, kieModule.getModuleClassLoader());
-    }
-
-    private static InternalKieModule createRuleUnitKieModule(Class<?> unitClass, boolean useExecModel, String... drls) {
-        if (drls == null || drls.length == 0) {
-            drls = new String[] { unitClassToDrlPath(unitClass) };
-        } else {
-            for (int i = 0; i < drls.length; i++) {
-                drls[i] = unitClassToDrlPath(unitClass, drls[i]);
-            }
-        }
-
-        KieServices ks = KieServices.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
-        for (String drl : drls) {
-            kfs.write(ks.getResources().newClassPathResource(drl));
-        }
-        return (InternalKieModule) ks.newKieBuilder( kfs )
-                .getKieModule(useExecModel ? ExecutableModelProject.class : DrlProject.class);
-    }
-
-    private static String unitClassToDrlPath(Class<?> unitClass) {
-        // transform foo.bar.Baz to /foo/bar/Baz.drl
-        // this currently only works for single files
-        return String.format("%s.drl", unitClass.getCanonicalName().replace('.', '/'));
-    }
-
-    private static String unitClassToDrlPath(Class<?> unitClass, String drl) {
-        String unitClassName = unitClass.getCanonicalName();
-        String unitPackage = unitClassName.substring(0, unitClassName.lastIndexOf('.'));
-        return unitPackage.replace('.', '/') + "/" + drl + ".drl";
-    }
-
-    public static KieModuleKieProject createRuleUnitKieProject(Class<?> unitClass, String... drls) {
-        boolean useExecModel = true;
-        InternalKieModule kieModule = createRuleUnitKieModule(unitClass, useExecModel, drls);
-        return createRuleUnitKieProject(kieModule, useExecModel);
     }
 }

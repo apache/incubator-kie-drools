@@ -16,7 +16,6 @@
 package org.drools.ruleunits.dsl;
 
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
@@ -29,33 +28,31 @@ import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.impl.EntryPointDataProcessor;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
+import org.drools.ruleunits.impl.RuleUnitProviderImpl;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.runtime.rule.EntryPoint;
 
-public class RuleUnitRegistry {
+public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 
     private static final boolean DUMP_GENERATED_RETE = false;
 
-    private static final RuleUnitRegistry INSTANCE = new RuleUnitRegistry();
-
-    private RuleUnitRegistry() {}
-
-    private Map<RuleUnitDefinition, RuleUnitInstance> unitInstancesCache = new WeakHashMap<>();
-
-    public <T extends RuleUnitDefinition> RuleUnitInstance<T> getOrCreate(T ruleUnit) {
-        return unitInstancesCache.computeIfAbsent(ruleUnit, this::instance);
+    @Override
+    public int servicePriority() {
+        return 1;
     }
 
-    public <T extends RuleUnitDefinition> RuleUnitInstance<T> instance(T ruleUnit) {
-        RulesFactory rulesFactory = new RulesFactory(ruleUnit);
-        ruleUnit.defineRules(rulesFactory);
-        return new ModelRuleUnit<>((Class<T>) ruleUnit.getClass(), rulesFactory).createInstance(ruleUnit);
-    }
-
-    public static RuleUnitRegistry get() {
-        return INSTANCE;
+    @Override
+    protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
+        if (ruleUnitData instanceof RuleUnitDefinition) {
+            RuleUnitDefinition ruleUnitDef = (RuleUnitDefinition) ruleUnitData;
+            RulesFactory rulesFactory = new RulesFactory(ruleUnitDef);
+            ruleUnitDef.defineRules(rulesFactory);
+            RuleUnit<T> ruleUnit = new ModelRuleUnit<>((Class<T>) ruleUnitData.getClass(), rulesFactory);
+            return Map.of(ruleUnitData.getClass().getCanonicalName(), ruleUnit);
+        }
+        return super.generateRuleUnit(ruleUnitData);
     }
 
     public static class ModelRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {

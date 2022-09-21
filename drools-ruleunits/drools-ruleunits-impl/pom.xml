@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-ruleunits</artifactId>
-        <version>8.28.0-SNAPSHOT</version>
+        <version>8.29.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.drools</groupId>
@@ -43,6 +43,10 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-ruleunits-api</artifactId>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-model-codegen</artifactId>
+      </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -51,11 +55,6 @@
       <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-model-codegen</artifactId>
         <scope>test</scope>
       </dependency>
       <dependency>

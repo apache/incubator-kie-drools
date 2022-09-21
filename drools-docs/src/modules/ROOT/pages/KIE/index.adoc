@@ -15,6 +15,7 @@ include::BuildDeployUtilizeAndRun/_KIEExamples-section.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/_executable-model-con.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/_executable-model-modify-proc.adoc[leveloffset=+2]
 include::BuildDeployUtilizeAndRun/_executable-model-upgrading-proc.adoc[leveloffset=+2]
+include::BuildDeployUtilizeAndRun/_rule-unit-api.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/_rule-unit-dsl.adoc[leveloffset=+1]
 include::BuildDeployUtilizeAndRun/_kie-scanner-proc.adoc[leveloffset=+1]
 

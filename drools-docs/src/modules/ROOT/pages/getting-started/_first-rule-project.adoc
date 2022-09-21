@@ -38,11 +38,7 @@ Firstly, `pom.xml`.
 ----
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-impl</artifactId>
+      <artifactId>drools-ruleunits-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
