@@ -53,6 +53,9 @@ public class ProcessMetaData {
     private boolean startable;
     private boolean dynamic;
 
+    private String modelPackageName;
+    private String modelClassName;
+
     private Map<String, CompilationUnit> generatedHandlers = new HashMap<>();
     private Set<CompilationUnit> generatedListeners = new HashSet<>();
 
@@ -205,6 +208,22 @@ public class ProcessMetaData {
                 ", processId=" + processId + ", extractedProcessId=" + extractedProcessId +
                 ", processName=" + processName + ", processVersion=" + processVersion +
                 ", workItems=" + workItems + "]";
+    }
+
+    public String getModelPackageName() {
+        return modelPackageName;
+    }
+
+    public void setModelPackageName(String modelPackageName) {
+        this.modelPackageName = modelPackageName;
+    }
+
+    public String getModelClassName() {
+        return modelClassName;
+    }
+
+    public void setModelClassName(String modelClassName) {
+        this.modelClassName = modelClassName;
     }
 
 }

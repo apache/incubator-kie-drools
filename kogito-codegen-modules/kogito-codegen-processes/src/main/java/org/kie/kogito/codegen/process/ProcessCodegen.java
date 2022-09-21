@@ -270,6 +270,10 @@ public class ProcessCodegen extends AbstractGenerator {
         return packageName + ".ProcessEventListenerConfig";
     }
 
+    private boolean skipModelGeneration(WorkflowProcess process) {
+        return process.getType().equals(KogitoWorkflowProcess.SW_TYPE);
+    }
+
     @Override
     protected Collection<GeneratedFile> internalGenerate() {
 
@@ -289,14 +293,16 @@ public class ProcessCodegen extends AbstractGenerator {
 
         // first we generate all the data classes from variable declarations
         for (WorkflowProcess workFlowProcess : processes.values()) {
-            ModelClassGenerator mcg = new ModelClassGenerator(context(), workFlowProcess);
-            processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
+            if (!skipModelGeneration(workFlowProcess)) {
+                ModelClassGenerator mcg = new ModelClassGenerator(context(), workFlowProcess);
+                processIdToModelGenerator.put(workFlowProcess.getId(), mcg);
 
-            InputModelClassGenerator imcg = new InputModelClassGenerator(context(), workFlowProcess);
-            processIdToInputModelGenerator.put(workFlowProcess.getId(), imcg);
+                InputModelClassGenerator imcg = new InputModelClassGenerator(context(), workFlowProcess);
+                processIdToInputModelGenerator.put(workFlowProcess.getId(), imcg);
 
-            OutputModelClassGenerator omcg = new OutputModelClassGenerator(context(), workFlowProcess);
-            processIdToOutputModelGenerator.put(workFlowProcess.getId(), omcg);
+                OutputModelClassGenerator omcg = new OutputModelClassGenerator(context(), workFlowProcess);
+                processIdToOutputModelGenerator.put(workFlowProcess.getId(), omcg);
+            }
         }
 
         // then we generate user task inputs and outputs if any
@@ -330,7 +336,7 @@ public class ProcessCodegen extends AbstractGenerator {
             String classPrefix = StringUtils.ucFirst(execModelGen.extractedProcessId());
             KogitoWorkflowProcess workFlowProcess = execModelGen.process();
             ModelClassGenerator modelClassGenerator =
-                    processIdToModelGenerator.get(execModelGen.getProcessId());
+                    processIdToModelGenerator.getOrDefault(execModelGen.getProcessId(), new ModelClassGenerator(context(), workFlowProcess));
 
             ProcessGenerator p = new ProcessGenerator(
                     context(),

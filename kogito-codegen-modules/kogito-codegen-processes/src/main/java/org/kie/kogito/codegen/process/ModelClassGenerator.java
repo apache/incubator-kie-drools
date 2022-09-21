@@ -15,40 +15,31 @@
  */
 package org.kie.kogito.codegen.process;
 
-import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.ruleflow.core.Metadata;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 public class ModelClassGenerator {
 
-    private final KogitoBuildContext context;
-    private final WorkflowProcess workFlowProcess;
-    private String modelFileName;
-    private ModelMetaData modelMetaData;
-    private String modelClassName;
+    private final String modelFileName;
+    private final ModelMetaData modelMetaData;
+    private final String modelClassName;
 
     public ModelClassGenerator(KogitoBuildContext context, WorkflowProcess workFlowProcess) {
-        String pid = workFlowProcess.getId();
-        String name = ProcessToExecModelGenerator.extractProcessId(pid);
-        this.modelClassName = workFlowProcess.getPackageName() + "." +
-                StringUtils.ucFirst(name) + "Model";
-
-        this.context = context;
-        this.workFlowProcess = workFlowProcess;
-    }
-
-    public ModelMetaData generate() {
-        // create model class for all variables
-        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+        modelMetaData = workFlowProcess.getType().equals(KogitoWorkflowProcess.SW_TYPE) ? ServerlessWorkflowUtils.getModelMetadata(workFlowProcess)
+                : ProcessToExecModelGenerator.INSTANCE.generateModel(workFlowProcess);
+        modelClassName = modelMetaData.getModelClassName();
         modelFileName = modelMetaData.getModelClassName().replace('.', '/') + ".java";
-
         modelMetaData.setSupportsValidation(context.isValidationSupported());
         modelMetaData.setSupportsOpenApiGeneration(context.isOpenApiSpecSupported());
         modelMetaData.setModelSchemaRef((String) workFlowProcess.getMetaData().get(Metadata.DATA_INPUT_SCHEMA_REF));
+    }
 
+    public ModelMetaData generate() {
         return modelMetaData;
     }
 

@@ -95,6 +95,7 @@ public class MessageConsumerGenerator {
                 .withPackageName(processPackageName)
                 .build(context, "MessageConsumer");
         this.clazz = generator.compilationUnitOrThrow("Cannot generate message consumer");
+        clazz.addImport(modelfqcn);
     }
 
     public String className() {

@@ -84,15 +84,16 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
 
         Map<String, String> inputTypes = node.getIoSpecification().getInputTypes();
 
-        String subProcessModelClassName = ProcessToExecModelGenerator.extractModelClassName(subProcessId);
+        String subProcessModelClassName = metadata.getModelClassName() != null ? metadata.getModelClassName() : ProcessToExecModelGenerator.extractModelClassName(subProcessId);
+
         ModelMetaData subProcessModel = new ModelMetaData(subProcessId,
-                metadata.getPackageName(),
+                metadata.getModelPackageName() != null ? metadata.getModelPackageName() : metadata.getPackageName(),
                 subProcessModelClassName,
                 KogitoWorkflowProcess.PRIVATE_VISIBILITY,
                 VariableDeclarations.ofRawInfo(inputTypes),
                 false);
 
-        retValue.ifPresent(retValueExpression -> {
+        retValue.ifPresentOrElse(retValueExpression -> {
             retValueExpression.findAll(ClassOrInterfaceType.class)
                     .stream()
                     .filter(t -> t.getNameAsString().equals("$Type$"))
@@ -104,13 +105,9 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
                     .ifPresent(m -> m.setBody(createInstance(node, metadata)));
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
                     .ifPresent(m -> m.setBody(unbind(variableScope, node)));
-        });
+            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValueExpression));
+        }, () -> body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey())));
 
-        if (retValue.isPresent()) {
-            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValue.get()));
-        } else {
-            body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey()));
-        }
         addNodeMappings(node, body, getNodeId(node));
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));

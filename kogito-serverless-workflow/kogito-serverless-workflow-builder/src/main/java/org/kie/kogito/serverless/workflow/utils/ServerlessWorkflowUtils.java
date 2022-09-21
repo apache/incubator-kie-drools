@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -26,10 +27,15 @@ import java.util.function.Supplier;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.util.StringUtils;
+import org.jbpm.compiler.canonical.ModelMetaData;
+import org.jbpm.compiler.canonical.VariableDeclarations;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
 import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
+import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
 import org.slf4j.Logger;
@@ -227,5 +233,14 @@ public class ServerlessWorkflowUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static ModelMetaData getModelMetadata(WorkflowProcess process) {
+        return getModelMetadata(process, JsonNodeModel.class);
+    }
+
+    private static ModelMetaData getModelMetadata(WorkflowProcess process, Class<?> modelClass) {
+        return new ModelMetaData(process.getId(), modelClass.getPackage().getName(), modelClass.getSimpleName(), KogitoWorkflowProcess.PUBLIC_VISIBILITY,
+                VariableDeclarations.of(Collections.emptyMap()), false);
     }
 }

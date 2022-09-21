@@ -87,6 +87,11 @@ public class ProcessToExecModelGenerator {
                 new ProcessMetaData(process.getId(), extractedProcessId, process.getName(), process.getVersion(),
                         packageName, processClazz.getNameAsString());
 
+        if (process.getType().equals(KogitoWorkflowProcess.SW_TYPE)) {
+            metadata.setModelClassName("JsonNodeModel");
+            metadata.setModelPackageName("org.kie.kogito.serverless.workflow.models");
+        }
+
         Optional<MethodDeclaration> processMethod = parsedClazzFile.findFirst(MethodDeclaration.class, sl -> sl
                 .getName()
                 .asString()

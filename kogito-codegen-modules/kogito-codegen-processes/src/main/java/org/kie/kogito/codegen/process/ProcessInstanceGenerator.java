@@ -86,6 +86,7 @@ public class ProcessInstanceGenerator {
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
         compilationUnit.getTypes().add(classDeclaration());
+        compilationUnit.addImport(model.getModelClassName());
         return compilationUnit;
     }
 

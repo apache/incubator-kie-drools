@@ -146,6 +146,7 @@ public class ProcessGenerator {
 
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = new CompilationUnit(packageName);
+        compilationUnit.addImport(modelTypeName);
         compilationUnit.getTypes().add(classDeclaration());
         processExecutable.generate().getGeneratedClassModel().getImports().forEach(compilationUnit::addImport);
         return compilationUnit;
@@ -489,11 +490,13 @@ public class ProcessGenerator {
 
                 String fieldName = "process" + subProcess.getKey();
                 ClassOrInterfaceType modelType = new ClassOrInterfaceType(null, new SimpleName(org.kie.kogito.process.Process.class.getCanonicalName()),
-                        NodeList.nodeList(new ClassOrInterfaceType(null, StringUtils.ucFirst(subProcess.getKey() + "Model"))));
+                        NodeList.nodeList(
+                                new ClassOrInterfaceType(null, processMetaData.getModelPackageName() != null ? processMetaData.getModelPackageName() + "." + processMetaData.getModelClassName()
+                                        : StringUtils.ucFirst(subProcess.getKey() + "Model"))));
                 if (context.hasDI()) {
                     subprocessFieldDeclaration
                             .addVariable(new VariableDeclarator(modelType, fieldName));
-                    context.getDependencyInjectionAnnotator().withInjection(subprocessFieldDeclaration);
+                    context.getDependencyInjectionAnnotator().withNamedInjection(subprocessFieldDeclaration, subProcess.getValue());
                 } else {
                     // app.get(org.kie.kogito.process.Processes.class).processById()
                     MethodCallExpr initSubProcessField = new MethodCallExpr(
