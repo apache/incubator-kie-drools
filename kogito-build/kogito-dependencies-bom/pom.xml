@@ -50,7 +50,7 @@
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
 
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
-    <version.io.fabric8.kubernetes-client>5.8.0</version.io.fabric8.kubernetes-client>
+    <version.io.fabric8.kubernetes-client>5.12.3</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.9.3</version.io.micrometer>
     <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
     <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->

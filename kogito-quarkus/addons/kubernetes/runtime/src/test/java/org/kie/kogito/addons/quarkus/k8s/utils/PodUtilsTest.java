@@ -18,8 +18,6 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.KubeResourceDiscovery;
 import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
@@ -30,6 +28,8 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This tests also covers the queryServiceByLabelOrSelector method from {@link ServiceUtils}
@@ -50,7 +50,7 @@ public class PodUtilsTest {
                 .load(this.getClass().getClassLoader().getResourceAsStream("pod/pod-no-service.yaml")).get();
         pod.getMetadata().setName("test-pod");
         mockServer.getClient().pods().inNamespace(namespace).create(pod);
-        Assertions.assertEquals(Optional.empty(),
+        assertEquals(Optional.empty(),
                 kubeResourceDiscovery.query(new KubeURI("kubernetes:v1/pod/" + namespace + "/hello")));
     }
 
@@ -64,7 +64,7 @@ public class PodUtilsTest {
         mockServer.getClient().pods().inNamespace(namespace).create(pod);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://172.17.0.21:8080", url.get());
+        assertEquals("http://172.17.0.21:8080", url.get());
     }
 
     @Test
@@ -77,7 +77,7 @@ public class PodUtilsTest {
         mockServer.getClient().pods().inNamespace(namespace).create(pod);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://172.17.0.22:52485", url.get());
+        assertEquals("http://172.17.0.22:52485", url.get());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class PodUtilsTest {
         mockServer.getClient().services().inNamespace(namespace).create(service);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://10.10.10.10:80", url.get());
+        assertEquals("http://10.10.10.10:80", url.get());
     }
 
     @Test
@@ -124,6 +124,6 @@ public class PodUtilsTest {
         mockServer.getClient().services().inNamespace(namespace).create(service1);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://20.20.20.20:80", url.get());
+        assertEquals("http://20.20.20.20:80", url.get());
     }
 }

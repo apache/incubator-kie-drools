@@ -18,18 +18,19 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
 import java.net.URI;
 import java.util.Optional;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class URIUtilsTest {
 
     @Test
     public void testURI() {
-        Assert.assertEquals(URI.create("http://test:8009"), URIUtils.builder("http", 8009, "test").get());
+        assertEquals(URI.create("http://test:8009"), URIUtils.builder("http", 8009, "test").get());
     }
 
     @Test
     public void testInvalidURI() {
-        Assert.assertEquals(Optional.empty(), URIUtils.builder("http", -1, ""));
+        assertEquals(Optional.empty(), URIUtils.builder("http", -1, ""));
     }
 }

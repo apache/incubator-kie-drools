@@ -17,8 +17,6 @@ package org.kie.kogito.addons.quarkus.k8s.utils;
 
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.KubeResourceDiscovery;
 import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
@@ -34,6 +32,9 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
 import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This tests also covers the queryServiceByLabelOrSelector method from {@link ServiceUtils}
@@ -55,7 +56,7 @@ public class DeploymentUtilsTest {
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
         deployment.getMetadata().setName("test");
         mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
-        Assertions.assertEquals(Optional.empty(),
+        assertEquals(Optional.empty(),
                 kubeResourceDiscovery.query(new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/invalid")));
     }
 
@@ -73,7 +74,7 @@ public class DeploymentUtilsTest {
         mockServer.getClient().services().inNamespace(namespace).create(service);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://10.10.10.11:80", url.get());
+        assertEquals("http://10.10.10.11:80", url.get());
     }
 
     @Test
@@ -98,7 +99,7 @@ public class DeploymentUtilsTest {
         mockServer.getClient().services().inNamespace(namespace).create(service);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://10.10.10.11:4009", url.get());
+        assertEquals("http://10.10.10.11:4009", url.get());
     }
 
     @Test
@@ -122,7 +123,7 @@ public class DeploymentUtilsTest {
         mockServer.getClient().pods().inNamespace(namespace).create(pod);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://172.17.0.11:8080", url.get());
+        assertEquals("http://172.17.0.11:8080", url.get());
     }
 
     @Test
@@ -149,7 +150,7 @@ public class DeploymentUtilsTest {
         mockServer.getClient().pods().inNamespace(namespace).create(pod);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertTrue(url.isEmpty());
+        assertTrue(url.isEmpty());
     }
 
     @Test
@@ -180,6 +181,6 @@ public class DeploymentUtilsTest {
         Pod createdPod = mockServer.getClient().pods().inNamespace(namespace).create(pod);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://172.17.0.11:4009", url.get());
+        assertEquals("http://172.17.0.11:4009", url.get());
     }
 }

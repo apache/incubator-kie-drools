@@ -19,24 +19,25 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
-import org.kie.kogito.addons.quarkus.k8s.testutils.KnativeTestServer;
-import org.kie.kogito.addons.quarkus.k8s.testutils.WithKnativeTestServer;
 
-import io.fabric8.knative.mock.KnativeServer;
+import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.knative.serving.v1.Service;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.kubernetes.client.KubernetesTestServer;
+import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-@WithKnativeTestServer(https = false)
+@WithKubernetesTestServer
 public class KnativeServiceDiscoveryTest {
 
-    @KnativeTestServer
-    public KnativeServer mockServer;
+    @KubernetesTestServer
+    public KubernetesServer mockServer;
 
     @Inject
     KubernetesClient kubernetesClient;
@@ -46,11 +47,12 @@ public class KnativeServiceDiscoveryTest {
     @Test
     public void testNotFoundKnativeService() {
         kubeResourceDiscovery = new KubeResourceDiscovery(kubernetesClient);
-        Service service = mockServer.getKnativeClient().services().inNamespace(namespace)
+        KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
+        Service service = knativeClient.services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
         service.getMetadata().setName("test");
-        mockServer.getKnativeClient().services().inNamespace(namespace).create(service);
-        Assertions.assertEquals(Optional.empty(),
+        knativeClient.services().inNamespace(namespace).create(service);
+        assertEquals(Optional.empty(),
                 kubeResourceDiscovery.query(new KubeURI("knative:serving.knative.dev/v1/Service/" + namespace + "/invalid")));
     }
 
@@ -59,13 +61,13 @@ public class KnativeServiceDiscoveryTest {
         kubeResourceDiscovery = new KubeResourceDiscovery(kubernetesClient);
         KubeURI kubeURI = new KubeURI("knative:serving.knative.dev/v1/Service/" + namespace + "/serverless-workflow-greeting-quarkus");
 
-        Service kService = mockServer.getKnativeClient().services().inNamespace(namespace)
+        KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
+        Service kService = knativeClient.services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
-        mockServer.getKnativeClient().services().inNamespace(namespace).create(kService);
+        knativeClient.services().inNamespace(namespace).create(kService);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
-        Assert.assertEquals("http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io", url.get());
-
+        assertEquals("http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io", url.get());
     }
 
 }
