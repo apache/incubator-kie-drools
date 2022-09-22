@@ -4,23 +4,42 @@ options { tokenVocab=DRLLexer; }
 
 import JavaParser;
 
+    /*
+     * statement := importStatement
+     *           |  globalStatement
+     *           |  declare
+     *           |  rule
+     *           |  ruleAttribute
+     *           |  function
+     *           |  query
+     *           ;
+     */
+compilationUnit : packagedef? unitdef? drlStatementdef* ;
 
-compilationUnit : packagedef? unitdef? importdef* attributes* globaldef* ruledef* ;
+drlStatementdef
+    : importdef
+    | globaldef
+    | functiondef
+    | attributes
+    | ruledef
+    ;
 
-packagedef : PACKAGE name=qualifiedName SEMI? ;
+packagedef : DRL_PACKAGE name=drlQualifiedName SEMI? ;
 
-unitdef : UNIT name=qualifiedName SEMI? ;
+unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
-importdef : IMPORT (FUNCTION|STATIC)? qualifiedName (DOT MUL)? SEMI? ;
+importdef : DRL_IMPORT (DRL_FUNCTION|DRL_STATIC)? drlQualifiedName (DOT MUL)? SEMI? ;
 
-globaldef : GLOBAL type IDENTIFIER SEMI? ;
+globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
-ruledef : RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? WHEN lhs THEN rhs END ;
+// rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-lhs : lhsExpression ;
+ruledef : DRL_RULE name=stringId (DRL_EXTENDS stringId)? drlAnnotation* attributes? DRL_WHEN lhs DRL_THEN rhs DRL_END ;
+
+lhs : lhsExpression? ;
 lhsExpression : lhsOr* ;
-lhsOr : LPAREN KWD_OR lhsAnd+ RPAREN | lhsAnd (KWD_OR lhsAnd)* ;
-lhsAnd : LPAREN KWD_AND lhsUnary+ RPAREN | lhsUnary (KWD_AND lhsUnary)* ;
+lhsOr : LPAREN DRL_OR lhsAnd+ RPAREN | lhsAnd (DRL_OR lhsAnd)* ;
+lhsAnd : LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
 
 /*
 lhsUnary : ( lhsExists namedConsequence?
@@ -38,14 +57,14 @@ lhsUnary : (
            | lhsNot
            | lhsPatternBind
            ) ;
-lhsPatternBind : label? ( LPAREN lhsPattern (KWD_OR lhsPattern)* RPAREN | lhsPattern ) ;
+lhsPatternBind : label? ( LPAREN lhsPattern (DRL_OR lhsPattern)* RPAREN | lhsPattern ) ;
 
 /*
 lhsPattern : xpathPrimary (OVER patternFilter)? |
              ( QUESTION? qualifiedIdentifier LPAREN positionalConstraints? constraints? RPAREN (OVER patternFilter)? (FROM patternSource)? ) ;
 */
 
-lhsPattern : QUESTION? objectType=qualifiedName LPAREN (positionalConstraints? constraints? ) RPAREN (FROM patternSource)? ;
+lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN (positionalConstraints? constraints? ) RPAREN (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : label? ( nestedConstraint | conditionalOrExpression ) ;
@@ -59,6 +78,76 @@ equalityExpression : left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) righ
 instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
 inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
 relationalExpression : drlExpression? ;
+
+
+/* function := FUNCTION type? ID parameters(typed) chunk_{_} */
+functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters block ;
+
+
+/* extending JavaParser qualifiedName */
+drlQualifiedName
+    : drlIdentifier (DOT drlIdentifier)*
+    ;
+
+/* extending JavaParser identifier */
+drlIdentifier
+    : drlKeywords
+    | IDENTIFIER
+    | MODULE
+    | OPEN
+    | REQUIRES
+    | EXPORTS
+    | OPENS
+    | TO
+    | USES
+    | PROVIDES
+    | WITH
+    | TRANSITIVE
+    | YIELD
+    | SEALED
+    | PERMITS
+    | RECORD
+    | VAR
+    ;
+
+drlKeywords
+    : DRL_PACKAGE
+    | DRL_UNIT
+    | DRL_IMPORT
+    | DRL_FUNCTION
+    | DRL_STATIC
+    | DRL_GLOBAL
+    | DRL_RULE
+    | DRL_QUERY
+    | DRL_EXTENDS
+    | DRL_SUPER
+    | DRL_WHEN
+    | DRL_THEN
+    | DRL_END
+    | DRL_AND
+    | DRL_OR
+    | DRL_EXISTS
+    | DRL_NOT
+    | DRL_IN
+    | DRL_FROM
+    | DRL_MATCHES
+    | DRL_SALIENCE
+    | DRL_ENABLED
+    | DRL_NO_LOOP
+    | DRL_AUTO_FOCUS
+    | DRL_LOCK_ON_ACTIVE
+    | DRL_REFRACT
+    | DRL_DIRECT
+    | DRL_AGENDA_GROUP
+    | DRL_ACTIVATION_GROUP
+    | DRL_RULEFLOW_GROUP
+    | DRL_DATE_EFFECTIVE
+    | DRL_DATE_EXPIRES
+    | DRL_DIALECT
+    | DRL_CALENDARS
+    | DRL_TIMER
+    | DRL_DURATION
+    ;
 
 /* extending JavaParser expression */
 drlExpression
@@ -84,7 +173,7 @@ drlExpression
     | drlExpression (LT LT | GT GT GT | GT GT) drlExpression
     | drlExpression bop=(LE | GE | GT | LT) drlExpression
     | drlExpression bop=INSTANCEOF (typeType | pattern)
-    | drlExpression bop=MATCHES drlExpression
+    | drlExpression bop=DRL_MATCHES drlExpression
     | drlExpression bop=(EQUAL | NOTEQUAL) drlExpression
     | drlExpression bop=BITAND drlExpression
     | drlExpression bop=CARET drlExpression
@@ -110,7 +199,7 @@ drlPrimary
     | THIS
     | SUPER
     | drlLiteral
-    | identifier
+    | drlIdentifier
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
@@ -153,7 +242,7 @@ fromExpression : conditionalOrExpression ;
            | lhsPatternBind
            )
 */
-lhsExists : EXISTS lhsPatternBind ;
+lhsExists : DRL_EXISTS lhsPatternBind ;
 /*
  lhsNot := NOT
            ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
@@ -161,9 +250,9 @@ lhsExists : EXISTS lhsPatternBind ;
            | lhsPatternBind
            )
 */
-lhsNot : NOT lhsPatternBind ;
+lhsNot : DRL_NOT lhsPatternBind ;
 
-rhs : blockStatement* ;
+rhs : drlRhsBlockStatement* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
@@ -175,7 +264,7 @@ type : IDENTIFIER typeArguments? ( DOT IDENTIFIER typeArguments? )* (LBRACK RBRA
 drlArguments : LPAREN drlArgument (COMMA drlArgument)* RPAREN ;
 drlArgument : ( stringId | floatLiteral | BOOL_LITERAL | NULL_LITERAL ) ;
 
-drlAnnotation : AT name=qualifiedName drlArguments? ;
+drlAnnotation : AT name=drlQualifiedName drlArguments? ;
 
 attributes : attribute ( COMMA? attribute )* ;
 attribute : ( 'salience' DECIMAL_LITERAL )
@@ -198,3 +287,77 @@ assignmentOperator : ASSIGN
 
 label : IDENTIFIER COLON ;
 unif : IDENTIFIER UNIFY ;
+
+/* extending JavaParser blockStatement */
+drlRhsBlockStatement
+    : localVariableDeclaration SEMI
+    | drlRhsStatement
+    | localTypeDeclaration
+    ;
+
+/* extending JavaParser statement */
+drlRhsStatement
+    : blockLabel=block
+    | ASSERT drlRhsExpression (COLON drlRhsExpression)? SEMI
+    | IF parExpression drlRhsStatement (ELSE drlRhsStatement)?
+    | FOR LPAREN forControl RPAREN drlRhsStatement
+    | WHILE parExpression drlRhsStatement
+    | DO drlRhsStatement WHILE parExpression SEMI
+    | TRY block (catchClause+ finallyBlock? | finallyBlock)
+    | TRY resourceSpecification block catchClause* finallyBlock?
+    | SWITCH parExpression LBRACE switchBlockStatementGroup* switchLabel* RBRACE
+    | SYNCHRONIZED parExpression block
+    | RETURN drlRhsExpression? SEMI
+    | THROW drlRhsExpression SEMI
+    | BREAK identifier? SEMI
+    | CONTINUE identifier? SEMI
+    | YIELD drlRhsExpression SEMI // Java17
+    | SEMI
+    | statementExpression=drlRhsExpression SEMI
+    | switchExpression SEMI? // Java17
+    | identifierLabel=identifier COLON drlRhsStatement
+    ;
+
+/* extending JavaParser expression */
+drlRhsExpression
+    : drlPrimary
+    | drlRhsExpression bop=DOT
+      (
+         identifier
+       | methodCall
+       | THIS
+       | NEW nonWildcardTypeArguments? innerCreator
+       | SUPER superSuffix
+       | explicitGenericInvocation
+      )
+    | drlRhsExpression LBRACK drlRhsExpression RBRACK
+    | methodCall
+    | NEW creator
+    | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlRhsExpression
+    | drlRhsExpression postfix=(INC | DEC)
+    | prefix=(ADD|SUB|INC|DEC) drlRhsExpression
+    | prefix=(TILDE|BANG) drlRhsExpression
+    | drlRhsExpression bop=(MUL|DIV|MOD) drlRhsExpression
+    | drlRhsExpression bop=(ADD|SUB) drlRhsExpression
+    | drlRhsExpression (LT LT | GT GT GT | GT GT) drlRhsExpression
+    | drlRhsExpression bop=(LE | GE | GT | LT) drlRhsExpression
+    | drlRhsExpression bop=INSTANCEOF (typeType | pattern)
+    | drlRhsExpression bop=DRL_MATCHES drlRhsExpression
+    | drlRhsExpression bop=(EQUAL | NOTEQUAL) drlRhsExpression
+    | drlRhsExpression bop=BITAND drlRhsExpression
+    | drlRhsExpression bop=CARET drlRhsExpression
+    | drlRhsExpression bop=BITOR drlRhsExpression
+    | drlRhsExpression bop=AND drlRhsExpression
+    | drlRhsExpression bop=OR drlRhsExpression
+    | <assoc=right> drlRhsExpression bop=QUESTION drlRhsExpression COLON drlRhsExpression
+    | <assoc=right> drlRhsExpression
+      bop=(ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | RSHIFT_ASSIGN | URSHIFT_ASSIGN | LSHIFT_ASSIGN | MOD_ASSIGN)
+      drlRhsExpression
+    | lambdaExpression // Java8
+    | switchExpression // Java17
+
+    // Java 8 methodReference
+    | drlRhsExpression COLONCOLON typeArguments? identifier
+    | typeType COLONCOLON (typeArguments? identifier | NEW)
+    | classType COLONCOLON typeArguments? NEW
+    ;
