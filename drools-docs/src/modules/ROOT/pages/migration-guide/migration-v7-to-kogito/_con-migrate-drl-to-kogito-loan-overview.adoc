@@ -1,10 +1,10 @@
 [id="con-migrate-drl-to-kogito-loan-overview_{context}"]
-= Migration of a DRL service to a {KOGITO} microservice
+= Migration of a DRL service from {PRODUCT} v7 to a {KOGITO} microservice
 
 [role="_abstract"]
-You can build and deploy a sample project in {KOGITO} to expose a stateless rules evaluation of the {DECISION_ENGINE} in a {QUARKUS} REST endpoint, and migrate the REST endpoint to {KOGITO}.
+You can build and deploy a sample project in {KOGITO} to expose a stateless rules evaluation of the {RULE_ENGINE} in a {QUARKUS} REST endpoint, and migrate the REST endpoint to {KOGITO}.
 
-The stateless rule evaluation is a single execution of a rule set in {PRODUCT} and can be identified as a function invocation. In the invoked function, the output values are determined using the input values. Also, the invoked function uses the {DECISION_ENGINE} to perform the jobs. Therefore, in such cases, a function is exposed using a REST endpoint and converted into a microservice. After converting into a microservice, a function is deployed into a Function as a Service environment to eliminate the cost of JVM startup time.
+The stateless rule evaluation is a single execution of a rule set in {PRODUCT} and can be identified as a function invocation. In the invoked function, the output values are determined using the input values. Also, the invoked function uses the {RULE_ENGINE} to perform the jobs. Therefore, in such cases, a function is exposed using a REST endpoint and converted into a microservice. After converting into a microservice, a function is deployed into a Function as a Service environment to eliminate the cost of JVM startup time.
 
 [id="ref-migrate-drl-to-kogito-considerations_{context}"]
 == Major changes and migration considerations

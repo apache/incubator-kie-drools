@@ -24,6 +24,7 @@
 :DMN_EDITOR: KIE DMN Editor
 
 :KOGITO: Kogito
+:QUARKUS: Quarkus
 :KIE_SERVER: KIE Server
 :BUSINESS_CENTRAL: Business Central
 :OPENSHIFT: OpenShift

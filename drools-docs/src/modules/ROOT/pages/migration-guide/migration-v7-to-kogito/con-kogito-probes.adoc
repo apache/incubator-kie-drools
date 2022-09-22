@@ -1,4 +1,0 @@
-[id="con-kogito-probes_{context}"]
-= Probes for {KOGITO} microservices on {OPENSHIFT}
-
-The probes in {OPENSHIFT} verify that an application is working or it needs to be restarted. For {KOGITO} microservices on {QUARKUS} and Spring Boot, probes interact with the application using an HTTP request, defaulting to the endpoints that are exposed by an extension. Therefore, to run your {KOGITO} microservices on {OPENSHIFT}, you must import the extensions to provide application availability information for the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness, readiness, and startup probes].
