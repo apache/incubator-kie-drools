@@ -4,9 +4,21 @@ module.exports = typeDefs = gql`
 
   schema {
     query: Query
-    subscription: Subscription
+    mutation: Mutation
   }
-
+  
+  type Mutation {
+    ProcessInstanceSkip(id: String): String
+    ProcessInstanceAbort(id: String): String
+    ProcessInstanceRetry(id: String): String
+    ProcessInstanceUpdateVariables(id: String variables: String): String
+    NodeInstanceTrigger(id: String nodeId: String): String
+    NodeInstanceCancel(id: String nodeInstanceId: String): String
+    NodeInstanceRetrigger(id: String nodeInstanceId: String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String data: String): String
+  }
+  
   type Query {
     ProcessInstances(
       where: ProcessInstanceArgument
@@ -48,6 +60,7 @@ module.exports = typeDefs = gql`
     serviceUrl: String
     endpoint: String!
     nodes: [NodeInstance!]!
+    nodeDefinitions: [Node!]
     milestones: [Milestones!]
     variables: String
     start: DateTime!
@@ -57,6 +70,7 @@ module.exports = typeDefs = gql`
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!
+    diagram: String
   }
 
   type KogitoMetadata {
@@ -116,6 +130,14 @@ module.exports = typeDefs = gql`
     nodeId: String!
   }
 
+  type Node {
+    id: String!
+    nodeDefinitionId: String!
+    name: String!
+    type: String!
+    uniqueId: String!
+  }
+  
   type Milestones {
     id: String!
     name: String!

@@ -4,7 +4,9 @@ documents: './src/graphql/queries.tsx'
 generates:
   ./src/graphql/types.tsx:
     plugins:
-      - add: '/* tslint:disable */'
+      - add:
+          content:
+          - '/* eslint-disable */'
       - add:
           content:
           - ''
@@ -19,6 +21,9 @@ generates:
       withHOC: false
       withHooks: true
       withComponent: false
+      apolloReactHooksImportFrom: '@apollo/react-hooks'
+      apolloReactCommonImportFrom: '@apollo/react-common'
+      gqlImport: graphql-tag
   ./src/graphql/graphql.schema.json:
     plugins:
       - "introspection"

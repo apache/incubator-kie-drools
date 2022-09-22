@@ -132,6 +132,8 @@ export interface ProcessInstance {
   isSelected?: boolean;
   errorMessage?: string;
   isOpen?: boolean;
+  diagram?: string;
+  nodeDefinitions?: TriggerableNode[];
 }
 
 export interface ProcessInstanceFilter {

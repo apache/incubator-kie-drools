@@ -27,7 +27,11 @@ import { EmbeddedProcessList } from '@kogito-apps/process-list';
 
 const MockQueries = jest.fn<ProcessListQueries, []>(() => ({
   getProcessInstances: jest.fn(),
-  getChildProcessInstances: jest.fn()
+  getChildProcessInstances: jest.fn(),
+  handleProcessSkip: jest.fn(),
+  handleProcessAbort: jest.fn(),
+  handleProcessRetry: jest.fn(),
+  handleProcessMultipleAction: jest.fn()
 }));
 
 jest

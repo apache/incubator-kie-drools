@@ -24,6 +24,17 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "queries": Object {
           "getJobs": [MockFunction],
           "getProcessDetails": [MockFunction],
+          "getSVG": [MockFunction],
+          "getTriggerableNodes": [MockFunction],
+          "handleNodeInstanceCancel": [MockFunction],
+          "handleNodeInstanceRetrigger": [MockFunction],
+          "handleNodeTrigger": [MockFunction],
+          "handleProcessAbort": [MockFunction],
+          "handleProcessRetry": [MockFunction],
+          "handleProcessSkip": [MockFunction],
+          "handleProcessVariableUpdate": [MockFunction],
+          "jobCancel": [MockFunction],
+          "rescheduleJob": [MockFunction],
         },
         "rescheduleJob": [Function],
       }

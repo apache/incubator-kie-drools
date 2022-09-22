@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,13 +18,17 @@
 import gql from 'graphql-tag';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactHooks from '@apollo/react-hooks';
-
 export namespace GraphQL {
   export type Maybe<T> = T | null;
-  export type Exact<T extends { [key: string]: any }> = {
+  export type InputMaybe<T> = Maybe<T>;
+  export type Exact<T extends { [key: string]: unknown }> = {
     [K in keyof T]: T[K];
   };
-
+  export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+    { [SubKey in K]?: Maybe<T[SubKey]> };
+  export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+    { [SubKey in K]: Maybe<T[SubKey]> };
+  const defaultOptions = {};
   /** All built-in and custom scalars, mapped to their actual values */
   export type Scalars = {
     ID: string;
@@ -36,19 +40,46 @@ export namespace GraphQL {
     DateTime: any;
   };
 
+  export type Attachment = {
+    __typename?: 'Attachment';
+    content: Scalars['String'];
+    id: Scalars['String'];
+    name: Scalars['String'];
+    updatedAt: Scalars['DateTime'];
+    updatedBy: Scalars['String'];
+  };
+
+  export type AttachmentArgument = {
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
+  };
+
   export type BooleanArgument = {
-    isNull?: Maybe<Scalars['Boolean']>;
-    equal?: Maybe<Scalars['Boolean']>;
+    equal?: InputMaybe<Scalars['Boolean']>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
+  };
+
+  export type Comment = {
+    __typename?: 'Comment';
+    content: Scalars['String'];
+    id: Scalars['String'];
+    updatedAt: Scalars['DateTime'];
+    updatedBy: Scalars['String'];
+  };
+
+  export type CommentArgument = {
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
   };
 
   export type DateArgument = {
-    isNull?: Maybe<Scalars['Boolean']>;
-    equal?: Maybe<Scalars['DateTime']>;
-    greaterThan?: Maybe<Scalars['DateTime']>;
-    greaterThanEqual?: Maybe<Scalars['DateTime']>;
-    lessThan?: Maybe<Scalars['DateTime']>;
-    lessThanEqual?: Maybe<Scalars['DateTime']>;
-    between?: Maybe<DateRange>;
+    between?: InputMaybe<DateRange>;
+    equal?: InputMaybe<Scalars['DateTime']>;
+    greaterThan?: InputMaybe<Scalars['DateTime']>;
+    greaterThanEqual?: InputMaybe<Scalars['DateTime']>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
+    lessThan?: InputMaybe<Scalars['DateTime']>;
+    lessThanEqual?: InputMaybe<Scalars['DateTime']>;
   };
 
   export type DateRange = {
@@ -57,71 +88,71 @@ export namespace GraphQL {
   };
 
   export type IdArgument = {
-    in?: Maybe<Array<Scalars['String']>>;
-    equal?: Maybe<Scalars['String']>;
-    isNull?: Maybe<Scalars['Boolean']>;
+    equal?: InputMaybe<Scalars['String']>;
+    in?: InputMaybe<Array<Scalars['String']>>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
   };
 
   export type Job = {
     __typename?: 'Job';
+    callbackEndpoint?: Maybe<Scalars['String']>;
+    endpoint?: Maybe<Scalars['String']>;
+    executionCounter?: Maybe<Scalars['Int']>;
+    expirationTime?: Maybe<Scalars['DateTime']>;
     id: Scalars['String'];
+    lastUpdate?: Maybe<Scalars['DateTime']>;
+    nodeInstanceId?: Maybe<Scalars['String']>;
+    priority?: Maybe<Scalars['Int']>;
     processId?: Maybe<Scalars['String']>;
     processInstanceId?: Maybe<Scalars['String']>;
-    nodeInstanceId?: Maybe<Scalars['String']>;
-    rootProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessId?: Maybe<Scalars['String']>;
-    status: JobStatus;
-    expirationTime?: Maybe<Scalars['DateTime']>;
-    priority?: Maybe<Scalars['Int']>;
-    callbackEndpoint?: Maybe<Scalars['String']>;
     repeatInterval?: Maybe<Scalars['Int']>;
     repeatLimit?: Maybe<Scalars['Int']>;
-    scheduledId?: Maybe<Scalars['String']>;
     retries?: Maybe<Scalars['Int']>;
-    lastUpdate?: Maybe<Scalars['DateTime']>;
-    executionCounter?: Maybe<Scalars['Int']>;
-    endpoint?: Maybe<Scalars['String']>;
+    rootProcessId?: Maybe<Scalars['String']>;
+    rootProcessInstanceId?: Maybe<Scalars['String']>;
+    scheduledId?: Maybe<Scalars['String']>;
+    status: JobStatus;
   };
 
   export type JobArgument = {
-    and?: Maybe<Array<JobArgument>>;
-    or?: Maybe<Array<JobArgument>>;
-    not?: Maybe<JobArgument>;
-    id?: Maybe<IdArgument>;
-    processId?: Maybe<StringArgument>;
-    processInstanceId?: Maybe<IdArgument>;
-    nodeInstanceId?: Maybe<IdArgument>;
-    rootProcessInstanceId?: Maybe<IdArgument>;
-    rootProcessId?: Maybe<StringArgument>;
-    status?: Maybe<JobStatusArgument>;
-    expirationTime?: Maybe<DateArgument>;
-    priority?: Maybe<NumericArgument>;
-    scheduledId?: Maybe<IdArgument>;
-    lastUpdate?: Maybe<DateArgument>;
+    and?: InputMaybe<Array<JobArgument>>;
+    expirationTime?: InputMaybe<DateArgument>;
+    id?: InputMaybe<IdArgument>;
+    lastUpdate?: InputMaybe<DateArgument>;
+    nodeInstanceId?: InputMaybe<IdArgument>;
+    not?: InputMaybe<JobArgument>;
+    or?: InputMaybe<Array<JobArgument>>;
+    priority?: InputMaybe<NumericArgument>;
+    processId?: InputMaybe<StringArgument>;
+    processInstanceId?: InputMaybe<IdArgument>;
+    rootProcessId?: InputMaybe<StringArgument>;
+    rootProcessInstanceId?: InputMaybe<IdArgument>;
+    scheduledId?: InputMaybe<IdArgument>;
+    status?: InputMaybe<JobStatusArgument>;
   };
 
   export type JobOrderBy = {
-    processId?: Maybe<OrderBy>;
-    rootProcessId?: Maybe<OrderBy>;
-    status?: Maybe<OrderBy>;
-    expirationTime?: Maybe<OrderBy>;
-    priority?: Maybe<OrderBy>;
-    retries?: Maybe<OrderBy>;
-    lastUpdate?: Maybe<OrderBy>;
-    executionCounter?: Maybe<OrderBy>;
+    executionCounter?: InputMaybe<OrderBy>;
+    expirationTime?: InputMaybe<OrderBy>;
+    lastUpdate?: InputMaybe<OrderBy>;
+    priority?: InputMaybe<OrderBy>;
+    processId?: InputMaybe<OrderBy>;
+    retries?: InputMaybe<OrderBy>;
+    rootProcessId?: InputMaybe<OrderBy>;
+    status?: InputMaybe<OrderBy>;
   };
 
   export enum JobStatus {
+    Canceled = 'CANCELED',
     Error = 'ERROR',
     Executed = 'EXECUTED',
-    Scheduled = 'SCHEDULED',
     Retry = 'RETRY',
-    Canceled = 'CANCELED'
+    Scheduled = 'SCHEDULED'
   }
 
   export type JobStatusArgument = {
-    equal?: Maybe<JobStatus>;
-    in?: Maybe<Array<Maybe<JobStatus>>>;
+    equal?: InputMaybe<JobStatus>;
+    in?: InputMaybe<Array<InputMaybe<JobStatus>>>;
   };
 
   export type KogitoMetadata = {
@@ -132,13 +163,13 @@ export namespace GraphQL {
   };
 
   export type KogitoMetadataArgument = {
-    lastUpdate?: Maybe<DateArgument>;
-    processInstances?: Maybe<ProcessInstanceMetaArgument>;
-    userTasks?: Maybe<UserTaskInstanceMetaArgument>;
+    lastUpdate?: InputMaybe<DateArgument>;
+    processInstances?: InputMaybe<ProcessInstanceMetaArgument>;
+    userTasks?: InputMaybe<UserTaskInstanceMetaArgument>;
   };
 
   export type KogitoMetadataOrderBy = {
-    lastUpdate?: Maybe<OrderBy>;
+    lastUpdate?: InputMaybe<OrderBy>;
   };
 
   export type Milestone = {
@@ -149,52 +180,179 @@ export namespace GraphQL {
   };
 
   export type MilestoneArgument = {
-    id?: Maybe<IdArgument>;
-    name?: Maybe<StringArgument>;
-    status?: Maybe<MilestoneStatusArgument>;
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
+    status?: InputMaybe<MilestoneStatusArgument>;
   };
 
   export enum MilestoneStatus {
-    Available = 'AVAILABLE',
     Active = 'ACTIVE',
+    Available = 'AVAILABLE',
     Completed = 'COMPLETED'
   }
 
   export type MilestoneStatusArgument = {
-    equal?: Maybe<MilestoneStatus>;
-    in?: Maybe<Array<Maybe<MilestoneStatus>>>;
+    equal?: InputMaybe<MilestoneStatus>;
+    in?: InputMaybe<Array<InputMaybe<MilestoneStatus>>>;
+  };
+
+  export type Mutation = {
+    __typename?: 'Mutation';
+    JobCancel?: Maybe<Scalars['String']>;
+    JobReschedule?: Maybe<Scalars['String']>;
+    NodeInstanceCancel?: Maybe<Scalars['String']>;
+    NodeInstanceRetrigger?: Maybe<Scalars['String']>;
+    NodeInstanceTrigger?: Maybe<Scalars['String']>;
+    ProcessInstanceAbort?: Maybe<Scalars['String']>;
+    ProcessInstanceRetry?: Maybe<Scalars['String']>;
+    ProcessInstanceSkip?: Maybe<Scalars['String']>;
+    ProcessInstanceUpdateVariables?: Maybe<Scalars['String']>;
+    UserTaskInstanceAttachmentCreate?: Maybe<Scalars['String']>;
+    UserTaskInstanceAttachmentDelete?: Maybe<Scalars['String']>;
+    UserTaskInstanceAttachmentUpdate?: Maybe<Scalars['String']>;
+    UserTaskInstanceCommentCreate?: Maybe<Scalars['String']>;
+    UserTaskInstanceCommentDelete?: Maybe<Scalars['String']>;
+    UserTaskInstanceCommentUpdate?: Maybe<Scalars['String']>;
+    UserTaskInstanceUpdate?: Maybe<Scalars['String']>;
+  };
+
+  export type MutationJobCancelArgs = {
+    id?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationJobRescheduleArgs = {
+    data?: InputMaybe<Scalars['String']>;
+    id?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationNodeInstanceCancelArgs = {
+    id?: InputMaybe<Scalars['String']>;
+    nodeInstanceId?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationNodeInstanceRetriggerArgs = {
+    id?: InputMaybe<Scalars['String']>;
+    nodeInstanceId?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationNodeInstanceTriggerArgs = {
+    id?: InputMaybe<Scalars['String']>;
+    nodeId?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationProcessInstanceAbortArgs = {
+    id?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationProcessInstanceRetryArgs = {
+    id?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationProcessInstanceSkipArgs = {
+    id?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationProcessInstanceUpdateVariablesArgs = {
+    id?: InputMaybe<Scalars['String']>;
+    variables?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceAttachmentCreateArgs = {
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    name?: InputMaybe<Scalars['String']>;
+    taskId?: InputMaybe<Scalars['String']>;
+    uri?: InputMaybe<Scalars['String']>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceAttachmentDeleteArgs = {
+    attachmentId?: InputMaybe<Scalars['String']>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceAttachmentUpdateArgs = {
+    attachmentId?: InputMaybe<Scalars['String']>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    name?: InputMaybe<Scalars['String']>;
+    uri?: InputMaybe<Scalars['String']>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceCommentCreateArgs = {
+    comment?: InputMaybe<Scalars['String']>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    taskId?: InputMaybe<Scalars['String']>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceCommentDeleteArgs = {
+    commentId?: InputMaybe<Scalars['String']>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceCommentUpdateArgs = {
+    comment?: InputMaybe<Scalars['String']>;
+    commentId?: InputMaybe<Scalars['String']>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type MutationUserTaskInstanceUpdateArgs = {
+    actualOwner?: InputMaybe<Scalars['String']>;
+    adminGroups?: InputMaybe<Array<Scalars['String']>>;
+    adminUsers?: InputMaybe<Array<Scalars['String']>>;
+    description?: InputMaybe<Scalars['String']>;
+    excludedUsers?: InputMaybe<Array<Scalars['String']>>;
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    inputParams?: InputMaybe<Scalars['String']>;
+    potentialGroups?: InputMaybe<Array<Scalars['String']>>;
+    potentialUsers?: InputMaybe<Array<Scalars['String']>>;
+    priority?: InputMaybe<Scalars['String']>;
+    taskId?: InputMaybe<Scalars['String']>;
+    user?: InputMaybe<Scalars['String']>;
+  };
+
+  export type Node = {
+    __typename?: 'Node';
+    id: Scalars['String'];
+    name: Scalars['String'];
+    nodeDefinitionId: Scalars['String'];
+    type: Scalars['String'];
+    uniqueId: Scalars['String'];
   };
 
   export type NodeInstance = {
     __typename?: 'NodeInstance';
-    id: Scalars['String'];
-    name: Scalars['String'];
-    type: Scalars['String'];
+    definitionId: Scalars['String'];
     enter: Scalars['DateTime'];
     exit?: Maybe<Scalars['DateTime']>;
-    definitionId: Scalars['String'];
+    id: Scalars['String'];
+    name: Scalars['String'];
     nodeId: Scalars['String'];
+    type: Scalars['String'];
   };
 
   export type NodeInstanceArgument = {
-    id?: Maybe<IdArgument>;
-    name?: Maybe<StringArgument>;
-    definitionId?: Maybe<StringArgument>;
-    nodeId?: Maybe<StringArgument>;
-    type?: Maybe<StringArgument>;
-    enter?: Maybe<DateArgument>;
-    exit?: Maybe<DateArgument>;
+    definitionId?: InputMaybe<StringArgument>;
+    enter?: InputMaybe<DateArgument>;
+    exit?: InputMaybe<DateArgument>;
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
+    nodeId?: InputMaybe<StringArgument>;
+    type?: InputMaybe<StringArgument>;
   };
 
   export type NumericArgument = {
-    in?: Maybe<Array<Scalars['Int']>>;
-    isNull?: Maybe<Scalars['Boolean']>;
-    equal?: Maybe<Scalars['Int']>;
-    greaterThan?: Maybe<Scalars['Int']>;
-    greaterThanEqual?: Maybe<Scalars['Int']>;
-    lessThan?: Maybe<Scalars['Int']>;
-    lessThanEqual?: Maybe<Scalars['Int']>;
-    between?: Maybe<NumericRange>;
+    between?: InputMaybe<NumericRange>;
+    equal?: InputMaybe<Scalars['Int']>;
+    greaterThan?: InputMaybe<Scalars['Int']>;
+    greaterThanEqual?: InputMaybe<Scalars['Int']>;
+    in?: InputMaybe<Array<Scalars['Int']>>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
+    lessThan?: InputMaybe<Scalars['Int']>;
+    lessThanEqual?: InputMaybe<Scalars['Int']>;
   };
 
   export type NumericRange = {
@@ -208,302 +366,321 @@ export namespace GraphQL {
   }
 
   export type Pagination = {
-    limit?: Maybe<Scalars['Int']>;
-    offset?: Maybe<Scalars['Int']>;
+    limit?: InputMaybe<Scalars['Int']>;
+    offset?: InputMaybe<Scalars['Int']>;
   };
 
   export type ProcessInstance = {
     __typename?: 'ProcessInstance';
+    addons?: Maybe<Array<Scalars['String']>>;
+    businessKey?: Maybe<Scalars['String']>;
+    childProcessInstances?: Maybe<Array<ProcessInstance>>;
+    diagram?: Maybe<Scalars['String']>;
+    end?: Maybe<Scalars['DateTime']>;
+    endpoint: Scalars['String'];
+    error?: Maybe<ProcessInstanceError>;
     id: Scalars['String'];
+    lastUpdate: Scalars['DateTime'];
+    milestones?: Maybe<Array<Milestone>>;
+    nodeDefinitions?: Maybe<Array<Node>>;
+    nodes: Array<NodeInstance>;
+    parentProcessInstance?: Maybe<ProcessInstance>;
+    parentProcessInstanceId?: Maybe<Scalars['String']>;
     processId: Scalars['String'];
     processName?: Maybe<Scalars['String']>;
-    parentProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessId?: Maybe<Scalars['String']>;
     roles?: Maybe<Array<Scalars['String']>>;
-    state: ProcessInstanceState;
-    endpoint: Scalars['String'];
+    rootProcessId?: Maybe<Scalars['String']>;
+    rootProcessInstanceId?: Maybe<Scalars['String']>;
     serviceUrl?: Maybe<Scalars['String']>;
-    nodes: Array<NodeInstance>;
-    milestones?: Maybe<Array<Milestone>>;
-    variables?: Maybe<Scalars['String']>;
+    source?: Maybe<Scalars['String']>;
     start: Scalars['DateTime'];
-    end?: Maybe<Scalars['DateTime']>;
-    parentProcessInstance?: Maybe<ProcessInstance>;
-    childProcessInstances?: Maybe<Array<ProcessInstance>>;
-    error?: Maybe<ProcessInstanceError>;
-    addons?: Maybe<Array<Scalars['String']>>;
-    lastUpdate: Scalars['DateTime'];
-    businessKey?: Maybe<Scalars['String']>;
+    state: ProcessInstanceState;
+    variables?: Maybe<Scalars['String']>;
   };
 
   export type ProcessInstanceArgument = {
-    and?: Maybe<Array<ProcessInstanceArgument>>;
-    or?: Maybe<Array<ProcessInstanceArgument>>;
-    not?: Maybe<ProcessInstanceArgument>;
-    id?: Maybe<IdArgument>;
-    processId?: Maybe<StringArgument>;
-    processName?: Maybe<StringArgument>;
-    parentProcessInstanceId?: Maybe<IdArgument>;
-    rootProcessInstanceId?: Maybe<IdArgument>;
-    rootProcessId?: Maybe<StringArgument>;
-    state?: Maybe<ProcessInstanceStateArgument>;
-    error?: Maybe<ProcessInstanceErrorArgument>;
-    nodes?: Maybe<NodeInstanceArgument>;
-    milestones?: Maybe<MilestoneArgument>;
-    endpoint?: Maybe<StringArgument>;
-    roles?: Maybe<StringArrayArgument>;
-    start?: Maybe<DateArgument>;
-    end?: Maybe<DateArgument>;
-    addons?: Maybe<StringArrayArgument>;
-    lastUpdate?: Maybe<DateArgument>;
-    businessKey?: Maybe<StringArgument>;
+    addons?: InputMaybe<StringArrayArgument>;
+    and?: InputMaybe<Array<ProcessInstanceArgument>>;
+    businessKey?: InputMaybe<StringArgument>;
+    end?: InputMaybe<DateArgument>;
+    endpoint?: InputMaybe<StringArgument>;
+    error?: InputMaybe<ProcessInstanceErrorArgument>;
+    id?: InputMaybe<IdArgument>;
+    lastUpdate?: InputMaybe<DateArgument>;
+    milestones?: InputMaybe<MilestoneArgument>;
+    nodes?: InputMaybe<NodeInstanceArgument>;
+    not?: InputMaybe<ProcessInstanceArgument>;
+    or?: InputMaybe<Array<ProcessInstanceArgument>>;
+    parentProcessInstanceId?: InputMaybe<IdArgument>;
+    processId?: InputMaybe<StringArgument>;
+    processName?: InputMaybe<StringArgument>;
+    roles?: InputMaybe<StringArrayArgument>;
+    rootProcessId?: InputMaybe<StringArgument>;
+    rootProcessInstanceId?: InputMaybe<IdArgument>;
+    start?: InputMaybe<DateArgument>;
+    state?: InputMaybe<ProcessInstanceStateArgument>;
   };
 
   export type ProcessInstanceError = {
     __typename?: 'ProcessInstanceError';
-    nodeDefinitionId: Scalars['String'];
     message?: Maybe<Scalars['String']>;
+    nodeDefinitionId: Scalars['String'];
   };
 
   export type ProcessInstanceErrorArgument = {
-    nodeDefinitionId?: Maybe<StringArgument>;
-    message?: Maybe<StringArgument>;
+    message?: InputMaybe<StringArgument>;
+    nodeDefinitionId?: InputMaybe<StringArgument>;
   };
 
   export type ProcessInstanceErrorOrderBy = {
-    nodeDefinitionId?: Maybe<OrderBy>;
-    message?: Maybe<OrderBy>;
+    message?: InputMaybe<OrderBy>;
+    nodeDefinitionId?: InputMaybe<OrderBy>;
   };
 
   export type ProcessInstanceMeta = {
     __typename?: 'ProcessInstanceMeta';
+    businessKey?: Maybe<Scalars['String']>;
+    end?: Maybe<Scalars['DateTime']>;
+    endpoint: Scalars['String'];
     id: Scalars['String'];
+    lastUpdate: Scalars['DateTime'];
+    parentProcessInstanceId?: Maybe<Scalars['String']>;
     processId: Scalars['String'];
     processName?: Maybe<Scalars['String']>;
-    parentProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessId?: Maybe<Scalars['String']>;
     roles?: Maybe<Array<Scalars['String']>>;
-    state: ProcessInstanceState;
-    endpoint: Scalars['String'];
+    rootProcessId?: Maybe<Scalars['String']>;
+    rootProcessInstanceId?: Maybe<Scalars['String']>;
     serviceUrl?: Maybe<Scalars['String']>;
     start: Scalars['DateTime'];
-    end?: Maybe<Scalars['DateTime']>;
-    lastUpdate: Scalars['DateTime'];
-    businessKey?: Maybe<Scalars['String']>;
+    state: ProcessInstanceState;
   };
 
   export type ProcessInstanceMetaArgument = {
-    id?: Maybe<IdArgument>;
-    processId?: Maybe<StringArgument>;
-    processName?: Maybe<StringArgument>;
-    parentProcessInstanceId?: Maybe<IdArgument>;
-    rootProcessInstanceId?: Maybe<IdArgument>;
-    rootProcessId?: Maybe<StringArgument>;
-    state?: Maybe<ProcessInstanceStateArgument>;
-    endpoint?: Maybe<StringArgument>;
-    roles?: Maybe<StringArrayArgument>;
-    start?: Maybe<DateArgument>;
-    end?: Maybe<DateArgument>;
-    businessKey?: Maybe<StringArgument>;
+    businessKey?: InputMaybe<StringArgument>;
+    end?: InputMaybe<DateArgument>;
+    endpoint?: InputMaybe<StringArgument>;
+    id?: InputMaybe<IdArgument>;
+    parentProcessInstanceId?: InputMaybe<IdArgument>;
+    processId?: InputMaybe<StringArgument>;
+    processName?: InputMaybe<StringArgument>;
+    roles?: InputMaybe<StringArrayArgument>;
+    rootProcessId?: InputMaybe<StringArgument>;
+    rootProcessInstanceId?: InputMaybe<IdArgument>;
+    start?: InputMaybe<DateArgument>;
+    state?: InputMaybe<ProcessInstanceStateArgument>;
   };
 
   export type ProcessInstanceOrderBy = {
-    processId?: Maybe<OrderBy>;
-    processName?: Maybe<OrderBy>;
-    rootProcessId?: Maybe<OrderBy>;
-    state?: Maybe<OrderBy>;
-    start?: Maybe<OrderBy>;
-    end?: Maybe<OrderBy>;
-    error?: Maybe<ProcessInstanceErrorOrderBy>;
-    lastUpdate?: Maybe<OrderBy>;
-    businessKey?: Maybe<OrderBy>;
+    businessKey?: InputMaybe<OrderBy>;
+    end?: InputMaybe<OrderBy>;
+    error?: InputMaybe<ProcessInstanceErrorOrderBy>;
+    lastUpdate?: InputMaybe<OrderBy>;
+    processId?: InputMaybe<OrderBy>;
+    processName?: InputMaybe<OrderBy>;
+    rootProcessId?: InputMaybe<OrderBy>;
+    start?: InputMaybe<OrderBy>;
+    state?: InputMaybe<OrderBy>;
   };
 
   export enum ProcessInstanceState {
-    Pending = 'PENDING',
+    Aborted = 'ABORTED',
     Active = 'ACTIVE',
     Completed = 'COMPLETED',
-    Aborted = 'ABORTED',
-    Suspended = 'SUSPENDED',
-    Error = 'ERROR'
+    Error = 'ERROR',
+    Pending = 'PENDING',
+    Suspended = 'SUSPENDED'
   }
 
   export type ProcessInstanceStateArgument = {
-    equal?: Maybe<ProcessInstanceState>;
-    in?: Maybe<Array<Maybe<ProcessInstanceState>>>;
+    equal?: InputMaybe<ProcessInstanceState>;
+    in?: InputMaybe<Array<InputMaybe<ProcessInstanceState>>>;
   };
 
   export type Query = {
     __typename?: 'Query';
+    Jobs?: Maybe<Array<Maybe<Job>>>;
     ProcessInstances?: Maybe<Array<Maybe<ProcessInstance>>>;
     UserTaskInstances?: Maybe<Array<Maybe<UserTaskInstance>>>;
-    Jobs?: Maybe<Array<Maybe<Job>>>;
-  };
-
-  export type QueryProcessInstancesArgs = {
-    where?: Maybe<ProcessInstanceArgument>;
-    orderBy?: Maybe<ProcessInstanceOrderBy>;
-    pagination?: Maybe<Pagination>;
-  };
-
-  export type QueryUserTaskInstancesArgs = {
-    where?: Maybe<UserTaskInstanceArgument>;
-    orderBy?: Maybe<UserTaskInstanceOrderBy>;
-    pagination?: Maybe<Pagination>;
   };
 
   export type QueryJobsArgs = {
-    where?: Maybe<JobArgument>;
-    orderBy?: Maybe<JobOrderBy>;
-    pagination?: Maybe<Pagination>;
+    orderBy?: InputMaybe<JobOrderBy>;
+    pagination?: InputMaybe<Pagination>;
+    where?: InputMaybe<JobArgument>;
+  };
+
+  export type QueryProcessInstancesArgs = {
+    orderBy?: InputMaybe<ProcessInstanceOrderBy>;
+    pagination?: InputMaybe<Pagination>;
+    where?: InputMaybe<ProcessInstanceArgument>;
+  };
+
+  export type QueryUserTaskInstancesArgs = {
+    orderBy?: InputMaybe<UserTaskInstanceOrderBy>;
+    pagination?: InputMaybe<Pagination>;
+    where?: InputMaybe<UserTaskInstanceArgument>;
   };
 
   export type StringArgument = {
-    in?: Maybe<Array<Scalars['String']>>;
-    like?: Maybe<Scalars['String']>;
-    isNull?: Maybe<Scalars['Boolean']>;
-    equal?: Maybe<Scalars['String']>;
+    equal?: InputMaybe<Scalars['String']>;
+    in?: InputMaybe<Array<Scalars['String']>>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
+    like?: InputMaybe<Scalars['String']>;
   };
 
   export type StringArrayArgument = {
-    contains?: Maybe<Scalars['String']>;
-    containsAll?: Maybe<Array<Scalars['String']>>;
-    containsAny?: Maybe<Array<Scalars['String']>>;
-    isNull?: Maybe<Scalars['Boolean']>;
+    contains?: InputMaybe<Scalars['String']>;
+    containsAll?: InputMaybe<Array<Scalars['String']>>;
+    containsAny?: InputMaybe<Array<Scalars['String']>>;
+    isNull?: InputMaybe<Scalars['Boolean']>;
   };
 
   export type Subscription = {
     __typename?: 'Subscription';
+    JobAdded: Job;
+    JobUpdated: Job;
     ProcessInstanceAdded: ProcessInstance;
     ProcessInstanceUpdated: ProcessInstance;
     UserTaskInstanceAdded: UserTaskInstance;
     UserTaskInstanceUpdated: UserTaskInstance;
-    JobAdded: Job;
-    JobUpdated: Job;
   };
 
   export type UserTaskInstance = {
     __typename?: 'UserTaskInstance';
-    id: Scalars['String'];
-    description?: Maybe<Scalars['String']>;
-    name?: Maybe<Scalars['String']>;
-    priority?: Maybe<Scalars['String']>;
-    processInstanceId: Scalars['String'];
-    processId: Scalars['String'];
-    rootProcessInstanceId?: Maybe<Scalars['String']>;
-    rootProcessId?: Maybe<Scalars['String']>;
-    state: Scalars['String'];
     actualOwner?: Maybe<Scalars['String']>;
     adminGroups?: Maybe<Array<Scalars['String']>>;
     adminUsers?: Maybe<Array<Scalars['String']>>;
+    attachments?: Maybe<Array<Attachment>>;
+    comments?: Maybe<Array<Comment>>;
     completed?: Maybe<Scalars['DateTime']>;
-    started: Scalars['DateTime'];
+    description?: Maybe<Scalars['String']>;
+    endpoint?: Maybe<Scalars['String']>;
     excludedUsers?: Maybe<Array<Scalars['String']>>;
+    id: Scalars['String'];
+    inputs?: Maybe<Scalars['String']>;
+    lastUpdate: Scalars['DateTime'];
+    name?: Maybe<Scalars['String']>;
+    outputs?: Maybe<Scalars['String']>;
     potentialGroups?: Maybe<Array<Scalars['String']>>;
     potentialUsers?: Maybe<Array<Scalars['String']>>;
-    inputs?: Maybe<Scalars['String']>;
-    outputs?: Maybe<Scalars['String']>;
+    priority?: Maybe<Scalars['String']>;
+    processId: Scalars['String'];
+    processInstanceId: Scalars['String'];
     referenceName?: Maybe<Scalars['String']>;
-    lastUpdate: Scalars['DateTime'];
-    endpoint?: Maybe<Scalars['String']>;
+    rootProcessId?: Maybe<Scalars['String']>;
+    rootProcessInstanceId?: Maybe<Scalars['String']>;
+    schema?: Maybe<Scalars['String']>;
+    started: Scalars['DateTime'];
+    state: Scalars['String'];
+  };
+
+  export type UserTaskInstanceSchemaArgs = {
+    groups?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+    user?: InputMaybe<Scalars['String']>;
   };
 
   export type UserTaskInstanceArgument = {
-    and?: Maybe<Array<UserTaskInstanceArgument>>;
-    or?: Maybe<Array<UserTaskInstanceArgument>>;
-    not?: Maybe<UserTaskInstanceArgument>;
-    state?: Maybe<StringArgument>;
-    id?: Maybe<IdArgument>;
-    description?: Maybe<StringArgument>;
-    name?: Maybe<StringArgument>;
-    priority?: Maybe<StringArgument>;
-    processId?: Maybe<StringArgument>;
-    processInstanceId?: Maybe<IdArgument>;
-    actualOwner?: Maybe<StringArgument>;
-    potentialUsers?: Maybe<StringArrayArgument>;
-    potentialGroups?: Maybe<StringArrayArgument>;
-    excludedUsers?: Maybe<StringArrayArgument>;
-    adminGroups?: Maybe<StringArrayArgument>;
-    adminUsers?: Maybe<StringArrayArgument>;
-    completed?: Maybe<DateArgument>;
-    started?: Maybe<DateArgument>;
-    referenceName?: Maybe<StringArgument>;
-    lastUpdate?: Maybe<DateArgument>;
+    actualOwner?: InputMaybe<StringArgument>;
+    adminGroups?: InputMaybe<StringArrayArgument>;
+    adminUsers?: InputMaybe<StringArrayArgument>;
+    and?: InputMaybe<Array<UserTaskInstanceArgument>>;
+    attachments?: InputMaybe<AttachmentArgument>;
+    comments?: InputMaybe<CommentArgument>;
+    completed?: InputMaybe<DateArgument>;
+    description?: InputMaybe<StringArgument>;
+    excludedUsers?: InputMaybe<StringArrayArgument>;
+    id?: InputMaybe<IdArgument>;
+    lastUpdate?: InputMaybe<DateArgument>;
+    name?: InputMaybe<StringArgument>;
+    not?: InputMaybe<UserTaskInstanceArgument>;
+    or?: InputMaybe<Array<UserTaskInstanceArgument>>;
+    potentialGroups?: InputMaybe<StringArrayArgument>;
+    potentialUsers?: InputMaybe<StringArrayArgument>;
+    priority?: InputMaybe<StringArgument>;
+    processId?: InputMaybe<StringArgument>;
+    processInstanceId?: InputMaybe<IdArgument>;
+    referenceName?: InputMaybe<StringArgument>;
+    started?: InputMaybe<DateArgument>;
+    state?: InputMaybe<StringArgument>;
   };
 
   export type UserTaskInstanceMeta = {
     __typename?: 'UserTaskInstanceMeta';
-    id: Scalars['String'];
-    description?: Maybe<Scalars['String']>;
-    name?: Maybe<Scalars['String']>;
-    priority?: Maybe<Scalars['String']>;
-    processInstanceId: Scalars['String'];
-    state: Scalars['String'];
     actualOwner?: Maybe<Scalars['String']>;
     adminGroups?: Maybe<Array<Scalars['String']>>;
     adminUsers?: Maybe<Array<Scalars['String']>>;
+    attachments?: Maybe<Array<Attachment>>;
+    comments?: Maybe<Array<Comment>>;
     completed?: Maybe<Scalars['DateTime']>;
-    started: Scalars['DateTime'];
+    description?: Maybe<Scalars['String']>;
     excludedUsers?: Maybe<Array<Scalars['String']>>;
+    id: Scalars['String'];
+    lastUpdate: Scalars['DateTime'];
+    name?: Maybe<Scalars['String']>;
     potentialGroups?: Maybe<Array<Scalars['String']>>;
     potentialUsers?: Maybe<Array<Scalars['String']>>;
+    priority?: Maybe<Scalars['String']>;
+    processInstanceId: Scalars['String'];
     referenceName?: Maybe<Scalars['String']>;
-    lastUpdate: Scalars['DateTime'];
+    started: Scalars['DateTime'];
+    state: Scalars['String'];
   };
 
   export type UserTaskInstanceMetaArgument = {
-    state?: Maybe<StringArgument>;
-    id?: Maybe<IdArgument>;
-    description?: Maybe<StringArgument>;
-    name?: Maybe<StringArgument>;
-    priority?: Maybe<StringArgument>;
-    processInstanceId?: Maybe<IdArgument>;
-    actualOwner?: Maybe<StringArgument>;
-    potentialUsers?: Maybe<StringArrayArgument>;
-    potentialGroups?: Maybe<StringArrayArgument>;
-    excludedUsers?: Maybe<StringArrayArgument>;
-    adminGroups?: Maybe<StringArrayArgument>;
-    adminUsers?: Maybe<StringArrayArgument>;
-    completed?: Maybe<DateArgument>;
-    started?: Maybe<DateArgument>;
-    referenceName?: Maybe<StringArgument>;
+    actualOwner?: InputMaybe<StringArgument>;
+    adminGroups?: InputMaybe<StringArrayArgument>;
+    adminUsers?: InputMaybe<StringArrayArgument>;
+    completed?: InputMaybe<DateArgument>;
+    description?: InputMaybe<StringArgument>;
+    excludedUsers?: InputMaybe<StringArrayArgument>;
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
+    potentialGroups?: InputMaybe<StringArrayArgument>;
+    potentialUsers?: InputMaybe<StringArrayArgument>;
+    priority?: InputMaybe<StringArgument>;
+    processInstanceId?: InputMaybe<IdArgument>;
+    referenceName?: InputMaybe<StringArgument>;
+    started?: InputMaybe<DateArgument>;
+    state?: InputMaybe<StringArgument>;
   };
 
   export type UserTaskInstanceOrderBy = {
-    state?: Maybe<OrderBy>;
-    actualOwner?: Maybe<OrderBy>;
-    description?: Maybe<OrderBy>;
-    name?: Maybe<OrderBy>;
-    priority?: Maybe<OrderBy>;
-    processId?: Maybe<OrderBy>;
-    completed?: Maybe<OrderBy>;
-    started?: Maybe<OrderBy>;
-    referenceName?: Maybe<OrderBy>;
-    lastUpdate?: Maybe<OrderBy>;
+    actualOwner?: InputMaybe<OrderBy>;
+    completed?: InputMaybe<OrderBy>;
+    description?: InputMaybe<OrderBy>;
+    lastUpdate?: InputMaybe<OrderBy>;
+    name?: InputMaybe<OrderBy>;
+    priority?: InputMaybe<OrderBy>;
+    processId?: InputMaybe<OrderBy>;
+    referenceName?: InputMaybe<OrderBy>;
+    started?: InputMaybe<OrderBy>;
+    state?: InputMaybe<OrderBy>;
   };
 
   /**
    * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
    *
-   * In some cases, you need to provide options to alter GraphQL's execution behavior
-   * in ways field arguments will not suffice, such as conditionally including or
-   * skipping a field. Directives provide this by describing additional information
-   * to the executor.
+   * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
    */
   export type __Directive = {
     __typename?: '__Directive';
     name: Scalars['String'];
     description?: Maybe<Scalars['String']>;
+    isRepeatable: Scalars['Boolean'];
     locations: Array<__DirectiveLocation>;
     args: Array<__InputValue>;
   };
 
   /**
-   * A Directive can be adjacent to many parts of the GraphQL language, a
-   * __DirectiveLocation describes one such possible adjacencies.
+   * A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
+   *
+   * In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
    */
+  export type __DirectiveArgsArgs = {
+    includeDeprecated?: InputMaybe<Scalars['Boolean']>;
+  };
+
+  /** A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies. */
   export enum __DirectiveLocation {
     /** Location adjacent to a query operation. */
     Query = 'QUERY',
@@ -545,11 +722,7 @@ export namespace GraphQL {
     InputFieldDefinition = 'INPUT_FIELD_DEFINITION'
   }
 
-  /**
-   * One possible value for a given Enum. Enum values are unique values, not a
-   * placeholder for a string or numeric value. However an Enum value is returned in
-   * a JSON response as a string.
-   */
+  /** One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string. */
   export type __EnumValue = {
     __typename?: '__EnumValue';
     name: Scalars['String'];
@@ -558,10 +731,7 @@ export namespace GraphQL {
     deprecationReason?: Maybe<Scalars['String']>;
   };
 
-  /**
-   * Object and Interface types are described by a list of Fields, each of which has
-   * a name, potentially a list of arguments, and a return type.
-   */
+  /** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
   export type __Field = {
     __typename?: '__Field';
     name: Scalars['String'];
@@ -572,11 +742,12 @@ export namespace GraphQL {
     deprecationReason?: Maybe<Scalars['String']>;
   };
 
-  /**
-   * Arguments provided to Fields or Directives and the input fields of an
-   * InputObject are represented as Input Values which describe their type and
-   * optionally a default value.
-   */
+  /** Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type. */
+  export type __FieldArgsArgs = {
+    includeDeprecated?: InputMaybe<Scalars['Boolean']>;
+  };
+
+  /** Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value. */
   export type __InputValue = {
     __typename?: '__InputValue';
     name: Scalars['String'];
@@ -584,15 +755,14 @@ export namespace GraphQL {
     type: __Type;
     /** A GraphQL-formatted string representing the default value for this input value. */
     defaultValue?: Maybe<Scalars['String']>;
+    isDeprecated: Scalars['Boolean'];
+    deprecationReason?: Maybe<Scalars['String']>;
   };
 
-  /**
-   * A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all
-   * available types and directives on the server, as well as the entry points for
-   * query, mutation, and subscription operations.
-   */
+  /** A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations. */
   export type __Schema = {
     __typename?: '__Schema';
+    description?: Maybe<Scalars['String']>;
     /** A list of all types supported by this server. */
     types: Array<__Type>;
     /** The type that query operations will be rooted at. */
@@ -606,20 +776,16 @@ export namespace GraphQL {
   };
 
   /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of
-   * types in GraphQL as represented by the `__TypeKind` enum.
+   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
    *
-   * Depending on the kind of a type, certain fields describe information about that
-   * type. Scalar types provide no information beyond a name and description, while
-   * Enum types provide their values. Object and Interface types provide the fields
-   * they describe. Abstract types, Union and Interface, provide the Object types
-   * possible at runtime. List and NonNull types compose other types.
+   * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
    */
   export type __Type = {
     __typename?: '__Type';
     kind: __TypeKind;
     name?: Maybe<Scalars['String']>;
     description?: Maybe<Scalars['String']>;
+    specifiedByUrl?: Maybe<Scalars['String']>;
     fields?: Maybe<Array<__Field>>;
     interfaces?: Maybe<Array<__Type>>;
     possibleTypes?: Maybe<Array<__Type>>;
@@ -629,31 +795,30 @@ export namespace GraphQL {
   };
 
   /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of
-   * types in GraphQL as represented by the `__TypeKind` enum.
+   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
    *
-   * Depending on the kind of a type, certain fields describe information about that
-   * type. Scalar types provide no information beyond a name and description, while
-   * Enum types provide their values. Object and Interface types provide the fields
-   * they describe. Abstract types, Union and Interface, provide the Object types
-   * possible at runtime. List and NonNull types compose other types.
+   * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
    */
   export type __TypeFieldsArgs = {
-    includeDeprecated?: Maybe<Scalars['Boolean']>;
+    includeDeprecated?: InputMaybe<Scalars['Boolean']>;
   };
 
   /**
-   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of
-   * types in GraphQL as represented by the `__TypeKind` enum.
+   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
    *
-   * Depending on the kind of a type, certain fields describe information about that
-   * type. Scalar types provide no information beyond a name and description, while
-   * Enum types provide their values. Object and Interface types provide the fields
-   * they describe. Abstract types, Union and Interface, provide the Object types
-   * possible at runtime. List and NonNull types compose other types.
+   * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
    */
   export type __TypeEnumValuesArgs = {
-    includeDeprecated?: Maybe<Scalars['Boolean']>;
+    includeDeprecated?: InputMaybe<Scalars['Boolean']>;
+  };
+
+  /**
+   * The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+   *
+   * Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+   */
+  export type __TypeInputFieldsArgs = {
+    includeDeprecated?: InputMaybe<Scalars['Boolean']>;
   };
 
   /** An enum describing what kind of type a given `__Type` is. */
@@ -662,7 +827,7 @@ export namespace GraphQL {
     Scalar = 'SCALAR',
     /** Indicates this type is an object. `fields` and `interfaces` are valid fields. */
     Object = 'OBJECT',
-    /** Indicates this type is an interface. `fields` and `possibleTypes` are valid fields. */
+    /** Indicates this type is an interface. `fields`, `interfaces`, and `possibleTypes` are valid fields. */
     Interface = 'INTERFACE',
     /** Indicates this type is a union. `possibleTypes` is a valid field. */
     Union = 'UNION',
@@ -677,504 +842,683 @@ export namespace GraphQL {
   }
 
   export type GetProcessInstancesQueryVariables = Exact<{
-    where?: Maybe<ProcessInstanceArgument>;
-    offset?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<ProcessInstanceOrderBy>;
+    where?: InputMaybe<ProcessInstanceArgument>;
+    offset?: InputMaybe<Scalars['Int']>;
+    limit?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<ProcessInstanceOrderBy>;
   }>;
 
-  export type GetProcessInstancesQuery = { __typename?: 'Query' } & {
-    ProcessInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'ProcessInstance' } & Pick<
-            ProcessInstance,
-            | 'id'
-            | 'processId'
-            | 'processName'
-            | 'parentProcessInstanceId'
-            | 'rootProcessInstanceId'
-            | 'roles'
-            | 'state'
-            | 'start'
-            | 'lastUpdate'
-            | 'addons'
-            | 'businessKey'
-            | 'serviceUrl'
-          > & {
-              error?: Maybe<
-                { __typename?: 'ProcessInstanceError' } & Pick<
-                  ProcessInstanceError,
-                  'nodeDefinitionId' | 'message'
-                >
-              >;
+  export type GetProcessInstancesQuery = {
+    __typename?: 'Query';
+    ProcessInstances?:
+      | Array<
+          | {
+              __typename?: 'ProcessInstance';
+              id: string;
+              processId: string;
+              processName?: string | null | undefined;
+              parentProcessInstanceId?: string | null | undefined;
+              rootProcessInstanceId?: string | null | undefined;
+              roles?: Array<string> | null | undefined;
+              state: ProcessInstanceState;
+              start: any;
+              lastUpdate: any;
+              addons?: Array<string> | null | undefined;
+              businessKey?: string | null | undefined;
+              serviceUrl?: string | null | undefined;
+              error?:
+                | {
+                    __typename?: 'ProcessInstanceError';
+                    nodeDefinitionId: string;
+                    message?: string | null | undefined;
+                  }
+                | null
+                | undefined;
             }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetChildInstancesQueryVariables = Exact<{
-    rootProcessInstanceId?: Maybe<Scalars['String']>;
+    rootProcessInstanceId?: InputMaybe<Scalars['String']>;
   }>;
 
-  export type GetChildInstancesQuery = { __typename?: 'Query' } & {
-    ProcessInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'ProcessInstance' } & Pick<
-            ProcessInstance,
-            | 'id'
-            | 'processId'
-            | 'processName'
-            | 'parentProcessInstanceId'
-            | 'rootProcessInstanceId'
-            | 'roles'
-            | 'state'
-            | 'start'
-            | 'lastUpdate'
-            | 'serviceUrl'
-            | 'addons'
-            | 'businessKey'
-          > & {
-              error?: Maybe<
-                { __typename?: 'ProcessInstanceError' } & Pick<
-                  ProcessInstanceError,
-                  'nodeDefinitionId' | 'message'
-                >
-              >;
+  export type GetChildInstancesQuery = {
+    __typename?: 'Query';
+    ProcessInstances?:
+      | Array<
+          | {
+              __typename?: 'ProcessInstance';
+              id: string;
+              processId: string;
+              processName?: string | null | undefined;
+              parentProcessInstanceId?: string | null | undefined;
+              rootProcessInstanceId?: string | null | undefined;
+              roles?: Array<string> | null | undefined;
+              state: ProcessInstanceState;
+              start: any;
+              lastUpdate: any;
+              serviceUrl?: string | null | undefined;
+              addons?: Array<string> | null | undefined;
+              businessKey?: string | null | undefined;
+              error?:
+                | {
+                    __typename?: 'ProcessInstanceError';
+                    nodeDefinitionId: string;
+                    message?: string | null | undefined;
+                  }
+                | null
+                | undefined;
             }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetProcessInstanceByIdQueryVariables = Exact<{
-    id?: Maybe<Scalars['String']>;
+    id?: InputMaybe<Scalars['String']>;
   }>;
 
-  export type GetProcessInstanceByIdQuery = { __typename?: 'Query' } & {
-    ProcessInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'ProcessInstance' } & Pick<
-            ProcessInstance,
-            | 'id'
-            | 'processId'
-            | 'processName'
-            | 'businessKey'
-            | 'parentProcessInstanceId'
-            | 'roles'
-            | 'variables'
-            | 'state'
-            | 'start'
-            | 'lastUpdate'
-            | 'end'
-            | 'addons'
-            | 'endpoint'
-            | 'serviceUrl'
-          > & {
-              parentProcessInstance?: Maybe<
-                { __typename?: 'ProcessInstance' } & Pick<
-                  ProcessInstance,
-                  'id' | 'processName' | 'businessKey'
-                >
-              >;
-              error?: Maybe<
-                { __typename?: 'ProcessInstanceError' } & Pick<
-                  ProcessInstanceError,
-                  'nodeDefinitionId' | 'message'
-                >
-              >;
-              childProcessInstances?: Maybe<
-                Array<
-                  { __typename?: 'ProcessInstance' } & Pick<
-                    ProcessInstance,
-                    'id' | 'processName' | 'businessKey'
-                  >
-                >
-              >;
-              nodes: Array<
-                { __typename?: 'NodeInstance' } & Pick<
-                  NodeInstance,
-                  | 'id'
-                  | 'nodeId'
-                  | 'name'
-                  | 'enter'
-                  | 'exit'
-                  | 'type'
-                  | 'definitionId'
-                >
-              >;
-              milestones?: Maybe<
-                Array<
-                  { __typename?: 'Milestone' } & Pick<
-                    Milestone,
-                    'id' | 'name' | 'status'
-                  >
-                >
-              >;
+  export type GetProcessInstanceByIdQuery = {
+    __typename?: 'Query';
+    ProcessInstances?:
+      | Array<
+          | {
+              __typename?: 'ProcessInstance';
+              id: string;
+              processId: string;
+              processName?: string | null | undefined;
+              businessKey?: string | null | undefined;
+              parentProcessInstanceId?: string | null | undefined;
+              roles?: Array<string> | null | undefined;
+              variables?: string | null | undefined;
+              state: ProcessInstanceState;
+              start: any;
+              lastUpdate: any;
+              end?: any | null | undefined;
+              addons?: Array<string> | null | undefined;
+              endpoint: string;
+              serviceUrl?: string | null | undefined;
+              parentProcessInstance?:
+                | {
+                    __typename?: 'ProcessInstance';
+                    id: string;
+                    processName?: string | null | undefined;
+                    businessKey?: string | null | undefined;
+                  }
+                | null
+                | undefined;
+              error?:
+                | {
+                    __typename?: 'ProcessInstanceError';
+                    nodeDefinitionId: string;
+                    message?: string | null | undefined;
+                  }
+                | null
+                | undefined;
+              childProcessInstances?:
+                | Array<{
+                    __typename?: 'ProcessInstance';
+                    id: string;
+                    processName?: string | null | undefined;
+                    businessKey?: string | null | undefined;
+                  }>
+                | null
+                | undefined;
+              nodes: Array<{
+                __typename?: 'NodeInstance';
+                id: string;
+                nodeId: string;
+                name: string;
+                enter: any;
+                exit?: any | null | undefined;
+                type: string;
+                definitionId: string;
+              }>;
+              milestones?:
+                | Array<{
+                    __typename?: 'Milestone';
+                    id: string;
+                    name: string;
+                    status: MilestoneStatus;
+                  }>
+                | null
+                | undefined;
             }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetColumnPickerAttributesQueryVariables = Exact<{
     columnPickerType: Scalars['String'];
   }>;
 
-  export type GetColumnPickerAttributesQuery = { __typename?: 'Query' } & {
-    __type?: Maybe<
-      { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-          fields?: Maybe<
-            Array<
-              { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-                  type: { __typename?: '__Type' } & Pick<
-                    __Type,
-                    'name' | 'kind'
-                  > & {
-                      fields?: Maybe<
-                        Array<
-                          { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-                              type: { __typename?: '__Type' } & Pick<
-                                __Type,
-                                'name' | 'kind'
-                              >;
-                            }
-                        >
-                      >;
-                    };
-                }
-            >
-          >;
+  export type GetColumnPickerAttributesQuery = {
+    __typename?: 'Query';
+    __type?:
+      | {
+          __typename?: '__Type';
+          name?: string | null | undefined;
+          fields?:
+            | Array<{
+                __typename?: '__Field';
+                name: string;
+                type: {
+                  __typename?: '__Type';
+                  name?: string | null | undefined;
+                  kind: __TypeKind;
+                  fields?:
+                    | Array<{
+                        __typename?: '__Field';
+                        name: string;
+                        type: {
+                          __typename?: '__Type';
+                          name?: string | null | undefined;
+                          kind: __TypeKind;
+                        };
+                      }>
+                    | null
+                    | undefined;
+                };
+              }>
+            | null
+            | undefined;
         }
-    >;
+      | null
+      | undefined;
   };
 
   export type GetQueryTypesQueryVariables = Exact<{ [key: string]: never }>;
 
-  export type GetQueryTypesQuery = { __typename?: 'Query' } & {
-    __schema: { __typename?: '__Schema' } & {
-      queryType: Array<
-        { __typename?: '__Type' } & Pick<__Type, 'name' | 'kind'> & {
-            fields?: Maybe<
-              Array<
-                { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-                    type: { __typename?: '__Type' } & Pick<
-                      __Type,
-                      'name' | 'kind'
-                    >;
-                  }
-              >
-            >;
-            inputFields?: Maybe<
-              Array<
-                { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-                    type: { __typename?: '__Type' } & Pick<
-                      __Type,
-                      'name' | 'kind'
-                    >;
-                  }
-              >
-            >;
-          }
-      >;
+  export type GetQueryTypesQuery = {
+    __typename?: 'Query';
+    __schema: {
+      __typename?: '__Schema';
+      queryType: Array<{
+        __typename?: '__Type';
+        name?: string | null | undefined;
+        kind: __TypeKind;
+        fields?:
+          | Array<{
+              __typename?: '__Field';
+              name: string;
+              type: {
+                __typename?: '__Type';
+                name?: string | null | undefined;
+                kind: __TypeKind;
+              };
+            }>
+          | null
+          | undefined;
+        inputFields?:
+          | Array<{
+              __typename?: '__InputValue';
+              name: string;
+              type: {
+                __typename?: '__Type';
+                name?: string | null | undefined;
+                kind: __TypeKind;
+              };
+            }>
+          | null
+          | undefined;
+      }>;
     };
   };
 
   export type GetQueryFieldsQueryVariables = Exact<{ [key: string]: never }>;
 
-  export type GetQueryFieldsQuery = { __typename?: 'Query' } & {
-    __type?: Maybe<
-      { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-          fields?: Maybe<
-            Array<
-              { __typename?: '__Field' } & Pick<__Field, 'name'> & {
-                  args: Array<
-                    { __typename?: '__InputValue' } & Pick<
-                      __InputValue,
-                      'name'
-                    > & {
-                        type: { __typename?: '__Type' } & Pick<
-                          __Type,
-                          'kind' | 'name'
-                        >;
-                      }
-                  >;
-                  type: { __typename?: '__Type' } & {
-                    ofType?: Maybe<
-                      { __typename?: '__Type' } & Pick<__Type, 'name'>
-                    >;
+  export type GetQueryFieldsQuery = {
+    __typename?: 'Query';
+    __type?:
+      | {
+          __typename?: '__Type';
+          name?: string | null | undefined;
+          fields?:
+            | Array<{
+                __typename?: '__Field';
+                name: string;
+                args: Array<{
+                  __typename?: '__InputValue';
+                  name: string;
+                  type: {
+                    __typename?: '__Type';
+                    kind: __TypeKind;
+                    name?: string | null | undefined;
                   };
-                }
-            >
-          >;
+                }>;
+                type: {
+                  __typename?: '__Type';
+                  ofType?:
+                    | {
+                        __typename?: '__Type';
+                        name?: string | null | undefined;
+                      }
+                    | null
+                    | undefined;
+                };
+              }>
+            | null
+            | undefined;
         }
-    >;
+      | null
+      | undefined;
   };
 
   export type GetInputFieldsFromQueryQueryVariables = Exact<{
     currentQuery: Scalars['String'];
   }>;
 
-  export type GetInputFieldsFromQueryQuery = { __typename?: 'Query' } & {
-    __type?: Maybe<
-      { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-          inputFields?: Maybe<
-            Array<
-              { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-                  type: { __typename?: '__Type' } & Pick<
-                    __Type,
-                    'name' | 'kind'
-                  > & {
-                      inputFields?: Maybe<
-                        Array<
-                          { __typename?: '__InputValue' } & Pick<
-                            __InputValue,
-                            'name'
-                          > & {
-                              type: { __typename?: '__Type' } & Pick<
-                                __Type,
-                                'name'
-                              >;
-                            }
-                        >
-                      >;
-                    };
-                }
-            >
-          >;
+  export type GetInputFieldsFromQueryQuery = {
+    __typename?: 'Query';
+    __type?:
+      | {
+          __typename?: '__Type';
+          name?: string | null | undefined;
+          inputFields?:
+            | Array<{
+                __typename?: '__InputValue';
+                name: string;
+                type: {
+                  __typename?: '__Type';
+                  name?: string | null | undefined;
+                  kind: __TypeKind;
+                  inputFields?:
+                    | Array<{
+                        __typename?: '__InputValue';
+                        name: string;
+                        type: {
+                          __typename?: '__Type';
+                          name?: string | null | undefined;
+                        };
+                      }>
+                    | null
+                    | undefined;
+                };
+              }>
+            | null
+            | undefined;
         }
-    >;
+      | null
+      | undefined;
   };
 
   export type GetInputFieldsFromTypeQueryVariables = Exact<{
     type: Scalars['String'];
   }>;
 
-  export type GetInputFieldsFromTypeQuery = { __typename?: 'Query' } & {
-    __type?: Maybe<
-      { __typename?: '__Type' } & Pick<__Type, 'name'> & {
-          inputFields?: Maybe<
-            Array<
-              { __typename?: '__InputValue' } & Pick<__InputValue, 'name'> & {
-                  type: { __typename?: '__Type' } & Pick<
-                    __Type,
-                    'name' | 'kind'
-                  > & {
-                      enumValues?: Maybe<
-                        Array<
-                          { __typename?: '__EnumValue' } & Pick<
-                            __EnumValue,
-                            'name'
-                          >
-                        >
-                      >;
-                      ofType?: Maybe<
-                        { __typename?: '__Type' } & Pick<
-                          __Type,
-                          'kind' | 'name'
-                        > & {
-                            enumValues?: Maybe<
-                              Array<
-                                { __typename?: '__EnumValue' } & Pick<
-                                  __EnumValue,
-                                  'name'
-                                >
-                              >
-                            >;
-                          }
-                      >;
-                    };
-                }
-            >
-          >;
+  export type GetInputFieldsFromTypeQuery = {
+    __typename?: 'Query';
+    __type?:
+      | {
+          __typename?: '__Type';
+          name?: string | null | undefined;
+          inputFields?:
+            | Array<{
+                __typename?: '__InputValue';
+                name: string;
+                type: {
+                  __typename?: '__Type';
+                  name?: string | null | undefined;
+                  kind: __TypeKind;
+                  enumValues?:
+                    | Array<{ __typename?: '__EnumValue'; name: string }>
+                    | null
+                    | undefined;
+                  ofType?:
+                    | {
+                        __typename?: '__Type';
+                        kind: __TypeKind;
+                        name?: string | null | undefined;
+                        enumValues?:
+                          | Array<{ __typename?: '__EnumValue'; name: string }>
+                          | null
+                          | undefined;
+                      }
+                    | null
+                    | undefined;
+                };
+              }>
+            | null
+            | undefined;
         }
-    >;
+      | null
+      | undefined;
   };
 
   export type GetUserTasksByStatesQueryVariables = Exact<{
-    state?: Maybe<Array<Scalars['String']>>;
-    orderBy?: Maybe<UserTaskInstanceOrderBy>;
+    state?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+    orderBy?: InputMaybe<UserTaskInstanceOrderBy>;
   }>;
 
-  export type GetUserTasksByStatesQuery = { __typename?: 'Query' } & {
-    UserTaskInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'UserTaskInstance' } & Pick<
-            UserTaskInstance,
-            | 'id'
-            | 'name'
-            | 'referenceName'
-            | 'description'
-            | 'priority'
-            | 'processInstanceId'
-            | 'processId'
-            | 'rootProcessInstanceId'
-            | 'rootProcessId'
-            | 'state'
-            | 'actualOwner'
-            | 'adminGroups'
-            | 'adminUsers'
-            | 'completed'
-            | 'started'
-            | 'excludedUsers'
-            | 'potentialGroups'
-            | 'potentialUsers'
-            | 'inputs'
-            | 'outputs'
-            | 'endpoint'
-          >
+  export type GetUserTasksByStatesQuery = {
+    __typename?: 'Query';
+    UserTaskInstances?:
+      | Array<
+          | {
+              __typename?: 'UserTaskInstance';
+              id: string;
+              name?: string | null | undefined;
+              referenceName?: string | null | undefined;
+              description?: string | null | undefined;
+              priority?: string | null | undefined;
+              processInstanceId: string;
+              processId: string;
+              rootProcessInstanceId?: string | null | undefined;
+              rootProcessId?: string | null | undefined;
+              state: string;
+              actualOwner?: string | null | undefined;
+              adminGroups?: Array<string> | null | undefined;
+              adminUsers?: Array<string> | null | undefined;
+              completed?: any | null | undefined;
+              started: any;
+              excludedUsers?: Array<string> | null | undefined;
+              potentialGroups?: Array<string> | null | undefined;
+              potentialUsers?: Array<string> | null | undefined;
+              inputs?: string | null | undefined;
+              outputs?: string | null | undefined;
+              endpoint?: string | null | undefined;
+            }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetUserTaskByIdQueryVariables = Exact<{
-    id?: Maybe<Scalars['String']>;
+    id?: InputMaybe<Scalars['String']>;
   }>;
 
-  export type GetUserTaskByIdQuery = { __typename?: 'Query' } & {
-    UserTaskInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'UserTaskInstance' } & Pick<
-            UserTaskInstance,
-            | 'id'
-            | 'description'
-            | 'name'
-            | 'priority'
-            | 'processInstanceId'
-            | 'processId'
-            | 'rootProcessInstanceId'
-            | 'rootProcessId'
-            | 'state'
-            | 'actualOwner'
-            | 'adminGroups'
-            | 'adminUsers'
-            | 'completed'
-            | 'started'
-            | 'excludedUsers'
-            | 'potentialGroups'
-            | 'potentialUsers'
-            | 'inputs'
-            | 'outputs'
-            | 'referenceName'
-            | 'endpoint'
-            | 'lastUpdate'
-          >
+  export type GetUserTaskByIdQuery = {
+    __typename?: 'Query';
+    UserTaskInstances?:
+      | Array<
+          | {
+              __typename?: 'UserTaskInstance';
+              id: string;
+              description?: string | null | undefined;
+              name?: string | null | undefined;
+              priority?: string | null | undefined;
+              processInstanceId: string;
+              processId: string;
+              rootProcessInstanceId?: string | null | undefined;
+              rootProcessId?: string | null | undefined;
+              state: string;
+              actualOwner?: string | null | undefined;
+              adminGroups?: Array<string> | null | undefined;
+              adminUsers?: Array<string> | null | undefined;
+              completed?: any | null | undefined;
+              started: any;
+              excludedUsers?: Array<string> | null | undefined;
+              potentialGroups?: Array<string> | null | undefined;
+              potentialUsers?: Array<string> | null | undefined;
+              inputs?: string | null | undefined;
+              outputs?: string | null | undefined;
+              referenceName?: string | null | undefined;
+              endpoint?: string | null | undefined;
+              lastUpdate: any;
+            }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetTasksForUserQueryVariables = Exact<{
-    whereArgument?: Maybe<UserTaskInstanceArgument>;
-    offset?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
-    orderBy?: Maybe<UserTaskInstanceOrderBy>;
+    whereArgument?: InputMaybe<UserTaskInstanceArgument>;
+    offset?: InputMaybe<Scalars['Int']>;
+    limit?: InputMaybe<Scalars['Int']>;
+    orderBy?: InputMaybe<UserTaskInstanceOrderBy>;
   }>;
 
-  export type GetTasksForUserQuery = { __typename?: 'Query' } & {
-    UserTaskInstances?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'UserTaskInstance' } & Pick<
-            UserTaskInstance,
-            | 'id'
-            | 'name'
-            | 'referenceName'
-            | 'description'
-            | 'priority'
-            | 'processInstanceId'
-            | 'processId'
-            | 'rootProcessInstanceId'
-            | 'rootProcessId'
-            | 'state'
-            | 'actualOwner'
-            | 'adminGroups'
-            | 'adminUsers'
-            | 'completed'
-            | 'started'
-            | 'excludedUsers'
-            | 'potentialGroups'
-            | 'potentialUsers'
-            | 'inputs'
-            | 'outputs'
-            | 'lastUpdate'
-            | 'endpoint'
-          >
+  export type GetTasksForUserQuery = {
+    __typename?: 'Query';
+    UserTaskInstances?:
+      | Array<
+          | {
+              __typename?: 'UserTaskInstance';
+              id: string;
+              name?: string | null | undefined;
+              referenceName?: string | null | undefined;
+              description?: string | null | undefined;
+              priority?: string | null | undefined;
+              processInstanceId: string;
+              processId: string;
+              rootProcessInstanceId?: string | null | undefined;
+              rootProcessId?: string | null | undefined;
+              state: string;
+              actualOwner?: string | null | undefined;
+              adminGroups?: Array<string> | null | undefined;
+              adminUsers?: Array<string> | null | undefined;
+              completed?: any | null | undefined;
+              started: any;
+              excludedUsers?: Array<string> | null | undefined;
+              potentialGroups?: Array<string> | null | undefined;
+              potentialUsers?: Array<string> | null | undefined;
+              inputs?: string | null | undefined;
+              outputs?: string | null | undefined;
+              lastUpdate: any;
+              endpoint?: string | null | undefined;
+            }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetJobsByProcessInstanceIdQueryVariables = Exact<{
-    processInstanceId?: Maybe<Scalars['String']>;
+    processInstanceId?: InputMaybe<Scalars['String']>;
   }>;
 
-  export type GetJobsByProcessInstanceIdQuery = { __typename?: 'Query' } & {
-    Jobs?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'Job' } & Pick<
-            Job,
-            | 'id'
-            | 'processId'
-            | 'processInstanceId'
-            | 'rootProcessId'
-            | 'status'
-            | 'expirationTime'
-            | 'priority'
-            | 'callbackEndpoint'
-            | 'repeatInterval'
-            | 'repeatLimit'
-            | 'scheduledId'
-            | 'retries'
-            | 'lastUpdate'
-            | 'endpoint'
-            | 'nodeInstanceId'
-            | 'executionCounter'
-          >
+  export type GetJobsByProcessInstanceIdQuery = {
+    __typename?: 'Query';
+    Jobs?:
+      | Array<
+          | {
+              __typename?: 'Job';
+              id: string;
+              processId?: string | null | undefined;
+              processInstanceId?: string | null | undefined;
+              rootProcessId?: string | null | undefined;
+              status: JobStatus;
+              expirationTime?: any | null | undefined;
+              priority?: number | null | undefined;
+              callbackEndpoint?: string | null | undefined;
+              repeatInterval?: number | null | undefined;
+              repeatLimit?: number | null | undefined;
+              scheduledId?: string | null | undefined;
+              retries?: number | null | undefined;
+              lastUpdate?: any | null | undefined;
+              endpoint?: string | null | undefined;
+              nodeInstanceId?: string | null | undefined;
+              executionCounter?: number | null | undefined;
+            }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
   };
 
   export type GetJobsWithFiltersQueryVariables = Exact<{
-    values?: Maybe<Array<Maybe<JobStatus>>>;
-    orderBy?: Maybe<JobOrderBy>;
-    offset?: Maybe<Scalars['Int']>;
-    limit?: Maybe<Scalars['Int']>;
+    values?: InputMaybe<Array<InputMaybe<JobStatus>> | InputMaybe<JobStatus>>;
+    orderBy?: InputMaybe<JobOrderBy>;
+    offset?: InputMaybe<Scalars['Int']>;
+    limit?: InputMaybe<Scalars['Int']>;
   }>;
 
-  export type GetJobsWithFiltersQuery = { __typename?: 'Query' } & {
-    Jobs?: Maybe<
-      Array<
-        Maybe<
-          { __typename?: 'Job' } & Pick<
-            Job,
-            | 'id'
-            | 'processId'
-            | 'processInstanceId'
-            | 'rootProcessId'
-            | 'status'
-            | 'expirationTime'
-            | 'priority'
-            | 'callbackEndpoint'
-            | 'repeatInterval'
-            | 'repeatLimit'
-            | 'scheduledId'
-            | 'retries'
-            | 'lastUpdate'
-            | 'endpoint'
-            | 'executionCounter'
-          >
+  export type GetJobsWithFiltersQuery = {
+    __typename?: 'Query';
+    Jobs?:
+      | Array<
+          | {
+              __typename?: 'Job';
+              id: string;
+              processId?: string | null | undefined;
+              processInstanceId?: string | null | undefined;
+              rootProcessId?: string | null | undefined;
+              status: JobStatus;
+              expirationTime?: any | null | undefined;
+              priority?: number | null | undefined;
+              callbackEndpoint?: string | null | undefined;
+              repeatInterval?: number | null | undefined;
+              repeatLimit?: number | null | undefined;
+              scheduledId?: string | null | undefined;
+              retries?: number | null | undefined;
+              lastUpdate?: any | null | undefined;
+              endpoint?: string | null | undefined;
+              executionCounter?: number | null | undefined;
+            }
+          | null
+          | undefined
         >
-      >
-    >;
+      | null
+      | undefined;
+  };
+
+  export type AbortProcessInstanceMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type AbortProcessInstanceMutation = {
+    __typename?: 'Mutation';
+    ProcessInstanceAbort?: string | null | undefined;
+  };
+
+  export type SkipProcessInstanceMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type SkipProcessInstanceMutation = {
+    __typename?: 'Mutation';
+    ProcessInstanceSkip?: string | null | undefined;
+  };
+
+  export type RetryProcessInstanceMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type RetryProcessInstanceMutation = {
+    __typename?: 'Mutation';
+    ProcessInstanceRetry?: string | null | undefined;
+  };
+
+  export type GetProcessInstanceSvgQueryVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type GetProcessInstanceSvgQuery = {
+    __typename?: 'Query';
+    ProcessInstances?:
+      | Array<
+          | {
+              __typename?: 'ProcessInstance';
+              diagram?: string | null | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+
+  export type GetProcessInstanceNodeDefinitionsQueryVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type GetProcessInstanceNodeDefinitionsQuery = {
+    __typename?: 'Query';
+    ProcessInstances?:
+      | Array<
+          | {
+              __typename?: 'ProcessInstance';
+              nodeDefinitions?:
+                | Array<{
+                    __typename?: 'Node';
+                    id: string;
+                    name: string;
+                    type: string;
+                    uniqueId: string;
+                    nodeDefinitionId: string;
+                  }>
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >
+      | null
+      | undefined;
+  };
+
+  export type HandleNodeTriggerMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+    nodeId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type HandleNodeTriggerMutation = {
+    __typename?: 'Mutation';
+    NodeInstanceTrigger?: string | null | undefined;
+  };
+
+  export type HandleNodeInstanceCancelMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+    nodeInstanceId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type HandleNodeInstanceCancelMutation = {
+    __typename?: 'Mutation';
+    NodeInstanceCancel?: string | null | undefined;
+  };
+
+  export type HandleNodeInstanceRetriggerMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+    nodeInstanceId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type HandleNodeInstanceRetriggerMutation = {
+    __typename?: 'Mutation';
+    NodeInstanceRetrigger?: string | null | undefined;
+  };
+
+  export type HandleProcessVariableUpdateMutationVariables = Exact<{
+    processId?: InputMaybe<Scalars['String']>;
+    processInstanceVariables?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type HandleProcessVariableUpdateMutation = {
+    __typename?: 'Mutation';
+    ProcessInstanceUpdateVariables?: string | null | undefined;
+  };
+
+  export type JobCancelMutationVariables = Exact<{
+    jobId?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type JobCancelMutation = {
+    __typename?: 'Mutation';
+    JobCancel?: string | null | undefined;
+  };
+
+  export type HandleJobRescheduleMutationVariables = Exact<{
+    jobId?: InputMaybe<Scalars['String']>;
+    data?: InputMaybe<Scalars['String']>;
+  }>;
+
+  export type HandleJobRescheduleMutation = {
+    __typename?: 'Mutation';
+    JobReschedule?: string | null | undefined;
   };
 
   export const GetProcessInstancesDocument = gql`
@@ -1234,10 +1578,11 @@ export namespace GraphQL {
       GetProcessInstancesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetProcessInstancesQuery,
       GetProcessInstancesQueryVariables
-    >(GetProcessInstancesDocument, baseOptions);
+    >(GetProcessInstancesDocument, options);
   }
   export function useGetProcessInstancesLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1245,10 +1590,11 @@ export namespace GraphQL {
       GetProcessInstancesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetProcessInstancesQuery,
       GetProcessInstancesQueryVariables
-    >(GetProcessInstancesDocument, baseOptions);
+    >(GetProcessInstancesDocument, options);
   }
   export type GetProcessInstancesQueryHookResult = ReturnType<
     typeof useGetProcessInstancesQuery
@@ -1307,10 +1653,11 @@ export namespace GraphQL {
       GetChildInstancesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetChildInstancesQuery,
       GetChildInstancesQueryVariables
-    >(GetChildInstancesDocument, baseOptions);
+    >(GetChildInstancesDocument, options);
   }
   export function useGetChildInstancesLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1318,10 +1665,11 @@ export namespace GraphQL {
       GetChildInstancesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetChildInstancesQuery,
       GetChildInstancesQueryVariables
-    >(GetChildInstancesDocument, baseOptions);
+    >(GetChildInstancesDocument, options);
   }
   export type GetChildInstancesQueryHookResult = ReturnType<
     typeof useGetChildInstancesQuery
@@ -1405,10 +1753,11 @@ export namespace GraphQL {
       GetProcessInstanceByIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetProcessInstanceByIdQuery,
       GetProcessInstanceByIdQueryVariables
-    >(GetProcessInstanceByIdDocument, baseOptions);
+    >(GetProcessInstanceByIdDocument, options);
   }
   export function useGetProcessInstanceByIdLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1416,10 +1765,11 @@ export namespace GraphQL {
       GetProcessInstanceByIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetProcessInstanceByIdQuery,
       GetProcessInstanceByIdQueryVariables
-    >(GetProcessInstanceByIdDocument, baseOptions);
+    >(GetProcessInstanceByIdDocument, options);
   }
   export type GetProcessInstanceByIdQueryHookResult = ReturnType<
     typeof useGetProcessInstanceByIdQuery
@@ -1470,15 +1820,16 @@ export namespace GraphQL {
    * });
    */
   export function useGetColumnPickerAttributesQuery(
-    baseOptions?: ApolloReactHooks.QueryHookOptions<
+    baseOptions: ApolloReactHooks.QueryHookOptions<
       GetColumnPickerAttributesQuery,
       GetColumnPickerAttributesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetColumnPickerAttributesQuery,
       GetColumnPickerAttributesQueryVariables
-    >(GetColumnPickerAttributesDocument, baseOptions);
+    >(GetColumnPickerAttributesDocument, options);
   }
   export function useGetColumnPickerAttributesLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1486,10 +1837,11 @@ export namespace GraphQL {
       GetColumnPickerAttributesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetColumnPickerAttributesQuery,
       GetColumnPickerAttributesQueryVariables
-    >(GetColumnPickerAttributesDocument, baseOptions);
+    >(GetColumnPickerAttributesDocument, options);
   }
   export type GetColumnPickerAttributesQueryHookResult = ReturnType<
     typeof useGetColumnPickerAttributesQuery
@@ -1547,10 +1899,11 @@ export namespace GraphQL {
       GetQueryTypesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetQueryTypesQuery,
       GetQueryTypesQueryVariables
-    >(GetQueryTypesDocument, baseOptions);
+    >(GetQueryTypesDocument, options);
   }
   export function useGetQueryTypesLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1558,10 +1911,11 @@ export namespace GraphQL {
       GetQueryTypesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetQueryTypesQuery,
       GetQueryTypesQueryVariables
-    >(GetQueryTypesDocument, baseOptions);
+    >(GetQueryTypesDocument, options);
   }
   export type GetQueryTypesQueryHookResult = ReturnType<
     typeof useGetQueryTypesQuery
@@ -1617,10 +1971,11 @@ export namespace GraphQL {
       GetQueryFieldsQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetQueryFieldsQuery,
       GetQueryFieldsQueryVariables
-    >(GetQueryFieldsDocument, baseOptions);
+    >(GetQueryFieldsDocument, options);
   }
   export function useGetQueryFieldsLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1628,10 +1983,11 @@ export namespace GraphQL {
       GetQueryFieldsQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetQueryFieldsQuery,
       GetQueryFieldsQueryVariables
-    >(GetQueryFieldsDocument, baseOptions);
+    >(GetQueryFieldsDocument, options);
   }
   export type GetQueryFieldsQueryHookResult = ReturnType<
     typeof useGetQueryFieldsQuery
@@ -1681,15 +2037,16 @@ export namespace GraphQL {
    * });
    */
   export function useGetInputFieldsFromQueryQuery(
-    baseOptions?: ApolloReactHooks.QueryHookOptions<
+    baseOptions: ApolloReactHooks.QueryHookOptions<
       GetInputFieldsFromQueryQuery,
       GetInputFieldsFromQueryQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetInputFieldsFromQueryQuery,
       GetInputFieldsFromQueryQueryVariables
-    >(GetInputFieldsFromQueryDocument, baseOptions);
+    >(GetInputFieldsFromQueryDocument, options);
   }
   export function useGetInputFieldsFromQueryLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1697,10 +2054,11 @@ export namespace GraphQL {
       GetInputFieldsFromQueryQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetInputFieldsFromQueryQuery,
       GetInputFieldsFromQueryQueryVariables
-    >(GetInputFieldsFromQueryDocument, baseOptions);
+    >(GetInputFieldsFromQueryDocument, options);
   }
   export type GetInputFieldsFromQueryQueryHookResult = ReturnType<
     typeof useGetInputFieldsFromQueryQuery
@@ -1754,15 +2112,16 @@ export namespace GraphQL {
    * });
    */
   export function useGetInputFieldsFromTypeQuery(
-    baseOptions?: ApolloReactHooks.QueryHookOptions<
+    baseOptions: ApolloReactHooks.QueryHookOptions<
       GetInputFieldsFromTypeQuery,
       GetInputFieldsFromTypeQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetInputFieldsFromTypeQuery,
       GetInputFieldsFromTypeQueryVariables
-    >(GetInputFieldsFromTypeDocument, baseOptions);
+    >(GetInputFieldsFromTypeDocument, options);
   }
   export function useGetInputFieldsFromTypeLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1770,10 +2129,11 @@ export namespace GraphQL {
       GetInputFieldsFromTypeQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetInputFieldsFromTypeQuery,
       GetInputFieldsFromTypeQueryVariables
-    >(GetInputFieldsFromTypeDocument, baseOptions);
+    >(GetInputFieldsFromTypeDocument, options);
   }
   export type GetInputFieldsFromTypeQueryHookResult = ReturnType<
     typeof useGetInputFieldsFromTypeQuery
@@ -1841,10 +2201,11 @@ export namespace GraphQL {
       GetUserTasksByStatesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetUserTasksByStatesQuery,
       GetUserTasksByStatesQueryVariables
-    >(GetUserTasksByStatesDocument, baseOptions);
+    >(GetUserTasksByStatesDocument, options);
   }
   export function useGetUserTasksByStatesLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1852,10 +2213,11 @@ export namespace GraphQL {
       GetUserTasksByStatesQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetUserTasksByStatesQuery,
       GetUserTasksByStatesQueryVariables
-    >(GetUserTasksByStatesDocument, baseOptions);
+    >(GetUserTasksByStatesDocument, options);
   }
   export type GetUserTasksByStatesQueryHookResult = ReturnType<
     typeof useGetUserTasksByStatesQuery
@@ -1918,10 +2280,11 @@ export namespace GraphQL {
       GetUserTaskByIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetUserTaskByIdQuery,
       GetUserTaskByIdQueryVariables
-    >(GetUserTaskByIdDocument, baseOptions);
+    >(GetUserTaskByIdDocument, options);
   }
   export function useGetUserTaskByIdLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -1929,10 +2292,11 @@ export namespace GraphQL {
       GetUserTaskByIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetUserTaskByIdQuery,
       GetUserTaskByIdQueryVariables
-    >(GetUserTaskByIdDocument, baseOptions);
+    >(GetUserTaskByIdDocument, options);
   }
   export type GetUserTaskByIdQueryHookResult = ReturnType<
     typeof useGetUserTaskByIdQuery
@@ -2007,10 +2371,11 @@ export namespace GraphQL {
       GetTasksForUserQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetTasksForUserQuery,
       GetTasksForUserQueryVariables
-    >(GetTasksForUserDocument, baseOptions);
+    >(GetTasksForUserDocument, options);
   }
   export function useGetTasksForUserLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -2018,10 +2383,11 @@ export namespace GraphQL {
       GetTasksForUserQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetTasksForUserQuery,
       GetTasksForUserQueryVariables
-    >(GetTasksForUserDocument, baseOptions);
+    >(GetTasksForUserDocument, options);
   }
   export type GetTasksForUserQueryHookResult = ReturnType<
     typeof useGetTasksForUserQuery
@@ -2078,10 +2444,11 @@ export namespace GraphQL {
       GetJobsByProcessInstanceIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetJobsByProcessInstanceIdQuery,
       GetJobsByProcessInstanceIdQueryVariables
-    >(GetJobsByProcessInstanceIdDocument, baseOptions);
+    >(GetJobsByProcessInstanceIdDocument, options);
   }
   export function useGetJobsByProcessInstanceIdLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -2089,10 +2456,11 @@ export namespace GraphQL {
       GetJobsByProcessInstanceIdQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetJobsByProcessInstanceIdQuery,
       GetJobsByProcessInstanceIdQueryVariables
-    >(GetJobsByProcessInstanceIdDocument, baseOptions);
+    >(GetJobsByProcessInstanceIdDocument, options);
   }
   export type GetJobsByProcessInstanceIdQueryHookResult = ReturnType<
     typeof useGetJobsByProcessInstanceIdQuery
@@ -2160,10 +2528,11 @@ export namespace GraphQL {
       GetJobsWithFiltersQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useQuery<
       GetJobsWithFiltersQuery,
       GetJobsWithFiltersQueryVariables
-    >(GetJobsWithFiltersDocument, baseOptions);
+    >(GetJobsWithFiltersDocument, options);
   }
   export function useGetJobsWithFiltersLazyQuery(
     baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
@@ -2171,10 +2540,11 @@ export namespace GraphQL {
       GetJobsWithFiltersQueryVariables
     >
   ) {
+    const options = { ...defaultOptions, ...baseOptions };
     return ApolloReactHooks.useLazyQuery<
       GetJobsWithFiltersQuery,
       GetJobsWithFiltersQueryVariables
-    >(GetJobsWithFiltersDocument, baseOptions);
+    >(GetJobsWithFiltersDocument, options);
   }
   export type GetJobsWithFiltersQueryHookResult = ReturnType<
     typeof useGetJobsWithFiltersQuery
@@ -2185,5 +2555,585 @@ export namespace GraphQL {
   export type GetJobsWithFiltersQueryResult = ApolloReactCommon.QueryResult<
     GetJobsWithFiltersQuery,
     GetJobsWithFiltersQueryVariables
+  >;
+  export const AbortProcessInstanceDocument = gql`
+    mutation abortProcessInstance($processId: String) {
+      ProcessInstanceAbort(id: $processId)
+    }
+  `;
+  export type AbortProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
+    AbortProcessInstanceMutation,
+    AbortProcessInstanceMutationVariables
+  >;
+
+  /**
+   * __useAbortProcessInstanceMutation__
+   *
+   * To run a mutation, you first call `useAbortProcessInstanceMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useAbortProcessInstanceMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [abortProcessInstanceMutation, { data, loading, error }] = useAbortProcessInstanceMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *   },
+   * });
+   */
+  export function useAbortProcessInstanceMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      AbortProcessInstanceMutation,
+      AbortProcessInstanceMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      AbortProcessInstanceMutation,
+      AbortProcessInstanceMutationVariables
+    >(AbortProcessInstanceDocument, options);
+  }
+  export type AbortProcessInstanceMutationHookResult = ReturnType<
+    typeof useAbortProcessInstanceMutation
+  >;
+  export type AbortProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
+    AbortProcessInstanceMutation
+  >;
+  export type AbortProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    AbortProcessInstanceMutation,
+    AbortProcessInstanceMutationVariables
+  >;
+  export const SkipProcessInstanceDocument = gql`
+    mutation skipProcessInstance($processId: String) {
+      ProcessInstanceSkip(id: $processId)
+    }
+  `;
+  export type SkipProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
+    SkipProcessInstanceMutation,
+    SkipProcessInstanceMutationVariables
+  >;
+
+  /**
+   * __useSkipProcessInstanceMutation__
+   *
+   * To run a mutation, you first call `useSkipProcessInstanceMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useSkipProcessInstanceMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [skipProcessInstanceMutation, { data, loading, error }] = useSkipProcessInstanceMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *   },
+   * });
+   */
+  export function useSkipProcessInstanceMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      SkipProcessInstanceMutation,
+      SkipProcessInstanceMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      SkipProcessInstanceMutation,
+      SkipProcessInstanceMutationVariables
+    >(SkipProcessInstanceDocument, options);
+  }
+  export type SkipProcessInstanceMutationHookResult = ReturnType<
+    typeof useSkipProcessInstanceMutation
+  >;
+  export type SkipProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
+    SkipProcessInstanceMutation
+  >;
+  export type SkipProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    SkipProcessInstanceMutation,
+    SkipProcessInstanceMutationVariables
+  >;
+  export const RetryProcessInstanceDocument = gql`
+    mutation retryProcessInstance($processId: String) {
+      ProcessInstanceRetry(id: $processId)
+    }
+  `;
+  export type RetryProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
+    RetryProcessInstanceMutation,
+    RetryProcessInstanceMutationVariables
+  >;
+
+  /**
+   * __useRetryProcessInstanceMutation__
+   *
+   * To run a mutation, you first call `useRetryProcessInstanceMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useRetryProcessInstanceMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [retryProcessInstanceMutation, { data, loading, error }] = useRetryProcessInstanceMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *   },
+   * });
+   */
+  export function useRetryProcessInstanceMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      RetryProcessInstanceMutation,
+      RetryProcessInstanceMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      RetryProcessInstanceMutation,
+      RetryProcessInstanceMutationVariables
+    >(RetryProcessInstanceDocument, options);
+  }
+  export type RetryProcessInstanceMutationHookResult = ReturnType<
+    typeof useRetryProcessInstanceMutation
+  >;
+  export type RetryProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
+    RetryProcessInstanceMutation
+  >;
+  export type RetryProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    RetryProcessInstanceMutation,
+    RetryProcessInstanceMutationVariables
+  >;
+  export const GetProcessInstanceSvgDocument = gql`
+    query getProcessInstanceSVG($processId: String) {
+      ProcessInstances(where: { id: { equal: $processId } }) {
+        diagram
+      }
+    }
+  `;
+
+  /**
+   * __useGetProcessInstanceSvgQuery__
+   *
+   * To run a query within a React component, call `useGetProcessInstanceSvgQuery` and pass it any options that fit your needs.
+   * When your component renders, `useGetProcessInstanceSvgQuery` returns an object from Apollo Client that contains loading, error, and data properties
+   * you can use to render your UI.
+   *
+   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+   *
+   * @example
+   * const { data, loading, error } = useGetProcessInstanceSvgQuery({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *   },
+   * });
+   */
+  export function useGetProcessInstanceSvgQuery(
+    baseOptions?: ApolloReactHooks.QueryHookOptions<
+      GetProcessInstanceSvgQuery,
+      GetProcessInstanceSvgQueryVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useQuery<
+      GetProcessInstanceSvgQuery,
+      GetProcessInstanceSvgQueryVariables
+    >(GetProcessInstanceSvgDocument, options);
+  }
+  export function useGetProcessInstanceSvgLazyQuery(
+    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+      GetProcessInstanceSvgQuery,
+      GetProcessInstanceSvgQueryVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useLazyQuery<
+      GetProcessInstanceSvgQuery,
+      GetProcessInstanceSvgQueryVariables
+    >(GetProcessInstanceSvgDocument, options);
+  }
+  export type GetProcessInstanceSvgQueryHookResult = ReturnType<
+    typeof useGetProcessInstanceSvgQuery
+  >;
+  export type GetProcessInstanceSvgLazyQueryHookResult = ReturnType<
+    typeof useGetProcessInstanceSvgLazyQuery
+  >;
+  export type GetProcessInstanceSvgQueryResult = ApolloReactCommon.QueryResult<
+    GetProcessInstanceSvgQuery,
+    GetProcessInstanceSvgQueryVariables
+  >;
+  export const GetProcessInstanceNodeDefinitionsDocument = gql`
+    query getProcessInstanceNodeDefinitions($processId: String) {
+      ProcessInstances(where: { id: { equal: $processId } }) {
+        nodeDefinitions {
+          id
+          name
+          type
+          uniqueId
+          nodeDefinitionId
+        }
+      }
+    }
+  `;
+
+  /**
+   * __useGetProcessInstanceNodeDefinitionsQuery__
+   *
+   * To run a query within a React component, call `useGetProcessInstanceNodeDefinitionsQuery` and pass it any options that fit your needs.
+   * When your component renders, `useGetProcessInstanceNodeDefinitionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+   * you can use to render your UI.
+   *
+   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+   *
+   * @example
+   * const { data, loading, error } = useGetProcessInstanceNodeDefinitionsQuery({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *   },
+   * });
+   */
+  export function useGetProcessInstanceNodeDefinitionsQuery(
+    baseOptions?: ApolloReactHooks.QueryHookOptions<
+      GetProcessInstanceNodeDefinitionsQuery,
+      GetProcessInstanceNodeDefinitionsQueryVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useQuery<
+      GetProcessInstanceNodeDefinitionsQuery,
+      GetProcessInstanceNodeDefinitionsQueryVariables
+    >(GetProcessInstanceNodeDefinitionsDocument, options);
+  }
+  export function useGetProcessInstanceNodeDefinitionsLazyQuery(
+    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+      GetProcessInstanceNodeDefinitionsQuery,
+      GetProcessInstanceNodeDefinitionsQueryVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useLazyQuery<
+      GetProcessInstanceNodeDefinitionsQuery,
+      GetProcessInstanceNodeDefinitionsQueryVariables
+    >(GetProcessInstanceNodeDefinitionsDocument, options);
+  }
+  export type GetProcessInstanceNodeDefinitionsQueryHookResult = ReturnType<
+    typeof useGetProcessInstanceNodeDefinitionsQuery
+  >;
+  export type GetProcessInstanceNodeDefinitionsLazyQueryHookResult = ReturnType<
+    typeof useGetProcessInstanceNodeDefinitionsLazyQuery
+  >;
+  export type GetProcessInstanceNodeDefinitionsQueryResult = ApolloReactCommon.QueryResult<
+    GetProcessInstanceNodeDefinitionsQuery,
+    GetProcessInstanceNodeDefinitionsQueryVariables
+  >;
+  export const HandleNodeTriggerDocument = gql`
+    mutation handleNodeTrigger($processId: String, $nodeId: String) {
+      NodeInstanceTrigger(id: $processId, nodeId: $nodeId)
+    }
+  `;
+  export type HandleNodeTriggerMutationFn = ApolloReactCommon.MutationFunction<
+    HandleNodeTriggerMutation,
+    HandleNodeTriggerMutationVariables
+  >;
+
+  /**
+   * __useHandleNodeTriggerMutation__
+   *
+   * To run a mutation, you first call `useHandleNodeTriggerMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useHandleNodeTriggerMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [handleNodeTriggerMutation, { data, loading, error }] = useHandleNodeTriggerMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *      nodeId: // value for 'nodeId'
+   *   },
+   * });
+   */
+  export function useHandleNodeTriggerMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      HandleNodeTriggerMutation,
+      HandleNodeTriggerMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      HandleNodeTriggerMutation,
+      HandleNodeTriggerMutationVariables
+    >(HandleNodeTriggerDocument, options);
+  }
+  export type HandleNodeTriggerMutationHookResult = ReturnType<
+    typeof useHandleNodeTriggerMutation
+  >;
+  export type HandleNodeTriggerMutationResult = ApolloReactCommon.MutationResult<
+    HandleNodeTriggerMutation
+  >;
+  export type HandleNodeTriggerMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    HandleNodeTriggerMutation,
+    HandleNodeTriggerMutationVariables
+  >;
+  export const HandleNodeInstanceCancelDocument = gql`
+    mutation handleNodeInstanceCancel(
+      $processId: String
+      $nodeInstanceId: String
+    ) {
+      NodeInstanceCancel(id: $processId, nodeInstanceId: $nodeInstanceId)
+    }
+  `;
+  export type HandleNodeInstanceCancelMutationFn = ApolloReactCommon.MutationFunction<
+    HandleNodeInstanceCancelMutation,
+    HandleNodeInstanceCancelMutationVariables
+  >;
+
+  /**
+   * __useHandleNodeInstanceCancelMutation__
+   *
+   * To run a mutation, you first call `useHandleNodeInstanceCancelMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useHandleNodeInstanceCancelMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [handleNodeInstanceCancelMutation, { data, loading, error }] = useHandleNodeInstanceCancelMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *      nodeInstanceId: // value for 'nodeInstanceId'
+   *   },
+   * });
+   */
+  export function useHandleNodeInstanceCancelMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      HandleNodeInstanceCancelMutation,
+      HandleNodeInstanceCancelMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      HandleNodeInstanceCancelMutation,
+      HandleNodeInstanceCancelMutationVariables
+    >(HandleNodeInstanceCancelDocument, options);
+  }
+  export type HandleNodeInstanceCancelMutationHookResult = ReturnType<
+    typeof useHandleNodeInstanceCancelMutation
+  >;
+  export type HandleNodeInstanceCancelMutationResult = ApolloReactCommon.MutationResult<
+    HandleNodeInstanceCancelMutation
+  >;
+  export type HandleNodeInstanceCancelMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    HandleNodeInstanceCancelMutation,
+    HandleNodeInstanceCancelMutationVariables
+  >;
+  export const HandleNodeInstanceRetriggerDocument = gql`
+    mutation handleNodeInstanceRetrigger(
+      $processId: String
+      $nodeInstanceId: String
+    ) {
+      NodeInstanceRetrigger(id: $processId, nodeInstanceId: $nodeInstanceId)
+    }
+  `;
+  export type HandleNodeInstanceRetriggerMutationFn = ApolloReactCommon.MutationFunction<
+    HandleNodeInstanceRetriggerMutation,
+    HandleNodeInstanceRetriggerMutationVariables
+  >;
+
+  /**
+   * __useHandleNodeInstanceRetriggerMutation__
+   *
+   * To run a mutation, you first call `useHandleNodeInstanceRetriggerMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useHandleNodeInstanceRetriggerMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [handleNodeInstanceRetriggerMutation, { data, loading, error }] = useHandleNodeInstanceRetriggerMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *      nodeInstanceId: // value for 'nodeInstanceId'
+   *   },
+   * });
+   */
+  export function useHandleNodeInstanceRetriggerMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      HandleNodeInstanceRetriggerMutation,
+      HandleNodeInstanceRetriggerMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      HandleNodeInstanceRetriggerMutation,
+      HandleNodeInstanceRetriggerMutationVariables
+    >(HandleNodeInstanceRetriggerDocument, options);
+  }
+  export type HandleNodeInstanceRetriggerMutationHookResult = ReturnType<
+    typeof useHandleNodeInstanceRetriggerMutation
+  >;
+  export type HandleNodeInstanceRetriggerMutationResult = ApolloReactCommon.MutationResult<
+    HandleNodeInstanceRetriggerMutation
+  >;
+  export type HandleNodeInstanceRetriggerMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    HandleNodeInstanceRetriggerMutation,
+    HandleNodeInstanceRetriggerMutationVariables
+  >;
+  export const HandleProcessVariableUpdateDocument = gql`
+    mutation handleProcessVariableUpdate(
+      $processId: String
+      $processInstanceVariables: String
+    ) {
+      ProcessInstanceUpdateVariables(
+        id: $processId
+        variables: $processInstanceVariables
+      )
+    }
+  `;
+  export type HandleProcessVariableUpdateMutationFn = ApolloReactCommon.MutationFunction<
+    HandleProcessVariableUpdateMutation,
+    HandleProcessVariableUpdateMutationVariables
+  >;
+
+  /**
+   * __useHandleProcessVariableUpdateMutation__
+   *
+   * To run a mutation, you first call `useHandleProcessVariableUpdateMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useHandleProcessVariableUpdateMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [handleProcessVariableUpdateMutation, { data, loading, error }] = useHandleProcessVariableUpdateMutation({
+   *   variables: {
+   *      processId: // value for 'processId'
+   *      processInstanceVariables: // value for 'processInstanceVariables'
+   *   },
+   * });
+   */
+  export function useHandleProcessVariableUpdateMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      HandleProcessVariableUpdateMutation,
+      HandleProcessVariableUpdateMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      HandleProcessVariableUpdateMutation,
+      HandleProcessVariableUpdateMutationVariables
+    >(HandleProcessVariableUpdateDocument, options);
+  }
+  export type HandleProcessVariableUpdateMutationHookResult = ReturnType<
+    typeof useHandleProcessVariableUpdateMutation
+  >;
+  export type HandleProcessVariableUpdateMutationResult = ApolloReactCommon.MutationResult<
+    HandleProcessVariableUpdateMutation
+  >;
+  export type HandleProcessVariableUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    HandleProcessVariableUpdateMutation,
+    HandleProcessVariableUpdateMutationVariables
+  >;
+  export const JobCancelDocument = gql`
+    mutation jobCancel($jobId: String) {
+      JobCancel(id: $jobId)
+    }
+  `;
+  export type JobCancelMutationFn = ApolloReactCommon.MutationFunction<
+    JobCancelMutation,
+    JobCancelMutationVariables
+  >;
+
+  /**
+   * __useJobCancelMutation__
+   *
+   * To run a mutation, you first call `useJobCancelMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useJobCancelMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [jobCancelMutation, { data, loading, error }] = useJobCancelMutation({
+   *   variables: {
+   *      jobId: // value for 'jobId'
+   *   },
+   * });
+   */
+  export function useJobCancelMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      JobCancelMutation,
+      JobCancelMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      JobCancelMutation,
+      JobCancelMutationVariables
+    >(JobCancelDocument, options);
+  }
+  export type JobCancelMutationHookResult = ReturnType<
+    typeof useJobCancelMutation
+  >;
+  export type JobCancelMutationResult = ApolloReactCommon.MutationResult<
+    JobCancelMutation
+  >;
+  export type JobCancelMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    JobCancelMutation,
+    JobCancelMutationVariables
+  >;
+  export const HandleJobRescheduleDocument = gql`
+    mutation handleJobReschedule($jobId: String, $data: String) {
+      JobReschedule(id: $jobId, data: $data)
+    }
+  `;
+  export type HandleJobRescheduleMutationFn = ApolloReactCommon.MutationFunction<
+    HandleJobRescheduleMutation,
+    HandleJobRescheduleMutationVariables
+  >;
+
+  /**
+   * __useHandleJobRescheduleMutation__
+   *
+   * To run a mutation, you first call `useHandleJobRescheduleMutation` within a React component and pass it any options that fit your needs.
+   * When your component renders, `useHandleJobRescheduleMutation` returns a tuple that includes:
+   * - A mutate function that you can call at any time to execute the mutation
+   * - An object with fields that represent the current status of the mutation's execution
+   *
+   * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+   *
+   * @example
+   * const [handleJobRescheduleMutation, { data, loading, error }] = useHandleJobRescheduleMutation({
+   *   variables: {
+   *      jobId: // value for 'jobId'
+   *      data: // value for 'data'
+   *   },
+   * });
+   */
+  export function useHandleJobRescheduleMutation(
+    baseOptions?: ApolloReactHooks.MutationHookOptions<
+      HandleJobRescheduleMutation,
+      HandleJobRescheduleMutationVariables
+    >
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useMutation<
+      HandleJobRescheduleMutation,
+      HandleJobRescheduleMutationVariables
+    >(HandleJobRescheduleDocument, options);
+  }
+  export type HandleJobRescheduleMutationHookResult = ReturnType<
+    typeof useHandleJobRescheduleMutation
+  >;
+  export type HandleJobRescheduleMutationResult = ApolloReactCommon.MutationResult<
+    HandleJobRescheduleMutation
+  >;
+  export type HandleJobRescheduleMutationOptions = ApolloReactCommon.BaseMutationOptions<
+    HandleJobRescheduleMutation,
+    HandleJobRescheduleMutationVariables
   >;
 }

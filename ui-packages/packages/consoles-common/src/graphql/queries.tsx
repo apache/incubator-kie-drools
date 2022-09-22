@@ -392,3 +392,89 @@ const GET_JOBS_WITH_FILTERS = gql`
     }
   }
 `;
+
+const ABORT_PROCESS_INSTANCE = gql`
+  mutation abortProcessInstance($processId: String) {
+    ProcessInstanceAbort(id: $processId)
+  }
+`;
+
+const SKIP_PROCESS_INSTANCE = gql`
+  mutation skipProcessInstance($processId: String) {
+    ProcessInstanceSkip(id: $processId)
+  }
+`;
+
+const RETRY_PROCESS_INSTANCE = gql`
+  mutation retryProcessInstance($processId: String) {
+    ProcessInstanceRetry(id: $processId)
+  }
+`;
+const GET_PROCESS_INSTANCE_SVG = gql`
+  query getProcessInstanceSVG($processId: String) {
+    ProcessInstances(where: { id: { equal: $processId } }) {
+      diagram
+    }
+  }
+`;
+
+const GET_PROCESS_INSTANCE_NODES = gql`
+  query getProcessInstanceNodeDefinitions($processId: String) {
+    ProcessInstances(where: { id: { equal: $processId } }) {
+      nodeDefinitions {
+        id
+        name
+        type
+        uniqueId
+        nodeDefinitionId
+      }
+    }
+  }
+`;
+
+const TRIGGER_PROCESS_NODE_INSTANCE = gql`
+  mutation handleNodeTrigger($processId: String, $nodeId: String) {
+    NodeInstanceTrigger(id: $processId, nodeId: $nodeId)
+  }
+`;
+
+const CANCEL_PROCESS_NODE_INSTANCE = gql`
+  mutation handleNodeInstanceCancel(
+    $processId: String
+    $nodeInstanceId: String
+  ) {
+    NodeInstanceCancel(id: $processId, nodeInstanceId: $nodeInstanceId)
+  }
+`;
+
+const RETRIGGER_PROCESS_NODE_INSTANCE = gql`
+  mutation handleNodeInstanceRetrigger(
+    $processId: String
+    $nodeInstanceId: String
+  ) {
+    NodeInstanceRetrigger(id: $processId, nodeInstanceId: $nodeInstanceId)
+  }
+`;
+
+const UPDATE_PROCESS_VARBALES = gql`
+  mutation handleProcessVariableUpdate(
+    $processId: String
+    $processInstanceVariables: String
+  ) {
+    ProcessInstanceUpdateVariables(
+      id: $processId
+      variables: $processInstanceVariables
+    )
+  }
+`;
+const CANCEL_JOB = gql`
+  mutation jobCancel($jobId: String) {
+    JobCancel(id: $jobId)
+  }
+`;
+
+const RESCHEDULE_JOB = gql`
+  mutation handleJobReschedule($jobId: String, $data: String) {
+    JobReschedule(id: $jobId, data: $data)
+  }
+`;
