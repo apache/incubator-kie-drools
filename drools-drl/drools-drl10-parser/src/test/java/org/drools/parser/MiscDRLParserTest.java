@@ -494,4 +494,16 @@ public class MiscDRLParserTest extends TestCase {
 
         // Note : RuleParserTest.testEmptyRule allows this DRL, but I think is doesn't make sense to pass this DRL
     }
+
+    @Test
+    public void testKeywordCollisions() throws Exception {
+        String source = readResource("eol_funny_business.drl"); // keywords everywhere
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+    }
 }
