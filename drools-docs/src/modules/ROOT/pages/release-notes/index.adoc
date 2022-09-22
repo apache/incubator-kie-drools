@@ -43,7 +43,7 @@ The `KieMarshallers` are still present and working as expected on the release of
 {KIE_SERVER} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#kie-server_migration-guide[Migration guide chapter].
 
 === {BUSINESS_CENTRAL} is retired
-{BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8. See xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter] for migration.
+{BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter].
 
 == Previous release notes
 
