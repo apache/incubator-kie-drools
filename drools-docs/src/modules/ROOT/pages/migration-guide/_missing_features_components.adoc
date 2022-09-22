@@ -12,7 +12,7 @@ You can find the detailed migration steps in the https://blog.kie.org/2021/09/br
 [id='business-central_{context}']
 == {BUSINESS_CENTRAL}
 
-{BUSINESS_CENTRAL} is retired and no longer a component of {PRODUCT} 8. For asset management, usual version control system is recommended, for example, git. For editors, https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle[VS Code Kogito extension] is recommended.
+{BUSINESS_CENTRAL} is retired and no longer a component of {PRODUCT} 8. For asset management, the usual version control system is recommended, for example, git. For editors, https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle[VS Code Kogito extension] is recommended.
 
 [id='bpmn-integration_{context}']
 == BPMN integration / Rule flow
