@@ -15,30 +15,47 @@
  */
 package org.kie.efesto.common.api.cache;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Key used by efesto caches based on type/generics
  */
-public class EfestoClassKey {
+public class EfestoClassKey implements ParameterizedType {
 
-    private final Class mainType;
-    // Must be ordered collection because order may matter
-    private final List<Class> generics;
+    private final Type rawType;
+    private final Type[] typeArguments;
 
-    public EfestoClassKey(Class mainType, List<Class> generics) {
-        this.mainType = mainType;
-        this.generics = generics;
+    public EfestoClassKey(Type rawType, Type... typeArguments) {
+        this.rawType = rawType;
+        this.typeArguments = typeArguments;
     }
 
-    public Class getMainType() {
-        return mainType;
+    @Override
+    public Type[] getActualTypeArguments() {
+        return typeArguments;
     }
 
-    public List<Class> getGenerics() {
-        return Collections.unmodifiableList(generics);
+    @Override
+    public Type getRawType() {
+        return rawType;
+    }
+
+    @Override
+    public Type getOwnerType() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        String argsString = Stream.of(typeArguments).map(this::getCanonicalTypeName).collect(Collectors.joining(", "));
+        return getCanonicalTypeName(rawType) + "<" + argsString + ">";
     }
 
     @Override
@@ -50,12 +67,20 @@ public class EfestoClassKey {
             return false;
         }
         EfestoClassKey that = (EfestoClassKey) o;
-        return Objects.equals(mainType, that.mainType) && Objects.equals(generics, that.generics);
+        return Objects.equals(rawType, that.rawType) && Arrays.equals(typeArguments, that.typeArguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mainType, generics);
+        int result = Objects.hash(rawType);
+        result = 31 * result + Arrays.hashCode(typeArguments);
+        return result;
     }
+
+    private String getCanonicalTypeName(Type type) {
+        return type instanceof Class ? ((Class<?>) type).getCanonicalName() : type.getTypeName();
+    }
+
+
 
 }

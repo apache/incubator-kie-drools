@@ -35,7 +35,7 @@ public class MockKieRuntimeServiceA extends AbstractMockKieRuntimeService {
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(MockEfestoInputA.class, Collections.singletonList(String.class));
+        return new EfestoClassKey(MockEfestoInputA.class, String.class);
     }
 
     @Override

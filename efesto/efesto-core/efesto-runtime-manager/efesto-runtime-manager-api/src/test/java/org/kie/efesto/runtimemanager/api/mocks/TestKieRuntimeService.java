@@ -15,7 +15,6 @@
  */
 package org.kie.efesto.runtimemanager.api.mocks;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.kie.efesto.common.api.cache.EfestoClassKey;
@@ -30,7 +29,7 @@ public class TestKieRuntimeService<T extends AbstractMockEfestoInput> implements
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
         // THis should always return an unmatchable key
-        return new EfestoClassKey(TestKieRuntimeService.class, Collections.emptyList());
+        return new EfestoClassKey(TestKieRuntimeService.class);
     }
 
     @Override

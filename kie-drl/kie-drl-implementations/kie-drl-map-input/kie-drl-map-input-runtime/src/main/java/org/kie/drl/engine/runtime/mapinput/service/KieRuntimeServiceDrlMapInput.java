@@ -33,7 +33,7 @@ public class KieRuntimeServiceDrlMapInput implements KieRuntimeService<EfestoMap
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(BaseEfestoInput.class, Collections.singletonList(EfestoMapInputDTO.class));
+        return new EfestoClassKey(BaseEfestoInput.class, EfestoMapInputDTO.class);
     }
 
     @Override

@@ -18,7 +18,6 @@ package org.kie.efesto.runtimemanager.core.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,13 +62,13 @@ class RuntimeManagerImplTest {
     @Test
     void populateFirstLevelCache() {
         KieRuntimeService kieRuntimeServiceA = mock(KieRuntimeService.class);
-        EfestoClassKey efestoClassKeyA = new EfestoClassKey(String.class, Collections.emptyList());
+        EfestoClassKey efestoClassKeyA = new EfestoClassKey(String.class);
         when(kieRuntimeServiceA.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyA);
         KieRuntimeService kieRuntimeServiceB = mock(KieRuntimeService.class);
-        EfestoClassKey efestoClassKeyB = new EfestoClassKey(String.class, Collections.emptyList());
+        EfestoClassKey efestoClassKeyB = new EfestoClassKey(String.class);
         when(kieRuntimeServiceB.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyB);
         KieRuntimeService kieRuntimeServiceC = mock(KieRuntimeService.class);
-        EfestoClassKey efestoClassKeyC = new EfestoClassKey(List.class, Collections.singletonList(String.class));
+        EfestoClassKey efestoClassKeyC = new EfestoClassKey(List.class, String.class);
         when(kieRuntimeServiceC.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyC);
         List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA, kieRuntimeServiceB, kieRuntimeServiceC);
         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();

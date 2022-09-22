@@ -36,7 +36,7 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(EfestoInputPMML.class, Collections.singletonList(PMMLRuntimeContextImpl.class));
+        return new EfestoClassKey(EfestoInputPMML.class, PMMLRuntimeContextImpl.class);
     }
 
     @Override

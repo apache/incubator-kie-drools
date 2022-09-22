@@ -35,7 +35,7 @@ public class KieRuntimeServicePMMLRequestData implements KieRuntimeService<PMMLR
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(BaseEfestoInput.class, Collections.singletonList(PMMLRequestData.class));
+        return new EfestoClassKey(BaseEfestoInput.class, PMMLRequestData.class);
     }
 
     @Override

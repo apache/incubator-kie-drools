@@ -15,6 +15,7 @@
  */
 package org.kie.efesto.runtimemanager.api.model;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface EfestoInput<T> {
     T getInputData();
 
     default EfestoClassKey getEfestoClassKeyIdentifier() {
-        List<Class> generics = getInputData() != null ? Collections.singletonList(getInputData().getClass()) : Collections.emptyList();
-        return new EfestoClassKey(this.getClass(), generics);
+        List<Type> generics = getInputData() != null ? Collections.singletonList(getInputData().getClass()) : Collections.emptyList();
+        return new EfestoClassKey(this.getClass(), generics.toArray(new Type[0]));
     }
 }
