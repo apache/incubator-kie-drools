@@ -6,4 +6,4 @@ include::../_artifacts/document-attributes.adoc[]
 :context: migration-guide
 
 include::_traditional-to-ruleunit.adoc[leveloffset=+1]
-
+include::_missing_features_components.adoc[leveloffset=+1]
