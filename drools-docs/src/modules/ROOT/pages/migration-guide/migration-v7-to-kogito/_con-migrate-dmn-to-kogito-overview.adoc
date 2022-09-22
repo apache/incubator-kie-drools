@@ -55,7 +55,7 @@ NOTE: The features that are not mentioned in the previous table are either not s
 == Migration strategy
 
 [role="_abstract"]
-When migrating a DMN project to a {KOGITO} project, first you can migrate external applications that are interacting with decision services on the {KIE_SERVER}. You can use the REST endpoints that are specific to DMN models. After using the REST endpoints, you can migrate the external applications from the {KIE_SERVER} to a {KOGITO} deployment. For more information about specific REST endpoints to DMN models, see https://blog.kie.org/2021/03/new-model-specific-dmn-kie-server-endpoints.html[_REST endpoints for specific DMN models_].
+When migrating a DMN project to a {KOGITO} project, first you can migrate external applications that are interacting with decision services on the {KIE_SERVER}. You can use the REST endpoints that are specific to DMN models. After using the REST endpoints, you can migrate the external applications from the {KIE_SERVER} to a {KOGITO} deployment. For additional information about specific REST endpoints to DMN models, you can reference the https://blog.kie.org/2021/03/new-model-specific-dmn-kie-server-endpoints.html[_REST endpoints for specific DMN models_ blog post].
 
 The migration strategy includes the following steps:
 

@@ -6,6 +6,8 @@ You can build and deploy a sample project in {KOGITO} to expose a stateless rule
 
 The stateless rule evaluation is a single execution of a rule set in {PRODUCT} and can be identified as a function invocation. In the invoked function, the output values are determined using the input values. Also, the invoked function uses the {RULE_ENGINE} to perform the jobs. Therefore, in such cases, a function is exposed using a REST endpoint and converted into a microservice. After converting into a microservice, a function is deployed into a Function as a Service environment to eliminate the cost of JVM startup time.
 
+You can find additional information in the https://blog.kie.org/2021/09/bringing-drools-rules-into-the-cloud-with-kogito-a-step-by-step-path.html[_Bringing Drools rules into the cloud with Kogito: a step by step path_ blog post].
+
 [id="ref-migrate-drl-to-kogito-considerations_{context}"]
 == Major changes and migration considerations
 
