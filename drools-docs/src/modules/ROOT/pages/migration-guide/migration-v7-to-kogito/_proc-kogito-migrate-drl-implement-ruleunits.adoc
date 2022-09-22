@@ -51,7 +51,7 @@ public class LoanUnit implements RuleUnitData {
 
 In the previous example, instead of using `LoanAppDto` the `LoanUnit` class is bound directly. `LoanAppDto` is used to marshall or unmarshall JSON requests. Also, the previous example implements the `org.kie.kogito.rules.RuleUnitData` interface and uses a `DataStore` to contain the loan applications to be approved.
 
-The `org.kie.kogito.rules.RuleUnitData` is a marker interface to notify the {DECISION_ENGINE} that `LoanUnit` class is part of a rule unit definition. In addition, the `DataStore` is responsible to allow the rule engine to react on the changes by firing new rules and triggering other rules.
+The `org.kie.kogito.rules.RuleUnitData` is a marker interface to notify the {RULE_ENGINE} that `LoanUnit` class is part of a rule unit definition. In addition, the `DataStore` is responsible to allow the rule engine to react on the changes by firing new rules and triggering other rules.
 
 Additionally, the consequences of the rules modify the `approved` property in the previous example. On the contrary, the `maxAmount` value is considered as a configuration parameter for the rule unit, which is not modified. The `maxAmount` is processed automatically during the rules evaluation and automatically set from the value passed in the JSON requests.
 --
@@ -91,7 +91,7 @@ Also, the DRL file in the previous example is rewritten using the OOPath express
 
 `$l: /loanApplications[ applicant.age >= 20, deposit >= 1000, amount <= maxAmount ]`
 
-Alternatively, you can use the standard DRL syntax, in which you can specify the data source name as an entry point. However, you need to specify the type of the matched object again as shown in the following example, even if the {DECISION_ENGINE} can infer the type from the data source:
+Alternatively, you can use the standard DRL syntax, in which you can specify the data source name as an entry point. However, you need to specify the type of the matched object again as shown in the following example, even if the {RULE_ENGINE} can infer the type from the data source:
 
 `$l: LoanApplication( applicant.age >= 20, deposit >= 1000, amount <= maxAmount ) from entry-point loanApplications`
 

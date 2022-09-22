@@ -1,7 +1,7 @@
 [id="proc-kogito-migrate-drl-expose-ruleunits_{context}"]
 = Exposing rule evaluation with a REST endpoint using {QUARKUS}
 
-You can expose the rule evaluation that is developed in {CENTRAL} with a REST endpoint using {QUARKUS}.
+You can expose the rule evaluation that is developed in {BUSINESS_CENTRAL} with a REST endpoint using {QUARKUS}.
 
 .Procedure
 . Create a new module based on the module that contains the rules and Quarkus libraries, providing the REST support:
@@ -63,7 +63,7 @@ public class FindApprovedLoansEndpoint {
 
 In the previous example, a `KieContainer` containing the rules is created and added into a static field. The rules in the `KieContainer` are obtained from the other module in the class path. Using this approach, you can reuse the same `KieContainer` for subsequent invocations related to the `FindApprovedLoansEndpoint` endpoint without recompiling the rules.
 
-NOTE: The two modules are consolidated in the next process of migrating rule units to a {KOGITO} microservice using legacy API. For more information, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#proc-kogito-migrate-drl-legacy-api_migration-kogito-microservices[_Migrating DRL rules units to {KOGITO} microservice using legacy API_].
+NOTE: The two modules are consolidated in the next process of migrating rule units to a {KOGITO} microservice using legacy API.
 
 When the `FindApprovedLoansEndpoint` endpoint is invoked, a new `KieSession` is created from the `KieContainer`. The `KieSession` is populated with the objects from `LoanAppDto` resulting from the unmarshalling of a JSON request.
 

@@ -4,12 +4,12 @@
 The following is an example of migrating a DMN model KJAR to a {KOGITO} microservice:
 
 .Example decision service implemented using DMN model
-image::KogitoMicroservices/example-dmn-decision-service-migrate.png[Example of a DMN decision service]
+image::kogito-microservices/example-dmn-decision-service-migrate.png[Example of a DMN decision service]
 
 .Example DMN model using specific `ItemDefinition` structure
-image::KogitoMicroservices/example-dmn-decision-service-migrate2.png[Example of a DMN decision service using ItemDefinition structure]
+image::kogito-microservices/example-dmn-decision-service-migrate2.png[Example of a DMN decision service using ItemDefinition structure]
 
-You need to define the object model (POJO) as a DTO in an existing KJAR that is developed in {CENTRAL}.
+You need to define the object model (POJO) as a DTO in an existing KJAR that is developed in {BUSINESS_CENTRAL}.
 
 .Example of an object model defined as DTO in a KJAR
 [source,java]
@@ -84,6 +84,6 @@ DMNServicesClient dmnClient = kieServicesClient.getServicesClient(DMNServicesCli
 ----
 
 .Example of manually specifying DTO in the payload
-image::KogitoMicroservices/example-dmn-migrate-manual-kjar.png[Example of KJAR deployed manually]
+image::kogito-microservices/example-dmn-migrate-manual-kjar.png[Example of KJAR deployed manually]
 
 NOTE: In the previous example, the FQCN of the object model in the REST API is used for the generic {KIE_SERVER} marshalling.
