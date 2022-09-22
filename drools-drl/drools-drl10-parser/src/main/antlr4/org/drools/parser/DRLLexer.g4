@@ -18,45 +18,45 @@ import JavaLexer;
 // KEYWORDS
 /////////////////
 
-PACKAGE : 'package';
-UNIT : 'unit';
-IMPORT : 'import';
-FUNCTION : 'function';
-STATIC : 'static';
-GLOBAL : 'global';
-RULE : 'rule';
-QUERY : 'query';
-EXTENDS : 'extends';
-SUPER : 'super';
-WHEN : 'when';
-THEN : 'then';
-END : 'end';
+DRL_PACKAGE : 'package';
+DRL_UNIT : 'unit';
+DRL_IMPORT : 'import';
+DRL_FUNCTION : 'function';
+DRL_STATIC : 'static';
+DRL_GLOBAL : 'global';
+DRL_RULE : 'rule';
+DRL_QUERY : 'query';
+DRL_EXTENDS : 'extends';
+DRL_SUPER : 'super';
+DRL_WHEN : 'when';
+DRL_THEN : 'then';
+DRL_END : 'end';
 
-KWD_AND : 'and';
-KWD_OR : 'or';
+DRL_AND : 'and';
+DRL_OR : 'or';
 
-EXISTS : 'exists';
-NOT : 'not';
-IN : 'in';
-FROM : 'from';
-MATCHES : 'matches';
+DRL_EXISTS : 'exists';
+DRL_NOT : 'not';
+DRL_IN : 'in';
+DRL_FROM : 'from';
+DRL_MATCHES : 'matches';
 
-SALIENCE : 'salience';
-ENABLED : 'enabled';
-NO_LOOP : 'no-loop';
-AUTO_FOCUS : 'auto-focus';
-LOCK_ON_ACTIVE : 'lock-on-active';
-REFRACT : 'refract';
-DIRECT : 'direct';
-AGENDA_GROUP : 'agenda-group';
-ACTIVATION_GROUP : 'activation-group';
-RULEFLOW_GROUP : 'ruleflow-group';
-DATE_EFFECTIVE : 'date-effective';
-DATE_EXPIRES : 'date-expires';
-DIALECT : 'dialect';
-CALENDARS : 'calendars';
-TIMER : 'timer';
-DURATION : 'duration';
+DRL_SALIENCE : 'salience';
+DRL_ENABLED : 'enabled';
+DRL_NO_LOOP : 'no-loop';
+DRL_AUTO_FOCUS : 'auto-focus';
+DRL_LOCK_ON_ACTIVE : 'lock-on-active';
+DRL_REFRACT : 'refract';
+DRL_DIRECT : 'direct';
+DRL_AGENDA_GROUP : 'agenda-group';
+DRL_ACTIVATION_GROUP : 'activation-group';
+DRL_RULEFLOW_GROUP : 'ruleflow-group';
+DRL_DATE_EFFECTIVE : 'date-effective';
+DRL_DATE_EXPIRES : 'date-expires';
+DRL_DIALECT : 'dialect';
+DRL_CALENDARS : 'calendars';
+DRL_TIMER : 'timer';
+DRL_DURATION : 'duration';
 
 /////////////////
 // LEXER
