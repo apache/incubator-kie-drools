@@ -59,7 +59,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public Object visitGlobaldef(DRLParser.GlobaldefContext ctx) {
-        GlobalDescr globalDescr = new GlobalDescr(ctx.IDENTIFIER().getText(), ctx.type().getText());
+        GlobalDescr globalDescr = new GlobalDescr(ctx.drlIdentifier().getText(), ctx.type().getText());
         populateStartEnd(globalDescr, ctx);
         packageDescr.addGlobal(globalDescr);
         return super.visitGlobaldef(ctx);
@@ -67,8 +67,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public Object visitImportdef(DRLParser.ImportdefContext ctx) {
-        String target = ctx.qualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
-        if (ctx.FUNCTION() != null || ctx.STATIC() != null) {
+        String target = ctx.drlQualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
+        if (ctx.DRL_FUNCTION() != null || ctx.DRL_STATIC() != null) {
             FunctionImportDescr functionImportDescr = new FunctionImportDescr();
             functionImportDescr.setTarget(target);
             populateStartEnd(functionImportDescr, ctx);
@@ -180,13 +180,10 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitIdentifier(DRLParser.IdentifierContext ctx) {
-        if (ctx.IDENTIFIER() == null) {
-            return "";
-        } else {
-            return ctx.IDENTIFIER().getText();
-        }
+    public Object visitDrlIdentifier(DRLParser.DrlIdentifierContext ctx) {
+        return ctx.getText();
     }
+
 
     @Override
     public Object visitDrlLiteral(DRLParser.DrlLiteralContext ctx) {
