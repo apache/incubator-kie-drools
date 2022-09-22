@@ -313,7 +313,7 @@ In general this is not recommended, and the Maven plugin should always be used.
 [[_enginedependency]]
 == Engine dependency
 
-{PRODUCT} has 3 types of engine dependency that aggregates a required collection of dependencies.
+{PRODUCT} has 3 types of engine dependency that aggregate a required collection of dependencies.
 
 *`drools-ruleunits-engine`* is the standard engine for rule units that enables executable model.
 
