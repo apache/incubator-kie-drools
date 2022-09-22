@@ -315,7 +315,7 @@ In general this is not recommended, and the Maven plugin should always be used.
 
 {PRODUCT} has 3 types of engine dependency that aggregate a required collection of dependencies.
 
-*`drools-ruleunits-engine`* is the standard engine for rule units that enables executable model.
+*`drools-ruleunits-engine`* is the standard engine for rule units that enables an executable model.
 
 *`drools-engine`* is the standard engine for traditional DRL syntax that enables executable model.
 
