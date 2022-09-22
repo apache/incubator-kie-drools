@@ -40,7 +40,7 @@ You can refer the xref:KIE/index.adoc#_securitymanager[Security Manager chapter]
 The `KieMarshallers` are still present and working as expected on the release of the Drools 8-series, however we are currently exploring alternative solutions more idiomatic to cloud-native use cases.
 
 === {KIE_SERVER} is retired
-{KIE_SERVER} is no longer a component of {PRODUCT} 8. See xref:migration-guide/index.adoc#kie-server_migration-guide[Migration guide chapter] for migration.
+{KIE_SERVER} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#kie-server_migration-guide[Migration guide chapter].
 
 === {BUSINESS_CENTRAL} is retired
 {BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8. See xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter] for migration.
