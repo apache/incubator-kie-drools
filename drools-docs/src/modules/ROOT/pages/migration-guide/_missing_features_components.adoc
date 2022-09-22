@@ -7,7 +7,7 @@
 
 While {KIE_SERVER} hosts multiple kjar containers, One {KOGITO} instance hosts one domain service. Hence, you would create {KOGITO} project per kjar container, which would be microservice style.
 
-You can find the detailed migration steps in the https://blog.kie.org/2021/09/bringing-drools-rules-into-the-cloud-with-kogito-a-step-by-step-path.html[Bringing Drools rules into the cloud with Kogito: a step by step path] article.
+You can find the detailed migration steps in the next sections, xref:con-migration-to-kogito-overview_migration-guide[].
 
 [id='business-central_{context}']
 == {BUSINESS_CENTRAL}

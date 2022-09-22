@@ -7,7 +7,7 @@ After migrating your external application, you need to migrate a KJAR that is sp
 .Procedure
 . Create a Maven project for your {KOGITO} microservice.
 +
-For the procedure about creating a Maven project, see https://blog.kie.org/2021/03/modeling-and-development-of-decision-services-dmn-with-kogito.html[_Modeling and development of decision services: DMN with Kogito_].
+For additional information about the procedure about creating a Maven project, you can reference https://blog.kie.org/2021/03/modeling-and-development-of-decision-services-dmn-with-kogito.html[_Modeling and development of decision services: DMN with Kogito_ blog post].
 +
 The Maven project creates Kogito artifacts.
 
