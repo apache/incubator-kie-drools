@@ -26,6 +26,7 @@
 
 :KOGITO: Kogito
 :KIE_SERVER: KIE Server
-:OPENSHIFT: Openshift
+:BUSINESS_CENTRAL: Business Central
+:OPENSHIFT: OpenShift
 
 :RH-SSO: Red Hat Single Sign-On
