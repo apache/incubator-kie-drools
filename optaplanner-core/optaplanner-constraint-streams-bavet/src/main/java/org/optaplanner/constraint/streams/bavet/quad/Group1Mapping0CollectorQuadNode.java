@@ -31,9 +31,4 @@ final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
-    @Override
-    public String toString() {
-        return "GroupQuadNode 1+0";
-    }
-
 }

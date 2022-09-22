@@ -68,9 +68,21 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
                         ? new IndexedJoinQuadNode<>(
                                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                                 buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()), downstream, outputStoreSize,
+                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                                downstream, outputStoreSize + 2,
+                                outputStoreSize, outputStoreSize + 1,
                                 indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
-                        : new UnindexedJoinQuadNode<>(downstream, outputStoreSize);
+                        : new UnindexedJoinQuadNode<>(
+                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                                downstream, outputStoreSize + 2,
+                                outputStoreSize, outputStoreSize + 1);
         buildHelper.addNode(node, leftParent, rightParent);
     }
 

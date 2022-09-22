@@ -9,8 +9,15 @@ final class UnindexedJoinBiNode<A, B>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinBiNode(TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinBiNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -20,18 +27,13 @@ final class UnindexedJoinBiNode<A, B>
     }
 
     @Override
-    protected void updateOutTupleLeft(BiTupleImpl<A, B> outTuple, UniTuple<A> leftTuple) {
+    protected void setOutTupleLeftFacts(BiTupleImpl<A, B> outTuple, UniTuple<A> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
     }
 
     @Override
-    protected void updateOutTupleRight(BiTupleImpl<A, B> outTuple, UniTuple<B> rightTuple) {
+    protected void setOutTupleRightFact(BiTupleImpl<A, B> outTuple, UniTuple<B> rightTuple) {
         outTuple.factB = rightTuple.getFactA();
-    }
-
-    @Override
-    public String toString() {
-        return "JoinBiNode";
     }
 
 }

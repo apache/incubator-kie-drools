@@ -39,9 +39,4 @@ final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
-    @Override
-    public String toString() {
-        return "GroupUniNode 3+0";
-    }
-
 }

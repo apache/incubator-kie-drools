@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
@@ -18,12 +17,19 @@ final class IndexedJoinQuadNode<A, B, C, D>
     private final int outputStoreSize;
 
     public IndexedJoinQuadNode(TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
-            int inputStoreIndexAB, int inputStoreIndexC,
+            int inputStoreIndexABC, int inputStoreIndexEntryABC, int inputStoreIndexOutTupleListABC,
+            int inputStoreIndexD, int inputStoreIndexEntryD, int inputStoreIndexOutTupleListD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
             int outputStoreSize,
-            Indexer<TriTuple<A, B, C>, Map<UniTuple<D>, QuadTupleImpl<A, B, C, D>>> indexerABC,
-            Indexer<UniTuple<D>, Map<TriTuple<A, B, C>, QuadTupleImpl<A, B, C, D>>> indexerD) {
-        super(mappingD, inputStoreIndexAB, inputStoreIndexC, nextNodesTupleLifecycle, indexerABC, indexerD);
+            int outputStoreIndexOutEntryABC, int outputStoreIndexOutEntryD,
+            Indexer<TriTuple<A, B, C>> indexerABC,
+            Indexer<UniTuple<D>> indexerD) {
+        super(mappingD,
+                inputStoreIndexABC, inputStoreIndexEntryABC, inputStoreIndexOutTupleListABC,
+                inputStoreIndexD, inputStoreIndexEntryD, inputStoreIndexOutTupleListD,
+                nextNodesTupleLifecycle,
+                outputStoreIndexOutEntryABC, outputStoreIndexOutEntryD,
+                indexerABC, indexerD);
         this.mappingABC = mappingABC;
         this.outputStoreSize = outputStoreSize;
     }
@@ -34,14 +40,14 @@ final class IndexedJoinQuadNode<A, B, C, D>
     }
 
     @Override
-    protected void updateOutTupleLeft(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
+    protected void setOutTupleLeftFacts(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
         outTuple.factC = leftTuple.getFactC();
     }
 
     @Override
-    protected void updateOutTupleRight(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
+    protected void setOutTupleRightFact(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
         outTuple.factD = rightTuple.getFactA();
     }
 
@@ -49,11 +55,6 @@ final class IndexedJoinQuadNode<A, B, C, D>
     protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
         return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
                 outputStoreSize);
-    }
-
-    @Override
-    public String toString() {
-        return "JoinQuadNode";
     }
 
 }

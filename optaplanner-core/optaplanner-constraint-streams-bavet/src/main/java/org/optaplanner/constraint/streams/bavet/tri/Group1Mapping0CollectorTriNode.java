@@ -31,9 +31,4 @@ final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
-    @Override
-    public String toString() {
-        return "GroupTriNode 1+0";
-    }
-
 }

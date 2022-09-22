@@ -10,8 +10,15 @@ final class UnindexedJoinTriNode<A, B, C>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinTriNode(TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinTriNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -21,19 +28,14 @@ final class UnindexedJoinTriNode<A, B, C>
     }
 
     @Override
-    protected void updateOutTupleLeft(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
+    protected void setOutTupleLeftFacts(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
     }
 
     @Override
-    protected void updateOutTupleRight(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
+    protected void setOutTupleRightFact(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
         outTuple.factC = rightTuple.getFactA();
-    }
-
-    @Override
-    public String toString() {
-        return "JoinTriNode";
     }
 
 }

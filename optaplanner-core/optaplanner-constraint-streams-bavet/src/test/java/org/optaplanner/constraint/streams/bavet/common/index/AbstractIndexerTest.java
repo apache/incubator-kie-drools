@@ -1,9 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class AbstractIndexerTest {
 
@@ -19,8 +17,7 @@ abstract class AbstractIndexerTest {
 
     }
 
-    protected <Tuple_ extends Tuple, Value_> Map<Tuple_, Value_> getTupleMap(Indexer<Tuple_, Value_> indexer,
-            Object... objectProperties) {
+    protected <T> List<T> getTuples(Indexer<T> indexer, Object... objectProperties) {
         IndexProperties properties = null;
         switch (objectProperties.length) {
             case 0:
@@ -33,8 +30,8 @@ abstract class AbstractIndexerTest {
                 properties = new ManyIndexProperties(objectProperties);
                 break;
         }
-        Map<Tuple_, Value_> result = new LinkedHashMap<>();
-        indexer.visit(properties, result::put);
+        List<T> result = new ArrayList<>();
+        indexer.forEach(properties, result::add);
         return result;
     }
 

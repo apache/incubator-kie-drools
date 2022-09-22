@@ -5,7 +5,6 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
@@ -36,7 +35,7 @@ public class IndexerFactory {
         return joinerTypes.length > 0;
     }
 
-    public <Tuple_ extends Tuple, Value_> Indexer<Tuple_, Value_> buildIndexer(boolean isLeftBridge) {
+    public <T> Indexer<T> buildIndexer(boolean isLeftBridge) {
         /*
          * Indexers form a parent-child hierarchy, each child has exactly one parent.
          * NoneIndexer is always at the bottom of the hierarchy, never a parent unless it is the only indexer.
@@ -77,14 +76,14 @@ public class IndexerFactory {
             }
         }
         NavigableMap<Integer, JoinerType> descendingJoinerTypeMap = joinerTypeMap.descendingMap();
-        Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier = NoneIndexer::new;
+        Supplier<Indexer<T>> downstreamIndexerSupplier = NoneIndexer::new;
         for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
             Integer endingPropertyExclusive = entry.getKey();
             Integer previousEndingPropertyExclusiveOrNull = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
             int previousEndingPropertyExclusive =
                     previousEndingPropertyExclusiveOrNull == null ? 0 : previousEndingPropertyExclusiveOrNull;
             JoinerType joinerType = entry.getValue();
-            Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier = downstreamIndexerSupplier;
+            Supplier<Indexer<T>> actualDownstreamIndexerSupplier = downstreamIndexerSupplier;
             if (joinerType == JoinerType.EQUAL) {
                 /*
                  * Equals indexer keys may span multiple index properties, one for each EQUALS joiner.

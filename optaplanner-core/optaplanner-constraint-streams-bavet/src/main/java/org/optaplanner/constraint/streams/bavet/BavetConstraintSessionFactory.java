@@ -64,7 +64,9 @@ public final class BavetConstraintSessionFactory<Solution_, Score_ extends Score
         }
         List<AbstractNode> nodeList = buildHelper.destroyAndGetNodeList();
         Map<Class<?>, ForEachUniNode<Object>> declaredClassToNodeMap = new LinkedHashMap<>();
+        long nextNodeId = 0;
         for (AbstractNode node : nodeList) {
+            node.setId(nextNodeId++);
             if (node instanceof ForEachUniNode) {
                 ForEachUniNode<Object> forEachUniNode = (ForEachUniNode<Object>) node;
                 ForEachUniNode<Object> old = declaredClassToNodeMap.put(forEachUniNode.getForEachClass(), forEachUniNode);

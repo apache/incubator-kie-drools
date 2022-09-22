@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -18,12 +17,19 @@ final class IndexedJoinTriNode<A, B, C>
     private final int outputStoreSize;
 
     public IndexedJoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
-            int inputStoreIndexAB, int inputStoreIndexC,
+            int inputStoreIndexAB, int inputStoreIndexEntryAB, int inputStoreIndexOutTupleListAB,
+            int inputStoreIndexC, int inputStoreIndexEntryC, int inputStoreIndexOutTupleListC,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
             int outputStoreSize,
-            Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTupleImpl<A, B, C>>> indexerAB,
-            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTupleImpl<A, B, C>>> indexerC) {
-        super(mappingC, inputStoreIndexAB, inputStoreIndexC, nextNodesTupleLifecycle, indexerAB, indexerC);
+            int outputStoreIndexOutEntryAB, int outputStoreIndexOutEntryC,
+            Indexer<BiTuple<A, B>> indexerAB,
+            Indexer<UniTuple<C>> indexerC) {
+        super(mappingC,
+                inputStoreIndexAB, inputStoreIndexEntryAB, inputStoreIndexOutTupleListAB,
+                inputStoreIndexC, inputStoreIndexEntryC, inputStoreIndexOutTupleListC,
+                nextNodesTupleLifecycle,
+                outputStoreIndexOutEntryAB, outputStoreIndexOutEntryC,
+                indexerAB, indexerC);
         this.mappingAB = mappingAB;
         this.outputStoreSize = outputStoreSize;
     }
@@ -39,19 +45,14 @@ final class IndexedJoinTriNode<A, B, C>
     }
 
     @Override
-    protected void updateOutTupleLeft(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
+    protected void setOutTupleLeftFacts(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
     }
 
     @Override
-    protected void updateOutTupleRight(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
+    protected void setOutTupleRightFact(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
         outTuple.factC = rightTuple.getFactA();
-    }
-
-    @Override
-    public String toString() {
-        return "JoinTriNode";
     }
 
 }

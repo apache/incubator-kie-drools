@@ -64,13 +64,32 @@ public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         TupleLifecycle<BiTuple<A, B>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         AbstractIfExistsNode<BiTuple<A, B>, C> node = indexerFactory.hasJoiners()
-                ? new IndexedIfExistsBiNode<>(shouldExist,
+                ? (filtering == null ? new IndexedIfExistsBiNode<>(shouldExist,
                         JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                         buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
-                        downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
-                        filtering)
-                : new UnindexedIfExistsBiNode<>(shouldExist, downstream, filtering);
+                        buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                        downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
+                        : new IndexedIfExistsBiNode<>(shouldExist,
+                                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                                buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                                downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
+                                filtering))
+                : (filtering == null ? new UnindexedIfExistsBiNode<>(shouldExist,
+                        buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                        buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()), downstream)
+                        : new UnindexedIfExistsBiNode<>(shouldExist,
+                                buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                                buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource()),
+                                downstream, filtering));
         buildHelper.addNode(node, this, parentBridgeC);
     }
 

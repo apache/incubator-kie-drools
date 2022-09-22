@@ -35,9 +35,4 @@ final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_
         outTuple.factC = result.getValue();
     }
 
-    @Override
-    public String toString() {
-        return "GroupBiNode 1+2";
-    }
-
 }

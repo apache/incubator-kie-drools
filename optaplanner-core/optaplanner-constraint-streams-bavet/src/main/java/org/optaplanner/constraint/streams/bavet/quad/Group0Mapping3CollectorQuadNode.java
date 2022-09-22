@@ -44,9 +44,4 @@ final class Group0Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
         outTuple.factC = result.getC();
     }
 
-    @Override
-    public String toString() {
-        return "GroupQuadNode 0+3";
-    }
-
 }

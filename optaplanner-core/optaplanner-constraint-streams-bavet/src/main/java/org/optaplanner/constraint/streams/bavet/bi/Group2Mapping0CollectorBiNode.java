@@ -37,9 +37,4 @@ final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
-    @Override
-    public String toString() {
-        return "GroupBiNode 2+0";
-    }
-
 }

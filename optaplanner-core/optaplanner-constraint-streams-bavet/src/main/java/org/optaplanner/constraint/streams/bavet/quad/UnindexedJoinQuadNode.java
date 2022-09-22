@@ -10,20 +10,27 @@ final class UnindexedJoinQuadNode<A, B, C, D>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinQuadNode(TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinQuadNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected void updateOutTupleLeft(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
+    protected void setOutTupleLeftFacts(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
         outTuple.factC = leftTuple.getFactC();
     }
 
     @Override
-    protected void updateOutTupleRight(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
+    protected void setOutTupleRightFact(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
         outTuple.factD = rightTuple.getFactA();
     }
 
@@ -31,11 +38,6 @@ final class UnindexedJoinQuadNode<A, B, C, D>
     protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
         return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
                 outputStoreSize);
-    }
-
-    @Override
-    public String toString() {
-        return "JoinQuadNode";
     }
 
 }

@@ -46,10 +46,10 @@ public final class ForEachUniNode<A> extends AbstractNode {
             if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
                 throw new IllegalStateException("The fact (" + a + ") was retracted, so it cannot update.");
             }
-            return;
+        } else {
+            tuple.state = BavetTupleState.UPDATING;
+            dirtyTupleQueue.add(tuple);
         }
-        tuple.state = BavetTupleState.UPDATING;
-        dirtyTupleQueue.add(tuple);
     }
 
     public void retract(A a) {
@@ -99,7 +99,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public String toString() {
-        return "ForEachUniNode(" + forEachClass.getSimpleName() + ")";
+        return super.toString() + "(" + forEachClass.getSimpleName() + ")";
     }
 
     public Class<A> getForEachClass() {

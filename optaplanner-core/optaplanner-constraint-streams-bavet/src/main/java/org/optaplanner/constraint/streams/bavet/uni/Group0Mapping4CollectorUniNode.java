@@ -46,9 +46,4 @@ final class Group0Mapping4CollectorUniNode<OldA, A, B, C, D, ResultContainerA_, 
         outTuple.factD = result.getD();
     }
 
-    @Override
-    public String toString() {
-        return "GroupUniNode 0+4";
-    }
-
 }

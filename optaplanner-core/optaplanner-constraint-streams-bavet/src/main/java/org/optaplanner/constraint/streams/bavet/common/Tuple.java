@@ -5,6 +5,8 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
+ * A tuple is an <i>out tuple</i> in exactly one node and an <i>in tuple</i> in one or more nodes.
+ * <p/>
  * A tuple must not implement equals()/hashCode() to fact equality,
  * because some stream operations ({@link UniConstraintStream#map(Function)}, ...)
  * might create 2 different tuple instances to contain the same facts

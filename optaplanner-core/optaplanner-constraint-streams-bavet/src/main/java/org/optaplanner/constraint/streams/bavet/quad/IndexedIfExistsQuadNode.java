@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedIfExistsNode;
@@ -18,13 +17,29 @@ final class IndexedIfExistsQuadNode<A, B, C, D, E> extends AbstractIndexedIfExis
     private final PentaPredicate<A, B, C, D, E> filtering;
 
     public IndexedIfExistsQuadNode(boolean shouldExist,
-            QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingD,
-            int inputStoreIndexABC, int inputStoreIndexD,
+            QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingE,
+            int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
-            Indexer<QuadTuple<A, B, C, D>, ExistsCounter<QuadTuple<A, B, C, D>>> indexerABCD,
-            Indexer<UniTuple<E>, Set<ExistsCounter<QuadTuple<A, B, C, D>>>> indexerE,
+            Indexer<ExistsCounter<QuadTuple<A, B, C, D>>> indexerABCD, Indexer<UniTuple<E>> indexerE) {
+        this(shouldExist, mappingABCD, mappingE,
+                inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, -1,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, -1,
+                nextNodesTupleLifecycle, indexerABCD, indexerE,
+                null);
+    }
+
+    public IndexedIfExistsQuadNode(boolean shouldExist,
+            QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingE,
+            int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry, int inputStoreIndexLeftTrackerList,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
+            Indexer<ExistsCounter<QuadTuple<A, B, C, D>>> indexerABCD, Indexer<UniTuple<E>> indexerE,
             PentaPredicate<A, B, C, D, E> filtering) {
-        super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABCD, indexerE,
+        super(shouldExist, mappingE,
+                inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, inputStoreIndexLeftTrackerList,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, inputStoreIndexRightTrackerList,
+                nextNodesTupleLifecycle, indexerABCD, indexerE,
                 filtering != null);
         this.mappingABCD = mappingABCD;
         this.filtering = filtering;
@@ -39,11 +54,6 @@ final class IndexedIfExistsQuadNode<A, B, C, D, E> extends AbstractIndexedIfExis
     protected boolean testFiltering(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
                 rightTuple.getFactA());
-    }
-
-    @Override
-    public String toString() {
-        return "IfExistsQuadWithUniNode";
     }
 
 }

@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -17,12 +16,28 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
 
     public IndexedIfExistsUniNode(boolean shouldExist,
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
-            int inputStoreIndexA, int inputStoreIndexB,
+            int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
-            Indexer<UniTuple<A>, ExistsCounter<UniTuple<A>>> indexerA,
-            Indexer<UniTuple<B>, Set<ExistsCounter<UniTuple<A>>>> indexerB,
+            Indexer<ExistsCounter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>> indexerB) {
+        this(shouldExist, mappingA, mappingB,
+                inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, -1,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, -1,
+                nextNodesTupleLifecycle, indexerA, indexerB,
+                null);
+    }
+
+    public IndexedIfExistsUniNode(boolean shouldExist,
+            Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
+            int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry, int inputStoreIndexLeftTrackerList,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
+            Indexer<ExistsCounter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>> indexerB,
             BiPredicate<A, B> filtering) {
-        super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesTupleLifecycle, indexerA, indexerB,
+        super(shouldExist, mappingB,
+                inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, inputStoreIndexLeftTrackerList,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, inputStoreIndexRightTrackerList,
+                nextNodesTupleLifecycle, indexerA, indexerB,
                 filtering != null);
         this.mappingA = mappingA;
         this.filtering = filtering;
@@ -36,11 +51,6 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
     @Override
     protected boolean testFiltering(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
         return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
-    }
-
-    @Override
-    public String toString() {
-        return "IfExistsUniWithUniNode";
     }
 
 }

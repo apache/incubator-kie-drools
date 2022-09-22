@@ -37,9 +37,4 @@ final class Group2Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
         outTuple.factD = result.getValue();
     }
 
-    @Override
-    public String toString() {
-        return "GroupTriNode 2+2";
-    }
-
 }

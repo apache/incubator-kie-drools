@@ -1,9 +1,10 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayDeque;
-import java.util.Map;
 import java.util.Queue;
 
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 /**
@@ -23,27 +24,43 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
     private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
+
+    protected final int inputStoreIndexLeftOutTupleList;
+    protected final int inputStoreIndexRightOutTupleList;
+
+    private final int outputStoreIndexLeftOutEntry;
+    private final int outputStoreIndexRightOutEntry;
     protected final Queue<OutTuple_> dirtyTupleQueue;
 
-    protected AbstractJoinNode(TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+    protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        this.inputStoreIndexLeftOutTupleList = inputStoreIndexLeftOutTupleList;
+        this.inputStoreIndexRightOutTupleList = inputStoreIndexRightOutTupleList;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
+        this.outputStoreIndexLeftOutEntry = outputStoreIndexLeftOutEntry;
+        this.outputStoreIndexRightOutEntry = outputStoreIndexRightOutEntry;
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     protected abstract MutableOutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
-    protected abstract void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple);
+    protected abstract void setOutTupleLeftFacts(MutableOutTuple_ outTuple, LeftTuple_ leftTuple);
 
-    protected abstract void updateOutTupleRight(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple);
+    protected abstract void setOutTupleRightFact(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple);
 
-    protected final void insertTuple(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple,
-            UniTuple<Right_> rightTuple) {
+    protected final void insertOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
         MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-        outTupleMapLeft.put(rightTuple, outTuple);
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
+        outTuple.setStore(outputStoreIndexLeftOutEntry, outEntryLeft);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
+        outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
         dirtyTupleQueue.add(outTuple);
     }
 
-    protected final void updateTuple(OutTuple_ outTuple) {
+    protected final void doUpdateOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -63,7 +80,17 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
     }
 
-    protected final void retractTuple(OutTuple_ outTuple) {
+    protected final void retractOutTuple(MutableOutTuple_ outTuple) {
+        TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
+        outEntryLeft.remove();
+        outTuple.setStore(outputStoreIndexLeftOutEntry, null);
+        TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
+        outEntryRight.remove();
+        outTuple.setStore(outputStoreIndexRightOutEntry, null);
+        doRetractOutTuple(outTuple);
+    }
+
+    private final void doRetractOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
                 // Don't add the tuple to the dirtyTupleQueue twice

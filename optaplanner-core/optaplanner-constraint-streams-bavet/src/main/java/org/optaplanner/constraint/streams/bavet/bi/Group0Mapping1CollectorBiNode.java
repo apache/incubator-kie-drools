@@ -27,8 +27,4 @@ final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
         outTuple.factA = a;
     }
 
-    @Override
-    public String toString() {
-        return "GroupBiNode 0+1";
-    }
 }

@@ -35,9 +35,4 @@ final class Group3Mapping1CollectorUniNode<OldA, A, B, C, D, ResultContainer_>
         outTuple.factD = d;
     }
 
-    @Override
-    public String toString() {
-        return "GroupUniNode 3+1";
-    }
-
 }

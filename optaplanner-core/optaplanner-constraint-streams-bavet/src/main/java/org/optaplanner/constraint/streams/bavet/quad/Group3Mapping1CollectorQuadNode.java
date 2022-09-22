@@ -32,9 +32,4 @@ final class Group3Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
         outTuple.factD = d;
     }
 
-    @Override
-    public String toString() {
-        return "GroupQuadNode 3+1";
-    }
-
 }

@@ -27,8 +27,4 @@ final class Group0Mapping1CollectorTriNode<OldA, OldB, OldC, A, ResultContainer_
         outTuple.factA = a;
     }
 
-    @Override
-    public String toString() {
-        return "GroupTriNode 0+1";
-    }
 }

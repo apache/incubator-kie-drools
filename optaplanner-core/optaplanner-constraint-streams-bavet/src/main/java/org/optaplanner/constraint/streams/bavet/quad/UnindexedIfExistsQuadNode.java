@@ -10,9 +10,23 @@ final class UnindexedIfExistsQuadNode<A, B, C, D, E> extends AbstractUnindexedIf
     private final PentaPredicate<A, B, C, D, E> filtering;
 
     public UnindexedIfExistsQuadNode(boolean shouldExist,
+            int inputStoreIndexLeftCounterEntry, int inputStoreIndexRightEntry,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle) {
+        this(shouldExist,
+                inputStoreIndexLeftCounterEntry, -1,
+                inputStoreIndexRightEntry, -1,
+                nextNodesTupleLifecycle, null);
+    }
+
+    public UnindexedIfExistsQuadNode(boolean shouldExist,
+            int inputStoreIndexLeftCounterEntry, int inputStoreIndexLeftTrackerList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
             PentaPredicate<A, B, C, D, E> filtering) {
-        super(shouldExist, nextNodesTupleLifecycle, filtering != null);
+        super(shouldExist,
+                inputStoreIndexLeftCounterEntry, inputStoreIndexLeftTrackerList,
+                inputStoreIndexRightEntry, inputStoreIndexRightTrackerList,
+                nextNodesTupleLifecycle, filtering != null);
         this.filtering = filtering;
     }
 
@@ -20,11 +34,6 @@ final class UnindexedIfExistsQuadNode<A, B, C, D, E> extends AbstractUnindexedIf
     protected boolean testFiltering(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
                 rightTuple.getFactA());
-    }
-
-    @Override
-    public String toString() {
-        return "IfExistsQuadWithUniNode";
     }
 
 }
