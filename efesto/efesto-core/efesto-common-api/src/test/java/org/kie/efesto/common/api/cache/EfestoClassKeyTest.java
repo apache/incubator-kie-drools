@@ -15,7 +15,10 @@
  */
 package org.kie.efesto.common.api.cache;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -96,5 +99,39 @@ class EfestoClassKeyTest {
         assertThat(map.containsKey(second)).isFalse();
         map.put(second, "");
         assertThat(map).size().isEqualTo(2);
+    }
+
+    @Test
+    void getActualTypeArguments() {
+        List<Type> typeArguments = Arrays.asList(String.class, Boolean.class, Long.class);
+        EfestoClassKey efestoClassKey = new EfestoClassKey(List.class, typeArguments.toArray(new Type[0]));
+        Type[] retrieved = efestoClassKey.getActualTypeArguments();
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(typeArguments.size());
+        for (Type type : retrieved) {
+            assertThat(typeArguments.contains(type)).isTrue();
+        }
+
+        typeArguments = Collections.emptyList();
+        efestoClassKey = new EfestoClassKey(List.class, typeArguments.toArray(new Type[0]));
+        retrieved = efestoClassKey.getActualTypeArguments();
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(0);
+
+        efestoClassKey = new EfestoClassKey(List.class);
+        retrieved = efestoClassKey.getActualTypeArguments();
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(0);
+
+    }
+
+    @Test
+    void getRawType() {
+        Type rawType = List.class;
+        List<Type> typeArguments = Arrays.asList(String.class, Boolean.class, Long.class);
+        EfestoClassKey efestoClassKey = new EfestoClassKey(rawType, typeArguments.toArray(new Type[0]));
+        Type retrieved = efestoClassKey.getRawType();
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(rawType);
     }
 }
