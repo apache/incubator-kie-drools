@@ -37,12 +37,14 @@ public class DroolsConsequenceAction extends DroolsAction implements Serializabl
         this.consequence = consequence;
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(dialect);
         out.writeObject(consequence);
     }
 
+    @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         super.readExternal(in);

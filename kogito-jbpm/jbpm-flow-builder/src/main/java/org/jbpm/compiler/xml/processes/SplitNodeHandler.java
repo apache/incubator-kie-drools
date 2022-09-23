@@ -32,6 +32,7 @@ public class SplitNodeHandler extends AbstractNodeHandler {
         return new Split();
     }
 
+    @Override
     public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser)
             throws SAXException {

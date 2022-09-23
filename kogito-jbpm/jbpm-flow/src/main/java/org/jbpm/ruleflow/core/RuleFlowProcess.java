@@ -75,6 +75,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         return (CompensationScope) getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
     }
 
+    @Override
     protected NodeContainer createNodeContainer() {
         return new WorkflowProcessNodeContainer();
     }
@@ -180,6 +181,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
 
         private static final long serialVersionUID = 510l;
 
+        @Override
         protected void validateAddNode(Node node) {
             super.validateAddNode(node);
             StartNode startNode = getStart(null, null);

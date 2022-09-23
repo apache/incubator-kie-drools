@@ -34,6 +34,7 @@ public class VariableScopeResolverFactory extends ImmutableDefaultFactory {
         this.variableScope = variableScope;
     }
 
+    @Override
     public boolean isResolveable(String name) {
         boolean found = variableScope.getVariable(name) != null;
         if (!found) {
@@ -43,6 +44,7 @@ public class VariableScopeResolverFactory extends ImmutableDefaultFactory {
         return found;
     }
 
+    @Override
     public VariableResolver getVariableResolver(String name) {
         if (extraParameters.containsKey(name)) {
             return new SimpleValueResolver(extraParameters.get(name));

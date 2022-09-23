@@ -48,6 +48,7 @@ public class TaskHandler extends AbstractNodeHandler {
         return Node.class;
     }
 
+    @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
@@ -109,6 +110,7 @@ public class TaskHandler extends AbstractNodeHandler {
         throw new IllegalArgumentException("Writing out should be handled by the WorkItemNodeHandler");
     }
 
+    @Override
     public Object end(final String uri, final String localName,
             final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();

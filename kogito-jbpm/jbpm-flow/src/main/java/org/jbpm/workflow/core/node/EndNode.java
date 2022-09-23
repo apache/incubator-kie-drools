@@ -44,10 +44,12 @@ public class EndNode extends ExtendedNodeImpl {
         this.terminate = terminate;
     }
 
+    @Override
     public String[] getActionTypes() {
         return EVENT_TYPES;
     }
 
+    @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
@@ -62,11 +64,13 @@ public class EndNode extends ExtendedNodeImpl {
         }
     }
 
+    @Override
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
                 "An end node does not have an outgoing connection!");
     }
 
+    @Override
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
                 "An end node does not have an outgoing connection!");

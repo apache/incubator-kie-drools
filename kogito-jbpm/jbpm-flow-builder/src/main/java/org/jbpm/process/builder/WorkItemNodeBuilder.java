@@ -26,6 +26,7 @@ import org.kie.api.definition.process.Process;
 
 public class WorkItemNodeBuilder extends EventBasedNodeBuilder {
 
+    @Override
     public void build(Process process, ProcessDescr processDescr,
             ProcessBuildContext context, Node node) {
         super.build(process, processDescr, context, node);

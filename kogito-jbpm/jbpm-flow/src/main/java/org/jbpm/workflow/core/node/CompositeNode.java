@@ -52,6 +52,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public NodeContainer getNodeContainer() {
         return nodeContainer;
     }
@@ -215,6 +216,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         return outConnectionMap;
     }
 
+    @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
         if (((Node) connection.getFrom()).getParentContainer() == this) {
@@ -231,6 +233,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void addIncomingConnection(String type, Connection connection) {
         if (((Node) connection.getFrom()).getParentContainer() == this) {
             linkOutgoingConnections(connection.getFrom().getId(), connection.getFromType(), Node.CONNECTION_DEFAULT_TYPE);
@@ -250,6 +253,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
         if (((Node) connection.getTo()).getParentContainer() == this) {
@@ -266,6 +270,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void addOutgoingConnection(String type, Connection connection) {
         if (((Node) connection.getTo()).getParentContainer() == this) {
             linkIncomingConnections(
@@ -287,6 +292,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
         if (nodeAndType != null) {
@@ -301,6 +307,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void removeIncomingConnection(String type, Connection connection) {
         super.removeIncomingConnection(type, connection);
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedIncomingNode(type);
@@ -318,6 +325,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void validateRemoveOutgoingConnection(final String type, final Connection connection) {
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);
         if (nodeAndType != null) {
@@ -332,6 +340,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         }
     }
 
+    @Override
     public void removeOutgoingConnection(String type, Connection connection) {
         super.removeOutgoingConnection(type, connection);
         CompositeNode.NodeAndType nodeAndType = internalGetLinkedOutgoingNode(type);

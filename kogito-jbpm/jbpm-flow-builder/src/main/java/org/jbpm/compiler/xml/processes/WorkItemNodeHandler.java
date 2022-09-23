@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 
 public class WorkItemNodeHandler extends AbstractNodeHandler {
 
+    @Override
     public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser)
             throws SAXException {

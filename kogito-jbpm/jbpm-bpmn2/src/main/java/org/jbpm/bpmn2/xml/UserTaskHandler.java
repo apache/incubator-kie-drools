@@ -28,14 +28,17 @@ import org.xml.sax.SAXException;
 
 public class UserTaskHandler extends TaskHandler {
 
+    @Override
     protected Node createNode(Attributes attrs) {
         return new HumanTaskNode();
     }
 
+    @Override
     public Class<HumanTaskNode> generateNodeFor() {
         return HumanTaskNode.class;
     }
 
+    @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
         Node currentNode = super.handleNode(node, element, uri, localName, parser);
@@ -94,6 +97,7 @@ public class UserTaskHandler extends TaskHandler {
         return null;
     }
 
+    @Override
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         HumanTaskNode humanTaskNode = (HumanTaskNode) node;
         writeNode("userTask", humanTaskNode, xmlDump, metaDataType);

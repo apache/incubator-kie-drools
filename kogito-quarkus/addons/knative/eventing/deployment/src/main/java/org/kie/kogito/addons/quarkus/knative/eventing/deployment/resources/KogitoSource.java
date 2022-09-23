@@ -70,6 +70,7 @@ public class KogitoSource implements HasMetadata,
     }
 
     @JsonProperty("apiVersion")
+    @Override
     public String getApiVersion() {
         return apiVersion;
     }
@@ -86,6 +87,7 @@ public class KogitoSource implements HasMetadata,
      * (Required)
      */
     @JsonProperty("kind")
+    @Override
     public String getKind() {
         return kind;
     }

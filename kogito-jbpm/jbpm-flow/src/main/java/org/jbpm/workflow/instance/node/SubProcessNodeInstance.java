@@ -172,6 +172,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         this.processInstanceId = processInstanceId;
     }
 
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         addProcessListener();
@@ -181,6 +182,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
@@ -235,6 +237,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         triggerCompleted();
     }
 
+    @Override
     public String getNodeName() {
         org.kie.api.definition.process.Node node = getNode();
         if (node == null) {

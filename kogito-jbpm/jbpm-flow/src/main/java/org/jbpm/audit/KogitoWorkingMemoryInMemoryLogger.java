@@ -46,11 +46,13 @@ public class KogitoWorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         events = (List<LogEvent>) in.readObject();
     }
 
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(events);

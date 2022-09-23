@@ -48,10 +48,12 @@ public class OutputExpressionAssignment implements AssignmentAction {
         // producer in this case is void
         Object value = MVELProcessHelper.evaluator().executeExpression(toCompiled, new ImmutableDefaultFactory() {
 
+            @Override
             public boolean isResolveable(String name) {
                 return targetResolver.apply(name) != null || name.equals("_value");
             }
 
+            @Override
             public VariableResolver getVariableResolver(String name) {
                 if ("_value".equals(name)) {
                     return new SimpleValueResolver(sourceResolver.apply(from.getLabel()));

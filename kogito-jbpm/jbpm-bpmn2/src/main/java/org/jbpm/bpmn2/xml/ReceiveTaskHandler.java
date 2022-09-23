@@ -28,16 +28,19 @@ import org.xml.sax.SAXException;
 
 public class ReceiveTaskHandler extends TaskHandler {
 
+    @Override
     protected Node createNode(Attributes attrs) {
         return new WorkItemNode();
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public Class generateNodeFor() {
         return Node.class;
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
@@ -56,6 +59,7 @@ public class ReceiveTaskHandler extends TaskHandler {
         return node;
     }
 
+    @Override
     protected String getTaskName(final Element element) {
         return "Receive Task";
     }

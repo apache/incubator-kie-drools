@@ -86,6 +86,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
         // Do nothing, event activated
     }
 
+    @Override
     protected void configureSla() {
         String slaDueDateExpression = (String) getNode().getMetaData().get("customSLADueDate");
         if (slaDueDateExpression != null) {

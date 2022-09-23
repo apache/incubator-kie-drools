@@ -27,6 +27,7 @@ public class ProcessStartedEventImpl extends ProcessEvent implements ProcessStar
         super(instance, kruntime);
     }
 
+    @Override
     public String toString() {
         return "==>[ProcessStarted(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }

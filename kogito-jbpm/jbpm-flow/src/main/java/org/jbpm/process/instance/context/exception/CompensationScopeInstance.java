@@ -47,6 +47,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
 
     private Stack<NodeInstance> compensationInstances = new Stack<NodeInstance>();
 
+    @Override
     public String getContextType() {
         return CompensationScope.COMPENSATION_SCOPE;
     }
@@ -55,6 +56,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
         this.compensationInstances.addAll(generatedInstances);
     }
 
+    @Override
     public void handleException(String activityRef, KogitoProcessContext dunno) {
         assert activityRef != null : "It should not be possible for the compensation activity reference to be null here.";
 

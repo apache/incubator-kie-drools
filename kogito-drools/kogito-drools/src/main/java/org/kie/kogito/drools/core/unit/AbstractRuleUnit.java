@@ -26,6 +26,7 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> extends org.drool
         super(id, ruleUnits);
     }
 
+    @Override
     public RuleUnitInstance<T> createInstance(T data, String name) {
         return (RuleUnitInstance<T>) super.createInstance(data, name);
     }

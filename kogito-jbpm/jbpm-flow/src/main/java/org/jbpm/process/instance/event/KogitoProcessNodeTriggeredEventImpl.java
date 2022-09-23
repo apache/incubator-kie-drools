@@ -35,6 +35,7 @@ public class KogitoProcessNodeTriggeredEventImpl extends ProcessEvent implements
         return nodeInstance;
     }
 
+    @Override
     public String toString() {
         return "==>[ProcessNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
                 + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";

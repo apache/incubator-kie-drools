@@ -40,10 +40,12 @@ public class HumanTaskId extends TaskId implements LocalId {
         return this;
     }
 
+    @Override
     public ProcessInstanceId processInstanceId() {
         return processInstanceId;
     }
 
+    @Override
     public String taskId() {
         return taskId;
     }

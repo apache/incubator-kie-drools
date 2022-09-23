@@ -73,6 +73,7 @@ public class KogitoProcessVariableChangedEventImpl extends ProcessEvent implemen
         return this.nodeInstance;
     }
 
+    @Override
     public String toString() {
         return "==>[ProcessVariableChanged(id=" + getVariableId() + "; instanceId=" + getVariableInstanceId() + "; oldValue=" + getOldValue() + "; newValue=" + getNewValue()
                 + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";

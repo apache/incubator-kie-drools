@@ -43,6 +43,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
         return CompositeNode.class;
     }
 
+    @Override
     public boolean allowNesting() {
         return true;
     }

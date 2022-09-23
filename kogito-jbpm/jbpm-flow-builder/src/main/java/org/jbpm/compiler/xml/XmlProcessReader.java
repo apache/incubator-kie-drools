@@ -56,14 +56,17 @@ public class XmlProcessReader {
                 return processParserMessage(super.getParents(), super.getAttrs(), super.buildPrintMessage(x));
             }
 
+            @Override
             public void warning(final SAXParseException x) {
                 logger.debug(buildPrintMessage(x));
             }
 
+            @Override
             public void error(final SAXParseException x) {
                 logger.debug(buildPrintMessage(x));
             }
 
+            @Override
             public void fatalError(final SAXParseException x) throws SAXParseException {
                 logger.debug(buildPrintMessage(x));
                 throw x;

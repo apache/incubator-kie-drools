@@ -93,6 +93,7 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
         this.scope = scope;
     }
 
+    @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
@@ -107,6 +108,7 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
         }
     }
 
+    @Override
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {

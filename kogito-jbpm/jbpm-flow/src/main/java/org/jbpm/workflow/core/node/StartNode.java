@@ -60,20 +60,24 @@ public class StartNode extends ExtendedNodeImpl {
         this.triggers = triggers;
     }
 
+    @Override
     public String[] getActionTypes() {
         return EVENT_TYPES;
     }
 
+    @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
                 "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
     }
 
+    @Override
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
                 "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
     }
 
+    @Override
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {

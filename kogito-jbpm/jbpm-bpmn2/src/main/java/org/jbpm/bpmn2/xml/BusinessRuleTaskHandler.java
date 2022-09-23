@@ -43,6 +43,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
         return RuleSetNode.class;
     }
 
+    @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);

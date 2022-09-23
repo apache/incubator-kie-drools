@@ -35,6 +35,7 @@ public class SLAViolatedEventImpl extends ProcessEvent implements SLAViolatedEve
         this.nodeInstance = nodeInstance;
     }
 
+    @Override
     public String toString() {
         return "==>[SLAViolatedEvent(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }

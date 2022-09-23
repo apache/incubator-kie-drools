@@ -27,6 +27,7 @@ public class ProcessCompletedEventImpl extends ProcessEvent implements ProcessCo
         super(instance, kruntime);
     }
 
+    @Override
     public String toString() {
         return "==>[ProcessCompleted(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }

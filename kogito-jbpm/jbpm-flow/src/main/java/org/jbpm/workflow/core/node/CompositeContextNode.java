@@ -50,6 +50,7 @@ public class CompositeContextNode extends CompositeNode implements ContextContai
         return this.contextContainer.getDefaultContext(contextType);
     }
 
+    @Override
     public Context resolveContext(String contextId, Object param) {
         Context context = getDefaultContext(contextId);
         if (context != null) {

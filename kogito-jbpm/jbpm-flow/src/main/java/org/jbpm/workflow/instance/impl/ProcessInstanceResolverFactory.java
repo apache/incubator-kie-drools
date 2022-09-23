@@ -30,10 +30,12 @@ public class ProcessInstanceResolverFactory extends ImmutableDefaultFactory {
         this.processInstance = processInstance;
     }
 
+    @Override
     public boolean isResolveable(String name) {
         return processInstance.getVariable(name) != null;
     }
 
+    @Override
     public VariableResolver getVariableResolver(String name) {
         return new SimpleValueResolver(processInstance.getVariable(name));
     }

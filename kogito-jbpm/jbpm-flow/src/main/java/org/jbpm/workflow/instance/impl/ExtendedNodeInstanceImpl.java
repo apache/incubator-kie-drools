@@ -45,6 +45,7 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
         triggerCompleted(CONNECTION_DEFAULT_TYPE, remove);
     }
 
+    @Override
     public void triggerCompleted(String type, boolean remove) {
         triggerEvent(EVENT_NODE_EXIT);
         super.triggerCompleted(type, remove);

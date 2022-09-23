@@ -70,10 +70,12 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         }
     }
 
+    @Override
     protected boolean isLinkedIncomingNodeRequired() {
         return false;
     }
 
+    @Override
     public void signalEvent(String type, Object event) {
         if ("signal".equals(type)) {
             if (event instanceof String) {
@@ -114,18 +116,21 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
         getProcessInstance().addEventListener(getActivationEventType(), this, true);
     }
 
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         addTriggerListener();
         addActivationListener();
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener("signal", this, false);
         getProcessInstance().removeEventListener(getActivationEventType(), this, true);
     }
 
+    @Override
     public String[] getEventTypes() {
         return new String[] { "signal", getActivationEventType() };
     }

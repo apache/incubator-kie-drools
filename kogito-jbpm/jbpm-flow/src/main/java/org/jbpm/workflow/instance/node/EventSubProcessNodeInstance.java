@@ -31,10 +31,12 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
 
     private static final long serialVersionUID = 7095736653568661510L;
 
+    @Override
     protected EventSubProcessNode getCompositeNode() {
         return (EventSubProcessNode) getNode();
     }
 
+    @Override
     public NodeContainer getNodeContainer() {
         return getCompositeNode();
     }

@@ -17,6 +17,7 @@ package org.kie.kogito.rules;
 
 public interface RuleUnit<T extends org.drools.ruleunits.api.RuleUnitData> extends org.drools.ruleunits.api.RuleUnit<T> {
 
+    @Override
     default RuleUnitInstance<T> createInstance(T data) {
         return createInstance(data, null);
     }

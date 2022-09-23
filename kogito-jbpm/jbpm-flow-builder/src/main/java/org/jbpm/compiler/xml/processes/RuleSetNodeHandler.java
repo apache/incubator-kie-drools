@@ -27,6 +27,7 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         return new RuleSetNode();
     }
 
+    @Override
     public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser)
             throws SAXException {

@@ -43,6 +43,7 @@ public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
         }
     }
 
+    @Override
     public boolean isResolveable(String name) {
         boolean found = nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, name) != null;
         if (!found) {
@@ -52,6 +53,7 @@ public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
         return found;
     }
 
+    @Override
     public VariableResolver getVariableResolver(String name) {
         if (extraParameters.containsKey(name)) {
             return new SimpleValueResolver(extraParameters.get(name));

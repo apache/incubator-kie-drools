@@ -52,6 +52,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         return conditionPredicate == null || conditionPredicate.test(context);
     }
 
+    @Override
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
@@ -62,6 +63,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         }
     }
 
+    @Override
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {

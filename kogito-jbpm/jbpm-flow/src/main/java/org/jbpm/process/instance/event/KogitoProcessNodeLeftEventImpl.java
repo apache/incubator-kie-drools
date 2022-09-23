@@ -35,6 +35,7 @@ public class KogitoProcessNodeLeftEventImpl extends ProcessEvent implements Proc
         return nodeInstance;
     }
 
+    @Override
     public String toString() {
         return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + ((KogitoNodeInstance) nodeInstance).getStringId()
                 + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";

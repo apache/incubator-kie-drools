@@ -80,6 +80,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         timerId = jobService.scheduleProcessInstanceJob(jobDescription);
     }
 
+    @Override
     public void signalEvent(String type, Object event) {
         if (TIMER_TRIGGERED_EVENT.equals(type)) {
             TimerInstance timer = (TimerInstance) event;
@@ -89,10 +90,12 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         }
     }
 
+    @Override
     public String[] getEventTypes() {
         return new String[] { TIMER_TRIGGERED_EVENT };
     }
 
+    @Override
     public void triggerCompleted(boolean remove) {
         triggerCompleted(Node.CONNECTION_DEFAULT_TYPE, remove);
     }
@@ -103,6 +106,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         super.cancel();
     }
 
+    @Override
     public void addEventListeners() {
         super.addEventListeners();
         if (getTimerInstances() == null) {
@@ -110,6 +114,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         }
     }
 
+    @Override
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, this, false);

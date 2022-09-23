@@ -44,10 +44,12 @@ public class InputExpressionAssignment implements AssignmentAction {
         // producer in this case is void
         ImmutableDefaultFactory immutableDefaultFactory = new ImmutableDefaultFactory() {
 
+            @Override
             public boolean isResolveable(String name) {
                 return sourceResolver.apply(name) != null;
             }
 
+            @Override
             public VariableResolver getVariableResolver(String name) {
                 return new SimpleValueResolver(sourceResolver.apply(name));
             }

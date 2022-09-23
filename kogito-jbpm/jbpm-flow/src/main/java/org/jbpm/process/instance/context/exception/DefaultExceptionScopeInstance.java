@@ -29,6 +29,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
 
     private static final long serialVersionUID = 510l;
 
+    @Override
     public String getContextType() {
         return ExceptionScope.EXCEPTION_SCOPE;
     }

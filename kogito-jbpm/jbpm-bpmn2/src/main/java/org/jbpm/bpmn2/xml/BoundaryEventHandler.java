@@ -53,6 +53,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         return BoundaryEventNode.class;
     }
 
+    @Override
     public Object end(final String uri, final String localName,
             final Parser parser) throws SAXException {
         final Element element = parser.endElementBuilder();

@@ -27,14 +27,17 @@ public class DynamicNodeHandler extends CompositeNodeHandler {
 
     public static final String AUTOCOMPLETE_COMPLETION_CONDITION = "autocomplete";
 
+    @Override
     protected Node createNode() {
         return new DynamicNode();
     }
 
+    @Override
     public Class<?> generateNodeFor() {
         return DynamicNode.class;
     }
 
+    @Override
     protected String getNodeName() {
         return "dynamic";
     }

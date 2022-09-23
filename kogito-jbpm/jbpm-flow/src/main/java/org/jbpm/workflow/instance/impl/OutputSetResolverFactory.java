@@ -31,10 +31,12 @@ public class OutputSetResolverFactory extends ImmutableDefaultFactory {
         this.outputSet = outputSet;
     }
 
+    @Override
     public boolean isResolveable(String name) {
         return outputSet.containsKey(name);
     }
 
+    @Override
     public VariableResolver getVariableResolver(String name) {
         return new SimpleValueResolver(outputSet.get(name));
     }

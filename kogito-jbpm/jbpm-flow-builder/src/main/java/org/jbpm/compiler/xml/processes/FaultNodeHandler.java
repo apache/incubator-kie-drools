@@ -27,6 +27,7 @@ public class FaultNodeHandler extends AbstractNodeHandler {
         return new FaultNode();
     }
 
+    @Override
     public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser)
             throws SAXException {

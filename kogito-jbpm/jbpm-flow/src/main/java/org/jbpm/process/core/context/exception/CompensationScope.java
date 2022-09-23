@@ -36,10 +36,12 @@ public class CompensationScope extends ExceptionScope {
 
     private String containerId;
 
+    @Override
     public String getType() {
         return COMPENSATION_SCOPE;
     }
 
+    @Override
     public void setContextContainer(ContextContainer contextContainer) {
         assert contextContainer instanceof NodeContainer
                 : "CompensationScope context container instance is NOT an instance of a node container! " +
@@ -60,6 +62,7 @@ public class CompensationScope extends ExceptionScope {
         return containerId;
     }
 
+    @Override
     public ExceptionHandler getExceptionHandler(String exception) {
         return exceptionHandlers.get(exception);
     }
@@ -74,6 +77,7 @@ public class CompensationScope extends ExceptionScope {
      * broadcast/general compensation.
      */
 
+    @Override
     public Context resolveContext(Object activityRefStr) {
         if (activityRefStr == null || !(activityRefStr instanceof String)) {
             throw new IllegalArgumentException(

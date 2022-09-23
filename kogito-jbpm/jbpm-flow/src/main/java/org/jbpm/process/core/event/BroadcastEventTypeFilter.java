@@ -41,6 +41,7 @@ public class BroadcastEventTypeFilter extends EventTypeFilter {
         return accepts;
     }
 
+    @Override
     public String toString() {
         return "Broadcast Event filter: [" + this.type + "]";
     }

@@ -69,6 +69,7 @@ public class UIWorkItemHandler extends JFrame implements KogitoWorkItemHandler {
         workItemsList = new JList();
         workItemsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         workItemsList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     select();

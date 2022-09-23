@@ -34,6 +34,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         return SubProcessNode.class;
     }
 
+    @Override
     protected Node handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);

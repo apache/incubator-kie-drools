@@ -22,15 +22,18 @@ import org.xml.sax.Attributes;
 
 public class ManualTaskHandler extends TaskHandler {
 
+    @Override
     protected Node createNode(Attributes attrs) {
         return new WorkItemNode();
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public Class generateNodeFor() {
         return Node.class;
     }
 
+    @Override
     protected String getTaskName(final Element element) {
         return "Manual Task";
     }

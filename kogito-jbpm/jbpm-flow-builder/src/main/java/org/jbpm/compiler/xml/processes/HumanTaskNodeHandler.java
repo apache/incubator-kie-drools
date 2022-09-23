@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 public class HumanTaskNodeHandler extends WorkItemNodeHandler {
 
+    @Override
     public void handleNode(final Node node, final Element element, final String uri,
             final String localName, final Parser parser)
             throws SAXException {
@@ -36,14 +37,17 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         }
     }
 
+    @Override
     protected Node createNode() {
         return new HumanTaskNode();
     }
 
+    @Override
     public Class<?> generateNodeFor() {
         return HumanTaskNode.class;
     }
 
+    @Override
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
         WorkItemNode workItemNode = (WorkItemNode) node;
         writeNode("humanTask", workItemNode, xmlDump, includeMeta);
@@ -63,6 +67,7 @@ public class HumanTaskNodeHandler extends WorkItemNodeHandler {
         endNode("humanTask", xmlDump);
     }
 
+    @Override
     protected void visitParameters(WorkItemNode workItemNode, StringBuilder xmlDump) {
         super.visitParameters(workItemNode, xmlDump);
         HumanTaskNode humanTaskNode = (HumanTaskNode) workItemNode;

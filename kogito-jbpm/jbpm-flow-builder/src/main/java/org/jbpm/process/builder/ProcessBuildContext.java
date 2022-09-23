@@ -64,6 +64,7 @@ public class ProcessBuildContext extends PackageBuildContext {
         this.process = process;
     }
 
+    @Override
     public DialectCompiletimeRegistry getDialectRegistry() {
         return dialectRegistry;
     }
