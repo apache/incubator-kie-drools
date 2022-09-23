@@ -4,7 +4,7 @@ environment:
       enabled: true
     branch:
       enabled: true
-      version: '2.12'
+      version: '2.13'
     lts:
       enabled: true
       version: '2.7'
@@ -19,12 +19,12 @@ productized_branch: true
 disable:
   triggers: false
 repositories:
-  - name: optaplanner
-    branch: main
-  - name: optaweb-vehicle-routing
-    branch: main
-  - name: optaplanner-quickstarts
-    branch: development
+- name: optaplanner
+  branch: main
+- name: optaweb-vehicle-routing
+  branch: main
+- name: optaplanner-quickstarts
+  branch: development
 git:
   author:
     name: kiegroup
@@ -58,4 +58,3 @@ jenkins:
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.6
-
