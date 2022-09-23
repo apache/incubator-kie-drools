@@ -297,29 +297,55 @@ public class Converter {
             List<SimplePredicate> sortedList = predicatesForInput.stream().sorted(Comparator.comparing(o -> o.getOperator().name())).collect(Collectors.toList());
             SimplePredicate p0 = sortedList.get(0);
             SimplePredicate p1 = sortedList.get(1);
-            StringBuilder sb = new StringBuilder();
-            if (p0.getOperator() == Operator.GREATER_OR_EQUAL) {
-                sb.append("[");
-            } else if (p0.getOperator() == Operator.GREATER_THAN) {
-                sb.append("(");
+
+            if (canCollapseBinaryPredicate(p0, p1)) {
+                ut.setText(feelLiteralValue(p0.getValue(), df));
             } else {
-                throw new UnsupportedOperationException("Unsupported operator in lowerbound: "+p0.getOperator());
+                StringBuilder sb = new StringBuilder();
+                if (p0.getOperator() == Operator.GREATER_OR_EQUAL) {
+                    sb.append("[");
+                } else if (p0.getOperator() == Operator.GREATER_THAN) {
+                    sb.append("(");
+                } else {
+                    throw new UnsupportedOperationException("Unsupported operator in lowerbound: "+p0.getOperator());
+                }
+                sb.append(feelLiteralValue(p0.getValue(), df));
+                sb.append(" .. ");
+                sb.append(feelLiteralValue(p1.getValue(), df));
+                if (p1.getOperator() == Operator.LESS_THAN) {
+                    sb.append(")");
+                } else if (p1.getOperator() == Operator.LESS_OR_EQUAL) {
+                    sb.append("]");
+                } else {
+                    throw new UnsupportedOperationException("Unsupported operator in upperbound: "+p1.getOperator());
+                }
+                ut.setText(sb.toString());
             }
-            sb.append(feelLiteralValue(p0.getValue(), df));
-            sb.append(" .. ");
-            sb.append(feelLiteralValue(p1.getValue(), df));
-            if (p1.getOperator() == Operator.LESS_THAN) {
-                sb.append(")");
-            } else if (p1.getOperator() == Operator.LESS_OR_EQUAL) {
-                sb.append("]");
-            } else {
-                throw new UnsupportedOperationException("Unsupported operator in upperbound: "+p1.getOperator());
-            }
-            ut.setText(sb.toString());
         } else {
             ut.setText("\"?\"");
         }
         return ut;
+    }
+
+    /**
+     * Checks if a binary predicate can be collapsed to an unary one. 
+     * 
+     * @param predicates The contents of the binary predicate to check. 
+     * @return True, if the contents of the binary predicate have the same value, lower bound is greater or equal and upper bound is less or equal (case of [x..x]).  
+     * Otherwise returns false.
+     */
+    private static boolean canCollapseBinaryPredicate(final SimplePredicate first, final SimplePredicate second) {
+        final Object firstValue = first.getValue();
+        final Object secondValue = second.getValue();
+
+        final boolean haveCorrectOperators = (first.getOperator() == Operator.GREATER_OR_EQUAL) 
+            && (second.getOperator() == Operator.LESS_OR_EQUAL);
+
+        if (firstValue instanceof BigDecimal && secondValue instanceof BigDecimal) {
+            return haveCorrectOperators && (((BigDecimal) firstValue).compareTo((BigDecimal) secondValue) == 0);
+        } else {
+            return haveCorrectOperators && firstValue.equals(secondValue);
+        }
     }
 
     private static String feelUTofOp(Operator operator) {
