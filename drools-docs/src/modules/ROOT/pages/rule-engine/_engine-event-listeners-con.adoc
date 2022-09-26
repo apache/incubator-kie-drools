@@ -1,6 +1,6 @@
 [id='engine-event-listeners-con_{context}']
 
-= {RULE_ENGINE_CAP} event listeners and debug logging
+= {RULE_ENGINE} event listeners and debug logging
 
 The {RULE_ENGINE} generates events when performing activities such as fact insertions and rule executions. If you register event listeners, the {RULE_ENGINE} calls every listener when an activity is performed.
 

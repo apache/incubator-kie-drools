@@ -1,6 +1,6 @@
 [id='engine-queries-con_{context}']
 
-= {RULE_ENGINE_CAP} queries and live queries
+= {RULE_ENGINE} queries and live queries
 
 You can use queries with the {RULE_ENGINE} to retrieve fact sets based on fact patterns as they are used in rules. The patterns might also use optional parameters.
 

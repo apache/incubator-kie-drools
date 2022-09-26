@@ -19,7 +19,6 @@
 :URL_COMPONENT_PRODUCT: drools
 
 :RULE_ENGINE: Drools rule engine
-:RULE_ENGINE_CAP: Drools rule engine
 
 :DMN_ENGINE: Drools DMN engine
 :DMN_EDITOR: KIE DMN Editor
