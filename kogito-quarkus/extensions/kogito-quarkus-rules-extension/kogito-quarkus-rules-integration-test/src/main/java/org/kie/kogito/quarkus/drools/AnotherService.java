@@ -18,9 +18,9 @@ package org.kie.kogito.quarkus.drools;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.kogito.incubation.common.ReferenceContext;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
 
 import io.quarkus.arc.Unremovable;
 

@@ -18,15 +18,4 @@ package org.kie.kogito.rules;
 import org.kie.kogito.KogitoEngine;
 
 public interface RuleUnits extends org.drools.ruleunits.api.RuleUnits, KogitoEngine {
-
-    <T extends org.drools.ruleunits.api.RuleUnitData> RuleUnit<T> create(Class<T> clazz);
-
-    void register(String name, RuleUnitInstance<?> unitInstance);
-
-    default void register(String name, org.drools.ruleunits.api.RuleUnitInstance<?> unitInstance) {
-        register(name, (RuleUnitInstance) unitInstance);
-    }
-
-    RuleUnitInstance<?> getRegisteredInstance(String name);
-
 }

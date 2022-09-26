@@ -21,9 +21,14 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.drools.ruleunits.api.DataSource;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.incubation.application.AppRoot;
-import org.kie.kogito.incubation.common.*;
+import org.kie.kogito.incubation.common.EmptyDataContext;
+import org.kie.kogito.incubation.common.ExtendedDataContext;
+import org.kie.kogito.incubation.common.ExtendedReferenceContext;
+import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.incubation.common.MetaDataContext;
 import org.kie.kogito.incubation.rules.InstanceQueryId;
 import org.kie.kogito.incubation.rules.RuleUnitIds;
 import org.kie.kogito.incubation.rules.RuleUnitInstanceId;
@@ -31,11 +36,12 @@ import org.kie.kogito.incubation.rules.data.DataSourceId;
 import org.kie.kogito.incubation.rules.services.DataSourceService;
 import org.kie.kogito.incubation.rules.services.StatefulRuleUnitService;
 import org.kie.kogito.incubation.rules.services.contexts.RuleUnitMetaDataContext;
-import org.kie.kogito.rules.DataSource;
 
 import io.quarkus.test.junit.QuarkusTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class StatefulRuleUnitServiceTest {

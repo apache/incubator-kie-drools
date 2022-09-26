@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.examples.Hello;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitInstance;
 
 import io.quarkus.test.junit.QuarkusTest;
 

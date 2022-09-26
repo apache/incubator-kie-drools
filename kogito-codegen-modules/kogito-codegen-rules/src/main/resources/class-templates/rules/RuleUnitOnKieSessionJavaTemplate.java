@@ -23,8 +23,8 @@ import org.drools.ruleunits.impl.sessions.RuleUnitStatefulKnowledgeSessionImpl;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.kogito.drools.core.unit.AbstractRuleUnit;
-import org.kie.kogito.rules.RuleUnits;
 import org.kie.kogito.rules.RuleEventListenerConfig;
+import org.kie.kogito.rules.RuleUnits;
 
 public class $Name$ extends AbstractRuleUnit<$ModelName$> {
 

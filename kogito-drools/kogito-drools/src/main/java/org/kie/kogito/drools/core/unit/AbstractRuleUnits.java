@@ -18,8 +18,8 @@ package org.kie.kogito.drools.core.unit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnits;
 
 public abstract class AbstractRuleUnits implements RuleUnits {

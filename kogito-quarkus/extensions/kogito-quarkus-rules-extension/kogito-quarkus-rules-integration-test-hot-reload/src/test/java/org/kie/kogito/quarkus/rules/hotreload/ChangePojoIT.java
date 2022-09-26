@@ -167,8 +167,8 @@ public class ChangePojoIT {
                     "\n" +
                     "import org.kie.kogito.quarkus.rules.hotreload.newunit.Person;\n" +
                     "\n" +
-                    "import org.kie.kogito.rules.DataStore;\n" +
-                    "import org.kie.kogito.rules.RuleUnitData;\n" +
+                    "import org.drools.ruleunits.api.DataStore;\n" +
+                    "import org.drools.ruleunits.api.RuleUnitData;\n" +
                     "\n" +
                     "declare AdultUnit extends RuleUnitData\n" +
                     "   persons: DataStore<Person>\n" +

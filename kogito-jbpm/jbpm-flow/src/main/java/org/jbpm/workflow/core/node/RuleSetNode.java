@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
+import org.drools.ruleunits.api.RuleUnitData;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
@@ -31,7 +32,6 @@ import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.decision.DecisionModel;
-import org.kie.kogito.rules.RuleUnitData;
 
 /**
  * Default implementation of a RuleSet node.

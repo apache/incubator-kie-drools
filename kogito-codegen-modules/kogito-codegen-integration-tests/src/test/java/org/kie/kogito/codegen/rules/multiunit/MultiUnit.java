@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.codegen.rules.multiunit;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 
 public class MultiUnit implements RuleUnitData {
     DataStore<Object> values = DataSource.createStore();

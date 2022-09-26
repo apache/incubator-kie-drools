@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataProcessor;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.SingletonStore;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.kogito.codegen.data.Person;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataProcessor;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.SingletonStore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

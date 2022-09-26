@@ -1,8 +1,8 @@
 package org.kie.kogito.quarkus.rules.hotreload;
 unit AdultUnit;
 
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 
 declare Person
    name:  String

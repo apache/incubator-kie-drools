@@ -18,9 +18,9 @@ package org.kie.kogito.core.rules.incubation.quarkus.support;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
 
 @ApplicationScoped
 public class DataSourceProvider {

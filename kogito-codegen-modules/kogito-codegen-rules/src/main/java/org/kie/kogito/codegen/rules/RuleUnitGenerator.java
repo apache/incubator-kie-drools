@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.model.codegen.execmodel.QueryModel;
+import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.conf.ClockType;
 import org.drools.ruleunits.api.conf.EventProcessingType;
@@ -33,7 +34,6 @@ import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.drools.core.unit.AbstractRuleUnit;
-import org.kie.kogito.rules.RuleUnit;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;

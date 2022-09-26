@@ -15,14 +15,17 @@
  */
 package org.kie.kogito.codegen.rules;
 
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 import org.drools.ruleunits.impl.AssignableChecker;
 import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.drools.util.ClassUtils.rawType;
@@ -70,13 +73,14 @@ public class RuleUnitHelper {
             }
         } else if (isAssignableFrom(DataStream.class, ruleUnitVariableClass)) {
             if (ruleUnitVariable.setter() != null) {
-                supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStream<%s> %s = org.kie.kogito.rules.DataSource.createStream();", genericType, ruleUnitVariable.getName()));
+                supplierBlock.addStatement(
+                        String.format("org.drools.ruleunits.api.DataStream<%s> %s = org.drools.ruleunits.api.DataSource.createBufferedStream(16);", genericType, ruleUnitVariable.getName()));
                 supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
             }
             supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::append);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
         } else if (isAssignableFrom(DataStore.class, ruleUnitVariableClass)) {
             if (ruleUnitVariable.setter() != null) {
-                supplierBlock.addStatement(String.format("org.kie.kogito.rules.DataStore<%s> %s = org.kie.kogito.rules.DataSource.createStore();", genericType, ruleUnitVariable.getName()));
+                supplierBlock.addStatement(String.format("org.drools.ruleunits.api.DataStore<%s> %s = org.drools.ruleunits.api.DataSource.createStore();", genericType, ruleUnitVariable.getName()));
                 supplierBlock.addStatement(String.format("unit.%s(%s);", ruleUnitVariable.setter(), ruleUnitVariable.getName()));
             }
             supplierBlock.addStatement(String.format("this.%s.forEach( unit.%s()::add);", ruleUnitVariable.getName(), ruleUnitVariable.getter()));
@@ -89,15 +93,22 @@ public class RuleUnitHelper {
         return supplierBlock;
     }
 
-    String createDataSourceMethodName(Class<?> dsClass) {
+    MethodCallExpr createDataSourceMethodCallExpr(Class<?> dsClass) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr();
+        methodCallExpr.setScope(new NameExpr(DataSource.class.getCanonicalName()));
+
         if (isAssignableFrom(DataStream.class, dsClass)) {
-            return "createStream";
+            return methodCallExpr
+                    .setName("createBufferedStream")
+                    .addArgument("16");
         }
         if (isAssignableFrom(DataStore.class, dsClass)) {
-            return "createStore";
+            return methodCallExpr
+                    .setName("createStore");
         }
         if (isAssignableFrom(SingletonStore.class, dsClass)) {
-            return "createSingleton";
+            return methodCallExpr
+                    .setName("createSingleton");
         }
         throw new IllegalArgumentException("Unknown data source type " + dsClass.getCanonicalName());
     }

@@ -16,8 +16,8 @@
 package io.quarkus.it.kogito.drools;
 unit AlertingService;
 
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.RuleUnitData 
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.RuleUnitData
 
 
 declare Event

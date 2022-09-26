@@ -18,13 +18,17 @@ package org.kie.kogito.core.rules.incubation.quarkus.support;
 import java.io.IOException;
 import java.util.List;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -54,7 +58,7 @@ class RuleUnitDataJacksonModule extends SimpleModule {
 
         @Override
         public DataStream deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            DataStream stream = DataSource.createStream();
+            DataStream stream = DataSource.createBufferedStream(16);
             List list = ctxt.readValue(jp, collectionType);
             list.forEach(stream::append);
             return stream;

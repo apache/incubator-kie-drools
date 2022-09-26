@@ -30,10 +30,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.SpringBootConfiguration;
@@ -62,7 +62,7 @@ public class KogitoObjectMapper {
 
         @Override
         public DataStream deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            DataStream stream = DataSource.createStream();
+            DataStream stream = DataSource.createBufferedStream(16);
             List list = ctxt.readValue(jp, collectionType);
             list.forEach(stream::append);
             return stream;

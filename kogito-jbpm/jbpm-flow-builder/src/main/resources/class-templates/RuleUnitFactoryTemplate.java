@@ -18,7 +18,7 @@ class Template {
         public $Type$ bind(org.kie.api.runtime.process.ProcessContext kcontext) {
             return null;
         }
-        public org.kie.kogito.rules.RuleUnit<$Type$> unit() {
+        public org.drools.ruleunits.api.RuleUnit<$Type$> unit() {
             return null;
         }
         public void unbind(org.kie.api.runtime.process.ProcessContext kcontext, $Type$ unit) {

@@ -17,7 +17,7 @@ package com.myspace.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kie.kogito.eventdriven.rules.AbstractEventDrivenQueryExecutor;
-import org.kie.kogito.rules.RuleUnit;
+import org.drools.ruleunits.api.RuleUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

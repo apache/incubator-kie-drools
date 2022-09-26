@@ -15,9 +15,9 @@
  */
 package org.jbpm.workflow.core.node;
 
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.api.runtime.process.ProcessContext;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitData;
 
 public interface RuleUnitFactory<T extends RuleUnitData> {
 

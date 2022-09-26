@@ -15,10 +15,10 @@
  */
 package org.kie.kogito.drools.core.unit;
 
+import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnits;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitInstance;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> extends org.drools.ruleunits.impl.factory.AbstractRuleUnit<T> implements RuleUnit<T> {
 

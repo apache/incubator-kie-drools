@@ -15,13 +15,13 @@
  */
 package org.kie.kogito.codegen;
 
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.unit.AnnotatedRules;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.RuleUnit;
-import org.kie.kogito.rules.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnits;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

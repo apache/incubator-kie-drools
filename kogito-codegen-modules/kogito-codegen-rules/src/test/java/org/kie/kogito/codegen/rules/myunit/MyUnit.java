@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.codegen.rules.myunit;
 
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.RuleUnitData;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.RuleUnitData;
 
 public class MyUnit implements RuleUnitData {
     DataSource<Object> values;

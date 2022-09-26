@@ -17,6 +17,8 @@ package org.jbpm.compiler.canonical;
 
 import java.text.MessageFormat;
 
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.SingletonStore;
 import org.drools.ruleunits.impl.AssignableChecker;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.drools.ruleunits.impl.ReflectiveRuleUnitDescription;
@@ -30,8 +32,6 @@ import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.rules.RuleConfig;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.SingletonStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

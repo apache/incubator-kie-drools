@@ -15,14 +15,14 @@
  */
 package com.myspace.demo;
 
+import org.drools.ruleunits.api.RuleUnitInstance;
+
 import java.util.List;
 import java.util.Map;
 
-import org.kie.kogito.rules.RuleUnitInstance;
-
 import static java.util.stream.Collectors.toList;
 
-public class $unit$Query$name$ implements org.kie.kogito.rules.RuleUnitQuery<List<$ReturnType$>> {
+public class $unit$Query$name$ implements org.drools.ruleunits.api.RuleUnitQuery<List<$ReturnType$>> {
 
     private final RuleUnitInstance<$UnitType$> instance;
 

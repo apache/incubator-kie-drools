@@ -19,8 +19,15 @@ package org.kie.kogito.core.rules.incubation.quarkus.support;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-import org.kie.kogito.drools.core.data.DataHandleImpl;
-import org.kie.kogito.drools.core.data.ListDataStore;
+import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnits;
+import org.drools.ruleunits.impl.datasources.ListDataStore;
+import org.drools.ruleunits.impl.factory.DataHandleImpl;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.LocalId;
 import org.kie.kogito.incubation.rules.RuleUnitId;
@@ -28,13 +35,6 @@ import org.kie.kogito.incubation.rules.RuleUnitInstanceId;
 import org.kie.kogito.incubation.rules.data.DataId;
 import org.kie.kogito.incubation.rules.data.DataSourceId;
 import org.kie.kogito.incubation.rules.services.DataSourceService;
-import org.kie.kogito.rules.DataHandle;
-import org.kie.kogito.rules.DataSource;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.RuleUnitData;
-import org.kie.kogito.rules.RuleUnitInstance;
-import org.kie.kogito.rules.RuleUnits;
 
 /**
  * A very rough implementation that goes straight to the DataStore

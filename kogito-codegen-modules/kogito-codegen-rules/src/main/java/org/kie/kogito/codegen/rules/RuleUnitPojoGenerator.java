@@ -19,10 +19,10 @@ import java.util.Collections;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.model.codegen.execmodel.JavaParserCompiler;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.RuleUnitData;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -71,9 +71,9 @@ public class RuleUnitPojoGenerator implements RuleFileGenerator {
             if (v.isDataSource()) {
                 t.setTypeArguments(StaticJavaParser.parseType(v.getDataSourceParameterType().getCanonicalName()));
                 if (ruleUnitHelper.isAssignableFrom(DataStore.class, rawType(v.getType()))) {
-                    vd.setInitializer("org.kie.kogito.rules.DataSource.createStore()");
+                    vd.setInitializer("org.drools.ruleunits.api.DataSource.createStore()");
                 } else {
-                    vd.setInitializer("org.kie.kogito.rules.DataSource.createSingleton()");
+                    vd.setInitializer("org.drools.ruleunits.api.DataSource.createSingleton()");
                 }
             }
             c.addMember(f);

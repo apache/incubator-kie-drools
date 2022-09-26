@@ -18,9 +18,10 @@ package org.kie.kogito.codegen.json;
 import java.io.IOException;
 import java.util.List;
 
-import org.kie.kogito.rules.DataStore;
-import org.kie.kogito.rules.DataStream;
-import org.kie.kogito.rules.SingletonStore;
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.DataStream;
+import org.drools.ruleunits.api.SingletonStore;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -54,7 +55,7 @@ public class KogitoModule extends SimpleModule {
 
         @Override
         public DataStream deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            DataStream stream = org.kie.kogito.rules.DataSource.createStream();
+            DataStream stream = DataSource.createBufferedStream(16);
             List list = ctxt.readValue(jp, collectionType);
             list.forEach(stream::append);
             return stream;
@@ -75,7 +76,7 @@ public class KogitoModule extends SimpleModule {
 
         @Override
         public DataStore deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            DataStore store = org.kie.kogito.rules.DataSource.createStore();
+            DataStore store = DataSource.createStore();
             List list = ctxt.readValue(jp, collectionType);
             list.forEach(store::add);
             return store;
@@ -96,7 +97,7 @@ public class KogitoModule extends SimpleModule {
 
         @Override
         public SingletonStore deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            SingletonStore store = org.kie.kogito.rules.DataSource.createSingleton();
+            SingletonStore store = DataSource.createSingleton();
             store.set(ctxt.readValue(jp, javaType));
             return store;
         }

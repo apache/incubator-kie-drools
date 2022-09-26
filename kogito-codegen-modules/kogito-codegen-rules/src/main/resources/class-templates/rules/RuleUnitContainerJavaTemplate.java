@@ -23,7 +23,7 @@ public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits
         this.application = application;
     }
 
-    protected org.kie.kogito.rules.RuleUnit<?> create(String fqcn) {
+    public org.drools.ruleunits.api.RuleUnit<?> create(String fqcn) {
         switch(fqcn) {
             case "$RuleUnit$":
                 return new $RuleUnit$RuleUnit(application.get(RuleUnits.class));
