@@ -34,7 +34,7 @@ try {
 }
 ----
 
-For information about built-in event listeners and debug logging in the {RULE_ENGINE}, see xref:engine-event-listeners-con_rule-engine[].
+For information about built-in event listeners and debug logging in the {RULE_ENGINE}, see xref:#engine-event-listeners-con_rule-engine[{RULE_ENGINE} event listeners and debug logging].
 --
 
 

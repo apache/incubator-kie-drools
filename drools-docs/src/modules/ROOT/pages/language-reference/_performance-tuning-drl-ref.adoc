@@ -72,13 +72,7 @@ Use {RULE_ENGINE} event listeners instead of `System.out.println` statements in 
 You can use `System.out.println` statements in your rule actions for debug logging and console output, but doing this for many rules can impede rule evaluation. As a more efficient alternative, use the built-in {RULE_ENGINE} event listeners when possible. If these listeners do not meet your requirements, use a system logging utility supported by the {RULE_ENGINE}, such as Logback, Apache Commons Logging, or Apache Log4j.
 +
 --
-For more information about supported {RULE_ENGINE} event listeners and logging utilities, see
-ifdef::DM,PAM[]
-{URL_DEVELOPING_DECISION_SERVICES}#engine-event-listeners-con_decision-engine[_{DECISION_ENGINE_DOC}_].
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
-xref:engine-event-listeners-con_rule-engine[].
-endif::[]
+For more information about supported {RULE_ENGINE} event listeners and logging utilities, see xref:rule-engine/index.adoc#engine-event-listeners-con_rule-engine[{RULE_ENGINE} event listeners and debug logging].
 --
 
 Use the `drools-metric` module to identify the obstruction in your rules::

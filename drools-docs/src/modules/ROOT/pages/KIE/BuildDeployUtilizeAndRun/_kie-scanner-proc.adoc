@@ -50,12 +50,12 @@ The project group ID, artifact ID, and version (GAV) settings in the example are
 [source,xml,subs="attributes+"]
 ----
 <profile>
-  <id>guvnor-m2-repo</id>
+  <id>my-nexus-env</id>
   <repositories>
     <repository>
-      <id>guvnor-m2-repo</id>
-      <name>BA Repository</name>
-      <url>http://localhost:8080/\{URL_COMPONENT_CENTRAL}/maven2/</url>
+      <id>my-nexus</id>
+      <name>My Nexus repository</name>
+      <url>http://repository.example.org/nexus/content/groups/public/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -72,12 +72,4 @@ The project group ID, artifact ID, and version (GAV) settings in the example are
 +
 --
 After the KIE scanner starts polling, if the KIE scanner detects an updated version of the `SNAPSHOT` project in the specified KIE container, the KIE scanner automatically downloads the new project version and triggers an incremental build of the new project. From that moment, all of the new `KieBase` and `KieSession` objects that were created from the KIE container use the new project version.
-
-For information about starting or stopping a KIE scanner using {KIE_SERVER} APIs, see
-ifdef::DM,PAM[]
-{URL_DEPLOYING_AND_MANAGING_SERVICES}#kie-server-commands-con_kie-apis[_{KIE_APIS}_].
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
-xref:kie-server-commands-con_kie-apis[].
-endif::[]
 --

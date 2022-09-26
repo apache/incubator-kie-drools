@@ -1,11 +1,6 @@
 [id='rule-engine-con_{context}']
 
-ifdef::DM,PAM[]
-= {RULE_ENGINE_CAP} in {PRODUCT}
-endif::[]
-ifdef::DROOLS,JBPM,OP[]
-= {RULE_ENGINE_CAP}
-endif::[]
+= {RULE_ENGINE}
 
 The {RULE_ENGINE} stores, processes, and evaluates data to execute the business rules or decision models that you define. The basic function of the {RULE_ENGINE} is to match incoming data, or _facts_, to the conditions of rules and determine whether and how to execute the rules.
 
