@@ -178,7 +178,7 @@ declare trait GoldenCustomer extends Customer
 end
 ----
 
-Aside from the `@Alias`, a Person-as-GoldenCustomer's best friend may be compatible with the requirements of the trait `GoldenCustomer`, provided that they are some kind of `Customer` themselves. Marking a `Person` as "logically traitable" - i.e. adding the annotation `@Traitable(logical = true)` - will instruct the {DECISION_ENGINE} to try and preserve the logical consistency rather than throwing an exception due to a hard field with different type declarations (`Person` vs `Customer`). The following operations would then work:
+Aside from the `@Alias`, a Person-as-GoldenCustomer's best friend may be compatible with the requirements of the trait `GoldenCustomer`, provided that they are some kind of `Customer` themselves. Marking a `Person` as "logically traitable" - i.e. adding the annotation `@Traitable(logical = true)` - will instruct the {RULE_ENGINE} to try and preserve the logical consistency rather than throwing an exception due to a hard field with different type declarations (`Person` vs `Customer`). The following operations would then work:
 
 [source,java]
 ----
