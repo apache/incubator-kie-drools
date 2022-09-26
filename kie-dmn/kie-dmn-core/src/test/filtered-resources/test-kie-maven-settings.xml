@@ -1,0 +1,9 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <!-- we have to use the same repo as Maven build in order to find kjar artifacts -->
+  <localRepository>${settings.localRepository}</localRepository>
+
+  <!-- no remote repositories should be declared -->
+</settings>
