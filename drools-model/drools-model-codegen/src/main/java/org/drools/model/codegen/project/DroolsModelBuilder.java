@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
+import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
 
 /**
  * Utility class to wrap ModelBuilderImpl + KnowledgeBuilder and extract the generated source code or metadata
@@ -74,10 +75,20 @@ public class DroolsModelBuilder {
         this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
-        this.knowledgeBuilderConfiguration = new KnowledgeBuilderConfigurationImpl(context.getClassLoader());
+        this.knowledgeBuilderConfiguration = configFromContext(context);
         this.packageModelWriterProvider = packageModelWriterProvider;
 
         checkDependencyTableSupport();
+    }
+
+    private static KnowledgeBuilderConfigurationImpl configFromContext(DroolsModelBuildContext buildContext) {
+        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(buildContext.getClassLoader());
+        for (String prop : buildContext.getApplicationProperties()) {
+            if (prop.startsWith("drools")) {
+                conf.setProperty(prop, buildContext.getApplicationProperty(prop).orElseThrow());
+            }
+        }
+        return conf;
     }
 
     public void build() {
