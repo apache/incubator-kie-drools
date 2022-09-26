@@ -97,9 +97,9 @@ Finally, `src/test/java/org/example/RuleTest.java` is the test case that execute
 ----
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
 ----
-Create a `MeasurementUnit` instance. Then create a `RuleUnitInstance` with the `MeasurementUnit` instance using `RuleUnitInstanceFactory`.
+Create a `MeasurementUnit` instance. Then create a `RuleUnitInstance` with the `MeasurementUnit` instance using `RuleUnitProvider`.
 
 [source,java]
 ----

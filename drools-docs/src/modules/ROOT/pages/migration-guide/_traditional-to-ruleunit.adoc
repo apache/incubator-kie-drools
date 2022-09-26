@@ -84,7 +84,7 @@ Using Rule Unit APIs, the resulting Java snippet would be like this:
 [source,java]
 ----
         MeasurementUnit measurementUnit = new MeasurementUnit();
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
         try {
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));
             measurementUnit.getMeasurements().add(new Measurement("color", "green"));

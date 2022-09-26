@@ -134,14 +134,14 @@ Note that `DataProcessor` is a little internal detail. If you instantiate `RuleU
 
 == Client code
 
-Finally, you instantiate a `RuleUnitInstance` using `RuleUnitInstanceFactory` to execute the rules.
+Finally, you instantiate a `RuleUnitInstance` using `RuleUnitProvider` to execute the rules.
 
 [source,java]
 ----
     public void test() {
         MeasurementUnit measurementUnit = new MeasurementUnit();
 
-        RuleUnitInstance<MeasurementUnit> instance = RuleUnitInstanceFactory.instance(measurementUnit);
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
         try {
             measurementUnit.getMeasurements().add(new Measurement("color", "red"));
             ...

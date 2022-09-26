@@ -7,7 +7,6 @@
 Building {PRODUCT}-based KIE project make use of Maven, and aligns with Maven practices.
 A KIE project or module is simply a Maven Java project or module; with an additional metadata file META-INF/kmodule.xml.
 The kmodule.xml file is the descriptor that selects resources to KIE bases and configures those KIE bases and sessions.
-There is also alternative XML support via Spring and OSGi BluePrints.
 
 While standard Maven can build and package KIE resources, it will not provide validation at build time.
 There is a Maven plugin (`kie-maven-plugin`) which is recommended to use to get build time validation.
@@ -16,7 +15,7 @@ The plugin also generates many classes, making the runtime loading faster too.
 The example project layout and Maven POM descriptor is illustrated in the screenshot
 
 .Example project layout and Maven POM
-image::KIE/BuildDeployUtilizeAndRun/defaultkiesession.png[align="center"]
+image::KIE/BuildDeployUtilizeAndRun/project-layout.png[align="center"]
 
 
 KIE uses defaults to minimise the amount of configuration.
