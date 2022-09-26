@@ -130,8 +130,10 @@ pipeline {
             }
         }
         unsuccessful {
-            if (currentBuild.currentResult != 'UNSTABLE') {
-                sendPipelineErrorNotification()
+            script {
+                if (currentBuild.currentResult != 'UNSTABLE') {
+                    sendPipelineErrorNotification()
+                }
             }
         }
     }
