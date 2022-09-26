@@ -32,73 +32,73 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EfestoClassKeyTest {
 
     @Test
-    void testEquals() {
-        EfestoClassKey first = new EfestoClassKey(List.class, String.class);
-        EfestoClassKey second = new EfestoClassKey(List.class, String.class);
-        assertThat(first.equals(second)).isTrue();
-        second = new EfestoClassKey(ArrayList.class, String.class);
-        assertThat(first.equals(second)).isFalse();
-        first = new EfestoClassKey(Map.class, String.class, Integer.class);
-        second = new EfestoClassKey(Map.class, String.class, Integer.class);
-        assertThat(first.equals(second)).isTrue();
-        second = new EfestoClassKey(HashMap.class, String.class, Integer.class);
-        assertThat(first.equals(second)).isFalse();
-        second = new EfestoClassKey(Map.class, Integer.class, String.class);
-        assertThat(first.equals(second)).isFalse();
+    void equalsMethod() {
+        EfestoClassKey keyListString1 = new EfestoClassKey(List.class, String.class);
+        EfestoClassKey keyListString2 = new EfestoClassKey(List.class, String.class);
+        assertThat(keyListString1).isEqualTo(keyListString2);
+        keyListString2 = new EfestoClassKey(ArrayList.class, String.class);
+        assertThat(keyListString1).isNotEqualTo(keyListString2);
+        keyListString1 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        keyListString2 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        assertThat(keyListString1).isEqualTo(keyListString2);
+        keyListString2 = new EfestoClassKey(HashMap.class, String.class, Integer.class);
+        assertThat(keyListString1).isNotEqualTo(keyListString2);
+        keyListString2 = new EfestoClassKey(Map.class, Integer.class, String.class);
+        assertThat(keyListString1).isNotEqualTo(keyListString2);
     }
 
     @Test
-    void testSet() {
+    void setOfKeys() {
         Set<EfestoClassKey> set = new HashSet<>();
-        EfestoClassKey first = new EfestoClassKey(List.class, String.class);
-        set.add(first);
-        EfestoClassKey second = new EfestoClassKey(List.class, String.class);
-        assertThat(set.contains(second)).isTrue();
-        set.add(second);
-        assertThat(set).size().isEqualTo(1);
-        second = new EfestoClassKey(ArrayList.class, String.class);
-        assertThat(set.contains(second)).isFalse();
-        set.add(second);
-        assertThat(set).size().isEqualTo(2);
+        EfestoClassKey keyListString1 = new EfestoClassKey(List.class, String.class);
+        set.add(keyListString1);
+        EfestoClassKey keyListString2 = new EfestoClassKey(List.class, String.class);
+        assertThat(set.contains(keyListString2)).isTrue();
+        set.add(keyListString2);
+        assertThat(set).hasSize(1);
+        keyListString2 = new EfestoClassKey(ArrayList.class, String.class);
+        assertThat(set.contains(keyListString2)).isFalse();
+        set.add(keyListString2);
+        assertThat(set).hasSize(2);
 
         set = new HashSet<>();
-        first = new EfestoClassKey(Map.class, String.class, Integer.class);
-        set.add(first);
-        second = new EfestoClassKey(Map.class, String.class, Integer.class);
-        assertThat(set.contains(second)).isTrue();
-        set.add(second);
-        assertThat(set).size().isEqualTo(1);
-        second = new EfestoClassKey(Map.class, Integer.class, String.class);
-        assertThat(set.contains(second)).isFalse();
-        set.add(second);
-        assertThat(set).size().isEqualTo(2);
+        keyListString1 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        set.add(keyListString1);
+        keyListString2 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        assertThat(set.contains(keyListString2)).isTrue();
+        set.add(keyListString2);
+        assertThat(set).hasSize(1);
+        keyListString2 = new EfestoClassKey(Map.class, Integer.class, String.class);
+        assertThat(set.contains(keyListString2)).isFalse();
+        set.add(keyListString2);
+        assertThat(set).hasSize(2);
     }
 
     @Test
-    void testMap() {
+    void mapOfKeys() {
         Map<EfestoClassKey, String> map = new HashMap<>();
-        EfestoClassKey first = new EfestoClassKey(List.class, String.class);
-        map.put(first, "");
-        EfestoClassKey second = new EfestoClassKey(List.class, String.class);
-        assertThat(map.containsKey(second)).isTrue();
-        map.put(second, "");
-        assertThat(map).size().isEqualTo(1);
-        second = new EfestoClassKey(ArrayList.class, String.class);
-        assertThat(map.containsKey(second)).isFalse();
-        map.put(second, "");
-        assertThat(map).size().isEqualTo(2);
+        EfestoClassKey keyListString1 = new EfestoClassKey(List.class, String.class);
+        map.put(keyListString1, "");
+        EfestoClassKey keyListString2 = new EfestoClassKey(List.class, String.class);
+        assertThat(map.containsKey(keyListString2)).isTrue();
+        map.put(keyListString2, "");
+        assertThat(map).hasSize(1);
+        keyListString2 = new EfestoClassKey(ArrayList.class, String.class);
+        assertThat(map.containsKey(keyListString2)).isFalse();
+        map.put(keyListString2, "");
+        assertThat(map).hasSize(2);
 
         map = new HashMap<>();
-        first = new EfestoClassKey(Map.class, String.class, Integer.class);
-        map.put(first, "");
-        second = new EfestoClassKey(Map.class, String.class, Integer.class);
-        assertThat(map.containsKey(second)).isTrue();
-        map.put(second, "");
-        assertThat(map).size().isEqualTo(1);
-        second = new EfestoClassKey(Map.class, Integer.class, String.class);
-        assertThat(map.containsKey(second)).isFalse();
-        map.put(second, "");
-        assertThat(map).size().isEqualTo(2);
+        keyListString1 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        map.put(keyListString1, "");
+        keyListString2 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        assertThat(map.containsKey(keyListString2)).isTrue();
+        map.put(keyListString2, "");
+        assertThat(map).hasSize(1);
+        keyListString2 = new EfestoClassKey(Map.class, Integer.class, String.class);
+        assertThat(map.containsKey(keyListString2)).isFalse();
+        map.put(keyListString2, "");
+        assertThat(map).hasSize(2);
     }
 
     @Test
@@ -107,21 +107,18 @@ class EfestoClassKeyTest {
         EfestoClassKey efestoClassKey = new EfestoClassKey(List.class, typeArguments.toArray(new Type[0]));
         Type[] retrieved = efestoClassKey.getActualTypeArguments();
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved.length).isEqualTo(typeArguments.size());
-        for (Type type : retrieved) {
-            assertThat(typeArguments.contains(type)).isTrue();
-        }
-
+        assertThat(retrieved).hasSameSizeAs(typeArguments);
+        assertThat(typeArguments).containsAll(Arrays.asList(retrieved));
         typeArguments = Collections.emptyList();
         efestoClassKey = new EfestoClassKey(List.class, typeArguments.toArray(new Type[0]));
         retrieved = efestoClassKey.getActualTypeArguments();
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved.length).isEqualTo(0);
+        assertThat(retrieved).isEmpty();
 
         efestoClassKey = new EfestoClassKey(List.class);
         retrieved = efestoClassKey.getActualTypeArguments();
         assertThat(retrieved).isNotNull();
-        assertThat(retrieved.length).isEqualTo(0);
+        assertThat(retrieved).isEmpty();
 
     }
 
