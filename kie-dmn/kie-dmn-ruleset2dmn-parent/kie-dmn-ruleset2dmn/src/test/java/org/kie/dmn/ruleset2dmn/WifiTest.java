@@ -16,9 +16,7 @@
 
 package org.kie.dmn.ruleset2dmn;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.junit.Test;
