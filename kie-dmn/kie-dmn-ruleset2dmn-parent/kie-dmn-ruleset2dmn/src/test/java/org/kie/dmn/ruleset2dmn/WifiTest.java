@@ -16,7 +16,9 @@
 
 package org.kie.dmn.ruleset2dmn;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -57,9 +59,9 @@ public class WifiTest {
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("3"));
 
         // DECISION_TABLE_MASKED_RULE: Rule 12 is masked by rule: 11 (if it was a Priority with lov := 1,2,3 (DROOLS-7022)
-        // [X3 >= -51.0] ^ [X3 <= -51.0] ^ [X1 >= -43.0] ^ [X1 <= -43.0] -> 3
+        // [X3 >= -51.0] ^ [X3 <= -51.0] ^ [X1 >= -43.0] ^ [X1 <= -43.0] ^ [X2 >= -43.0] ^ [X2 < -43.0] -> 3
         assertThat(dmnRuntime.evaluateAll(modelUnderTest,
-                ctxFromJson(modelUnderTest, "{\"X1\" : -43, \"X3\": -51}")) // DROOLS-7023 capture this cases [x..x] in the Converter?
+                ctxFromJson(modelUnderTest, "{\"X1\" : -43, \"X3\": -51, \"X2\": -42}")) // DROOLS-7023 capture this cases [x..x] in the Converter?
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("2"));
 
         // default -> 0

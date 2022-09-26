@@ -110,12 +110,14 @@
                     <SimplePredicate field="X3" operator="greaterOrEqual" value="-64.0"/>
                 </CompoundPredicate>
             </SimpleRule>
-            <SimpleRule id="[X3 &gt;= -51.0] ^ [X3 &lt;= -51.0] ^ [X1 &gt;= -43.0] ^ [X1 &lt;= -43.0]" score="3" recordCount="500" nbCorrect="371" confidence="0.3333333333333333" weight="0.3333333333333333">
+            <SimpleRule id="[X3 &gt;= -51.0] ^ [X3 &lt;= -51.0] ^ [X1 &gt;= -43.0] ^ [X1 &lt;= -43.0] ^ [X2 &gt;= -43.0] ^ [X2 &lt; -43.0]" score="3" recordCount="500" nbCorrect="371" confidence="0.3333333333333333" weight="0.3333333333333333">
                 <CompoundPredicate booleanOperator="and">
                     <SimplePredicate field="X3" operator="greaterOrEqual" value="-51.0"/>
                     <SimplePredicate field="X3" operator="lessOrEqual" value="-51.0"/>
                     <SimplePredicate field="X1" operator="greaterOrEqual" value="-43.0"/>
                     <SimplePredicate field="X1" operator="lessOrEqual" value="-43.0"/>
+                    <SimplePredicate field="X2" operator="greaterOrEqual" value="-42.0"/>
+                    <SimplePredicate field="X2" operator="lessThan" value="-42.0"/>
                 </CompoundPredicate>
             </SimpleRule>
             <SimpleRule id="[X1 &gt;= -54.0]" score="2" recordCount="500" nbCorrect="373" confidence="0.4900398406374502" weight="0.4900398406374502">
