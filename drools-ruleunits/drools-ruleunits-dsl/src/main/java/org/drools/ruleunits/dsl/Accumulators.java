@@ -33,6 +33,9 @@ import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 
 import static org.drools.model.functions.Function1.identity;
 
+/**
+ * A set of convenient factory methods to create the accumulators used in the rule unit Java DSL.
+ */
 public class Accumulators {
 
     public static <A, B> Accumulator1<A, Long> count() {

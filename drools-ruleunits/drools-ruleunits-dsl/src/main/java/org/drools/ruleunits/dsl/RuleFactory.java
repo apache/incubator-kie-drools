@@ -25,6 +25,9 @@ import org.drools.ruleunits.dsl.patterns.Pattern2Def;
 import org.drools.ruleunits.dsl.patterns.PatternDef;
 import org.drools.ruleunits.impl.datasources.ConsequenceDataStore;
 
+/**
+ * The root of the fluent Java DSL to define a rule.
+ */
 public interface RuleFactory {
 
     <A> Pattern1Def<A> on(DataSource<A> dataSource);

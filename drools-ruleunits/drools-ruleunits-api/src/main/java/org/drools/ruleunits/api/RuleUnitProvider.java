@@ -17,10 +17,25 @@ package org.drools.ruleunits.api;
 
 import org.kie.api.internal.utils.KieService;
 
+/**
+ * A provider of {@link RuleUnit} and {@link RuleUnitInstance} from a given {@link RuleUnitData}.
+ */
 public interface RuleUnitProvider extends KieService {
 
+    /**
+     * Provides the {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     * @return The generated {@link RuleUnit} or null if there's no {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     */
     <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData);
 
+    /**
+     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     * This is equivalent to
+     * <pre>
+     * RuleUnitProvider.get().getRuleUnit(ruleUnitData).createInstance(ruleUnitData);
+     * </pre>
+     * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     */
     default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData) {
         RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData);
         if (ruleUnit == null) {
@@ -29,6 +44,9 @@ public interface RuleUnitProvider extends KieService {
         return ruleUnit.createInstance(ruleUnitData);
     }
 
+    /**
+     * Returns an instance of the RuleUnitProvider.
+     */
     static RuleUnitProvider get() {
         return RuleUnitProvider.Factory.get();
     }
