@@ -54,7 +54,7 @@ public class UserTaskHandler extends TaskHandler {
         setParameter(work, "Skippable", humanTaskNode.getIoSpecification().getDataInputAssociation());
         setParameter(work, "Content", humanTaskNode.getIoSpecification().getDataInputAssociation());
 
-        List<String> owners = new ArrayList<String>();
+        List<String> owners = new ArrayList<>();
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();

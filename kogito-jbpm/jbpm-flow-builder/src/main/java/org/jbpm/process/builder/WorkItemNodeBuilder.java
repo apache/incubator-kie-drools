@@ -31,7 +31,7 @@ public class WorkItemNodeBuilder extends EventBasedNodeBuilder {
             ProcessBuildContext context, Node node) {
         super.build(process, processDescr, context, node);
         WorkflowProcess wfProcess = (WorkflowProcess) process;
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("imports", wfProcess.getImports());
         parameters.put("classloader", context.getConfiguration().getClassLoader());
 

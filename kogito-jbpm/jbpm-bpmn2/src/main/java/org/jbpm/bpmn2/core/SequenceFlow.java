@@ -32,7 +32,7 @@ public class SequenceFlow implements Serializable {
     private String language;
     private String name;
     private int priority;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     public SequenceFlow(String id, String sourceRef, String targetRef) {
         this.id = id;

@@ -81,7 +81,7 @@ public class ForEachNodeHandler extends AbstractCompositeNodeHandler {
 
     protected List<Node> getSubNodes(ForEachNode forEachNode) {
         List<Node> subNodes =
-                new ArrayList<Node>();
+                new ArrayList<>();
         for (org.kie.api.definition.process.Node subNode : forEachNode.getNodes()) {
             // filter out composite start and end nodes as they can be regenerated
             if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&

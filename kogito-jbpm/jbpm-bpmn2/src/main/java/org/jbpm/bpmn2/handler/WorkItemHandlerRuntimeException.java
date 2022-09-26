@@ -30,7 +30,7 @@ public class WorkItemHandlerRuntimeException extends RuntimeException {
 
     public final static String WORKITEMHANDLERTYPE = "workItemHandlerType";
 
-    private HashMap<String, Object> info = new HashMap<String, Object>();
+    private HashMap<String, Object> info = new HashMap<>();
 
     public WorkItemHandlerRuntimeException(Throwable cause, String message) {
         super(message, cause);

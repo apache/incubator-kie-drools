@@ -147,7 +147,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     if (escalation == null) {
                         throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     String type = escalation.getEscalationCode();
                     eventFilter.setType("Escalation-" + attachedTo + "-" + type);
@@ -204,7 +204,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                         }
                     }
 
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Error-" + attachedTo + "-" + type);
                     eventFilters.add(eventFilter);
@@ -251,14 +251,14 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     subNode = subNode.getNextSibling();
                 }
                 if (timeDuration != null && timeDuration.trim().length() > 0) {
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDuration", timeDuration);
                 } else if (timeCycle != null && timeCycle.trim().length() > 0) {
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
@@ -266,7 +266,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventNode.setMetaData("TimeCycle", timeCycle);
                     eventNode.setMetaData("Language", language);
                 } else if (timeDate != null && timeDate.trim().length() > 0) {
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Timer-" + attachedTo + "-" + timeDate + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
@@ -307,7 +307,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         // 2. Add the event filter (never fires, purely for dumping purposes)
         EventTypeFilter eventFilter = new NonAcceptingEventTypeFilter();
         eventFilter.setType("Compensation");
-        List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+        List<EventFilter> eventFilters = new ArrayList<>();
         eventNode.setEventFilters(eventFilters);
         eventFilters.add(eventFilter);
 
@@ -333,7 +333,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
 
                     type = checkSignalAndConvertToRealSignalNam(parser, type);
 
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType(type);
                     eventFilters.add(eventFilter);
@@ -364,7 +364,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     String subnodeName = subNode.getNodeName();
                     if ("condition".equals(subnodeName)) {
                         eventNode.setMetaData("Condition", xmlNode.getTextContent());
-                        List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                        List<EventFilter> eventFilters = new ArrayList<>();
                         EventTypeFilter eventFilter = new EventTypeFilter();
                         eventFilter.setType("Condition-" + attachedTo);
                         eventFilters.add(eventFilter);
@@ -405,7 +405,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData("MessageType", message.getType());
                 eventNode.setMetaData("TriggerType", "ConsumeMessage");
                 eventNode.setMetaData("TriggerRef", message.getName());
-                List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                List<EventFilter> eventFilters = new ArrayList<>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setCorrelationManager(((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
                 eventFilter.setType("Message-" + message.getName());

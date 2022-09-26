@@ -55,7 +55,7 @@ public class ImportHandler extends BaseAbstractHandler
 
         java.util.Set<String> list = process.getImports();
         if (list == null) {
-            list = new HashSet<String>();
+            list = new HashSet<>();
             process.setImports(list);
         }
         list.add(name);

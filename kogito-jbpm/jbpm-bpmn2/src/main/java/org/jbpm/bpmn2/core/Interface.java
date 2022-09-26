@@ -26,7 +26,7 @@ public class Interface implements Serializable {
     private String id;
     private String name;
     private String implementationRef;
-    private Map<String, Operation> operations = new HashMap<String, Operation>();
+    private Map<String, Operation> operations = new HashMap<>();
 
     public Interface(String id, String name) {
         this.id = id;

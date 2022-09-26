@@ -64,7 +64,7 @@ public class Bpmn2ImportHandler extends BaseAbstractHandler implements Handler {
         if (type != null && location != null && namespace != null) {
             List<Bpmn2Import> typedImports = (List<Bpmn2Import>) buildData.getMetaData("Bpmn2Imports");
             if (typedImports == null) {
-                typedImports = new ArrayList<Bpmn2Import>();
+                typedImports = new ArrayList<>();
                 buildData.setMetaData("Bpmn2Imports", typedImports);
             }
             typedImports.add(new Bpmn2Import(type, location, namespace));

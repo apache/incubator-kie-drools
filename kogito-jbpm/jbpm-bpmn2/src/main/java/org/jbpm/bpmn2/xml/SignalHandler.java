@@ -81,7 +81,7 @@ public class SignalHandler extends BaseAbstractHandler implements Handler {
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         Map<String, Signal> signals = (Map<String, Signal>) buildData.getMetaData("Signals");
         if (signals == null) {
-            signals = new HashMap<String, Signal>();
+            signals = new HashMap<>();
             buildData.setMetaData("Signals", signals);
         }
 

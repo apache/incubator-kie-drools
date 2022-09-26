@@ -233,7 +233,7 @@ public class XmlWorkflowProcessDumper {
     }
 
     private void visitConnections(org.kie.api.definition.process.Node[] nodes, StringBuilder xmlDump, boolean includeMeta) {
-        List<Connection> connections = new ArrayList<Connection>();
+        List<Connection> connections = new ArrayList<>();
         for (org.kie.api.definition.process.Node node : nodes) {
             for (List<Connection> connectionList : node.getIncomingConnections().values()) {
                 connections.addAll(connectionList);

@@ -164,7 +164,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 DroolsConsequenceAction action = createJavaAction(
                         new SignalProcessInstanceAction(signalName, variable, inputVariable, (String) endNode.getMetaData("customScope")));
 
-                List<DroolsAction> actions = new ArrayList<DroolsAction>();
+                List<DroolsAction> actions = new ArrayList<>();
                 actions.add(action);
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }

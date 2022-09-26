@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ProtoMessage extends ProtoComponent {
 
-    private List<ProtoField> fields = new ArrayList<ProtoField>();
+    private List<ProtoField> fields = new ArrayList<>();
 
     public ProtoMessage(String name, String javaPackageOption) {
         super(name, javaPackageOption);

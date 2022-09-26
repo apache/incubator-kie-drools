@@ -28,8 +28,8 @@ public class DefaultSemanticModule implements SemanticModule {
 
     public DefaultSemanticModule(String uri) {
         this.uri = uri;
-        this.handlers = new HashMap<String, Handler>();
-        this.handlersByClass = new HashMap<Class<?>, Handler>();
+        this.handlers = new HashMap<>();
+        this.handlersByClass = new HashMap<>();
     }
 
     public String getUri() {

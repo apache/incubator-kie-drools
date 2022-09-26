@@ -64,7 +64,7 @@ public class EscalationHandler extends BaseAbstractHandler implements Handler {
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         Map<String, Escalation> escalations = (Map<String, Escalation>) buildData.getMetaData(ProcessHandler.ESCALATIONS);
         if (escalations == null) {
-            escalations = new HashMap<String, Escalation>();
+            escalations = new HashMap<>();
             buildData.setMetaData(ProcessHandler.ESCALATIONS, escalations);
         }
         Escalation e = new Escalation(id, escalationCode);

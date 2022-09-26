@@ -30,7 +30,7 @@ public class Trigger implements Mappable, Serializable {
 
     private static final long serialVersionUID = 510l;
 
-    private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
+    private List<DataAssociation> inMapping = new LinkedList<>();
 
     public void addInMapping(String mapping) {
         addInMapping(mapping, mapping);
@@ -41,7 +41,7 @@ public class Trigger implements Mappable, Serializable {
     }
 
     public void setInMappings(Map<String, String> inMapping) {
-        this.inMapping = new LinkedList<DataAssociation>();
+        this.inMapping = new LinkedList<>();
         for (Map.Entry<String, String> entry : inMapping.entrySet()) {
             addInMapping(entry.getKey(), entry.getValue());
         }
@@ -52,7 +52,7 @@ public class Trigger implements Mappable, Serializable {
     }
 
     public Map<String, String> getInMappings() {
-        Map<String, String> in = new HashMap<String, String>();
+        Map<String, String> in = new HashMap<>();
         for (DataAssociation a : inMapping) {
             if (a.getSources().size() == 1 && (a.getAssignments() == null || a.getAssignments().isEmpty()) && a.getTransformation() == null) {
                 in.put(a.getSources().get(0).getLabel(), a.getTarget().getLabel());

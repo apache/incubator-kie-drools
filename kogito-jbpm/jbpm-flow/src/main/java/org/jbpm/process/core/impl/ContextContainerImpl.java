@@ -31,8 +31,8 @@ public class ContextContainerImpl implements Serializable, ContextContainer {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, Context> defaultContexts = new HashMap<String, Context>();
-    private Map<String, List<Context>> subContexts = new HashMap<String, List<Context>>();
+    private Map<String, Context> defaultContexts = new HashMap<>();
+    private Map<String, List<Context>> subContexts = new HashMap<>();
     private long lastContextId;
 
     public List<Context> getContexts(String contextType) {
@@ -42,7 +42,7 @@ public class ContextContainerImpl implements Serializable, ContextContainer {
     public void addContext(Context context) {
         List<Context> list = this.subContexts.get(context.getType());
         if (list == null) {
-            list = new ArrayList<Context>();
+            list = new ArrayList<>();
             this.subContexts.put(context.getType(), list);
         }
         if (!list.contains(context)) {

@@ -145,8 +145,8 @@ class CompensationEventListener implements KogitoEventListener {
     }
 
     private Stack<NodeInstance> createNodeInstanceContainers(org.kie.api.definition.process.Node toCompensateNode, boolean generalCompensation) {
-        Stack<NodeContainer> nestedNodes = new Stack<NodeContainer>();
-        Stack<NodeInstance> generatedInstances = new Stack<NodeInstance>();
+        Stack<NodeContainer> nestedNodes = new Stack<>();
+        Stack<NodeInstance> generatedInstances = new Stack<>();
 
         NodeContainer parentContainer = ((Node) toCompensateNode).getParentContainer();
         while (!(parentContainer instanceof RuleFlowProcess)) {

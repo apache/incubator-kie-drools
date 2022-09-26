@@ -243,7 +243,7 @@ public class ForEachNode extends CompositeContextNode {
         VariableScope variableScope = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         List<Variable> variables = variableScope.getVariables();
         if (variables == null) {
-            variables = new ArrayList<Variable>();
+            variables = new ArrayList<>();
             variableScope.setVariables(variables);
         }
         Variable variable = new Variable();

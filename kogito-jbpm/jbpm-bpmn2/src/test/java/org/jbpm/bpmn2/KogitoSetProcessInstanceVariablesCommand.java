@@ -36,7 +36,7 @@ public class KogitoSetProcessInstanceVariablesCommand implements ExecutableComma
 
     private String processInstanceId;
 
-    private Map<String, Object> variables = new HashMap<String, Object>();
+    private Map<String, Object> variables = new HashMap<>();
 
     public KogitoSetProcessInstanceVariablesCommand() {
     }

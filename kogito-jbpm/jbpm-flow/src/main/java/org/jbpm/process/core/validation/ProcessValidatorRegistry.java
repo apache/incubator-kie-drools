@@ -29,8 +29,8 @@ public class ProcessValidatorRegistry {
 
     private static ProcessValidatorRegistry instance;
 
-    private Map<String, ProcessValidator> defaultValidators = new ConcurrentHashMap<String, ProcessValidator>();
-    private Set<ProcessValidator> additionalValidators = new CopyOnWriteArraySet<ProcessValidator>();
+    private Map<String, ProcessValidator> defaultValidators = new ConcurrentHashMap<>();
+    private Set<ProcessValidator> additionalValidators = new CopyOnWriteArraySet<>();
 
     private ProcessValidatorRegistry() {
         defaultValidators.put(KogitoWorkflowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());

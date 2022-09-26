@@ -64,7 +64,7 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) buildData.getMetaData("ItemDefinitions");
         if (itemDefinitions == null) {
-            itemDefinitions = new HashMap<String, ItemDefinition>();
+            itemDefinitions = new HashMap<>();
             buildData.setMetaData("ItemDefinitions", itemDefinitions);
         }
         ItemDefinition itemDefinition = new ItemDefinition(id);

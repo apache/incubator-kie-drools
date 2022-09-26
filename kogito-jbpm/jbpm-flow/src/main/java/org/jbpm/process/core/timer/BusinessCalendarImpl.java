@@ -80,7 +80,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     private String timezone;
 
     private List<TimePeriod> holidays;
-    private List<Integer> weekendDays = new ArrayList<Integer>();
+    private List<Integer> weekendDays = new ArrayList<>();
     private SessionClock clock;
 
     private static final int SIM_WEEK = 3;
@@ -343,7 +343,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
 
     protected List<TimePeriod> parseHolidays() {
         String holidaysString = businessCalendarConfiguration.getProperty(HOLIDAYS);
-        List<TimePeriod> holidays = new ArrayList<TimePeriod>();
+        List<TimePeriod> holidays = new ArrayList<>();
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         if (holidaysString != null) {
             String[] hPeriods = holidaysString.split(",");

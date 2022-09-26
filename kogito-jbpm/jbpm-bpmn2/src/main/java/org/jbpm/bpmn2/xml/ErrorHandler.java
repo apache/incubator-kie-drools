@@ -66,7 +66,7 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
 
         List<Error> errors = definitions.getErrors();
         if (errors == null) {
-            errors = new ArrayList<Error>();
+            errors = new ArrayList<>();
             definitions.setErrors(errors);
             ((ProcessBuildData) parser.getData()).setMetaData("Errors", errors);
         }

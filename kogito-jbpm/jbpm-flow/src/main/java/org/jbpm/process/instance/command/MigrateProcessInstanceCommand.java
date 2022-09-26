@@ -113,7 +113,7 @@ public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, K
             processInstance.disconnect();
             processInstance.setProcess(oldProcess);
             if (nodeMapping == null) {
-                nodeMapping = new HashMap<String, Long>();
+                nodeMapping = new HashMap<>();
             }
             updateNodeInstances(processInstance, nodeMapping);
             processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime);

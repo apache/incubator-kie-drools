@@ -122,8 +122,8 @@ public class SplitInstance extends NodeInstanceImpl {
                 outgoing = split.getDefaultOutgoingConnections();
                 boolean found = false;
                 List<NodeInstanceTrigger> nodeInstances =
-                        new ArrayList<NodeInstanceTrigger>();
-                List<Connection> outgoingCopy = new ArrayList<Connection>(outgoing);
+                        new ArrayList<>();
+                List<Connection> outgoingCopy = new ArrayList<>(outgoing);
                 while (!outgoingCopy.isEmpty()) {
                     priority = Integer.MAX_VALUE;
                     Connection selectedConnection = null;
@@ -193,7 +193,7 @@ public class SplitInstance extends NodeInstanceImpl {
                         throw new IllegalArgumentException(
                                 "An Exclusive AND is only possible if the parent is a context instance container");
                     }
-                    Map<org.jbpm.workflow.instance.NodeInstance, String> nodeInstancesMap = new HashMap<org.jbpm.workflow.instance.NodeInstance, String>();
+                    Map<org.jbpm.workflow.instance.NodeInstance, String> nodeInstancesMap = new HashMap<>();
                     for (Connection connection : connections) {
                         nodeInstancesMap.put(followConnection(connection), connection.getToType());
                     }
@@ -228,7 +228,7 @@ public class SplitInstance extends NodeInstanceImpl {
     }
 
     protected boolean hasLoop(org.kie.api.definition.process.Node startAt, final org.kie.api.definition.process.Node lookFor) {
-        Set<Long> vistedNodes = new HashSet<Long>();
+        Set<Long> vistedNodes = new HashSet<>();
 
         return checkNodes(startAt, lookFor, vistedNodes);
 

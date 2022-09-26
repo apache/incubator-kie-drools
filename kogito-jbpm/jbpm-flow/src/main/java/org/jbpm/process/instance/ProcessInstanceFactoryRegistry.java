@@ -30,7 +30,7 @@ public class ProcessInstanceFactoryRegistry {
     private Map<Class<? extends Process>, ProcessInstanceFactory> registry;
 
     private ProcessInstanceFactoryRegistry() {
-        this.registry = new HashMap<Class<? extends Process>, ProcessInstanceFactory>();
+        this.registry = new HashMap<>();
 
         // hard wired nodes:
         register(RuleFlowProcess.class,

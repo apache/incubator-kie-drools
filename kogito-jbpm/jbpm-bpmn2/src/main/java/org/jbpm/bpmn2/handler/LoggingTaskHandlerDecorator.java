@@ -64,10 +64,10 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingTaskHandlerDecorator.class);
     private int loggedExceptionsLimit = 100;
-    private Queue<WorkItemExceptionInfo> exceptionInfoList = new ArrayDeque<WorkItemExceptionInfo>(loggedExceptionsLimit);
+    private Queue<WorkItemExceptionInfo> exceptionInfoList = new ArrayDeque<>(loggedExceptionsLimit);
 
     private String configuredMessage = "{0} thrown when work item {1} ({2}) was {3}ed in process instance {4}.";
-    private List<InputParameter> configuredInputList = new ArrayList<InputParameter>();
+    private List<InputParameter> configuredInputList = new ArrayList<>();
     private boolean printStackTrace = true;
 
     /**
@@ -180,13 +180,13 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
 
     private void initializeExceptionInfoList(int listSize) {
         this.loggedExceptionsLimit = listSize;
-        Queue<WorkItemExceptionInfo> newExceptionInfoList = new ArrayDeque<WorkItemExceptionInfo>(loggedExceptionsLimit + 1);
+        Queue<WorkItemExceptionInfo> newExceptionInfoList = new ArrayDeque<>(loggedExceptionsLimit + 1);
         newExceptionInfoList.addAll(exceptionInfoList);
         this.exceptionInfoList = newExceptionInfoList;
     }
 
     public synchronized List<WorkItemExceptionInfo> getWorkItemExceptionInfoList() {
-        return new ArrayList<WorkItemExceptionInfo>(exceptionInfoList);
+        return new ArrayList<>(exceptionInfoList);
     }
 
     @Override
@@ -217,7 +217,7 @@ public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHa
             cause = cause.getCause();
         }
 
-        List<String> inputList = new ArrayList<String>();
+        List<String> inputList = new ArrayList<>();
         if (configuredInputList.isEmpty()) {
 
             if (workItem.getParameter("Interface") != null) {

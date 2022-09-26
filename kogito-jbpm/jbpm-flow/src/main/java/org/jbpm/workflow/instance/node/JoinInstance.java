@@ -49,7 +49,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<Long, Integer> triggers = new HashMap<Long, Integer>();
+    private Map<Long, Integer> triggers = new HashMap<>();
 
     protected Join getJoin() {
         return (Join) getNode();
@@ -177,7 +177,7 @@ public class JoinInstance extends NodeInstanceImpl {
     private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final org.kie.api.definition.process.Node lookFor) {
 
         Collection<NodeInstance> activeNodeInstancesOrig = nodeInstanceContainer.getNodeInstances();
-        List<NodeInstance> activeNodeInstances = new ArrayList<NodeInstance>(activeNodeInstancesOrig);
+        List<NodeInstance> activeNodeInstances = new ArrayList<>(activeNodeInstancesOrig);
         // sort active instances in the way that lookFor nodeInstance will be last to not finish too early
         Collections.sort(activeNodeInstances, new Comparator<NodeInstance>() {
 
@@ -198,7 +198,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 continue;
             }
             org.kie.api.definition.process.Node node = nodeInstance.getNode();
-            Set<Long> vistedNodes = new HashSet<Long>();
+            Set<Long> vistedNodes = new HashSet<>();
             checkNodes(vistedNodes, node, node, lookFor);
             if (vistedNodes.contains(lookFor.getId()) && !vistedNodes.contains(node.getId())) {
                 return true;
@@ -225,7 +225,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 return false;
             }
             for (Connection conn : connections) {
-                Set<Long> xorCopy = new HashSet<Long>(vistedNodes);
+                Set<Long> xorCopy = new HashSet<>(vistedNodes);
 
                 org.kie.api.definition.process.Node nextNode = conn.getTo();
                 if (nextNode == null) {

@@ -24,7 +24,7 @@ public class SemanticModules {
     public Map<String, SemanticModule> modules;
 
     public SemanticModules() {
-        this.modules = new HashMap<String, SemanticModule>();
+        this.modules = new HashMap<>();
     }
 
     public void addSemanticModule(SemanticModule module) {

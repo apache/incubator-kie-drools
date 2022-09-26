@@ -30,8 +30,8 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     private static final long serialVersionUID = 510l;
 
     private String name;
-    private Map<String, ParameterDefinition> parameters = new HashMap<String, ParameterDefinition>();
-    private Map<String, ParameterDefinition> results = new HashMap<String, ParameterDefinition>();
+    private Map<String, ParameterDefinition> parameters = new HashMap<>();
+    private Map<String, ParameterDefinition> results = new HashMap<>();
 
     public String getName() {
         return name;
@@ -42,7 +42,7 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     }
 
     public Set<ParameterDefinition> getParameters() {
-        return new HashSet<ParameterDefinition>(parameters.values());
+        return new HashSet<>(parameters.values());
     }
 
     public void setParameters(Set<ParameterDefinition> parameters) {
@@ -70,7 +70,7 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     }
 
     public Set<ParameterDefinition> getResults() {
-        return new HashSet<ParameterDefinition>(results.values());
+        return new HashSet<>(results.values());
     }
 
     public void setResults(Set<ParameterDefinition> results) {

@@ -36,7 +36,7 @@ public class IntermediateLink implements Serializable {
     private List<String> sources;
 
     public IntermediateLink() {
-        this.sources = new ArrayList<String>();
+        this.sources = new ArrayList<>();
     }
 
     public void setUniqueId(String id) {

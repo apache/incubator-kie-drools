@@ -90,7 +90,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
 
     private KnowledgeBuilderImpl knowledgeBuilder;
-    private final List<KnowledgeBuilderResult> errors = new ArrayList<KnowledgeBuilderResult>();
+    private final List<KnowledgeBuilderResult> errors = new ArrayList<>();
 
     public ProcessBuilderImpl(KnowledgeBuilderImpl packageBuilder) {
         this.knowledgeBuilder = packageBuilder;

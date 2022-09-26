@@ -37,7 +37,7 @@ import org.mvel2.MacroProcessor;
 
 public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuilder {
 
-    private static final Map<String, Macro> macros = new HashMap<String, Macro>(5);
+    private static final Map<String, Macro> macros = new HashMap<>(5);
     static {
         macros.put("insert",
                 new Macro() {
@@ -63,7 +63,7 @@ public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuil
             final ContextResolver contextResolver) {
 
         String text = processMacros(actionDescr.getText());
-        Map<String, Class<?>> variables = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> variables = new HashMap<>();
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect("mvel");

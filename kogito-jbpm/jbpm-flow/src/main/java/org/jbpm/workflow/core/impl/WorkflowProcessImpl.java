@@ -55,7 +55,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
 
         String evaluatedValue = expression;
-        Map<String, String> replacements = new HashMap<String, String>();
+        Map<String, String> replacements = new HashMap<>();
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(evaluatedValue);
         while (matcher.find()) {
             String paramName = matcher.group(1);
@@ -196,7 +196,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     public List<StartNode> getTimerStart() {
         org.kie.api.definition.process.Node[] nodes = getNodes();
 
-        List<StartNode> timerStartNodes = new ArrayList<StartNode>();
+        List<StartNode> timerStartNodes = new ArrayList<>();
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof StartNode && ((StartNode) nodes[i]).getTimer() != null) {
                 timerStartNodes.add((StartNode) nodes[i]);

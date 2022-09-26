@@ -37,7 +37,7 @@ import org.kie.kogito.signal.SignalManager;
 
 public class DefaultSignalManager implements SignalManager {
 
-    private Map<String, List<EventListener>> processEventListeners = new ConcurrentHashMap<String, List<EventListener>>();
+    private Map<String, List<EventListener>> processEventListeners = new ConcurrentHashMap<>();
     private InternalKnowledgeRuntime kruntime;
 
     public DefaultSignalManager(InternalKnowledgeRuntime kruntime) {
@@ -51,7 +51,7 @@ public class DefaultSignalManager implements SignalManager {
             synchronized (processEventListeners) {
                 eventListeners = processEventListeners.get(type);
                 if (eventListeners == null) {
-                    eventListeners = new CopyOnWriteArrayList<EventListener>();
+                    eventListeners = new CopyOnWriteArrayList<>();
                     processEventListeners.put(type, eventListeners);
                 }
             }

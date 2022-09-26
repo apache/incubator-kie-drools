@@ -41,7 +41,7 @@ public class StartNode extends ExtendedNodeImpl {
 
     public void addTrigger(Trigger trigger) {
         if (triggers == null) {
-            triggers = new ArrayList<Trigger>();
+            triggers = new ArrayList<>();
         }
         triggers.add(trigger);
     }

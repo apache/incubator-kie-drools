@@ -27,7 +27,7 @@ public class ProcessDialectRegistry {
     private static ConcurrentMap<String, ProcessDialect> dialects;
 
     static {
-        dialects = new ConcurrentHashMap<String, ProcessDialect>();
+        dialects = new ConcurrentHashMap<>();
         dialects.put("java", new JavaProcessDialect());
         dialects.put("mvel", new MVELProcessDialect());
         dialects.put("FEEL", new FeelProcessDialect());

@@ -27,8 +27,8 @@ public class Lane implements Serializable {
 
     private String id;
     private String name;
-    private List<String> flowElementIds = new ArrayList<String>();
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private List<String> flowElementIds = new ArrayList<>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     public Lane(String id) {
         this.id = id;

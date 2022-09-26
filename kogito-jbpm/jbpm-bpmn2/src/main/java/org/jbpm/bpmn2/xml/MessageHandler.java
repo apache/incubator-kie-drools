@@ -77,7 +77,7 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
         if (messages == null) {
-            messages = new HashMap<String, Message>();
+            messages = new HashMap<>();
             buildData.setMetaData("Messages", messages);
         }
         Message message = new Message(id);

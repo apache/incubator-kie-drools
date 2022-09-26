@@ -42,7 +42,7 @@ import io.micrometer.core.instrument.Tag;
 public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsProcessEventListener.class);
-    private static Map<String, AtomicInteger> gaugeMap = new HashMap<String, AtomicInteger>();
+    private static Map<String, AtomicInteger> gaugeMap = new HashMap<>();
     private final String identifier;
     private final KogitoGAV gav;
     private final MeterRegistry meterRegistry;

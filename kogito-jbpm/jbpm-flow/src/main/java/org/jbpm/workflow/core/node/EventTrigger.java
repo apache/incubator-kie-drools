@@ -24,7 +24,7 @@ public class EventTrigger extends Trigger {
 
     private static final long serialVersionUID = 510l;
 
-    private List<EventFilter> filters = new ArrayList<EventFilter>();
+    private List<EventFilter> filters = new ArrayList<>();
 
     public void addEventFilter(EventFilter eventFilter) {
         filters.add(eventFilter);

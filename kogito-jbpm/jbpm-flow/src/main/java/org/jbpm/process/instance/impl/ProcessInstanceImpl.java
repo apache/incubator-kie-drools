@@ -46,10 +46,10 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     private transient Process process;
     private String processXml;
     private int state = STATE_PENDING;
-    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
-    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private Map<String, ContextInstance> contextInstances = new HashMap<>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
     private transient InternalKnowledgeRuntime kruntime;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
     private String outcome;
     private String parentProcessInstanceId;
     private String rootProcessInstanceId;

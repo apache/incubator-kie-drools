@@ -56,7 +56,7 @@ public class Variable implements TypeObject, ValueObject, Serializable {
     private String sanitizedName;
     private DataType type;
     private Object value;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     private List<String> tags = new ArrayList<>();
 

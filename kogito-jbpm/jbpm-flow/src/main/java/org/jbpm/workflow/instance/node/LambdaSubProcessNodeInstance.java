@@ -229,7 +229,7 @@ public class LambdaSubProcessNodeInstance extends StateBasedNodeInstance impleme
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list == null) {
-            list = new ArrayList<ContextInstance>();
+            list = new ArrayList<>();
             this.subContextInstances.put(contextId, list);
         }
         list.add(contextInstance);

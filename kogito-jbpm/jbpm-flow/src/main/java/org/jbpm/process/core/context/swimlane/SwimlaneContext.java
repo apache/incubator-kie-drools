@@ -29,7 +29,7 @@ public class SwimlaneContext extends AbstractContext {
 
     public static final String SWIMLANE_SCOPE = "SwimlaneScope";
 
-    private Map<String, Swimlane> swimlanes = new HashMap<String, Swimlane>();
+    private Map<String, Swimlane> swimlanes = new HashMap<>();
 
     public String getType() {
         return SWIMLANE_SCOPE;
@@ -48,7 +48,7 @@ public class SwimlaneContext extends AbstractContext {
     }
 
     public Collection<Swimlane> getSwimlanes() {
-        return new ArrayList<Swimlane>(swimlanes.values());
+        return new ArrayList<>(swimlanes.values());
     }
 
     public void setSwimlanes(Collection<Swimlane> swimlanes) {

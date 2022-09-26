@@ -31,7 +31,7 @@ public class ExceptionScope extends AbstractContext {
 
     public static final String EXCEPTION_SCOPE = "ExceptionScope";
 
-    protected Map<String, ExceptionHandler> exceptionHandlers = new HashMap<String, ExceptionHandler>();
+    protected Map<String, ExceptionHandler> exceptionHandlers = new HashMap<>();
     private transient Collection<ExceptionHandlerPolicy> policies = ExceptionHandlerPolicyFactory.getHandlerPolicies();
 
     @Override

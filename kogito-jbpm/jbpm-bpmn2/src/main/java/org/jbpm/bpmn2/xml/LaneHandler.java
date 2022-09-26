@@ -69,7 +69,7 @@ public class LaneHandler extends BaseAbstractHandler implements Handler {
 
         List<Lane> lanes = (List<Lane>) ((RuleFlowProcess) process).getMetaData(LaneHandler.LANES);
         if (lanes == null) {
-            lanes = new ArrayList<Lane>();
+            lanes = new ArrayList<>();
             ((RuleFlowProcess) process).setMetaData(LaneHandler.LANES, lanes);
         }
         Lane lane = new Lane(id);

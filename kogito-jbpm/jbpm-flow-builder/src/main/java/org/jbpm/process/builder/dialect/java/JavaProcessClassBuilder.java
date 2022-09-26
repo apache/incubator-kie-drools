@@ -28,7 +28,7 @@ public class JavaProcessClassBuilder
         implements
         ProcessClassBuilder {
 
-    protected static List<String> systemImports = new ArrayList<String>();
+    protected static List<String> systemImports = new ArrayList<>();
     static {
         systemImports.add(org.drools.core.util.KieFunctions.class.getName());
     }

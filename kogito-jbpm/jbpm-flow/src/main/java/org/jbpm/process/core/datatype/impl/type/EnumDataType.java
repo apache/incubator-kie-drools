@@ -103,7 +103,7 @@ public class EnumDataType implements DataType {
     public Map<String, Object> getValueMap(ClassLoader classLoader) {
         if (this.valueMap == null) {
             try {
-                this.valueMap = new HashMap<String, Object>();
+                this.valueMap = new HashMap<>();
                 if (className == null) {
                     return null;
                 }

@@ -184,7 +184,7 @@ public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
     private RuleType ruleType;
 
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private Map<String, Object> parameters = new HashMap<>();
 
     private Supplier<DecisionModel> decisionModel;
     private Supplier<KieRuntime> kieRuntime;

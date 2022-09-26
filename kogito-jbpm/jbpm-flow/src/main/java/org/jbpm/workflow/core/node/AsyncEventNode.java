@@ -47,7 +47,7 @@ public class AsyncEventNode extends EventNode {
 
     @Override
     public Map<String, Object> getMetaData() {
-        Map<String, Object> metaData = new HashMap<String, Object>(node.getMetaData());
+        Map<String, Object> metaData = new HashMap<>(node.getMetaData());
         metaData.put("hidden", "true");
         return metaData;
     }

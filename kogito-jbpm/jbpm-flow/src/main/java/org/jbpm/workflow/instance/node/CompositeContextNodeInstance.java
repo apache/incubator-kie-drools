@@ -34,8 +34,8 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
-    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+    private Map<String, ContextInstance> contextInstances = new HashMap<>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     protected CompositeContextNode getCompositeContextNode() {
         return (CompositeContextNode) getNode();
@@ -69,7 +69,7 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
     public void addContextInstance(String contextId, ContextInstance contextInstance) {
         List<ContextInstance> list = this.subContextInstances.get(contextId);
         if (list == null) {
-            list = new ArrayList<ContextInstance>();
+            list = new ArrayList<>();
             this.subContextInstances.put(contextId, list);
         }
         list.add(contextInstance);

@@ -33,7 +33,7 @@ public class HumanTaskNode extends WorkItemNode {
     public HumanTaskNode() {
         Work work = new WorkImpl();
         work.setName("Human Task");
-        Set<ParameterDefinition> parameterDefinitions = new HashSet<ParameterDefinition>();
+        Set<ParameterDefinition> parameterDefinitions = new HashSet<>();
         parameterDefinitions.add(new ParameterDefinitionImpl("TaskName", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("ActorId", new StringDataType()));
         parameterDefinitions.add(new ParameterDefinitionImpl("Priority", new StringDataType()));

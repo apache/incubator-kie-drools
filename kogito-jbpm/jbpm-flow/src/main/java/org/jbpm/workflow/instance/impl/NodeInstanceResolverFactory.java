@@ -31,7 +31,7 @@ public class NodeInstanceResolverFactory extends ImmutableDefaultFactory {
 
     private NodeInstance nodeInstance;
 
-    private Map<String, Object> extraParameters = new HashMap<String, Object>();
+    private Map<String, Object> extraParameters = new HashMap<>();
 
     public NodeInstanceResolverFactory(NodeInstance nodeInstance) {
         this.nodeInstance = nodeInstance;

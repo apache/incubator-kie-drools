@@ -28,7 +28,7 @@ public class Assignment implements Serializable {
     private String dialect;
     private DataDefinition from; // this is an expression
     private DataDefinition to; // this is another expression
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     public Assignment(String dialect, DataDefinition from, DataDefinition to) {
         this.dialect = dialect;

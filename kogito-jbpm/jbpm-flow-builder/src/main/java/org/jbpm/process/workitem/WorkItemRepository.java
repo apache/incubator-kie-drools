@@ -45,7 +45,7 @@ public class WorkItemRepository {
     }
 
     public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames, String widName) {
-        Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
+        Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<>();
         List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path, widName);
         for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
             if (workDefinitionMap != null) {
@@ -58,7 +58,7 @@ public class WorkItemRepository {
                 workDefinition.setPath((String) workDefinitionMap.get("path"));
                 workDefinition.setFile((String) workDefinitionMap.get("file"));
                 workDefinition.setDocumentation((String) workDefinitionMap.get("documentation"));
-                Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
+                Set<ParameterDefinition> parameters = new HashSet<>();
                 Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
                 if (parameterMap != null) {
                     for (Map.Entry<String, DataType> entry : parameterMap.entrySet()) {
@@ -71,7 +71,7 @@ public class WorkItemRepository {
                     workDefinition.setParameterValues((Map<String, Object>) workDefinitionMap.get("parameterValues"));
                 }
 
-                Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
+                Set<ParameterDefinition> results = new HashSet<>();
                 Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
                 if (resultMap != null) {
                     for (Map.Entry<String, DataType> entry : resultMap.entrySet()) {
@@ -118,7 +118,7 @@ public class WorkItemRepository {
     }
 
     private static List<Map<String, Object>> getAllWorkDefinitionsMap(String directory, String widName) {
-        List<Map<String, Object>> workDefinitions = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> workDefinitions = new ArrayList<>();
         if (widName != null) {
             workDefinitions.addAll(getWorkDefinitionsMapForSingleDir(directory, widName));
         } else {

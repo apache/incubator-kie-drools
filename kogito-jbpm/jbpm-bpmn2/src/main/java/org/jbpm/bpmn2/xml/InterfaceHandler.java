@@ -69,7 +69,7 @@ public class InterfaceHandler extends BaseAbstractHandler implements Handler {
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
         List<Interface> interfaces = (List<Interface>) buildData.getMetaData("Interfaces");
         if (interfaces == null) {
-            interfaces = new ArrayList<Interface>();
+            interfaces = new ArrayList<>();
             buildData.setMetaData("Interfaces", interfaces);
         }
         Interface i = new Interface(id, name);

@@ -56,7 +56,7 @@ public class ImportHandler extends BaseAbstractHandler implements Handler {
         if (type != null && location != null && namespace != null) {
             Map<String, String> typedImports = (Map<String, String>) process.getMetaData(type);
             if (typedImports == null) {
-                typedImports = new HashMap<String, String>();
+                typedImports = new HashMap<>();
                 process.setMetaData(type, typedImports);
             }
             typedImports.put(namespace, location);
@@ -64,7 +64,7 @@ public class ImportHandler extends BaseAbstractHandler implements Handler {
 
             java.util.Set<String> list = process.getImports();
             if (list == null) {
-                list = new HashSet<String>();
+                list = new HashSet<>();
                 process.setImports(list);
             }
             list.add(name);

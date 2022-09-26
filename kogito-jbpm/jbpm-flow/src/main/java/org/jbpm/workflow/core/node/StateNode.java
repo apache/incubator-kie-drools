@@ -26,7 +26,7 @@ public class StateNode extends CompositeContextNode implements Constrainable {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
+    private Map<ConnectionRef, Constraint> constraints = new HashMap<>();
 
     public void setConstraints(Map<ConnectionRef, Constraint> constraints) {
         this.constraints = constraints;

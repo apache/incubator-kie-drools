@@ -158,8 +158,8 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     public static class ProcessInfo {
 
         private String processRef;
-        private List<NodeInfo> nodeInfos = new ArrayList<NodeInfo>();
-        private List<ConnectionInfo> connectionInfos = new ArrayList<ConnectionInfo>();
+        private List<NodeInfo> nodeInfos = new ArrayList<>();
+        private List<ConnectionInfo> connectionInfos = new ArrayList<>();
 
         public ProcessInfo(String processRef) {
             this.processRef = processRef;

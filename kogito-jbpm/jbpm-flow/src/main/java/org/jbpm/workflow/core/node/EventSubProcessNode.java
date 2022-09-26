@@ -28,8 +28,8 @@ public class EventSubProcessNode extends CompositeContextNode {
 
     private static final long serialVersionUID = 2200928773922042238L;
 
-    private List<String> events = new ArrayList<String>();
-    private List<EventTypeFilter> eventTypeFilters = new ArrayList<EventTypeFilter>();
+    private List<String> events = new ArrayList<>();
+    private List<EventTypeFilter> eventTypeFilters = new ArrayList<>();
     private boolean keepActive = true;
 
     public void addEvent(EventTypeFilter filter) {

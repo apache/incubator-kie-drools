@@ -154,7 +154,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
                 // if there is no list, create one
                 if (null == sources) {
-                    sources = new ArrayList<String>();
+                    sources = new ArrayList<>();
                 }
 
                 // to connect nodes.
@@ -173,7 +173,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             List<IntermediateLink> links = (List<IntermediateLink>) process
                     .getMetaData().get(ProcessHandler.LINKS);
             if (null == links) {
-                links = new ArrayList<IntermediateLink>();
+                links = new ArrayList<>();
             }
             links.add(aLink);
             process.setMetaData(ProcessHandler.LINKS, links);
@@ -182,7 +182,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
             List<IntermediateLink> links = (List<IntermediateLink>) subprocess
                     .getMetaData().get(ProcessHandler.LINKS);
             if (null == links) {
-                links = new ArrayList<IntermediateLink>();
+                links = new ArrayList<>();
             }
             links.add(aLink);
             subprocess.setMetaData(ProcessHandler.LINKS, links);

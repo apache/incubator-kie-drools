@@ -111,7 +111,7 @@ public class AbstractMVELBuilder {
 
     protected void collectTypes(String key, AnalysisResult analysis, ProcessBuildContext context) {
         if (context.getProcess() != null) {
-            Set<String> referencedTypes = new HashSet<String>();
+            Set<String> referencedTypes = new HashSet<>();
 
             MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
 

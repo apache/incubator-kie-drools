@@ -29,7 +29,7 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
 
     private static final long serialVersionUID = 510l;
 
-    private List<EventFilter> filters = new ArrayList<EventFilter>();
+    private List<EventFilter> filters = new ArrayList<>();
     private String inputVariableName;
     private String variableName;
     private String scope;

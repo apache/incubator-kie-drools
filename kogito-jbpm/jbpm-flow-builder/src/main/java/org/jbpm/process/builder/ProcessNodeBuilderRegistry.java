@@ -47,7 +47,7 @@ public class ProcessNodeBuilderRegistry {
     private Map<Class<? extends Node>, ProcessNodeBuilder> registry;
 
     public ProcessNodeBuilderRegistry() {
-        this.registry = new HashMap<Class<? extends Node>, ProcessNodeBuilder>();
+        this.registry = new HashMap<>();
 
         register(StartNode.class,
                 new StartNodeBuilder());

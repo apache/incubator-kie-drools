@@ -34,8 +34,8 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     private static final long serialVersionUID = 510l;
 
     private NodeContainer nodeContainer;
-    private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
-    private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
+    private Map<String, CompositeNode.NodeAndType> inConnectionMap = new HashMap<>();
+    private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<>();
     private boolean cancelRemainingInstances = true;
     private boolean autoComplete = true;
 
@@ -62,7 +62,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     }
 
     public org.kie.api.definition.process.Node[] getNodes() {
-        List<org.kie.api.definition.process.Node> subNodes = new ArrayList<org.kie.api.definition.process.Node>();
+        List<org.kie.api.definition.process.Node> subNodes = new ArrayList<>();
         for (org.kie.api.definition.process.Node node : nodeContainer.getNodes()) {
             if (!(node instanceof CompositeNode.CompositeNodeStart) &&
                     !(node instanceof CompositeNode.CompositeNodeEnd)) {

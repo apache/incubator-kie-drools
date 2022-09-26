@@ -30,7 +30,7 @@ public class DroolsAction implements Externalizable, Wireable {
     private static final long serialVersionUID = 510l;
 
     private String name;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     public void wire(Object object) {
         setMetaData("Action",

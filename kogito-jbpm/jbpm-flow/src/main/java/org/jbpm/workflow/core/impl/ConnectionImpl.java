@@ -36,7 +36,7 @@ public class ConnectionImpl implements Connection, Serializable {
     private org.kie.api.definition.process.Node to;
     private String fromType;
     private String toType;
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     public ConnectionImpl() {
     }

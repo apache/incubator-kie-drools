@@ -164,7 +164,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             List<IntermediateLink> links = (List<IntermediateLink>) process
                     .getMetaData().get(ProcessHandler.LINKS);
             if (null == links) {
-                links = new ArrayList<IntermediateLink>();
+                links = new ArrayList<>();
             }
             links.add(aLink);
             process.setMetaData(ProcessHandler.LINKS, links);
@@ -173,7 +173,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             List<IntermediateLink> links = (List<IntermediateLink>) subprocess
                     .getMetaData().get(ProcessHandler.LINKS);
             if (null == links) {
-                links = new ArrayList<IntermediateLink>();
+                links = new ArrayList<>();
             }
             links.add(aLink);
             subprocess.setMetaData(ProcessHandler.LINKS, links);
@@ -194,7 +194,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
 
                     type = checkSignalAndConvertToRealSignalNam(parser, type);
 
-                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    List<EventFilter> eventFilters = new ArrayList<>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType(type);
                     eventFilters.add(eventFilter);
@@ -239,7 +239,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData(MESSAGE_TYPE, message.getType());
                 eventNode.setMetaData(TRIGGER_TYPE, CONSUME_MESSAGE);
                 eventNode.setMetaData(TRIGGER_REF, message.getName());
-                List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                List<EventFilter> eventFilters = new ArrayList<>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setCorrelationManager(((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
                 eventFilter.setType("Message-" + message.getName());

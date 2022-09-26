@@ -37,8 +37,8 @@ public class WorkImpl implements Work, Serializable {
     private static final long serialVersionUID = 510l;
 
     private String name;
-    private Map<String, Object> parameters = new LinkedHashMap<String, Object>();
-    private Map<String, ParameterDefinition> parameterDefinitions = new LinkedHashMap<String, ParameterDefinition>();
+    private Map<String, Object> parameters = new LinkedHashMap<>();
+    private Map<String, ParameterDefinition> parameterDefinitions = new LinkedHashMap<>();
 
     private Collection<DeadlineInfo<Map<String, Object>>> startDeadlines;
     private Collection<DeadlineInfo<Map<String, Object>>> endDeadlines;
@@ -85,7 +85,7 @@ public class WorkImpl implements Work, Serializable {
         if (parameters == null) {
             throw new NullPointerException();
         }
-        this.parameters = new HashMap<String, Object>(parameters);
+        this.parameters = new HashMap<>(parameters);
     }
 
     @Override

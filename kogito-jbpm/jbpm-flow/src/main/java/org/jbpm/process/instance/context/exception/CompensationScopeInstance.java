@@ -45,7 +45,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
 
     private static final long serialVersionUID = 510l;
 
-    private Stack<NodeInstance> compensationInstances = new Stack<NodeInstance>();
+    private Stack<NodeInstance> compensationInstances = new Stack<>();
 
     @Override
     public String getContextType() {

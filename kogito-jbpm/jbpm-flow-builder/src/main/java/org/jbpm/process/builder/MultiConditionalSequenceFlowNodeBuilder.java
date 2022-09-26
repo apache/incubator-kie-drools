@@ -47,7 +47,7 @@ public class MultiConditionalSequenceFlowNodeBuilder implements ProcessNodeBuild
         }
 
         // we need to clone the map, so we can update the original while iterating.
-        Map<ConnectionRef, Constraint> map = new HashMap<ConnectionRef, Constraint>(constraints);
+        Map<ConnectionRef, Constraint> map = new HashMap<>(constraints);
         for (Iterator<Map.Entry<ConnectionRef, Constraint>> it = map.entrySet().iterator(); it.hasNext();) {
             Map.Entry<ConnectionRef, Constraint> entry = it.next();
             ConnectionRef connection = entry.getKey();

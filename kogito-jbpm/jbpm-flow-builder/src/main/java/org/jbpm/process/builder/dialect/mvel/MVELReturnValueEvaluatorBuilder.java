@@ -47,7 +47,7 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
             final ContextResolver contextResolver) {
 
         String text = descr.getText();
-        Map<String, Class<?>> variables = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> variables = new HashMap<>();
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect("mvel");

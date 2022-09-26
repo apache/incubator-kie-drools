@@ -29,7 +29,7 @@ public class ConstraintImpl implements Constraint, Serializable {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
 
     private String name;
     private String constraint;

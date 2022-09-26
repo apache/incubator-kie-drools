@@ -169,7 +169,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     public RuleFlowProcessFactory global(String name, String type) {
         Map<String, String> globals = getRuleFlowProcess().getGlobals();
         if (globals == null) {
-            globals = new HashMap<String, String>();
+            globals = new HashMap<>();
             getRuleFlowProcess().setGlobals(globals);
         }
         globals.put(name, type);

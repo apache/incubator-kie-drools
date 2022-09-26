@@ -33,7 +33,7 @@ public class EventNodeBuilder implements ProcessNodeBuilder {
         Transformation transformation = (Transformation) node.getMetaData().get("Transformation");
         if (transformation != null) {
             WorkflowProcess wfProcess = (WorkflowProcess) process;
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            Map<String, Object> parameters = new HashMap<>();
             parameters.put("imports", wfProcess.getImports());
             parameters.put("classloader", context.getConfiguration().getClassLoader());
 

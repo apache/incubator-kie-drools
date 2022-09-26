@@ -489,7 +489,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", "");
             cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
@@ -523,7 +523,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
         List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
         if (actions == null) {
-            actions = new ArrayList<DroolsAction>();
+            actions = new ArrayList<>();
         }
         DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", null);
         cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
@@ -571,7 +571,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
@@ -603,7 +603,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
@@ -619,7 +619,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if (cancelActivity) {
             List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
             if (actions == null) {
-                actions = new ArrayList<DroolsAction>();
+                actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
@@ -812,8 +812,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     }
 
     private void assignLanes(RuleFlowProcess process, List<Lane> lanes) {
-        List<String> laneNames = new ArrayList<String>();
-        Map<String, String> laneMapping = new HashMap<String, String>();
+        List<String> laneNames = new ArrayList<>();
+        Map<String, String> laneMapping = new HashMap<>();
         if (lanes != null) {
             for (Lane lane : lanes) {
                 String name = lane.getName();
@@ -832,7 +832,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     }
 
     private void postProcessNodes(RuleFlowProcess process, NodeContainer container) {
-        List<String> eventSubProcessHandlers = new ArrayList<String>();
+        List<String> eventSubProcessHandlers = new ArrayList<>();
         for (Node node : container.getNodes()) {
 
             if (node instanceof StateNode) {

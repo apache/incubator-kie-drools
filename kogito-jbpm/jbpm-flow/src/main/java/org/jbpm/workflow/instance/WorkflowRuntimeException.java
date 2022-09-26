@@ -76,7 +76,7 @@ public class WorkflowRuntimeException extends RuntimeException {
         if (variableScope != null) {
             this.variables = variableScope.getVariables();
         } else {
-            this.variables = new HashMap<String, Object>(0);
+            this.variables = new HashMap<>(0);
         }
     }
 

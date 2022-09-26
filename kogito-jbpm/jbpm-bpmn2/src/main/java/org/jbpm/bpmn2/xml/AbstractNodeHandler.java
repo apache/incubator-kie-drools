@@ -260,7 +260,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                         if (subXmlNode.getNodeName().contains(type + "-script")) {
                             List<DroolsAction> actions = node.getActions(type);
                             if (actions == null) {
-                                actions = new ArrayList<DroolsAction>();
+                                actions = new ArrayList<>();
                                 node.setActions(type, actions);
                             }
                             DroolsAction action = extractScript((Element) subXmlNode);

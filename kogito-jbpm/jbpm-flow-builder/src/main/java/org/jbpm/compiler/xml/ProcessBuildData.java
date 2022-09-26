@@ -35,11 +35,11 @@ public class ProcessBuildData {
 
     private static List<ProcessDataEventListenerProvider> providers = collectProviders();
 
-    private List<Process> processes = new ArrayList<Process>();
-    private Map<Long, Node> nodes = new HashMap<Long, Node>();
-    private Map<String, Object> metaData = new HashMap<String, Object>();
+    private List<Process> processes = new ArrayList<>();
+    private Map<Long, Node> nodes = new HashMap<>();
+    private Map<String, Object> metaData = new HashMap<>();
 
-    private List<ProcessDataEventListener> listeners = new ArrayList<ProcessDataEventListener>();
+    private List<ProcessDataEventListener> listeners = new ArrayList<>();
 
     public ProcessBuildData() {
         if (providers != null) {
@@ -122,7 +122,7 @@ public class ProcessBuildData {
 
     private static List<ProcessDataEventListenerProvider> collectProviders() {
         ServiceLoader<ProcessDataEventListenerProvider> availableProviders = ServiceLoader.load(ProcessDataEventListenerProvider.class);
-        List<ProcessDataEventListenerProvider> collected = new ArrayList<ProcessDataEventListenerProvider>();
+        List<ProcessDataEventListenerProvider> collected = new ArrayList<>();
         try {
             for (ProcessDataEventListenerProvider provider : availableProviders) {
                 collected.add(provider);

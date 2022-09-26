@@ -56,7 +56,7 @@ public class FunctionImportHandler extends BaseAbstractHandler
 
         java.util.List<String> list = process.getFunctionImports();
         if (list == null) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             process.setFunctionImports(list);
         }
         list.add(name);

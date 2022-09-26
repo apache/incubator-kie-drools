@@ -42,7 +42,7 @@ public class UIWorkItemHandlerDialog extends JDialog {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, Object> results = new HashMap<String, Object>();
+    private Map<String, Object> results = new HashMap<>();
     private UIWorkItemHandler handler;
     private KogitoWorkItem workItem;
     private JTextField resultNameTextField;

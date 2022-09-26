@@ -101,7 +101,7 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if (work != null) {
             xmlDump.append("      <work name=\"" + work.getName() + "\" >" + EOL);
             List<ParameterDefinition> parameterDefinitions =
-                    new ArrayList<ParameterDefinition>(work.getParameterDefinitions());
+                    new ArrayList<>(work.getParameterDefinitions());
             Collections.sort(parameterDefinitions, new Comparator<ParameterDefinition>() {
                 public int compare(ParameterDefinition o1,
                         ParameterDefinition o2) {

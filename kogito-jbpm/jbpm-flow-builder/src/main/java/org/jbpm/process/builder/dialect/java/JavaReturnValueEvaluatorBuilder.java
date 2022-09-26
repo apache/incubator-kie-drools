@@ -69,7 +69,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
 
         JavaDialect dialect = (JavaDialect) context.getDialect("java");
 
-        Map<String, Class<?>> variables = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> variables = new HashMap<>();
         BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context);
         AnalysisResult analysis = dialect.analyzeBlock(context,
                 descr,

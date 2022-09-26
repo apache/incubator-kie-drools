@@ -60,7 +60,7 @@ public class VariableHandler extends BaseAbstractHandler
             variable.setName(name);
             List<Variable> variables = variableScope.getVariables();
             if (variables == null) {
-                variables = new ArrayList<Variable>();
+                variables = new ArrayList<>();
                 variableScope.setVariables(variables);
             }
             variables.add(variable);

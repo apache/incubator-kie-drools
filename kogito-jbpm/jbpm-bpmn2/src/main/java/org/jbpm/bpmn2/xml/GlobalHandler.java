@@ -55,7 +55,7 @@ public class GlobalHandler extends BaseAbstractHandler implements Handler {
 
         Map<String, String> map = process.getGlobals();
         if (map == null) {
-            map = new HashMap<String, String>();
+            map = new HashMap<>();
             process.setGlobals(map);
         }
         map.put(identifier, type);

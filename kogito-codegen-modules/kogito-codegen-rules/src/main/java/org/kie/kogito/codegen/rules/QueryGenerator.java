@@ -183,7 +183,7 @@ public class QueryGenerator implements RuleFileGenerator {
     }
 
     private void generateResultClass(ClassOrInterfaceDeclaration clazz, MethodDeclaration toResultMethod) {
-        ClassOrInterfaceDeclaration resultClass = new ClassOrInterfaceDeclaration(new NodeList<Modifier>(Modifier.publicModifier(), Modifier.staticModifier()), false, "Result");
+        ClassOrInterfaceDeclaration resultClass = new ClassOrInterfaceDeclaration(new NodeList<>(Modifier.publicModifier(), Modifier.staticModifier()), false, "Result");
         clazz.addMember(resultClass);
 
         ConstructorDeclaration constructor = resultClass.addConstructor(Modifier.Keyword.PUBLIC);

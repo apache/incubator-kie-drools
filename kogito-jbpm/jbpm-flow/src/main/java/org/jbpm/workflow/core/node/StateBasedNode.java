@@ -38,7 +38,7 @@ public class StateBasedNode extends ExtendedNodeImpl {
 
     public void addTimer(Timer timer, DroolsAction action) {
         if (timers == null) {
-            timers = new HashMap<Timer, DroolsAction>();
+            timers = new HashMap<>();
         }
         if (timer.getId() == 0) {
             long id = 0;
@@ -60,7 +60,7 @@ public class StateBasedNode extends ExtendedNodeImpl {
 
     public void addBoundaryEvents(String boundaryEvent) {
         if (this.boundaryEvents == null) {
-            this.boundaryEvents = new ArrayList<String>();
+            this.boundaryEvents = new ArrayList<>();
         }
         this.boundaryEvents.add(boundaryEvent);
     }

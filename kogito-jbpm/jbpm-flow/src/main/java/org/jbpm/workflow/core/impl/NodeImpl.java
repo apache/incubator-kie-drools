@@ -48,7 +48,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     private Map<String, Context> contexts = new HashMap<>();
     private Map<String, Object> metaData = new HashMap<>();
 
-    protected Map<ConnectionRef, Constraint> constraints = new HashMap<ConnectionRef, Constraint>();
+    protected Map<ConnectionRef, Constraint> constraints = new HashMap<>();
 
     private IOSpecification ioSpecification;
     private MultiInstanceSpecification multiInstanceSpecification;
@@ -164,7 +164,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         validateAddIncomingConnection(type, connection);
         List<Connection> connections = this.incomingConnections.get(type);
         if (connections == null) {
-            connections = new ArrayList<Connection>();
+            connections = new ArrayList<>();
             this.incomingConnections.put(type, connections);
         }
         connections.add(connection);
@@ -182,7 +182,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     public List<Connection> getIncomingConnections(String type) {
         List<Connection> result = incomingConnections.get(type);
         if (result == null) {
-            return new ArrayList<Connection>();
+            return new ArrayList<>();
         }
         return result;
     }
@@ -191,7 +191,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         validateAddOutgoingConnection(type, connection);
         List<Connection> connections = this.outgoingConnections.get(type);
         if (connections == null) {
-            connections = new ArrayList<Connection>();
+            connections = new ArrayList<>();
             this.outgoingConnections.put(type, connections);
         }
         connections.add(connection);
@@ -209,7 +209,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     public List<Connection> getOutgoingConnections(String type) {
         List<Connection> result = outgoingConnections.get(type);
         if (result == null) {
-            return new ArrayList<Connection>();
+            return new ArrayList<>();
         }
         return result;
     }

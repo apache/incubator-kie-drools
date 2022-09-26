@@ -28,7 +28,7 @@ public class VariableScopeResolverFactory extends ImmutableDefaultFactory {
     private static final long serialVersionUID = 510l;
 
     private VariableScopeInstance variableScope;
-    private Map<String, Object> extraParameters = new HashMap<String, Object>();
+    private Map<String, Object> extraParameters = new HashMap<>();
 
     public VariableScopeResolverFactory(VariableScopeInstance variableScope) {
         this.variableScope = variableScope;

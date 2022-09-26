@@ -39,7 +39,7 @@ public class VariableScopeInstance extends AbstractContextInstance {
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, Object> variables = new HashMap<String, Object>();
+    private Map<String, Object> variables = new HashMap<>();
     private transient String variableIdPrefix = null;
     private transient String variableInstanceIdPrefix = null;
 

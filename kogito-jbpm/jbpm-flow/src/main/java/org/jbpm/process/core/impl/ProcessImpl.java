@@ -50,8 +50,8 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private String packageName;
     private Resource resource;
     private ContextContainer contextContainer = new ContextContainerImpl();
-    private Map<String, Object> metaData = new HashMap<String, Object>();
-    private transient Map<String, Object> runtimeMetaData = new HashMap<String, Object>();
+    private Map<String, Object> metaData = new HashMap<>();
+    private transient Map<String, Object> runtimeMetaData = new HashMap<>();
     private Set<String> imports = new HashSet<>();
     private Map<String, String> globals;
     private List<String> functionImports = new ArrayList<>();
@@ -209,7 +209,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     }
 
     public String[] getGlobalNames() {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
         if (this.globals != null) {
             for (Iterator<String> iterator = this.globals.keySet().iterator(); iterator.hasNext();) {
                 result.add(iterator.next());
@@ -239,6 +239,6 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        this.runtimeMetaData = new HashMap<String, Object>();
+        this.runtimeMetaData = new HashMap<>();
     }
 }

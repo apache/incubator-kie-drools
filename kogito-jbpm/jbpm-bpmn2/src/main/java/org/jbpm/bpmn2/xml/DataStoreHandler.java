@@ -81,7 +81,7 @@ public class DataStoreHandler extends BaseAbstractHandler implements Handler {
         Definitions parent = (Definitions) parser.getParent();
         List<DataStore> dataStores = parent.getDataStores();
         if (dataStores == null) {
-            dataStores = new ArrayList<DataStore>();
+            dataStores = new ArrayList<>();
             parent.setDataStores(dataStores);
         }
         dataStores.add(store);
