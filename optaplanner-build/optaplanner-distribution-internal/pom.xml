@@ -92,10 +92,11 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-test</artifactId>
     </dependency>
-    <dependency>
+    <!-- TODO: enable the module by default after the 8.29.x branch is created. -->
+    <!--<dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-operator</artifactId>
-    </dependency>
+    </dependency>-->
 
     <!-- Examples -->
     <dependency>

@@ -1,6 +1,18 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+////
+TODO: enable after the 8.29.x branch is created.
+[[releaseNotes-8.30.0.Final]]
+=== OptaPlanner 8.30.0.Final
+
+==== OptaPlanner operator (experimental) is available in the distribution
+
+While the OptaPlanner operator remains experimental, it has now become a part of the https://download.jboss.org/optaplanner/release/latestFinal[OptaPlanner distribution].
+
+If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo]
+////
+
 [[releaseNotes-8.29.0.Final]]
 === OptaPlanner 8.29.0.Final
 
@@ -9,12 +21,6 @@
 https://jdk.java.net/19/[OpenJDK 19] was recently released and OptaPlanner is fully compatible with it.
 
 We always test our releases against the long-term supported versions of the JDK, currently 11 and 17, as well as against the latest release. We encourage you to upgrade your JDK regularly to benefit from the enhancements that come with the new releases.
-
-==== OptaPlanner operator (experimental) is available in the distribution
-
-While the OptaPlanner operator remains experimental, it has now become a part of the https://download.jboss.org/optaplanner/release/latestFinal[OptaPlanner distribution].
-
-If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo]
 
 [[releaseNotes-8.27.0.Final]]
 === OptaPlanner 8.27.0.Final
