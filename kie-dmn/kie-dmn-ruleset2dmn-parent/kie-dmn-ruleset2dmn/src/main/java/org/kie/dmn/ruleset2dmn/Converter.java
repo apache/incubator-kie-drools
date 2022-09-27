@@ -301,25 +301,7 @@ public class Converter {
             if (canCollapseBinaryPredicate(p0, p1)) {
                 ut.setText(feelLiteralValue(p0.getValue(), df));
             } else {
-                StringBuilder sb = new StringBuilder();
-                if (p0.getOperator() == Operator.GREATER_OR_EQUAL) {
-                    sb.append("[");
-                } else if (p0.getOperator() == Operator.GREATER_THAN) {
-                    sb.append("(");
-                } else {
-                    throw new UnsupportedOperationException("Unsupported operator in lowerbound: "+p0.getOperator());
-                }
-                sb.append(feelLiteralValue(p0.getValue(), df));
-                sb.append(" .. ");
-                sb.append(feelLiteralValue(p1.getValue(), df));
-                if (p1.getOperator() == Operator.LESS_THAN) {
-                    sb.append(")");
-                } else if (p1.getOperator() == Operator.LESS_OR_EQUAL) {
-                    sb.append("]");
-                } else {
-                    throw new UnsupportedOperationException("Unsupported operator in upperbound: "+p1.getOperator());
-                }
-                ut.setText(sb.toString());
+                ut.setText(convertBinaryPredicate(p0, p1, df));
             }
         } else {
             ut.setText("\"?\"");
@@ -345,6 +327,36 @@ public class Converter {
             return haveCorrectOperators && (((BigDecimal) firstValue).compareTo((BigDecimal) secondValue) == 0);
         } else {
             return haveCorrectOperators && firstValue.equals(secondValue);
+        }
+    }
+
+    private static String convertBinaryPredicate(final SimplePredicate firstPart, final SimplePredicate secondPart, final Optional<DataField> df) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getOperatorText(firstPart.getOperator(), true));
+        sb.append(feelLiteralValue(firstPart.getValue(), df));
+        sb.append(" .. ");
+        sb.append(feelLiteralValue(secondPart.getValue(), df));
+        sb.append(getOperatorText(secondPart.getOperator(), false));
+        return sb.toString();
+    }
+
+    private static String getOperatorText(final Operator operator, final boolean lowerBound) {
+        if (lowerBound) {
+            if (operator == Operator.GREATER_OR_EQUAL) {
+                return "[";
+            } else if (operator == Operator.GREATER_THAN) {
+                return "(";
+            } else {
+                throw new UnsupportedOperationException("Unsupported operator in lowerbound: " + operator);
+            }
+        } else {
+            if (operator == Operator.LESS_THAN) {
+                return ")";
+            } else if (operator == Operator.LESS_OR_EQUAL) {
+                return "]";
+            } else {
+                throw new UnsupportedOperationException("Unsupported operator in upperbound: " + operator);
+            }
         }
     }
 
