@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 
 import org.kie.api.runtime.rule.FactHandle;
 
+// TODO to be removed (or moved to test code base)
 public interface DataObserver {
 
     static <T> DataProcessor<T> of(Consumer<T> consumer) {

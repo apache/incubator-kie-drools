@@ -28,6 +28,9 @@ import org.drools.ruleunits.dsl.util.RuleDefinition;
 
 import static org.drools.model.DSL.globalOf;
 
+/**
+ * The starting point to create and define rules through the rule unit Java DSL.
+ */
 public class RulesFactory {
 
     private final RuleUnitDefinition unit;
@@ -40,10 +43,16 @@ public class RulesFactory {
         this.globals = new UnitGlobals(unit);
     }
 
+    /**
+     * Creates a new rule and automatically adds it to the ones belonging to the {@link RuleUnitDefinition}.
+     */
     public RuleFactory rule() {
         return rule(UUID.randomUUID().toString());
     }
 
+    /**
+     * Creates a new rule with the given name and automatically adds it to the ones belonging to the {@link RuleUnitDefinition}.
+     */
     public RuleFactory rule(String name) {
         RuleDefinition rule = new RuleDefinition(name, unit, globals);
         rules.add(rule);
@@ -66,11 +75,11 @@ public class RulesFactory {
 
         private final RuleUnitDefinition unit;
 
-        public UnitGlobals(RuleUnitDefinition unit) {
+        private UnitGlobals(RuleUnitDefinition unit) {
             this.unit = unit;
         }
 
-        Map<Object, Global> getGlobals() {
+        private Map<Object, Global> getGlobals() {
             return globals;
         }
 
