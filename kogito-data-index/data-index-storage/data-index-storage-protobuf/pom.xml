@@ -21,6 +21,16 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>process-serialization-protobuf</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>jbpm-flow</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-jackson-utils</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
