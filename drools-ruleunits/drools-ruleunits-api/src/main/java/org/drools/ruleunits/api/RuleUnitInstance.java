@@ -38,7 +38,7 @@ public interface RuleUnitInstance<T extends RuleUnitData> {
     T ruleUnitData();
 
     /**
-     * Trigger the pattern matching algorithm on all the facts contained in the @{@link DataSource}s of the {@link RuleUnitData}
+     * Trigger the pattern matching algorithm on all the facts contained in the {@link DataSource}s of the {@link RuleUnitData}
      * used by this RuleUnitInstance and fires all the rules activated by them.
      * @return The number of fired rules.
      */
