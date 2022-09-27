@@ -33,7 +33,8 @@ import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.model.codegen.execmodel.GeneratedFile;
-import org.drools.model.codegen.project.KogitoPackageSources;
+import org.drools.model.codegen.execmodel.PackageModelWriter;
+import org.drools.model.codegen.project.CodegenPackageSources;
 import org.drools.model.codegen.project.RuleCodegenError;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.kie.api.io.Resource;
@@ -80,8 +81,9 @@ public class DrlCompilerHelper {
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(Collection<CompositePackageDescr> packages, String basePath, KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration, DrlCompilationContext context) {
-        ExplicitCanonicalModelCompiler<KogitoPackageSources> compiler =
-                ExplicitCanonicalModelCompiler.of( packages, knowledgeBuilderConfiguration, KogitoPackageSources::dumpSources );
+        ExplicitCanonicalModelCompiler<CodegenPackageSources> compiler =
+                ExplicitCanonicalModelCompiler.of(packages, knowledgeBuilderConfiguration,
+                        pkgModel -> CodegenPackageSources.dumpSources(new PackageModelWriter(pkgModel)));
 
         compiler.process();
         BuildResultCollector buildResults = compiler.getBuildResults();
@@ -93,11 +95,11 @@ public class DrlCompilerHelper {
             throw new RuleCodegenError(buildResults.getAllResults());
         }
 
-        Collection<KogitoPackageSources> packageSources = compiler.getPackageSources();
+        Collection<CodegenPackageSources> packageSources = compiler.getPackageSources();
 
         List<GeneratedFile> modelFiles = new ArrayList<>();
         List<String> generatedRulesModels = new ArrayList<>();
-        for (KogitoPackageSources pkgSources : packageSources) {
+        for (CodegenPackageSources pkgSources : packageSources) {
             pkgSources.collectGeneratedFiles(modelFiles);
             generatedRulesModels.addAll(pkgSources.getExecutableRulesClasses());
         }
