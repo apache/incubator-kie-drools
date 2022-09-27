@@ -40,10 +40,11 @@ import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputB;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputC;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputD;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputE;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
 
 class TestCompilationManagerImpl {
 
@@ -60,7 +61,7 @@ class TestCompilationManagerImpl {
 
     @Test
     void processResource() {
-        EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+        EfestoCompilationContext context = EfestoCompilationContextUtils.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             IndexFile indexFile = null;
             try {
@@ -82,7 +83,7 @@ class TestCompilationManagerImpl {
             }
         });
 
-        EfestoCompilationContext newContext = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+        EfestoCompilationContext newContext = EfestoCompilationContextUtils.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         compilationManager.processResource(newContext, new MockEfestoRedirectOutputD());
         assertThat(newContext.getGeneratedResourcesMap()).isEmpty();
         Map<String, IndexFile> indexFiles = newContext.createIndexFiles(TARGET_TEST_CLASSES_DIRECTORY);
@@ -91,7 +92,7 @@ class TestCompilationManagerImpl {
 
     @Test
     void processResources() {
-        EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+        EfestoCompilationContext context = EfestoCompilationContextUtils.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         List<AbstractMockOutput> toProcess = new ArrayList<>();
         MANAGED_Efesto_RESOURCES.forEach(managedResource -> {
             try {
@@ -124,7 +125,7 @@ class TestCompilationManagerImpl {
 
         // 1st round
         try {
-            EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+            EfestoCompilationContext context = EfestoCompilationContextUtils.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
             List<AbstractMockOutput> toProcess = new ArrayList<>();
             toProcess.add(new MockEfestoRedirectOutputA());
             compilationManager.processResource(context, toProcess.toArray(new EfestoResource[0]));
@@ -140,7 +141,7 @@ class TestCompilationManagerImpl {
 
         // 2nd round
         try {
-            EfestoCompilationContext context = EfestoCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
+            EfestoCompilationContext context = EfestoCompilationContextUtils.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
             List<AbstractMockOutput> toProcess = new ArrayList<>();
             toProcess.add(new MockEfestoRedirectOutputE());
             compilationManager.processResource(context, toProcess.toArray(new EfestoResource[0]));

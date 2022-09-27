@@ -28,15 +28,16 @@ import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputA;
-import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputB;
-import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputC;
-import org.kie.efesto.runtimemanager.api.mocks.MockEfestoInputD;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputA;
+import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputB;
+import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputC;
+import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputD;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -56,7 +57,7 @@ class RuntimeManagerImplTest {
     @BeforeAll
     static void setUp() {
         runtimeManager = new RuntimeManagerImpl();
-        context = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        context = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
     @Test

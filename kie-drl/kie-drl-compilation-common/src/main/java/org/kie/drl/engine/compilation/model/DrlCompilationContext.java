@@ -16,7 +16,8 @@
 package org.kie.drl.engine.compilation.model;
 
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -31,7 +32,7 @@ public interface DrlCompilationContext extends EfestoCompilationContext {
     }
 
     static DrlCompilationContext buildWithEfestoCompilationContext(EfestoCompilationContextImpl context) {
-        return (DrlCompilationContext) EfestoCompilationContext.buildFromContext(context, DrlCompilationContextImpl.class);
+        return (DrlCompilationContext) EfestoCompilationContextUtils.buildFromContext(context, DrlCompilationContextImpl.class);
     }
 
     KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration();

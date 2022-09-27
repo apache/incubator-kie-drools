@@ -23,6 +23,7 @@ import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
@@ -89,7 +90,7 @@ class KieRuntimeServicePMMLTest {
     @Test
     void evaluateEfestoRuntimeContext() {
         EfestoRuntimeContext runtimeContext =
-                EfestoRuntimeContext.buildWithParentClassLoader(memoryCompilerClassLoader);
+                EfestoRuntimeContextUtils.buildWithParentClassLoader(memoryCompilerClassLoader);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                memoryCompilerClassLoader));
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(darInputPMML,

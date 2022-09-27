@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_STEP;
 import org.kie.pmml.api.models.PMMLStep;
@@ -53,7 +54,7 @@ public class TestingHelper {
     }
 
     public static EfestoRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
-        return EfestoRuntimeContext.buildWithParentClassLoader(parenClassLoader);
+        return EfestoRuntimeContextUtils.buildWithParentClassLoader(parenClassLoader);
     }
 
     public static PMMLRequestData getPMMLRequestData(String modelName, String fileName) {

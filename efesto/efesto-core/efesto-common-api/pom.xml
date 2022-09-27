@@ -20,7 +20,7 @@
   <dependencies>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
+      <artifactId>jackson-annotations</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>

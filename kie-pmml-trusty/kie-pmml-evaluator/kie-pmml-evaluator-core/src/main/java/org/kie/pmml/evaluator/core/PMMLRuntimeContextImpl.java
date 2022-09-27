@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContextImpl;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextImpl;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.runtime.PMMLListener;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
@@ -228,9 +228,9 @@ public class PMMLRuntimeContextImpl extends EfestoRuntimeContextImpl<PMMLListene
      */
     @Override
     public Map<String, Double> getProbabilityMap() {
-        final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
-        return probabilityResultMap != null ?
-                Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
+        final LinkedHashMap<String, Double> toReturn = getProbabilityResultMap();
+        return toReturn != null ?
+                Collections.unmodifiableMap(getFixedProbabilityMap(toReturn)) : Collections.emptyMap();
     }
 
     @Override

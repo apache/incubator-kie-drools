@@ -17,7 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>org.kie</groupId>
-            <artifactId>efesto-runtime-manager-api</artifactId>
+            <artifactId>efesto-runtime-manager-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>

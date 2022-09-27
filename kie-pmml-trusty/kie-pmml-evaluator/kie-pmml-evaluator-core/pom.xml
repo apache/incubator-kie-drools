@@ -27,16 +27,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-api</artifactId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
     <!-- Efesto -->
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-core</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <!-- PMML -->
     <dependency>

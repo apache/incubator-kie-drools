@@ -76,6 +76,11 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
+        <artifactId>efesto-common-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
         <artifactId>efesto-identifiers-api-application</artifactId>
         <version>${project.version}</version>
       </dependency>
