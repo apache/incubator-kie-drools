@@ -36,13 +36,13 @@ import static org.drools.ruleunits.impl.RuleUnitProviderImpl.createRuleUnitKiePr
  */
 public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUnit<T> {
 
-    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnit) {
-        InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>(ruleUnit.getClass().getCanonicalName());
-        return interpretedRuleUnit.createInstance(ruleUnit);
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnitData) {
+        InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>((Class<T>) ruleUnitData.getClass());
+        return interpretedRuleUnit.createInstance(ruleUnitData);
     }
 
-    private InterpretedRuleUnit(String id) {
-        super(id);
+    private InterpretedRuleUnit(Class<T> ruleUnitDataClass) {
+        super(ruleUnitDataClass);
     }
 
     @Override

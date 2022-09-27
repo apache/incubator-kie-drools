@@ -21,7 +21,7 @@ import java.util.Map;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnits;
+import org.drools.ruleunits.impl.RuleUnits;
 
 public abstract class AbstractRuleUnits implements RuleUnits {
 

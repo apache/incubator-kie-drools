@@ -18,7 +18,6 @@ package org.drools.ruleunits.impl;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnitQuery;
 
 public abstract class AbstractRuleUnitInstance<E, T extends RuleUnitData> implements RuleUnitInstance<T> {
 
@@ -31,19 +30,6 @@ public abstract class AbstractRuleUnitInstance<E, T extends RuleUnitData> implem
         this.evaluator = evaluator;
         this.unitMemory = unitMemory;
         bind(evaluator, unitMemory);
-    }
-
-    @Override
-    public <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query) {
-        return createRuleUnitQuery(query).execute();
-    }
-
-    protected <Q> RuleUnitQuery<Q> createRuleUnitQuery(Class<? extends RuleUnitQuery<Q>> query) {
-        try {
-            return query.getConstructor(RuleUnitInstance.class).newInstance(this);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

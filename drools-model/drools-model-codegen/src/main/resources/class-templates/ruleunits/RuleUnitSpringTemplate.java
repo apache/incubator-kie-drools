@@ -12,7 +12,7 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL() );
 
     public CLASS_NAME() {
-        super(RULE_UNIT_CLASS.class.getCanonicalName());
+        super(RULE_UNIT_CLASS.class);
     }
 
     @Override
