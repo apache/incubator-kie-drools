@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.drl.extensions.DecisionTableProvider;
+import org.drools.model.codegen.project.MissingDecisionTableDependencyError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
