@@ -51,7 +51,7 @@ When you have your Quarkus project configured, you can add the Drools Quarkus ex
 </dependency>
 <dependency>
     <groupId>org.drools</groupId>
-    <artifactId>drools-ruleunits-impl</artifactId>
+    <artifactId>drools-ruleunits-engine</artifactId>
 </dependency>
 
 <dependency>
