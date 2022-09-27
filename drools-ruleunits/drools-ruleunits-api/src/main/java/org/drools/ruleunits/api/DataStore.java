@@ -23,7 +23,7 @@ public interface DataStore<T> extends DataSource<T> {
 
     /**
      * Add an object to this DataStore.
-     * @return The {@link DataHandle} to further modified
+     * @return The {@link DataHandle} to be further modified
      */
     DataHandle add(T object);
 
