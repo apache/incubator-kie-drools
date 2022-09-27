@@ -31,6 +31,6 @@ public abstract class AbstractMockEfestoInput implements EfestoInput<String> {
 
     @Override
     public String getInputData() {
-        return null;
+        return this.getClass().getSimpleName();
     }
 }

@@ -17,12 +17,12 @@ package org.kie.efesto.runtimemanager.api.model;
 
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public abstract class AbstractEfestoInput<T> implements EfestoInput<T> {
+public class BaseEfestoInput<T> implements EfestoInput<T> {
 
     private final ModelLocalUriId modelLocalUriId;
     private final T inputData;
 
-    protected AbstractEfestoInput(ModelLocalUriId modelLocalUriId, T inputData) {
+    public BaseEfestoInput(ModelLocalUriId modelLocalUriId, T inputData) {
         this.modelLocalUriId = modelLocalUriId;
         this.inputData = inputData;
     }

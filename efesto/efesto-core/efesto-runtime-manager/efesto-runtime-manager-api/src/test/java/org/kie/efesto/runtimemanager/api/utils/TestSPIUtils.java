@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.kie.efesto.runtimemanager.api.mocks.MockKieRuntimeServiceAB;
+import org.kie.efesto.runtimemanager.api.mocks.MockKieRuntimeServiceA;
 import org.kie.efesto.runtimemanager.api.mocks.MockKieRuntimeServiceC;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
@@ -27,7 +27,7 @@ import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 class TestSPIUtils {
 
     private static final List<Class<? extends KieRuntimeService>> KIE_RUNTIME_SERVICES =
-            Arrays.asList(MockKieRuntimeServiceAB.class, MockKieRuntimeServiceC.class);
+            Arrays.asList(MockKieRuntimeServiceA.class, MockKieRuntimeServiceC.class);
 
     private static EfestoRuntimeContext context;
 

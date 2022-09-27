@@ -15,21 +15,56 @@
  */
 package org.kie.efesto.common.utils;
 
-import com.github.javaparser.StaticJavaParser;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.*;
-import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static org.kie.efesto.common.api.constants.Constants.*;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_BODY_IN_METHOD;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_CONSTRUCTOR_IN_BODY;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_STATIC_INITIALIZER;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
+import static org.kie.efesto.common.api.constants.Constants.MISSING_VARIABLE_IN_BODY;
 
 /**
  * Class meant to provide <i>helper</i> methods to all <i>code-generating</i> classes
@@ -75,15 +110,13 @@ public class CommonCodegenUtils {
     public static void addMapPopulation(final Map<String, MethodDeclaration> toAdd,
                                         final BlockStmt body,
                                         final String mapName) {
-        Map<String, Expression> toAddExpr = toAdd.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> {
-                    MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-                    methodReferenceExpr.setScope(new ThisExpr());
-                    methodReferenceExpr.setIdentifier(entry.getValue().getNameAsString());
-                    return methodReferenceExpr;
-                }
-        ));
+        Map<String, Expression> toAddExpr = new HashMap<>();
+        for (Map.Entry<String, MethodDeclaration> entry : toAdd.entrySet()) {
+            MethodReferenceExpr value = new MethodReferenceExpr();
+            value.setScope(new ThisExpr());
+            value.setIdentifier(entry.getValue().getNameAsString());
+            toAddExpr.put(entry.getKey(), value);
+        }
         addMapPopulationExpressions(toAddExpr, body, mapName);
     }
 
@@ -373,8 +406,10 @@ public class CommonCodegenUtils {
      */
     public static ClassOrInterfaceType getTypedClassOrInterfaceTypeByTypeNames(final String className,
                                                                                final List<String> typesName) {
-        List<Type> types = typesName.stream()
-                .map(StaticJavaParser::parseClassOrInterfaceType).collect(Collectors.toList());
+        List<Type> types = new ArrayList<>();
+        for (String typeName : typesName) {
+            types.add(parseClassOrInterfaceType(typeName));
+        }
         return getTypedClassOrInterfaceTypeByTypes(className, types);
     }
 
@@ -431,9 +466,12 @@ public class CommonCodegenUtils {
      */
     public static Optional<AssignExpr> getAssignExpression(final BlockStmt body, final String assignExpressionName) {
         final List<AssignExpr> assignExprs = body.findAll(AssignExpr.class);
-        return assignExprs.stream()
-                .filter(assignExpr -> assignExpressionName.equals(assignExpr.getTarget().asNameExpr().getNameAsString()))
-                .findFirst();
+        for (AssignExpr assignExpr : assignExprs) {
+            if (assignExpressionName.equals(assignExpr.getTarget().asNameExpr().getNameAsString())) {
+                return Optional.of(assignExpr);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -711,11 +749,13 @@ public class CommonCodegenUtils {
      * @return
      */
     public static List<NameExpr> getNameExprsFromBlock(final BlockStmt toRead, final String exprName) {
-        return toRead.stream()
+        List<NameExpr> toReturn = new ArrayList<>();
+        toRead.stream()
                 .filter(node -> node instanceof NameExpr &&
                         ((NameExpr) node).getName().asString().equals(exprName))
                 .map(NameExpr.class::cast)
-                .collect(Collectors.toList());
+                .forEach(toReturn::add);
+        return toReturn;
     }
 
     /**
@@ -913,14 +953,11 @@ public class CommonCodegenUtils {
      */
     public static void replaceNameExprWithNullInStatement(final Statement container,
                                                           final List<NameExpr> toReplace) {
-        final List<ReplacementTupla> replacementTuplas =
-                toReplace.stream()
-                        .map(nameExpr -> {
-                            NullLiteralExpr toAdd = new NullLiteralExpr();
-                            return new ReplacementTupla(nameExpr, toAdd);
-                        })
-                        .collect(Collectors.toList());
-        replacementTuplas.forEach(replacementTupla -> replaceNodeInStatement(container, replacementTupla));
+        for (NameExpr nameExpr : toReplace) {
+            NullLiteralExpr toAdd = new NullLiteralExpr();
+            ReplacementTupla replacementTupla = new ReplacementTupla(nameExpr, toAdd);
+            replaceNodeInStatement(container, replacementTupla);
+        }
     }
 
     public static MethodCallExpr getArraysAsListInvocationMethodCall(NodeList<Expression> arguments) {

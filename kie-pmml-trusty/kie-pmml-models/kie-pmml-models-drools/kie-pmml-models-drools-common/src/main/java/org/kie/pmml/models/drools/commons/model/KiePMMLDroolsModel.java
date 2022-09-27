@@ -30,8 +30,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
@@ -107,9 +106,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
                 .get(PmmlIdRedirectFactory.class)
                 .get("drl", context.getFileNameNoSuffix(), getSanitizedClassName(this.getName()));
 
-        EfestoInput<EfestoMapInputDTO> input = new AbstractEfestoInput<EfestoMapInputDTO>(modelLocalUriId,
-                                                                                          darMapInputDTO) {
-        };
+        BaseEfestoInput<EfestoMapInputDTO> input = new BaseEfestoInput<>(modelLocalUriId,
+                                                                                      darMapInputDTO);
 
         Optional<RuntimeManager> runtimeManager = getRuntimeManager(true);
         if (!runtimeManager.isPresent()) {

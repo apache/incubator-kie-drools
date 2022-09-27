@@ -22,14 +22,11 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
-import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoInput;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
-import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,28 +54,18 @@ class KieRuntimeServicePMMLRequestDataTest {
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName(MODEL_NAME));
     }
-
-    @Test
-    void canManageEfestoInputPMML() {
-        PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        AbstractEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
-        assertThat(kieRuntimeServicePMMLRequestData.canManageInput(darInputPMML, context)).isFalse();
-    }
-
     @Test
     void canManageEfestoInput() {
         EfestoRuntimeContext runtimeContext = getEfestoContext(memoryCompilerClassLoader);
         PMMLRequestData pmmlRequestData = new PMMLRequestData();
-        EfestoInput<PMMLRequestData> inputPMML = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
-        };
+        EfestoInput<PMMLRequestData> inputPMML = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
         assertThat(kieRuntimeServicePMMLRequestData.canManageInput(inputPMML, runtimeContext)).isTrue();
     }
 
     @Test
     void evaluateCorrectInput() {
         PMMLRequestData pmmlRequestData = getPMMLRequestDataWithInputData(MODEL_NAME, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
-        };
+        EfestoInput<PMMLRequestData> efestoInput = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput,
                                                                                               getEfestoContext(memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isPresent();
@@ -90,27 +77,20 @@ class KieRuntimeServicePMMLRequestDataTest {
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName("wrongmodel"));
         PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
-        };
+        EfestoInput<PMMLRequestData> efestoInput = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput,
                                                                                               getEfestoContext(memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
-    void evaluateWrongEfestoRuntimeContext() {
+    void evaluatePMMLRuntimeContext() {
         EfestoRuntimeContext runtimeContext =
                 getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         PMMLRequestData pmmlRequestData = getPMMLRequestData(MODEL_NAME, FILE_NAME);
-        EfestoInput<PMMLRequestData> efestoInput = new AbstractEfestoInput<>(modelLocalUriId, pmmlRequestData) {
-        };
-        KieRuntimeServiceException thrown = assertThrows(
-                KieRuntimeServiceException.class,
-                () -> kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput,
-                                                                     runtimeContext),
-                "Expected evaluateInput() to throw, but it didn't"
-        );
-        String expectedMessage = "Unexpected PMMLRuntimeContext received";
-        assertThat(thrown.getMessage()).isEqualTo(expectedMessage);
+        EfestoInput<PMMLRequestData> efestoInput = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
+
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLRequestData.evaluateInput(efestoInput, runtimeContext);
+        assertThat(retrieved).isNotNull().isPresent();
     }
 }

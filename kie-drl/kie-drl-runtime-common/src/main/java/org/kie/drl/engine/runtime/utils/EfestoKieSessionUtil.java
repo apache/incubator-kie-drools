@@ -15,9 +15,9 @@
  */
 package org.kie.drl.engine.runtime.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.drools.model.Model;
 import org.drools.modelcompiler.KieBaseBuilder;
@@ -40,12 +40,15 @@ public class EfestoKieSessionUtil {
 
     public static KieSession loadKieSession(ModelLocalUriId modelLocalUriId, EfestoRuntimeContext context) {
         logger.debug("loadKieSession {} {}", modelLocalUriId, context);
-        Optional<GeneratedExecutableResource> generatedExecutableResourceOpt = GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap());
+        Optional<GeneratedExecutableResource> generatedExecutableResourceOpt =
+                GeneratedResourceUtils.getGeneratedExecutableResource(modelLocalUriId,
+                                                                      context.getGeneratedResourcesMap());
         GeneratedExecutableResource finalResource = generatedExecutableResourceOpt.orElseThrow(
                 () -> new KieRuntimeServiceException("Can not find expected GeneratedExecutableResource for " + modelLocalUriId));
-        List<Model> models = finalResource.getFullClassNames().stream()
-                .map(className -> loadModel(className, context))
-                .collect(Collectors.toList());
+        List<Model> models = new ArrayList<>();
+        for (String className : finalResource.getFullClassNames()) {
+            models.add(loadModel(className, context));
+        }
         logger.debug("models {}", models);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(models);
         logger.debug("kieBase {}", kieBase);
@@ -54,7 +57,8 @@ public class EfestoKieSessionUtil {
             logger.debug("toReturn {}", toReturn);
             return toReturn;
         } catch (Exception e) {
-            String errorMessage = String.format("Failed to create new session from %s due to %s", kieBase, e.getMessage());
+            String errorMessage = String.format("Failed to create new session from %s due to %s", kieBase,
+                                                e.getMessage());
             logger.error(errorMessage, e);
             throw new KieRuntimeServiceException(errorMessage, e);
         }

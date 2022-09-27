@@ -15,8 +15,6 @@
  */
 package org.kie.efesto.compilationmanager.core.service;
 
-import java.util.Arrays;
-
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
@@ -31,7 +29,8 @@ public class CompilationManagerImpl implements CompilationManager {
 
     @Override
     public void processResource(EfestoCompilationContext context, EfestoResource... toProcess) {
-        Arrays.stream(toProcess)
-                .forEach(resource -> processResourceWithContext(resource, context));
+        for (EfestoResource efestoResource : toProcess) {
+            processResourceWithContext(efestoResource, context);
+        }
     }
 }

@@ -49,10 +49,10 @@ public class EfestoCompilationContextImpl<T extends EfestoListener> implements E
     }
 
     private void prepareClassLoader() {
-        Set<ModelLocalUriId> localUriKeySet = localUriIdKeySet();
-        localUriKeySet.stream()
-                 .map(this::getGeneratedClasses)
-                 .forEach(generatedClasses -> generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent));
+        for (ModelLocalUriId modelLocalUriId : localUriIdKeySet()) {
+            Map<String, byte[]> generatedClasses = getGeneratedClasses(modelLocalUriId);
+            generatedClasses.forEach(memoryCompilerClassLoader::addCodeIfAbsent);
+        }
     }
 
     private void populateGeneratedResourcesMap() {

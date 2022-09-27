@@ -40,7 +40,7 @@ public class DrlRuntimeHelper {
     }
 
     public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return (toEvaluate instanceof EfestoInputDrlKieSessionLocal) && getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), context.getGeneratedResourcesMap()).isPresent();
+        return getGeneratedExecutableResource(toEvaluate.getModelLocalUriId(), context.getGeneratedResourcesMap()).isPresent();
     }
 
     public static Optional<EfestoOutputDrlKieSessionLocal> execute(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {

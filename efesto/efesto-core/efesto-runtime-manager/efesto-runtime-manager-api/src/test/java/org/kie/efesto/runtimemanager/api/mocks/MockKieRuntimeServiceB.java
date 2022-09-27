@@ -15,34 +15,29 @@
  */
 package org.kie.efesto.runtimemanager.api.mocks;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
-// This service is required to find IndexFile "testb" in classpath
-public class TestBKieRuntimeService<T extends AbstractMockEfestoInput> implements KieRuntimeService<String, String, T, MockEfestoOutput, EfestoRuntimeContext> {
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
+
+public class MockKieRuntimeServiceB extends AbstractMockKieRuntimeService {
+
+    private static List<ModelLocalUriId> managedResources =
+            Collections.singletonList(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputB.class.getSimpleName() + SLASH + MockEfestoInputB.class.getPackage().getName())));
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        // THis should always return an unmatchable key
-        return new EfestoClassKey(TestBKieRuntimeService.class);
-    }
-
-    @Override
-    public Optional<MockEfestoOutput> evaluateInput(T toEvaluate, EfestoRuntimeContext context) {
-        return Optional.empty();
-    }
-
-    @Override
-    public String getModelType() {
-        return "testb";
+        return new EfestoClassKey(MockEfestoInputB.class, String.class);
     }
 
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return false;
+        return managedResources.contains(toEvaluate.getModelLocalUriId());
     }
 }

@@ -16,11 +16,11 @@
 package org.kie.efesto.runtimemanager.api.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -45,21 +45,25 @@ public class SPIUtils {
 
     private static List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(kieRuntimeServiceLoader);
 
-    public static Optional<KieRuntimeService> getKieRuntimeService(EfestoInput<?> input, boolean refresh, EfestoRuntimeContext context) {
+    public static List<KieRuntimeService> getDiscoveredKieRuntimeServices() {
+        return kieRuntimeServices;
+    }
+
+    public static Optional<KieRuntimeService> getKieRuntimeService(List<KieRuntimeService> discoveredServices,  EfestoInput<?> input, EfestoRuntimeContext context) {
         if ( logger.isTraceEnabled() ) {
-            logger.trace("getKieRuntimeService {} {}", input, refresh);
+            logger.trace("getKieRuntimeService {} {} {}", discoveredServices, input, context);
         }
-        return findAtMostOne(getKieRuntimeServices(refresh), service -> service.canManageInput(input, context),
-                (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
+        return findAtMostOne(discoveredServices, service -> service.canManageInput(input, context),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
     public static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContext(EfestoInput<?> input, EfestoRuntimeContext context) {
         if ( logger.isTraceEnabled() ) {
-            logger.trace("getKieCompilerServiceFromEfestoCompilationContext {} {}", input, context);
+            logger.trace("getKieRuntimeServiceFromEfestoRuntimeContext {} {}", input, context);
         }
         ServiceLoader<KieRuntimeService> contextServiceLoader = context.getKieRuntimeService();
-        return findAtMostOne(contextServiceLoader, service -> service.canManageInput(input, context),
-                             (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
+        return findAtMostOne(contextServiceLoader, service -> input.getEfestoClassKeyIdentifier().equals(service.getEfestoClassKeyIdentifier()),
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one runtime services: " + s1 + " and " + s2));
     }
 
     public static List<KieRuntimeService> getKieRuntimeServices(boolean refresh) {
@@ -84,10 +88,8 @@ public class SPIUtils {
 
     public static Optional<RuntimeManager> getRuntimeManager(boolean refresh) {
         logger.debug("getRuntimeManager {}", refresh);
-        List<RuntimeManager> toReturn = new ArrayList<>();
         Iterable<RuntimeManager> managers = getManagers(refresh);
-        managers.forEach(toReturn::add);
-        return toReturn.stream().findFirst();
+        return managers.iterator().hasNext() ? Optional.of(managers.iterator().next()) : Optional.empty();
     }
 
 
@@ -107,7 +109,10 @@ public class SPIUtils {
 
     public static Set<String> collectModelTypes(EfestoRuntimeContext context) {
         List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(false);
-        Set<String> modelTypes = kieRuntimeServices.stream().map(KieRuntimeService::getModelType).collect(Collectors.toSet());
+        Set<String> modelTypes = new HashSet<>();
+        for (KieRuntimeService kieRuntimeService : kieRuntimeServices) {
+            modelTypes.add(kieRuntimeService.getModelType());
+        }
         ServiceLoader<KieRuntimeService> serviceLoader = context.getKieRuntimeService();
         for (KieRuntimeService kieRuntimeService : serviceLoader) {
             modelTypes.add(kieRuntimeService.getModelType());

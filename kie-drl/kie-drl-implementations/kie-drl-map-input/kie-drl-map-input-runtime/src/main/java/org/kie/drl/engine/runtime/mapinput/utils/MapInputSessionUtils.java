@@ -15,16 +15,14 @@
  */
 package org.kie.drl.engine.runtime.mapinput.utils;
 
+import java.util.Map;
+
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
 import org.kie.efesto.runtimemanager.api.model.EfestoOriginalTypeGeneratedType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 import static org.kie.efesto.common.api.constants.Constants.OUTPUTFIELDS_MAP_IDENTIFIER;
 import static org.kie.efesto.common.api.constants.Constants.PACKAGE_CLASS_TEMPLATE;
@@ -34,14 +32,9 @@ import static org.kie.efesto.common.api.constants.Constants.PACKAGE_CLASS_TEMPLA
  */
 public class MapInputSessionUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(MapInputSessionUtils.class.getName());
-
-    //    private static final CommandFactoryServiceImpl COMMAND_FACTORY_SERVICE = new CommandFactoryServiceImpl();
     final KieSession kieSession;
     final String modelName;
     final String packageName;
-
-//    final List<Command> commands;
 
     private MapInputSessionUtils(final KieSession kieSession, final EfestoMapInputDTO darMapInputDTO) {
         this.modelName = darMapInputDTO.getModelName();
@@ -50,15 +43,6 @@ public class MapInputSessionUtils {
         darMapInputDTO.getInserts().forEach(kieSession::insert);
         darMapInputDTO.getGlobals().forEach((key, value) -> insertObjectInSession(value, key));
         addObjectsToSession(darMapInputDTO.getUnwrappedInputParams(), darMapInputDTO.getFieldTypeMap());
-
-
-//        this.kieSession =  kieSession.getKieBase().newStatelessKieSession();
-//
-//        commands = new ArrayList<>();
-//
-//        darMapInputDTO.getInserts().forEach(toInsert -> commands.add(COMMAND_FACTORY_SERVICE.newInsert(toInsert)));
-//        darMapInputDTO.getGlobals().forEach((key, value) -> insertObjectInSession(value, key));
-//        addObjectsToSession(darMapInputDTO.getUnwrappedInputParams(), darMapInputDTO.getFieldTypeMap());
     }
 
     public static Builder builder(final KieSession kieSession, final EfestoMapInputDTO darMapInputDTO) {
@@ -71,8 +55,6 @@ public class MapInputSessionUtils {
     public void fireAllRules() {
         kieSession.fireAllRules();
         kieSession.dispose();
-//        BatchExecutionCommand batchExecutionCommand = COMMAND_FACTORY_SERVICE.newBatchExecution(commands);
-//        kieSession.execute(batchExecutionCommand);
     }
 
     /**
@@ -84,8 +66,6 @@ public class MapInputSessionUtils {
     void insertObjectInSession(final Object toInsert, final String globalName) {
         kieSession.insert(toInsert);
         kieSession.setGlobal(globalName, toInsert);
-//        commands.add(COMMAND_FACTORY_SERVICE.newInsert(toInsert));
-//        commands.add(COMMAND_FACTORY_SERVICE.newSetGlobal(globalName, toInsert));
     }
 
     /**
@@ -111,7 +91,6 @@ public class MapInputSessionUtils {
                 Object toAdd = factType.newInstance();
                 factType.set(toAdd, "value", entry.getValue());
                 kieSession.insert(toAdd);
-//                commands.add(COMMAND_FACTORY_SERVICE.newInsert(toAdd));
             } catch (Exception e) {
                 throw new KieRuntimeServiceException(e.getMessage(), e);
             }

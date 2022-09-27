@@ -110,11 +110,8 @@ public class FileUtils {
     }
 
     public static Optional<File> getFileFromFileNameOrFilePath(String fileName, String filePath) {
-        return Stream.of(getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader()),
-                         getFileByFilePath(filePath))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
+        Optional<File> fromClassloader = getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader());
+        return fromClassloader.isPresent() ? fromClassloader :  getFileByFilePath(filePath);
     }
 
     public static Optional<File> getFileFromFileName(String fileName) {

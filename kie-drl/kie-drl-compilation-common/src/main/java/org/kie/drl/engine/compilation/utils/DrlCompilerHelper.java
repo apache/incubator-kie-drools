@@ -21,10 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -32,6 +32,7 @@ import org.drools.compiler.builder.impl.resources.DrlResourceHandler;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.io.FileSystemResource;
 import org.drools.model.codegen.execmodel.GeneratedFile;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.project.CodegenPackageSources;
@@ -66,7 +67,10 @@ public class DrlCompilerHelper {
 
     public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
-        Set<PackageDescr> packageDescrSet = buildCompositePackageDescrs(resources, conf).stream().collect(Collectors.toSet());
+        Set<PackageDescr> packageDescrSet = new HashSet<>();
+        for (CompositePackageDescr packageDescr : buildCompositePackageDescrs(resources, conf)) {
+            packageDescrSet.add(packageDescr);
+        }
         return new DrlPackageDescrSetResource(packageDescrSet, resources.getModelLocalUriId().basePath());
     }
 
@@ -76,7 +80,6 @@ public class DrlCompilerHelper {
 
     public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
-
         return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getModelLocalUriId().basePath(), conf, context);
     }
 
@@ -103,14 +106,15 @@ public class DrlCompilerHelper {
             pkgSources.collectGeneratedFiles(modelFiles);
             generatedRulesModels.addAll(pkgSources.getExecutableRulesClasses());
         }
-
-        Map<String, String> sourceCode = modelFiles.stream()
-                .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                                  .replace(".java", "")
-                                                  .replace(File.separatorChar, '.'),
-                                          generatedFile -> new String(generatedFile.getData(),
-                                                                      StandardCharsets.UTF_8)));
-
+        Map<String, String> sourceCode = new HashMap<>();
+        for (GeneratedFile generatedFile : modelFiles) {
+            String key = generatedFile.getPath()
+                    .replace(".java", "")
+                    .replace(File.separatorChar, '.');
+            String value = new String(generatedFile.getData(),
+                                      StandardCharsets.UTF_8);
+            sourceCode.put(key, value);
+        }
         Map<String, byte[]> compiledClasses = context.compileClasses(sourceCode);
         LocalComponentIdDrl modelLocalUriId = new ReflectiveAppRoot("")
                 .get(DrlIdFactory.class)
@@ -120,7 +124,11 @@ public class DrlCompilerHelper {
 
     private static Collection<CompositePackageDescr> buildCompositePackageDescrs(DrlFileSetResource resources, KnowledgeBuilderConfigurationImpl conf) {
         DrlResourceHandler drlResourceHandler = new DrlResourceHandler(conf);
-        return toCompositePackageDescrs(resources.getFileSystemResource().stream().map(r -> resourceToPackageDescr(drlResourceHandler, r)).collect(Collectors.toList()));
+        List<PackageDescr> packageDescrs = new ArrayList<>();
+        for(FileSystemResource resource : resources.getFileSystemResource()) {
+            packageDescrs.add(resourceToPackageDescr(drlResourceHandler, resource));
+        }
+        return toCompositePackageDescrs(packageDescrs);
     }
 
     private static Collection<CompositePackageDescr> toCompositePackageDescrs(Iterable<PackageDescr> packageDescrs) {

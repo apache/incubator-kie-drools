@@ -72,19 +72,18 @@ public class PMMLRuntimeHelper {
     }
 
     public static boolean canManageEfestoInput(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
-        return (!(toEvaluate instanceof EfestoInputPMML) && (toEvaluate.getInputData() instanceof PMMLRequestData)
-                && (!(runtimeContext instanceof PMMLRuntimeContext))
-                && isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext));
-    }
-
-    public static boolean canManageEfestoInputPMML(EfestoInput toEvaluate, EfestoRuntimeContext runtimeContext) {
-        return (toEvaluate instanceof EfestoInputPMML) &&
-                (runtimeContext instanceof PMMLRuntimeContext) &&
-                isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext);
+        return  isPresentExecutableOrRedirect(toEvaluate.getModelLocalUriId(), runtimeContext);
     }
 
     public static Optional<EfestoOutputPMML> executeEfestoInputPMML(EfestoInputPMML toEvaluate,
-                                                                    PMMLRuntimeContext pmmlContext) {
+                                                                    EfestoRuntimeContext runtimeContext) {
+        PMMLRuntimeContext pmmlContext;
+        if (runtimeContext instanceof PMMLRuntimeContext) {
+            pmmlContext = (PMMLRuntimeContext) runtimeContext;
+        } else {
+            pmmlContext = getPMMLRuntimeContext(toEvaluate.getInputData().getRequestData(),
+                                                runtimeContext.getGeneratedResourcesMap());
+        }
         KiePMMLModelFactory kiePMMLModelFactory;
         try {
             kiePMMLModelFactory = loadKiePMMLModelFactory(toEvaluate.getModelLocalUriId(), pmmlContext);
@@ -107,8 +106,13 @@ public class PMMLRuntimeHelper {
 
     public static Optional<EfestoOutputPMML> executeEfestoInput(EfestoInput<PMMLRequestData> toEvaluate,
                                                                 EfestoRuntimeContext runtimeContext) {
-        PMMLRuntimeContext pmmlContext = getPMMLRuntimeContext(toEvaluate.getInputData(),
-                                                               runtimeContext.getGeneratedResourcesMap());
+        PMMLRuntimeContext pmmlContext;
+        if (runtimeContext instanceof PMMLRuntimeContext) {
+            pmmlContext = (PMMLRuntimeContext) runtimeContext;
+        } else {
+            pmmlContext = getPMMLRuntimeContext(toEvaluate.getInputData(),
+                                    runtimeContext.getGeneratedResourcesMap());
+        }
         EfestoInputPMML efestoInputPMML = getEfestoInputPMML(toEvaluate, pmmlContext);
         return executeEfestoInputPMML(efestoInputPMML, pmmlContext);
     }

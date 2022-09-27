@@ -16,9 +16,9 @@
 package org.kie.efesto.compilationmanager.core.utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedClassResource;
@@ -153,9 +153,11 @@ public class CompilationManagerUtils {
     }
 
     static List<GeneratedResource> getGeneratedResources(EfestoClassesContainer finalOutput) {
-        return finalOutput.getCompiledClassesMap().keySet().stream()
-                          .map(CompilationManagerUtils::getGeneratedClassResource)
-                          .collect(Collectors.toList());
+        List<GeneratedResource> toReturn = new ArrayList<>();
+        for (String key : finalOutput.getCompiledClassesMap().keySet()) {
+            toReturn.add(getGeneratedClassResource(key));
+        }
+        return toReturn;
     }
 
     static GeneratedClassResource getGeneratedClassResource(String fullClassName) {
