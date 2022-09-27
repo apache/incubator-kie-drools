@@ -60,11 +60,11 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
     private static final Logger LOGGER = LoggerFactory.getLogger(GraphQLQueryMapper.class);
 
     private static AttributeFilter filterValueList(Object value, Function<List, AttributeFilter> filter) {
-        return (value instanceof List && ((List) value).isEmpty() == false) ? filter.apply((List) value) : null;
+        return (value instanceof List && !((List) value).isEmpty()) ? filter.apply((List) value) : null;
     }
 
     private static AttributeFilter filterValueMap(Object value, Function<Map<String, Object>, AttributeFilter> filter) {
-        return (value instanceof Map && ((Map) value).isEmpty() == false) ? filter.apply((Map) value) : null;
+        return (value instanceof Map && !((Map) value).isEmpty()) ? filter.apply((Map) value) : null;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     }
 
     public void setRootProcessInstanceId(String id) {
-        if (id != null && id.trim().isEmpty() == false) {
+        if (id != null && !id.trim().isEmpty()) {
             this.rootProcessInstanceId = id;
         }
     }

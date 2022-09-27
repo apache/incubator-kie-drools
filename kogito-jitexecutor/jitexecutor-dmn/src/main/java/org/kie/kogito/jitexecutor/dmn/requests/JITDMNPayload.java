@@ -64,7 +64,7 @@ public class JITDMNPayload extends MultipleResourcesPayload {
     }
 
     private void consistencyChecks() {
-        if (model != null && getMainURI() != null && getResources() != null && getResources().size() > 0) {
+        if (model != null && getMainURI() != null && getResources() != null && !getResources().isEmpty()) {
             throw new IllegalStateException("JITDMNPayload should not contain both (main) model and resources collection");
         }
     }

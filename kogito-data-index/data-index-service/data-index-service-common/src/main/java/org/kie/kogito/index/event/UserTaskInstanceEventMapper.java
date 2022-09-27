@@ -70,7 +70,7 @@ public class UserTaskInstanceEventMapper implements Function<UserTaskInstanceDat
     }
 
     private Function<CommentEventBody, Comment> comment() {
-        return (c) -> Comment.builder()
+        return c -> Comment.builder()
                 .id(c.getId())
                 .content(c.getContent())
                 .updatedBy(c.getUpdatedBy())
@@ -79,7 +79,7 @@ public class UserTaskInstanceEventMapper implements Function<UserTaskInstanceDat
     }
 
     private Function<AttachmentEventBody, Attachment> attachment() {
-        return (a) -> Attachment.builder()
+        return a -> Attachment.builder()
                 .id(a.getId())
                 .content(a.getContent() == null ? null : a.getContent().toString())
                 .name(a.getName())

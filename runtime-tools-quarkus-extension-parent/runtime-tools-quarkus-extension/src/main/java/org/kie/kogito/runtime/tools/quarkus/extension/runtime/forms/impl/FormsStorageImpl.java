@@ -124,7 +124,7 @@ public class FormsStorageImpl implements FormsStorage {
 
     @Override
     public Collection<FormInfo> getFormInfoList(FormFilter filter) {
-        if (filter != null && filter.getNames().size() > 0) {
+        if (filter != null && !filter.getNames().isEmpty()) {
             return formInfoMap.entrySet().stream()
                     .filter(entry -> StringUtils.containsAnyIgnoreCase(entry.getKey(), filter.getNames().toArray(new String[0])))
                     .map(Map.Entry::getValue)
@@ -182,13 +182,9 @@ public class FormsStorageImpl implements FormsStorage {
 
         JsonObject resourcesJSON = configJSON.getJsonObject("resources");
 
-        resourcesJSON.getJsonObject("scripts").stream().forEach(entry -> {
-            resources.getScripts().put(entry.getKey(), entry.getValue().toString());
-        });
+        resourcesJSON.getJsonObject("scripts").stream().forEach(entry -> resources.getScripts().put(entry.getKey(), entry.getValue().toString()));
 
-        resourcesJSON.getJsonObject("styles").stream().forEach(entry -> {
-            resources.getStyles().put(entry.getKey(), entry.getValue().toString());
-        });
+        resourcesJSON.getJsonObject("styles").stream().forEach(entry -> resources.getStyles().put(entry.getKey(), entry.getValue().toString()));
 
         return new FormConfiguration(configJSON.getString("schema"), resources);
     }

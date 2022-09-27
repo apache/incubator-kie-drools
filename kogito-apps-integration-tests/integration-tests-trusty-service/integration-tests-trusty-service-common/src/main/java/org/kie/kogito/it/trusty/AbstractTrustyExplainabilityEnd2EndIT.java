@@ -218,18 +218,16 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                     .atLeast(5, SECONDS)
                     .atMost(60, SECONDS)
                     .with().pollInterval(5, SECONDS)
-                    .untilAsserted(() -> {
-                        executionIds.forEach(executionId -> {
-                            SalienciesResponse salienciesResponse = given()
-                                    .port(trustyService.getFirstMappedPort())
-                                    .auth().oauth2(accessToken)
-                                    .when().get("/executions/decisions/" + executionId + "/explanations/saliencies")
-                                    .then().statusCode(200)
-                                    .extract().as(SalienciesResponse.class);
+                    .untilAsserted(() -> executionIds.forEach(executionId -> {
+                        SalienciesResponse salienciesResponse = given()
+                                .port(trustyService.getFirstMappedPort())
+                                .auth().oauth2(accessToken)
+                                .when().get("/executions/decisions/" + executionId + "/explanations/saliencies")
+                                .then().statusCode(200)
+                                .extract().as(SalienciesResponse.class);
 
-                            assertEquals("SUCCEEDED", salienciesResponse.getStatus());
-                        });
-                    });
+                        assertEquals("SUCCEEDED", salienciesResponse.getStatus());
+                    }));
 
             LOGGER.info("Request Counterfactuals for each execution and check responses generated...");
             executionIds.forEach(executionId -> {

@@ -85,9 +85,9 @@ public class OracleStorage<V> implements Storage<String, V> {
         return entity -> {
             try {
                 if (String.class.equals(type)) {
-                    return (V) mapper.treeToValue(entity.getValue().get("value"), type);
+                    return mapper.treeToValue(entity.getValue().get("value"), type);
                 } else {
-                    return (V) mapper.treeToValue(entity.getValue(), type);
+                    return mapper.treeToValue(entity.getValue(), type);
                 }
             } catch (JsonProcessingException ex) {
                 throw new RuntimeException(format("Failed to convert JSON into type %s", rootType), ex);

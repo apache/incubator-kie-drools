@@ -108,7 +108,7 @@ public class CustomDashboardStorageImpl implements CustomDashboardStorage {
 
     @Override
     public Collection<CustomDashboardInfo> getCustomDashboardFiles(CustomDashboardFilter filter) {
-        if (filter != null && filter.getNames().size() > 0) {
+        if (filter != null && !filter.getNames().isEmpty()) {
             return customDashboardInfoMap.entrySet().stream()
                     .filter(entry -> StringUtils.containsAnyIgnoreCase(entry.getKey(), filter.getNames().toArray(new String[0])))
                     .map(Map.Entry::getValue)

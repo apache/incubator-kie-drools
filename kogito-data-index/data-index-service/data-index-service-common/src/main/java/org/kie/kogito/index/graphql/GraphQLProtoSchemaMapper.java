@@ -79,7 +79,7 @@ public class GraphQLProtoSchemaMapper {
             }
             LOGGER.debug("New GraphQL types: {}", additionalTypes.keySet());
             Set<GraphQLType> newTypes = additionalTypes.entrySet().stream().map(entry -> entry.getValue()).collect(toSet());
-            newTypes.addAll(schema.getAdditionalTypes().stream().filter(type -> additionalTypes.containsKey(((GraphQLNamedType) type).getName()) == false).collect(toSet()));
+            newTypes.addAll(schema.getAdditionalTypes().stream().filter(type -> !additionalTypes.containsKey(((GraphQLNamedType) type).getName())).collect(toSet()));
             builder.additionalTypes(newTypes);
 
             GraphQLObjectType query = schema.getQueryType();
@@ -88,7 +88,7 @@ public class GraphQLProtoSchemaMapper {
             query = query.transform(qBuilder -> {
                 if (qBuilder.hasField(rootType.getName())) {
                     qBuilder.clearFields();
-                    qBuilder.fields(schema.getQueryType().getFieldDefinitions().stream().filter(field -> rootType.getName().equals(field.getName()) == false).collect(toList()));
+                    qBuilder.fields(schema.getQueryType().getFieldDefinitions().stream().filter(field -> !rootType.getName().equals(field.getName())).collect(toList()));
                 }
 
                 List<GraphQLArgument> arguments = new ArrayList<>();

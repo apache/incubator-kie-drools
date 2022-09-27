@@ -86,7 +86,7 @@ public class RedisStorage<V> implements Storage<String, V> {
     public V put(String key, V value) {
         Map<String, Object> document = new HashMap<>();
         List<String> indexedFields = redisIndexManager.getSchema(indexName);
-        if (indexedFields.size() > 0) { // Add into the payload only the indexed fields, if there is any
+        if (!indexedFields.isEmpty()) { // Add into the payload only the indexed fields, if there are any
             Map<String, Object> mappedValue = JsonUtils.getMapper().convertValue(value, Map.class);
             for (String fieldName : indexedFields) {
                 if (mappedValue.get(fieldName) != null) { // If a field is indexed, its value can not be null: it has to be filtered out

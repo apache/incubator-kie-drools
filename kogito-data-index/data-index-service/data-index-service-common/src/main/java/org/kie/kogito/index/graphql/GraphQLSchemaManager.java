@@ -287,7 +287,7 @@ public class GraphQLSchemaManager {
         Query<ProcessInstance> query = cacheService.getProcessInstancesCache().query();
         query.filter(singletonList(equalTo("id", source.getParentProcessInstanceId())));
         List<ProcessInstance> execute = query.execute();
-        return execute.size() > 0 ? execute.get(0) : null;
+        return !execute.isEmpty() ? execute.get(0) : null;
     }
 
     private CompletableFuture getUserTaskInstanceSchema(DataFetchingEnvironment env) {
