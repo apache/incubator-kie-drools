@@ -24,8 +24,8 @@
     <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.13.4</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
-    <version.net.thisptr.jackson-jq>1.0.0-preview.20210928</version.net.thisptr.jackson-jq>
-    <version.io.quarkiverse.jackson-jq>1.0.1</version.io.quarkiverse.jackson-jq>
+    <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
+    <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
     <version.io.quarkiverse.openapi.generator>0.11.0</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.reactivemessaging.http>1.0.8</version.io.quarkiverse.reactivemessaging.http>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
