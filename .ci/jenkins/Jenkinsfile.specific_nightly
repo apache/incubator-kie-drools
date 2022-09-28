@@ -33,7 +33,7 @@ pipeline {
 
         stage('Build quarkus') {
             when {
-                expression { env.QUARKUS_BRANCH }
+                expression { getQuarkusBranch() }
             }
             steps {
                 script {
@@ -44,6 +44,7 @@ pipeline {
 
                     // Update downstream repositories dependencies
                     mavenCompareQuarkusDependencies(droolsRepo, 'drools-build-parent')
+                    mavenSetProperty(droolsRepo, 'version.io.quarkus', '999-SNAPSHOT')
                 }
             }
             post {
@@ -115,13 +116,6 @@ MavenCommand getBasicMavenCommand(String directory) {
 MavenCommand getEcosystemMavenCommand(String directory) {
     def mvnCmd = getBasicMavenCommand(directory)
 
-    if (getQuarkusBranch()) {
-        mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
-                .withProperty('version.io.quarkus.quarkus-test', '999-SNAPSHOT')
-                .withProperty('quarkus-plugin.version', '999-SNAPSHOT')
-                .withProperty('quarkus.platform.version', '999-SNAPSHOT')
-    }
-    
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
     }
@@ -147,6 +141,10 @@ MavenCommand getFullMavenCommand(String directory) {
 
 void mavenCompareQuarkusDependencies(String repo, String artifactId) {
     maven.mvnCompareDependencies(getBasicMavenCommand(repo), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ":${artifactId}", true, true)
+}
+
+void mavenSetProperty(String repo, String property, String newVersion) {
+    maven.mvnSetVersionProperty(getBasicMavenCommand(repo), property, newVersion)
 }
 
 void cleanContainers() {
