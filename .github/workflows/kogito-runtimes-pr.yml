@@ -35,6 +35,9 @@ jobs:
         uses: kiegroup/kogito-pipelines/.ci/actions/long-paths@main
       - name: Java and Maven Setup
         uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        env:
+          BUILD_MVN_OPTS: '-Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral'
+          DISABLE_PERSISTENCE: 'true'
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
