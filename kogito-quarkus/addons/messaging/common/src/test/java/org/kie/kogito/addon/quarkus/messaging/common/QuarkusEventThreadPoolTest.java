@@ -95,7 +95,7 @@ public class QuarkusEventThreadPoolTest {
 
     @Test
     void testQuarkusEventThreadPoolMultiThreadLongQueueNotStopTest() throws InterruptedException, ExecutionException {
-        testIt(10, 10, 100);
+        testIt(10, 100, 100);
         assertNotStop();
     }
 
