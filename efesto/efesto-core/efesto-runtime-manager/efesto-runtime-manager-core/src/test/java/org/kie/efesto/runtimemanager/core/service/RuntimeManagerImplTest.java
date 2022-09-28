@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 
 class RuntimeManagerImplTest {
 
-    private static RuntimeManager runtimeManager;
+    private static RuntimeManagerImpl runtimeManager;
     private static EfestoRuntimeContext context;
 
     private static final List<Class<? extends EfestoInput>> MANAGED_Efesto_INPUTS =
@@ -98,7 +98,7 @@ class RuntimeManagerImplTest {
     void populateFirstLevelCache() {
         List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA, kieRuntimeServiceB, kieRuntimeServiceC);
         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
-        ((RuntimeManagerImpl)runtimeManager).populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
+        RuntimeManagerImpl.populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
         assertThat(toPopulate.size()).isEqualTo(2);
         assertThat(toPopulate.containsKey(efestoClassKeyA)).isTrue(); // Those two are the same
         assertThat(toPopulate.containsKey(efestoClassKeyB)).isTrue(); // Those two are the same
@@ -116,42 +116,41 @@ class RuntimeManagerImplTest {
 
     @Test
     void checkBaseClassEvaluatedBeforeChild() {
-        ((RuntimeManagerImpl) runtimeManager).secondLevelCache.clear();
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.clear();
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.put(baseInputService.getEfestoClassKeyIdentifier(),
+        RuntimeManagerImpl.secondLevelCache.clear();
+        RuntimeManagerImpl.firstLevelCache.clear();
+        RuntimeManagerImpl.firstLevelCache.put(baseInputService.getEfestoClassKeyIdentifier(),
                                                                   Collections.singletonList(baseInputService));
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.put(baseInputExtenderService.getEfestoClassKeyIdentifier(), Collections.singletonList(baseInputExtenderService));
+        RuntimeManagerImpl.firstLevelCache.put(baseInputExtenderService.getEfestoClassKeyIdentifier(), Collections.singletonList(baseInputExtenderService));
 
         EfestoInput baseEfestoInput = new BaseEfestoInput(modelLocalUri, "One");
         EfestoInput baseEfestoInputExtender = new BaseEfestoInputExtender(modelLocalUri, "One");
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isNull();
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isNull();
 
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceLocal(context, baseEfestoInput)).isPresent();
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceLocal(context, baseEfestoInput)).isPresent();
 
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isEqualTo(baseInputService);
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isNull();
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isEqualTo(baseInputService);
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isNull();
 
-        ((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceLocal(context, baseEfestoInputExtender);
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isEqualTo(baseInputService);
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isEqualTo(baseInputExtenderService);
+        RuntimeManagerImpl.getKieRuntimeServiceLocal(context, baseEfestoInputExtender);
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isEqualTo(baseInputService);
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isEqualTo(baseInputExtenderService);
     }
 
     @Test
     void checkChildClassEvaluatedBeforeParent() {
-        ((RuntimeManagerImpl) runtimeManager).secondLevelCache.clear();
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.clear();
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.put(baseInputService.getEfestoClassKeyIdentifier(),
+        RuntimeManagerImpl.secondLevelCache.clear();
+        RuntimeManagerImpl.firstLevelCache.clear();
+        RuntimeManagerImpl.firstLevelCache.put(baseInputService.getEfestoClassKeyIdentifier(),
                                                                   Collections.singletonList(baseInputService));
-        ((RuntimeManagerImpl) runtimeManager).firstLevelCache.put(baseInputExtenderService.getEfestoClassKeyIdentifier(), Collections.singletonList(baseInputExtenderService));
+        RuntimeManagerImpl.firstLevelCache.put(baseInputExtenderService.getEfestoClassKeyIdentifier(), Collections.singletonList(baseInputExtenderService));
 
         EfestoInput baseEfestoInput = new BaseEfestoInput(modelLocalUri, "One");
         EfestoInput baseEfestoInputExtender = new BaseEfestoInputExtender(modelLocalUri, "One");
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isNull();
-        ((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceLocal(context, baseEfestoInputExtender);
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
-        assertThat(((RuntimeManagerImpl) runtimeManager).getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isEqualTo(baseInputExtenderService);
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
+        RuntimeManagerImpl.getKieRuntimeServiceLocal(context, baseEfestoInputExtender);
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInput)).isNull();
+        assertThat(RuntimeManagerImpl.getKieRuntimeServiceFromSecondLevelCache(baseEfestoInputExtender)).isEqualTo(baseInputExtenderService);
     }
 
     @Test
