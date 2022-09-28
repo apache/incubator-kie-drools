@@ -6140,6 +6140,73 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    public void Given_FactMethodWithParameter_When_UnMarshall_Then_ShouldDetectMethod() throws Exception {
+        // GIVEN
+        String drl = "package org.mortgages;\n" +
+                "rule \"test\"\n" +
+                " dialect \"mvel\"\n" +
+                " when\n" +
+                "  Parent( methodToGetChild1(\"IAmAParameter\") > 5 )\n" +
+                " then\n" +
+                "end";
+
+        addMethodInformation("Parent",
+                "methodToGetChild1",
+                new ArrayList<String>() {{
+                    add("String");
+                }},
+                "Integer",
+                null,
+                "Integer");
+
+        // WHEN
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                Collections.emptyList(),
+                dmo);
+
+        // THEN
+        assertNotNull(m);
+
+        assertEquals(1,
+                m.lhs.length);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        final FactPattern fp = (FactPattern) m.lhs[0];
+        assertEquals("Parent",
+                fp.getFactType());
+
+        assertEquals(1,
+                fp.getNumberOfConstraints());
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraintEBLeftSide);
+        final SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) fp.getConstraint(0);
+        assertEquals("Integer",
+                exp.getFieldType());
+        assertEquals(">",
+                exp.getOperator());
+        assertEquals("5",
+                exp.getValue());
+
+        assertEquals(2,
+                exp.getExpressionLeftSide().getParts().size());
+        assertTrue(exp.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
+        final ExpressionUnboundFact expPart0 = (ExpressionUnboundFact) exp.getExpressionLeftSide().getParts().get(0);
+        assertEquals("Parent",
+                expPart0.getFactType());
+
+        assertTrue(exp.getExpressionLeftSide().getParts().get(1) instanceof ExpressionMethod);
+        final ExpressionMethod expPart1 = (ExpressionMethod) exp.getExpressionLeftSide().getParts().get(1);
+        assertEquals("methodToGetChild1",
+                expPart1.getName());
+        assertEquals("Integer",
+                expPart1.getClassType());
+        assertEquals("Integer",
+                expPart1.getGenericType());
+
+        assertEqualsIgnoreWhitespace(drl,
+                RuleModelDRLPersistenceImpl.getInstance().marshal(m));
+    }
+
+    @Test
     public void testLHSMissingConstraints() {
         String drl = "package org.mortgages;\n" +
                 "import java.lang.Number;\n" +

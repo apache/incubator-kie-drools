@@ -3843,13 +3843,16 @@ public class RuleModelDRLPersistenceImpl
                                        expr.length()).trim();
             }
 
-            boolean isExpression = fieldName.contains(".") || fieldName.endsWith("()");
             return createFieldConstraint(m,
                                          factPattern,
                                          fieldName,
                                          value,
                                          operator == null ? null : operator.trim(),
-                                         isExpression);
+                                         this.isExpression(fieldName));
+        }
+
+        private boolean isExpression(String fieldName) {
+            return fieldName.contains(".") || (fieldName.contains("(") && fieldName.endsWith(")"));
         }
 
         private SingleFieldConstraint createNullCheckFieldConstraint(final RuleModel m,
