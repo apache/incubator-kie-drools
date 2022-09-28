@@ -15,8 +15,10 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataDefinition;
@@ -58,7 +60,9 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
 
     public ForEachNodeFactory<T> variable(String varRef, String variableName, DataType dataType) {
         getForEachNode().setInputRef(variableName);
-        getForEachNode().addContextVariable(varRef, variableName, dataType);
+        Variable variable = getForEachNode().addContextVariable(varRef, variableName, dataType);
+        variable.setMetaData(Metadata.EVAL_VARIABLE, true);
+        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
         getForEachNode().getMultiInstanceSpecification().setInputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
         return this;
     }
@@ -83,20 +87,20 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
         return outputVariable(variableName, variableName, dataType);
     }
 
+    public ForEachNodeFactory<T> outputVariable(String varRef, String variableName, DataType dataType) {
+        getForEachNode().setOutputRef(variableName);
+        getForEachNode().getMultiInstanceSpecification().setOutputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
+        return this;
+    }
+
     public ForEachNodeFactory<T> tempVariable(String variableName, DataType dataType) {
-        getForEachNode().addContextVariable(variableName, variableName, dataType);
+        Variable variable = getForEachNode().addContextVariable(variableName, variableName, dataType);
+        variable.setMetaData(Variable.VARIABLE_TAGS, Variable.INTERNAL_TAG);
         return this;
     }
 
     public ForEachNodeFactory<T> tempVariable(String varRef, String variableName, DataType dataType) {
         getForEachNode().addContextVariable(varRef, variableName, dataType);
-        return this;
-    }
-
-    public ForEachNodeFactory<T> outputVariable(String varRef, String variableName, DataType dataType) {
-        getForEachNode().setOutputRef(variableName);
-        getForEachNode().addContextVariable(varRef, variableName, dataType);
-        getForEachNode().getMultiInstanceSpecification().setOutputDataItem(new DataDefinition(varRef, variableName, dataType.getStringType()));
         return this;
     }
 

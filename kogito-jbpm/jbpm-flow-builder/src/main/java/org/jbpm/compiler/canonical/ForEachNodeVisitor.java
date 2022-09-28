@@ -21,20 +21,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.jbpm.workflow.core.node.ForEachNode;
 
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_LINK_INCOMING_CONNECTIONS;
 import static org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory.METHOD_LINK_OUTGOING_CONNECTIONS;
@@ -94,8 +90,7 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
 
         if (node.getOutputVariableName() != null) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_OUTPUT_TEMP, new StringLiteralExpr(node.getOutputVariableName()),
-                    new ObjectCreationExpr(null, new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName()), NodeList.nodeList(
-                            new StringLiteralExpr(node.getOutputVariableType().getStringType())))));
+                    buildDataResolver(node.getOutputVariableType().getStringType())));
         }
 
         if (node.getExpressionLanguage() != null) {

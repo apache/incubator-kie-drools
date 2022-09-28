@@ -24,7 +24,6 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
-import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -235,11 +234,11 @@ public class ForEachNode extends CompositeContextNode {
         this.outputVariableName = varRef;
     }
 
-    public void addContextVariable(String varRef, String variableName, DataType type) {
-        this.addVariableToContext(getCompositeNode(), varRef, variableName, type);
+    public Variable addContextVariable(String varRef, String variableName, DataType type) {
+        return addVariableToContext(getCompositeNode(), varRef, variableName, type);
     }
 
-    private void addVariableToContext(CompositeContextNode compositeContextNode, String varRef, String variableName, DataType type) {
+    private Variable addVariableToContext(CompositeContextNode compositeContextNode, String varRef, String variableName, DataType type) {
         VariableScope variableScope = (VariableScope) compositeContextNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);
         List<Variable> variables = variableScope.getVariables();
         if (variables == null) {
@@ -249,9 +248,9 @@ public class ForEachNode extends CompositeContextNode {
         Variable variable = new Variable();
         variable.setId(varRef);
         variable.setName(variableName);
-        variable.setMetaData(Metadata.EVAL_VARIABLE, true);
         variable.setType(type);
         variables.add(variable);
+        return variable;
     }
 
     public String getCollectionExpression() {

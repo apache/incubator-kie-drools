@@ -18,7 +18,6 @@ package org.jbpm.process.core.datatype.impl.coverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import org.kie.kogito.jackson.utils.JsonNodeConverter;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
@@ -32,15 +31,12 @@ public class TypeConverterRegistry {
 
     private Map<String, Function<String, ? extends Object>> converters = new HashMap<>();
     private Map<String, Function<? extends Object, String>> unconverters = new HashMap<>();
-    private Map<Class<?>, UnaryOperator<Object>> cloners = new HashMap<>();
-
     private Function<String, String> defaultConverter = new NoOpTypeConverter();
 
     private TypeConverterRegistry() {
         converters.put("java.util.Date", new DateTypeConverter());
         converters.put(JsonNode.class.getName(), new JsonNodeConverter(ObjectMapperFactory::listenerAware));
         unconverters.put(JsonNode.class.getName(), new StringConverter());
-        cloners.put(JsonNode.class, o -> ((JsonNode) o).deepCopy());
     }
 
     public boolean isRegistered(String type) {
@@ -61,10 +57,6 @@ public class TypeConverterRegistry {
         return result == null ? Object::toString : result;
     }
 
-    public UnaryOperator<Object> forTypeCloner(Class<?> type) {
-        return cloners.getOrDefault(type, CloneHelperFactory.getCloner(type));
-    }
-
     public TypeConverterRegistry register(String type, Function<String, ? extends Object> converter) {
         converters.put(type, converter);
         return this;
@@ -72,11 +64,6 @@ public class TypeConverterRegistry {
 
     public <T> TypeConverterRegistry registerUnconverter(String type, Function<T, String> unconverter) {
         unconverters.put(type, unconverter);
-        return this;
-    }
-
-    public <T> TypeConverterRegistry registerCloner(Class<T> type, UnaryOperator<T> cloner) {
-        cloners.put(type, (UnaryOperator<Object>) cloner);
         return this;
     }
 
