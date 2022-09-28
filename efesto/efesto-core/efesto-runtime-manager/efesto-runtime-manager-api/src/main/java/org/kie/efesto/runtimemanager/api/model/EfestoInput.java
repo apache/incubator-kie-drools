@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 /**
@@ -35,8 +36,20 @@ public interface EfestoInput<T> {
 
     T getInputData();
 
-    default EfestoClassKey getEfestoClassKeyIdentifier() {
+    /**
+     * Returns the first-level cache key for the current <code>EfestoInput</code>
+     * @return
+     */
+    default EfestoClassKey getFirstLevelCacheKey() {
         List<Type> generics = getInputData() != null ? Collections.singletonList(getInputData().getClass()) : Collections.emptyList();
         return new EfestoClassKey(this.getClass(), generics.toArray(new Type[0]));
+    }
+
+    /**
+     * Returns the second-level cache key for the current <code>EfestoInput</code>
+     * @return
+     */
+    default EfestoIdentifierClassKey getSecondLevelCacheKey() {
+        return new EfestoIdentifierClassKey(this.getModelLocalUriId(), this.getFirstLevelCacheKey());
     }
 }
