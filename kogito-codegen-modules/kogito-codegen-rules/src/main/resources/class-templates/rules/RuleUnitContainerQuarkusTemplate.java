@@ -16,24 +16,25 @@
 package $Package$;
 
 import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.impl.InternalRuleUnit;
 
 @javax.enterprise.context.ApplicationScoped
 public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
     @javax.inject.Inject
-    javax.enterprise.inject.Instance<org.drools.ruleunits.api.RuleUnit<? extends org.drools.ruleunits.api.RuleUnitData>> ruleUnits;
+    javax.enterprise.inject.Instance<RuleUnit<? extends RuleUnitData>> ruleUnits;
 
-    private java.util.Map<String, org.drools.ruleunits.api.RuleUnit<? extends org.drools.ruleunits.api.RuleUnitData>> mappedRuleUnits = new java.util.HashMap<>();
+    private java.util.Map<Class<? extends RuleUnitData>, RuleUnit<? extends RuleUnitData>> mappedRuleUnits = new java.util.HashMap<>();
 
     @javax.annotation.PostConstruct
     public void setup() {
-        for (org.drools.ruleunits.api.RuleUnit<? extends org.drools.ruleunits.api.RuleUnitData> ruleUnit : ruleUnits) {
-            mappedRuleUnits.put(ruleUnit.id(), ruleUnit);
+        for (org.drools.ruleunits.api.RuleUnit<? extends RuleUnitData> ruleUnit : ruleUnits) {
+            mappedRuleUnits.put(((InternalRuleUnit)ruleUnit).getRuleUnitDataClass(), ruleUnit);
         }
     }
 
-    protected org.drools.ruleunits.api.RuleUnit<?> create(String fqcn) {
-        return mappedRuleUnits.get(fqcn);
+    public <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz) {
+        return (RuleUnit<T>) mappedRuleUnits.get(clazz);
     }
-
 }

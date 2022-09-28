@@ -18,20 +18,12 @@ package org.kie.kogito.drools.core.unit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.kie.kogito.rules.RuleUnits;
 
 public abstract class AbstractRuleUnits implements RuleUnits {
 
     private Map<String, RuleUnitInstance<?>> unitRegistry = new HashMap<>();
-
-    @Override
-    public <T extends org.drools.ruleunits.api.RuleUnitData> RuleUnit<T> create(Class<T> clazz) {
-        return (RuleUnit<T>) create(clazz.getCanonicalName());
-    }
-
-    protected abstract RuleUnit<?> create(String fqcn);
 
     @Override
     public void register(String name, RuleUnitInstance<?> unitInstance) {

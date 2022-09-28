@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnits;
+import org.drools.ruleunits.impl.RuleUnits;
 import org.kie.kogito.incubation.common.EmptyMetaDataContext;
 import org.kie.kogito.incubation.common.ExtendedDataContext;
 import org.kie.kogito.incubation.common.ExtendedReferenceContext;
@@ -119,7 +119,7 @@ class StatefulRuleUnitServiceImpl implements StatefulRuleUnitService {
         RuleUnitInstance<?> instance = ruleUnits.getRegisteredInstance(ruleUnitInstanceId.ruleUnitInstanceId());
         if (instance == null)
             throw new IllegalArgumentException("Unknown instance " + localId);
-        List<Map<String, Object>> results = instance.executeQuery(queryId.queryId());
+        List<Map<String, Object>> results = instance.executeQuery(queryId.queryId()).toList();
 
         return results.stream().map(r -> ExtendedDataContext.of(EmptyMetaDataContext.Instance, MapDataContext.of(r)));
 

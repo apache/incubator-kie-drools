@@ -21,7 +21,7 @@ import java.util.OptionalInt;
 import org.drools.ruleunits.api.conf.ClockType;
 import org.drools.ruleunits.api.conf.EventProcessingType;
 
-public class RuleUnitConfig extends org.drools.ruleunits.api.RuleUnitConfig {
+public class RuleUnitConfig extends org.drools.ruleunits.impl.RuleUnitConfig {
 
     public RuleUnitConfig(EventProcessingType eventProcessingType, ClockType clockType, Integer sessionPool) {
         super(eventProcessingType, clockType, sessionPool);

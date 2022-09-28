@@ -34,11 +34,11 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -128,15 +128,8 @@ public class QueryGenerator implements RuleFileGenerator {
 
         cu.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
 
-        FieldDeclaration ruleUnitDeclaration = clazz
-                .getFieldByName("instance")
-                .orElseThrow(() -> new NoSuchElementException("ClassOrInterfaceDeclaration doesn't contain a field named ruleUnit!"));
-        setGeneric(ruleUnitDeclaration.getElementType(), ruleUnit);
-
         String returnType = getReturnType(clazz);
-        setGeneric(clazz.getImplementedTypes(0).getTypeArguments().get().get(0), returnType);
-        generateConstructors(clazz);
-        generateQueryMethod(cu, clazz, returnType);
+        generateQueryMethod(clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());
 
         return new GeneratedFile(QUERY_TYPE,
@@ -144,18 +137,11 @@ public class QueryGenerator implements RuleFileGenerator {
                 cu.toString());
     }
 
-    private void generateConstructors(ClassOrInterfaceDeclaration clazz) {
-        for (ConstructorDeclaration c : clazz.getConstructors()) {
-            c.setName(targetClassName);
-            if (!c.getParameters().isEmpty()) {
-                setGeneric(c.getParameter(0).getType(), ruleUnit);
-            }
-        }
-    }
-
-    private void generateQueryMethod(CompilationUnit cu, ClassOrInterfaceDeclaration clazz, String returnType) {
+    private void generateQueryMethod(ClassOrInterfaceDeclaration clazz, String returnType) {
         MethodDeclaration queryMethod = clazz.getMethodsByName("execute").get(0);
         setGeneric(queryMethod.getType(), returnType);
+        setGeneric(queryMethod.getParameter(0).getType(), ruleUnit);
+        queryMethod.findAll(MethodReferenceExpr.class).forEach(mr -> mr.setScope(new NameExpr(targetClassName)));
     }
 
     private String getReturnType(ClassOrInterfaceDeclaration clazz) {

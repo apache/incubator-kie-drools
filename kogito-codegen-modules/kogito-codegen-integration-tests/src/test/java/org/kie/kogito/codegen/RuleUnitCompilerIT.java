@@ -29,8 +29,8 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnitQuery;
 import org.drools.ruleunits.impl.AbstractRuleUnitInstance;
+import org.drools.ruleunits.impl.InternalRuleUnit;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -53,7 +53,6 @@ import org.kie.kogito.codegen.unit.StockUnit;
 import org.kie.kogito.rules.RuleUnits;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -153,10 +152,10 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        Class<? extends RuleUnitQuery<List<String>>> queryClass = (Class<? extends RuleUnitQuery<List<String>>>) application.getClass()
+        Class<?> queryClass = application.getClass()
                 .getClassLoader().loadClass("org.kie.kogito.codegen.unit.AdultUnitQueryFindAdults");
 
-        List<String> results = instance.executeQuery(queryClass);
+        List<String> results = (List<String>) queryClass.getMethod("execute", RuleUnitInstance.class).invoke(null, instance);
 
         assertEquals(2, results.size());
         assertTrue(results.containsAll(asList("Mario", "Marilena")));
@@ -176,11 +175,7 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        List<Integer> results = instance.executeQuery("FindAdultsAge")
-                .stream()
-                .map(m -> m.get("$age"))
-                .map(Integer.class::cast)
-                .collect(toList());
+        List<Object> results = instance.executeQuery("FindAdultsAge").toList("$age");
 
         assertEquals(2, results.size());
         assertTrue(results.containsAll(asList(45, 47)));
@@ -201,11 +196,7 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        List<Integer> results = instance.executeQuery("FindAdultsAge")
-                .stream()
-                .map(m -> m.get("$sum"))
-                .map(Integer.class::cast)
-                .collect(toList());
+        List<Object> results = instance.executeQuery("FindAdultsAge").toList("$sum");
 
         assertEquals(1, results.size());
         assertThat(results).containsExactlyInAnyOrder(99);
@@ -226,10 +217,10 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         RuleUnit<AdultUnit> adultUnit = application.get(RuleUnits.class).create(AdultUnit.class);
 
         AdultUnit adultData18 = new AdultUnit(persons, 18);
-        RuleUnitInstance<AdultUnit> adultUnitInstance18 = adultUnit.createInstance(adultData18, "adult18");
+        RuleUnitInstance<AdultUnit> adultUnitInstance18 = ((InternalRuleUnit) adultUnit).createInstance(adultData18, "adult18");
 
         AdultUnit adultData21 = new AdultUnit(persons, 21);
-        RuleUnitInstance<AdultUnit> adultUnitInstance21 = adultUnit.createInstance(adultData21, "adult21");
+        RuleUnitInstance<AdultUnit> adultUnitInstance21 = ((InternalRuleUnit) adultUnit).createInstance(adultData21, "adult21");
 
         RuleUnit<PersonsUnit> personsUnit = application.get(RuleUnits.class).create(PersonsUnit.class);
         personsUnit.createInstance(new PersonsUnit(persons)).fire();
@@ -312,14 +303,10 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
         RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
 
-        List<Person> results = instance.executeQuery("FindPeopleInMilano")
-                .stream()
-                .map(m -> m.get("$p"))
-                .map(Person.class::cast)
-                .collect(toList());
+        List<Object> results = instance.executeQuery("FindPeopleInMilano").toList("$p");
 
         assertEquals(1, results.size());
-        assertEquals("Mario", results.get(0).getName());
+        assertEquals("Mario", ((Person) results.get(0)).getName());
     }
 
     @ParameterizedTest
@@ -346,7 +333,7 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
         stockUnit.getStockTicks().append(new StockTick("IBM", 1700, 170));
         stockUnit.getStockTicks().append(new StockTick("IBM", 1500, 240));
 
-        ValueDrop valueDrop = (ValueDrop) instance.executeQuery("highestValueDrop", "IBM").get(0).get("$s");
+        ValueDrop valueDrop = (ValueDrop) instance.executeQuery("highestValueDrop", "IBM").iterator().next().get("$s");
         assertEquals(300, valueDrop.getDropAmount());
     }
 

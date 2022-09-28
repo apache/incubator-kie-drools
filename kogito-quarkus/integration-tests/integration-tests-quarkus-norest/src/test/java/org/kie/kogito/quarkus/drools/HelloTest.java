@@ -42,7 +42,7 @@ public class HelloTest {
         data.getStrings().add("hello");
 
         RuleUnitInstance<Hello> ruleUnitInstance = ruleUnit.createInstance(data);
-        List<Map<String, Object>> results = ruleUnitInstance.executeQuery("hello");
+        List<Map<String, Object>> results = ruleUnitInstance.executeQuery("hello").toList();
 
         List<String> stringResults = results.stream()
                 .flatMap(entry -> entry.values().stream())

@@ -15,5 +15,13 @@
  */
 package org.kie.kogito.rules;
 
-public interface RuleEventListenerConfig extends org.drools.ruleunits.api.RuleEventListenerConfig {
+import java.util.List;
+
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+
+public interface RuleEventListenerConfig {
+    List<AgendaEventListener> agendaListeners();
+
+    List<RuleRuntimeEventListener> ruleRuntimeListeners();
 }

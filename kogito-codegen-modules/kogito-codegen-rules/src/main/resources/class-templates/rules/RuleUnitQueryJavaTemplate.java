@@ -22,20 +22,13 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-public class $unit$Query$name$ implements org.drools.ruleunits.api.RuleUnitQuery<List<$ReturnType$>> {
+public class $unit$Query$name$ {
 
-    private final RuleUnitInstance<$UnitType$> instance;
-
-    public $unit$Query$name$Endpoint(RuleUnitInstance<$UnitType$> instance) {
-        this.instance = instance;
+    public static List<$ReturnType$> execute(RuleUnitInstance<$UnitType$> instance) {
+        return instance.executeQuery( "$queryName$" ).toList().stream().map($unit$Query$name$::toResult).collect(toList());
     }
 
-    @Override
-    public List<$ReturnType$> execute() {
-        return instance.executeQuery( "$queryName$" ).stream().map(this::toResult).collect(toList());
-    }
-
-    private $ReturnType$ toResult(Map<String, Object> tuple) {
+    private static $ReturnType$ toResult(Map<String, Object> tuple) {
         return ($ReturnType$) tuple.get("");
     }
 }

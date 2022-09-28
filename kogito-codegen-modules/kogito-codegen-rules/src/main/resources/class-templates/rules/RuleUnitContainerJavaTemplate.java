@@ -15,6 +15,9 @@
  */
 package $Package$;
 
+import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
+
 public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits implements org.kie.kogito.rules.RuleUnits {
 
     private final Application application;
@@ -23,10 +26,11 @@ public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits
         this.application = application;
     }
 
-    public org.drools.ruleunits.api.RuleUnit<?> create(String fqcn) {
+    public <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz) {
+        String fqcn = clazz.getCanonicalName();
         switch(fqcn) {
             case "$RuleUnit$":
-                return new $RuleUnit$RuleUnit(application.get(RuleUnits.class));
+                return (RuleUnit<T>) new $RuleUnit$RuleUnit(application.get(RuleUnits.class));
             default:
                 throw new java.lang.UnsupportedOperationException();
         }

@@ -161,27 +161,6 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         return methodDeclaration;
     }
 
-    private MethodDeclaration createQueryMethod() {
-        MethodDeclaration methodDeclaration = new MethodDeclaration();
-
-        BlockStmt methodBlock = new BlockStmt();
-        methodDeclaration.setName("createRuleUnitQuery")
-                .addAnnotation("Override")
-                .addModifier(Modifier.Keyword.PROTECTED)
-                .addTypeParameter("Q")
-                .addParameter("Class<? extends org.drools.ruleunits.api.RuleUnitQuery<Q>>", "query")
-                .setType("org.drools.ruleunits.api.RuleUnitQuery<Q>")
-                .setBody(methodBlock);
-
-        String statement = "if (@@@.class.equals( query )) return (org.drools.ruleunits.api.RuleUnitQuery<Q>) new @@@(this);";
-        for (String queryClass : queryClasses) {
-            methodBlock.addStatement(statement.replaceAll("@@@", queryClass));
-        }
-        methodBlock.addStatement("throw new IllegalArgumentException(\"Unknown query: \" + query.getCanonicalName());");
-
-        return methodDeclaration;
-    }
-
     private String getEntryPointName(RuleUnitDescription ruleUnitDescription, String propertyName) {
         Class<?> ruleUnitClass = ruleUnitDescription.getRuleUnitClass();
         if (ruleUnitClass == null) {
@@ -224,9 +203,6 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
                         new NameExpr("value"),
                         new NameExpr("evaluator"))));
         classDecl.addMember(bindMethod());
-        if (!queryClasses.isEmpty()) {
-            classDecl.addMember(createQueryMethod());
-        }
         classDecl.getMembers().sort(new BodyDeclarationComparator());
         return classDecl;
     }
