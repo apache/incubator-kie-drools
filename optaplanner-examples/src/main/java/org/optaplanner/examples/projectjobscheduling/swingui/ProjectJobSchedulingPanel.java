@@ -18,6 +18,7 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
 
@@ -42,12 +43,14 @@ public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
         YIntervalRenderer renderer = new YIntervalRenderer();
         int maximumEndDate = 0;
         int seriesIndex = 0;
+        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Project project : schedule.getProjectList()) {
             YIntervalSeries projectSeries = new YIntervalSeries(project.getLabel());
             seriesCollection.addSeries(projectSeries);
             projectSeriesMap.put(project, projectSeries);
             renderer.setSeriesShape(seriesIndex, new Rectangle());
             renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
+            renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(project));
             seriesIndex++;
         }
         for (Allocation allocation : schedule.getAllocationList()) {
@@ -66,6 +69,8 @@ public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
         XYPlot plot = new XYPlot(seriesCollection, domainAxis, rangeAxis, renderer);
         plot.setOrientation(PlotOrientation.HORIZONTAL);
+        plot.setDomainGridlinePaint(TangoColorFactory.ALUMINIUM_5);
+        plot.setRangeGridlinePaint(TangoColorFactory.ALUMINIUM_5);
         return new JFreeChart("Project Job Scheduling", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
     }
