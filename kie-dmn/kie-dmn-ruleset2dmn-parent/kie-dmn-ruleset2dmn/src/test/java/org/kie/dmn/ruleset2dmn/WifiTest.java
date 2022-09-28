@@ -42,28 +42,28 @@ public class WifiTest {
         final DMNModel modelUnderTest = dmnRuntime.getModels().get(0);
 
         // [X4 <= -61.0] ^ [X5 <= -63.0] -> 1
-        assertThat(dmnRuntime .evaluateAll(modelUnderTest,
+        assertThat(dmnRuntime.evaluateAll(modelUnderTest,
                 ctxFromJson(modelUnderTest, "{\"X4\" : -61, \"X5\": -63}"))
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("1"));
 
         // [X1 >= -54.0] -> 2
-        assertThat(dmnRuntime .evaluateAll(modelUnderTest,
+        assertThat(dmnRuntime.evaluateAll(modelUnderTest,
                 ctxFromJson(modelUnderTest, "{\"X1\" : -54}"))
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("2"));
 
         // [X5 <= -57.0] ^ [X1 <= -46.0] ^ [X3 >= -53.0] ^ [X1 >= -55.0] ^ [X7 <= -73.0] -> 3
-        assertThat(dmnRuntime .evaluateAll(modelUnderTest,
+        assertThat(dmnRuntime.evaluateAll(modelUnderTest,
                 ctxFromJson(modelUnderTest, "{\"X5\" : -57, \"X1\": -46, \"X3\": -53, \"X7\": -73}"))
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("3"));
 
         // DECISION_TABLE_MASKED_RULE: Rule 12 is masked by rule: 11 (if it was a Priority with lov := 1,2,3 (DROOLS-7022)
-        // // [X3 >= -51.0] ^ [X3 <= -51.0] ^ [X1 >= -43.0] ^ [X1 <= -43.0] -> 3
-        // assertThat(dmnRuntime .evaluateAll(dmnRuntime.getModels().get(0),
-        //         ctxFromJson(dmnRuntime, "{\"X1\" : -43, \"X3\": -51}")) // DROOLS-7023 capture this cases [x..x] in the Converter?
-        // .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("2"));
+        // [X3 >= -51.0] ^ [X3 <= -51.0] ^ [X1 >= -43.0] ^ [X1 <= -43.0] ^ [X2 >= -43.0] ^ [X2 < -43.0] -> 3
+        assertThat(dmnRuntime.evaluateAll(modelUnderTest,
+                ctxFromJson(modelUnderTest, "{\"X1\" : -43, \"X3\": -51, \"X2\": -42}")) // DROOLS-7023 capture this cases [x..x] in the Converter?
+        .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("2"));
 
         // default -> 0
-        assertThat(dmnRuntime .evaluateAll(modelUnderTest,
+        assertThat(dmnRuntime.evaluateAll(modelUnderTest,
                 ctxFromJson(modelUnderTest, "{\"nothing\" : 999}"))
         .getDecisionResults().get(0).getResult()).isEqualTo(new BigDecimal("4"));
     }
