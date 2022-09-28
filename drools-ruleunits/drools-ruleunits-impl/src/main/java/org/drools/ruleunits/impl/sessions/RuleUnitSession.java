@@ -25,7 +25,7 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.ruleunits.api.RuleUnits;
+import org.drools.ruleunits.impl.RuleUnits;
 
 public class RuleUnitSession extends RuleUnitExecutorImpl {
 

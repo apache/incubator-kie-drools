@@ -15,13 +15,11 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.common.ReteEvaluator;
-import org.kie.api.time.SessionClock;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionClock;
 
 public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData> extends AbstractRuleUnitInstance<ReteEvaluator, T> {
 
@@ -40,9 +38,9 @@ public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData>
     }
 
     @Override
-    public List<Map<String, Object>> executeQuery(String query, Object... arguments) {
+    public QueryResults executeQuery(String query, Object... arguments) {
         fire();
-        return evaluator.getQueryResults(query, arguments).toList();
+        return evaluator.getQueryResults(query, arguments);
     }
 
     @Override

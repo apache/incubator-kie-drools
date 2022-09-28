@@ -44,13 +44,13 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
     }
 
     @Override
-    protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
+    protected <T extends RuleUnitData> Map<Class<? extends RuleUnitData>, RuleUnit> generateRuleUnit(T ruleUnitData) {
         if (ruleUnitData instanceof RuleUnitDefinition) {
             RuleUnitDefinition ruleUnitDef = (RuleUnitDefinition) ruleUnitData;
             RulesFactory rulesFactory = new RulesFactory(ruleUnitDef);
             ruleUnitDef.defineRules(rulesFactory);
             RuleUnit<T> ruleUnit = new ModelRuleUnit<>((Class<T>) ruleUnitData.getClass(), rulesFactory);
-            return Map.of(ruleUnitData.getClass().getCanonicalName(), ruleUnit);
+            return Map.of(ruleUnitData.getClass(), ruleUnit);
         }
         return super.generateRuleUnit(ruleUnitData);
     }
@@ -61,7 +61,7 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
         private final RuleBase ruleBase;
 
         private ModelRuleUnit(Class<T> type, RulesFactory rulesFactory) {
-            super(type.getCanonicalName(), DummyRuleUnits.INSTANCE);
+            super(type, DummyRuleUnits.INSTANCE);
             this.rulesFactory = rulesFactory;
             this.ruleBase = KieBaseBuilder.createKieBaseFromModel( rulesFactory.toModel() );
             if (DUMP_GENERATED_RETE) {

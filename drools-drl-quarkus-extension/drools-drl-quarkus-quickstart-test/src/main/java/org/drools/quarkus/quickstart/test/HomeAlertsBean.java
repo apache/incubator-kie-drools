@@ -43,7 +43,7 @@ public class HomeAlertsBean {
 
         RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
         var queryResults = unitInstance.executeQuery("AllAlerts");
-        List<Alert> results = queryResults.stream()
+        List<Alert> results = queryResults.toList().stream()
                 .flatMap(m -> m.values().stream()
                         .filter(Alert.class::isInstance)
                         .map(Alert.class::cast))
