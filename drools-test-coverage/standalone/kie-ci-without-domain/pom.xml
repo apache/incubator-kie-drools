@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.drools.testcoverage</groupId>
     <artifactId>drools-standalone-parent</artifactId>
-    <version>8.28.0.Beta</version>
+    <version>8.28.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-kie-ci-without-domain-parent</artifactId>
