@@ -23,14 +23,10 @@ public class LoanTest {
         loanUnit.getLoanApplications().add( new LoanApplication("ABC10001", new Applicant("John", 45), 2000, 100) );
         loanUnit.getLoanApplications().add( new LoanApplication("ABC10015", new Applicant("George", 12), 1000, 100) );
 
-        List<LoanApplication> results = instance.executeQuery("FindApproved").stream().map(this::toResult).collect(toList());
+        List<LoanApplication> results = instance.executeQuery("FindApproved").toList("$l");
 
         assertEquals(1, results.size());
         assertEquals("ABC10001", results.get(0).getId());
         assertEquals("John", results.get(0).getApplicant().getName());
-    }
-
-    private LoanApplication toResult(Map<String, Object> tuple) {
-        return (LoanApplication) tuple.get("$l");
     }
 }

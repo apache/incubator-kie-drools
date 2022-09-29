@@ -15,30 +15,35 @@
  */
 package org.drools.ruleunits.impl.factory;
 
-import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.api.RuleUnits;
+import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.impl.InternalRuleUnit;
 
-public abstract class AbstractRuleUnit<T extends RuleUnitData> implements RuleUnit<T> {
+public abstract class AbstractRuleUnit<T extends RuleUnitData> implements InternalRuleUnit<T> {
 
-    private final String id;
+    private final Class<T> ruleUnitDataClass;
     protected final RuleUnits ruleUnits;
 
-    public AbstractRuleUnit(String id) {
-        this(id, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
+    public AbstractRuleUnit(Class<T> ruleUnitDataClass) {
+        this(ruleUnitDataClass, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
     }
 
-    public AbstractRuleUnit(String id, RuleUnits ruleUnits) {
-        this.id = id;
+    public AbstractRuleUnit(Class<T> ruleUnitDataClass, RuleUnits ruleUnits) {
+        this.ruleUnitDataClass = ruleUnitDataClass;
         this.ruleUnits = ruleUnits;
     }
 
     protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
 
     @Override
-    public String id() {
-        return id;
+    public Class<T> getRuleUnitDataClass() {
+        return ruleUnitDataClass;
+    }
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data) {
+        return createInstance(data, null);
     }
 
     @Override

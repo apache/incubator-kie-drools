@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
-import org.drools.ruleunits.api.RuleUnitConfig;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.conf.Clock;
 import org.drools.ruleunits.api.conf.EventProcessing;

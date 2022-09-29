@@ -48,7 +48,7 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     private static final boolean USE_EXEC_MODEL = true;
 
-    private final Map<String, RuleUnit> ruleUnitMap;
+    private final Map<Class<? extends RuleUnitData>, RuleUnit> ruleUnitMap;
 
     public RuleUnitProviderImpl() {
         this.ruleUnitMap = loadRuleUnits(Thread.currentThread().getContextClassLoader());
@@ -57,25 +57,25 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     @Override
     public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
         Class<? extends RuleUnitData> ruleUnitDataClass = ruleUnitData.getClass();
-        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitDataClass.getCanonicalName());
+        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitDataClass);
         if (ruleUnit != null) {
             return ruleUnit;
         }
         ruleUnitMap.putAll(generateRuleUnit(ruleUnitData));
-        return ruleUnitMap.get(ruleUnitDataClass.getCanonicalName());
+        return ruleUnitMap.get(ruleUnitDataClass);
     }
 
-    protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
+    protected <T extends RuleUnitData> Map<Class<? extends RuleUnitData>, RuleUnit> generateRuleUnit(T ruleUnitData) {
         InternalKieModule kieModule = createRuleUnitKieModule(ruleUnitData.getClass(), USE_EXEC_MODEL);
         KieModuleKieProject kieModuleKieProject = createRuleUnitKieProject(kieModule, USE_EXEC_MODEL);
         return loadRuleUnits(kieModuleKieProject.getClassLoader());
     }
 
-    private Map<String, RuleUnit> loadRuleUnits(ClassLoader classLoader) {
-        Map<String, RuleUnit> map = new HashMap<>();
+    private Map<Class<? extends RuleUnitData>, RuleUnit> loadRuleUnits(ClassLoader classLoader) {
+        Map<Class<? extends RuleUnitData>, RuleUnit> map = new HashMap<>();
         ServiceLoader<RuleUnit> loader = ServiceLoader.load(RuleUnit.class, classLoader);
         for (RuleUnit impl : loader) {
-            map.put(impl.id(), impl);
+            map.put(((InternalRuleUnit) impl).getRuleUnitDataClass(), impl);
         }
         return map;
     }
@@ -97,7 +97,6 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     }
 
     private static Collection<Resource> drlResourcesForUnitClass(KieServices ks, Class<?> unitClass) {
-        // TODO use regexp
         String unitStatement = "unit " + unitClass.getSimpleName();
         Collection<Resource> resources = new HashSet<>();
         try {

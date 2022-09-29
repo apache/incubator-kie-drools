@@ -26,12 +26,8 @@ package org.drools.ruleunits.api;
  */
 public interface RuleUnit<T extends RuleUnitData> {
 
-    // TODO this method is a leaky abstraction and should be removed from the public API
-    String id();
-
-    default RuleUnitInstance<T> createInstance(T data) {
-        return createInstance(data, null);
-    }
-
-    RuleUnitInstance<T> createInstance(T data, String name);
+    /**
+     * Creates a {@link RuleUnitInstance} using the given {@link RuleUnitData}.
+     */
+    RuleUnitInstance<T> createInstance(T data);
 }

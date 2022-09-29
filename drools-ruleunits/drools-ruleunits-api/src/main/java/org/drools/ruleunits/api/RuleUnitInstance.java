@@ -15,9 +15,7 @@
  */
 package org.drools.ruleunits.api;
 
-import java.util.List;
-import java.util.Map;
-
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
 
 /**
@@ -50,10 +48,7 @@ public interface RuleUnitInstance<T extends RuleUnitData> {
      * @param arguments The arguments to be passed to the query
      * @return TODO this should return a {@link org.kie.api.runtime.rule.QueryResults}
      */
-    List<Map<String, Object>> executeQuery(String query, Object... arguments);
-
-    // TODO check if we want to keep this method (and also the RuleUnitQuery in the public API)
-    <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query);
+    QueryResults executeQuery(String query, Object... arguments);
 
     /**
      * @return the session clock instance used by this RuleUnitInstance

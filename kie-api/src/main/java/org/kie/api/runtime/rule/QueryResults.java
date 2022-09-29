@@ -49,11 +49,11 @@ public interface QueryResults extends Iterable<QueryResultsRow> {
         return results;
     }
 
-    default List<Object> toList(String identifier) {
+    default <T> List<T> toList(String identifier) {
         List<Object> results = new ArrayList<>(size());
         for (QueryResultsRow row : this) {
             results.add(row.get( identifier ));
         }
-        return results;
+        return (List<T>) results;
     }
 }
