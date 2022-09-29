@@ -19,6 +19,8 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.quarkus.testdata.gizmo.DummyConstraintProvider;
 import org.optaplanner.quarkus.testdata.gizmo.DummyVariableListener;
@@ -48,12 +50,13 @@ class OptaPlannerProcessorGizmoKitchenSinkTest {
     @Test
     void singletonSolverFactory() {
         assertNotNull(solverFactory);
-        // TODO with optaplanner 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
-        // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataPlanningSolution>) scoreManager).getScoreDirectorFactory());
+        assertNotNull(scoreManager);
+        // There is only one ScoreDirectorFactory instance
+        assertSame(((DefaultSolverFactory<?>) solverFactory).getScoreDirectorFactory(),
+                ((DefaultScoreManager<?, ?>) scoreManager).getScoreDirectorFactory());
         assertNotNull(solverManager);
         // There is only one SolverFactory instance
         assertSame(solverFactory, ((DefaultSolverManager<TestDataKitchenSinkSolution, Long>) solverManager).getSolverFactory());
-        assertNotNull(scoreManager);
     }
 
     @Test
