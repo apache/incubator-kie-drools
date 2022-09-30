@@ -15,11 +15,14 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.drools.model.Global;
 import org.drools.model.Model;
@@ -61,30 +64,38 @@ public class RulesFactory {
 
     Model toModel() {
         ModelImpl model = new ModelImpl();
-        getGlobals().values().forEach(model::addGlobal);
+        globals.getGlobals().values().forEach(model::addGlobal);
         rules.stream().map(RuleDefinition::toRule).forEach(model::addRule);
         return model;
     }
 
-    Map<Object, Global> getGlobals() {
-        return globals.getGlobals();
+    UnitGlobalsResolver getUnitGlobalsResolver() {
+        return new UnitGlobalsResolver(globals.fieldByGlobal);
     }
 
     public static class UnitGlobals {
         private final Map<Object, Global> globals = new IdentityHashMap<>();
 
-        private final RuleUnitDefinition unit;
+        private final Map<String, Field> fieldByGlobal = new HashMap<>();
+
+        private final String unitName;
 
         private UnitGlobals(RuleUnitDefinition unit) {
-            this.unit = unit;
+            this.unitName = unit.getClass().getCanonicalName();
         }
 
         private Map<Object, Global> getGlobals() {
             return globals;
         }
 
-        public <T> Global asGlobal(T globalObject) {
-            return globals.computeIfAbsent(globalObject, o -> globalOf(o.getClass(), unit.getClass().getCanonicalName(), UUID.randomUUID().toString()));
+        public <T> Global asGlobal(Supplier<Field> globalField, T globalObject) {
+            return globals.computeIfAbsent(globalObject, o -> registerGlobal(globalField, o));
+        }
+
+        private Global<?> registerGlobal(Supplier<Field> globalField, Object globalObject) {
+            String globalUUID = UUID.randomUUID().toString();
+            fieldByGlobal.put(globalUUID, globalField.get());
+            return globalOf(globalObject.getClass(), unitName, globalUUID);
         }
     }
 }

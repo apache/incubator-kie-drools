@@ -20,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.drools.model.Condition;
 import org.drools.model.DSL;
@@ -73,10 +74,6 @@ public class RuleDefinition implements RuleFactory {
         patterns.add(pattern);
     }
 
-    public void removePattern(InternalPatternDef pattern) {
-        patterns.remove(pattern);
-    }
-
     public <B> InternalPatternDef internalCreatePattern(B builder, Function1<B, PatternDef> patternBuilder) {
         registerNewPattern = false;
         try {
@@ -89,8 +86,9 @@ public class RuleDefinition implements RuleFactory {
 
     @Override
     public <A> Pattern1DefImpl<A> on(DataSource<A> dataSource) {
+        Field dataSourceField = findUnitField(dataSource);
         Pattern1DefImpl<A> pattern1 = new Pattern1DefImpl<>(this,
-                declarationOf(findDataSourceClass(dataSource), entryPoint(asGlobal(dataSource).getName())));
+                declarationOf(findDataSourceClass(dataSourceField), entryPoint(asGlobal(() -> dataSourceField, dataSource).getName())));
         if (registerNewPattern) {
             addPattern(pattern1);
         }
@@ -150,7 +148,11 @@ public class RuleDefinition implements RuleFactory {
     }
 
     public <T> Global asGlobal(T globalObject) {
-        return globals.asGlobal(globalObject);
+        return asGlobal(() -> findUnitField(globalObject), globalObject);
+    }
+
+    public <T> Global asGlobal(Supplier<Field> globalField, T globalObject) {
+        return globals.asGlobal(globalField, globalObject);
     }
 
     public Rule toRule() {
@@ -169,21 +171,26 @@ public class RuleDefinition implements RuleFactory {
         return ruleBuilder.build(items.toArray(new RuleItemBuilder[items.size()]));
     }
 
-    private <A> Class<A> findDataSourceClass(DataSource<A> dataSource) {
-        assert(dataSource != null);
+    private <A> Class<A> findDataSourceClass(Field field) {
+        Type dsType = field.getGenericType();
+        if (dsType instanceof ParameterizedType) {
+            return (Class<A>) ((ParameterizedType) dsType).getActualTypeArguments()[0];
+        }
+        throw new IllegalArgumentException("Unknown DataSource type");
+    }
+
+    private Field findUnitField(Object object) {
+        assert(object != null);
         for (Field field : unit.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
-                if (dataSource == field.get(unit)) {
-                    Type dsType = field.getGenericType();
-                    if (dsType instanceof ParameterizedType) {
-                        return (Class<A>) ((ParameterizedType) dsType).getActualTypeArguments()[0];
-                    }
+                if (object == field.get(unit)) {
+                    return field;
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
-        throw new IllegalArgumentException("Unknown DataSource type");
+        throw new IllegalArgumentException("Unknown unit field for object: " + object);
     }
 }
