@@ -245,4 +245,22 @@ public class RuleUnitsTest {
         assertThat(unitInstanceOne.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("not exists");
     }
+
+    @Test
+    public void testRuleUnitDefinitionReuse() {
+        // DROOLS-7181
+        SumAccumulateUnit unit = new SumAccumulateUnit();
+        RuleUnitInstance<SumAccumulateUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
+        int fireNr = unitInstance.fire();
+
+        assertThat(fireNr).isEqualTo(1);
+        assertThat(unit.getResults()).containsExactly(0);
+
+        SumAccumulateUnit unit2 = new SumAccumulateUnit();
+        unit2.getIntegers().add(17);
+        RuleUnitInstance<SumAccumulateUnit> unitInstance2 = RuleUnitProvider.get().createRuleUnitInstance(unit2);
+        int fireNr2 = unitInstance2.fire();
+        assertThat(fireNr2).isEqualTo(1);
+        assertThat(unit2.getResults()).containsExactly(Integer.valueOf(17));
+    }
 }
