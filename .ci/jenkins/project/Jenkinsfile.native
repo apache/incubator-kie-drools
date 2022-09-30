@@ -7,7 +7,7 @@ quickstartsRepo = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !master'
+        label 'kie-rhel7 && kie-mem16g && !built-in'
     }
     tools {
         maven env.BUILD_MAVEN_TOOL
