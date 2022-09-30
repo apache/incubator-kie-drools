@@ -8,7 +8,7 @@ kogitoRuntimesRepo = 'kogito-runtimes'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !master'
+        label 'kie-rhel7 && kie-mem16g && !built-in'
     }
 
     tools {
