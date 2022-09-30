@@ -50,7 +50,7 @@ pipeline {
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
                                 'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
-                                'drools-scmRevision': getDroolsBranch()
+                                'drools-scmRevision': getCurrentBranch()
                             ]
                             pmebuild.buildProjects(projectCollection, "${SETTINGS_XML_ID}", "$WORKSPACE/build_config/rhbop/nightly", "${env.PME_CLI_PATH}", projectVariableMap, additionalVariables, [:])
                         }, 2, 180*60)
@@ -80,9 +80,26 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
-                        uploadSources("optaplanner", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
-                        uploadSources("optaplanner-quickstarts", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
-                        uploadSources("optaweb-vehicle-routing", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
+                        // rename sources directories
+                        def optaplannerSourceDir = "org.optaplanner-optaplanner-${PRODUCT_VERSION}.Final-redhat"
+                        sh "mv ${env.WORKSPACE}/kiegroup_optaplanner ${env.WORKSPACE}/$optaplannerSourceDir"
+
+                        def quickstartsSourceDir = "org.optaplanner-optaplanner-quickstarts-${PRODUCT_VERSION}.Final-redhat"
+                        sh "mv ${env.WORKSPACE}/kiegroup_optaplanner-quickstarts ${env.WORKSPACE}/$quickstartsSourceDir"
+
+                        def optawebSourceDir = "org.optaweb.vehiclerouting-optaweb-vehicle-routing-${PRODUCT_VERSION}.Final-redhat"
+                        sh "mv ${env.WORKSPACE}/kiegroup_optaweb-vehicle-routing ${env.WORKSPACE}/$optawebSourceDir"
+
+                        // zip source directories
+                        dir("${env.WORKSPACE}/") {
+                            def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", PME_BUILD_VARIABLES['datetimeSuffix'])
+                            sh "zip -r $optaplannerSourcesFilename $optaplannerSourceDir -x '$optaplannerSourceDir/.git/*' -x '$optaplannerSourceDir/optaplanner-operator/*'  -x '$optaplannerSourceDir/optaplanner-examples/*' -x '$optaplannerSourceDir/target/*'"
+                            uploadSources(optaplannerSourcesFilename, folder)
+
+                            def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", PME_BUILD_VARIABLES['datetimeSuffix'])
+                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*'"
+                            uploadSources(quickstartsSourcesFilename, folder)
+                        }
 
                     } else {
                         println "[WARNING] No sources to upload. None project has been built."
@@ -97,7 +114,7 @@ pipeline {
                         echo '[INFO] Sending RHBOP UMB message to QE.'
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
-                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-main-nightly/"
+                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
                         def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
                         def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
                         def optawebSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
@@ -174,16 +191,17 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
     "archives": "${optaplannerArchiveUrl}",
     "sources": {
         "optaplanner": "${optaplannerSourcesUrl}",
-        "optaplanner-quickstarts": "${optaplannerQuickstartsSourcesUrl}",
-        "optaweb-vehicle-routing": "${optawebSourcesFileUrl}"
+        "optaplanner-quickstarts": "${optaplannerQuickstartsSourcesUrl}"
     }
 }"""    
 }
 
-def uploadSources(String project, String folder, String suffix) {
-    echo "[INFO] Start uploading $project sources zip file.."
-    def sourcesFilename = "rhbop-${PRODUCT_VERSION}-$project-sources-${suffix}.zip"
-    sh "zip -r $sourcesFilename $WORKSPACE/kiegroup_$project -x '*.git*'"
+def computeSourcesFilename(String project, String suffix) {
+    return "rhbop-${PRODUCT_VERSION}-$project-sources-${suffix}.zip"
+}
+
+def uploadSources(String sourcesFilename, String folder) {
+    echo "[INFO] Start uploading $sourcesFilename sources zip file.."
     sshagent(credentials: ['rcm-publish-server']) {
         sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
         sh "scp -o StrictHostKeyChecking=no $sourcesFilename rhba@${env.RCM_HOST}:${folder}"
@@ -194,6 +212,6 @@ def gitHashesToCollection(String gitInformationHashes) {
     return gitInformationHashes.replaceAll(/([\w\d\-\_\.]*\/)([\w\d\-\_\.]*)/,'$2').split(';').findAll { it.split('=').size() }.collectEntries{ [it.split('=')[0], it.split('=')[1]] }
 }
 
-String getDroolsBranch() {
+String getCurrentBranch() {
     return env.CHANGE_BRANCH ?: env.BRANCH_NAME
 }
