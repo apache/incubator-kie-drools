@@ -46,6 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.not;
 import static org.drools.model.DSL.on;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
@@ -537,4 +539,75 @@ public class FactTemplateTest {
             System.out.println("rowUpdated: " + row.get("c") + "; " + row.get("a"));
         }
     }
+
+    @Test
+    public void testRetract() {
+        Prototype personFact = prototype( "org.drools.Person" );
+        PrototypeVariable markV = variable(personFact, "m");
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        not( protoPattern(markV)
+                                .expr( "name", Index.ConstraintType.EXISTS_PROTOTYPE_FIELD, true ) ),
+                        execute(drools ->
+                                drools.insert(new Result("Found"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Fact mark = createMapBasedFact(personFact);
+        mark.set( "name", "Mark" );
+        mark.set( "age", 40 );
+
+        FactHandle fh = ksession.insert( mark );
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        ksession.delete(fh);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testUndefinedOnBeta() {
+        Prototype prototype = prototype( "org.X" );
+
+        PrototypeVariable var1 = variable( prototype );
+        PrototypeVariable var2 = variable( prototype );
+
+        Rule rule = rule( "beta" )
+                .build(
+                        protoPattern(var1),
+                        protoPattern(var2)
+                                .expr( "i", Index.ConstraintType.EQUAL, var1, "custom.expected_index" ),
+                        on(var2, var1).execute((p1, p2) -> { } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact f1 = createMapBasedFact( prototype );
+        f1.set( "custom.expected_index", 2 );
+
+        ksession.insert(f1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f2 = createMapBasedFact( prototype );
+        f2.set( "i", 3 );
+
+        ksession.insert(f2);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f3 = createMapBasedFact( prototype );
+        f3.set( "i", 2 );
+
+        ksession.insert(f3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
 }

@@ -26,7 +26,6 @@ import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
 
 import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
 
 public class PrototypeDSL {
@@ -141,15 +140,12 @@ public class PrototypeDSL {
             Prototype prototype = protoVar.getPrototype();
             Prototype.Field field = prototype.getField(fieldName);
             Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
-            Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : Object.class);
-            int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
             Prototype otherPrototype = other.getPrototype();
             Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
 
             expr("expr:" + fieldName + ":" + constraintType + ":" + otherFieldName,
                     other, asPredicate2(extractor, constraintType, otherExtractor),
-                    betaIndexedBy( fieldClass, constraintType, fieldIndex, extractor, otherExtractor ),
                     reactOn( fieldName ));
 
             return this;
@@ -185,7 +181,7 @@ public class PrototypeDSL {
         }
 
         private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> otherExtractor) {
-            return (p1, p2) -> constraintType.asPredicate().test(extractor.apply(p1), otherExtractor.apply(p2));
+            return (p1, p2) -> constraintType.asPredicate().and((a,b) -> a != null).test(extractor.apply(p1), otherExtractor.apply(p2));
         }
 
         private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
