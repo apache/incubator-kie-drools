@@ -24,7 +24,7 @@ import org.kie.kogito.eventdriven.rules.AbstractEventDrivenQueryExecutor;
 import org.drools.ruleunits.api.RuleUnit;
 
 @ApplicationScoped
-public class $QueryType$EventDrivenExecutor extends AbstractEventDrivenQueryExecutor<$DataType$, $ReturnType$> {
+public class $QueryType$EventDrivenExecutor extends AbstractEventDrivenQueryExecutor<$DataType$> {
 
     @Inject
     RuleUnit<$DataType$> ruleUnit;
@@ -34,6 +34,6 @@ public class $QueryType$EventDrivenExecutor extends AbstractEventDrivenQueryExec
 
     @PostConstruct
     private void onPostConstruct() {
-        setup(ruleUnit, "$name$", $QueryType$.class, $DataType$.class, objectMapper);
+        setup(ruleUnit, "$name$", $QueryType$::execute, $DataType$.class, objectMapper);
     }
 }
