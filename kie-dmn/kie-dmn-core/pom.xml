@@ -103,11 +103,11 @@
     <!-- Efesto -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>efesto-compilation-manager-api</artifactId>
+      <artifactId>efesto-compilation-manager-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-api</artifactId>
+      <artifactId>efesto-runtime-manager-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -198,16 +198,6 @@
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-compilation-manager-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>efesto-runtime-manager-core</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

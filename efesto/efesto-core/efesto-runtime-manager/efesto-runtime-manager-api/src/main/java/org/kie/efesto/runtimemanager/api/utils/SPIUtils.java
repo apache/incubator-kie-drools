@@ -62,7 +62,7 @@ public class SPIUtils {
             logger.trace("getKieRuntimeServiceFromEfestoRuntimeContext {} {}", input, context);
         }
         ServiceLoader<KieRuntimeService> contextServiceLoader = context.getKieRuntimeService();
-        return findAtMostOne(contextServiceLoader, service -> input.getEfestoClassKeyIdentifier().equals(service.getEfestoClassKeyIdentifier()),
+        return findAtMostOne(contextServiceLoader, service -> input.getFirstLevelCacheKey().equals(service.getEfestoClassKeyIdentifier()),
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one runtime services: " + s1 + " and " + s2));
     }
 

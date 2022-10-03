@@ -40,8 +40,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
-import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.writeGeneratedResourcesObject;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerService;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerServiceFromEfestoCompilationContext;
 

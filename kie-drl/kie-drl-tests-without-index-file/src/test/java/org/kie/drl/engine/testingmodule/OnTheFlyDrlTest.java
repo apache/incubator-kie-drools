@@ -39,6 +39,7 @@ import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.efesto.runtimemanager.core.service.RuntimeManagerImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +64,7 @@ class OnTheFlyDrlTest {
         compilationManager.processResource(compilationContext, toProcess);
 
         // Suppose we cannot access the previous compilationContext
-        EfestoRuntimeContext runtimeContext = EfestoRuntimeContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), compilationContext.getGeneratedResourcesMap());
+        EfestoRuntimeContext runtimeContext = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(), compilationContext.getGeneratedResourcesMap());
         ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
                 .get(DrlIdFactory.class)
                 .get(onTheFlyPath);

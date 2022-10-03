@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,6 +34,32 @@ class EfestoClassKeyTest {
 
     @Test
     void equalsMethod() {
+        EfestoClassKey keyListString1 = new EfestoClassKey(List.class, String.class);
+        EfestoClassKey keyListString2 = new EfestoClassKey(List.class, String.class);
+        assertThat(keyListString1).isEqualTo(keyListString2);
+
+        EfestoClassKey keyArrayListString = new EfestoClassKey(ArrayList.class, String.class);
+        assertThat(keyListString1).isNotEqualTo(keyArrayListString);
+
+        EfestoClassKey keyMapStringInteger1 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        EfestoClassKey keyMapStringInteger2 = new EfestoClassKey(Map.class, String.class, Integer.class);
+        assertThat(keyMapStringInteger1).isEqualTo(keyMapStringInteger2);
+
+        EfestoClassKey keyHashMapStringInteger = new EfestoClassKey(HashMap.class, String.class, Integer.class);
+        assertThat(keyMapStringInteger1).isNotEqualTo(keyHashMapStringInteger);
+        EfestoClassKey keyMapIntegerString1 = new EfestoClassKey(Map.class, Integer.class, String.class);
+        assertThat(keyMapIntegerString1).isNotEqualTo(keyMapStringInteger1);
+    }
+
+    @Test
+    void equalsExtender() {
+        EfestoClassKey keyArrayListString = new EfestoClassKey(ArrayList.class, String.class);
+        EfestoClassKey keyArrayListExtender = new EfestoClassKey(ArrayListExtender.class);
+        assertThat(keyArrayListString).isNotEqualTo(keyArrayListExtender);
+    }
+
+    @Test
+    void equalsBaseInputMethod() {
         EfestoClassKey keyListString1 = new EfestoClassKey(List.class, String.class);
         EfestoClassKey keyListString2 = new EfestoClassKey(List.class, String.class);
         assertThat(keyListString1).isEqualTo(keyListString2);
@@ -141,5 +168,9 @@ class EfestoClassKeyTest {
         Type retrieved = efestoClassKey.getRawType();
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(rawType);
+    }
+
+    static class ArrayListExtender extends ArrayList<String> {
+
     }
 }

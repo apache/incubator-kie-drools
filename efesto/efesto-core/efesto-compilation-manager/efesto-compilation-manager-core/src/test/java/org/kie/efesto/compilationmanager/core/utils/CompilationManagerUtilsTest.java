@@ -36,11 +36,12 @@ import org.kie.efesto.compilationmanager.core.mocks.MockEfestoInputF;
 import org.kie.efesto.compilationmanager.core.mocks.MockEfestoRedirectOutputE;
 import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceE;
 import org.kie.efesto.compilationmanager.core.mocks.MockKieCompilerServiceF;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
-import static org.kie.efesto.common.api.utils.JSONUtils.writeGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.writeGeneratedResourcesObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ class CompilationManagerUtilsTest {
         KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceE.class);
         EfestoResource toProcess = new MockEfestoRedirectOutputE();
         EfestoCompilationContext context =
-                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+                EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
         verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }
@@ -68,7 +69,7 @@ class CompilationManagerUtilsTest {
         KieCompilerService kieCompilerServiceMock = mock(MockKieCompilerServiceF.class);
         EfestoResource toProcess = new MockEfestoInputF();
         EfestoCompilationContext context =
-                EfestoCompilationContext.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+                EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         CompilationManagerUtils.processResources(kieCompilerServiceMock, toProcess, context);
         verify(kieCompilerServiceMock, times(1)).processResource(toProcess, context);
     }

@@ -21,7 +21,7 @@
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>efesto-compilation-manager-api</artifactId>
+        <artifactId>efesto-compilation-manager-core</artifactId>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>

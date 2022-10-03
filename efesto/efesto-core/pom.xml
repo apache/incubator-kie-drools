@@ -16,6 +16,7 @@
 
   <modules>
     <module>efesto-common-api</module>
+    <module>efesto-common-core</module>
     <module>efesto-compilation-manager</module>
     <module>efesto-runtime-manager</module>
   </modules>

@@ -20,18 +20,14 @@ import java.util.List;
 
 import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
-import org.kie.drl.engine.compilation.model.DrlCompilationContextImpl;
-import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
 
 import static org.kie.drl.engine.compilation.utils.DrlCompilerHelper.pkgDescrToExecModel;
 

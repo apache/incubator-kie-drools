@@ -42,6 +42,7 @@ import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceExcept
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.efesto.runtimemanager.api.exceptions.EfestoRuntimeManagerException;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
@@ -49,6 +50,7 @@ import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,7 +177,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
                                                           ClassLoader parentClassLoader) {
         try {
             EfestoCompilationContext compilationContext =
-                    EfestoCompilationContext.buildWithParentClassLoader(parentClassLoader);
+                    EfestoCompilationContextUtils.buildWithParentClassLoader(parentClassLoader);
             EfestoInputStreamResource toProcess = new EfestoInputStreamResource(documentResource.getInputStream(),
                                                                                 fileName);
             compilationManager.processResource(compilationContext, toProcess);
@@ -202,7 +204,7 @@ public class DMNKiePMMLTrustyInvocationEvaluator extends AbstractDMNKiePMMLInvoc
     }
 
     private EfestoRuntimeContext getEfestoRuntimeContext(final ClassLoader parentClassloader) {
-        return EfestoRuntimeContext.buildWithParentClassLoader(parentClassloader);
+        return EfestoRuntimeContextUtils.buildWithParentClassLoader(parentClassloader);
     }
 
     private ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {

@@ -32,6 +32,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>efesto-common-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>efesto-compilation-manager-api</artifactId>
     </dependency>
     <dependency>
