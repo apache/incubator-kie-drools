@@ -86,7 +86,6 @@ public class PackageDescrBuilder {
 
     private void registerPackageDescr(
             CompositeKnowledgeBuilderImpl.ResourceDescr resourceDescr, Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
-        if (packageDescr == null) { return; }
         CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
         if (compositePackageDescr == null) {
             compositePackageDescr = makeCompositePackageDescr(resource, packageDescr);
