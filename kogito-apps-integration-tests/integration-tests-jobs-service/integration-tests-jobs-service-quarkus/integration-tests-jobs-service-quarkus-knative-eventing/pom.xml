@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>integration-tests-jobs-service-quarkus</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>integration-tests-jobs-service-quarkus-knative-eventing</artifactId>
+  <name>Kogito Apps :: Integration Tests :: Jobs Service :: Quarkus :: Knative Eventing</name>
+  <description>Quarkus jobs service integration tests based on the Jobs Knative Eventing Addon</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-jobs-knative-eventing</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock-jre8</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${common.test.resources.dir}</directory>
+        <includes>
+          <include>**/*.bpmn</include>
+          <include>**/*.sw.json</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+</project>

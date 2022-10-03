@@ -16,19 +16,13 @@
 
 package org.kie.kogito.it.jobs;
 
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.restassured.path.json.JsonPath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.test.TestUtils.assertProcessInstanceHasFinished;
 import static org.kie.kogito.test.TestUtils.newProcessInstanceAndGetId;
-import static org.kie.kogito.test.TestUtils.waitForEvent;
 
 public abstract class BaseSwitchStateTimeoutsIT {
 
@@ -39,26 +33,11 @@ public abstract class BaseSwitchStateTimeoutsIT {
     private static final String EVENT_PROCESS_INSTANCE_ID_PATH = "kogitoprocinstanceid";
     private static final String EVENT_TYPE_PATH = "type";
 
-    private static final String DECISION_NO_DECISION = "NoDecision";
+    protected static final String DECISION_NO_DECISION = "NoDecision";
 
-    private static final String KOGITO_OUTGOING_STREAM_TOPIC = "kogito-sw-out-events";
-
-    private static final String PROCESS_RESULT_EVENT_TYPE = "process_result_event";
+    protected static final String PROCESS_RESULT_EVENT_TYPE = "process_result_event";
 
     private static final String EMPTY_WORKFLOW_DATA = "{\"workflowdata\" : \"\"}";
-
-    private KafkaTestClient kafkaClient;
-
-    @BeforeEach
-    void setup() {
-        String kafkaBootstrapServers = ConfigProvider.getConfig().getValue(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, String.class);
-        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
-    }
-
-    @AfterEach
-    void cleanUp() {
-        kafkaClient.shutdown();
-    }
 
     @Test
     void switchStateEventConditionTimeoutsTransitionTimeoutsExceeded() throws Exception {
@@ -66,10 +45,11 @@ public abstract class BaseSwitchStateTimeoutsIT {
         String processInstanceId = newProcessInstanceAndGetId(SWITCH_STATE_TIMEOUTS_URL, EMPTY_WORKFLOW_DATA);
         // Give enough time for the timeout to exceed.
         assertProcessInstanceHasFinished(SWITCH_STATE_TIMEOUTS_GET_BY_ID_URL, processInstanceId, 1, 180);
-        // When the process has finished the default case event must arrive.
-        JsonPath result = waitForEvent(kafkaClient, KOGITO_OUTGOING_STREAM_TOPIC, 50);
-        assertDecisionEvent(result, processInstanceId, PROCESS_RESULT_EVENT_TYPE, DECISION_NO_DECISION);
+        // When the process has finished in the default case a no decision event must have been produced.
+        verifyNoDecisionEventWasProduced(processInstanceId);
     }
+
+    protected abstract void verifyNoDecisionEventWasProduced(String processInstanceId) throws Exception;
 
     protected static void assertDecisionEvent(JsonPath cloudEventJsonPath,
             String expectedProcessInstanceId,

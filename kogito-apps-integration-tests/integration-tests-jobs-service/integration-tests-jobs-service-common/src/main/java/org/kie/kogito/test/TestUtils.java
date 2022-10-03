@@ -119,7 +119,7 @@ public class TestUtils {
             cloudEvent.set(rawCloudEvent);
             countDownLatch.countDown();
         });
-        // give some time to consume the event and verifyy the expected decision was made.
+        // give some time to consume the event.
         assertThat(countDownLatch.await(seconds, TimeUnit.SECONDS)).isTrue();
         return new JsonPath(cloudEvent.get());
     }

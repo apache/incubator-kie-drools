@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito;
 
-package org.kie.kogito.it.jobs;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.kogito.test.resources.JobServiceKafkaQuarkusTestResource;
-import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
-
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusIntegrationTest;
-
-@QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
-@QuarkusTestResource(JobServiceKafkaQuarkusTestResource.class)
-@QuarkusIntegrationTest
-class SwitchStateTimeoutsIT extends KafkaBaseSwitchStateTimeoutsIT {
+@ApplicationScoped
+public class HelloService extends AbstractHelloService {
 }

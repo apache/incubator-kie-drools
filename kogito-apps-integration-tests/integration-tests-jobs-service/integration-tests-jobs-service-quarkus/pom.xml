@@ -83,6 +83,7 @@
   <modules>
     <module>integration-tests-jobs-service-quarkus-management</module>
     <module>integration-tests-jobs-service-quarkus-messaging</module>
+    <module>integration-tests-jobs-service-quarkus-knative-eventing</module>
   </modules>
 
   <build>

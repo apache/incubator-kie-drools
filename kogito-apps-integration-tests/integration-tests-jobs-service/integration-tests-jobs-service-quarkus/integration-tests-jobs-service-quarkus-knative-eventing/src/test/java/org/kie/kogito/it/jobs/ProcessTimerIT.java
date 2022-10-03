@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.it.jobs;
 
 import org.kie.kogito.test.resources.JobServiceQuarkusTestResource;
 import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
+@QuarkusIntegrationTest
 @QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
 @QuarkusTestResource(JobServiceQuarkusTestResource.class)
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
-@QuarkusIntegrationTest
-class SwitchStateTimeoutsIT extends KafkaBaseSwitchStateTimeoutsIT {
+class ProcessTimerIT extends BaseProcessTimerIT {
 }
