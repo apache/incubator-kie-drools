@@ -59,7 +59,7 @@ public class ServerlessWorkflowConfigSource implements ConfigSource {
      */
     @Override
     public int getOrdinal() {
-        return 0;
+        return Integer.MIN_VALUE;
     }
 
     @Override

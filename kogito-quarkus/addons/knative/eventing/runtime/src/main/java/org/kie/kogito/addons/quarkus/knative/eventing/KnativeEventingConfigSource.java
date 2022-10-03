@@ -63,7 +63,7 @@ public class KnativeEventingConfigSource implements ConfigSource {
      */
     @Override
     public int getOrdinal() {
-        return 99;
+        return Integer.MIN_VALUE;
     }
 
     @Override
