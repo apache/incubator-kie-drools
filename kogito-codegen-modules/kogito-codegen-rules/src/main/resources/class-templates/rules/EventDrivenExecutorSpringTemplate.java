@@ -22,10 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class $QueryType$EventDrivenExecutor extends AbstractEventDrivenQueryExecutor<$DataType$, $ReturnType$> {
+public class $QueryType$EventDrivenExecutor extends AbstractEventDrivenQueryExecutor<$DataType$> {
 
     @Autowired
     public $QueryType$EventDrivenExecutor(RuleUnit<$DataType$> ruleUnit, ObjectMapper objectMapper) {
-        super(ruleUnit, "$name$", $QueryType$.class, $DataType$.class, objectMapper);
+        super(ruleUnit, "$name$", $QueryType$::execute, $DataType$.class, objectMapper);
     }
 }
