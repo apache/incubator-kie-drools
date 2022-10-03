@@ -68,7 +68,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.api.utils.CollectionUtils.findExactlyOne;
-import static org.kie.efesto.common.api.utils.JSONUtils.getGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.compilationmanager.core.utils.CompilationManagerUtils.getExistingIndexFile;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedExecutableResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedRedirectResource;
@@ -175,9 +175,7 @@ public class PredictionCodegen extends AbstractGenerator {
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .collect(toList());
-        executableResources.forEach(executableResource -> {
-            toReturn.putAll(compilationContext.getGeneratedClasses(executableResource.getModelLocalUriId()));
-        });
+        executableResources.forEach(executableResource -> toReturn.putAll(compilationContext.getGeneratedClasses(executableResource.getModelLocalUriId())));
         return toReturn;
     }
 
