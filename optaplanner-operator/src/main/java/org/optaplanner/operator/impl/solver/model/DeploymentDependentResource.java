@@ -1,12 +1,14 @@
 package org.optaplanner.operator.impl.solver.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.fabric8.kubernetes.api.model.EnvVarBuilder;
+import io.fabric8.kubernetes.api.model.PodTemplateSpec;
+import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
@@ -35,12 +37,6 @@ public final class DeploymentDependentResource extends CRUDKubernetesDependentRe
     protected Deployment desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {
         String deploymentName = solver.getDeploymentName();
 
-        Container container = new ContainerBuilder()
-                .withName(deploymentName)
-                .withImage(solver.getSpec().getSolverImage())
-                .withEnv(buildEnvironmentVariablesMapping(solver))
-                .build();
-
         DeploymentSpecBuilder deploymentSpecBuilder = new DeploymentSpecBuilder()
                 .withNewSelector().withMatchLabels(Map.of("app", deploymentName))
                 .endSelector();
@@ -48,19 +44,44 @@ public final class DeploymentDependentResource extends CRUDKubernetesDependentRe
             // Set deployment replicas only for static scaling, otherwise the operator would interfere with KEDA.
             deploymentSpecBuilder.withReplicas(solver.getSpec().getScaling().getReplicas());
         }
-        deploymentSpecBuilder.withNewTemplate()
-                .withNewMetadata().withLabels(Map.of("app", deploymentName)).endMetadata()
-                .withNewSpec()
-                .withContainers(container)
-                .endSpec()
-                .endTemplate();
 
+        PodTemplateSpec podTemplateSpec = solver.getSpec().getTemplate();
+        if (podTemplateSpec == null) {
+            throw new IllegalStateException("Solver (" + solver.getMetadata().getName() + ") pod template is missing."
+                    + "\nMaybe check the related " + solver.getFullResourceName() + " resource.");
+        }
+
+        PodTemplateSpec updatedPodTemplateSpec = addPodAppLabel(podTemplateSpec, deploymentName);
+        if (updatedPodTemplateSpec.getSpec() == null || updatedPodTemplateSpec.getSpec().getContainers() == null
+                || updatedPodTemplateSpec.getSpec().getContainers().isEmpty()) {
+            throw new IllegalStateException("Solver (" + solver.getMetadata().getName()
+                    + ") pod template does not contain any container."
+                    + "\nMaybe check the related " + solver.getFullResourceName() + " resource.");
+        }
+        List<Container> containers = updatedPodTemplateSpec.getSpec().getContainers();
+        // There may be multiple containers; add the environment variables to all of them.
+        for (Container container : containers) {
+            if (container.getEnv() == null) {
+                container.setEnv(new ArrayList<>());
+            }
+            container.getEnv().addAll(buildEnvironmentVariablesMapping(solver));
+        }
+
+        deploymentSpecBuilder.withTemplate(updatedPodTemplateSpec);
         return new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(deploymentName)
                 .withNamespace(solver.getNamespace())
                 .endMetadata()
                 .withSpec(deploymentSpecBuilder.build())
+                .build();
+    }
+
+    private PodTemplateSpec addPodAppLabel(PodTemplateSpec podTemplateSpec, String deploymentName) {
+        return new PodTemplateSpecBuilder(podTemplateSpec)
+                .editOrNewMetadata()
+                .addToLabels("app", deploymentName)
+                .endMetadata()
                 .build();
     }
 

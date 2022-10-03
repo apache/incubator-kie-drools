@@ -29,6 +29,12 @@ import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthenticationDepe
 
 import io.fabric8.kubernetes.api.model.Condition;
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.ContainerBuilder;
+import io.fabric8.kubernetes.api.model.EnvVar;
+import io.fabric8.kubernetes.api.model.EnvVarBuilder;
+import io.fabric8.kubernetes.api.model.PodTemplateSpec;
+import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
+import io.fabric8.kubernetes.api.model.Quantity;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -64,7 +70,7 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         solver.getMetadata().setName(solverName);
         solver.getMetadata().setNamespace(namespace);
         solver.setSpec(new OptaPlannerSolverSpec());
-        solver.getSpec().setSolverImage("solver-project-image");
+        solver.getSpec().setTemplate(createPodTemplateSpec("solver-project-image"));
         solver.getSpec().setAmqBroker(amqBroker);
         solver.getSpec().setScaling(new Scaling());
         getClient().resources(OptaPlannerSolver.class).create(solver);
@@ -117,7 +123,7 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         final OptaPlannerSolver solver = new OptaPlannerSolver();
         solver.getMetadata().setName(solverName);
         solver.setSpec(new OptaPlannerSolverSpec());
-        solver.getSpec().setSolverImage("solver-project-image");
+        solver.getSpec().setTemplate(createPodTemplateSpec("solver-project-image"));
         solver.getSpec().setAmqBroker(amqBroker);
         solver.getSpec().setScaling(new Scaling(true, maxReplicas));
 
@@ -184,6 +190,68 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         });
     }
 
+    @Test
+    void mergePodTemplate() {
+        final OptaPlannerSolver solver = new OptaPlannerSolver();
+        final String solverName = "test-solver-merge-environment";
+
+        solver.getMetadata().setName(solverName);
+        solver.getMetadata().setNamespace(namespace);
+        solver.setSpec(new OptaPlannerSolverSpec());
+        solver.getSpec().setAmqBroker(createAmqBroker());
+
+        EnvVar existingEnvVar = new EnvVarBuilder()
+                .withName("test-var")
+                .withValue("test-var-value")
+                .build();
+
+        PodTemplateSpec podTemplateSpec = new PodTemplateSpecBuilder()
+                .withNewMetadata()
+                .withName("test-pod-template")
+                .addToLabels("test-label", "test-label-value")
+                .endMetadata()
+                .withNewSpec()
+                .withContainers(new ContainerBuilder()
+                        .withImage("solver-project-image")
+                        .withEnv(existingEnvVar)
+                        .withNewResources()
+                        .addToRequests("cpu", Quantity.parse("1"))
+                        .endResources()
+                        .build())
+                .endSpec()
+                .build();
+
+        solver.getSpec().setTemplate(podTemplateSpec);
+
+        getClient().resources(OptaPlannerSolver.class).create(solver);
+
+        await().ignoreException(NullPointerException.class).atMost(1, MINUTES).untilAsserted(() -> {
+            OptaPlannerSolver updatedSolver = getClient()
+                    .resources(OptaPlannerSolver.class)
+                    .inNamespace(solver.getMetadata().getNamespace())
+                    .withName(solver.getMetadata().getName())
+                    .get();
+            assertThat(updatedSolver.getStatus().getConditions().get(0).getStatus())
+                    .isNotEqualTo(OptaPlannerSolverStatus.ConditionStatus.UNKNOWN.getName());
+        });
+
+        List<Deployment> deployments = getClient()
+                .resources(Deployment.class)
+                .inNamespace(solver.getMetadata().getNamespace())
+                .list()
+                .getItems();
+        assertThat(deployments).hasSize(1);
+        PodTemplateSpec resolvedPodTemplateSpec = deployments.get(0).getSpec().getTemplate();
+        assertThat(resolvedPodTemplateSpec.getMetadata().getName()).isEqualTo(podTemplateSpec.getMetadata().getName());
+        assertThat(resolvedPodTemplateSpec.getMetadata().getLabels()).containsOnlyKeys("app", "test-label");
+        assertThat(resolvedPodTemplateSpec.getSpec().getContainers()).hasSize(1);
+        assertThat(resolvedPodTemplateSpec.getSpec().getContainers().get(0).getEnv())
+                .hasSizeGreaterThan(1)
+                .contains(existingEnvVar);
+        assertThat(resolvedPodTemplateSpec.getSpec().getContainers().get(0).getResources().getRequests())
+                .containsOnlyKeys("cpu");
+    }
+
     private KubernetesClient getClient() {
         return getMockServer().getClient().inNamespace(namespace);
     }
@@ -215,5 +283,15 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
         amqBroker.setPasswordSecretRef(new SecretKeySelector("amq-password", "my-secret", false));
 
         return amqBroker;
+    }
+
+    private PodTemplateSpec createPodTemplateSpec(String imageName) {
+        return new PodTemplateSpecBuilder()
+                .withNewSpec()
+                .withContainers(new ContainerBuilder()
+                        .withImage(imageName)
+                        .build())
+                .endSpec()
+                .build();
     }
 }

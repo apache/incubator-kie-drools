@@ -1,18 +1,11 @@
 package org.optaplanner.operator.impl.solver.model;
 
+import io.fabric8.kubernetes.api.model.PodTemplateSpec;
+
 public final class OptaPlannerSolverSpec {
-    private String solverImage;
     private AmqBroker amqBroker;
-
-    private Scaling scaling;
-
-    public String getSolverImage() {
-        return solverImage;
-    }
-
-    public void setSolverImage(String solverImage) {
-        this.solverImage = solverImage;
-    }
+    private Scaling scaling = new Scaling();
+    private PodTemplateSpec template;
 
     public Scaling getScaling() {
         return scaling;
@@ -28,5 +21,13 @@ public final class OptaPlannerSolverSpec {
 
     public void setAmqBroker(AmqBroker amqBroker) {
         this.amqBroker = amqBroker;
+    }
+
+    public PodTemplateSpec getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(PodTemplateSpec template) {
+        this.template = template;
     }
 }

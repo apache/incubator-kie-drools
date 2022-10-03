@@ -8,13 +8,22 @@ import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.client.CustomResource;
 import io.fabric8.kubernetes.model.annotation.Group;
 import io.fabric8.kubernetes.model.annotation.Kind;
+import io.fabric8.kubernetes.model.annotation.Plural;
+import io.fabric8.kubernetes.model.annotation.Singular;
 import io.fabric8.kubernetes.model.annotation.Version;
 
-@Group("org.optaplanner.solver")
-@Kind("Solver")
-@Version("v1beta1")
+@Group(OptaPlannerSolver.GROUP)
+@Plural(OptaPlannerSolver.PLURAL)
+@Singular(OptaPlannerSolver.SINGULAR)
+@Version(OptaPlannerSolver.API_VERSION)
+@Kind(OptaPlannerSolver.KIND)
 public final class OptaPlannerSolver extends CustomResource<OptaPlannerSolverSpec, OptaPlannerSolverStatus>
         implements Namespaced {
+    public static final String GROUP = "org.optaplanner.solver";
+    public static final String PLURAL = "solvers";
+    public static final String SINGULAR = "solver";
+    public static final String API_VERSION = "v1alpha1";
+    public static final String KIND = "Solver";
 
     @Override
     protected OptaPlannerSolverStatus initStatus() {
