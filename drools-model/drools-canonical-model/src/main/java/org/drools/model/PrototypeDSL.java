@@ -90,7 +90,7 @@ public class PrototypeDSL {
             Prototype prototype = protoVar.getPrototype();
             Prototype.Field field = prototype.getField(fieldName);
 
-            Function1<PrototypeFact, Object> extractor = null;
+            Function1<PrototypeFact, Object> extractor;
             AlphaIndex alphaIndex = null;
             if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
                 extractor = prototypeFact -> prototypeFact.has(fieldName);
@@ -138,7 +138,6 @@ public class PrototypeDSL {
             PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
 
             Prototype prototype = protoVar.getPrototype();
-            Prototype.Field field = prototype.getField(fieldName);
             Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
 
             Prototype otherPrototype = other.getPrototype();
@@ -172,16 +171,27 @@ public class PrototypeDSL {
             return this;
         }
 
-        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Object value) {
-            return p -> constraintType.asPredicate().test(extractor.apply(p), value);
+        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Object rightValue) {
+            return p -> {
+                Object leftValue = extractor.apply(p);
+                return leftValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
+            };
         }
 
         private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> right) {
-            return p -> constraintType.asPredicate().test(left.apply(p), right.apply(p));
+            return p -> {
+                Object leftValue = left.apply(p);
+                Object rightValue = right.apply(p);
+                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
+            };
         }
 
         private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> otherExtractor) {
-            return (p1, p2) -> constraintType.asPredicate().and((a,b) -> a != null).test(extractor.apply(p1), otherExtractor.apply(p2));
+            return (p1, p2) -> {
+                Object leftValue = extractor.apply(p1);
+                Object rightValue = otherExtractor.apply(p2);
+                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
+            };
         }
 
         private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
