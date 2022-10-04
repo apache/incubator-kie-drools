@@ -90,7 +90,9 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
 
     @AfterEach
     void cleanUp() {
-        kafkaClient.shutdown();
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
     }
 
     @Test

@@ -44,7 +44,7 @@ class CallbackStateIT extends AbstractCallbackStateIT {
 
     @Test
     @SuppressWarnings("squid:S2699")
-    void callbackStateWithError() {
+    void callbackStateWithError() throws Exception {
         executeCallbackStateWithErrorPath(CALLBACK_STATE_SERVICE_URL, CALLBACK_STATE_SERVICE_GET_BY_ID_URL);
     }
 }

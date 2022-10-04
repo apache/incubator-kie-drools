@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
@@ -70,6 +71,13 @@ public class CorrelationIT {
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
                 .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    @AfterEach
+    public void cleanup() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
     }
 
     @Test

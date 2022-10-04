@@ -18,6 +18,7 @@ package org.kie.kogito.quarkus.workflows;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
@@ -42,6 +43,7 @@ import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessIn
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceNotExists;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstance;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
+import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.waitForKogitoProcessInstanceEvent;
 
 abstract class AbstractCallbackStateIT {
 
@@ -61,6 +63,13 @@ abstract class AbstractCallbackStateIT {
                 .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+    @AfterEach
+    void cleanUp() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+    }
+
     void executeCallbackStateSuccessfulPath(String callbackProcessPostUrl,
             String callbackProcessGetByIdUrl,
             String answer,
@@ -69,6 +78,11 @@ abstract class AbstractCallbackStateIT {
         // start a new process instance by sending the post query and collect the process instance id.
         String processInput = buildProcessInput(SUCCESSFUL_QUERY);
         String processInstanceId = newProcessInstanceAndGetId(callbackProcessPostUrl, processInput);
+
+        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, true);
+        Map workflowDataMap = processInstanceEventContent.getMap("data.variables.workflowdata");
+        assertThat(workflowDataMap).hasSize(1);
+        assertThat(workflowDataMap).containsEntry("query", SUCCESSFUL_QUERY);
 
         // double check that the process instance is there.
         assertProcessInstanceExists(callbackProcessGetByIdUrl, processInstanceId);
@@ -89,7 +103,7 @@ abstract class AbstractCallbackStateIT {
         assertProcessInstanceHasFinished(callbackProcessGetByIdUrl, processInstanceId, 1, 180);
     }
 
-    void executeCallbackStateWithErrorPath(String callbackProcessPostUrl, String callbackProcessGetByIdUrl) {
+    void executeCallbackStateWithErrorPath(String callbackProcessPostUrl, String callbackProcessGetByIdUrl) throws Exception {
         // start a new process instance and collect the results.
         String processInput = buildProcessInput(GENERATE_ERROR_QUERY);
         JsonPath result = newProcessInstance(callbackProcessPostUrl, processInput);
@@ -97,13 +111,16 @@ abstract class AbstractCallbackStateIT {
         // ensure the process has failed as expected since GENERATE_ERROR_QUERY was used.
         String lastExecutedState = result.getString("workflowdata.lastExecutedState");
         assertThat(lastExecutedState).isEqualTo("FinalizeWithError");
+
+        JsonPath processInstanceEventContent = waitForKogitoProcessInstanceEvent(kafkaClient, true);
+        Map workflowDataMap = processInstanceEventContent.getMap("data.variables.workflowdata");
+        assertThat(workflowDataMap)
+                .hasSize(2)
+                .containsEntry("query", GENERATE_ERROR_QUERY)
+                .containsEntry("lastExecutedState", "FinalizeWithError");
+
         // the process instance should not be there since an end state was reached.
         assertProcessInstanceNotExists(callbackProcessGetByIdUrl, processInstanceId);
-    }
-
-    @AfterEach
-    void cleanUp() {
-        kafkaClient.shutdown();
     }
 
     protected static String buildProcessInput(String query) {
