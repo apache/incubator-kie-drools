@@ -45,8 +45,8 @@ The `KieMarshallers` are still present and working as expected on the release of
 === {BUSINESS_CENTRAL} is retired
 {BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter].
 
-=== OSGi support is dropped
-{PRODUCT} 8 no longer supports OSGi.
+=== OSGi support is retired
+{PRODUCT} 8 no longer provides out of the box OSGi support in its modules.
 
 == Previous release notes
 
