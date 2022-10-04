@@ -142,7 +142,7 @@
     </profile>
 
     <profile>
-      <!-- TODO: enable the module by default after the 8.29.x branch is created. -->
+      <!-- TODO: enable the module by default after the 8.29.x branch is created, exlude it from productized profile. -->
       <id>operator</id>
       <activation>
         <property>

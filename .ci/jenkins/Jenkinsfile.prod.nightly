@@ -46,7 +46,7 @@ pipeline {
                         pipelineHelper.retry(
                         {
                             def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
-                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing']
+                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing', 'jboss-integration/rhbop-optaplanner']
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
                                 'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
@@ -80,24 +80,12 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
-                        // rename sources directories
-                        def optaplannerSourceDir = "org.optaplanner-optaplanner-${PRODUCT_VERSION}.Final-redhat"
-                        sh "mv ${env.WORKSPACE}/kiegroup_optaplanner ${env.WORKSPACE}/$optaplannerSourceDir"
-
-                        def quickstartsSourceDir = "org.optaplanner-optaplanner-quickstarts-${PRODUCT_VERSION}.Final-redhat"
-                        sh "mv ${env.WORKSPACE}/kiegroup_optaplanner-quickstarts ${env.WORKSPACE}/$quickstartsSourceDir"
-
-                        def optawebSourceDir = "org.optaweb.vehiclerouting-optaweb-vehicle-routing-${PRODUCT_VERSION}.Final-redhat"
-                        sh "mv ${env.WORKSPACE}/kiegroup_optaweb-vehicle-routing ${env.WORKSPACE}/$optawebSourceDir"
-
                         // zip source directories
-                        dir("${env.WORKSPACE}/") {
+                        dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop/${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}") {
                             def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            sh "zip -r $optaplannerSourcesFilename $optaplannerSourceDir -x '$optaplannerSourceDir/.git/*' -x '$optaplannerSourceDir/optaplanner-operator/*'  -x '$optaplannerSourceDir/optaplanner-examples/*' -x '$optaplannerSourceDir/target/*'"
                             uploadSources(optaplannerSourcesFilename, folder)
 
                             def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*'"
                             uploadSources(quickstartsSourcesFilename, folder)
                         }
 
@@ -115,9 +103,8 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
                         def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
-                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        def optawebSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-sources.zip"
+                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-quickstarts-sources.zip"
 
                         def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
                         def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
@@ -125,7 +112,6 @@ pipeline {
                             optaplannerArchiveUrl,
                             optaplannerSourcesFileUrl,
                             optaplannerQuickstartsSourcesFileUrl,
-                            optawebSourcesFileUrl,
                             env.ALREADY_BUILT_PROJECTS,
                             ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
@@ -181,7 +167,7 @@ pipeline {
     }
 }
 
-def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String optawebSourcesFileUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
+def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
     def alreadyBuiltProjectsArray = (alreadyBuiltProjects ?: '').split(";")
     return """
 {
@@ -197,7 +183,7 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
 }
 
 def computeSourcesFilename(String project, String suffix) {
-    return "rhbop-${PRODUCT_VERSION}-$project-sources-${suffix}.zip"
+    return "rhbop-${PRODUCT_VERSION}.redhat-${suffix}-${project}-sources.zip"
 }
 
 def uploadSources(String sourcesFilename, String folder) {
