@@ -22,6 +22,8 @@ import java.util.function.Function;
 
 public interface Prototype extends NamedModelItem {
 
+    Object UNDEFINED_VALUE = new Object();
+
     Collection<String> getFieldNames();
 
     Field getField(String name);
@@ -30,7 +32,7 @@ public interface Prototype extends NamedModelItem {
 
     default Function<PrototypeFact, Object> getFieldValueExtractor(String name) {
         Field field = getField(name);
-        return field != null ? field.getExtractor() : p -> p.get(name);
+        return field != null ? field.getExtractor() : p -> p.has(name) ? p.get(name) : UNDEFINED_VALUE;
     }
 
     interface Field {

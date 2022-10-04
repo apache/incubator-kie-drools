@@ -572,7 +572,45 @@ public class FactTemplateTest {
     }
 
     @Test
+    public void testUndefinedOnAlpha() {
+        // DROOLS-7192
+        Prototype prototype = prototype( "org.X" );
+
+        PrototypeVariable var1 = variable( prototype );
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(var1).expr( "i", Index.ConstraintType.EQUAL, null ),
+                        on(var1).execute((p1, p2) -> { } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact f1 = createMapBasedFact( prototype );
+        f1.set( "j", 2 );
+
+        ksession.insert(f1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f2 = createMapBasedFact( prototype );
+        f2.set( "i", 3 );
+
+        ksession.insert(f2);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f3 = createMapBasedFact( prototype );
+        f3.set( "i", null );
+
+        ksession.insert(f3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
     public void testUndefinedOnBeta() {
+        // DROOLS-7192
         Prototype prototype = prototype( "org.X" );
 
         PrototypeVariable var1 = variable( prototype );
@@ -583,7 +621,7 @@ public class FactTemplateTest {
                         protoPattern(var1),
                         protoPattern(var2)
                                 .expr( "i", Index.ConstraintType.EQUAL, var1, "custom.expected_index" ),
-                        on(var2, var1).execute((p1, p2) -> { } )
+                        on(var1, var2).execute((p1, p2) -> { } )
                 );
 
         Model model = new ModelImpl().addRule( rule );
@@ -609,5 +647,4 @@ public class FactTemplateTest {
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
-
 }

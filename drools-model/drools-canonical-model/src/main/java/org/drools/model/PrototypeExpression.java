@@ -139,9 +139,9 @@ public interface PrototypeExpression {
                     if (leftValue instanceof Integer && rightValue instanceof Integer) {
                         return ((Integer) leftValue).intValue() + ((Integer) rightValue).intValue();
                     }
-                    if (leftValue == null) {
+                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
                         return rightValue == null ? 0 : rightValue;
-                    } else if (rightValue == null) {
+                    } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
                         return leftValue;
                     }
                     return ((Number) leftValue).doubleValue() + ((Number) rightValue).doubleValue();
@@ -156,9 +156,9 @@ public interface PrototypeExpression {
                     if (leftValue instanceof Integer && rightValue instanceof Integer) {
                         return ((Integer) leftValue).intValue() - ((Integer) rightValue).intValue();
                     }
-                    if (leftValue == null) {
+                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
                         return rightValue == null ? 0 : rightValue;
-                    } else if (rightValue == null) {
+                    } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
                         return leftValue;
                     }
                     return ((Number) leftValue).doubleValue() - ((Number) rightValue).doubleValue();
@@ -173,7 +173,7 @@ public interface PrototypeExpression {
                     if (leftValue instanceof Integer && rightValue instanceof Integer) {
                         return ((Integer) leftValue).intValue() * ((Integer) rightValue).intValue();
                     }
-                    if (leftValue == null || rightValue == null) {
+                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
                         return 0;
                     }
                     return ((Number) leftValue).doubleValue() * ((Number) rightValue).doubleValue();
@@ -188,7 +188,7 @@ public interface PrototypeExpression {
                     if (leftValue instanceof Integer && rightValue instanceof Integer) {
                         return ((Integer) leftValue).intValue() / ((Integer) rightValue).intValue();
                     }
-                    if (leftValue == null || rightValue == null) {
+                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
                         return 0;
                     }
                     return ((Number) leftValue).doubleValue() / ((Number) rightValue).doubleValue();
