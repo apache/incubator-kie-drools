@@ -13,8 +13,7 @@ The `KieBase` can be obtained from the `KieContainer` containing the `KieModule`
 image::KIE/BuildDeployUtilizeAndRun/KieBase.png[align="center"]
 
 
-Sometimes, for instance in a OSGi environment, the `KieBase` needs to resolve types that are not in the default class loader.
-In this case it will be necessary to create a `KieBaseConfiguration` with an additional class loader and pass it to `KieContainer` when creating a new `KieBase` from it.
+When the `KieBase` needs to resolve types that are not in the default class loader, it will be necessary to create a `KieBaseConfiguration` with an additional class loader and pass it to `KieContainer` when creating a new `KieBase` from it.
 
 .Creating a new KieBase with a custom ClassLoader
 ====

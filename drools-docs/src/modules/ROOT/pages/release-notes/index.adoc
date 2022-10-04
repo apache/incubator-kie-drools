@@ -45,6 +45,9 @@ The `KieMarshallers` are still present and working as expected on the release of
 === {BUSINESS_CENTRAL} is retired
 {BUSINESS_CENTRAL} is no longer a component of {PRODUCT} 8.  For migration, see xref:migration-guide/index.adoc#business-central_migration-guide[Migration guide chapter].
 
+=== OSGi support is retired
+{PRODUCT} 8 no longer provides out of the box OSGi support in its modules.
+
 == Previous release notes
 
 For the release notes of the previous releases, you can refer the {PRODUCT} documentation of link:https://docs.drools.org/7.73.0.Final/drools-docs/html_single/index.html#droolsreleasenoteschapter[version 7]. 
