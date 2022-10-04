@@ -31,6 +31,19 @@ pipeline {
             }
         }
 
+        stage('Setup integration branch') {
+            when {
+                expression { useIntegrationBranch() }
+            }
+            steps {
+                script {
+                    // Calculate integration branch
+                    setIntegrationBranch("${getKogitoBranch()}-integration-quarkus-${getQuarkusBranch()}")
+                    mergeOnIntegrationBranch(droolsRepo, getDroolsBranch(), true)
+                }
+            }
+        }
+
         stage('Build quarkus') {
             when {
                 expression { getQuarkusBranch() }
@@ -92,18 +105,40 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${getBuildBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO])
+    String additionalInfo = ''
+    if(useIntegrationBranch()) {
+        additionalInfo += """
+If any changes need to be done, please perform them on branch **${getIntegrationBranch()}**
+"""
+    }
+    additionalInfo = """
+${getReproducer()}
+"""
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}${useIntegrationBranch() ? ' - Integration' : ''}", "[${getDroolsBranch()}] Drools", [env.KOGITO_CI_EMAIL_TO], additionalInfo)
 }
 
 void checkoutDroolsRepo() {
     dir(droolsRepo) {
-        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getBuildBranch(), false))
+        deleteDir()
+        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsBranch(), false))
     }
 }
 
 void checkoutQuarkusRepo() {
     dir('quarkus') {
+        deleteDir()
         checkout(githubscm.resolveRepository('quarkus', 'quarkusio', getQuarkusBranch(), false))
+    }
+}
+
+void mergeOnIntegrationBranch(String repoName, String baseBranch, boolean pushChanges = false) {
+    echo "Merge changes for repository ${repoName} from ${baseBranch} to ${getIntegrationBranch()}"
+    dir(repoName) {
+        getOrCreateGitBranch(getIntegrationBranch())
+        sh "git merge origin/${baseBranch} --no-ff"
+        if(pushChanges){
+            githubscm.pushObject('origin', getIntegrationBranch(),  params.GIT_AUTHOR_CREDS_ID)
+        }
     }
 }
 
@@ -163,6 +198,55 @@ String getQuarkusBranch() {
     return env['QUARKUS_BRANCH'] ?: ''
 }
 
-String getBuildBranch() {
+String getKogitoBranch() {
+    return util.calculateTargetReleaseBranch(getDroolsBranch(), -7)
+}
+
+String getDroolsBranch() {
     return params.BUILD_BRANCH_NAME
+}
+
+boolean useIntegrationBranch() {
+    return env.USE_INTEGRATION_BRANCH ? env.USE_INTEGRATION_BRANCH.toBoolean() : false
+}
+
+void setIntegrationBranch(String branch) {
+    echo "Set integration branch ${getIntegrationBranch()}"
+    env.INTEGRATION_BRANCH = branch
+}
+
+String getIntegrationBranch() {
+    return env.INTEGRATION_BRANCH
+}
+
+void getOrCreateGitBranch(String branch) {
+    sh 'git fetch origin'
+    String branchRemoteResult = sh(script: "git ls-remote origin ${branch} | wc -l", returnStdout: true).trim()
+    if (Integer.parseInt(branchRemoteResult) > 0) {
+        echo "Branch ${branch} already exist ... will not create it. Checking out !"
+        sh "git checkout ${branch}"
+    } else {
+
+        echo "Branch ${branch} does not exist ... gonna create it"
+        githubscm.createBranch(branch)
+    }
+}
+
+String getReproducer() {
+    String droolsBranch = useIntegrationBranch() ? getIntegrationBranch() : getDroolsBranch()
+    String reproducer = """
+git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/drools.git
+"""
+    if (getQuarkusBranch()) {
+        reproducer += """
+git clone --branch ${getQuarkusBranch()} --depth 1 https://github.com/quarkusio/quarkus.git
+mvn -f quarkus/pom.xml clean install -Dquickly
+mvn -f drools/pom.xml -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+mvn -f drools/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+"""
+    }
+    reproducer += """
+mvn -f drools/pom.xml clean install
+"""
+    return reproducer
 }
