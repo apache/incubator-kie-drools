@@ -38,6 +38,10 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
     @XmlTransient
     protected List<File> graphFileList = null;
 
+    PickedMoveTypeStepScoreDiffSubSingleStatistic() {
+        // For JAXB.
+    }
+
     public PickedMoveTypeStepScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
     }

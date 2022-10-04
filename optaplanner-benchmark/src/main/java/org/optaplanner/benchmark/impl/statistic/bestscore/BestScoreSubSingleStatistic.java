@@ -16,6 +16,10 @@ import io.micrometer.core.instrument.Tags;
 public class BestScoreSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, BestScoreStatisticPoint> {
 
+    BestScoreSubSingleStatistic() {
+        // For JAXB.
+    }
+
     public BestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, ProblemStatisticType.BEST_SCORE);
     }

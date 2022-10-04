@@ -38,6 +38,10 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     @XmlTransient
     protected List<File> graphFileList = null;
 
+    ConstraintMatchTotalBestScoreSubSingleStatistic() {
+        // For JAXB.
+    }
+
     public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
     }

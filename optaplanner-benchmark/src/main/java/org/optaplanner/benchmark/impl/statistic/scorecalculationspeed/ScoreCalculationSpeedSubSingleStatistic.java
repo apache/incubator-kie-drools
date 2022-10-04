@@ -18,7 +18,11 @@ import io.micrometer.core.instrument.Tags;
 public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, ScoreCalculationSpeedStatisticPoint> {
 
-    private final long timeMillisThresholdInterval;
+    private long timeMillisThresholdInterval;
+
+    ScoreCalculationSpeedSubSingleStatistic() {
+        // For JAXB.
+    }
 
     public ScoreCalculationSpeedSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this(subSingleBenchmarkResult, 1000L);

@@ -17,7 +17,11 @@ import io.micrometer.core.instrument.Tags;
 public class MemoryUseSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, MemoryUseStatisticPoint> {
 
-    private final long timeMillisThresholdInterval;
+    private long timeMillisThresholdInterval;
+
+    MemoryUseSubSingleStatistic() {
+        // For JAXB.
+    }
 
     public MemoryUseSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this(subSingleBenchmarkResult, 1000L);

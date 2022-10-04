@@ -27,7 +27,11 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscor
 public abstract class PureSubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint>
         extends SubSingleStatistic<Solution_, StatisticPoint_> {
 
-    protected final SingleStatisticType singleStatisticType;
+    protected SingleStatisticType singleStatisticType;
+
+    protected PureSubSingleStatistic() {
+        // For JAXB.
+    }
 
     protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult,
             SingleStatisticType singleStatisticType) {

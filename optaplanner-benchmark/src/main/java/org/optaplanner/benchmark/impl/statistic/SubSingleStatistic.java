@@ -42,6 +42,10 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     @XmlTransient
     protected List<StatisticPoint_> pointList;
 
+    protected SubSingleStatistic() {
+        // For JAXB.
+    }
+
     protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
     }

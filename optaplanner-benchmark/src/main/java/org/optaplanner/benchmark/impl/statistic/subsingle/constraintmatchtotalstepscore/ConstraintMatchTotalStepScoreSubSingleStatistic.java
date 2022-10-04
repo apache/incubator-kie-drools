@@ -38,6 +38,10 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
     @XmlTransient
     protected List<File> graphFileList = null;
 
+    ConstraintMatchTotalStepScoreSubSingleStatistic() {
+        // For JAXB.
+    }
+
     public ConstraintMatchTotalStepScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE);
     }

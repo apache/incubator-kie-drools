@@ -38,6 +38,10 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
     @XmlTransient
     protected List<File> graphFileList = null;
 
+    PickedMoveTypeBestScoreDiffSubSingleStatistic() {
+        // For JAXB.
+    }
+
     public PickedMoveTypeBestScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_BEST_SCORE_DIFF);
     }

@@ -6,7 +6,11 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 public abstract class ProblemBasedSubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint>
         extends SubSingleStatistic<Solution_, StatisticPoint_> {
 
-    protected final ProblemStatisticType problemStatisticType;
+    protected ProblemStatisticType problemStatisticType;
+
+    protected ProblemBasedSubSingleStatistic() {
+        // For JAXB.
+    }
 
     protected ProblemBasedSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult,
             ProblemStatisticType problemStatisticType) {
