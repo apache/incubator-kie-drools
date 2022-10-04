@@ -533,17 +533,14 @@
           <executions>
             <execution>
               <id>schemagen</id>
-              <!-- Make sure the XSD will be generated after the codebase has been successfully compiled. -->
-              <phase>process-classes</phase>
               <goals>
                 <goal>schemagen</goal>
               </goals>
             </execution>
           </executions>
           <configuration>
-            <clearOutputDir>false</clearOutputDir>
+            <clearOutputDir>true</clearOutputDir>
             <createJavaDocAnnotations>false</createJavaDocAnnotations>
-            <generateEpisode>false</generateEpisode>
             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
             <transformSchemas>
               <transformSchema>

@@ -132,6 +132,32 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Copy the solver.xsd to make sure it's available from the IDE without running maven first. -->
+            <id>copy-solver-xsd</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>solver.xsd</include>
+                  </includes>
+                  <targetPath>${project.basedir}/src/main/resources</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
       </plugin>

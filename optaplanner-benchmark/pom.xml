@@ -194,6 +194,32 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Copy the benchmark.xsd to make sure it's available from the IDE without running maven first.
+                 Use the later phase to copy the resulting benchmark.xsd after it has been merged. -->
+            <id>copy-benchmark-xsd</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.outputDirectory}</directory>
+                  <includes>
+                    <include>benchmark.xsd</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <ignoredUsedUndeclaredDependencies>
