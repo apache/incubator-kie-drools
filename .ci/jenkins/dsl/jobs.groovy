@@ -72,7 +72,7 @@ setupPromoteJob(Folder.RELEASE)
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
   modules: [ 'kogito-dependencies-bom', 'kogito-build-parent', 'kogito-quarkus-bom', 'kogito-build-no-bom-parent' ],
   compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
-  properties: [ 'version.io.quarkus', 'version.io.quarkus.quarkus-test' ],
+  properties: [ 'version.io.quarkus' ],
 ])
 
 /////////////////////////////////////////////////////////////////
