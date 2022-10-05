@@ -13,23 +13,34 @@
  * limitations under the License.
 */
 
-package test.dialect.rule.end.mine;
 
-global java.lang.String rule;
 
-import com.dialect.something.SomeClass
-
-function boolean test() {
-    return true;
-}
-
-rule type1
+rule myrule 
   when
-    $id : Something( duration == "foo")
   then
-      The.method();
-      int attributes = 0;
-      String rulex = "ccc";
-      Object endx = null;
-end
+      int i = 0;
+    i = 1;
+    i / 1;
+    i == 1;
+    i(i);
+    i = 'i';
+    i.i.i;
+    i<i;
+    i>i;
+    i="i";
+    ++i;
+    i++;
+    --i;
+    i--;
+    i += i;
+    i -= i;
+    i *= i;
+    i /= i;
+    int i = 5;
+    for(int j; j<i; ++j) {
+      System.out.println(j);
+    }
+    Object o = new String("Hello");
+    String s = (String) o;
 
+end
