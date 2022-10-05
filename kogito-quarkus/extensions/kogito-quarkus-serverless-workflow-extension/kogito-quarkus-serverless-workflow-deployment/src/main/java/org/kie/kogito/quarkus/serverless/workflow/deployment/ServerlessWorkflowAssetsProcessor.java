@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -91,6 +92,8 @@ public class ServerlessWorkflowAssetsProcessor {
         Collection<OpenAPI> inputModelSchemas = getWorkflows(contextBuildItem.getKogitoBuildContext())
                 .map(OpenApiModelSchemaGenerator::new)
                 .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema)
+                .filter(Optional::isPresent)
+                .map(Optional::orElseThrow)
                 .collect(Collectors.toList());
 
         openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(inputModelSchemas)));

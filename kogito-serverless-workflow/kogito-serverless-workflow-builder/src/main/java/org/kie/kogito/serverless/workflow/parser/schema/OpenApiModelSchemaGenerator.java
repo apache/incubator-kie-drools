@@ -49,19 +49,19 @@ public class OpenApiModelSchemaGenerator {
         this.workflow = workflow;
     }
 
-    private Schema generateInputModel() {
+    private Optional<Schema> generateInputModel() {
         if (workflow.getDataInputSchema() == null ||
                 workflow.getDataInputSchema().getSchema() == null ||
                 workflow.getDataInputSchema().getSchema().isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         try {
             final URI inputSchemaURI = new URI(workflow.getDataInputSchema().getSchema());
             return fromJsonSchemaToOpenApiSchema(inputSchemaURI.toString(), "");
         } catch (URISyntaxException e) {
             LOGGER.warn("Invalid Data Input Schema for workflow {}. Only valid URIs are supported at this time.", workflow.getId());
+            return Optional.empty();
         }
-        return null;
     }
 
     /**
@@ -74,7 +74,7 @@ public class OpenApiModelSchemaGenerator {
      * @param authRef the Authentication Reference information to fetch the JSON Schema URI if needed
      * @return The @{@link Schema} object
      */
-    private Schema fromJsonSchemaToOpenApiSchema(String jsonSchemaURI, String authRef) {
+    private Optional<Schema> fromJsonSchemaToOpenApiSchema(String jsonSchemaURI, String authRef) {
         if (jsonSchemaURI != null) {
             final Optional<byte[]> bytes = ServerlessWorkflowUtils.loadResourceFile(workflow, Optional.empty(), jsonSchemaURI, authRef);
             if (bytes.isPresent()) {
@@ -88,19 +88,19 @@ public class OpenApiModelSchemaGenerator {
                 try {
                     final ObjectMapper objectMapper = ObjectMapperFactory.get();
                     // the workflowdata input model now has inherited from the given JSON Schema
-                    return objectMapper.readValue(schemaLoader.load().build().toString(), JsonSchemaImpl.class);
+                    return Optional.of(objectMapper.readValue(schemaLoader.load().build().toString(), JsonSchemaImpl.class));
                 } catch (JsonProcessingException e) {
                     throw new UncheckedIOException("Error deserializing JSON Schema " + jsonSchemaURI + " for workflow " + workflow.getId(), e);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public OpenAPI generateOpenAPIModelSchema() {
-        return OASFactory.createOpenAPI()
-                .components(OASFactory.createComponents().addSchema(SWFConstants.DEFAULT_WORKFLOW_VAR, generateInputModel()))
-                .openapi("workflowmodelschema");
+    public Optional<OpenAPI> generateOpenAPIModelSchema() {
+        return generateInputModel().map(inputModel -> OASFactory.createOpenAPI()
+                .components(OASFactory.createComponents().addSchema(SWFConstants.DEFAULT_WORKFLOW_VAR, inputModel))
+                .openapi("workflowmodelschema"));
     }
 
 }
