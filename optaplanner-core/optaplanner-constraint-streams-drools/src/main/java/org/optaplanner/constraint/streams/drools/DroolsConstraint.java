@@ -19,9 +19,9 @@ public final class DroolsConstraint<Solution_>
     public DroolsConstraint(DroolsConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
             ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            RuleBuilder<Solution_> ruleBuilder) {
+            RuleBuilder<Solution_> ruleBuilder, Object justificationMapping, Object indictedObjectsMapping) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
-                isConstraintWeightConfigurable);
+                isConstraintWeightConfigurable, justificationMapping, indictedObjectsMapping);
         this.ruleBuilder = Objects.requireNonNull(ruleBuilder);
     }
 

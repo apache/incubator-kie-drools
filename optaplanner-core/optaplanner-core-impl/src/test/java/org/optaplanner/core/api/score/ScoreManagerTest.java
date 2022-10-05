@@ -38,8 +38,11 @@ public class ScoreManagerTest {
         assertSoftly(softly -> {
             softly.assertThat(scoreExplanation.getScore()).isNotNull();
             softly.assertThat(scoreExplanation.getSummary()).isNotBlank();
-            softly.assertThat(scoreExplanation.getConstraintMatchTotalMap()).isNotEmpty();
-            softly.assertThat(scoreExplanation.getIndictmentMap()).isNotEmpty();
+            softly.assertThat(scoreExplanation.getConstraintMatchTotalMap())
+                    .containsOnlyKeys("org.optaplanner.core.impl.testdata.domain/testConstraint");
+            softly.assertThat(scoreExplanation.getIndictmentMap())
+                    .containsOnlyKeys(solution.getEntityList().toArray());
+
         });
     }
 

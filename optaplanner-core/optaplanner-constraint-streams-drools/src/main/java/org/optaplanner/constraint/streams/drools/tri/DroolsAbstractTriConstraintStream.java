@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.tri;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -22,11 +23,13 @@ import org.optaplanner.constraint.streams.drools.quad.DroolsJoinQuadConstraintSt
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -278,32 +281,43 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher,
-            ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
-    }
-
-    private TriConstraintBuilderImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> TriConstraintBuilderImpl<A, B, C, Score_> newTerminator(
+            RuleBuilder<Solution_> ruleBuilder, Score_ constraintWeight, ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName, constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return InnerTriConstraintStream.getDefaultJustificationMapping();
+    }
+
+    @Override
+    protected final TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerTriConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

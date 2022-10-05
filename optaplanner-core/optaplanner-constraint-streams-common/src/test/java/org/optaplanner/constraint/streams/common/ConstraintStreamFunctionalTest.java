@@ -124,20 +124,64 @@ public interface ConstraintStreamFunctionalTest {
     // Penalize/reward
     // ************************************************************************
 
-    void penalize_Int();
+    void penalizeUnweighted();
 
-    void penalize_Long();
+    void penalize();
 
-    void penalize_BigDecimal();
+    void penalizeLong();
 
-    void penalize_negative();
+    void penalizeBigDecimal();
 
-    void reward_Int();
+    void rewardUnweighted();
 
-    void reward_Long();
+    void reward();
 
-    void reward_BigDecimal();
+    void rewardLong();
 
-    void reward_negative();
+    void rewardBigDecimal();
+
+    void impactPositiveUnweighted();
+
+    void impactPositive();
+
+    void impactPositiveLong();
+
+    void impactPositiveBigDecimal();
+
+    void impactNegative();
+
+    void impactNegativeLong();
+
+    void impactNegativeBigDecimal();
+
+    void penalizeUnweightedCustomJustifications();
+
+    void penalizeCustomJustifications();
+
+    void penalizeLongCustomJustifications();
+
+    void penalizeBigDecimalCustomJustifications();
+
+    void rewardUnweightedCustomJustifications();
+
+    void rewardCustomJustifications();
+
+    void rewardLongCustomJustifications();
+
+    void rewardBigDecimalCustomJustifications();
+
+    void impactPositiveUnweightedCustomJustifications();
+
+    void impactPositiveCustomJustifications();
+
+    void impactPositiveLongCustomJustifications();
+
+    void impactPositiveBigDecimalCustomJustifications();
+
+    void impactNegativeCustomJustifications();
+
+    void impactNegativeLongCustomJustifications();
+
+    void impactNegativeBigDecimalCustomJustifications();
 
 }

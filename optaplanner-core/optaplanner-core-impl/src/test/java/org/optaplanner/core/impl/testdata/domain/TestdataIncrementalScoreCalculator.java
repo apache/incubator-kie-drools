@@ -1,9 +1,9 @@
 package org.optaplanner.core.impl.testdata.domain;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -37,7 +37,7 @@ public class TestdataIncrementalScoreCalculator
                 if (Objects.equals(right.getValue(), value)) {
                     score -= 1;
                     ConstraintMatch<SimpleScore> constraintMatch =
-                            constraintMatchTotal.addConstraintMatch(Arrays.asList(left, right), SimpleScore.ONE);
+                            constraintMatchTotal.addConstraintMatch(List.of(left, right), SimpleScore.ONE);
                     Stream.of(left, right)
                             .forEach(entity -> indictmentMap
                                     .computeIfAbsent(entity, key -> new DefaultIndictment<>(key, SimpleScore.ZERO))

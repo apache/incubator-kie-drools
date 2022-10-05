@@ -9,12 +9,6 @@ Constraint streams are a Functional Programming form of incremental score calcul
 read, write and debug.
 The API should feel familiar if you're familiar with Java Streams or SQL.
 
-// TODO Remove when PLANNER-1709 is fixed. https://issues.redhat.com/browse/PLANNER-1709
-[WARNING]
-====
-For the ConstraintStreams API, xref:score-calculation/score-calculation.adoc#explainingTheScore[Constraint justifications] may not function properly yet.
-====
-
 
 [[constraintStreamsIntroduction]]
 == Introduction
@@ -42,8 +36,6 @@ The ConstraintStreams API enables you to write similar code in pure Java, while 
 incremental score calculation.
 This is an example of the same code, using the Constraint Streams API:
 
-// TODO Rewrite the above paragraph PLANNER-1709 is fixed, mentioning constraint justification as another benefit.
-
 [source,java,options="nowrap"]
 ----
     private Constraint doNotAssignAnn(ConstraintFactory factory) {
@@ -68,10 +60,9 @@ The following figure illustrates this xref:score-calculation/score-calculation.a
 
 image::constraint-streams/constraintStreamIncrementalCalculation.png[align="center"]
 
-////
-TODO Include and describe the following image when PLANNER-1709 is fixed.
+ConstraintStreams API also has advanced support for xref:score-calculation/score-calculation.adoc#explainingTheScore[score explanation] through xref:constraintStreamsCustomizingJustificationsAndIndictments[custom justifications and indictments].
+
 image::constraint-streams/constraintStreamJustification.png[align="center"]
-////
 
 
 [[constraintStreamsConfiguration]]
@@ -293,6 +284,70 @@ every matching `Shift` in the constraint stream.
 
 By replacing the keyword `penalize` by `reward` in the name of these building blocks, you get operations that
 affect score in the opposite direction.
+
+
+[[constraintStreamsCustomizingJustificationsAndIndictments]]
+==== Customizing justifications and indictments
+
+One of important OptaPlanner features is its ability to xref:score-calculation/score-calculation.adoc#explainingTheScore[explain the score] of solutions it produced through the use of justifications and indictments.
+By default, each constraint is justified with `org.optaplanner.core.api.score.stream.DefaultConstraintJustification`, and the final tuple makes up the indicted objects.
+For example, in the following constraint, the indicted objects will be of type `Vehicle` and an `Integer`:
+
+[source,java,options="nowrap"]
+----
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
+                .groupBy(Customer::getVehicle, sum(Customer::getDemand))
+                .filter((vehicle, demand) -> demand > vehicle.getCapacity())
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .asConstraint("vehicleCapacity");
+    }
+----
+
+For the purposes of creating a xref:score-calculation/score-calculation.adoc#indictmentHeatMap[heat map], the `Vehicle` is very important, but the naked `Integer` carries no semantics.
+We can remove it by providing the `indictWith(...) method with a custom indictment mapping:
+
+[source,java,options="nowrap"]
+----
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
+                .groupBy(Customer::getVehicle, sum(Customer::getDemand))
+                .filter((vehicle, demand) -> demand > vehicle.getCapacity())
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .indictWith((vehicle, demand) -> List.of(vehicle))
+                .asConstraint("vehicleCapacity");
+    }
+----
+
+The same mechanism can also be used to transform any of the indicted objects to any other object.
+To present the constraint matches to the user or to send them over the wire where they can be further processed, use the `justifyWith(...)` method to provide a custom constraint justification:
+
+[source,java,options="nowrap"]
+----
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
+                .groupBy(Customer::getVehicle, sum(Customer::getDemand))
+                .filter((vehicle, demand) -> demand > vehicle.getCapacity())
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .justifyWith((vehicle, demand, score) ->
+                    new VehicleDemandOveruse(vehicle, demand, score))
+                .indictWith((vehicle, demand) -> List.of(vehicle))
+                .asConstraint("vehicleCapacity");
+    }
+----
+
+`VehicleDemandOveruse` is a custom type you have to implement.
+You have complete control over the type, its name or methods exposed.
+If you choose to decorate it with the proper annotations,
+you will be able to send it over HTTP or store it in a database.
+The only limitation is that it must implement the `org.optaplanner.core.api.score.stream.ConstraintJustification` marker interface.
+
 
 [[constraintStreamsFilter]]
 === Filtering

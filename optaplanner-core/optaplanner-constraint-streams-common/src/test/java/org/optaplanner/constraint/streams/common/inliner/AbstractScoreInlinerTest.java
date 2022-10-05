@@ -1,15 +1,11 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraint;
 import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
@@ -20,11 +16,6 @@ public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<S
             new TestConstraintFactory<>(buildSolutionDescriptor());
 
     abstract protected SolutionDescriptor<Solution_> buildSolutionDescriptor();
-
-    protected Map<Constraint, Score_> getConstaintToWeightMap(TestConstraint<Solution_, Score_>... constraint) {
-        return Arrays.stream(constraint)
-                .collect(Collectors.toMap(c -> c, c -> c.extractConstraintWeight(null)));
-    }
 
     protected TestConstraint<Solution_, Score_> buildConstraint(Score_ constraintWeight) {
         return new TestConstraint<>(constraintFactory, "Test Constraint", constraintWeight);
@@ -66,7 +57,7 @@ public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<S
         protected TestConstraint(TestConstraintFactory<Solution_, Score_> constraintFactory, String constraintName,
                 Score_ constraintWeight) {
             super(constraintFactory, constraintFactory.getDefaultConstraintPackage(), constraintName,
-                    solution -> constraintWeight, ScoreImpactType.REWARD, false);
+                    solution -> constraintWeight, ScoreImpactType.REWARD, false, null, null);
         }
     }
 

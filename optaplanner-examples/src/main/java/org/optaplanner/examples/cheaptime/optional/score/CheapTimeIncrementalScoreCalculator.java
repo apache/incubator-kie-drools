@@ -1,7 +1,6 @@
 package org.optaplanner.examples.cheaptime.optional.score;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -545,36 +544,31 @@ public class CheapTimeIncrementalScoreCalculator
                 for (int i = 0; i < machinePeriod.resourceAvailableList.length; i++) {
                     int resourceAvailable = machinePeriod.resourceAvailableList[i];
                     if (resourceAvailable < 0) {
-                        resourceCapacityMatchTotal.addConstraintMatch(
-                                Arrays.asList(machine, period, resourceList.get(i)),
+                        resourceCapacityMatchTotal.addConstraintMatch(List.of(machine, period, resourceList.get(i)),
                                 HardMediumSoftLongScore.of(resourceAvailable, 0, 0));
                     }
                 }
                 if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
-                    spinUpDownMatchTotal.addConstraintMatch(
-                            Arrays.asList(machine, period),
+                    spinUpDownMatchTotal.addConstraintMatch(List.of(machine, period),
                             HardMediumSoftLongScore.of(0, -machine.getSpinUpDownCostMicros(), 0));
                     taskConsumptionWeight += machine.getSpinUpDownCostMicros();
                 }
                 if (machinePeriod.status != MachinePeriodStatus.OFF) {
-                    machineConsumptionMatchTotal.addConstraintMatch(
-                            Arrays.asList(machine, period),
+                    machineConsumptionMatchTotal.addConstraintMatch(List.of(machine, period),
                             HardMediumSoftLongScore.of(0, -machinePeriod.machineCostMicros, 0));
                     taskConsumptionWeight += machinePeriod.machineCostMicros;
                 }
             }
         }
         // Individual taskConsumption isn't tracked for performance
-        taskConsumptionMatchTotal.addConstraintMatch(
-                Collections.emptyList(),
+        taskConsumptionMatchTotal.addConstraintMatch(Collections.emptyList(),
                 HardMediumSoftLongScore.of(0, taskConsumptionWeight, 0));
         // Individual taskStartPeriod isn't tracked for performance
         // but we mimic it
         for (TaskAssignment taskAssignment : cheapTimeSolution.getTaskAssignmentList()) {
             Integer startPeriod = taskAssignment.getStartPeriod();
             if (startPeriod != null) {
-                minimizeTaskStartPeriodMatchTotal.addConstraintMatch(
-                        Collections.singletonList(taskAssignment),
+                minimizeTaskStartPeriodMatchTotal.addConstraintMatch(List.of(taskAssignment),
                         HardMediumSoftLongScore.of(0, 0, -startPeriod));
             }
 

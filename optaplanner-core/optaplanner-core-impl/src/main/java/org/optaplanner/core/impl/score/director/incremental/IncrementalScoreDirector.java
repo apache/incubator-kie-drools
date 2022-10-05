@@ -116,12 +116,13 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatch.getJustificationList().stream()
-                        .distinct() // One match might have the same justification twice
-                        .forEach(justification -> {
-                            DefaultIndictment<Score_> indictment = (DefaultIndictment<Score_>) indictmentMap
-                                    .computeIfAbsent(justification,
-                                            k -> new DefaultIndictment<>(justification, zeroScore));
+                constraintMatch.getIndictedObjectList()
+                        .stream()
+                        .distinct() // One match might have the same indictment twice.
+                        .forEach(fact -> {
+                            DefaultIndictment<Score_> indictment =
+                                    (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(fact,
+                                            k -> new DefaultIndictment<>(fact, zeroScore));
                             indictment.addConstraintMatch(constraintMatch);
                         });
             }

@@ -16,6 +16,28 @@ If you want to learn more about the operator, follow the https://github.com/kieg
 [[releaseNotes-8.29.0.Final]]
 === OptaPlanner 8.29.0.Final
 
+==== Custom justifications and indictments in Constraint Streams
+
+With a new Constraint Streams API, it is now easy to define custom constraint justifications and indictments in your constraints:
+
+[source,java,options="nowrap"]
+----
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
+                .groupBy(Customer::getVehicle, sum(Customer::getDemand))
+                .filter((vehicle, demand) -> demand > vehicle.getCapacity())
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .justifyWith((vehicle, demand, score) ->
+                    new VehicleDemandOveruse(vehicle, demand, score))
+                .indictWith((vehicle, demand) -> List.of(vehicle))
+                .asConstraint("vehicleCapacity");
+    }
+----
+
+Note the new methods: `justifyWith(...)` and `indictWith(...)`. To find out more, see xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[customizing justifications and indictments].
+
 ==== Compatible with JDK 19
 
 https://jdk.java.net/19/[OpenJDK 19] was recently released and OptaPlanner is fully compatible with it.

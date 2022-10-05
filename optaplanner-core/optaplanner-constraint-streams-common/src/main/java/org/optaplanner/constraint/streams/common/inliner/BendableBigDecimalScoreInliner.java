@@ -47,7 +47,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                             }
                             Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                                     BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                                    justificationsSupplier.get());
+                                    justificationsSupplier);
                             return () -> {
                                 undoScoreImpact.run();
                                 undoConstraintMatch.run();
@@ -66,7 +66,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                             }
                             Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                                     BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                                    justificationsSupplier.get());
+                                    justificationsSupplier);
                             return () -> {
                                 undoScoreImpact.run();
                                 undoConstraintMatch.run();
@@ -98,8 +98,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                             return undoScoreImpact;
                         }
                         Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                BendableBigDecimalScore.of(hardImpacts, softImpacts),
-                                justificationsSupplier.get());
+                                BendableBigDecimalScore.of(hardImpacts, softImpacts), justificationsSupplier);
                         return () -> {
                             undoScoreImpact.run();
                             undoConstraintMatch.run();

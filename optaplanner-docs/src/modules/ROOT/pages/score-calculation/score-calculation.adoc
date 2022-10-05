@@ -1202,6 +1202,13 @@ Do not attempt to parse this string or use it in your UI or exposed services.
 Instead use the ConstraintMatch API below and do it properly.
 ====
 
+In the string above, there are two previously unexplained concepts.
+
+_Justifications_ are user-defined objects that implement the `org.optaplanner.core.api.score.stream.ConstraintJustification` interface,
+which carry meaningful information about a constraint match, such as its package, name and score.
+
+On the other hand, _indicted objects_ are objects which were directly involved in causing a constraint to match. For example, if your constraints penalize each vehicle, then there will be one `org.optaplanner.core.api.score.constraint.Indictment` instance per vehicle, carrying the vehicle as an indicted object. Indictments are typically used for xref:indictmentHeatMap[heat map visualization].
+
 [[usingScoreCalculationOutsideTheSolver]]
 === Using score calculation outside the `Solver`
 
@@ -1224,8 +1231,35 @@ Furthermore, the `ScoreExplanation` can help explain the score through constrain
 
 image::score-calculation/scoreVisualization.png[align="center"]
 
+
+[[constraintJustification]]
+=== Break down the score by constraint justification
+
+Each constraint may be justified by a different `ConstraintJustification` implementation, but you can also choose to share them among constraints.
+To receive all constraint justifications regardless of their type, call:
+
+[source,java,options="nowrap"]
+----
+List<ConstraintJustification> constraintJustificationlist = scoreExplanation.getJustificationList();
+...
+----
+
+
+In score DRL, justifications are always instances of
+`org.optaplanner.core.api.score.stream.DefaultConstraintJustification`,
+while in xref:constraint-streams/constraint-streams.adoc[constraint streams], the return type xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[can be customised],
+so that it can be easily serialized and sent over the wire.
+Such custom justifications can be queried like so:
+
+[source,java,options="nowrap"]
+----
+List<MyConstraintJustification> constraintJustificationlist = scoreExplanation.getJustificationList(MyConstraintJustification.class);
+...
+----
+
+
 [[constraintMatchTotal]]
-=== Constraint match total: break down the score by constraint
+=== Break down the score by constraint
 
 To break down the score per constraint, get the ``ConstraintMatchTotal``s from the ``ScoreExplanation``:
 
@@ -1238,7 +1272,7 @@ for (ConstraintMatchTotal<HardSoftScore> constraintMatchTotal : constraintMatchT
     HardSoftScore totalScore = constraintMatchTotal.getScore();
 
     for (ConstraintMatch<HardSoftScore> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-        List<Object> justificationList = constraintMatch.getJustificationList();
+        ConstraintJustification justification = constraintMatch.getJustification();
         HardSoftScore score = constraintMatch.getScore();
         ...
     }

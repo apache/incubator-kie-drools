@@ -25,7 +25,7 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
                 return undoScoreImpact;
             }
             Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                    SimpleBigDecimalScore.of(impact), justificationsSupplier.get());
+                    SimpleBigDecimalScore.of(impact), justificationsSupplier);
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

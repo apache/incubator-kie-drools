@@ -68,12 +68,11 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
      * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
-     * it is a {@link Score} total for each justification {@link Object}
-     * in {@link ConstraintMatch#getJustificationList()}.
+     * it is a {@link Score} total for each {@link ConstraintMatch#getJustification() constraint justification}.
      * <p>
      * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #calculateScore()}
      * because each {@link ConstraintMatch#getScore()} is counted
-     * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * for each {@link ConstraintMatch#getJustification() constraint justification}.
      * <p>
      * Call {@link #calculateScore()} before calling this method,
      * unless that method has already been called since the last {@link PlanningVariable} changes.

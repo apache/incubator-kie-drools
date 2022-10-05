@@ -28,7 +28,7 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftScore.ofHard(hardImpact), justificationsSupplier.get());
+                        HardMediumSoftScore.ofHard(hardImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -43,7 +43,7 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftScore.ofMedium(mediumImpact), justificationsSupplier.get());
+                        HardMediumSoftScore.ofMedium(mediumImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -58,7 +58,7 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftScore.ofSoft(softImpact), justificationsSupplier.get());
+                        HardMediumSoftScore.ofSoft(softImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -81,8 +81,7 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftScore.of(hardImpact, mediumImpact, softImpact),
-                        justificationsSupplier.get());
+                        HardMediumSoftScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

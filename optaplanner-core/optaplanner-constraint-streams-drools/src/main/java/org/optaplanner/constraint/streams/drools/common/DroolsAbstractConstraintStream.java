@@ -27,15 +27,21 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     }
 
     protected Constraint buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
+            ScoreImpactType impactType, Object justificationMapping, Object indictedObjectsMapping,
+            RuleBuilder<Solution_> ruleBuilder) {
         var resolvedConstraintPackage =
                 Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
+        var resolvedJustificationMapping =
+                Objects.requireNonNullElseGet(justificationMapping, this::getDefaultJustificationMapping);
+        var resolvedIndictedObjectsMapping =
+                Objects.requireNonNullElseGet(indictedObjectsMapping, this::getDefaultIndictedObjectsMapping);
         var isConstraintWeightConfigurable = constraintWeight == null;
         var constraintWeightExtractor = isConstraintWeightConfigurable
                 ? buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName)
                 : buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName, constraintWeight);
         return new DroolsConstraint<>(constraintFactory, resolvedConstraintPackage, constraintName, constraintWeightExtractor,
-                impactType, isConstraintWeightConfigurable, ruleBuilder);
+                impactType, isConstraintWeightConfigurable, ruleBuilder, resolvedJustificationMapping,
+                resolvedIndictedObjectsMapping);
     }
 
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {

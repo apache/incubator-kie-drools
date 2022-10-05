@@ -3,7 +3,9 @@ package org.optaplanner.constraint.streams.drools.uni;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -24,6 +26,7 @@ import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 import org.optaplanner.constraint.streams.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.constraint.streams.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -281,33 +284,43 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToIntFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    private UniConstraintBuilderImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> UniConstraintBuilderImpl<A, Score_> newTerminator(RuleBuilder<Solution_> ruleBuilder,
+            Score_ constraintWeight, ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToLongFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToLongFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            Function<A, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return InnerUniConstraintStream.getDefaultJustificationMapping();
+    }
+
+    @Override
+    protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerUniConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract UniLeftHandSide<A> getLeftHandSide();

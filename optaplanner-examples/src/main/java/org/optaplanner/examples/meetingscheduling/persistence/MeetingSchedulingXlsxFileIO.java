@@ -964,9 +964,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .reduce(HardMediumSoftScore::add)
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()
-                                .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
-                                .filter(justification -> justification instanceof MeetingAssignment
-                                        && justification != meetingAssignment)
+                                .flatMap(constraintMatch -> constraintMatch.getIndictedObjectList().stream())
+                                .filter(indictedObject -> indictedObject instanceof MeetingAssignment
+                                        && indictedObject != meetingAssignment)
                                 .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId()))
                                 .collect(joining(", "));
                         commentString.append("\n    ").append(sum.toShortString())

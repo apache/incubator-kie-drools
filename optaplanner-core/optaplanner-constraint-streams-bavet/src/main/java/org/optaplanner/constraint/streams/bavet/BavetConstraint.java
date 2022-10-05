@@ -16,10 +16,10 @@ public final class BavetConstraint<Solution_>
 
     public BavetConstraint(BavetConstraintFactory<Solution_> constraintFactory, String constraintPackage,
             String constraintName, Function<Solution_, Score<?>> constraintWeightExtractor,
-            ScoreImpactType scoreImpactType, boolean isConstraintWeightConfigurable,
-            BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
+            ScoreImpactType scoreImpactType, Object justificationMapping, Object indictedObjectsMapping,
+            boolean isConstraintWeightConfigurable, BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         super(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor, scoreImpactType,
-                isConstraintWeightConfigurable);
+                isConstraintWeightConfigurable, justificationMapping, indictedObjectsMapping);
         this.scoringConstraintStream = scoringConstraintStream;
     }
 

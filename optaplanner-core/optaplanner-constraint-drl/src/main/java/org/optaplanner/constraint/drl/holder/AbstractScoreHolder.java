@@ -267,7 +267,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
                 for (DefaultIndictment<Score_> indictment : indictmentList) {
                     indictment.removeConstraintMatch(constraintMatch);
                     if (indictment.getConstraintMatchSet().isEmpty()) {
-                        indictmentMap.remove(indictment.getJustification());
+                        indictmentMap.remove(indictment.getIndictedObject());
                     }
                 }
             }

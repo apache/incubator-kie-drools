@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.common.inliner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -12,8 +11,6 @@ import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalS
 
 class SimpleBigDecimalScoreInlinerTest
         extends AbstractScoreInlinerTest<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> {
-
-    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
     void defaultScore() {
@@ -30,11 +27,11 @@ class SimpleBigDecimalScoreInlinerTest
         SimpleBigDecimalScore constraintWeight = SimpleBigDecimalScore.of(BigDecimal.valueOf(10));
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20), EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20), JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(300)));
 

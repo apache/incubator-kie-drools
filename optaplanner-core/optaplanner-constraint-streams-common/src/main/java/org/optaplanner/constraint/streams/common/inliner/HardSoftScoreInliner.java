@@ -26,7 +26,7 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardSoftScore.ofHard(hardImpact), justificationsSupplier.get());
+                        HardSoftScore.ofHard(hardImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -41,7 +41,7 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardSoftScore.ofSoft(softImpact), justificationsSupplier.get());
+                        HardSoftScore.ofSoft(softImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();
@@ -61,7 +61,7 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardSoftScore.of(hardImpact, softImpact), justificationsSupplier.get());
+                        HardSoftScore.of(hardImpact, softImpact), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

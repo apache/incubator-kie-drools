@@ -23,3 +23,4 @@
 * xref:integration/integration.adoc[leveloffset=+1]
 * xref:design-patterns/design-patterns.adoc[leveloffset=+1]
 * xref:development/development.adoc[leveloffset=+1]
+* xref:release-notes/release-notes.adoc[leveloffset=+1]

@@ -2,16 +2,12 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
 
 class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoftScoreSolution, HardSoftScore> {
-
-    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
     void defaultScore() {
@@ -28,11 +24,11 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
         HardSoftScore constraintWeight = HardSoftScore.ofHard(90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(90, 0));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(270, 0));
 
@@ -53,11 +49,11 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
         HardSoftScore constraintWeight = HardSoftScore.ofSoft(90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(0, 90));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(0, 270));
 
@@ -78,11 +74,11 @@ class HardSoftScoreInlinerTest extends AbstractScoreInlinerTest<TestdataHardSoft
         HardSoftScore constraintWeight = HardSoftScore.of(10, 100);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(100, 1_000));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, EMPTY_JUSTIFICATIONS_SUPPLIER);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardSoftScore.of(300, 3_000));
 

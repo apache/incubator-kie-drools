@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.score.constraint;
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,8 @@ import java.util.Set;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 
 public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> implements ConstraintMatchTotal<Score_>,
         Comparable<DefaultConstraintMatchTotal<Score_>> {
@@ -66,10 +69,34 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch<Score_> addConstraintMatch(List<Object> justificationList, Score_ score) {
+    /**
+     * Creates a {@link ConstraintMatch} and adds it to the collection returned by {@link #getConstraintMatchSet()}.
+     * It will use {@link DefaultConstraintJustification},
+     * whose {@link DefaultConstraintJustification#getFacts()} method will return the given list of justifications.
+     * Additionally, the constraint match will indict the objects in the given list of justifications.
+     *
+     * @param justifications never null, never empty
+     * @param score never null
+     * @return never null
+     */
+    public ConstraintMatch<Score_> addConstraintMatch(List<Object> justifications, Score_ score) {
+        return addConstraintMatch(DefaultConstraintJustification.of(score, justifications), justifications, score);
+    }
+
+    /**
+     * Creates a {@link ConstraintMatch} and adds it to the collection returned by {@link #getConstraintMatchSet()}.
+     * It will the provided {@link ConstraintJustification}.
+     * Additionally, the constraint match will indict the objects in the given list of indicted objects.
+     *
+     * @param indictedObjects never null, may be empty
+     * @param score never null
+     * @return never null
+     */
+    public ConstraintMatch<Score_> addConstraintMatch(ConstraintJustification justification, Collection<Object> indictedObjects,
+            Score_ score) {
         this.score = this.score == null ? score : this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
-                justificationList, score);
+                justification, indictedObjects, score);
         constraintMatchSet.add(constraintMatch);
         return constraintMatch;
     }

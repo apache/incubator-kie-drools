@@ -54,8 +54,7 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
-            return new DefaultScoreExplanation<>(solution, scoreDirector.calculateScore(),
-                    scoreDirector.getConstraintMatchTotalMap(), scoreDirector.getIndictmentMap());
+            return new DefaultScoreExplanation<>(scoreDirector);
         }
     }
 }

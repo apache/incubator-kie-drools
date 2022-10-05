@@ -3,7 +3,7 @@ package org.optaplanner.core.api.score.stream;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public interface ConstraintBuilder<ConstraintBuilder_ extends ConstraintBuilder<ConstraintBuilder_>> {
+public interface ConstraintBuilder {
 
     /**
      * Builds a {@link Constraint} from the constraint stream.

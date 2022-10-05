@@ -1,33 +1,46 @@
 package org.optaplanner.core.impl.score.constraint;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 public final class DefaultIndictment<Score_ extends Score<Score_>> implements Indictment<Score_> {
 
-    private final Object justification;
-
-    private final Set<ConstraintMatch<Score_>> constraintMatchSet;
+    private final Object indictedObject;
+    private final Set<ConstraintMatch<Score_>> constraintMatchSet = new LinkedHashSet<>();
+    private List<ConstraintJustification> constraintJustificationList;
     private Score_ score;
 
-    public DefaultIndictment(Object justification, Score_ zeroScore) {
-        this.justification = justification;
-        constraintMatchSet = new LinkedHashSet<>();
-        score = zeroScore;
+    public DefaultIndictment(Object indictedObject, Score_ zeroScore) {
+        this.indictedObject = indictedObject;
+        this.score = zeroScore;
     }
 
     @Override
-    public Object getJustification() {
-        return justification;
+    public <IndictedObject_> IndictedObject_ getIndictedObject() {
+        return (IndictedObject_) indictedObject;
     }
 
     @Override
     public Set<ConstraintMatch<Score_>> getConstraintMatchSet() {
         return constraintMatchSet;
+    }
+
+    @Override
+    public List<ConstraintJustification> getJustificationList() {
+        if (constraintJustificationList == null) {
+            constraintJustificationList = constraintMatchSet.stream()
+                    .map(s -> (ConstraintJustification) s.getJustification())
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+        return constraintJustificationList;
     }
 
     @Override
@@ -47,6 +60,7 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
                     + ") could not add constraintMatch (" + constraintMatch
                     + ") to its constraintMatchSet (" + constraintMatchSet + ").");
         }
+        constraintJustificationList = null; // Rebuild later.
     }
 
     public void removeConstraintMatch(ConstraintMatch<Score_> constraintMatch) {
@@ -57,6 +71,7 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }
+        constraintJustificationList = null; // Rebuild later.
     }
 
     // ************************************************************************
@@ -69,7 +84,7 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
             return true;
         } else if (o instanceof DefaultIndictment) {
             DefaultIndictment<Score_> other = (DefaultIndictment<Score_>) o;
-            return justification.equals(other.justification);
+            return indictedObject.equals(other.indictedObject);
         } else {
             return false;
         }
@@ -77,12 +92,12 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
 
     @Override
     public int hashCode() {
-        return justification.hashCode();
+        return indictedObject.hashCode();
     }
 
     @Override
     public String toString() {
-        return justification + "=" + score;
+        return indictedObject + "=" + score;
     }
 
 }

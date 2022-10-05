@@ -1,14 +1,19 @@
 package org.optaplanner.core.api.score;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 
 /**
  * Build by {@link ScoreManager#explainScore(Object)} to hold {@link ConstraintMatchTotal}s and {@link Indictment}s
@@ -51,9 +56,9 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
     String getSummary();
 
     /**
-     * Explains the {@link Score} of {@link #getScore()} ()} by splitting it up per {@link Constraint}.
+     * Explains the {@link Score} of {@link #getScore()} by splitting it up per {@link Constraint}.
      * <p>
-     * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #getScore()} ()}.
+     * The sum of {@link ConstraintMatchTotal#getScore()} equals {@link #getScore()}.
      *
      * @return never null, the key is the {@link ConstraintMatchTotal#getConstraintId() constraintId}
      *         (to create one, use {@link ConstraintMatchTotal#composeConstraintId(String, String)}).
@@ -62,14 +67,58 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
     Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
+     * Explains the {@link Score} of {@link #getScore()} for all constraints.
+     * The return value of this method is determined by several factors:
+     *
+     * <ul>
+     * <li>
+     * With Constraint Streams, the user has an option to provide a custom justification mapping,
+     * implementing {@link ConstraintJustification}.
+     * If provided, every {@link ConstraintMatch} of such constraint will be associated with this custom justification class.
+     * Every constraint not associated with a custom justification class
+     * will be associated with {@link DefaultConstraintJustification}.
+     * </li>
+     * <li>
+     * With {@link ConstraintMatchAwareIncrementalScoreCalculator},
+     * every {@link ConstraintMatch} will be associated with the justification class that the user created it with.
+     * </li>
+     * <li>
+     * With score DRL, every {@link ConstraintMatch} will be associated with {@link DefaultConstraintJustification}.
+     * </li>
+     * </ul>
+     *
+     * @return never null, all constraint matches
+     * @see #getIndictmentMap()
+     */
+    List<ConstraintJustification> getJustificationList();
+
+    /**
+     * Explains the {@link Score} of {@link #getScore()} for all constraints
+     * justified with a given {@link ConstraintJustification} type.
+     * Otherwise, as defined by {@link #getJustificationList()}.
+     *
+     * @param constraintJustificationClass never null
+     * @return never null, all constraint matches associated with the given justification class
+     * @see #getIndictmentMap()
+     */
+    default <ConstraintJustification_ extends ConstraintJustification> List<ConstraintJustification_>
+            getJustificationList(Class<? extends ConstraintJustification_> constraintJustificationClass) {
+        return getJustificationList()
+                .stream()
+                .filter(constraintJustification -> constraintJustificationClass
+                        .isAssignableFrom(constraintJustification.getClass()))
+                .map(constraintJustification -> (ConstraintJustification_) constraintJustification)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
      * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
-     * it is a {@link Score} total for each justification {@link Object}
-     * in {@link ConstraintMatch#getJustificationList()}.
+     * it is a {@link Score} total for any of the {@link ConstraintMatch#getIndictedObjectList() indicted objects}.
      * <p>
-     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #getScore()} ()}
+     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #getScore()}
      * because each {@link ConstraintMatch#getScore()} is counted
-     * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * for each of the {@link ConstraintMatch#getIndictedObjectList() indicted objects}.
      *
      * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a
      *         {@link PlanningEntity planning entity}

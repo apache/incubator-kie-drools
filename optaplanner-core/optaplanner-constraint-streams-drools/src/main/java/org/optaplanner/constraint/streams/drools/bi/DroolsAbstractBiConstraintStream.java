@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.bi;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -26,7 +27,9 @@ import org.optaplanner.constraint.streams.drools.tri.DroolsJoinTriConstraintStre
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintBuilder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -274,33 +277,43 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            ToIntBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    private BiConstraintBuilderImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> BiConstraintBuilderImpl<A, B, Score_> newTerminator(
+            RuleBuilder<Solution_> ruleBuilder, Score_ constraintWeight, ScoreImpactType impactType) {
         return new BiConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return InnerBiConstraintStream.getDefaultJustificationMapping();
+    }
+
+    @Override
+    protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerBiConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();

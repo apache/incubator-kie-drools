@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.common;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.assertj.core.api.SoftAssertions;
@@ -10,6 +11,7 @@ import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.ScoreManagerTest.ScoreManagerSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -52,6 +54,11 @@ public abstract class AbstractScoreManagerTest {
                     .isNotEmpty();
             softly.assertThat(scoreExplanation.getIndictmentMap())
                     .isNotEmpty();
+            List<DefaultConstraintJustification> constraintJustificationList = (List) scoreExplanation.getJustificationList();
+            softly.assertThat(constraintJustificationList)
+                    .isNotEmpty();
+            softly.assertThat(scoreExplanation.getJustificationList(DefaultConstraintJustification.class))
+                    .containsExactlyElementsOf(constraintJustificationList);
         });
     }
 

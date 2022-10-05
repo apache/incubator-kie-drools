@@ -2,10 +2,10 @@ package org.optaplanner.constraint.streams.common.quad;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
 import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDistinct;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countQuad;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.max;
@@ -15,6 +15,9 @@ import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -23,16 +26,19 @@ import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamTest;
 import org.optaplanner.constraint.streams.common.ConstraintStreamFunctionalTest;
 import org.optaplanner.constraint.streams.common.ConstraintStreamImplSupport;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleLongScoreSolution;
@@ -1329,218 +1335,710 @@ public abstract class AbstractQuadConstraintStreamTest
 
     @Override
     @TestTemplate
-    public void penalize_Int() {
-        TestdataSolution solution = new TestdataSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(singletonList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
+    public void penalizeUnweighted() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                TestdataSolution.buildSolutionDescriptor(),
-                factory -> {
-                    QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
-                            .forEachUniquePair(TestdataEntity.class)
-                            .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                            .join(TestdataValue.class);
-                    return new Constraint[] {
-                            base.penalize(SimpleScore.ONE)
-                                    .asConstraint("myConstraint1"),
-                            base.penalize(SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
-                                    .asConstraint("myConstraint2")
-                    };
-                });
-
-        scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-21));
-    }
-
-    @Override
-    @TestTemplate
-    public void penalize_Long() {
-        TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(asList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
-
-        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
-                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
-                factory -> {
-                    QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
-                            .forEachUniquePair(TestdataEntity.class)
-                            .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                            .join(TestdataValue.class);
-                    return new Constraint[] {
-                            base.penalize(SimpleLongScore.ONE)
-                                    .asConstraint("myConstraint1"),
-                            base.penalizeLong(SimpleLongScore.ONE,
-                                    (entity1, entity2, value, extra) -> 20L)
-                                    .asConstraint("myConstraint2")
-                    };
-                });
-
-        scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-21L));
-    }
-
-    @Override
-    @TestTemplate
-    public void penalize_BigDecimal() {
-        TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(asList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
-
-        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(
-                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
-                        factory -> {
-                            QuadConstraintStream<TestdataEntity, TestdataEntity, TestdataValue, TestdataValue> base = factory
-                                    .forEachUniquePair(TestdataEntity.class)
-                                    .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                    .join(TestdataValue.class);
-                            return new Constraint[] {
-                                    base.penalize(SimpleBigDecimalScore.ONE)
-                                            .asConstraint("myConstraint1"),
-                                    base.penalizeBigDecimal(SimpleBigDecimalScore.ONE,
-                                            (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
-                                            .asConstraint("myConstraint2")
-                            };
-                        });
-
-        scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("-1.2")));
-    }
-
-    @Override
-    @TestTemplate
-    public void penalize_negative() {
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
-
-        String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
-                        .join(TestdataLavishEntityGroup.class)
-                        .join(TestdataLavishValue.class)
-                        .penalize(SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
-                        .asConstraint(constraintName));
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .penalize(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
-        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-2));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    private <Score_ extends Score<Score_>, Solution_, Entity_, Value_> void assertDefaultJustifications(
+            InnerScoreDirector<Solution_, Score_> scoreDirector, List<Entity_> entityList, List<Value_> valueList) {
+        if (!implSupport.isConstreamMatchEnabled())
+            return;
+
+        assertThat(scoreDirector.getIndictmentMap())
+                .containsOnlyKeys(entityList.get(0),
+                        entityList.get(1),
+                        entityList.get(5),
+                        entityList.get(6),
+                        valueList.get(0),
+                        valueList.get(1));
+
+        String constraintFqn =
+                ConstraintMatchTotal.composeConstraintId(scoreDirector.getSolutionDescriptor()
+                        .getSolutionClass().getPackageName(), TEST_CONSTRAINT_NAME);
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
+        assertThat(constraintMatchTotalMap)
+                .containsOnlyKeys(constraintFqn);
+        ConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.get(constraintFqn);
+        assertThat(constraintMatchTotal.getConstraintMatchSet())
+                .hasSize(2);
+        List<ConstraintMatch<Score_>> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
+        for (int i = 0; i < 2; i++) {
+            ConstraintMatch<Score_> constraintMatch = constraintMatchList.get(i);
+            assertSoftly(softly -> {
+                ConstraintJustification justification = constraintMatch.getJustification();
+                softly.assertThat(justification)
+                        .isInstanceOf(DefaultConstraintJustification.class);
+                DefaultConstraintJustification castJustification =
+                        (DefaultConstraintJustification) justification;
+                softly.assertThat(castJustification.getFacts())
+                        .hasSize(4);
+                softly.assertThat(constraintMatch.getIndictedObjectList())
+                        .hasSize(4);
+            });
+        }
     }
 
     @Override
     @TestTemplate
-    public void reward_Int() {
-        TestdataSolution solution = new TestdataSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(asList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
+    public void penalize() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                TestdataSolution.buildSolutionDescriptor(),
-                factory -> new Constraint[] {
-                        factory.forEachUniquePair(TestdataEntity.class)
-                                .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                .join(TestdataValue.class)
-                                .reward(SimpleScore.ONE)
-                                .asConstraint("myConstraint1"),
-                        factory.forEachUniquePair(TestdataEntity.class)
-                                .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                .join(TestdataValue.class)
-                                .reward(SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
-                                .asConstraint("myConstraint2")
-                });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .penalize(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(21));
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
     }
 
     @Override
     @TestTemplate
-    public void reward_Long() {
-        TestdataSimpleLongScoreSolution solution = new TestdataSimpleLongScoreSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(asList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
+    public void penalizeLong() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
-                        factory.forEachUniquePair(TestdataEntity.class)
-                                .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                .join(TestdataValue.class)
-                                .reward(SimpleLongScore.ONE)
-                                .asConstraint("myConstraint1"),
-                        factory.forEachUniquePair(TestdataEntity.class)
-                                .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                .join(TestdataValue.class)
-                                .rewardLong(SimpleLongScore.ONE,
-                                        (entity1, entity2, value, extra) -> 20L)
-                                .asConstraint("myConstraint2")
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .penalizeLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(21L));
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
     }
 
     @Override
     @TestTemplate
-    public void reward_BigDecimal() {
-        TestdataSimpleBigDecimalScoreSolution solution = new TestdataSimpleBigDecimalScoreSolution();
-        TestdataValue v1 = new TestdataValue("v1");
-        solution.setValueList(asList(v1));
-        TestdataEntity e1 = new TestdataEntity("e1", v1);
-        TestdataEntity e2 = new TestdataEntity("e2", v1);
-        solution.setEntityList(asList(e1, e2));
+    public void penalizeBigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
 
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
-                buildScoreDirector(
-                        TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] {
-                                factory.forEachUniquePair(TestdataEntity.class)
-                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                        .join(TestdataValue.class)
-                                        .reward(SimpleBigDecimalScore.ONE)
-                                        .asConstraint("myConstraint1"),
-                                factory.forEachUniquePair(TestdataEntity.class)
-                                        .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
-                                        .join(TestdataValue.class)
-                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
-                                                (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
-                                        .asConstraint("myConstraint2")
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
-        assertThat(scoreDirector.calculateScore())
-                .isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("1.2")));
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
     }
 
     @Override
     @TestTemplate
-    public void reward_negative() {
-        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 2);
+    public void rewardUnweighted() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
 
-        String constraintName = "myConstraint";
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
-                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
-                        .join(TestdataLavishEntityGroup.class)
-                        .join(TestdataLavishValue.class)
-                        .reward(SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
-                        .asConstraint(constraintName));
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .reward(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
-        assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void reward() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .reward(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardLong() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .rewardLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardBigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveUnweighted() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositive() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveLong() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveBigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegative() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> -2)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegativeLong() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegativeBigDecimal() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(-2))
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
+        assertDefaultJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void penalizeUnweightedCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .penalize(SimpleScore.ONE)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-2));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    private <Score_ extends Score<Score_>, Solution_, Entity_, Value_> void assertCustomJustifications(
+            InnerScoreDirector<Solution_, Score_> scoreDirector, List<Entity_> entityList, List<Value_> valueList) {
+        if (!implSupport.isConstreamMatchEnabled())
+            return;
+
+        assertThat(scoreDirector.getIndictmentMap())
+                .containsOnlyKeys(entityList.get(0),
+                        entityList.get(1),
+                        entityList.get(5),
+                        entityList.get(6),
+                        valueList.get(0),
+                        valueList.get(1));
+
+        String constraintFqn =
+                ConstraintMatchTotal.composeConstraintId(scoreDirector.getSolutionDescriptor()
+                        .getSolutionClass().getPackageName(), TEST_CONSTRAINT_NAME);
+        Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
+        assertThat(constraintMatchTotalMap)
+                .containsOnlyKeys(constraintFqn);
+        ConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.get(constraintFqn);
+        assertThat(constraintMatchTotal.getConstraintMatchSet())
+                .hasSize(2);
+        List<ConstraintMatch<Score_>> constraintMatchList = new ArrayList<>(constraintMatchTotal.getConstraintMatchSet());
+        for (int i = 0; i < 2; i++) {
+            ConstraintMatch<Score_> constraintMatch = constraintMatchList.get(i);
+            assertSoftly(softly -> {
+                ConstraintJustification justification = constraintMatch.getJustification();
+                softly.assertThat(justification)
+                        .isInstanceOf(TestConstraintJustification.class);
+                TestConstraintJustification<Score_> castJustification =
+                        (TestConstraintJustification<Score_>) justification;
+                softly.assertThat(castJustification.getFacts())
+                        .hasSize(4);
+                softly.assertThat(constraintMatch.getIndictedObjectList())
+                        .hasSize(4);
+            });
+        }
+    }
+
+    @Override
+    @TestTemplate
+    public void penalizeCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .penalize(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void penalizeLongCustomJustifications() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .penalizeLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                .indictWith(List::of)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void penalizeBigDecimalCustomJustifications() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .justifyWith(
+                                                (a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                        .indictWith(List::of)
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardUnweightedCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .reward(SimpleScore.ONE)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .reward(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardLongCustomJustifications() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .rewardLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                .indictWith(List::of)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void rewardBigDecimalCustomJustifications() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .justifyWith(
+                                                (a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                        .indictWith(List::of)
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveUnweightedCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(2));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveLongCustomJustifications() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                .indictWith(List::of)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactPositiveBigDecimalCustomJustifications() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .justifyWith(
+                                                (a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                        .indictWith(List::of)
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(4)));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegativeCustomJustifications() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution();
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
+                        .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                        .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> -2)
+                        .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                        .indictWith(List::of)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleScore.of(-4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegativeLongCustomJustifications() {
+        TestdataSimpleLongScoreSolution solution = TestdataSimpleLongScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleLongScoreSolution, SimpleLongScore> scoreDirector = buildScoreDirector(
+                TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
+                factory -> new Constraint[] {
+                        factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L)
+                                .justifyWith((a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                .indictWith(List::of)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
+                });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleLongScore.of(-4));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
+    }
+
+    @Override
+    @TestTemplate
+    public void impactNegativeBigDecimalCustomJustifications() {
+        TestdataSimpleBigDecimalScoreSolution solution = TestdataSimpleBigDecimalScoreSolution.generateSolution();
+
+        InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
+                buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
+                        factory -> new Constraint[] {
+                                factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
+                                        .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
+                                        .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
+                                                (entity, entity2, value, value2) -> BigDecimal.valueOf(-2))
+                                        .justifyWith(
+                                                (a, b, c, d, score) -> new TestConstraintJustification<>(score, a, b, c, d))
+                                        .indictWith(List::of)
+                                        .asConstraint(TEST_CONSTRAINT_NAME)
+                        });
+
+        scoreDirector.setWorkingSolution(solution);
+        scoreDirector.calculateScore();
+        assertThat(scoreDirector.calculateScore()).isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(-4)));
+        assertCustomJustifications(scoreDirector, solution.getEntityList(), solution.getValueList());
     }
 
 }

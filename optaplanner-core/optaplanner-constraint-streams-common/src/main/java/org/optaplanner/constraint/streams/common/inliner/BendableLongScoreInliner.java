@@ -42,7 +42,7 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
                     }
                     Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                             BendableLongScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                            justificationsSupplier.get());
+                            justificationsSupplier);
                     return () -> {
                         undoScoreImpact.run();
                         undoConstraintMatch.run();
@@ -59,7 +59,7 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
                     }
                     Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
                             BendableLongScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                            justificationsSupplier.get());
+                            justificationsSupplier);
                     return () -> {
                         undoScoreImpact.run();
                         undoConstraintMatch.run();
@@ -90,7 +90,7 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
                     return undoScoreImpact;
                 }
                 Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier.get());
+                        BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier);
                 return () -> {
                     undoScoreImpact.run();
                     undoConstraintMatch.run();

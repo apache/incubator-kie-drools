@@ -23,7 +23,7 @@ final class SimpleScoreInliner extends AbstractScoreInliner<SimpleScore> {
                 return undoScoreImpact;
             }
             Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight, SimpleScore.of(impact),
-                    justificationsSupplier.get());
+                    justificationsSupplier);
             return () -> {
                 undoScoreImpact.run();
                 undoConstraintMatch.run();

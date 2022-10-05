@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -116,21 +117,20 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
-            List<Object> justificationList) {
+            JustificationsSupplier justificationsSupplier) {
         String constraintPackage = constraint.getConstraintPackage();
         String constraintName = constraint.getConstraintName();
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
-        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
-        DefaultIndictment<Score_>[] indictments = justificationList.stream()
+        ConstraintMatch<Score_> constraintMatch =
+                constraintMatchTotal.addConstraintMatch(justificationsSupplier.createConstraintJustification(score),
+                        justificationsSupplier.createIndictedObjects(), score);
+        List<DefaultIndictment<Score_>> indictments = constraintMatch.getIndictedObjectList()
+                .stream()
                 .distinct() // One match might have the same justification twice
-                .map(justification -> {
-                    DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
-                            key -> new DefaultIndictment<>(justification, constraintMatch.getScore().zero()));
-                    indictment.addConstraintMatch(constraintMatch);
-                    return indictment;
-                }).toArray(DefaultIndictment[]::new);
+                .map(justificationPart -> processJustification(constraintMatch, justificationPart))
+                .collect(Collectors.toList());
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
             if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) {
@@ -139,10 +139,17 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
             for (DefaultIndictment<Score_> indictment : indictments) {
                 indictment.removeConstraintMatch(constraintMatch);
                 if (indictment.getConstraintMatchSet().isEmpty()) {
-                    indictmentMap.remove(indictment.getJustification());
+                    indictmentMap.remove(indictment.getIndictedObject());
                 }
             }
         };
+    }
+
+    private DefaultIndictment<Score_> processJustification(ConstraintMatch<Score_> constraintMatch, Object indictedObject) {
+        DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(indictedObject,
+                key -> new DefaultIndictment<>(indictedObject, constraintMatch.getScore().zero()));
+        indictment.addConstraintMatch(constraintMatch);
+        return indictment;
     }
 
     public final Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {

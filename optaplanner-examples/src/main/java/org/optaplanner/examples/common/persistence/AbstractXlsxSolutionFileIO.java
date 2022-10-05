@@ -4,9 +4,9 @@ import static org.optaplanner.examples.common.persistence.XSSFColorUtil.getXSSFC
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -451,7 +451,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             nextHeaderCell(constraintDescription);
         }
 
-        protected void writeScoreView(Function<List<Object>, String> justificationListFormatter) {
+        protected void writeScoreView(Function<Collection<?>, String> indictmentListFormatter) {
             nextSheet("Score view", 1, 3, true);
             nextRow();
             nextHeaderCell("Score");
@@ -516,7 +516,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                                     nextCell();
                                     nextCell(scoreStyle).setCellValue(constraintMatch.getScore().toShortString());
                                     nextCell().setCellValue(
-                                            justificationListFormatter.apply(constraintMatch.getJustificationList()));
+                                            indictmentListFormatter.apply(constraintMatch.getIndictedObjectList()));
                                 });
                     });
             autoSizeColumnsWithHeader();

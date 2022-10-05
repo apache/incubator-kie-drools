@@ -2,7 +2,9 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -24,6 +26,7 @@ import org.optaplanner.constraint.streams.common.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.uni.InnerUniConstraintStream;
 import org.optaplanner.constraint.streams.common.uni.UniConstraintBuilderImpl;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -386,33 +389,44 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToIntFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
-    private UniConstraintBuilderImpl<A> newTerminator(BavetScoringConstraintStream<Solution_> stream,
-            Score<?> constraintWeight, ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> UniConstraintBuilderImpl<A, Score_> newTerminator(
+            BavetScoringConstraintStream<Solution_> stream, Score_ constraintWeight, ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(
+                                constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                                indictedObjectsMapping, stream),
                 impactType, constraintWeight);
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToLongFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToLongFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            Function<A, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return InnerUniConstraintStream.getDefaultJustificationMapping();
+    }
+
+    @Override
+    protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerUniConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
 }
