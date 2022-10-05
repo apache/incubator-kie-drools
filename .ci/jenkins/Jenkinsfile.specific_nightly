@@ -3,7 +3,6 @@
 import org.kie.jenkins.MavenCommand
 
 optaplannerRepo = 'optaplanner'
-quickstartsRepo = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
@@ -16,26 +15,38 @@ pipeline {
     options {
         timestamps()
         timeout(time: 360, unit: 'MINUTES')
-        disableConcurrentBuilds(abortPrevious: true)
     }
     environment {
+        // QUARKUS_BRANCH should be defined directly into the job environment
+
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
     }
     stages {
         stage('Initialize') {
             steps {
                 script {
+                    checkoutQuarkusRepo()
                     checkoutOptaplannerRepo()
-                    checkoutOptaplannerQuickstartsRepo()
                 }
             }
         }
-        stage('Build optaplanner') {
+
+        stage('Build quarkus') {
+            when {
+                expression { getQuarkusBranch() }
+            }
             steps {
                 script {
-                    getNativeMavenCommand('optaplanner')
-                        .withProperty('maven.test.failure.ignore', true)
+                    checkoutQuarkusRepo()
+                    getBasicMavenCommand('quarkus')
+                        .withProperty('quickly')
                         .run('clean install')
+
+                    // Update downstream repositories dependencies
+                    mavenCompareQuarkusDependencies(optaplannerRepo, 'optaplanner-build-parent')
+                    mavenSetProperty(optaplannerRepo, 'version.io.quarkus', '999-SNAPSHOT')
                 }
             }
             post {
@@ -46,10 +57,11 @@ pipeline {
                 }
             }
         }
-        stage('Build optaplanner-quickstarts') {
+
+        stage('Build OptaPlanner') {
             steps {
                 script {
-                    getNativeMavenCommand('optaplanner-quickstarts')
+                    getFullMavenCommand(optaplannerRepo)
                         .withProperty('maven.test.failure.ignore', true)
                         .run('clean install')
                 }
@@ -64,14 +76,14 @@ pipeline {
         }
     }
     post {
+        unsuccessful {
+            sendNotification()
+        }
         always {
             script {
                 junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
                 util.archiveConsoleLog()
             }
-        }
-        unsuccessful {
-            sendErrorNotification()
         }
         cleanup {
             script {
@@ -81,8 +93,7 @@ pipeline {
     }
 }
 
-
-void sendErrorNotification() {
+void sendNotification() {
     String additionalInfo = "**[${getBuildBranch()}] Optaplanner${NOTIFICATION_JOB_NAME ? " - ${NOTIFICATION_JOB_NAME}" : ''}**"
     mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
 }
@@ -93,44 +104,68 @@ void checkoutOptaplannerRepo() {
     }
 }
 
-void checkoutOptaplannerQuickstartsRepo() {
-    // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
-    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getBuildBranch()
-
-    dir(quickstartsRepo) {
-        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
+void checkoutQuarkusRepo() {
+    dir('quarkus') {
+        checkout(githubscm.resolveRepository('quarkus', 'quarkusio', getQuarkusBranch(), false))
     }
 }
 
-String getBuildBranch() {
-    return params.BUILD_BRANCH_NAME
-}
-
-MavenCommand getMavenCommand(String directory) {
+MavenCommand getBasicMavenCommand(String directory) {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId('kogito_release_settings')
-                .withProperty('java.net.preferIPv4Stack', true)
                 .inDirectory(directory)
 }
 
-MavenCommand getNativeMavenCommand(String directory, String builderImage = getNativeBuilderImage()) {
-    def mvnCmd = getMavenCommand(directory)
-                .withProfiles(['native'])
-                .withProperty('quarkus.native.container-build', true)
-                .withProperty('quarkus.native.container-runtime', 'docker')
-                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
-    
-    if (builderImage) {
-        mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
+MavenCommand getEcosystemMavenCommand(String directory) {
+    def mvnCmd = getBasicMavenCommand(directory)
+
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
     }
 
     return mvnCmd
+}
+
+MavenCommand getFullMavenCommand(String directory) {
+    def mvnCmd = getEcosystemMavenCommand(directory)
+    if (isNative()) {
+        mvnCmd.withProfiles(['native'])
+                .withProperty('quarkus.native.container-build', true)
+                .withProperty('quarkus.native.container-runtime', 'docker')
+                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+
+        String builderImage = getNativeBuilderImage()
+        if (builderImage) {
+            mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
+        }
+    }
+    return mvnCmd
+}
+
+void mavenCompareQuarkusDependencies(String repo, String artifactId) {
+    maven.mvnCompareDependencies(getBasicMavenCommand(repo), 'io.quarkus:quarkus-bom:999-SNAPSHOT', ":${artifactId}", true, true)
+}
+
+void mavenSetProperty(String repo, String property, String newVersion) {
+    maven.mvnSetVersionProperty(getBasicMavenCommand(repo), property, newVersion)
 }
 
 void cleanContainers() {
     cloud.cleanContainersAndImages('docker')
 }
 
+boolean isNative() {
+    return env.NATIVE ? env.NATIVE.toBoolean() : false
+}
+
 String getNativeBuilderImage() {
     return env.NATIVE_BUILDER_IMAGE
+}
+
+String getQuarkusBranch() {
+    return env['QUARKUS_BRANCH'] ?: ''
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
 }
