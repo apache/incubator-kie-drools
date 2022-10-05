@@ -13,23 +13,11 @@
  * limitations under the License.
 */
 
-package test.dialect.rule.end.mine;
 
-global java.lang.String rule;
-
-import com.dialect.something.SomeClass
-
-function boolean test() {
-    return true;
-}
-
-rule type1
+rule rule1 
+  ruleflow-group "a group"
   when
-    $id : Something( duration == "foo")
+      not Cheese(type == "stilton")
   then
-      The.method();
-      int attributes = 0;
-      String rulex = "ccc";
-      Object endx = null;
+    funky();
 end
-
