@@ -13,23 +13,12 @@
  * limitations under the License.
 */
 
-package test.dialect.rule.end.mine;
+package foo
 
-global java.lang.String rule;
-
-import com.dialect.something.SomeClass
-
-function boolean test() {
-    return true;
-}
-
-rule type1
+rule rule_one 
   when
-    $id : Something( duration == "foo")
+      Foo()
   then
-      The.method();
-      int attributes = 0;
-      String rulex = "ccc";
-      Object endx = null;
+       if (speed > speedLimit ? true : false;)
+     pullEmOver();
 end
-

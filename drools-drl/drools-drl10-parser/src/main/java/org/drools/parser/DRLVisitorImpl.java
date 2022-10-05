@@ -16,6 +16,7 @@ import org.drools.drl.ast.descr.ConditionalElementDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -68,7 +69,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public Object visitImportdef(DRLParser.ImportdefContext ctx) {
         String target = ctx.drlQualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
-        if (ctx.DRL_FUNCTION() != null || ctx.DRL_STATIC() != null) {
+        if (ctx.DRL_FUNCTION() != null || ctx.STATIC() != null) {
             FunctionImportDescr functionImportDescr = new FunctionImportDescr();
             functionImportDescr.setTarget(target);
             populateStartEnd(functionImportDescr, ctx);
@@ -83,9 +84,38 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
+    public Object visitFunctiondef(DRLParser.FunctiondefContext ctx) {
+        FunctionDescr functionDescr = new FunctionDescr();
+        functionDescr.setNamespace(packageDescr.getNamespace());
+        AttributeDescr dialect = packageDescr.getAttribute("dialect");
+        if (dialect != null) {
+            functionDescr.setDialect(dialect.getValue());
+        }
+        if (ctx.typeTypeOrVoid() != null) {
+            functionDescr.setReturnType(ctx.typeTypeOrVoid().getText());
+        } else {
+            functionDescr.setReturnType("void");
+        }
+        functionDescr.setName(ctx.IDENTIFIER().getText());
+        DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
+        DRLParser.FormalParameterListContext formalParameterListContext = formalParametersContext.formalParameterList();
+        if (formalParameterListContext != null) {
+            List<DRLParser.FormalParameterContext> formalParameterContexts = formalParameterListContext.formalParameter();
+            formalParameterContexts.stream().forEach(formalParameterContext -> {
+                DRLParser.TypeTypeContext typeTypeContext = formalParameterContext.typeType();
+                DRLParser.VariableDeclaratorIdContext variableDeclaratorIdContext = formalParameterContext.variableDeclaratorId();
+                functionDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
+            });
+        }
+        functionDescr.setBody(ParserStringUtils.getTextPreservingWhitespace(ctx.block()));
+        packageDescr.addFunction(functionDescr);
+        return super.visitFunctiondef(ctx);
+    }
+
+    @Override
     public Object visitRuledef(DRLParser.RuledefContext ctx) {
         currentRule = new RuleDescr(safeStripStringDelimiters(ctx.name.getText()));
-        currentRule.setConsequence(ctx.rhs().getText());
+        currentRule.setConsequence(ParserStringUtils.getTextPreservingWhitespace(ctx.rhs()));
         packageDescr.addRule(currentRule);
 
         Object result = super.visitRuledef(ctx);

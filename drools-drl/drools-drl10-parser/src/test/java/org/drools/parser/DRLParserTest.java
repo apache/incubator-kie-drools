@@ -5,6 +5,7 @@ import java.util.List;
 import org.drools.drl.ast.descr.*;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.parser.DRLParserHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -60,7 +61,7 @@ public class DRLParserTest {
         ExprConstraintDescr expr = (ExprConstraintDescr) constraints.get(0);
         assertEquals("age >= 18", expr.getExpression());
 
-        assertEquals("inta=4;System.out.println($p.getName());", ruleDescr.getConsequence());
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int a = 4; System.out.println($p.getName());");
     }
 
     @Test

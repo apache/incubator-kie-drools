@@ -13,23 +13,7 @@
  * limitations under the License.
 */
 
-package test.dialect.rule.end.mine;
-
-global java.lang.String rule;
-
-import com.dialect.something.SomeClass
-
-function boolean test() {
-    return true;
-}
-
-rule type1
+rule "quoted string name"
   when
-    $id : Something( duration == "foo")
   then
-      The.method();
-      int attributes = 0;
-      String rulex = "ccc";
-      Object endx = null;
 end
-
