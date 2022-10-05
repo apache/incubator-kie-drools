@@ -56,7 +56,7 @@ public class CodegenUserTaskTest {
                 .collect(Collectors.toList());
 
         if (context.hasRESTForGenerator(codeGenerator)) {
-            assertThat(resources.size()).isEqualTo(1);
+            assertThat(resources).hasSize(1);
 
             CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));
 
@@ -70,7 +70,7 @@ public class CodegenUserTaskTest {
                             url.contains("/{id}/SecondTask/{taskId}"))
                     .orElse(true)).isTrue());
         } else {
-            assertThat(resources.size()).isZero();
+            assertThat(resources).isEmpty();
         }
 
     }

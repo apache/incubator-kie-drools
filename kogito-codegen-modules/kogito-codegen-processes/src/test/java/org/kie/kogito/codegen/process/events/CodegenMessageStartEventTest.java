@@ -62,7 +62,7 @@ public class CodegenMessageStartEventTest {
                 .collect(Collectors.toList());
 
         if (context.hasRESTForGenerator(codeGenerator)) {
-            assertThat(resources.size()).isEqualTo(1);
+            assertThat(resources).hasSize(1);
 
             CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));
 
@@ -71,7 +71,7 @@ public class CodegenMessageStartEventTest {
                             .withFailMessage("For processes without none start event there should not be create resource method")
                             .isEmpty();
         } else {
-            assertThat(resources.size()).isZero();
+            assertThat(resources).isEmpty();
         }
 
     }
@@ -93,7 +93,7 @@ public class CodegenMessageStartEventTest {
                 .collect(Collectors.toList());
 
         if (context.hasRESTForGenerator(codeGenerator)) {
-            assertThat(resources.size()).isEqualTo(1);
+            assertThat(resources).hasSize(1);
 
             CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));
 
@@ -102,7 +102,7 @@ public class CodegenMessageStartEventTest {
                             .withFailMessage("Must have method with name 'createResource'")
                             .hasSize(1);
         } else {
-            assertThat(resources.size()).isZero();
+            assertThat(resources).isEmpty();
         }
     }
 
@@ -122,7 +122,7 @@ public class CodegenMessageStartEventTest {
         List<GeneratedFile> resources = generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventMessageProducer_3.java"))
                 .collect(Collectors.toList());
-        assertThat(resources.size()).isEqualTo(1);
+        assertThat(resources).hasSize(1);
 
         CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));
 

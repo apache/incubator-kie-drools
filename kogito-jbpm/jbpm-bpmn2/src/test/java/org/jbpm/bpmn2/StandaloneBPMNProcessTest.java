@@ -652,9 +652,9 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         });
 
-        assertThat(list.size()).isEqualTo(0);
+        assertThat(list).isEmpty();
         countDownListener.waitTillCompleted();
-        assertThat(list.size()).isEqualTo(5);
+        assertThat(list).hasSize(5);
     }
 
     @Test
@@ -667,7 +667,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
         });
         kruntime.signalEvent("MySignal", "NewValue");
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
     }
 
     @Test
@@ -688,7 +688,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
         });
         kruntime.signalEvent("Message-HelloMessage", "NewValue");
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
     }
 
     @Test
@@ -763,8 +763,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
         workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertThat(throwObj instanceof Throwable).isTrue().withFailMessage("KogitoWorkItem doesn't contain Throwable.");
-        assertThat(((Throwable) throwObj).getMessage().endsWith(input)).isTrue().withFailMessage("Exception message does not match service input.");
+        assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
+        assertThat(((Throwable) throwObj).getMessage()).withFailMessage("Exception message does not match service input.").endsWith(input);
 
         // Complete process
         processInstance = kruntime.getProcessInstance(processInstance.getStringId());
@@ -854,8 +854,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
         KogitoWorkItem workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertThat(throwObj instanceof Throwable).isTrue().withFailMessage("KogitoWorkItem doesn't contain Throwable.");
-        assertThat(((Throwable) throwObj).getMessage().endsWith(input)).isTrue().withFailMessage("Exception message does not match service input.");
+        assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
+        assertThat(((Throwable) throwObj).getMessage()).withFailMessage("Exception message does not match service input.").endsWith(input);
 
         // Complete process
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE).withFailMessage("Process instance is not active.");

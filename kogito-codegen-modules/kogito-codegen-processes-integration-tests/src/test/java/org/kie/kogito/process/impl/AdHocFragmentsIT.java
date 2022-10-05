@@ -125,7 +125,7 @@ class AdHocFragmentsIT extends AbstractCodegenIT {
             assertThat(current).isNull();
         }
         assertThat(current).isNotNull();
-        assertThat(current.size()).isEqualTo(expected.size());
+        assertThat(current).hasSameSizeAs(expected);
         expected.forEach(e -> assertTrue(
                 current.stream().anyMatch(c -> c.getName().equals(e.getName()) && c.getType().equals(e.getType()) && c.isAutoStart() == e.isAutoStart()),
                 "Expected: " + e.toString() + ", Got: " + current.toString()));

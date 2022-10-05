@@ -58,7 +58,7 @@ class DocumentProcessInstanceMarshallerTest {
         assertNotNull(doc, "Marshalled value should not be null");
         assertThat(doc.get("id")).isEqualTo(processInstance.id());
         assertThat(doc.get("description")).isEqualTo(processInstance.description());
-        assertThat(doc.get("context", Document.class).getList("variable", Document.class).size()).isEqualTo(1);
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class)).hasSize(1);
         assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("name")).isEqualTo("test");
         assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("value", Document.class).get("value")).isEqualTo("testValue");
 

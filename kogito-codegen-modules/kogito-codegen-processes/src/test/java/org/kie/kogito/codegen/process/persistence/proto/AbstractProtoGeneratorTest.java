@@ -92,7 +92,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         Proto proto = generator.protoOfDataClasses("org.kie.kogito.test");
         assertThat(proto).isNotNull();
         // there is no messages as there is not classes
-        assertThat(proto.getMessages()).hasSize(0);
+        assertThat(proto.getMessages()).isEmpty();
     }
 
     @Test

@@ -23,7 +23,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,11 +49,10 @@ class SpringMetricsFilterRegisterTest {
 
         if (httpInterceptorUseDefault) {
             List<HandlerInterceptor> values = registerCaptor.getAllValues();
-            assertThat(values.isEmpty()).isFalse();
-            assertThat(values.size()).isEqualTo(1);
+            assertThat(values).hasSize(1);
             assertThat(values.get(0)).isInstanceOf(SpringbootMetricsInterceptor.class);
         } else {
-            assertThat(registerCaptor.getAllValues().isEmpty()).isTrue();
+            assertThat(registerCaptor.getAllValues()).isEmpty();
         }
     }
 

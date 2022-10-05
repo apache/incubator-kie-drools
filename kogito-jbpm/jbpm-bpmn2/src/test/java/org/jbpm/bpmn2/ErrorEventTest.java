@@ -434,7 +434,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
         assertNodeTriggered(processInstance.getStringId(), "start", "task", "subprocess-task");
 
-        assertEquals(processInstance.getState(), KogitoProcessInstance.STATE_COMPLETED);
+        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
     @Test
@@ -445,7 +445,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
         assertNodeTriggered(processInstance.getStringId(), "start", "task");
 
-        assertEquals(processInstance.getState(), KogitoProcessInstance.STATE_ABORTED);
+        assertEquals(KogitoProcessInstance.STATE_ABORTED, processInstance.getState());
     }
 
     @Test

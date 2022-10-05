@@ -64,6 +64,6 @@ public class RestJobsServiceTest {
     @Test
     void testGetJobsServiceUri() {
         URI jobsServiceUri = tested.getJobsServiceUri();
-        assertThat(jobsServiceUri.toString()).isEqualTo(JOB_SERVICE_URL + "/jobs");
+        assertThat(jobsServiceUri).hasToString(JOB_SERVICE_URL + "/jobs");
     }
 }

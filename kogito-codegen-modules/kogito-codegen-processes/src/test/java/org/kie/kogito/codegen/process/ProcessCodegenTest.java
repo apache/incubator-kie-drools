@@ -50,7 +50,7 @@ class ProcessCodegenTest {
         assertThat(emptyCodeGenerator.isEnabled()).isFalse();
 
         Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
-        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+        assertThat(emptyGeneratedFiles).isEmpty();
 
         ProcessCodegen codeGenerator = ProcessCodegen.ofCollectedResources(
                 context,

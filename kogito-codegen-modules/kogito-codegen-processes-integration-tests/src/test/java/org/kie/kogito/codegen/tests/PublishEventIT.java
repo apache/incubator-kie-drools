@@ -87,7 +87,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("TestCase.SimpleMilestone");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/SimpleMilestone");
+        assertThat(processDataEvent.getSource()).hasToString("http://myhost/SimpleMilestone");
 
         Set<MilestoneEventBody> milestones = ((ProcessInstanceDataEvent) event).getData().getMilestones();
         assertThat(milestones)
@@ -131,7 +131,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("compensateAll");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/compensateAll");
+        assertThat(processDataEvent.getSource()).hasToString("http://myhost/compensateAll");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "compensateAll", "Compensate All", 2);
 
@@ -506,7 +506,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
 
-        assertThat(event.getSource().toString()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getSource()).hasToString("http://myhost/" + processId);
         assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
         assertThat(((ProcessInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");
@@ -532,7 +532,7 @@ public class PublishEventIT extends AbstractCodegenIT {
             assertThat(body.getCompleteDate()).isNull();
         }
 
-        assertThat(event.getSource().toString()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getSource()).hasToString("http://myhost/" + processId);
         assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
         assertThat(((UserTaskInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");

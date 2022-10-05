@@ -124,9 +124,9 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         assertEquals(STATE_ACTIVE, instance.status());
 
         assertThat(instance.variables().toMap()).hasSize(1);
-        assertThat(instance.variables().toMap(BpmnVariables.OUTPUTS_ONLY)).hasSize(0);
-        assertThat(instance.variables().toMap(BpmnVariables.INPUTS_ONLY)).hasSize(0);
-        assertThat(instance.variables().toMap(BpmnVariables.INTERNAL_ONLY)).hasSize(0);
+        assertThat(instance.variables().toMap(BpmnVariables.OUTPUTS_ONLY)).isEmpty();
+        assertThat(instance.variables().toMap(BpmnVariables.INPUTS_ONLY)).isEmpty();
+        assertThat(instance.variables().toMap(BpmnVariables.INTERNAL_ONLY)).isEmpty();
         assertThat(instance.variables().toMap(v -> v.hasTag("onlyAdmin"))).hasSize(1).containsEntry("approver", "john");
 
         instance.abort();

@@ -62,10 +62,8 @@ public class XmlPackageReaderTest {
         assertEquals("cheesery.getCheeses(i+4)",
                 accessordescriptor.getExpression());
 
-        assertEquals(patterndescr.getObjectType(),
-                "Cheese");
-        assertEquals(patterndescr.getIdentifier(),
-                "cheese");
+        assertEquals("Cheese", patterndescr.getObjectType());
+        assertEquals("cheese", patterndescr.getIdentifier());
 
     }
 
@@ -80,10 +78,8 @@ public class XmlPackageReaderTest {
         Object patternobj = obj.getLhs().getDescrs().get(0);
         assertTrue(patternobj instanceof PatternDescr);
         final PatternDescr patterncheese = (PatternDescr) patternobj;
-        assertEquals(patterncheese.getIdentifier(),
-                "cheese");
-        assertEquals(patterncheese.getObjectType(),
-                "Cheese");
+        assertEquals("cheese", patterncheese.getIdentifier());
+        assertEquals("Cheese", patterncheese.getObjectType());
 
         AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
         assertEquals("total += $cheese.getPrice();",
@@ -97,10 +93,8 @@ public class XmlPackageReaderTest {
         assertTrue(patternobj instanceof PatternDescr);
 
         final PatternDescr patternmax = (PatternDescr) patternobj;
-        assertEquals(patternmax.getIdentifier(),
-                "max");
-        assertEquals(patternmax.getObjectType(),
-                "Number");
+        assertEquals("max", patternmax.getIdentifier());
+        assertEquals("Number", patternmax.getObjectType());
 
         accumulatedescr = (AccumulateDescr) patternmax.getSource();
 
@@ -127,10 +121,8 @@ public class XmlPackageReaderTest {
         Object patternobj = obj.getLhs().getDescrs().get(0);
         assertTrue(patternobj instanceof PatternDescr);
         final PatternDescr patterncheese = (PatternDescr) patternobj;
-        assertEquals(patterncheese.getIdentifier(),
-                "cheese");
-        assertEquals(patterncheese.getObjectType(),
-                "Cheese");
+        assertEquals("cheese", patterncheese.getIdentifier());
+        assertEquals("Cheese", patterncheese.getObjectType());
 
         AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
         assertEquals("total += $cheese.getPrice();",
@@ -146,10 +138,8 @@ public class XmlPackageReaderTest {
 
         PatternDescr[] listpattern = (PatternDescr[]) descrlist.toArray(new PatternDescr[descrlist.size()]);
 
-        assertEquals(listpattern[0].getObjectType(),
-                "Milk");
-        assertEquals(listpattern[1].getObjectType(),
-                "Cup");
+        assertEquals("Milk", listpattern[0].getObjectType());
+        assertEquals("Cup", listpattern[1].getObjectType());
     }
 
     @Test
@@ -167,12 +157,9 @@ public class XmlPackageReaderTest {
         PatternDescr personState = (PatternDescr) forallPaterns.get(1);
         PatternDescr cheeseState = (PatternDescr) forallPaterns.get(2);
 
-        assertEquals(pattarnState.getObjectType(),
-                "State");
-        assertEquals(personState.getObjectType(),
-                "Person");
-        assertEquals(cheeseState.getObjectType(),
-                "Cheese");
+        assertEquals("State", pattarnState.getObjectType());
+        assertEquals("Person", personState.getObjectType());
+        assertEquals("Cheese", cheeseState.getObjectType());
     }
 
     @Test
@@ -188,8 +175,7 @@ public class XmlPackageReaderTest {
 
         Object patternDescriptor = ((ExistsDescr) existdescr).getDescrs().get(0);
         assertTrue(patternDescriptor instanceof PatternDescr);
-        assertEquals(((PatternDescr) patternDescriptor).getObjectType(),
-                "Person");
+        assertEquals("Person", ((PatternDescr) patternDescriptor).getObjectType());
 
         Object notDescr = obj.getLhs().getDescrs().get(1);
 
@@ -198,8 +184,7 @@ public class XmlPackageReaderTest {
         existdescr = ((NotDescr) notDescr).getDescrs().get(0);
         patternDescriptor = ((ExistsDescr) existdescr).getDescrs().get(0);
         assertTrue(patternDescriptor instanceof PatternDescr);
-        assertEquals(((PatternDescr) patternDescriptor).getObjectType(),
-                "Cheese");
+        assertEquals("Cheese", ((PatternDescr) patternDescriptor).getObjectType());
     }
 
     @Test

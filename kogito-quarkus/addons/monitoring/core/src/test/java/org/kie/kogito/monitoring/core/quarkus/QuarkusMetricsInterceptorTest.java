@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.mockito.ArgumentCaptor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,13 +68,11 @@ class QuarkusMetricsInterceptorTest {
         verify(metricsInterceptor, times(1)).filter(matchedUrl.capture(), statusCodeCaptor.capture());
 
         List<String> endpoints = matchedUrl.getAllValues();
-        assertThat(endpoints.isEmpty()).isFalse();
-        assertThat(endpoints.size()).isEqualTo(1);
+        assertThat(endpoints).hasSize(1);
         assertThat(endpoints.get(0)).isEqualTo(expectedMatchedUrl);
 
         List<Integer> statusCodes = statusCodeCaptor.getAllValues();
-        assertThat(statusCodes.isEmpty()).isFalse();
-        assertThat(statusCodes.size()).isEqualTo(1);
+        assertThat(statusCodes).hasSize(1);
         assertThat(statusCodes.get(0)).isEqualTo(statusCode);
     }
 }

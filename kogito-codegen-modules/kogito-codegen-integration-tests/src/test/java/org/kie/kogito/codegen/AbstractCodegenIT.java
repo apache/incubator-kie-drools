@@ -140,7 +140,7 @@ public class AbstractCodegenIT {
 
         CompilationResult result = JAVA_COMPILER.compile(sources.toArray(new String[sources.size()]), srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
-        assertThat(result.getErrors()).describedAs(String.join("\n\n", Arrays.toString(result.getErrors()))).hasSize(0);
+        assertThat(result.getErrors()).describedAs(String.join("\n\n", Arrays.toString(result.getErrors()))).isEmpty();
 
         classloader = new TestClassLoader(this.getClass().getClassLoader(), trgMfs.getMap());
 

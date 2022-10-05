@@ -57,14 +57,14 @@ public class DefaultUnitOfWorkManagerTest {
         assertThat(((ManagedUnitOfWork) unit).delegate()).isInstanceOf(CollectingUnitOfWork.class);
 
         final AtomicInteger counter = new AtomicInteger(0);
-        assertThat(counter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(0);
 
         BaseWorkUnit dummyWork = new BaseWorkUnit(counter, (d) -> ((AtomicInteger) d).incrementAndGet());
         unit.start();
         unit.intercept(dummyWork);
         unit.end();
 
-        assertThat(counter.get()).isEqualTo(1);
+        assertThat(counter).hasValue(1);
         verify(listener).onBeforeStartEvent(any());
         verify(listener).onAfterEndEvent(any());
         verify(listener, never()).onAfterAbortEvent(any());
@@ -77,14 +77,14 @@ public class DefaultUnitOfWorkManagerTest {
         assertThat(unit).isNotNull().isInstanceOf(ManagedUnitOfWork.class);
 
         final AtomicInteger counter = new AtomicInteger(0);
-        assertThat(counter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(0);
 
         BaseWorkUnit dummyWork = new BaseWorkUnit(counter, (d) -> ((AtomicInteger) d).incrementAndGet());
         unit.start();
         unit.intercept(dummyWork);
         unit.abort();
 
-        assertThat(counter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(0);
         verify(listener).onBeforeStartEvent(any());
         verify(listener, never()).onAfterEndEvent(any());
         verify(listener).onAfterAbortEvent(any());
@@ -111,7 +111,7 @@ public class DefaultUnitOfWorkManagerTest {
         assertThat(unit).isNotNull().isInstanceOf(ManagedUnitOfWork.class);
 
         final AtomicInteger counter = new AtomicInteger(0);
-        assertThat(counter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(0);
 
         WorkUnit<AtomicInteger> dummyWork = WorkUnit.create(counter, (d) -> d.incrementAndGet());
 
@@ -129,7 +129,7 @@ public class DefaultUnitOfWorkManagerTest {
         assertThat(((ManagedUnitOfWork) unit).delegate()).isInstanceOf(CollectingUnitOfWork.class);
 
         final AtomicInteger counter = new AtomicInteger(0);
-        assertThat(counter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(0);
 
         final AtomicInteger picounter = new AtomicInteger(0);
 
@@ -143,7 +143,7 @@ public class DefaultUnitOfWorkManagerTest {
 
         // after execution the pi should be 0 as this is the initial value of counter which will indicate
         // it was invoked before dummyWork that increments it
-        assertThat(counter.get()).isEqualTo(1);
-        assertThat(picounter.get()).isEqualTo(0);
+        assertThat(counter).hasValue(1);
+        assertThat(picounter).hasValue(0);
     }
 }

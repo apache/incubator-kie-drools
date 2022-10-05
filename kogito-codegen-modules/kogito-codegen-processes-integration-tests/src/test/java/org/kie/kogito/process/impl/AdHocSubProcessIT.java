@@ -50,7 +50,7 @@ class AdHocSubProcessIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems();
-        assertThat(workItems.size()).isEqualTo(1);
+        assertThat(workItems).hasSize(1);
         WorkItem workItem = workItems.get(0);
         params = new HashMap<>();
         params.put("favouriteColour", "blue");
@@ -76,7 +76,7 @@ class AdHocSubProcessIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems();
-        assertThat(workItems.size()).isEqualTo(1);
+        assertThat(workItems).hasSize(1);
         WorkItem workItem = workItems.get(0);
         workItem.getParameters().put("favouriteColour", "green");
         params.put("favouriteColour", "green");

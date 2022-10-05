@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.mock.MockedConfigBean;
 import org.mockito.ArgumentCaptor;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,11 +56,10 @@ class QuarkusMetricsFilterRegisterTest {
 
         if (httpInterceptorUseDefault) {
             List<Object> values = registerCaptor.getAllValues();
-            assertThat(values.isEmpty()).isFalse();
-            assertThat(values.size()).isEqualTo(1);
+            assertThat(values).hasSize(1);
             assertThat(values.get(0)).isInstanceOf(QuarkusMetricsInterceptor.class);
         } else {
-            assertThat(registerCaptor.getAllValues().isEmpty()).isTrue();
+            assertThat(registerCaptor.getAllValues()).isEmpty();
         }
     }
 

@@ -57,7 +57,7 @@ class SampleCodegenTest {
         assertThat(emptyCodeGenerator.isEnabled()).isFalse();
 
         Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
-        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+        assertThat(emptyGeneratedFiles).isEmpty();
 
         Collection<CollectedResource> resources = Arrays.asList(
                 CollectedResourcesTestUtils.toCollectedResource("/sampleFile1.txt"),
@@ -70,7 +70,7 @@ class SampleCodegenTest {
 
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         int minNumberOfResources = context.hasRESTForGenerator(codeGenerator) ? 1 : 0;
-        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(minNumberOfResources);
+        assertThat(generatedFiles).hasSizeGreaterThanOrEqualTo(minNumberOfResources);
     }
 
     @ParameterizedTest

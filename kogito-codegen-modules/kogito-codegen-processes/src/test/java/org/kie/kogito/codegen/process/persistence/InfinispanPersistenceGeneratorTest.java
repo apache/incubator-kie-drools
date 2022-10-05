@@ -53,7 +53,7 @@ class InfinispanPersistenceGeneratorTest extends AbstractPersistenceGeneratorTes
                 List<GeneratedFile> marshallerFiles = generatedFiles.stream().filter(gf -> gf.relativePath().endsWith("MessageMarshaller.java")).collect(Collectors.toList());
 
                 String expectedMarshaller = "PersonMessageMarshaller";
-                assertThat(marshallerFiles.size()).isEqualTo(1);
+                assertThat(marshallerFiles).hasSize(1);
                 assertThat(marshallerFiles.get(0).relativePath()).endsWith(expectedMarshaller + ".java");
             }
         }

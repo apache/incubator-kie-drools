@@ -76,7 +76,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
+        assertThat(processDataEvent.getSource()).hasToString("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(processDataEvent, "BusinessRuleTask", "Default Process", 2);
 
@@ -118,7 +118,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         uow.abort();
 
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(0);
+        assertThat(events).isNotNull().isEmpty();
     }
 
     @Test
@@ -160,7 +160,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(processDataEvent.getKogitoRootProcessInstanceId()).isNull();
         assertThat(processDataEvent.getKogitoProcessId()).isEqualTo("BusinessRuleTask");
         assertThat(processDataEvent.getKogitoProcessInstanceState()).isEqualTo("2");
-        assertThat(processDataEvent.getSource().toString()).isEqualTo("http://myhost/BusinessRuleTask");
+        assertThat(processDataEvent.getSource()).hasToString("http://myhost/BusinessRuleTask");
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "BusinessRuleTask", "Default Process", 2);
 
@@ -219,7 +219,7 @@ public class PublishEventBusinessRuleIT extends AbstractRulesCodegenIT {
         assertThat(body.getProcessName()).isEqualTo(processName);
         assertThat(body.getState()).isEqualTo(state);
 
-        assertThat(event.getSource().toString()).isEqualTo("http://myhost/" + processId);
+        assertThat(event.getSource()).hasToString("http://myhost/" + processId);
         assertThat(event.getTime()).isBeforeOrEqualTo(ZonedDateTime.now().toOffsetDateTime());
 
         assertThat(((ProcessInstanceDataEvent) event).getKogitoAddons()).isEqualTo("test");

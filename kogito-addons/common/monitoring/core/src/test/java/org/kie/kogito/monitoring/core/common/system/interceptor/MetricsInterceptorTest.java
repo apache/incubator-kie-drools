@@ -22,7 +22,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollect
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,14 +46,12 @@ class MetricsInterceptorTest {
         verify(systemMetricsCollector, times(1)).registerStatusCodeRequest(endpointCaptor.capture(), statusCodeCaptor.capture());
 
         List<String> endpoints = endpointCaptor.getAllValues();
-        assertThat(endpoints.isEmpty()).isFalse();
-        assertThat(endpoints.size()).isEqualTo(1);
-        assertThat(endpoints.get(0)).isEqualTo(expectedEndpoint);
+        assertThat(endpoints).isNotEmpty().hasSize(1);
+        assertThat(endpoints).containsExactly(expectedEndpoint);
 
         List<String> statusCodes = statusCodeCaptor.getAllValues();
-        assertThat(statusCodes.isEmpty()).isFalse();
-        assertThat(statusCodes.size()).isEqualTo(1);
+        assertThat(statusCodes).isNotEmpty().hasSize(1);
         String statusCodeString = String.valueOf(statusCode);
-        assertThat(statusCodes.get(0)).isEqualTo(statusCodeString);
+        assertThat(statusCodes).containsExactly(statusCodeString);
     }
 }

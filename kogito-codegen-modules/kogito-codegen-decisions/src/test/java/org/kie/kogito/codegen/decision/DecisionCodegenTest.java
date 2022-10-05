@@ -59,7 +59,7 @@ public class DecisionCodegenTest {
         assertThat(emptyCodeGenerator.isEnabled()).isFalse();
 
         Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
-        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+        assertThat(emptyGeneratedFiles).isEmpty();
 
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
 
@@ -67,7 +67,7 @@ public class DecisionCodegenTest {
         assertThat(codeGenerator.isEnabled()).isTrue();
 
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(1);
+        assertThat(generatedFiles).hasSizeGreaterThan(0);
     }
 
     @ParameterizedTest
@@ -76,7 +76,7 @@ public class DecisionCodegenTest {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
 
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(6);
+        assertThat(generatedFiles).hasSizeGreaterThanOrEqualTo(6);
 
         Collection<String> expectedResources = new ArrayList<>(Arrays.asList("decision/InputSet.java",
                 "decision/OutputSet.java",
@@ -104,7 +104,7 @@ public class DecisionCodegenTest {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/alltypes/", contextBuilder);
 
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
+        assertThat(generatedFiles).hasSizeGreaterThanOrEqualTo(3);
 
         Collection<String> expectedResources = new ArrayList<>(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
                 "http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OutputSet.java",
@@ -184,7 +184,7 @@ public class DecisionCodegenTest {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-test20200507", contextBuilder);
 
         Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
-        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
+        assertThat(generatedFiles).hasSizeGreaterThanOrEqualTo(3);
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
     }

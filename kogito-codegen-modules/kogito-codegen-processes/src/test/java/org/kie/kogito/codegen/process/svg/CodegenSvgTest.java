@@ -60,7 +60,7 @@ public class CodegenSvgTest {
         List<GeneratedFile> resources = generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.type().equals(GeneratedFileType.INTERNAL_RESOURCE))
                 .collect(Collectors.toList());
-        assertThat(resources.size()).isEqualTo(1);
+        assertThat(resources).hasSize(1);
         assertThat("META-INF/processSVG/" + TEST_PROCESS_ID + ".svg").isEqualTo(resources.get(0).relativePath());
     }
 
@@ -80,7 +80,7 @@ public class CodegenSvgTest {
         List<GeneratedFile> resources = generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.type().equals(GeneratedFileType.INTERNAL_RESOURCE))
                 .collect(Collectors.toList());
-        assertThat(resources.size()).isZero();
+        assertThat(resources).isEmpty();
     }
 
     @Test

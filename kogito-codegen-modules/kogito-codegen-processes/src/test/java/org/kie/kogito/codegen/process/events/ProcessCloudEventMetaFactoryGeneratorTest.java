@@ -199,7 +199,7 @@ class ProcessCloudEventMetaFactoryGeneratorTest {
         Collection<ProcessCloudEventMeta> ces = generator.getCloudEventMetaBuilder().build(execModelGenerators);
         if (expectedTriggers > 0) {
             assertThat(ces).isNotEmpty();
-            assertThat(ces.size()).isEqualTo(expectedTriggers);
+            assertThat(ces).hasSize(expectedTriggers);
         } else {
             assertThat(ces).isEmpty();
         }

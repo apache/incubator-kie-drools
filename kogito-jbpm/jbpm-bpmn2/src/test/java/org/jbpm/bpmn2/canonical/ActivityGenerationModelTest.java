@@ -513,7 +513,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         assertEquals(STATE_COMPLETED, i.status());
         BpmnVariables variables = (BpmnVariables) i.variables();
-        assertEquals(variables.get("greeting"), "hello Tiago");
+        assertEquals("hello Tiago", variables.get("greeting"));
         assertNotEquals(mainThread, workItemThread.get());
     }
 
@@ -540,7 +540,7 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
         CompilationResult result = JAVA_COMPILER.compile(sources, srcMfs, trgMfs, this.getClass().getClassLoader());
         assertThat(result).isNotNull();
-        assertThat(result.getErrors()).hasSize(0);
+        assertThat(result.getErrors()).isEmpty();
 
         CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
         for (Entry<String, KogitoWorkItemHandler> entry : handlers.entrySet()) {
