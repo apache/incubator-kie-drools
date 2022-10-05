@@ -24,20 +24,20 @@ drlStatementdef
     | ruledef
     ;
 
-packagedef : DRL_PACKAGE name=drlQualifiedName SEMI? ;
+packagedef : PACKAGE name=drlQualifiedName SEMI? ;
 
 unitdef : DRL_UNIT name=drlQualifiedName SEMI? ;
 
-importdef : DRL_IMPORT (DRL_FUNCTION|DRL_STATIC)? drlQualifiedName (DOT MUL)? SEMI? ;
+importdef : IMPORT (DRL_FUNCTION|STATIC)? drlQualifiedName (DOT MUL)? SEMI? ;
 
 globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-ruledef : DRL_RULE name=stringId (DRL_EXTENDS stringId)? drlAnnotation* attributes? DRL_WHEN lhs DRL_THEN rhs DRL_END ;
+ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? DRL_WHEN lhs DRL_THEN rhs DRL_END ;
 
 lhs : lhsExpression? ;
-lhsExpression : lhsOr* ;
+lhsExpression : lhsOr+ ;
 lhsOr : LPAREN DRL_OR lhsAnd+ RPAREN | lhsAnd (DRL_OR lhsAnd)* ;
 lhsAnd : LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
 
@@ -111,16 +111,11 @@ drlIdentifier
     ;
 
 drlKeywords
-    : DRL_PACKAGE
-    | DRL_UNIT
-    | DRL_IMPORT
+    : DRL_UNIT
     | DRL_FUNCTION
-    | DRL_STATIC
     | DRL_GLOBAL
     | DRL_RULE
     | DRL_QUERY
-    | DRL_EXTENDS
-    | DRL_SUPER
     | DRL_WHEN
     | DRL_THEN
     | DRL_END
@@ -154,7 +149,7 @@ drlExpression
     : drlPrimary
     | drlExpression bop=DOT
       (
-         identifier
+         drlIdentifier
        | methodCall
        | THIS
        | NEW nonWildcardTypeArguments? innerCreator
@@ -163,7 +158,7 @@ drlExpression
       )
     | drlExpression LBRACK drlExpression RBRACK
     | methodCall
-    | NEW creator
+    | NEW drlCreator
     | LPAREN annotation* typeType (BITAND typeType)* RPAREN drlExpression
     | drlExpression postfix=(INC | DEC)
     | prefix=(ADD|SUB|INC|DEC) drlExpression
@@ -188,8 +183,8 @@ drlExpression
     | switchExpression // Java17
 
     // Java 8 methodReference
-    | drlExpression COLONCOLON typeArguments? identifier
-    | typeType COLONCOLON (typeArguments? identifier | NEW)
+    | drlExpression COLONCOLON typeArguments? drlIdentifier
+    | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
     ;
 
@@ -290,10 +285,37 @@ unif : IDENTIFIER UNIFY ;
 
 /* extending JavaParser blockStatement */
 drlRhsBlockStatement
-    : localVariableDeclaration SEMI
+    : drlLocalVariableDeclaration SEMI
     | drlRhsStatement
     | localTypeDeclaration
     ;
+
+/* extending JavaParser localVariableDeclaration */
+drlLocalVariableDeclaration
+    : variableModifier* (typeType drlVariableDeclarators | VAR drlIdentifier ASSIGN drlExpression)
+    ;
+
+/* extending JavaParser variableDeclarators */
+drlVariableDeclarators
+    : drlVariableDeclarator (COMMA drlVariableDeclarator)*
+    ;
+
+/* extending JavaParser variableDeclarator */
+drlVariableDeclarator
+    : drlVariableDeclaratorId (ASSIGN drlVariableInitializer)?
+    ;
+
+/* extending JavaParser variableDeclaratorId */
+drlVariableDeclaratorId
+    : drlIdentifier (LBRACK RBRACK)*
+    ;
+
+/* extending JavaParser variableInitializer */
+drlVariableInitializer
+    : arrayInitializer
+    | drlExpression
+    ;
+
 
 /* extending JavaParser statement */
 drlRhsStatement
@@ -309,13 +331,13 @@ drlRhsStatement
     | SYNCHRONIZED parExpression block
     | RETURN drlRhsExpression? SEMI
     | THROW drlRhsExpression SEMI
-    | BREAK identifier? SEMI
-    | CONTINUE identifier? SEMI
+    | BREAK drlIdentifier? SEMI
+    | CONTINUE drlIdentifier? SEMI
     | YIELD drlRhsExpression SEMI // Java17
     | SEMI
     | statementExpression=drlRhsExpression SEMI
     | switchExpression SEMI? // Java17
-    | identifierLabel=identifier COLON drlRhsStatement
+    | identifierLabel=drlIdentifier COLON drlRhsStatement
     ;
 
 /* extending JavaParser expression */
@@ -323,7 +345,7 @@ drlRhsExpression
     : drlPrimary
     | drlRhsExpression bop=DOT
       (
-         identifier
+         drlIdentifier
        | methodCall
        | THIS
        | NEW nonWildcardTypeArguments? innerCreator
@@ -357,7 +379,20 @@ drlRhsExpression
     | switchExpression // Java17
 
     // Java 8 methodReference
-    | drlRhsExpression COLONCOLON typeArguments? identifier
-    | typeType COLONCOLON (typeArguments? identifier | NEW)
+    | drlRhsExpression COLONCOLON typeArguments? drlIdentifier
+    | typeType COLONCOLON (typeArguments? drlIdentifier | NEW)
     | classType COLONCOLON typeArguments? NEW
     ;
+
+ drlCreator
+     : nonWildcardTypeArguments createdName classCreatorRest
+     | createdName (drlArrayCreatorRest | classCreatorRest)
+     ;
+
+ drlArrayCreatorRest
+     : LBRACK (RBRACK (LBRACK RBRACK)* drlArrayInitializer | expression RBRACK (LBRACK expression RBRACK)* (LBRACK RBRACK)*)
+     ;
+
+ drlArrayInitializer
+     : LBRACE (drlVariableInitializer (COMMA drlVariableInitializer)* (COMMA)? )? RBRACE
+     ;

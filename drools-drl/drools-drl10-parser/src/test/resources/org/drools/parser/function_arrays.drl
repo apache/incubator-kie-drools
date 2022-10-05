@@ -13,23 +13,17 @@
  * limitations under the License.
 */
 
-package test.dialect.rule.end.mine;
+package foo
 
-global java.lang.String rule;
-
-import com.dialect.something.SomeClass
-
-function boolean test() {
-    return true;
+function String[] yourFunction(String args[]) {
+     baz();
 }
 
-rule type1
-  when
-    $id : Something( duration == "foo")
-  then
-      The.method();
-      int attributes = 0;
-      String rulex = "ccc";
-      Object endx = null;
-end
+rule "new rule"
 
+    when
+        Something()
+    then
+        yourFunction(new String[] {"a","b","c"});
+
+end

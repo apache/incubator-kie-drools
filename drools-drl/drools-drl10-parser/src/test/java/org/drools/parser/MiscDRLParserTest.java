@@ -16,6 +16,7 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
+import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
@@ -498,6 +499,10 @@ public class MiscDRLParserTest extends TestCase {
     @Test
     public void testKeywordCollisions() throws Exception {
         String source = readResource("eol_funny_business.drl"); // keywords everywhere
+
+        // Note: eol_funny_business.drl is modified from the one under drools-test-coverage to be more realistic.
+        // e.g. "package" is not allowed in a package value in Java, so it doesn't make sense to test. (Right to raise a parser error)
+
         PackageDescr pkg = parser.parse(source);
 
         assertFalse( parser.getErrors().toString(),
@@ -505,5 +510,175 @@ public class MiscDRLParserTest extends TestCase {
 
         assertEquals( 1,
                       pkg.getRules().size() );
+    }
+
+    @Test
+    public void testTernaryExpression() throws Exception {
+        String source = readResource("ternary_expression.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if (speed > speedLimit ? true : false;) pullEmOver();");
+    }
+
+    @Test
+    public void testFunctionWithArrays() throws Exception {
+        String source = readResource("function_arrays.drl");
+
+        // Note: function_arrays.drl is modified from the one under drools-test-coverage to be more realistic.
+        // new String[3] {"a","b","c"} is invalid in Java (Cannot define dimension expressions when an array initializer is provided)
+        // , so it doesn't make sense to test. (Right to raise a parser error)
+
+        PackageDescr pkg = parser.parse(source);
+
+        assertEquals( "foo",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("yourFunction(new String[] {\"a\",\"b\",\"c\"});");
+
+        final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get(0 );
+
+        assertEquals( "String[]",
+                      func.getReturnType() );
+        assertEquals( "args[]",
+                      func.getParameterNames().get( 0 ) );
+        assertEquals( "String",
+                      func.getParameterTypes().get( 0 ) );
+    }
+
+    @Test
+    public void testAlmostEmptyRule() throws Exception {
+        String source = readResource("almost_empty_rule.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        assertNotNull( pkg );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+
+        assertEquals( "almost_empty",
+                      rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEquals( "",
+                      ((String) rule.getConsequence()).trim() );
+    }
+
+    @Test
+    public void testQuotedStringNameRule() throws Exception {
+        String source = readResource("quoted_string_name_rule.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get(0);
+        assertNotNull( rule );
+
+        assertEquals( "quoted string name",
+                      rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEquals( "",
+                      ((String) rule.getConsequence()).trim() );
+    }
+
+    @Test
+    public void testNoLoop() throws Exception {
+        String source = readResource("no-loop.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get(0);
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "no-loop" );
+        assertEquals( "false",
+                      att.getValue() );
+        assertEquals( "no-loop",
+                      att.getName() );
+    }
+
+    @Test
+    public void testAutofocus() throws Exception {
+        String source = readResource("autofocus.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get(0);
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "auto-focus" );
+        assertEquals( "true",
+                      att.getValue() );
+        assertEquals( "auto-focus",
+                      att.getName() );
+    }
+
+    @Test
+    public void testRuleFlowGroup() throws Exception {
+        String source = readResource("ruleflowgroup.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get(0);
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "ruleflow-group" );
+        assertEquals( "a group",
+                      att.getValue() );
+        assertEquals( "ruleflow-group",
+                      att.getName() );
+    }
+
+    @Test
+    public void testConsequenceWithDeclaration() throws Exception {
+        String source = readResource("declaration-in-consequence.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        // Note : Removed "i\i;" from the original declaration-in-consequence.drl under drools-test-coverage
+        // because it's not a valid java expression and doesn't make sense to test. (Right to raise a parser error)
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get(0);
+        assertNotNull( rule );
+
+        assertEquals( "myrule",
+                      rule.getName() );
+
+        final String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i<i; i>i; i=\"i\";  ++i;" +
+                "i++; --i; i--; i += i; i -= i; i *= i; i /= i;" +
+                "int i = 5;" + "for(int j; j<i; ++j) {" +
+                "System.out.println(j);}" +
+                "Object o = new String(\"Hello\");" +
+                "String s = (String) o;";
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace(expected);
+        assertTrue( ((String) rule.getConsequence()).indexOf( "++" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "--" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "+=" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "==" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "i++" ) > 0 );
+        // note, need to assert that "i++" is preserved as is, no extra spaces.
     }
 }
