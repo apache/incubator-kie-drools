@@ -43,11 +43,11 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
  */
 public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHandler {
 
-    final private String eventType;
+    private final String eventType;
 
     private String workItemExceptionParameterName = "jbpm.workitem.exception";
 
-    final private Map<String, Integer> processInstanceExceptionMap = new HashMap<>();
+    private final Map<String, Integer> processInstanceExceptionMap = new HashMap<>();
     private int exceptionCountLimit = 1;
 
     /**

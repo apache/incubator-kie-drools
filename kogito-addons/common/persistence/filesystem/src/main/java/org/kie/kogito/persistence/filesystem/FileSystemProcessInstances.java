@@ -35,15 +35,11 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({ "rawtypes" })
 public class FileSystemProcessInstances implements MutableProcessInstances {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemProcessInstances.class);
 
     public static final String PI_DESCRIPTION = "ProcessInstanceDescription";
     public static final String PI_STATUS = "ProcessInstanceStatus";

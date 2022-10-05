@@ -36,8 +36,6 @@ import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.services.uow.BaseWorkUnit;
 import org.kie.kogito.uow.WorkUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.jbpm.ruleflow.core.Metadata.ASYNC_WAITING;
 
@@ -48,7 +46,6 @@ import static org.jbpm.ruleflow.core.Metadata.ASYNC_WAITING;
 public class AsyncEventNodeInstance extends EventNodeInstance {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = LoggerFactory.getLogger(AsyncEventNodeInstance.class);
     private final KogitoEventListener listener = new AsyncExternalEventListener();
     private String jobId = "";
 

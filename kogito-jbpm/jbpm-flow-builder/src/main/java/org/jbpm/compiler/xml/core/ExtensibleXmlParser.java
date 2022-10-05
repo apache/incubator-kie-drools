@@ -101,8 +101,6 @@ public class ExtensibleXmlParser extends DefaultHandler implements Parser {
 
     private SemanticModules modules;
 
-    private boolean lastWasEndElement;
-
     private LinkedList parents;
 
     private Object peer;
@@ -366,7 +364,6 @@ public class ExtensibleXmlParser extends DefaultHandler implements Parser {
         this.isValidating = true;
         this.current = null;
         this.peer = null;
-        this.lastWasEndElement = false;
         this.parents.clear();
         this.characters = null;
         this.configurationStack.clear();

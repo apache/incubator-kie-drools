@@ -36,16 +36,12 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
 import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 public class KafkaProcessInstances implements MutableProcessInstances {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProcessInstances.class);
 
     private Process<?> process;
     private KafkaProducer<String, byte[]> producer;

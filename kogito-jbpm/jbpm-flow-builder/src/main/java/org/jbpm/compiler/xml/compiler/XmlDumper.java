@@ -60,7 +60,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     private StringBuilder xmlDump;
     private boolean patternContext;
-    private final static String eol = System.getProperty("line.separator");
+    private static final String eol = System.getProperty("line.separator");
     private String template;
 
     public synchronized String dump(final PackageDescr packageDescr) {

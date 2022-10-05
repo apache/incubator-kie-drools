@@ -36,8 +36,8 @@ public class RestrictionConnectiveHandler extends BaseAbstractHandler
         implements
         Handler {
 
-    public final static String AND = "and-";
-    public final static String OR = "or-";
+    public static final String AND = "and-";
+    public static final String OR = "or-";
 
     public RestrictionConnectiveHandler() {
     }

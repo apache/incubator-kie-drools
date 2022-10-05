@@ -24,17 +24,12 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.quarkus.deployment.dev.JavaCompilationProvider;
 
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.HOT_RELOAD_SUPPORT_PATH;
 import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtils.getHotReloadSupportSource;
 
 public abstract class KogitoCompilationProvider extends JavaCompilationProvider {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KogitoCompilationProvider.class);
 
     @Override
     public Set<String> handledSourcePaths() {

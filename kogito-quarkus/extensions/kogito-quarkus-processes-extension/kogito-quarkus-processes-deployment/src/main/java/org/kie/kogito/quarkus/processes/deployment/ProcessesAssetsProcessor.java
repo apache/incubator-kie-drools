@@ -107,8 +107,6 @@ import static org.kie.kogito.quarkus.common.deployment.KogitoQuarkusResourceUtil
  */
 public class ProcessesAssetsProcessor {
 
-    private static final DotName persistenceFactoryClass = DotName.createSimple("org.kie.kogito.persistence.KogitoProcessInstancesFactory");
-    private static final String PROCESS_SVG_SERVICE = "org.kie.kogito.svg.service.QuarkusProcessSvgService";
     private static final String PERSISTENCE_CAPABILITY = "org.kie.kogito.addons.persistence";
 
     @Inject

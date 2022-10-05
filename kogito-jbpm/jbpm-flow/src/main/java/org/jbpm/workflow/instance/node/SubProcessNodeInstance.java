@@ -58,7 +58,6 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
 
     // NOTE: ContextInstances are not persisted as current functionality (exception scope) does not require it
-    private Map<String, ContextInstance> contextInstances = new HashMap<>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
     private String processInstanceId;

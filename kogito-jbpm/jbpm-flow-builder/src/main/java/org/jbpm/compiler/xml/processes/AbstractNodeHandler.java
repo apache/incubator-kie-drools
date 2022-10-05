@@ -41,7 +41,7 @@ import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
-    protected final static String EOL = System.getProperty("line.separator");
+    protected static final String EOL = System.getProperty("line.separator");
 
     public AbstractNodeHandler() {
         initValidParents();

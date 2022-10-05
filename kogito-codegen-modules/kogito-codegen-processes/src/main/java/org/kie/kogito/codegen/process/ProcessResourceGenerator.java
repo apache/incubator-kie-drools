@@ -72,7 +72,6 @@ public class ProcessResourceGenerator {
     private final String resourceClazzName;
     private final String processClazzName;
     private final String processName;
-    private final String appCanonicalName;
     private KogitoWorkflowProcess process;
     private String processId;
     private String dataClazzName;
@@ -95,7 +94,6 @@ public class ProcessResourceGenerator {
         this.process = process;
         this.processId = process.getId();
         this.processName = processId.substring(processId.lastIndexOf('.') + 1);
-        this.appCanonicalName = appCanonicalName;
         String classPrefix = StringUtils.ucFirst(processName);
         this.resourceClazzName = classPrefix + "Resource";
         this.relativePath = process.getPackageName().replace(".", "/") + "/" + resourceClazzName + ".java";

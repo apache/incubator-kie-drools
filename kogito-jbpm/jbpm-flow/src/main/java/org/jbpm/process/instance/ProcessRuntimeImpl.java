@@ -75,14 +75,10 @@ import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
 
 public class ProcessRuntimeImpl extends AbstractProcessRuntime {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessRuntimeImpl.class);
 
     private InternalKnowledgeRuntime kruntime;
     private ProcessInstanceManager processInstanceManager;

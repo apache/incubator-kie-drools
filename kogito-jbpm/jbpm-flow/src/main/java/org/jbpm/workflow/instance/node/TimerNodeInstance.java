@@ -34,13 +34,10 @@ import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.timer.TimerInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
-    private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
     public static final String TIMER_TRIGGERED_EVENT = "timerTriggered";
 
     private String timerId;

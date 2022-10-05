@@ -38,7 +38,7 @@ import org.kie.kogito.decision.DecisionModel;
  */
 public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
-    public static abstract class RuleType implements Serializable {
+    public abstract static class RuleType implements Serializable {
 
         private static final String UNIT_RULEFLOW_PREFIX = "unit:";
 

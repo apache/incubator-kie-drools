@@ -90,7 +90,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
 
     private static final Logger logger = LoggerFactory.getLogger(XmlBPMNProcessDumper.class);
 
-    private final static String EOL = System.getProperty("line.separator");
+    private static final String EOL = System.getProperty("line.separator");
 
     private SemanticModule semanticModule;
     private int metaDataType = META_DATA_USING_DI;

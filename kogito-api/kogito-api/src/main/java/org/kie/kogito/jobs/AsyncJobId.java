@@ -20,7 +20,7 @@ import java.text.ParseException;
 
 public class AsyncJobId implements JobId<String, Object> {
 
-    public final static String TYPE = "ASYNC";
+    public static final String TYPE = "ASYNC";
     private static final String SIGNAL = "asyncTriggered";
     private static MessageFormat format = new MessageFormat("{0}:{1}");
     private String uuid;

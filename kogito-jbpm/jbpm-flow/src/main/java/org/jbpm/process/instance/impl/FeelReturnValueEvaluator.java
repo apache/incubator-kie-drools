@@ -33,12 +33,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FeelReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FeelReturnValueEvaluator.class);
 
     private static final long serialVersionUID = 630l;
 

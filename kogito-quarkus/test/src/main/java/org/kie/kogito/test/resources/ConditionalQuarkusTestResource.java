@@ -23,8 +23,6 @@ import java.util.Optional;
 import javax.annotation.Resource;
 
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Container;
 
 import com.google.common.base.Strings;
@@ -36,8 +34,6 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
  * Quarkus resource to be run if and only if it was enabled.
  */
 public abstract class ConditionalQuarkusTestResource<T extends TestResource> implements QuarkusTestResourceLifecycleManager, DevServicesContext.ContextAware {
-
-    private static Logger LOGGER = LoggerFactory.getLogger(ConditionalQuarkusTestResource.class);
 
     private final T testResource;
     private final ConditionHolder condition;

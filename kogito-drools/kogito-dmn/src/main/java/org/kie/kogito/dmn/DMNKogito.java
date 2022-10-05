@@ -31,8 +31,6 @@ import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.kogito.Application;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Internal Utility class.<br/>
@@ -40,8 +38,6 @@ import org.slf4j.LoggerFactory;
  * decisions.
  */
 public class DMNKogito {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DMNKogito.class);
 
     private DMNKogito() {
         // intentionally private.

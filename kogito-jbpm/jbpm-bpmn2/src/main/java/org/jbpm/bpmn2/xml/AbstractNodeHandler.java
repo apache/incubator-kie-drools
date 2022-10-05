@@ -97,7 +97,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     public static final String INPUT_TYPES = "BPMN.InputTypes";
     public static final String OUTPUT_TYPES = "BPMN.OutputTypes";
 
-    protected final static String EOL = System.getProperty("line.separator");
+    protected static final String EOL = System.getProperty("line.separator");
 
     public AbstractNodeHandler() {
         initValidParents();

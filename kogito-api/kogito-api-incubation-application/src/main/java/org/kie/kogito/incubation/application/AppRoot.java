@@ -45,7 +45,7 @@ public abstract class AppRoot extends LocalUriId implements Id {
      * DI/ServiceLoading mechanism to allow the pattern <code>appRoot.get(Components.class)...</code>;
      * e.g. <code>appRoot.get(ProcessIds.class).get("my.process.id).tasks().get("my.task")</code>
      */
-    abstract public <T extends ComponentRoot> T get(Class<T> providerId);
+    public abstract <T extends ComponentRoot> T get(Class<T> providerId);
 
     /**
      * Name is only used to differentiate multiple applications.

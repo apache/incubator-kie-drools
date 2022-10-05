@@ -61,7 +61,6 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
     private final String generatedFilePath;
     private final RuleUnitDescription ruleUnitDescription;
     private final RuleUnitHelper ruleUnitHelper;
-    private final List<String> queryClasses;
 
     private final Class<?> unitInstanceAbstractClass;
     private final Class<?> unitEvaluatorClass;
@@ -76,7 +75,6 @@ public class RuleUnitInstanceGenerator implements RuleFileGenerator {
         this.targetCanonicalName = ruleUnitDescription.getPackageName() + "." + targetTypeName;
         this.generatedFilePath = targetCanonicalName.replace('.', '/') + ".java";
         this.ruleUnitHelper = ruleUnitHelper;
-        this.queryClasses = queryClasses;
 
         if (useLegacySession(context)) {
             unitInstanceAbstractClass = KieSessionBasedRuleUnitInstance.class;

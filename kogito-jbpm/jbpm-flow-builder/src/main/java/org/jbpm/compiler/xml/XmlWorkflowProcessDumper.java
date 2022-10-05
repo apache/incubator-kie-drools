@@ -39,7 +39,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 
 public class XmlWorkflowProcessDumper {
 
-    private final static String EOL = System.getProperty("line.separator");
+    private static final String EOL = System.getProperty("line.separator");
 
     private String type;
     private String namespace;

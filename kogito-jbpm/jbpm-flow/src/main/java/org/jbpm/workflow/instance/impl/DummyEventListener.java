@@ -19,7 +19,7 @@ import org.kie.kogito.internal.process.event.KogitoEventListener;
 
 public class DummyEventListener implements KogitoEventListener {
 
-    public final static DummyEventListener EMPTY_EVENT_LISTENER = new DummyEventListener();
+    public static final DummyEventListener EMPTY_EVENT_LISTENER = new DummyEventListener();
 
     private DummyEventListener() {
     }

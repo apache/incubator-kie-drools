@@ -31,7 +31,7 @@ public final class KogitoCapability {
     public static final KogitoCapability RULES = new KogitoCapability("org.kie.kogito.rules", "kogito-quarkus-rules");
     public static final KogitoCapability SERVERLESS_WORKFLOW = new KogitoCapability("org.kie.kogito.serverless-workflow", "kogito-quarkus-serverless-workflow");
 
-    public final static List<KogitoCapability> ENGINES = asList(
+    public static final List<KogitoCapability> ENGINES = asList(
             KogitoCapability.DECISIONS,
             KogitoCapability.PROCESSES,
             KogitoCapability.PREDICTIONS,
