@@ -71,8 +71,6 @@ public class XPATHActionBuilder
             final ActionDescr actionDescr,
             final ContextResolver contextResolver) {
 
-        String text = processMacros(actionDescr.getText());
-
         try {
             //            XPATHDialect dialect = (XPATHDialect) context.getDialect( "XPath" );
             //

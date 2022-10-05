@@ -21,7 +21,6 @@ import org.drools.drl.ast.descr.PatternDestinationDescr;
 import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.core.BaseAbstractHandler;
-import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -68,7 +67,7 @@ public class PatternHandler extends BaseAbstractHandler
     public Object end(final String uri,
             final String localName,
             final Parser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
+        parser.endElementBuilder();
         final PatternDescr patternDescr = (PatternDescr) parser.getCurrent();
 
         final Object parent = parser.getParent();

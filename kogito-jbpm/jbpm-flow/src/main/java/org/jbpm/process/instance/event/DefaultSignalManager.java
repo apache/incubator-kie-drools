@@ -66,7 +66,6 @@ public class DefaultSignalManager implements SignalManager {
                 eventListeners.remove(eventListener);
                 if (eventListeners.isEmpty()) {
                     processEventListeners.remove(type);
-                    eventListeners = null;
                 }
             }
         }

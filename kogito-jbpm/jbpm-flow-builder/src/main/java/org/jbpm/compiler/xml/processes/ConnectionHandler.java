@@ -25,7 +25,6 @@ import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Node;
-import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -85,7 +84,7 @@ public class ConnectionHandler extends BaseAbstractHandler implements Handler {
 
     public Object end(final String uri, final String localName,
             final Parser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
+        parser.endElementBuilder();
         return parser.getCurrent();
     }
 

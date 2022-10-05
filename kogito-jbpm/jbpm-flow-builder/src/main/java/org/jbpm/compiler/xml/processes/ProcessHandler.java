@@ -22,7 +22,6 @@ import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -72,7 +71,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     public Object end(final String uri,
             final String localName,
             final Parser parser) throws SAXException {
-        final Element element = parser.endElementBuilder();
+        parser.endElementBuilder();
+
         return parser.getCurrent();
     }
 

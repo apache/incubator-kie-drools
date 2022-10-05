@@ -728,7 +728,7 @@ public class CronExpression implements Serializable, Cloneable {
                 end = v1;
                 i = vs.pos;
             }
-            if (i < s.length() && ((c = s.charAt(i)) == '/')) {
+            if (i < s.length() && ((s.charAt(i)) == '/')) {
                 i++;
                 c = s.charAt(i);
                 int v2 = Integer.parseInt(String.valueOf(c));
@@ -1474,7 +1474,6 @@ public class CronExpression implements Serializable, Cloneable {
             // 1-based
 
             year = cl.get(Calendar.YEAR);
-            t = -1;
 
             // get year...................................................
             st = years.tailSet(year);

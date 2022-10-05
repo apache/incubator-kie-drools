@@ -453,10 +453,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
                 // when using ISO date/time period is not set
                 long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
                 if (repeatValues.length == 3) {
-                    int parsedReapedCount = (int) repeatValues[0];
-                    if (parsedReapedCount > -1) {
-                        parsedReapedCount = Integer.MAX_VALUE;
-                    }
                     return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
                 } else {
                     long delay = repeatValues[0];

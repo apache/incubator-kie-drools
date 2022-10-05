@@ -15,7 +15,6 @@
  */
 package org.jbpm.compiler.xml.compiler.rules;
 
-import org.drools.drl.ast.descr.ConditionalElementDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.PatternDescr;
 import org.jbpm.compiler.xml.Handler;
@@ -52,8 +51,6 @@ public class FromHandler extends BaseAbstractHandler
         Object parent = parser.getParent();
 
         final PatternDescr patternDescr = (PatternDescr) parent;
-
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parser.getParent(1);
 
         if (element.getElementsByTagName("expression").getLength() > 0) {
             patternDescr.setSource(fromDescr);
