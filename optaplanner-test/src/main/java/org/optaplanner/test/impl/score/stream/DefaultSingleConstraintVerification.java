@@ -8,18 +8,16 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.test.api.score.stream.SingleConstraintVerification;
 
 public final class DefaultSingleConstraintVerification<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintVerification<Solution_, Score_>
         implements SingleConstraintVerification<Solution_> {
 
-    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
-    private final SessionBasedAssertionBuilder<Solution_, Score_> sessionBasedAssertionBuilder;
-
     DefaultSingleConstraintVerification(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory) {
-        this.scoreDirectorFactory = scoreDirectorFactory;
-        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder<>(scoreDirectorFactory);
+        super(scoreDirectorFactory);
     }
 
     @Override
     public DefaultSingleConstraintAssertion<Solution_, Score_> given(Object... facts) {
+        assertCorrectArguments(facts);
         return sessionBasedAssertionBuilder.singleConstraintGiven(facts);
     }
 

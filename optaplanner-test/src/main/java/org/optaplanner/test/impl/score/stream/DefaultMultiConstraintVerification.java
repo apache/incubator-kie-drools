@@ -9,21 +9,20 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
 
 public final class DefaultMultiConstraintVerification<Solution_, Score_ extends Score<Score_>>
+        extends AbstractConstraintVerification<Solution_, Score_>
         implements MultiConstraintVerification<Solution_> {
 
-    private final AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
     private final ConstraintProvider constraintProvider;
-    private final SessionBasedAssertionBuilder<Solution_, Score_> sessionBasedAssertionBuilder;
 
     DefaultMultiConstraintVerification(AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory,
             ConstraintProvider constraintProvider) {
-        this.scoreDirectorFactory = scoreDirectorFactory;
+        super(scoreDirectorFactory);
         this.constraintProvider = constraintProvider;
-        this.sessionBasedAssertionBuilder = new SessionBasedAssertionBuilder<>(scoreDirectorFactory);
     }
 
     @Override
     public DefaultMultiConstraintAssertion<Score_> given(Object... facts) {
+        assertCorrectArguments(facts);
         return sessionBasedAssertionBuilder.multiConstraintGiven(constraintProvider, facts);
     }
 
