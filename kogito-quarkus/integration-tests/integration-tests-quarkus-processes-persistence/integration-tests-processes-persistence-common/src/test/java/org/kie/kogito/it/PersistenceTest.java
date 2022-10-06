@@ -39,6 +39,7 @@ import static java.util.Arrays.asList;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -272,5 +273,50 @@ public abstract class PersistenceTest {
                         .get("/{processId}/{pId}")
                         .then()
                         .statusCode(404));
+    }
+
+    @Test
+    void testAdHocProcess() {
+        String pId = given().contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("status", "new"))
+                .post("/AdHocProcess")
+                .then()
+                .statusCode(201)
+                .body("id", not(emptyOrNullString()))
+                .body("status", equalTo("new"))
+                .extract()
+                .path("id");
+
+        String location = given().contentType(ContentType.JSON)
+                .pathParam("pId", pId)
+                .when()
+                .post("/AdHocProcess/{pId}/CloseTask")
+                .then()
+                .log().everything()
+                .statusCode(201)
+                .header("Location", notNullValue())
+                .extract()
+                .header("Location");
+
+        String taskId = location.substring(location.lastIndexOf("/") + 1);
+
+        given()
+                .queryParam("user", "user")
+                .queryParam("group", "agroup")
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("status", "closed"))
+                .post("/AdHocProcess/{pId}/CloseTask/{taskId}", pId, taskId)
+                .then()
+                .statusCode(200)
+                .body("status", equalTo("closed"));
+
+        given().contentType(ContentType.JSON)
+                .pathParam("pId", pId)
+                .when()
+                .get("/AdHocProcess/{pId}")
+                .then()
+                .statusCode(404);
     }
 }

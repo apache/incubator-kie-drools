@@ -237,7 +237,7 @@ public class ProtobufProcessInstanceReader {
                 result = buildMilestoneNodeInstance(content);
             } else if (nodeContentProtobuf.is(DynamicNodeInstanceContent.class)) {
                 DynamicNodeInstanceContent content = nodeContentProtobuf.unpack(DynamicNodeInstanceContent.class);
-                result = buildDynamicNodeInstance(content);
+                result = buildDynamicNodeInstance(content, nodeInstance, parent);
             } else if (nodeContentProtobuf.is(EventSubProcessNodeInstanceContent.class)) {
                 EventSubProcessNodeInstanceContent content = nodeContentProtobuf.unpack(EventSubProcessNodeInstanceContent.class);
                 result = buildEventSubProcessNodeInstance(content);
@@ -309,7 +309,8 @@ public class ProtobufProcessInstanceReader {
         return nodeInstance;
     }
 
-    private NodeInstanceImpl buildDynamicNodeInstance(DynamicNodeInstanceContent content) {
+    private NodeInstanceImpl buildDynamicNodeInstance(DynamicNodeInstanceContent content, KogitoTypesProtobuf.NodeInstance protoNodeInstance,
+            KogitoNodeInstanceContainer parentContainer) {
         DynamicNodeInstance nodeInstance = new DynamicNodeInstance();
         if (content.getTimerInstanceIdCount() > 0) {
             List<String> timerInstances = new ArrayList<>();
@@ -319,6 +320,7 @@ public class ProtobufProcessInstanceReader {
             nodeInstance.internalSetTimerInstances(timerInstances);
         }
 
+        setCommonNodeInstanceData(ruleFlowProcessInstance, parentContainer, protoNodeInstance, nodeInstance);
         buildWorkflowContext(nodeInstance, content.getContext());
 
         return nodeInstance;
