@@ -33,7 +33,7 @@ public abstract class KieSessionBasedRuleUnitInstance<T extends RuleUnitData> ex
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         evaluator.dispose();
     }
 
