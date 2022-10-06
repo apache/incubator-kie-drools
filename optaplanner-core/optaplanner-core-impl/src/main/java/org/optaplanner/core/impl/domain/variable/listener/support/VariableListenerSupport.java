@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.listener.support.violation.ShadowVariablesAssert;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
@@ -57,17 +58,19 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
-        AbstractVariableListener<Solution_, Object> variableListener =
-                shadowVariableDescriptor.buildVariableListener(scoreDirector);
-        if (variableListener instanceof Supply) {
-            // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
-            supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+        for (VariableListenerWithSources<Solution_> listenerWithSources : shadowVariableDescriptor
+                .buildVariableListeners(this)) {
+            AbstractVariableListener<Solution_, Object> variableListener = listenerWithSources.getVariableListener();
+            if (variableListener instanceof Supply) {
+                // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
+                supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+            }
+            int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
+            notifiableRegistry.registerNotifiable(
+                    listenerWithSources.getSourceVariableDescriptors(),
+                    AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, globalOrder));
+            nextGlobalOrder = globalOrder + 1;
         }
-        int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
-        notifiableRegistry.registerNotifiable(
-                shadowVariableDescriptor.getSourceVariableDescriptorList(),
-                AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, globalOrder));
-        nextGlobalOrder = globalOrder + 1;
     }
 
     @Override

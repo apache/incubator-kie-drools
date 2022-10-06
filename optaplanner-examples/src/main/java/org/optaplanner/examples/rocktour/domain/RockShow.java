@@ -7,10 +7,10 @@ import java.util.NavigableSet;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.rocktour.domain.solver.RockShowVariableListener;
 
@@ -33,18 +33,17 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     @AnchorShadowVariable(sourceVariableName = "previousStandstill")
     private RockBus bus;
 
-    @CustomShadowVariable(variableListenerClass = RockShowVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "previousStandstill"),
-            @PlanningVariableReference(variableName = "bus") })
+    @ShadowVariable(variableListenerClass = RockShowVariableListener.class, sourceVariableName = "previousStandstill")
+    @ShadowVariable(variableListenerClass = RockShowVariableListener.class, sourceVariableName = "bus")
     private LocalDate date;
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private RockTimeOfDay timeOfDay; // There can be 2 shows on the same date (early and late)
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private RockStandstill hosWeekStart; // HOS stands for Hours of Service regulation
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "date"))
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private Long hosWeekDrivingSecondsTotal; // HOS stands for Hours of Service regulation
 
     public RockShow() {

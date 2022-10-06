@@ -74,6 +74,11 @@ public final class ReflectionFieldMemberAccessor extends AbstractMemberAccessor 
     }
 
     @Override
+    public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+        return field.getDeclaredAnnotationsByType(annotationClass);
+    }
+
+    @Override
     public String toString() {
         return "field " + field;
     }

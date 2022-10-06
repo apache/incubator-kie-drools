@@ -7,8 +7,10 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 
 /*
  *  Should have one of every annotation, even annotations that
@@ -26,7 +28,15 @@ public class TestDataKitchenSinkEntity {
                     @PlanningVariableReference(entityClass = TestDataKitchenSinkEntity.class,
                             variableName = "stringVariable")
             })
-    private String myShadow;
+    private String shadow1;
+
+    @ShadowVariable(
+            variableListenerClass = DummyVariableListener.class,
+            sourceEntityClass = TestDataKitchenSinkEntity.class, sourceVariableName = "stringVariable")
+    private String shadow2;
+
+    @PiggybackShadowVariable(shadowVariableName = "shadow2")
+    private String piggybackShadow;
 
     @PlanningVariable(valueRangeProviderRefs = { "names" })
     private String stringVariable;

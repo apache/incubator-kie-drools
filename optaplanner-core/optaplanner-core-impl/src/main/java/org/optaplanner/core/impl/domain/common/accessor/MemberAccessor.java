@@ -54,4 +54,6 @@ public interface MemberAccessor {
      */
     <T extends Annotation> T getAnnotation(Class<T> annotationClass);
 
+    <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass);
+
 }

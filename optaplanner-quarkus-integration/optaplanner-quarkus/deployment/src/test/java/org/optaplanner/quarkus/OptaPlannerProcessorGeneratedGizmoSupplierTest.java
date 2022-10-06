@@ -13,8 +13,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -95,23 +94,15 @@ class OptaPlannerProcessorGeneratedGizmoSupplierTest {
 
     @PlanningEntity
     public interface DummyInterfaceEntity {
-        @CustomShadowVariable(
-                sources = {
-                        @PlanningVariableReference(entityClass = TestdataEntity.class,
-                                variableName = "value")
-                },
-                variableListenerClass = DummyVariableListener.class)
+        @ShadowVariable(variableListenerClass = DummyVariableListener.class,
+                sourceEntityClass = TestdataEntity.class, sourceVariableName = "value")
         Integer getLength();
     }
 
     @PlanningEntity
     public static abstract class DummyAbstractEntity {
-        @CustomShadowVariable(
-                sources = {
-                        @PlanningVariableReference(entityClass = TestdataEntity.class,
-                                variableName = "value")
-                },
-                variableListenerClass = DummyVariableListener.class)
+        @ShadowVariable(variableListenerClass = DummyVariableListener.class,
+                sourceEntityClass = TestdataEntity.class, sourceVariableName = "value")
         abstract Integer getLength();
     }
 

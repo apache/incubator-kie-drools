@@ -5,9 +5,8 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
@@ -29,12 +28,10 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private TestdataValue value;
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {
-            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     private List<String> shadowVariableList;
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {
-            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     private Map<String, String> shadowVariableMap;
 
     public TestdataFieldAnnotatedDeepCloningEntity() {

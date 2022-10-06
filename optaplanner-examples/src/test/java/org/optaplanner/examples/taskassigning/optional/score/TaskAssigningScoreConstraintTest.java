@@ -61,7 +61,6 @@ class TaskAssigningScoreConstraintTest {
         task.setEmployee(employee);
         for (int i = index; i < employee.getTasks().size(); i++) {
             Task t = employee.getTasks().get(i);
-            t.setIndex(i);
             t.setStartTime(i == 0 ? 0 : employee.getTasks().get(i - 1).getEndTime());
         }
     }

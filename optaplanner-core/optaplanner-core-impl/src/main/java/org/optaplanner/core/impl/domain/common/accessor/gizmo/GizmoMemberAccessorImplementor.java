@@ -97,6 +97,7 @@ public class GizmoMemberAccessorImplementor {
                 createExecuteSetter(classCreator, memberInfo);
             }
             createGetAnnotation(classCreator);
+            createDeclaredAnnotationsByType(classCreator);
         }
     }
 
@@ -434,8 +435,7 @@ public class GizmoMemberAccessorImplementor {
      * </pre>
      */
     private static void createGetAnnotation(ClassCreator classCreator) {
-        MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getAnnotation",
-                Class.class);
+        MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getAnnotation", Class.class);
         ResultHandle thisObj = methodCreator.getThis();
 
         ResultHandle annotatedElement = methodCreator.readInstanceField(
@@ -443,6 +443,19 @@ public class GizmoMemberAccessorImplementor {
                 thisObj);
         ResultHandle query = methodCreator.getMethodParam(0);
         ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("getAnnotation", Class.class),
+                annotatedElement, query);
+        methodCreator.returnValue(out);
+    }
+
+    private static void createDeclaredAnnotationsByType(ClassCreator classCreator) {
+        MethodCreator methodCreator = getAnnotationMethodCreator(classCreator, "getDeclaredAnnotationsByType", Class.class);
+        ResultHandle thisObj = methodCreator.getThis();
+
+        ResultHandle annotatedElement = methodCreator.readInstanceField(
+                FieldDescriptor.of(classCreator.getClassName(), ANNOTATED_ELEMENT_FIELD, AnnotatedElement.class),
+                thisObj);
+        ResultHandle query = methodCreator.getMethodParam(0);
+        ResultHandle out = methodCreator.invokeInterfaceMethod(getAnnotationMethod("getDeclaredAnnotationsByType", Class.class),
                 annotatedElement, query);
         methodCreator.returnValue(out);
     }

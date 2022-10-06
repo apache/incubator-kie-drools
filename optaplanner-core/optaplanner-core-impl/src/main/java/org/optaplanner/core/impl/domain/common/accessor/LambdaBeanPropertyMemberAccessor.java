@@ -147,6 +147,11 @@ public final class LambdaBeanPropertyMemberAccessor implements MemberAccessor {
     }
 
     @Override
+    public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+        return getterMethod.getDeclaredAnnotationsByType(annotationClass);
+    }
+
+    @Override
     public String toString() {
         return "bean property " + propertyName + " on " + getterMethod.getDeclaringClass();
     }

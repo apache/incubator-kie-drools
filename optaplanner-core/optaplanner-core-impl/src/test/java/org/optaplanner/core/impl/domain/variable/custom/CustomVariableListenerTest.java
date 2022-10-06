@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.domain.variable.custom;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.verify;
 
@@ -23,6 +24,8 @@ import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtende
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntityUniqueEvents;
 import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
+import org.optaplanner.core.impl.testdata.domain.shadow.wrong_listener.TestdataWrongBasicShadowEntity;
+import org.optaplanner.core.impl.testdata.domain.shadow.wrong_listener.TestdataWrongListShadowEntity;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 class CustomVariableListenerTest {
@@ -41,6 +44,18 @@ class CustomVariableListenerTest {
     void nonCyclicWithSevenDisorderedShadows() {
         SolutionDescriptor<TestdataSevenNonCyclicShadowedSolution> solutionDescriptor =
                 TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();
+    }
+
+    @Test
+    void listVariableListenerWithBasicSourceVariable() {
+        assertThatIllegalArgumentException().isThrownBy(TestdataWrongBasicShadowEntity::buildEntityDescriptor)
+                .withMessageContaining("basic variable");
+    }
+
+    @Test
+    void basicVariableListenerWithListSourceVariable() {
+        assertThatIllegalArgumentException().isThrownBy(TestdataWrongListShadowEntity::buildEntityDescriptor)
+                .withMessageContaining("list variable");
     }
 
     @Test

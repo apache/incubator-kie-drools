@@ -1,8 +1,7 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
@@ -67,13 +66,10 @@ public class TimeWindowedCustomer extends Customer {
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
-            // Arguable, to adhere to API specs (although this works), nextCustomer should also be a source,
-            // because this shadow must be triggered after nextCustomer (but there is no need to be triggered by nextCustomer)
-            sources = {
-                    @PlanningVariableReference(variableName = "vehicle"),
-                    @PlanningVariableReference(variableName = "previousCustomer")
-            })
+    // Arguable, to adhere to API specs (although this works), nextCustomer should also be a source,
+    // because this shadow must be triggered after nextCustomer (but there is no need to be triggered by nextCustomer)
+    @ShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class, sourceVariableName = "vehicle")
+    @ShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class, sourceVariableName = "previousCustomer")
     public Long getArrivalTime() {
         return arrivalTime;
     }

@@ -44,6 +44,17 @@ https://jdk.java.net/19/[OpenJDK 19] was recently released and OptaPlanner is fu
 
 We always test our releases against the long-term supported versions of the JDK, currently 11 and 17, as well as against the latest release. We encourage you to upgrade your JDK regularly to benefit from the enhancements that come with the new releases.
 
+==== New `@ShadowVariable` and `@PiggybackShadowVariable` annotations replace the `@CustomShadowVariable`
+
+`@ShadowVariable` annotation is repeatable and allows to specify 1 listener per source variable.
+
+`@PiggybackShadowVariable` is a specialized annotation to mark shadow variables that are updated by another shadow variable's listener.
+
+The `@CustomShadowVariable` has been deprecated.
+
+Read more about link:https://www.optaplanner.org/docs/optaplanner/latest/shadow-variable/shadow-variable.html#customVariableListener[custom shadow variables] in the documentation.
+
+
 [[releaseNotes-8.27.0.Final]]
 === OptaPlanner 8.27.0.Final
 
@@ -59,9 +70,9 @@ Drools intends to catch up performance wise.
 [[releaseNotes-8.24.0.Final]]
 === OptaPlanner 8.24.0.Final
 
-==== Optaweb Employee Rostering demo application abandoned
+==== OptaWeb Employee Rostering demo application abandoned
 
-The codebase for Optaweb Employee Rostering demo application has been frozen and will no longer receive any updates.
+The codebase for OptaWeb Employee Rostering demo application has been frozen and will no longer receive any updates.
 
 We encourage users to check out the https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/employee-scheduling[OptaPlanner Employee Rostering Quickstart] for a simple and straight-forward way of integrating OptaPlanner in your application.
 

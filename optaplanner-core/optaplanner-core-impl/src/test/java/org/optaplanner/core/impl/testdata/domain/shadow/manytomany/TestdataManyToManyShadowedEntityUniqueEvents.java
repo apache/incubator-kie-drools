@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -37,9 +37,8 @@ public class TestdataManyToManyShadowedEntityUniqueEvents extends TestdataManyTo
     }
 
     @Override
-    @CustomShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "primaryValue"),
-            @PlanningVariableReference(variableName = "secondaryValue") })
+    @ShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sourceVariableName = "primaryValue")
+    @ShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sourceVariableName = "secondaryValue")
     public String getComposedCode() {
         return super.getComposedCode();
     }
@@ -56,7 +55,7 @@ public class TestdataManyToManyShadowedEntityUniqueEvents extends TestdataManyTo
     }
 
     @Override
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "composedCode"))
+    @PiggybackShadowVariable(shadowVariableName = "composedCode")
     public String getReverseComposedCode() {
         return super.getReverseComposedCode();
     }

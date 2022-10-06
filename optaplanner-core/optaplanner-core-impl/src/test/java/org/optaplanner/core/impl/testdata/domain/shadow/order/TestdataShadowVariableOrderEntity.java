@@ -1,9 +1,9 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.order;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -27,35 +27,32 @@ public class TestdataShadowVariableOrderEntity extends TestdataObject {
     /**
      * G -> F
      */
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "x4F"))
+    @PiggybackShadowVariable(shadowVariableName = "x4F")
     private String x0G;
 
     /**
      * D -> C
      */
-    @CustomShadowVariable(variableListenerClass = DVariableListener.class,
-            sources = @PlanningVariableReference(variableName = "x3C"))
+    @ShadowVariable(variableListenerClass = DVariableListener.class, sourceVariableName = "x3C")
     private String x1D;
 
     /**
      * E -> {B, C}
      */
-    @CustomShadowVariable(variableListenerClass = EVariableListener.class,
-            sources = { @PlanningVariableReference(variableName = "x5B"), @PlanningVariableReference(variableName = "x3C") })
+    @ShadowVariable(variableListenerClass = EVariableListener.class, sourceVariableName = "x5B")
+    @ShadowVariable(variableListenerClass = EVariableListener.class, sourceVariableName = "x3C")
     private String x2E;
 
     /**
      * C -> A
      */
-    @CustomShadowVariable(variableListenerClass = CVariableListener.class,
-            sources = @PlanningVariableReference(variableName = "x6A"))
+    @ShadowVariable(variableListenerClass = CVariableListener.class, sourceVariableName = "x6A")
     private String x3C;
 
     /**
      * F -> E
      */
-    @CustomShadowVariable(variableListenerClass = FGVariableListener.class,
-            sources = @PlanningVariableReference(variableName = "x2E"))
+    @ShadowVariable(variableListenerClass = FGVariableListener.class, sourceVariableName = "x2E")
     private String x4F;
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")

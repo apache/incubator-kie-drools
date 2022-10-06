@@ -2,10 +2,11 @@ package org.optaplanner.core.impl.domain.variable.listener.support.violation;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 final class ShadowVariableSnapshot {
 
@@ -29,14 +30,22 @@ final class ShadowVariableSnapshot {
             violationMessageConsumer.accept("    The entity (" + entity
                     + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                     + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
-                    + ") after all " + VariableListener.class.getSimpleName()
-                    + "s were triggered without changes to the genuine variables.\n"
-                    + "      Maybe the " + VariableListener.class.getSimpleName() + " class ("
-                    + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
+                    + ") after all variable listeners were triggered without changes to the genuine variables.\n"
+                    + "      Maybe one of the listeners ("
+                    + shadowVariableDescriptor.getVariableListenerClasses().stream()
+                            .map(Class::getSimpleName)
+                            .collect(Collectors.toList())
                     + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                    + ") forgot to update it when one of its sources changed.\n"
-                    + "      Maybe some of the genuine/shadow variables it depends on are missing in the @"
-                    + CustomShadowVariable.class.getSimpleName() + "'s sources value.");
+                    + ") forgot to update it when one of its sourceVariables ("
+                    + shadowVariableDescriptor.getSourceVariableDescriptorList().stream()
+                            .map(VariableDescriptor::getSimpleEntityAndVariableName)
+                            .collect(Collectors.toList())
+                    + ") changed.\n"
+                    + "      Or vice versa, maybe one of the listeners computes this shadow variable using a planning variable"
+                    + " that is not declared as its source."
+                    + " Use the repeatable @" + ShadowVariable.class.getSimpleName()
+                    + " annotation for each source variable that is used to compute this shadow variable."
+                    + "\n");
         }
     }
 

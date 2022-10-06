@@ -1,9 +1,8 @@
 package org.optaplanner.quarkus.it.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 
 @PlanningEntity
 public class TestdataStringLengthShadowEntity {
@@ -11,11 +10,8 @@ public class TestdataStringLengthShadowEntity {
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     private String value;
 
-    @CustomShadowVariable(variableListenerClass = StringLengthVariableListener.class,
-            sources = {
-                    @PlanningVariableReference(entityClass = TestdataStringLengthShadowEntity.class,
-                            variableName = "value")
-            })
+    @ShadowVariable(variableListenerClass = StringLengthVariableListener.class,
+            sourceEntityClass = TestdataStringLengthShadowEntity.class, sourceVariableName = "value")
     private Integer length;
 
     // ************************************************************************

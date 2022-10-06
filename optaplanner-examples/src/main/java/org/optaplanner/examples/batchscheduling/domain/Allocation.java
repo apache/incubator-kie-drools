@@ -4,9 +4,8 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.batchscheduling.app.BatchSchedulingApp;
 import org.optaplanner.examples.batchscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -182,8 +181,7 @@ public class Allocation extends AbstractPersistable {
         return delay;
     }
 
-    @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "delay") })
+    @ShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class, sourceVariableName = "delay")
     public Long getPredecessorsDoneDate() {
         return predecessorsDoneDate;
     }

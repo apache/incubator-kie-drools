@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -7,8 +8,9 @@ import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -51,7 +53,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      */
     public abstract List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList();
 
-    public abstract Class<? extends AbstractVariableListener> getVariableListenerClass();
+    public abstract Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses();
 
     /**
      * @return never null
@@ -63,11 +65,10 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
     }
 
     /**
-     * @param scoreDirector never null
+     * @param supplyManager never null
      * @return never null
      */
-    public abstract AbstractVariableListener<Solution_, Object>
-            buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector);
+    public abstract Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager);
 
     // ************************************************************************
     // Extraction methods

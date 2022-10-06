@@ -19,8 +19,9 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -130,15 +131,15 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public Class<? extends AbstractVariableListener> getVariableListenerClass() {
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
         if (singleton) {
             if (chained) {
-                return SingletonInverseVariableListener.class;
+                return Collections.singleton(SingletonInverseVariableListener.class);
             } else {
-                return SingletonListInverseVariableListener.class;
+                return Collections.singleton(SingletonListInverseVariableListener.class);
             }
         } else {
-            return CollectionInverseVariableListener.class;
+            return Collections.singleton(CollectionInverseVariableListener.class);
         }
     }
 
@@ -161,7 +162,11 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public AbstractVariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager) {
+        return new VariableListenerWithSources<>(buildVariableListener(), sourceVariableDescriptor).toCollection();
+    }
+
+    private AbstractVariableListener<Solution_, Object> buildVariableListener() {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);

@@ -5,9 +5,8 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
@@ -58,7 +57,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     /**
      * Neither the type nor the method or the field are annotated; therefore we expect a shallow clone.
-     * 
+     *
      * @return
      */
     public TestdataVariousTypes getUnannotatedCopiedTestdataVariousTypes() {
@@ -71,7 +70,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     /**
      * Even though the return type is not annotated, the method is annotated, therefore we expect a deep clone.
-     * 
+     *
      * @return
      */
     @DeepPlanningClone
@@ -102,7 +101,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     /**
      * Neither the return type nor the method are annotated, but the instance returned is of an annotated type.
      * Therefore we expect a deep clone.
-     * 
+     *
      * @return
      */
     public TestdataVariousTypes getAnnotatedClonedTestdataVariousTypes() {
@@ -119,7 +118,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     /**
      * The return type is annotated. Therefore we expect a deep clone.
-     * 
+     *
      * @return
      */
     public AnnotatedTestdataVariousTypes getAnnotatedTestdataVariousTypes() {
@@ -131,8 +130,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {
-            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     public List<String> getShadowVariableList() {
         return shadowVariableList;
     }
@@ -142,8 +140,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     @DeepPlanningClone
-    @CustomShadowVariable(sources = {
-            @PlanningVariableReference(variableName = "value") }, variableListenerClass = DummyVariableListener.class)
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     public Map<String, String> getShadowVariableMap() {
         return shadowVariableMap;
     }

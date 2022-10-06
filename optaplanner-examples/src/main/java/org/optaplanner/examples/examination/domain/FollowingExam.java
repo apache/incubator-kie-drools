@@ -1,8 +1,7 @@
 package org.optaplanner.examples.examination.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.examination.domain.solver.PeriodUpdatingVariableListener;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -25,8 +24,8 @@ public class FollowingExam extends Exam {
     }
 
     @Override
-    @CustomShadowVariable(variableListenerClass = PeriodUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(entityClass = LeadingExam.class, variableName = "period") })
+    @ShadowVariable(variableListenerClass = PeriodUpdatingVariableListener.class,
+            sourceEntityClass = LeadingExam.class, sourceVariableName = "period")
     public Period getPeriod() {
         return period;
     }

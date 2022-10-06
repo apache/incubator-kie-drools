@@ -166,8 +166,9 @@ implement the interface and annotate it on the shadow variable that needs to cha
         return previousStandstill;
     }
 
-    @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "previousStandstill")})
+    @ShadowVariable(
+            variableListenerClass = VehicleUpdatingVariableListener.class,
+            sourceVariableName = "previousStandstill")
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -176,10 +177,8 @@ implement the interface and annotate it on the shadow variable that needs to cha
 <<shadowVariableIntroduction,Register this class as a planning entity>> if it isn't already.
 Otherwise OptaPlanner won't detect it and the shadow variable won't update.
 
-The source's `variableName` is the (genuine or shadow) variable that triggers changes to this shadow variable.
-If the source variable's class is different than the shadow variable's class,
-also specify the `entityClass` in the ``@PlanningVariableReference`` annotation
-and make sure the shadow variable's class is <<shadowVariableIntroduction,registered as a planning entity>>.
+The `sourceVariableName` is the (genuine or shadow) variable that triggers changes to the annotated shadow variable.
+If the source variable is declared on a different class than the annotated shadow variable's class, also specify the `sourceEntityClass` and make sure the shadow variable's class is <<shadowVariableIntroduction,registered as a planning entity>>.
 
 Implement the `VariableListener` interface.
 For example, the `VehicleUpdatingVariableListener` assures that every `Customer` in a chain has the same ``Vehicle``, namely the chain's anchor.
@@ -224,7 +223,37 @@ It must never change a genuine planning variable or a problem fact.
 Any change of a shadow variable must be told to the ``ScoreDirector`` with `before*()` and `after*()` methods.
 ====
 
-If one `VariableListener` changes two shadow variables (because having two separate ``VariableListener``s would be inefficient), then annotate only the first shadow variable with the `variableListenerClass` and let the other shadow variable(s) reference the first shadow variable:
+=== Multiple source variables
+
+If your custom variable listener needs multiple source variables to compute the shadow variable, annotate the shadow variable with multiple `@ShadowVariable` annotations, one per each source variable.
+
+[source,java]
+----
+    @PlanningVariable(...)
+    public ExecutionMode getExecutionMode() {
+        return executionMode;
+    }
+
+    @PlanningVariable(...)
+    public Integer getDelay() {
+        return delay;
+    }
+
+    @ShadowVariable(
+            variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+            sourceVariableName = "executionMode")
+    @ShadowVariable(
+            variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+            sourceVariableName = "delay")
+    public Integer getPredecessorsDoneDate() {
+        return predecessorsDoneDate;
+    }
+----
+
+=== Piggyback shadow variable
+
+If one `VariableListener` changes two or more shadow variables (because having two separate ``VariableListener``s would be inefficient), then annotate only the first shadow variable with `@ShadowVariable` and specify the `variableListenerClass` there.
+Use `@PiggybackShadowVariable` on each shadow variable updated by that variable listener and reference the first shadow variable:
 
 [source,java,options="nowrap"]
 ----
@@ -233,17 +262,20 @@ If one `VariableListener` changes two shadow variables (because having two separ
         return previousStandstill;
     }
 
-    @CustomShadowVariable(variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = "previousStandstill")})
+    @ShadowVariable(
+            variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
+            sourceVariableName = "previousStandstill")
     public Integer getTransportTime() {
         return transportTime;
     }
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "transportTime"))
+    @PiggybackShadowVariable(shadowVariableName = "transportTime")
     public Integer getCapacity() {
         return capacity;
     }
 ----
+
+=== Shadow variable cloning
 
 A shadow variable's value (just like a genuine variable's value)
 isn't xref:planner-configuration/planner-configuration.adoc#cloningASolution[planning cloned] by the default solution cloner,
@@ -267,7 +299,6 @@ All shadow variables are triggered by a ``VariableListener``, regardless if it's
 The genuine and shadow variables form a graph, that determines the order in which the ``afterEntityAdded()``, `afterVariableChanged()` and `afterEntityRemoved()` methods are called:
 
 image::shadow-variable/shadowVariableOrder.png[align="center"]
-
 
 [NOTE]
 ====

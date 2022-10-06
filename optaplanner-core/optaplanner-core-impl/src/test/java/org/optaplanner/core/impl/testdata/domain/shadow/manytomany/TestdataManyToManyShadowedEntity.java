@@ -1,9 +1,9 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.manytomany;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
@@ -54,9 +54,8 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         this.secondaryValue = secondaryValue;
     }
 
-    @CustomShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "primaryValue"),
-            @PlanningVariableReference(variableName = "secondaryValue") })
+    @ShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sourceVariableName = "primaryValue")
+    @ShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class, sourceVariableName = "secondaryValue")
     public String getComposedCode() {
         return composedCode;
     }
@@ -65,7 +64,7 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         this.composedCode = composedCode;
     }
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "composedCode"))
+    @PiggybackShadowVariable(shadowVariableName = "composedCode")
     public String getReverseComposedCode() {
         return reverseComposedCode;
     }

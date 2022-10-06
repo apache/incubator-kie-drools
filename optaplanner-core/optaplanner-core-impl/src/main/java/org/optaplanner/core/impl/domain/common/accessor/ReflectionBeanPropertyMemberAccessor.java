@@ -108,6 +108,11 @@ public final class ReflectionBeanPropertyMemberAccessor extends AbstractMemberAc
     }
 
     @Override
+    public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+        return getterMethod.getDeclaredAnnotationsByType(annotationClass);
+    }
+
+    @Override
     public String toString() {
         return "bean property " + propertyName + " on " + getterMethod.getDeclaringClass();
     }

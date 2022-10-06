@@ -1,8 +1,7 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.CoachPassengerCountTotalUpdatingVariableListener;
 
@@ -28,8 +27,8 @@ public class Coach extends Bus {
     }
 
     @Override
-    @CustomShadowVariable(variableListenerClass = CoachPassengerCountTotalUpdatingVariableListener.class,
-            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus") })
+    @ShadowVariable(variableListenerClass = CoachPassengerCountTotalUpdatingVariableListener.class,
+            sourceEntityClass = BusStop.class, sourceVariableName = "bus")
     public Integer getPassengerQuantityTotal() {
         return super.getPassengerQuantityTotal();
     }

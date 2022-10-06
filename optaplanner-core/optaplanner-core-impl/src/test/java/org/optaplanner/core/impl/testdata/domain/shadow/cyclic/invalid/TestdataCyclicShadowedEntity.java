@@ -1,9 +1,8 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.invalid;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -49,8 +48,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = RockShadowUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "scissorsShadow") })
+    @ShadowVariable(variableListenerClass = RockShadowUpdatingVariableListener.class, sourceVariableName = "scissorsShadow")
     public String getRockShadow() {
         return rockShadow;
     }
@@ -59,8 +57,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.rockShadow = rockShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = PaperShadowUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "rockShadow") })
+    @ShadowVariable(variableListenerClass = PaperShadowUpdatingVariableListener.class, sourceVariableName = "rockShadow")
     public String getPaperShadow() {
         return paperShadow;
     }
@@ -69,8 +66,7 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
         this.paperShadow = paperShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = ScissorsShadowUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "paperShadow") })
+    @ShadowVariable(variableListenerClass = ScissorsShadowUpdatingVariableListener.class, sourceVariableName = "paperShadow")
     public String getScissorsShadow() {
         return scissorsShadow;
     }

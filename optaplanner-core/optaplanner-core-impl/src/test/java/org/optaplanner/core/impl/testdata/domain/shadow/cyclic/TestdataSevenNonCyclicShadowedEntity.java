@@ -1,9 +1,8 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
@@ -53,8 +52,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "secondShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "secondShadow")
     public String getThirdShadow() {
         return thirdShadow;
     }
@@ -63,8 +61,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.thirdShadow = thirdShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "fourthShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "fourthShadow")
     public String getFifthShadow() {
         return fifthShadow;
     }
@@ -73,8 +70,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.fifthShadow = fifthShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "value") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     public String getFirstShadow() {
         return firstShadow;
     }
@@ -83,8 +79,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.firstShadow = firstShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "thirdShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "thirdShadow")
     public String getFourthShadow() {
         return fourthShadow;
     }
@@ -93,8 +88,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.fourthShadow = fourthShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "firstShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "firstShadow")
     public String getSecondShadow() {
         return secondShadow;
     }
@@ -103,8 +97,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.secondShadow = secondShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "sixthShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "sixthShadow")
     public String getSeventhShadow() {
         return seventhShadow;
     }
@@ -113,8 +106,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
         this.seventhShadow = seventhShadow;
     }
 
-    @CustomShadowVariable(variableListenerClass = DummyVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "fifthShadow") })
+    @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "fifthShadow")
     public String getSixthShadow() {
         return sixthShadow;
     }

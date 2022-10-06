@@ -88,6 +88,11 @@ public final class ReflectionMethodMemberAccessor extends AbstractMemberAccessor
     }
 
     @Override
+    public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+        return readMethod.getDeclaredAnnotationsByType(annotationClass);
+    }
+
+    @Override
     public String toString() {
         return "method " + methodName + " on " + readMethod.getDeclaringClass();
     }

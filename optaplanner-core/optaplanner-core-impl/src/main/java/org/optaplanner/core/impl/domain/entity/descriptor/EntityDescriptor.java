@@ -25,9 +25,11 @@ import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -38,6 +40,8 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.custom.CustomShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.custom.LegacyCustomShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.custom.PiggybackShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.BasicVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -70,6 +74,9 @@ public class EntityDescriptor<Solution_> {
             IndexShadowVariable.class,
             PreviousElementShadowVariable.class,
             NextElementShadowVariable.class,
+            ShadowVariable.class,
+            ShadowVariable.List.class,
+            PiggybackShadowVariable.class,
             CustomShadowVariable.class };
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityDescriptor.class);
@@ -221,7 +228,10 @@ public class EntityDescriptor<Solution_> {
                 member, VARIABLE_ANNOTATION_CLASSES);
         if (variableAnnotationClass != null) {
             MemberAccessorFactory.MemberAccessorType memberAccessorType;
-            if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
+            if (variableAnnotationClass.equals(CustomShadowVariable.class)
+                    || variableAnnotationClass.equals(ShadowVariable.class)
+                    || variableAnnotationClass.equals(ShadowVariable.List.class)
+                    || variableAnnotationClass.equals(PiggybackShadowVariable.class)) {
                 memberAccessorType = FIELD_OR_GETTER_METHOD;
             } else {
                 memberAccessorType = FIELD_OR_GETTER_METHOD_WITH_SETTER;
@@ -283,8 +293,17 @@ public class EntityDescriptor<Solution_> {
             NextElementShadowVariableDescriptor<Solution_> variableDescriptor =
                     new NextElementShadowVariableDescriptor<>(this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
-        } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
+        } else if (variableAnnotationClass.equals(ShadowVariable.class)
+                || variableAnnotationClass.equals(ShadowVariable.List.class)) {
             ShadowVariableDescriptor<Solution_> variableDescriptor = new CustomShadowVariableDescriptor<>(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(PiggybackShadowVariable.class)) {
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new PiggybackShadowVariableDescriptor<>(
+                    this, memberAccessor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
+        } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new LegacyCustomShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else {

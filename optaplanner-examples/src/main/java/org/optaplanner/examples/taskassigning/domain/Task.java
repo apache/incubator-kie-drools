@@ -1,10 +1,8 @@
 package org.optaplanner.examples.taskassigning.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
@@ -24,16 +22,8 @@ public class Task extends AbstractPersistable implements Labeled {
     // Shadow variables
     @InverseRelationShadowVariable(sourceVariableName = "tasks")
     private Employee employee;
-    @IndexShadowVariable(sourceVariableName = "tasks")
-    private Integer index;
-    // The starTime should be sourced on Employee.tasks but the @CustomShadowVariable does not allow that yet.
-    // Sourcing it on Task.employee and Task.index is a temporary workaround.
-    // See https://issues.redhat.com/browse/PLANNER-2706.
-    @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
-            sources = {
-                    @PlanningVariableReference(variableName = "employee"),
-                    @PlanningVariableReference(variableName = "index")
-            })
+    @ShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
+            sourceEntityClass = Employee.class, sourceVariableName = "tasks")
     private Integer startTime; // In minutes
 
     public Task() {
@@ -94,14 +84,6 @@ public class Task extends AbstractPersistable implements Labeled {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     public Integer getStartTime() {

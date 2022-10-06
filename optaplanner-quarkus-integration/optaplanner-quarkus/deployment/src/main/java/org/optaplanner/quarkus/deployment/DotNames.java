@@ -20,9 +20,11 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -58,6 +60,8 @@ public final class DotNames {
     static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
     static final DotName INDEX_SHADOW_VARIABLE = DotName.createSimple(IndexShadowVariable.class.getName());
     static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
+    static final DotName PIGGYBACK_SHADOW_VARIABLE = DotName.createSimple(PiggybackShadowVariable.class.getName());
+    static final DotName SHADOW_VARIABLE = DotName.createSimple(ShadowVariable.class.getName());
 
     // Need to use String since optaplanner-test is not on the compile classpath
     static final DotName CONSTRAINT_VERIFIER = DotName.createSimple("org.optaplanner.test.api.score.stream.ConstraintVerifier");
@@ -70,6 +74,8 @@ public final class DotNames {
             CUSTOM_SHADOW_VARIABLE,
             INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
+            PIGGYBACK_SHADOW_VARIABLE,
+            SHADOW_VARIABLE,
     };
 
     static final DotName[] GIZMO_MEMBER_ACCESSOR_ANNOTATIONS = {
@@ -90,6 +96,8 @@ public final class DotNames {
             CUSTOM_SHADOW_VARIABLE,
             INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
+            PIGGYBACK_SHADOW_VARIABLE,
+            SHADOW_VARIABLE,
     };
 
     public enum BeanDefiningAnnotations {
@@ -99,7 +107,8 @@ public final class DotNames {
                 "difficultyWeightFactoryClass"),
         PLANNING_VARIABLE(DotNames.PLANNING_VARIABLE, "strengthComparatorClass",
                 "strengthWeightFactoryClass"),
-        CUSTOM_SHADOW_VARIABLE(DotNames.CUSTOM_SHADOW_VARIABLE, "variableListenerClass");
+        CUSTOM_SHADOW_VARIABLE(DotNames.CUSTOM_SHADOW_VARIABLE, "variableListenerClass"),
+        SHADOW_VARIABLE(DotNames.SHADOW_VARIABLE, "variableListenerClass");
 
         private final DotName annotationDotName;
         private final List<String> parameterNames;

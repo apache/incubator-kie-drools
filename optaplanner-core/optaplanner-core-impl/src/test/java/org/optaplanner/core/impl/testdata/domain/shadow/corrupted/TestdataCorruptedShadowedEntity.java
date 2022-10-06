@@ -1,9 +1,8 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.corrupted;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.testdata.domain.DummyVariableListener;
@@ -42,8 +41,7 @@ public class TestdataCorruptedShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = CountUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "value") })
+    @ShadowVariable(variableListenerClass = CountUpdatingVariableListener.class, sourceVariableName = "value")
     public Integer getCount() {
         return count;
     }

@@ -1,9 +1,9 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.invalid;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -48,9 +48,9 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class, sources = {
-            @PlanningVariableReference(variableName = "value"),
-            @PlanningVariableReference(variableName = "cutsOwnHair") })
+    @ShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class, sourceVariableName = "value")
+    @ShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class,
+            sourceVariableName = "cutsOwnHair")
     public boolean isBarber() {
         return barber;
     }
@@ -59,7 +59,7 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         this.barber = barber;
     }
 
-    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "barber"))
+    @PiggybackShadowVariable(shadowVariableName = "barber")
     public boolean isCutsOwnHair() {
         return cutsOwnHair;
     }
