@@ -53,7 +53,7 @@ public class RuleTest {
             assertTrue("contains green", measurementUnit.getControlSet().contains("green"));
             assertTrue("contains blue", measurementUnit.getControlSet().contains("blue"));
         } finally {
-            instance.dispose();
+            instance.close();
         }
     }
 }
