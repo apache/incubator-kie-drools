@@ -139,43 +139,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         }
     }
 
-    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.elementAdded(entity, index);
-            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.notifyBefore(notification);
-            }
-            notificationQueuesAreEmpty = false;
-        }
-    }
-
-    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
-        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
-        if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.elementAdded(entity, index);
-            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.notifyAfter(notification);
-            }
-            notificationQueuesAreEmpty = false;
-        }
-    }
-
-    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
-        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
-        if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.elementRemoved(entity, index);
-            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
-                notifiable.notifyBefore(notification);
-            }
-            notificationQueuesAreEmpty = false;
-        }
-    }
-
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
-        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
-        if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.elementRemoved(entity, index);
+            ListVariableNotification<Solution_> notification = Notification.elementUnassigned(element);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.notifyAfter(notification);
             }

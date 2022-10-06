@@ -8,7 +8,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class SingletonListInverseVariableListener<Solution_>
-        implements ListVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+        implements ListVariableListener<Solution_, Object, Object>, SingletonInverseVariableSupply {
 
     protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
@@ -46,27 +46,11 @@ public class SingletonListInverseVariableListener<Solution_>
     }
 
     @Override
-    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Set entity[index].
-        setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(entity, index), entity, null);
-    }
-
-    @Override
-    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Unset entity[index].
-        setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(entity, index), null, entity);
-    }
-
-    @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Do nothing
+    public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+        shadowVariableDescriptor.setValue(element, null);
+        innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
     }
 
     @Override

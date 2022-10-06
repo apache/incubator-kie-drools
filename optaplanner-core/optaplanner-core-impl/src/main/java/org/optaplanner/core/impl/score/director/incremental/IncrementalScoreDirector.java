@@ -166,24 +166,22 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
     // TODO Add support for list variable (https://issues.redhat.com/browse/PLANNER-2711).
 
     @Override
-    public void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void beforeListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
-            int index) {
+    public void beforeListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 
     @Override
-    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
-            int index) {
+    public void afterListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         throw new UnsupportedOperationException("Not yet supported.");
     }
 

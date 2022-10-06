@@ -3,6 +3,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -29,6 +31,13 @@ class ListUnassignMoveTest {
         ListUnassignMove<TestdataListSolution> move = new ListUnassignMove<>(variableDescriptor, e1, 2);
         move.doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2);
+
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 2, 3);
+        verify(scoreDirector).beforeListVariableElementUnassigned(variableDescriptor, v3);
+        verify(scoreDirector).afterListVariableElementUnassigned(variableDescriptor, v3);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 2, 2);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
 
         // The unassign move only serves as an undo move of the assign move. It is not supposed to be done as a regular move.
         assertThatThrownBy(() -> move.doMove(scoreDirector)).isInstanceOf(UnsupportedOperationException.class);

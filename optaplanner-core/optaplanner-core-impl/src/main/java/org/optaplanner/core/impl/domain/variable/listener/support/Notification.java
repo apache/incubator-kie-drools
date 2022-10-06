@@ -48,19 +48,15 @@ public interface Notification<Solution_, T extends AbstractVariableListener<Solu
     }
 
     /**
-     * An element was added to {@code entity}'s list variable at {@code index}.
+     * An element was unassigned from a list variable.
      */
-    static <Solution_> ListVariableNotification<Solution_> elementAdded(Object entity, int index) {
-        return new ElementAddedNotification<>(entity, index);
+    static <Solution_> ListVariableNotification<Solution_> elementUnassigned(Object element) {
+        return new ElementUnassignedNotification<>(element);
     }
 
     /**
-     * An element was removed from {@code entity}'s list variable at {@code index}.
+     * A list variable change occurs on {@code entity} between {@code fromIndex} and {@code toIndex}.
      */
-    static <Solution_> ListVariableNotification<Solution_> elementRemoved(Object entity, int index) {
-        return new ElementRemovedNotification<>(entity, index);
-    }
-
     static <Solution_> ListVariableNotification<Solution_> listVariableChanged(Object entity, int fromIndex, int toIndex) {
         return new ListVariableChangedNotification<>(entity, fromIndex, toIndex);
     }

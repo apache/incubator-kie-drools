@@ -31,7 +31,7 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
         if (variableListener instanceof ListVariableListener) {
             return new ListVariableListenerNotifiable<>(
                     scoreDirector,
-                    ((ListVariableListener<Solution_, Object>) variableListener),
+                    ((ListVariableListener<Solution_, Object, Object>) variableListener),
                     new ArrayDeque<>(), globalOrder);
         } else {
             VariableListener<Solution_, Object> basicVariableListener = (VariableListener<Solution_, Object>) variableListener;

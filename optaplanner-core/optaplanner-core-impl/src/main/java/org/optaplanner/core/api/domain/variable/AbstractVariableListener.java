@@ -5,18 +5,16 @@ import java.io.Closeable;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
- * Changes shadow variables when a genuine planning variable changes.
+ * Common ancestor for specialized planning variable listeners.
  * <p>
- * Important: it must only change the shadow variable(s) for which it's configured!
- * It should never change a genuine variable or a problem fact.
- * It can change its shadow variable(s) on multiple entity instances
- * (for example: an arrivalTime change affects all trailing entities too).
- * <p>
- * It is recommended that implementations be kept stateless.
- * If state must be implemented, implementations may need to override the default methods
- * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
+ * <strong>Do not implement this interface directly.</strong>
+ * Implement either {@link VariableListener} or {@link ListVariableListener}.
+ *
+ * @see VariableListener
+ * @see ListVariableListener
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Entity_> @{@link PlanningEntity} on which the source variable is declared

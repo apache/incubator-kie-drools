@@ -26,42 +26,48 @@ class IndexVariableListenerTest {
         TestdataListValue v4 = new TestdataListValue("4");
         TestdataListEntity entity = new TestdataListEntity("a", v1, v2, v3);
 
-        assertThat(v1.getIndex()).isNull();
-        assertThat(v2.getIndex()).isNull();
-        assertThat(v3.getIndex()).isNull();
+        assertIndex(v1, null);
+        assertIndex(v2, null);
+        assertIndex(v3, null);
+        assertIndex(v4, null);
 
         indexVariableListener.beforeEntityAdded(scoreDirector, entity);
         indexVariableListener.afterEntityAdded(scoreDirector, entity);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
+        assertIndex(v1, 0);
+        assertIndex(v2, 1);
+        assertIndex(v3, 2);
 
-        indexVariableListener.beforeListVariableElementAdded(scoreDirector, entity, 2);
+        // Assign v4.
+        indexVariableListener.beforeListVariableChanged(scoreDirector, entity, 2, 2);
         entity.getValueList().add(2, v4);
-        indexVariableListener.afterListVariableElementAdded(scoreDirector, entity, 2);
+        indexVariableListener.afterListVariableChanged(scoreDirector, entity, 2, 3);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v4.getIndex()).isEqualTo(2);
-        assertThat(v3.getIndex()).isEqualTo(3);
+        assertIndex(v1, 0);
+        assertIndex(v2, 1);
+        assertIndex(v4, 2);
+        assertIndex(v3, 3);
 
-        indexVariableListener.beforeListVariableElementRemoved(scoreDirector, entity, 0);
+        // Unassign v1.
+        indexVariableListener.beforeListVariableChanged(scoreDirector, entity, 0, 1);
         entity.getValueList().remove(v1);
-        indexVariableListener.afterListVariableElementRemoved(scoreDirector, entity, 0);
+        indexVariableListener.afterListVariableElementUnassigned(scoreDirector, v1);
+        indexVariableListener.afterListVariableChanged(scoreDirector, entity, 0, 0);
 
-        assertThat(v2.getIndex()).isEqualTo(0);
-        assertThat(v4.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
+        assertIndex(v1, null);
+        assertIndex(v2, 0);
+        assertIndex(v4, 1);
+        assertIndex(v3, 2);
 
+        // Move v4 from entity[1] to entity[2].
         indexVariableListener.beforeListVariableChanged(scoreDirector, entity, 1, 3);
         entity.getValueList().remove(v4);
         entity.getValueList().add(2, v4);
         indexVariableListener.afterListVariableChanged(scoreDirector, entity, 1, 3);
 
-        assertThat(v2.getIndex()).isEqualTo(0);
-        assertThat(v3.getIndex()).isEqualTo(1);
-        assertThat(v4.getIndex()).isEqualTo(2);
+        assertIndex(v2, 0);
+        assertIndex(v3, 1);
+        assertIndex(v4, 2);
     }
 
     @Test
@@ -71,15 +77,20 @@ class IndexVariableListenerTest {
         TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity entity = TestdataListEntity.createWithValues("a", v1, v2, v3);
 
-        assertThat(v1.getIndex()).isEqualTo(0);
-        assertThat(v2.getIndex()).isEqualTo(1);
-        assertThat(v3.getIndex()).isEqualTo(2);
+        assertIndex(v1, 0);
+        assertIndex(v2, 1);
+        assertIndex(v3, 2);
 
         indexVariableListener.beforeEntityRemoved(scoreDirector, entity);
         indexVariableListener.afterEntityRemoved(scoreDirector, entity);
 
-        assertThat(v1.getIndex()).isNull();
-        assertThat(v2.getIndex()).isNull();
-        assertThat(v3.getIndex()).isNull();
+        assertIndex(v1, null);
+        assertIndex(v2, null);
+        assertIndex(v3, null);
+    }
+
+    void assertIndex(TestdataListValue element, Integer index) {
+        assertThat(element.getIndex()).isEqualTo(index);
+        assertThat(indexVariableListener.getIndex(element)).isEqualTo(index);
     }
 }

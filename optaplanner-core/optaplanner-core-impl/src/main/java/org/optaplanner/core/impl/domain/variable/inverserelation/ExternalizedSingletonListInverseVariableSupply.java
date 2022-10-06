@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
  */
 public class ExternalizedSingletonListInverseVariableSupply<Solution_> implements
         SourcedVariableListener<Solution_>,
-        ListVariableListener<Solution_, Object>,
+        ListVariableListener<Solution_, Object, Object>,
         SingletonInverseVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
@@ -54,25 +54,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        Object element = sourceVariableDescriptor.getElement(entity, index);
-        Object oldInverseEntity = inverseEntityMap.put(element, entity);
-        if (oldInverseEntity != null) {
-            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                    + " because the element (" + element
-                    + ") has an oldInverseEntity (" + oldInverseEntity
-                    + ") which is not null.");
-        }
-    }
-
-    @Override
-    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        Object element = sourceVariableDescriptor.getElement(entity, index);
+    public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
         Object oldInverseEntity = inverseEntityMap.remove(element);
         if (oldInverseEntity == null) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
@@ -80,11 +62,6 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
                     + ") has an oldInverseEntity (" + oldInverseEntity
                     + ") which is not set.");
         }
-    }
-
-    @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Do nothing
     }
 
     @Override

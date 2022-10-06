@@ -16,13 +16,14 @@ final class ListVariableChangedNotification<Solution_> extends AbstractNotificat
     }
 
     @Override
-    public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
+    public void triggerBefore(ListVariableListener<Solution_, Object, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         variableListener.beforeListVariableChanged(scoreDirector, entity, fromIndex, toIndex);
     }
 
     @Override
-    public void triggerAfter(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector) {
+    public void triggerAfter(ListVariableListener<Solution_, Object, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector) {
         variableListener.afterListVariableChanged(scoreDirector, entity, fromIndex, toIndex);
     }
 

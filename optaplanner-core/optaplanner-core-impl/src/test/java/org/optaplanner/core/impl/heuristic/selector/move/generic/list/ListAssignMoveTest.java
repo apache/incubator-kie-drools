@@ -3,10 +3,11 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -17,6 +18,10 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
 class ListAssignMoveTest {
 
+    private final InnerScoreDirector<TestdataListSolution, ?> scoreDirector = mock(InnerScoreDirector.class);
+    private final ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+            TestdataListEntity.buildVariableDescriptorForValueList();
+
     @Test
     void doMove() {
         TestdataListValue v1 = new TestdataListValue("1");
@@ -24,14 +29,17 @@ class ListAssignMoveTest {
         TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1");
 
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
-
         // v1 -> e1[0]
         ListAssignMove<TestdataListSolution> move = new ListAssignMove<>(variableDescriptor, v1, e1, 0);
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1);
+
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 0);
+        verify(scoreDirector).beforeListVariableElementAssigned(variableDescriptor, v1);
+        verify(scoreDirector).afterListVariableElementAssigned(variableDescriptor, v1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
 
         // undo
         undoMove.doMoveOnly(scoreDirector);
@@ -54,9 +62,6 @@ class ListAssignMoveTest {
 
         TestdataListValue destinationV1 = new TestdataListValue("1");
         TestdataListEntity destinationE1 = new TestdataListEntity("e1");
-
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
@@ -81,9 +86,6 @@ class ListAssignMoveTest {
     void toStringTest() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListEntity e1 = new TestdataListEntity("E1");
-
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         assertThat(new ListAssignMove<>(variableDescriptor, v1, e1, 15)).hasToString("1 {null -> E1[15]}");
     }

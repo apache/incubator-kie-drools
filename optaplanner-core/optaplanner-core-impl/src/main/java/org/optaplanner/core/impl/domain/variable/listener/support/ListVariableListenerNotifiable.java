@@ -13,12 +13,12 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 final class ListVariableListenerNotifiable<Solution_>
-        extends AbstractNotifiable<Solution_, ListVariableListener<Solution_, Object>> {
+        extends AbstractNotifiable<Solution_, ListVariableListener<Solution_, Object, Object>> {
 
     ListVariableListenerNotifiable(
             ScoreDirector<Solution_> scoreDirector,
-            ListVariableListener<Solution_, Object> variableListener,
-            Collection<Notification<Solution_, ? super ListVariableListener<Solution_, Object>>> notificationQueue,
+            ListVariableListener<Solution_, Object, Object> variableListener,
+            Collection<Notification<Solution_, ? super ListVariableListener<Solution_, Object, Object>>> notificationQueue,
             int globalOrder) {
         super(scoreDirector, variableListener, notificationQueue, globalOrder);
     }

@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -43,10 +44,14 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
-        // Remove a planning value from sourceEntity's list variable (at sourceIndex).
-        innerScoreDirector.beforeListVariableElementRemoved(variableDescriptor, sourceEntity, sourceIndex);
-        variableDescriptor.removeElement(sourceEntity, sourceIndex);
-        innerScoreDirector.afterListVariableElementRemoved(variableDescriptor, sourceEntity, sourceIndex);
+        List<Object> listVariable = variableDescriptor.getListVariable(sourceEntity);
+        Object element = listVariable.get(sourceIndex);
+        // Remove an element from sourceEntity's list variable (at sourceIndex).
+        innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
+        innerScoreDirector.beforeListVariableElementUnassigned(variableDescriptor, element);
+        listVariable.remove(sourceIndex);
+        innerScoreDirector.afterListVariableElementUnassigned(variableDescriptor, element);
+        innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
     }
 
     // ************************************************************************

@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ class SingletonListInverseVariableListenerTest {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
         TestdataListEntity e1 = new TestdataListEntity("a", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("b", v3);
 
@@ -37,13 +37,11 @@ class SingletonListInverseVariableListenerTest {
         inverseVariableListener.beforeEntityAdded(scoreDirector, e2);
         inverseVariableListener.afterEntityAdded(scoreDirector, e2);
 
-        assertThat(v1.getEntity()).isEqualTo(e1);
-        assertThat(v2.getEntity()).isEqualTo(e1);
-        assertThat(v3.getEntity()).isEqualTo(e2);
-        assertThat(inverseVariableListener.getInverseSingleton(v1)).isEqualTo(e1);
-        assertThat(inverseVariableListener.getInverseSingleton(v2)).isEqualTo(e1);
-        assertThat(inverseVariableListener.getInverseSingleton(v3)).isEqualTo(e2);
+        assertInverseEntity(v1, e1);
+        assertInverseEntity(v2, e1);
+        assertInverseEntity(v3, e2);
 
+        // Move v1 from e1 to e2.
         inverseVariableListener.beforeListVariableChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(v1);
         inverseVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 0);
@@ -51,8 +49,22 @@ class SingletonListInverseVariableListenerTest {
         e2.getValueList().add(v1);
         inverseVariableListener.afterListVariableChanged(scoreDirector, e2, 1, 2);
 
-        assertThat(v1.getEntity()).isEqualTo(e2);
-        assertThat(inverseVariableListener.getInverseSingleton(v1)).isEqualTo(e2);
+        assertInverseEntity(v1, e2);
+
+        // Assign v4 to e2[0].
+        inverseVariableListener.beforeListVariableChanged(scoreDirector, e2, 0, 0);
+        e2.getValueList().add(0, v4);
+        inverseVariableListener.afterListVariableChanged(scoreDirector, e2, 0, 1);
+
+        assertInverseEntity(v4, e2);
+
+        // Unassign v2 from e1.
+        inverseVariableListener.beforeListVariableChanged(scoreDirector, e1, 0, 1);
+        e1.getValueList().remove(0);
+        inverseVariableListener.afterListVariableElementUnassigned(scoreDirector, v2);
+        inverseVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 0);
+
+        assertInverseEntity(v2, null);
     }
 
     @Test
@@ -70,40 +82,13 @@ class SingletonListInverseVariableListenerTest {
         inverseVariableListener.beforeEntityRemoved(scoreDirector, e1);
         inverseVariableListener.afterEntityRemoved(scoreDirector, e1);
 
-        assertThat(v1.getEntity()).isNull();
-        assertThat(v2.getEntity()).isNull();
-        assertThat(v3.getEntity()).isEqualTo(e2);
-        assertThat(inverseVariableListener.getInverseSingleton(v1)).isNull();
-        assertThat(inverseVariableListener.getInverseSingleton(v2)).isNull();
-        assertThat(inverseVariableListener.getInverseSingleton(v3)).isEqualTo(e2);
+        assertInverseEntity(v1, null);
+        assertInverseEntity(v2, null);
+        assertInverseEntity(v3, e2);
     }
 
-    @Test
-    void inverseShouldBeNullBeforeElementAdded() {
-        TestdataListValue a = new TestdataListValue("A");
-        TestdataListEntity ann = TestdataListEntity.createWithValues("Ann", a);
-        TestdataListEntity bob = new TestdataListEntity("Bob");
-
-        inverseVariableListener.beforeListVariableElementAdded(scoreDirector, bob, 0);
-        bob.getValueList().add(a);
-        assertThatIllegalStateException()
-                .isThrownBy(() -> inverseVariableListener.afterListVariableElementAdded(scoreDirector, bob, 0))
-                .withMessageContaining("oldInverseEntity (Ann)");
-
-    }
-
-    @Test
-    void inverseShouldBeSourceEntityBeforeElementRemoved() {
-        TestdataListValue a = new TestdataListValue("A");
-        TestdataListEntity ann = TestdataListEntity.createWithValues("Ann", a);
-        TestdataListEntity bob = new TestdataListEntity("Bob");
-
-        bob.getValueList().add(a);
-
-        assertThatIllegalStateException().isThrownBy(() -> {
-            inverseVariableListener.beforeListVariableElementRemoved(scoreDirector, bob, 0);
-            bob.getValueList().remove(0);
-            inverseVariableListener.afterListVariableElementRemoved(scoreDirector, bob, 0);
-        }).withMessageContaining("oldInverseEntity (Ann)");
+    void assertInverseEntity(TestdataListValue element, Object entity) {
+        assertThat(element.getEntity()).isEqualTo(entity);
+        assertThat(inverseVariableListener.getInverseSingleton(element)).isEqualTo(entity);
     }
 }
