@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "precommit": "lint-staged",
-    "copy:dashbuilder": "mkdir -p dist/dashbuilder && cp -r ../../node_modules/@dashbuilder-js/dashbuilder-client/dist/* dist/dashbuilder && cp src/dashbuilder/setup.js dist/dashbuilder",
+    "copy:dashbuilder": "mkdir -p dist/dashbuilder && cp -r ../../node_modules/@kie-tools/dashbuilder-client/dist/* dist/dashbuilder && cp src/dashbuilder/setup.js dist/dashbuilder",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
     "build": "rimraf dist  && tsc -m commonjs -p tsconfig.json && yarn run copy:dashbuilder && yarn run copy:css ",
     "build:prod": "yarn run build",

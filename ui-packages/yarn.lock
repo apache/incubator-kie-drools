@@ -2167,11 +2167,6 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@dashbuilder-js/dashbuilder-client@^0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@dashbuilder-js/dashbuilder-client/-/dashbuilder-client-0.20.0.tgz#e0c1caf2f021700447fda9df93d480095832ae82"
-  integrity sha512-dhNGi1/dMm9yh6y/zU5s0Qv8gHyiyg7fp6RSqKm3efAhVd9JCh+jqOuBM/N5lLJNDNo/KctUgOh23E6f5Xujhg==
-
 "@discoveryjs/json-ext@^0.5.0", "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
@@ -3028,6 +3023,11 @@
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@jsdevtools/ono/-/ono-7.1.3.tgz#9df03bbd7c696a5c58885c34aa06da41c8543796"
   integrity sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==
+
+"@kie-tools/dashbuilder-client@^0.23.0":
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/@kie-tools/dashbuilder-client/-/dashbuilder-client-0.23.0.tgz#241f410012b1070179c8270c919fcaacac061fe5"
+  integrity sha512-2KrpkU5d/MyvI/wmZ8ABCQDihwZSrDixETiy4WHet1t+Tlyw9INuR742hFw4tz0Jkn2RS2GsF47iZJ+TrfH3Nw==
 
 "@kogito-apps/management-console@file:packages/management-console":
   version "1.0.0"
