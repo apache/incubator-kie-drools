@@ -24,20 +24,21 @@ import { BrowserRouter } from 'react-router-dom';
 import { MockedCustomDashboardViewDriver } from '../../../../embedded/tests/utils/Mocks';
 import wait from 'waait';
 
+const props = {
+  isEnvelopeConnectedToChannel: true,
+  driver: MockedCustomDashboardViewDriver(),
+  customDashboardName: 'name'
+};
+const MockedComponent = (): React.ReactElement => {
+  return <></>;
+};
+jest.mock('@kogito-apps/components-common', () =>
+  Object.assign({}, jest.requireActual('@kogito-apps/components-common'), {
+    ServerErrors: () => <MockedComponent />
+  })
+);
+
 describe('Custom Dashboard View tests', () => {
-  const props = {
-    isEnvelopeConnectedToChannel: true,
-    driver: MockedCustomDashboardViewDriver(),
-    customDashboardName: 'name'
-  };
-  const MockedComponent = (): React.ReactElement => {
-    return <></>;
-  };
-  jest.mock('@kogito-apps/common', () =>
-    Object.assign({}, jest.requireActual('@kogito-apps/common'), {
-      ServerErrors: () => <MockedComponent />
-    })
-  );
   it('Snapshot tests with data', async () => {
     (props.driver.getCustomDashboardContent as jest.Mock).mockResolvedValue(
       'its a yml file'
