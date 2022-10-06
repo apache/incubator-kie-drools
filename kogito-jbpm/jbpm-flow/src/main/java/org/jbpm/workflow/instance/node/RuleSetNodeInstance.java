@@ -171,13 +171,10 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 RuleUnitFactory<RuleUnitData> factory = ruleSetNode.getRuleUnitFactory();
                 AbstractProcessContext context = ContextFactory.fromNode(this);
                 RuleUnitData model = factory.bind(context);
-                RuleUnitInstance<RuleUnitData> instance = factory.unit().createInstance(model);
-                try {
+                try (RuleUnitInstance<RuleUnitData> instance = factory.unit().createInstance(model)) {
                     instance.fire();
                     factory.unbind(context, model);
                     triggerCompleted();
-                } finally {
-                    instance.dispose();
                 }
             } else {
                 throw new UnsupportedOperationException("Unsupported Rule Type: " + ruleType);

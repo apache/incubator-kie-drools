@@ -79,9 +79,8 @@ public abstract class AbstractEventDrivenQueryExecutor<D extends RuleUnitData> i
     }
 
     private Object internalExecuteQuery(D input) {
-        RuleUnitInstance<D> instance = ruleUnit.createInstance(input);
-        Object response = queryFunction.apply(instance);
-        instance.dispose();
-        return response;
+        try (RuleUnitInstance<D> instance = ruleUnit.createInstance(input)) {
+            return queryFunction.apply(instance);
+        }
     }
 }

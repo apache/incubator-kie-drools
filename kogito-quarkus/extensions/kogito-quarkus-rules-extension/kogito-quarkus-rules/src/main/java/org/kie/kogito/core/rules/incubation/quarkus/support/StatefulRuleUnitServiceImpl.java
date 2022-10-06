@@ -86,7 +86,7 @@ class StatefulRuleUnitServiceImpl implements StatefulRuleUnitService {
         RuleUnitInstance<?> instance = ruleUnits.getRegisteredInstance(ruleUnitInstanceId.ruleUnitInstanceId());
         if (instance == null)
             throw new IllegalArgumentException("Unknown instance " + localId);
-        instance.dispose();
+        instance.close();
         return EmptyMetaDataContext.Instance;
     }
 

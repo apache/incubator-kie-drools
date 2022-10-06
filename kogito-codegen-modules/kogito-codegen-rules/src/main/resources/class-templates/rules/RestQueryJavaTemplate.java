@@ -47,7 +47,7 @@ public class $unit$Query$name$Endpoint {
         RuleUnitInstance<$UnitType$> instance = ruleUnit.createInstance();
         // Do not return the result directly to allow post execution codegen (like monitoring)
         List<$ReturnType$> response = $unit$Query$name$.execute(instance);
-        instance.dispose();
+        instance.close();
         return response;
     }
 
