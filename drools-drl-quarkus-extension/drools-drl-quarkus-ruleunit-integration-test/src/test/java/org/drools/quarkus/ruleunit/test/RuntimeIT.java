@@ -35,8 +35,9 @@ public class RuntimeIT {
         HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Mario");
 
-        RuleUnitInstance<HelloWorldUnit> instance = ruleUnit.createInstance(unit);
-        instance.fire();
+        try ( RuleUnitInstance<HelloWorldUnit> instance = ruleUnit.createInstance(unit)  ) {
+            instance.fire();
+        }
 
         assertEquals(1, unit.getResults().size());
         assertEquals("Hello Mario", unit.getResults().get(0));

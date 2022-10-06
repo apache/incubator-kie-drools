@@ -42,10 +42,11 @@ public class RuntimeIT {
         homeUnitData.getLights().add(new Light("bedroom", false));
         homeUnitData.getLights().add(new Light("bathroom", false));
 
-        RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
-        QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
-        assertThat(queryResults).isNotEmpty()
-                .anyMatch(kv -> kv.get("$a").equals(new Alert("You might have forgot one light powered on: living room")));
+        try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
+            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            assertThat(queryResults).isNotEmpty()
+                    .anyMatch(kv -> kv.get("$a").equals(new Alert("You might have forgot one light powered on: living room")));
+        }
     }
 
     @Test
@@ -58,10 +59,11 @@ public class RuntimeIT {
         homeUnitData.getCctvs().add(new CCTV("security camera 2", true));
         homeUnitData.getSmartphones().add(new Smartphone("John Doe's phone"));
 
-        RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
-        QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
-        assertThat(queryResults).isNotEmpty()
-                .anyMatch(kv -> kv.get("$a").equals(new Alert("One CCTV is still operating: security camera 2")));
+        try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
+            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            assertThat(queryResults).isNotEmpty()
+                    .anyMatch(kv -> kv.get("$a").equals(new Alert("One CCTV is still operating: security camera 2")));
+        }
     }
 
     @Test
@@ -73,8 +75,9 @@ public class RuntimeIT {
         homeUnitData.getCctvs().add(new CCTV("security camera 1", true));
         homeUnitData.getCctvs().add(new CCTV("security camera 2", true));
 
-        RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData);
-        QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
-        assertThat(queryResults).isEmpty();
+        try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
+            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            assertThat(queryResults).isEmpty();
+        }
     }
 }

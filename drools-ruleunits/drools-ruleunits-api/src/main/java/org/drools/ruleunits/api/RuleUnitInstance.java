@@ -23,7 +23,7 @@ import org.kie.api.time.SessionClock;
  *
  * @param <T> The {@link RuleUnitData} for which this rule unit is generated.
  */
-public interface RuleUnitInstance<T extends RuleUnitData> {
+public interface RuleUnitInstance<T extends RuleUnitData> extends AutoCloseable {
 
     /**
      * The {@link RuleUnit} from which this RuleUnitInstance has been created.
@@ -60,5 +60,6 @@ public interface RuleUnitInstance<T extends RuleUnitData> {
      * This method <b>must</b> always be called after finishing using the RuleUnitInstance, or the engine
      * will not free the memory it uses.
      */
-    void dispose();
+    @Override
+    void close();
 }

@@ -33,9 +33,10 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit);
-        assertThat(unitInstance.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("it worked!");
+        try ( RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit) ) {
+            assertThat(unitInstance.fire()).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("it worked!");
+        }
     }
 
     @Test
@@ -43,9 +44,10 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
-        assertThat(unitInstance.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("it worked!");
+        try ( RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+            assertThat(unitInstance.fire()).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("it worked!");
+        }
     }
 
     @Test
@@ -53,17 +55,19 @@ public class InterpretedRuleUnitTest {
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
-        assertThat(unitInstance.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("it worked!");
+        try ( RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+            assertThat(unitInstance.fire()).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("it worked!");
+        }
     }
 
     @Test
     public void testNotWithAndWithoutSingleQuote() {
         NotTestUnit unit = new NotTestUnit();
 
-        RuleUnitInstance<NotTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
-        assertThat(unitInstance.fire()).isEqualTo(2);
+        try ( RuleUnitInstance<NotTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+            assertThat(unitInstance.fire()).isEqualTo(2);
+        }
     }
 
     @Test
@@ -71,30 +75,32 @@ public class InterpretedRuleUnitTest {
         // KOGITO-6466
         LogicalAddTestUnit unit = new LogicalAddTestUnit();
 
-        RuleUnitInstance<LogicalAddTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
+        try ( RuleUnitInstance<LogicalAddTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
 
-        DataHandle dh = unit.getStrings().add("abc");
+            DataHandle dh = unit.getStrings().add("abc");
 
-        assertThat(unitInstance.fire()).isEqualTo(2);
-        assertThat(unit.getResults()).containsExactly("exists");
+            assertThat(unitInstance.fire()).isEqualTo(2);
+            assertThat(unit.getResults()).containsExactly("exists");
 
-        unit.getResults().clear();
+            unit.getResults().clear();
 
-        unit.getStrings().remove(dh);
-        assertThat(unitInstance.fire()).isEqualTo(1);
-        assertThat(unit.getResults()).containsExactly("not exists");
+            unit.getStrings().remove(dh);
+            assertThat(unitInstance.fire()).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("not exists");
+        }
     }
 
     @Test
     public void testUpdate() {
         UpdateTestUnit unit = new UpdateTestUnit();
 
-        RuleUnitInstance<UpdateTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
+        try ( RuleUnitInstance<UpdateTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
 
-        unit.getPersons().add(new Person("Mario", 17));
+            unit.getPersons().add(new Person("Mario", 17));
 
-        assertThat(unitInstance.fire()).isEqualTo(2);
-        assertThat(unit.getResults()).containsExactly("ok");
+            assertThat(unitInstance.fire()).isEqualTo(2);
+            assertThat(unit.getResults()).containsExactly("ok");
+        }
     }
 
     @Test

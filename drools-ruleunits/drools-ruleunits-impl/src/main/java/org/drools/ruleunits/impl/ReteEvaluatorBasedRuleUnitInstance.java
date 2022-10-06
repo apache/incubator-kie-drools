@@ -33,7 +33,7 @@ public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData>
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         evaluator.dispose();
     }
 
