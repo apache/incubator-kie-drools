@@ -50,7 +50,8 @@ pipeline {
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
                                 'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
-                                'drools-scmRevision': getCurrentBranch()
+                                'drools-scmRevision': getCurrentBranch(),
+                                'optaplanner-quickstarts-scmRevision': getOptaPlannerQuickstartsBranch()
                             ]
                             pmebuild.buildProjects(projectCollection, "${SETTINGS_XML_ID}", "$WORKSPACE/build_config/rhbop/nightly", "${env.PME_CLI_PATH}", projectVariableMap, additionalVariables, [:])
                         }, 2, 180*60)
@@ -200,4 +201,9 @@ def gitHashesToCollection(String gitInformationHashes) {
 
 String getCurrentBranch() {
     return env.CHANGE_BRANCH ?: env.BRANCH_NAME
+}
+
+String getOptaPlannerQuickstartsBranch() {
+    def branch = getCurrentBranch()
+    return branch == 'main' ? 'development' : branch
 }
