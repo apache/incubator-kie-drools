@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.kie.kogito.event.EventManager;
-import org.kie.kogito.services.event.impl.BaseEventManager;
+import org.kie.kogito.event.impl.BaseEventManager;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkFactory;
 import org.kie.kogito.uow.UnitOfWorkManager;

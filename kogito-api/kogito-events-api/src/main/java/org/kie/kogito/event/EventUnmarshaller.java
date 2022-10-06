@@ -17,15 +17,24 @@ package org.kie.kogito.event;
 
 import java.io.IOException;
 
+/**
+ * This interface is one of the extension point for customers to incorporate more event formats when NOT using cloud events.
+ * It is responsible for converting objects received in the external service format into business objects consumed by Kogito.
+ * Default implementation of Kogito uses Jackson and JSON.
+ *
+ * @param <S> the external service object type
+ */
 public interface EventUnmarshaller<S> {
 
     /**
-     * Converts input object to output object
+     * Convert object received from the external service, denoted by generic type S, into a business object
      * 
-     * @param input value to be converted
-     * @param outputClass type of the value getting generated
-     * @return ouput object
-     * @throws IOException if conversion cannot be performed. IMPORTANT!!!! any other exception will be considered unexpected, so this implementation should not willingly throw any runtime exception
+     * @param <T> business object type
+     * @param input object received by the external system
+     * @param outputClass target business class
+     * @param parametrizedClasses business class might use generics
+     * @return kogito business object
+     * @throws IOException if there is any problem with the format. This method should not willingly throw any runtime
      */
     <T> T unmarshall(S input, Class<T> outputClass, Class<?>... parametrizedClasses) throws IOException;
 }

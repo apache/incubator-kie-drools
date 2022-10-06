@@ -22,9 +22,9 @@ import javax.enterprise.inject.Produces;
 import javax.sql.DataSource;
 
 import org.kie.kogito.correlation.CorrelationService;
+import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.persistence.jdbc.DatabaseType;
 import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
-import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

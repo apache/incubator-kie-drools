@@ -22,7 +22,7 @@ import org.kie.kogito.Application;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.impl.ProcessServiceImpl;
-import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
+import org.kie.kogito.event.impl.AbstractMessageConsumer;
 
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$> {
 

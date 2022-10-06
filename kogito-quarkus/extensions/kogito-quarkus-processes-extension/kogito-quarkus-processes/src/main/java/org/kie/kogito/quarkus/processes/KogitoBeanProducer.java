@@ -19,9 +19,9 @@ import javax.enterprise.inject.Produces;
 
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
+import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
-import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.properties.IfBuildProperty;

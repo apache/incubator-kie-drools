@@ -25,10 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.EventUnmarshaller;
-import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoRulesExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.slf4j.Logger;
@@ -54,59 +53,52 @@ public class EventDrivenRulesController {
     private ConfigBean config;
     private EventEmitter eventEmitter;
     private EventReceiver eventReceiver;
-    private EventUnmarshaller<Object> eventUnmarshaller;
 
     protected EventDrivenRulesController() {
     }
 
-    protected EventDrivenRulesController(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver,
-            EventUnmarshaller<Object> eventUnmarshaller) {
-        this.executors = buildExecutorsMap(executors);
-        this.config = config;
-        this.eventEmitter = eventEmitter;
-        this.eventReceiver = eventReceiver;
-        this.eventUnmarshaller = eventUnmarshaller;
+    protected EventDrivenRulesController(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+        init(executors, config, eventEmitter, eventReceiver);
+
     }
 
-    protected void init(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<Object> eventUnmarshaller) {
+    protected void init(Iterable<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.executors = buildExecutorsMap(executors);
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
-        this.eventUnmarshaller = eventUnmarshaller;
+
     }
 
     protected void subscribe() {
-        eventReceiver.subscribe(this::handleRequest, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(CloudEvent.class).createSubscriptionInfo());
+        eventReceiver.subscribe(this::handleRequest, Map.class);
     }
 
-    private CompletionStage<Void> handleRequest(CloudEvent event) {
+    private CompletionStage<Void> handleRequest(DataEvent<Map> event) {
         validateRequest(event)
                 .flatMap(this::buildEvaluationContext)
                 .map(this::processRequest)
                 .flatMap(this::buildResponseCloudEvent)
-                .flatMap(CloudEventUtils::toDataEvent)
-                .ifPresent(e -> eventEmitter.emit(e, (String) e.get("type"), Optional.empty()));
+                .ifPresent(e -> eventEmitter.emit(e, e.getType(), Optional.empty()));
         return CompletableFuture.completedFuture(null);
     }
 
-    private Optional<CloudEvent> validateRequest(CloudEvent event) {
+    private Optional<DataEvent<Map>> validateRequest(DataEvent<Map> event) {
         return Optional.ofNullable(event).filter(e -> REQUEST_EVENT_TYPE.equals(e.getType()));
     }
 
-    private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {
+    private Optional<EvaluationContext> buildEvaluationContext(DataEvent<Map> event) {
         KogitoRulesExtension extension = ExtensionProvider.getInstance().parseExtension(KogitoRulesExtension.class, event);
-        Map<String, Object> data = CloudEventUtils.decodeMapData(event, String.class, Object.class).orElse(null);
 
         if (extension == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null Kogito extension", event.getId(), event.getSource(), event.getType());
         }
 
-        if (data == null) {
+        if (event.getData() == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null data", event.getId(), event.getSource(), event.getType());
         }
 
-        return Optional.of(new EvaluationContext(event, extension));
+        return Optional.of(new EvaluationContext(event.asCloudEvent(), extension));
     }
 
     private EvaluationContext processRequest(EvaluationContext ctx) {
@@ -191,8 +183,7 @@ public class EventDrivenRulesController {
                     .map(KogitoRulesExtension::getRuleUnitQuery)
                     .orElse(null);
 
-            this.validRequest = isValidCloudEvent(requestCloudEvent)
-                    && requestExtension != null
+            this.validRequest = isValidCloudEvent(requestCloudEvent) && requestExtension != null
                     && ruleUnitId != null && !ruleUnitId.isEmpty()
                     && queryName != null && !queryName.isEmpty();
         }
@@ -232,17 +223,17 @@ public class EventDrivenRulesController {
         public void setQueryResult(Object queryResult) {
             this.queryResult = queryResult;
         }
+    }
 
-        private static boolean isValidCloudEvent(CloudEvent event) {
-            if (event == null || event.getData() == null) {
-                return false;
-            }
-            if (event.getData() instanceof JsonCloudEventData) {
-                JsonCloudEventData jced = (JsonCloudEventData) event.getData();
-                return jced.getNode() != null && !jced.getNode().isNull();
-            }
-            return true;
+    private static boolean isValidCloudEvent(CloudEvent event) {
+        if (event == null || event.getData() == null) {
+            return false;
         }
+        if (event.getData() instanceof JsonCloudEventData) {
+            JsonCloudEventData jced = (JsonCloudEventData) event.getData();
+            return jced.getNode() != null && !jced.getNode().isNull();
+        }
+        return true;
     }
 
 }

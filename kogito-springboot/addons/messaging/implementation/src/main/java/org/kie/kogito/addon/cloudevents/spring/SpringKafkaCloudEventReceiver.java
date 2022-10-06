@@ -26,11 +26,17 @@ import java.util.function.Function;
 import javax.annotation.PostConstruct;
 
 import org.kie.kogito.addon.cloudevents.Subscription;
+import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.CloudEventUnmarshallerFactory;
+import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
-import org.kie.kogito.event.SubscriptionInfo;
+import org.kie.kogito.event.impl.CloudEventConverter;
+import org.kie.kogito.event.impl.DataEventConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -39,7 +45,16 @@ import org.springframework.stereotype.Component;
 public class SpringKafkaCloudEventReceiver implements EventReceiver {
 
     private static final Logger log = LoggerFactory.getLogger(SpringKafkaCloudEventReceiver.class);
-    private Collection<Subscription<Object>> consumers;
+    private Collection<Subscription<Object, String>> consumers;
+
+    @Autowired
+    EventUnmarshaller<Object> eventDataUnmarshaller;
+
+    @Autowired
+    CloudEventUnmarshallerFactory<Object> cloudEventUnmarshaller;
+
+    @Autowired
+    ConfigBean configBean;
 
     @PostConstruct
     private void init() {
@@ -48,9 +63,11 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> info) {
-        log.info("Registering consumer with info {}", info);
-        consumers.add(new Subscription(consumer, info));
+    public <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> clazz) {
+
+        consumers.add(
+                new Subscription(consumer, configBean.useCloudEvents() ? new CloudEventConverter<>(clazz, cloudEventUnmarshaller)
+                        : new DataEventConverter<>(clazz, eventDataUnmarshaller)));
     }
 
     @KafkaListener(topics = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.INCOMING + ":" + KogitoEventStreams.INCOMING + "}")
@@ -58,12 +75,11 @@ public class SpringKafkaCloudEventReceiver implements EventReceiver {
         log.debug("Received {} events", messages.size());
         Collection<CompletionStage<?>> futures = new ArrayList<>();
         for (String message : messages) {
-            for (Subscription<Object> consumer : consumers) {
+            for (Subscription<Object, String> consumer : consumers) {
                 try {
-                    futures.add(consumer.getConsumer().apply(consumer.getInfo().getConverter().unmarshall(message, consumer.getInfo().getOutputClass(), consumer.getInfo().getParametrizedClasses())));
+                    futures.add(consumer.getConsumer().apply(consumer.getConverter().convert(message)));
                 } catch (IOException e) {
-                    log.info("Cannot convert to {} from {}, ignoring type {}, exception message is {}", consumer.getInfo().getOutputClass(), message, consumer.getInfo().getType(),
-                            e.getMessage());
+                    log.info("Cannot convert event to the proper type {}", e.getMessage());
                 }
             }
         }

@@ -18,9 +18,9 @@ package org.kie.kogito.codegen.process.events;
 import java.util.Objects;
 
 import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.kogito.event.DataEventAttrBuilder;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
-import org.kie.kogito.services.event.DataEventAttrBuilder;
 
 /**
  * Representation of {@link CloudEventMeta} with information about the generated process.

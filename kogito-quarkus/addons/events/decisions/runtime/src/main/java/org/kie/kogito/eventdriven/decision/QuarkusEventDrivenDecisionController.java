@@ -22,7 +22,6 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.EventUnmarshaller;
 
 import io.quarkus.runtime.Startup;
 
@@ -41,12 +40,9 @@ public class QuarkusEventDrivenDecisionController extends EventDrivenDecisionCon
     @Inject
     EventReceiver eventReceiver;
 
-    @Inject
-    EventUnmarshaller<?> eventUnmarshaller;
-
     @PostConstruct
     private void onPostConstruct() {
-        init(decisionModels, config, eventEmitter, eventReceiver, eventUnmarshaller);
+        init(decisionModels, config, eventEmitter, eventReceiver);
         subscribe();
     }
 }

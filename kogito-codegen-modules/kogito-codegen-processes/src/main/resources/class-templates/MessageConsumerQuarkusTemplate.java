@@ -16,91 +16,44 @@
 package $Package$;
 
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.kie.kogito.Application;
-import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.correlation.CompositeCorrelation;
-import org.kie.kogito.event.EventUnmarshaller;
-import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
-import org.kie.kogito.event.EventExecutorServiceFactory;
+import org.kie.kogito.addon.quarkus.messaging.common.QuarkusMessageConsumer;
+import org.kie.kogito.event.EventReceiver;
 
 
 @io.quarkus.runtime.Startup
-public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$> {
-
-    @Inject
-    Application application;
-
-    @Inject
-    EventUnmarshaller<Object> eventUnmarshaller;
+public class $Type$MessageConsumer extends QuarkusMessageConsumer<$Type$, $DataType$> {
 
     @Inject
     @Named("$ProcessName$")
     Process<$Type$> process;
-
-    @Inject
-    ConfigBean configBean;
-
-    @Inject
-    ProcessService processService;
     
     @Inject
     EventReceiver eventReceiver;
     
-    @Inject
-    EventExecutorServiceFactory factory;
-    
-    ExecutorService executor;
-
-    @Inject
-    ObjectMapper objectMapper;
-
-    Set<String> correlation;
-    
+    private Set<String> correlation;
 
     @javax.annotation.PostConstruct
     void init() {
-        executor = factory.getExecutorService("$Trigger$"); 
-        init(application,
-             process,
-             "$Trigger$",
-             eventReceiver,
-             $DataType$.class,
-             configBean.useCloudEvents(),
-             processService,
-             executor,
-             eventUnmarshaller,
-             correlation);
+        init(process,"$Trigger$",$DataType$.class, eventReceiver, correlation);
     }
 
-    @javax.annotation.PreDestroy
-    public void close() {
-        executor.shutdownNow();
-    }
-
-
-    private $Type$ eventToModel(Object event) {
+    private $Type$ eventToModel($DataType$ event) {
         $Type$ model = new $Type$();
         if(event != null) {
-            model.$SetModelMethodName$(objectMapper.convertValue(event, $DataType$.class));
+            model.$SetModelMethodName$(event);
         }
         return model;
     }
 
     @Override()
-    protected Optional<Function<Object, $Type$>> getModelConverter() {
+    protected Optional<Function<$DataType$, $Type$>> getModelConverter() {
         return Optional.of(this::eventToModel);
     }
 }

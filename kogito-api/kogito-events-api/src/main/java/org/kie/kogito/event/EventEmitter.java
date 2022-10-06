@@ -20,16 +20,16 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 /**
- * Generic emitter for events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
+ * Generic event emitter. Implementation is responsible to interact with the external event service and
+ * transform the model object into the format expected by the external service.
  */
 public interface EventEmitter {
     /**
-     * @param e object to emit
-     * @param type type of object to emit
-     * @param processDecorator process decorator
+     * Publish the model object, properly transformed, into an external event service.
+     * 
+     * @param e model object being emitted
+     * @param type type of object to emit. Usually cloud event type
+     * @param processDecorator Converts the model into the desired event object. Usually a cloud event
      */
     <T> CompletionStage<Void> emit(T e,
             String type,

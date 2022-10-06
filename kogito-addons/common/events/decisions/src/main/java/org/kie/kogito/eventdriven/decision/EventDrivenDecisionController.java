@@ -31,16 +31,16 @@ import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
+import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.EventUnmarshaller;
-import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventContext;
 import io.cloudevents.core.provider.ExtensionProvider;
 
 /**
@@ -60,55 +60,50 @@ public class EventDrivenDecisionController {
     private ConfigBean config;
     private EventEmitter eventEmitter;
     private EventReceiver eventReceiver;
-    private EventUnmarshaller<?> unmarshaller;
 
     protected EventDrivenDecisionController() {
     }
 
-    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<?> unmarshaller) {
-        init(decisionModels, config, eventEmitter, eventReceiver, unmarshaller);
+    protected EventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+        init(decisionModels, config, eventEmitter, eventReceiver);
     }
 
-    protected void init(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<?> unmarshaller) {
+    protected void init(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.decisionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
-        this.unmarshaller = unmarshaller;
     }
 
     protected void subscribe() {
-        eventReceiver.subscribe(this::handleRequest,
-                new SubscriptionInfo.SubscriptionInfoBuilder().converter(unmarshaller).outputClass(CloudEvent.class).createSubscriptionInfo());
+        eventReceiver.subscribe(this::handleRequest, Map.class);
     }
 
-    private CompletionStage<Void> handleRequest(CloudEvent event) {
+    private CompletionStage<Void> handleRequest(DataEvent<Map> event) {
         validateRequest(event)
                 .flatMap(this::buildEvaluationContext)
                 .map(this::processRequest)
                 .flatMap(this::buildResponseCloudEvent)
-                .flatMap(CloudEventUtils::toDataEvent)
-                .ifPresent(e -> eventEmitter.emit(e, (String) e.get("type"), Optional.empty()));
+                .ifPresent(e -> eventEmitter.emit(e, e.getType(), Optional.empty()));
         return CompletableFuture.completedFuture(null);
     }
 
-    private Optional<CloudEvent> validateRequest(CloudEvent event) {
+    private Optional<DataEvent<Map>> validateRequest(DataEvent<Map> event) {
         return Optional.ofNullable(event).filter(e -> REQUEST_EVENT_TYPE.equals(e.getType()));
     }
 
-    private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {
+    private Optional<EvaluationContext> buildEvaluationContext(DataEvent<Map> event) {
         KogitoExtension kogitoExtension = ExtensionProvider.getInstance().parseExtension(KogitoExtension.class, event);
-        Map<String, Object> data = CloudEventUtils.decodeMapData(event, String.class, Object.class).orElse(null);
 
         if (kogitoExtension == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null Kogito extension", event.getId(), event.getSource(), event.getType());
         }
 
-        if (data == null) {
+        if (event.getData() == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null data", event.getId(), event.getSource(), event.getType());
         }
 
-        return Optional.of(new EvaluationContext(event, kogitoExtension, data));
+        return Optional.of(new EvaluationContext(event, kogitoExtension, event.getData()));
     }
 
     private EvaluationContext processRequest(EvaluationContext ctx) {
@@ -190,7 +185,7 @@ public class EventDrivenDecisionController {
 
     private static class EvaluationContext {
 
-        private final CloudEvent requestCloudEvent;
+        private final CloudEventContext requestCloudEvent;
         private final Map<String, Object> requestData;
 
         private final String requestModelName;
@@ -204,7 +199,7 @@ public class EventDrivenDecisionController {
         private DecisionResponseError responseError;
         private DMNResult responseDmnResult;
 
-        public EvaluationContext(CloudEvent requestCloudEvent, KogitoExtension requestKogitoExtension, Map<String, Object> requestData) {
+        public EvaluationContext(CloudEventContext requestCloudEvent, KogitoExtension requestKogitoExtension, Map<String, Object> requestData) {
             this.requestCloudEvent = requestCloudEvent;
             this.requestData = requestData;
 
@@ -243,7 +238,7 @@ public class EventDrivenDecisionController {
             return evaluateDecisionServiceRequest;
         }
 
-        public CloudEvent getRequestCloudEvent() {
+        public CloudEventContext getRequestCloudEvent() {
             return requestCloudEvent;
         }
 

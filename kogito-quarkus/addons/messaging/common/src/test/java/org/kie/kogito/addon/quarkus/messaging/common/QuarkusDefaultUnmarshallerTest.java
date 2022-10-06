@@ -23,14 +23,14 @@ import java.util.Optional;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.impl.ByteArrayCloudEventUnmarshallerFactory;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.cloudevents.CloudEvent;
 import io.cloudevents.SpecVersion;
 import io.cloudevents.jackson.JsonFormat;
 import io.smallrye.reactive.messaging.ce.CloudEventMetadata;
@@ -43,12 +43,14 @@ import static org.mockito.Mockito.when;
 public class QuarkusDefaultUnmarshallerTest {
 
     private ObjectMapper objectMapper;
-    private QuarkusDefaultEventUnmarshaller unmarshaller;
+    private ByteArrayCloudEventUnmarshallerFactory unmarshaller;
+    private QuarkusCloudEventConverter<byte[], JsonNode> converter;
 
     @BeforeEach
     void setup() {
         objectMapper = ObjectMapperFactory.get().registerModule(JsonFormat.getCloudEventJacksonModule());
-        unmarshaller = new QuarkusDefaultEventUnmarshaller(objectMapper);
+        unmarshaller = new ByteArrayCloudEventUnmarshallerFactory(objectMapper);
+        converter = new QuarkusCloudEventConverter<>(unmarshaller.unmarshaller(JsonNode.class));
     }
 
     private byte[] getStructureCE(String specVersion, String type, String source, JsonNode data) throws JsonProcessingException {
@@ -74,35 +76,29 @@ public class QuarkusDefaultUnmarshallerTest {
     @Test
     void testStructureCloudEvent() throws IOException {
         Message<byte[]> message = getMessage(getStructureCE("1.0", "type", "/path", getPayload("Javierito")), null);
-        CloudEvent ce = unmarshaller.unmarshall(message, CloudEvent.class);
+        DataEvent<JsonNode> ce = converter.convert(message);
         assertEquals("type", ce.getType());
         assertEquals("/path", ce.getSource().toString());
         assertEquals(SpecVersion.V1, ce.getSpecVersion());
-        assertEquals("Javierito", objectMapper.readValue(ce.getData().toBytes(), ObjectNode.class).get("name").asText());
+        assertEquals("Javierito", ce.getData().get("name").asText());
     }
 
     @Test
     void testBynaryCloudEvent() throws IOException {
         Message<byte[]> message = getMessage(objectMapper.writeValueAsBytes(getPayload("Javierito")), getMetadata("0.3", "type", "/path"));
-        CloudEvent ce = unmarshaller.unmarshall(message, CloudEvent.class);
+        DataEvent<JsonNode> ce = converter.convert(message);
         assertEquals("type", ce.getType());
         assertEquals("/path", ce.getSource().toString());
         assertEquals(SpecVersion.V03, ce.getSpecVersion());
-        assertEquals("Javierito", objectMapper.readValue(ce.getData().toBytes(), ObjectNode.class).get("name").asText());
+        assertEquals("Javierito", ce.getData().get("name").asText());
     }
 
     @Test
     void testBynaryCEWithoutPayload() throws IOException {
         Message<byte[]> message = getMessage(null, getMetadata("0.3", "type", "/path"));
-        CloudEvent ce = unmarshaller.unmarshall(message, CloudEvent.class);
+        DataEvent<JsonNode> ce = converter.convert(message);
         assertEquals("type", ce.getType());
         assertEquals("/path", ce.getSource().toString());
         assertEquals(SpecVersion.V03, ce.getSpecVersion());
-    }
-
-    @Test
-    void testSimpleObject() throws IOException {
-        Message<String> message = getMessage("Javierito", null);
-        assertEquals("Javierito", unmarshaller.unmarshall(message, String.class));
     }
 }

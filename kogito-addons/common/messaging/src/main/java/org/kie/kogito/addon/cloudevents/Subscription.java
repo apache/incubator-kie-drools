@@ -18,22 +18,22 @@ package org.kie.kogito.addon.cloudevents;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
-import org.kie.kogito.event.SubscriptionInfo;
+import org.kie.kogito.event.Converter;
 
-public class Subscription<T> {
+public class Subscription<T, S> {
     private final Function<T, CompletionStage<?>> consumer;
-    private final SubscriptionInfo<Object, T> info;
+    private final Converter<S, T> converter;
 
-    public Subscription(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<Object, T> info) {
+    public Subscription(Function<T, CompletionStage<?>> consumer, Converter<S, T> converter) {
         this.consumer = consumer;
-        this.info = info;
+        this.converter = converter;
     }
 
     public Function<T, CompletionStage<?>> getConsumer() {
         return consumer;
     }
 
-    public SubscriptionInfo<Object, T> getInfo() {
-        return info;
+    public Converter<S, T> getConverter() {
+        return converter;
     }
 }

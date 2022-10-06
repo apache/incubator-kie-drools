@@ -16,8 +16,9 @@
 package org.kie.kogito.test;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.event.CloudEventFactory;
 import org.kie.kogito.event.EventEmitter;
-import org.kie.kogito.services.event.impl.AbstractMessageProducer;
+import org.kie.kogito.event.impl.AbstractMessageProducer;
 import javax.inject.Inject;
 
 @io.quarkus.runtime.Startup
@@ -25,9 +26,12 @@ public class MessageProducer extends AbstractMessageProducer<$DataType$> {
 
     @Inject
     EventEmitter emitter;
+    
+    @Inject 
+    CloudEventFactory eventFactory; 
 
     @javax.annotation.PostConstruct
     public void init() {
-        setParams(emitter,"$Trigger$");
+        init(emitter,"$Trigger$",eventFactory);
     }
 }

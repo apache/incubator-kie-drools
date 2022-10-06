@@ -21,7 +21,6 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.EventUnmarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +28,8 @@ import org.springframework.stereotype.Component;
 public class SpringBootEventDrivenDecisionController extends EventDrivenDecisionController {
 
     @Autowired
-    public SpringBootEventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver,
-            EventUnmarshaller<?> unmarshaller) {
-        super(decisionModels, config, eventEmitter, eventReceiver, unmarshaller);
+    public SpringBootEventDrivenDecisionController(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+        super(decisionModels, config, eventEmitter, eventReceiver);
     }
 
     @PostConstruct

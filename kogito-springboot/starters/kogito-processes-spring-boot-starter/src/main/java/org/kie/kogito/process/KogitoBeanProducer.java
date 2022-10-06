@@ -17,8 +17,8 @@ package org.kie.kogito.process;
 
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
+import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
-import org.kie.kogito.services.event.correlation.DefaultCorrelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

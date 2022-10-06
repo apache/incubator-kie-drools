@@ -18,6 +18,7 @@
 
   <modules>
     <module>kogito-events-api</module>
+    <module>kogito-events-core</module>
     <module>kogito-api</module>
     <module>kogito-services</module>
     <module>kogito-timer</module>

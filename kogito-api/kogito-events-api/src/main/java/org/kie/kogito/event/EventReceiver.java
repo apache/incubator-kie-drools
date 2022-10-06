@@ -19,17 +19,18 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 /**
- * Generic receiver for cloud events.
- *
- * Implementations provide their specific (usually injectable) behavior.
- *
+ * Event receiver interface.
+ * 
+ * Implementation are responsible for interacting with the external event publisher and transforming the events received into the model object.
  */
 public interface EventReceiver {
 
     /**
-     * Helper method to subscribe to the events.
+     * Subscribe an event consumer for a receiver. The implementation will receive the event (in some format) from the external service, transform it
+     * into a data event instance and invoke the callback.
      * 
-     * @param consumer the consumer that will receive the events.
+     * @param consumer consumer function that accepts the data event object and return a completion state with the result of the consumption.
+     * @param dataClass the model object class wrapped into the data event
      */
-    <S, T> void subscribe(Function<T, CompletionStage<?>> consumer, SubscriptionInfo<S, T> converter);
+    <T> void subscribe(Function<DataEvent<T>, CompletionStage<?>> consumer, Class<T> dataClass);
 }

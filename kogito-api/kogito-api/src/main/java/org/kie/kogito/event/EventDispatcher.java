@@ -20,7 +20,7 @@ import java.util.concurrent.CompletionStage;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.ProcessInstance;
 
-public interface EventDispatcher<M extends Model> {
+public interface EventDispatcher<M extends Model, D> {
 
-    CompletionStage<ProcessInstance<M>> dispatch(String trigger, Object event);
+    CompletionStage<ProcessInstance<M>> dispatch(String trigger, DataEvent<D> event);
 }

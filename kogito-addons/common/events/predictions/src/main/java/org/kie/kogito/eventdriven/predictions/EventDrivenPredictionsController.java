@@ -24,10 +24,9 @@ import java.util.concurrent.CompletionStage;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
-import org.kie.kogito.event.EventUnmarshaller;
-import org.kie.kogito.event.SubscriptionInfo;
 import org.kie.kogito.event.cloudevents.extension.KogitoPredictionsExtension;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.prediction.PredictionModel;
@@ -38,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventContext;
 import io.cloudevents.core.provider.ExtensionProvider;
 
 public class EventDrivenPredictionsController {
@@ -53,59 +53,52 @@ public class EventDrivenPredictionsController {
     private ConfigBean config;
     private EventEmitter eventEmitter;
     private EventReceiver eventReceiver;
-    private EventUnmarshaller<Object> eventUnmarshaller;
 
     protected EventDrivenPredictionsController() {
     }
 
-    protected EventDrivenPredictionsController(PredictionModels predictionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver,
-            EventUnmarshaller<Object> eventUnmarshaller) {
-        this.predictionModels = predictionModels;
-        this.config = config;
-        this.eventEmitter = eventEmitter;
-        this.eventReceiver = eventReceiver;
-        this.eventUnmarshaller = eventUnmarshaller;
+    protected EventDrivenPredictionsController(PredictionModels predictionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+        init(predictionModels, config, eventEmitter, eventReceiver);
+
     }
 
-    protected void init(PredictionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver, EventUnmarshaller<Object> eventUnmarshaller) {
+    protected void init(PredictionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.predictionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
-        this.eventUnmarshaller = eventUnmarshaller;
+
     }
 
     protected void subscribe() {
-        eventReceiver.subscribe(this::handleRequest, SubscriptionInfo.builder().converter(eventUnmarshaller).outputClass(CloudEvent.class).createSubscriptionInfo());
+        eventReceiver.subscribe(this::handleRequest, Map.class);
     }
 
-    private CompletionStage<Void> handleRequest(CloudEvent event) {
+    private CompletionStage<Void> handleRequest(DataEvent<Map> event) {
         filterRequest(event)
                 .flatMap(this::buildEvaluationContext)
                 .map(this::processRequest)
                 .flatMap(this::buildResponseCloudEvent)
-                .flatMap(CloudEventUtils::toDataEvent)
-                .ifPresent(e -> eventEmitter.emit(e, (String) e.get("type"), Optional.empty()));
+                .ifPresent(e -> eventEmitter.emit(e, e.getType(), Optional.empty()));
         return CompletableFuture.completedFuture(null);
     }
 
-    private Optional<CloudEvent> filterRequest(CloudEvent event) {
+    private Optional<DataEvent<Map>> filterRequest(DataEvent<Map> event) {
         return Optional.ofNullable(event).filter(e -> REQUEST_EVENT_TYPE.equals(e.getType()));
     }
 
-    private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {
+    private Optional<EvaluationContext> buildEvaluationContext(DataEvent<Map> event) {
         KogitoPredictionsExtension extension = ExtensionProvider.getInstance().parseExtension(KogitoPredictionsExtension.class, event);
-        Map<String, Object> data = CloudEventUtils.decodeMapData(event, String.class, Object.class).orElse(null);
 
         if (extension == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null Kogito extension", event.getId(), event.getSource(), event.getType());
         }
 
-        if (data == null) {
+        if (event.getData() == null) {
             LOG.warn("Received CloudEvent(id={} source={} type={}) with null data", event.getId(), event.getSource(), event.getType());
         }
 
-        return Optional.of(new EvaluationContext(event, extension, data));
+        return Optional.of(new EvaluationContext(event, extension, event.getData()));
     }
 
     private EvaluationContext processRequest(EvaluationContext ctx) {
@@ -167,7 +160,7 @@ public class EventDrivenPredictionsController {
 
     private static class EvaluationContext {
 
-        private final CloudEvent requestCloudEvent;
+        private final CloudEventContext requestCloudEvent;
         private final Map<String, Object> requestData;
 
         private final String requestFileName;
@@ -178,7 +171,7 @@ public class EventDrivenPredictionsController {
         private PredictionsResponseError responseError;
         private PMML4Result result;
 
-        public EvaluationContext(CloudEvent requestCloudEvent, KogitoPredictionsExtension requestExtension, Map<String, Object> requestData) {
+        public EvaluationContext(CloudEventContext requestCloudEvent, KogitoPredictionsExtension requestExtension, Map<String, Object> requestData) {
             this.requestCloudEvent = requestCloudEvent;
             this.requestData = requestData;
 
@@ -203,7 +196,7 @@ public class EventDrivenPredictionsController {
             return validRequest;
         }
 
-        public CloudEvent getRequestCloudEvent() {
+        public CloudEventContext getRequestCloudEvent() {
             return requestCloudEvent;
         }
 

@@ -15,7 +15,19 @@
  */
 package org.kie.kogito.event;
 
+/**
+ * This interface is one of the extension point for customers to incorporate more event formats.
+ * It is responsible for converting Kogito business objects into the format expected by the external service.
+ * 
+ * @param <R> The expected output type that will be consumed by the external service
+ */
 public interface EventMarshaller<R> {
-
+    /**
+     * Converts Kogito business object into external service one
+     * 
+     * @param <T> Kogito business object type
+     * @param dataEvent Kogito business object, typically, but not necessarily, a DataEvent instance.
+     * @return
+     */
     <T> R marshall(T dataEvent);
 }

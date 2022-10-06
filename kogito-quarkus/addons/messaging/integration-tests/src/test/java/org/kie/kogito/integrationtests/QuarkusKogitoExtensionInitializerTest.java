@@ -15,17 +15,17 @@
  */
 package org.kie.kogito.integrationtests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.dmn.DecisionTestUtils;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
-import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.core.CloudEventUtils;
 import io.cloudevents.core.provider.ExtensionProvider;
 import io.quarkus.test.junit.QuarkusTest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 public class QuarkusKogitoExtensionInitializerTest {

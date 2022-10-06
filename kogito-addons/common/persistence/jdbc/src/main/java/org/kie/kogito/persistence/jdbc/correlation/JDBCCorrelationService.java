@@ -25,8 +25,8 @@ import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.correlation.CorrelationEncoder;
 import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.CorrelationService;
+import org.kie.kogito.event.correlation.MD5CorrelationEncoder;
 import org.kie.kogito.persistence.jdbc.DatabaseType;
-import org.kie.kogito.services.event.correlation.MD5CorrelationEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
