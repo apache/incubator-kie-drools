@@ -55,7 +55,7 @@ public class DeploymentUtilsTest {
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
         deployment.getMetadata().setName("test");
-        mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
         assertEquals(Optional.empty(),
                 kubeResourceDiscovery.query(new KubeURI("kubernetes:apps/v1/deployment/" + namespace + "/invalid")));
     }
@@ -67,11 +67,11 @@ public class DeploymentUtilsTest {
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment.yaml")).get();
-        mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).get();
-        mockServer.getClient().services().inNamespace(namespace).create(service);
+        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertEquals("http://10.10.10.11:80", url.get());
@@ -87,7 +87,7 @@ public class DeploymentUtilsTest {
         deployment.getMetadata().setName("custom-port-deployment");
         deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
-        mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
 
         Service service = mockServer.getClient().services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-service.yaml")).get();
@@ -96,7 +96,7 @@ public class DeploymentUtilsTest {
                 .withName("my-custom-port")
                 .withTargetPort(new IntOrString("test-port"))
                 .withPort(4009).build());
-        mockServer.getClient().services().inNamespace(namespace).create(service);
+        mockServer.getClient().resource(service).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertEquals("http://10.10.10.11:4009", url.get());
@@ -109,18 +109,18 @@ public class DeploymentUtilsTest {
 
         Deployment deployment = mockServer.getClient().apps().deployments().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
-        Deployment createdDeployment = mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
 
         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
-        ReplicaSet createdRs = mockServer.getClient().apps().replicaSets().inNamespace(namespace).create(rs);
+        ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
         pod.getMetadata().setName("pod-deployment-no-service");
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
-        mockServer.getClient().pods().inNamespace(namespace).create(pod);
+        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertEquals("http://172.17.0.11:8080", url.get());
@@ -135,19 +135,20 @@ public class DeploymentUtilsTest {
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/deployment-no-service.yaml")).get();
         deployment.getMetadata().setName("example-deployment-no-service-2-replicas");
         deployment.getStatus().setReplicas(2);
-        Deployment createdDeployment = mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
 
         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
         rs.getMetadata().setName("rs-2-replicas");
         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
-        ReplicaSet createdRs = mockServer.getClient().apps().replicaSets().inNamespace(namespace).create(rs);
+        ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
         pod.getMetadata().setName("pod-2-replicas");
         pod.getMetadata().getOwnerReferences().get(0).setUid(createdRs.getMetadata().getUid());
-        mockServer.getClient().pods().inNamespace(namespace).create(pod);
+        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
+        ;
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertTrue(url.isEmpty());
@@ -163,13 +164,13 @@ public class DeploymentUtilsTest {
         deployment.getMetadata().setName("custom-port-deployment-1");
         deployment.getSpec().getTemplate().getSpec().getContainers().get(0).getPorts()
                 .add(new ContainerPortBuilder().withName("test-port").withContainerPort(4000).build());
-        Deployment createdDeployment = mockServer.getClient().apps().deployments().inNamespace(namespace).create(deployment);
+        Deployment createdDeployment = mockServer.getClient().resource(deployment).inNamespace(namespace).createOrReplace();
 
         ReplicaSet rs = mockServer.getClient().apps().replicaSets().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/replica-set-deployment-no-service.yaml")).get();
         rs.getMetadata().setName("custom-port-rs");
         rs.getMetadata().getOwnerReferences().get(0).setUid(createdDeployment.getMetadata().getUid());
-        ReplicaSet createdRs = mockServer.getClient().apps().replicaSets().inNamespace(namespace).create(rs);
+        ReplicaSet createdRs = mockServer.getClient().resource(rs).inNamespace(namespace).createOrReplace();
 
         Pod pod = mockServer.getClient().pods().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("deployment/pod-deployment-no-service.yaml")).get();
@@ -178,7 +179,7 @@ public class DeploymentUtilsTest {
                 .add(new ContainerPortBuilder()
                         .withName("my-custom-port")
                         .withContainerPort(4009).build());
-        Pod createdPod = mockServer.getClient().pods().inNamespace(namespace).create(pod);
+        mockServer.getClient().resource(pod).inNamespace(namespace).createOrReplace();
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertEquals("http://172.17.0.11:4009", url.get());

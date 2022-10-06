@@ -34,6 +34,7 @@ import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.ServiceSpec;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.kubernetes.client.KubernetesTestServer;
@@ -43,12 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@WithKubernetesTestServer
 @QuarkusTest
+@WithKubernetesTestServer
 public class KubernetesServiceEndpointDiscoveryTest {
 
     @KubernetesTestServer
     KubernetesServer mockServer;
+    @Inject
+    KubernetesClient kubernetesClient;
 
     @Named("default")
     @Inject
@@ -72,7 +75,7 @@ public class KubernetesServiceEndpointDiscoveryTest {
         svc.getSpec().setClusterIP("127.0.0.1");
         svc.getSpec().setPorts(sPorts);
 
-        mockServer.getClient().services().create(svc);
+        mockServer.getClient().resource(svc).createOrReplace();
     }
 
     @Test
