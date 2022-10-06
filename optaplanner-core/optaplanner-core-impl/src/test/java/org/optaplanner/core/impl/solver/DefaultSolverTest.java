@@ -35,6 +35,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
+import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
@@ -44,7 +45,9 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
@@ -66,6 +69,7 @@ import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntity
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.testutil.TestMeterRegistry;
 
@@ -811,5 +815,34 @@ class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    @Timeout(10)
+    void stopMultiThreadedSolving_whenThereIsNoMoveAvailable() {
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
+        solverConfig.setMoveThreadCount("1"); // Enable the multi-threaded solving.
+        LocalSearchPhaseConfig localSearchPhaseConfig = (LocalSearchPhaseConfig) solverConfig.getPhaseConfigList().get(1);
+
+        MoveListFactoryConfig moveListFactoryConfig = new MoveListFactoryConfig();
+        moveListFactoryConfig.setMoveListFactoryClass(TestMoveListFactory.class);
+        localSearchPhaseConfig.setMoveSelectorConfig(moveListFactoryConfig);
+
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = solver.solve(TestdataSolution.generateSolution());
+        PlannerAssert.assertSolutionInitialized(solution);
+    }
+
+    public static class TestMoveListFactory implements MoveListFactory<TestdataSolution> {
+
+        public TestMoveListFactory() {
+        }
+
+        @Override
+        public List<? extends Move<TestdataSolution>> createMoveList(TestdataSolution solution) {
+            return List.of();
+        }
     }
 }

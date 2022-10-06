@@ -180,6 +180,18 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     }
 
     private boolean forageResult(LocalSearchStepScope<Solution_> stepScope, int stepIndex) {
+        if (resultQueue.isEmpty() && operationQueue.size() <= moveThreadCount) {
+            /*
+             * When the phase starts, there might be up to _moveThreadCount_ unprocessed SetupOperations.
+             * Similarly, when the phase ends, there might be up to _moveThreadCount_ unprocessed DestroyOperations.
+             * If there is no MoveEvaluationOperation in the _operationQueue_, the _resultQueue_ will remain empty.
+             */
+            boolean operationQueueContainsNoMoveEvaluation = operationQueue.stream()
+                    .noneMatch(moveThreadOperation -> moveThreadOperation instanceof MoveEvaluationOperation);
+            if (operationQueueContainsNoMoveEvaluation) {
+                return true;
+            }
+        }
         OrderByMoveIndexBlockingQueue.MoveResult<Solution_> result;
         try {
             result = resultQueue.take();
@@ -211,10 +223,7 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
             }
         }
         stepScope.getPhaseScope().getSolverScope().checkYielding();
-        if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
-            return true;
-        }
-        return false;
+        return termination.isPhaseTerminated(stepScope.getPhaseScope());
     }
 
     private void shutdownMoveThreads() {

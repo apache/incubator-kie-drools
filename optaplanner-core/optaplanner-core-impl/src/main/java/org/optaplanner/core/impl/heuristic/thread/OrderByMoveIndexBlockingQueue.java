@@ -138,6 +138,10 @@ public class OrderByMoveIndexBlockingQueue<Solution_> {
         }
     }
 
+    public boolean isEmpty() {
+        return innerQueue.isEmpty() && backlog.isEmpty();
+    }
+
     public static class MoveResult<Solution_> {
 
         private final int moveThreadIndex;
