@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-events-api</artifactId>
+      <artifactId>kogito-events-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

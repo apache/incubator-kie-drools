@@ -32,7 +32,7 @@
     <!-- Use the same JSON ObjectMapper that is set-up and configured centrally -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-events-api</artifactId>
+      <artifactId>kogito-events-core</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
