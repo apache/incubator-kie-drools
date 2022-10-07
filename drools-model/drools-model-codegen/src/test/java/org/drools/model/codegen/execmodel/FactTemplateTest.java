@@ -652,7 +652,7 @@ public class FactTemplateTest {
 
     @Test
     public void testArrayAccess() {
-        // DROOLS-
+        // DROOLS-7194
         Prototype prototype = prototype( "org.X" );
 
         PrototypeVariable var1 = variable( prototype );
