@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.model.functions.Function1;
@@ -37,6 +38,10 @@ public interface PrototypeExpression {
 
     static PrototypeExpression prototypeField(String fieldName) {
         return new PrototypeFieldValue(fieldName);
+    }
+
+    static PrototypeExpression prototypeArrayItem(String fieldName, int pos) {
+        return new PrototypeArrayItemValue(fieldName, pos);
     }
 
     default PrototypeExpression composeWith(BinaryOperation.Operator op, PrototypeExpression right) {
@@ -102,7 +107,52 @@ public interface PrototypeExpression {
 
         @Override
         public String toString() {
-            return "PrototypeFieldValue{" + fieldName + '}';
+            return "PrototypeFieldValue{" + fieldName + "}";
+        }
+
+        public Collection<String> getImpactedFields() {
+            return Collections.singletonList(fieldName);
+        }
+    }
+
+    class PrototypeArrayItemValue implements PrototypeExpression {
+
+        private final String fieldName;
+        private final int pos;
+
+        PrototypeArrayItemValue(String fieldName, int pos) {
+            this.fieldName = fieldName;
+            this.pos = pos;
+        }
+
+        @Override
+        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+            return fact -> extractArrayItem( prototype.getFieldValueExtractor(fieldName).apply(fact) );
+        }
+
+        private Object extractArrayItem(Object value) {
+            if ( value instanceof int[] ) {
+                int[] array = (int[]) value;
+                return array.length > pos ? array[pos] : Prototype.UNDEFINED_VALUE;
+            }
+            if ( value.getClass().isArray() ) {
+                Object[] array = (Object[]) value;
+                return array.length > pos ? array[pos] : Prototype.UNDEFINED_VALUE;
+            }
+            if ( value instanceof List ) {
+                List<?> list = (List<?>) value;
+                return list.size() > pos ? list.get(pos) : Prototype.UNDEFINED_VALUE;
+            }
+            return Prototype.UNDEFINED_VALUE;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        @Override
+        public String toString() {
+            return "PrototypeArrayItemValue{" + fieldName + "[" + pos + "]}";
         }
 
         public Collection<String> getImpactedFields() {
