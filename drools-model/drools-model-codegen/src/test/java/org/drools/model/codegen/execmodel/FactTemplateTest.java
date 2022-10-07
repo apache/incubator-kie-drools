@@ -15,6 +15,7 @@
  */
 package org.drools.model.codegen.execmodel;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.core.facttemplates.Fact;
@@ -60,6 +61,7 @@ import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.model.PrototypeExpression.fixedValue;
+import static org.drools.model.PrototypeExpression.prototypeArrayItem;
 import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
@@ -644,6 +646,40 @@ public class FactTemplateTest {
         Fact f3 = createMapBasedFact( prototype );
         f3.set( "i", 2 );
 
+        ksession.insert(f3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testArrayAccess() {
+        // DROOLS-7194
+        Prototype prototype = prototype( "org.X" );
+
+        PrototypeVariable var1 = variable( prototype );
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(var1).expr( prototypeArrayItem( "i", 1 ), Index.ConstraintType.EQUAL, fixedValue( 3 ) ),
+                        on(var1).execute((p1, p2) -> { } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact f1 = createMapBasedFact( prototype );
+        f1.set( "i", Arrays.asList(3) );
+        ksession.insert(f1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f2 = createMapBasedFact( prototype );
+        f2.set( "i", Arrays.asList(1, 3, 5) );
+        ksession.insert(f2);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Fact f3 = createMapBasedFact( prototype );
+        f3.set( "i", new int[] {1, 3, 5} );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
