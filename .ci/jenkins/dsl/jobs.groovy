@@ -56,7 +56,7 @@ Map getMultijobPRConfig(Folder jobFolder) {
 KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 
 // Init branch
-setupInitBranchJob()
+createSetupBranchJob()
 
 // Nightly jobs
 setupDeployJob(Folder.NIGHTLY)
@@ -107,8 +107,8 @@ void setupSpecificNightlyJob(Folder specificNightlyFolder, boolean useIntegratio
     }
 }
 
-void setupInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'Drools Init branch')
+void createSetupBranchJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'drools', Folder.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Drools Init branch')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'drools',
@@ -120,6 +120,8 @@ void setupInitBranchJob() {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
