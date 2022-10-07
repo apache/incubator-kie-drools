@@ -2,8 +2,8 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 

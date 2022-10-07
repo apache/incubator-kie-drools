@@ -5,7 +5,6 @@ import java.io.Closeable;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
  * Common ancestor for specialized planning variable listeners.

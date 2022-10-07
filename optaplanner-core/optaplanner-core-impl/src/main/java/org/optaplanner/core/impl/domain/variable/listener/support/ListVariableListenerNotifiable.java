@@ -3,8 +3,8 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
  * A notifiable specialized to receive {@link ListVariableNotification}s and trigger them on a given

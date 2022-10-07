@@ -167,34 +167,40 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public void beforeListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.beforeListVariableElementAssigned(variableDescriptor.getVariableName(), element);
+        super.beforeListVariableElementAssigned(variableDescriptor, element);
     }
 
     @Override
     public void afterListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.afterListVariableElementAssigned(variableDescriptor.getVariableName(), element);
+        super.afterListVariableElementAssigned(variableDescriptor, element);
     }
 
     @Override
     public void beforeListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.beforeListVariableElementUnassigned(variableDescriptor.getVariableName(), element);
+        super.beforeListVariableElementUnassigned(variableDescriptor, element);
     }
 
     @Override
     public void afterListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.afterListVariableElementUnassigned(variableDescriptor.getVariableName(), element);
+        super.afterListVariableElementUnassigned(variableDescriptor, element);
     }
 
     @Override
     public void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.beforeListVariableChanged(entity, variableDescriptor.getVariableName(), fromIndex, toIndex);
+        super.beforeListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     @Override
     public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
-        throw new UnsupportedOperationException("Not yet supported.");
+        incrementalScoreCalculator.afterListVariableChanged(entity, variableDescriptor.getVariableName(), fromIndex, toIndex);
+        super.afterListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     @Override

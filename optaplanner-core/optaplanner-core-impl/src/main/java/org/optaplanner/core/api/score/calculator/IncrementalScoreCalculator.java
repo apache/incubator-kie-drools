@@ -46,6 +46,24 @@ public interface IncrementalScoreCalculator<Solution_, Score_ extends Score<Scor
      */
     void afterVariableChanged(Object entity, String variableName);
 
+    default void beforeListVariableElementAssigned(String variableName, Object element) {
+    }
+
+    default void afterListVariableElementAssigned(String variableName, Object element) {
+    }
+
+    default void beforeListVariableElementUnassigned(String variableName, Object element) {
+    }
+
+    default void afterListVariableElementUnassigned(String variableName, Object element) {
+    }
+
+    default void beforeListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+    }
+
+    default void afterListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+    }
+
     /**
      * @param entity never null, an instance of a {@link PlanningEntity} class
      */

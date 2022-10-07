@@ -20,10 +20,12 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
 import org.optaplanner.core.api.domain.variable.PiggybackShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -60,7 +62,9 @@ public final class DotNames {
     static final DotName CUSTOM_SHADOW_VARIABLE = DotName.createSimple(CustomShadowVariable.class.getName());
     static final DotName INDEX_SHADOW_VARIABLE = DotName.createSimple(IndexShadowVariable.class.getName());
     static final DotName INVERSE_RELATION_SHADOW_VARIABLE = DotName.createSimple(InverseRelationShadowVariable.class.getName());
+    static final DotName NEXT_ELEMENT_SHADOW_VARIABLE = DotName.createSimple(NextElementShadowVariable.class.getName());
     static final DotName PIGGYBACK_SHADOW_VARIABLE = DotName.createSimple(PiggybackShadowVariable.class.getName());
+    static final DotName PREVIOUS_ELEMENT_SHADOW_VARIABLE = DotName.createSimple(PreviousElementShadowVariable.class.getName());
     static final DotName SHADOW_VARIABLE = DotName.createSimple(ShadowVariable.class.getName());
 
     // Need to use String since optaplanner-test is not on the compile classpath
@@ -74,7 +78,9 @@ public final class DotNames {
             CUSTOM_SHADOW_VARIABLE,
             INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
+            NEXT_ELEMENT_SHADOW_VARIABLE,
             PIGGYBACK_SHADOW_VARIABLE,
+            PREVIOUS_ELEMENT_SHADOW_VARIABLE,
             SHADOW_VARIABLE,
     };
 
@@ -96,7 +102,9 @@ public final class DotNames {
             CUSTOM_SHADOW_VARIABLE,
             INDEX_SHADOW_VARIABLE,
             INVERSE_RELATION_SHADOW_VARIABLE,
+            NEXT_ELEMENT_SHADOW_VARIABLE,
             PIGGYBACK_SHADOW_VARIABLE,
+            PREVIOUS_ELEMENT_SHADOW_VARIABLE,
             SHADOW_VARIABLE,
     };
 

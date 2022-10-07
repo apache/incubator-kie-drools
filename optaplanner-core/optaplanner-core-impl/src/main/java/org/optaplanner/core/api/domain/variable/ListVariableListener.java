@@ -1,9 +1,7 @@
-package org.optaplanner.core.impl.domain.variable;
+package org.optaplanner.core.api.domain.variable;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
-import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
 /**

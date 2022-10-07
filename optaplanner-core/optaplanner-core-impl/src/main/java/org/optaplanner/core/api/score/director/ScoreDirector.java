@@ -32,6 +32,18 @@ public interface ScoreDirector<Solution_> {
 
     void afterVariableChanged(Object entity, String variableName);
 
+    void beforeListVariableElementAssigned(Object entity, String variableName, Object element);
+
+    void afterListVariableElementAssigned(Object entity, String variableName, Object element);
+
+    void beforeListVariableElementUnassigned(Object entity, String variableName, Object element);
+
+    void afterListVariableElementUnassigned(Object entity, String variableName, Object element);
+
+    void beforeListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex);
+
+    void afterListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex);
+
     void triggerVariableListeners();
 
     void beforeEntityRemoved(Object entity);

@@ -3,8 +3,8 @@ package org.optaplanner.examples.taskassigning.domain.solver;
 import java.util.List;
 import java.util.Objects;
 
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;

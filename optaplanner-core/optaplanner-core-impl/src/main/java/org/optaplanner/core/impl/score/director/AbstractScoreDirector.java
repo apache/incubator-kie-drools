@@ -340,6 +340,48 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
+    public void beforeListVariableElementAssigned(Object entity, String variableName, Object element) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        beforeListVariableElementAssigned(listVariableDescriptor, element);
+    }
+
+    @Override
+    public void afterListVariableElementAssigned(Object entity, String variableName, Object element) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        afterListVariableElementAssigned(listVariableDescriptor, element);
+    }
+
+    @Override
+    public void beforeListVariableElementUnassigned(Object entity, String variableName, Object element) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        beforeListVariableElementUnassigned(listVariableDescriptor, element);
+    }
+
+    @Override
+    public void afterListVariableElementUnassigned(Object entity, String variableName, Object element) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        afterListVariableElementUnassigned(listVariableDescriptor, element);
+    }
+
+    @Override
+    public void beforeListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        beforeListVariableChanged(listVariableDescriptor, entity, fromIndex, toIndex);
+    }
+
+    @Override
+    public void afterListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) getSolutionDescriptor().findVariableDescriptorOrFail(entity, variableName);
+        afterListVariableChanged(listVariableDescriptor, entity, fromIndex, toIndex);
+    }
+
+    @Override
     public final void beforeEntityRemoved(Object entity) {
         beforeEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }

@@ -342,8 +342,9 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * are going to be changed.</li>
      * </ol>
      * <p>
-     * {@link #beforeListVariableElementUnassigned} must be called for each element that will be unassigned (removed from a list
-     * variable of one entity without being added to a list variable of another entity).
+     * {@link #beforeListVariableElementUnassigned(ListVariableDescriptor, Object)} must be called for each element
+     * that will be unassigned (removed from a list variable of one entity without being added
+     * to a list variable of another entity).
      *
      * @param variableDescriptor descriptor of the list variable being changed
      * @param entity the entity owning the list variable being changed
@@ -377,8 +378,9 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * have changed.</li>
      * </ol>
      * <p>
-     * {@link #afterListVariableElementUnassigned} must be called for each element that was unassigned (removed from a list
-     * variable of one entity without being added to a list variable of another entity).
+     * {@link #afterListVariableElementUnassigned(ListVariableDescriptor, Object)} must be called for each element
+     * that was unassigned (removed from a list variable of one entity without being added
+     * to a list variable of another entity).
      *
      * @param variableDescriptor descriptor of the list variable being changed
      * @param entity the entity owning the list variable being changed

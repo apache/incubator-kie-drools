@@ -90,7 +90,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
             Customer newCustomer = createCustomer(vehicleRoutingSolution, newLocation);
             // A SolutionCloner clones planning entity lists (such as customerList), so no need to clone the customerList here
             // Add the planning entity itself
-            problemChangeDirector.addEntity(newCustomer, vehicleRoutingSolution.getCustomerList()::add);
+            problemChangeDirector.addProblemFact(newCustomer, vehicleRoutingSolution.getCustomerList()::add);
         });
     }
 

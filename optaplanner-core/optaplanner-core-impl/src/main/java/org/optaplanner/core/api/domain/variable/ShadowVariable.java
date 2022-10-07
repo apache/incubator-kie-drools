@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.ShadowVariable.List;
-import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
  * Specifies that a bean property (or a field) is a custom shadow variable of 1 or more source variables.
