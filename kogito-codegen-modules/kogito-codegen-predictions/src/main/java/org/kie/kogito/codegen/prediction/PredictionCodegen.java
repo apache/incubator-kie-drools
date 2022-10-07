@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.AbstractGenerator;
@@ -29,8 +29,7 @@ import org.kie.kogito.codegen.prediction.config.PredictionConfigGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.codegen.prediction.PredictionCodegenUtils.createIndexFiles;
-import static org.kie.kogito.codegen.prediction.PredictionCodegenUtils.generateModelFromIndexFile;
+import static org.kie.kogito.codegen.prediction.PredictionCodegenUtils.generateModelFromGeneratedResources;
 import static org.kie.kogito.codegen.prediction.PredictionCodegenUtils.generateModelsFromResource;
 
 public class PredictionCodegen extends AbstractGenerator {
@@ -73,9 +72,8 @@ public class PredictionCodegen extends AbstractGenerator {
         Collection<GeneratedFile> files = new ArrayList<>();
         for (PMMLResource resource : resources) {
             generateModelsFromResource(files, resource, this);
-            Map<String, IndexFile> indexFilesMap = createIndexFiles(resource.getGeneratedResourcesMap());
-            for (IndexFile indexFile : indexFilesMap.values()) {
-                generateModelFromIndexFile(files, indexFile);
+            for (Map.Entry<String, GeneratedResources> generatedResourcesEntry : resource.getGeneratedResourcesMap().entrySet()) {
+                generateModelFromGeneratedResources(files, generatedResourcesEntry);
             }
         }
         return files;

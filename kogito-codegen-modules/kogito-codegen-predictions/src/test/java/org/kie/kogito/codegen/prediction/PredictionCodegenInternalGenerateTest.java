@@ -30,7 +30,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.contextBuilders;
@@ -69,7 +68,7 @@ class PredictionCodegenInternalGenerateTest {
 
             PredictionCodegen codeGenerator = getPredictionCodegen(context, REGRESSION_FULL_SOURCE);
             Collection<GeneratedFile> generatedFiles = codeGenerator.internalGenerate();
-            Arguments toAdd = arguments(codeGenerator, generatedFiles, 5, 3, 1, false,
+            Arguments toAdd = arguments(codeGenerator, generatedFiles, 4, 3, 1, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
 
@@ -87,7 +86,7 @@ class PredictionCodegenInternalGenerateTest {
 
             codeGenerator = getPredictionCodegen(context, MULTIPLE_FULL_SOURCE);
             generatedFiles = codeGenerator.internalGenerate();
-            toAdd = arguments(codeGenerator, generatedFiles, 88, 84, 2, false,
+            toAdd = arguments(codeGenerator, generatedFiles, 86, 84, 2, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
             return testArguments.stream();
@@ -103,7 +102,7 @@ class PredictionCodegenInternalGenerateTest {
             int expectedRestEndpoints,
             boolean assertReflect,
             boolean hasRest) {
-        assertThat(commonVerifyTotalFiles(generatedFiles, expectedTotalFiles, expectedRestEndpoints, hasRest)).isNotNull();
+        commonVerifyTotalFiles(generatedFiles, expectedTotalFiles, expectedRestEndpoints, hasRest);
     }
 
     @MethodSource({ "data" })
@@ -115,7 +114,7 @@ class PredictionCodegenInternalGenerateTest {
             int expectedRestEndpoints,
             boolean assertReflect,
             boolean hasRest) {
-        assertThat(commonVerifyCompiledClasses(generatedFiles, expectedCompiledClasses)).isNotNull();
+        commonVerifyCompiledClasses(generatedFiles, expectedCompiledClasses);
     }
 
     @MethodSource({ "data" })
@@ -127,7 +126,7 @@ class PredictionCodegenInternalGenerateTest {
             int expectedRestEndpoints,
             boolean assertReflect,
             boolean hasRest) {
-        assertThat(commonVerifyReflectResource(generatedFiles, assertReflect)).isNotNull();
+        commonVerifyReflectResource(generatedFiles, assertReflect);
     }
 
     @MethodSource({ "data" })

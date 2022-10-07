@@ -15,35 +15,28 @@
  */
 package org.kie.kogito.codegen.prediction;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.model.GeneratedResources;
-import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.pmml.openapi.api.PMMLOASResult;
 import org.kie.kogito.pmml.openapi.factories.PMMLOASResultFactory;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLFactoryModel;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.drools.codegen.common.GeneratedFileType.COMPILED_CLASS;
-import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
-import static org.kie.efesto.common.core.utils.JSONUtils.writeGeneratedResourcesObject;
+import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesString;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
@@ -55,8 +48,6 @@ public class PredictionCodegenUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(PredictionCodegenUtils.class);
     private static final GeneratedFileType INDEX_FILE = GeneratedFileType.of("IndexFile",
             GeneratedFileType.Category.INTERNAL_RESOURCE);
-
-    private static final String DEFAULT_INDEXFILE_DIRECTORY = "./target/classes";
 
     static void generateModelsFromResource(Collection<GeneratedFile> files, PMMLResource resource, PredictionCodegen generator) {
         for (KiePMMLModel model : resource.getKiePmmlModels()) {
@@ -86,42 +77,36 @@ public class PredictionCodegenUtils {
         }
     }
 
-    static void generateModelFromIndexFile(Collection<GeneratedFile> files, IndexFile indexFile) {
-        if (indexFile.getPath().contains("test-classes")) {
-            return;
-        }
-        files.add(new GeneratedFile(INDEX_FILE, indexFile.getName(), getFileContent(indexFile)));
+    static void generateModelFromGeneratedResources(Collection<GeneratedFile> files, Map.Entry<String, GeneratedResources> generatedResourcesEntry) {
+        String indexFileName = String.format("%s.%s%s", "IndexFile", generatedResourcesEntry.getKey(), "_json");
+        addUpdateGeneratedFile(files, indexFileName, generatedResourcesEntry.getValue());
     }
 
-    static Map<String, IndexFile> createIndexFiles(Map<String, GeneratedResources> generatedResourcesMap) {
-        Path targetDirectory =
-                new File(System.getProperty(INDEXFILE_DIRECTORY_PROPERTY, DEFAULT_INDEXFILE_DIRECTORY)).toPath();
-        Map<String, IndexFile> indexFiles = new HashMap<>();
-        for (Map.Entry<String, GeneratedResources> entry : generatedResourcesMap.entrySet()) {
-            String model = entry.getKey();
-            GeneratedResources generatedResources = entry.getValue();
-            IndexFile indexFile = new IndexFile(targetDirectory.toString(), model);
-            try {
-                if (indexFile.exists()) {
-                    GeneratedResources existingGeneratedResources = getGeneratedResourcesObject(indexFile);
-                    generatedResources.addAll(existingGeneratedResources);
-                }
-                writeGeneratedResourcesObject(generatedResources, indexFile);
-            } catch (Exception e) {
-                throw new EfestoCompilationManagerException("Failed to write to IndexFile : " + indexFile.getAbsolutePath(), e);
-            }
-            indexFiles.put(model, indexFile);
-        }
-        return indexFiles;
-    }
-
-    static String getFileContent(IndexFile indexFile) {
-        LOGGER.debug("getFileContent {}", indexFile);
+    static void addUpdateGeneratedFile(Collection<GeneratedFile> files, String indexFileName,
+            GeneratedResources newGeneratedResources) {
         try {
-            return Files.readString(indexFile.toPath());
-        } catch (IOException e) {
-            throw new KiePMMLException("Failed to read content of " + indexFile.getPath(), e);
+            Optional<GeneratedFile> existing = files.stream().filter(generatedFile -> generatedFile.type().equals(INDEX_FILE) && generatedFile.relativePath().equals(indexFileName))
+                    .findFirst();
+            String content;
+            if (existing.isPresent()) {
+                GeneratedFile generatedFile = existing.get();
+                content = getUpdatedGeneratedResourcesContent(generatedFile, newGeneratedResources);
+                files.remove(generatedFile);
+            } else {
+                content = getGeneratedResourcesString(newGeneratedResources);
+            }
+            files.add(new GeneratedFile(INDEX_FILE, indexFileName, content));
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("Failed to serialize " + newGeneratedResources, e);
         }
+    }
+
+    static String getUpdatedGeneratedResourcesContent(GeneratedFile generatedFile,
+            GeneratedResources newGeneratedResources) throws JsonProcessingException {
+        String oldContent = new String(generatedFile.contents());
+        GeneratedResources oldGeneratedResources = getGeneratedResourcesObject(oldContent);
+        oldGeneratedResources.addAll(newGeneratedResources);
+        return getGeneratedResourcesString(oldGeneratedResources);
     }
 
     static void generateModelBaseFiles(Collection<GeneratedFile> files, PMMLResource resource) {

@@ -239,7 +239,8 @@ public class KogitoDevServicesProcessor {
                         DockerImageName.parse(config.imageName),
                         config.fixedExposedPort,
                         launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null,
-                        useSharedNetwork);
+                        useSharedNetwork,
+                        config.portUsedByTest);
 
                 LOGGER.debug(String.format("TrustyService DataSource Kind: %s", devServicesConfig.getDataSourceKind()));
                 LOGGER.debug(String.format("TrustyService DataSource Username: %s", devServicesConfig.getDataSourceUserName()));
@@ -309,12 +310,18 @@ public class KogitoDevServicesProcessor {
         private final boolean shared;
         private final String serviceName;
 
+        /**
+         * In test mode, pick a random port
+         */
+        private final int portUsedByTest;
+
         public TrustyServiceDevServiceConfig(final KogitoDevServicesBuildTimeConfig config) {
             this.devServicesEnabled = config.enabled.orElse(true);
             this.imageName = config.imageName;
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
+            this.portUsedByTest = config.portUsedByTest;
         }
 
         @Override

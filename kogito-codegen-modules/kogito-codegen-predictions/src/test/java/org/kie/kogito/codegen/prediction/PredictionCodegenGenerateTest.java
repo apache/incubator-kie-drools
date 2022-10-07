@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.AbstractIntegerAssert;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.AfterAll;
@@ -85,7 +84,7 @@ class PredictionCodegenGenerateTest {
 
             PredictionCodegen codeGenerator = getPredictionCodegen(context, REGRESSION_FULL_SOURCE);
             Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
-            Arguments toAdd = arguments(codeGenerator, generatedFiles, 5, 3, 1, false,
+            Arguments toAdd = arguments(codeGenerator, generatedFiles, 4, 3, 1, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
 
@@ -103,7 +102,7 @@ class PredictionCodegenGenerateTest {
 
             codeGenerator = getPredictionCodegen(context, MULTIPLE_FULL_SOURCE);
             generatedFiles = codeGenerator.generate();
-            toAdd = arguments(codeGenerator, generatedFiles, 88, 84, 2, false,
+            toAdd = arguments(codeGenerator, generatedFiles, 86, 84, 2, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
             return testArguments.stream();
@@ -181,26 +180,26 @@ class PredictionCodegenGenerateTest {
         commonVerifySectionAndCompilationUnit(codeGenerator);
     }
 
-    static AbstractIntegerAssert<?> commonVerifyTotalFiles(Collection<GeneratedFile> generatedFiles,
+    static void commonVerifyTotalFiles(Collection<GeneratedFile> generatedFiles,
             int expectedTotalFiles,
             int expectedRestEndpoints,
             boolean hasREST) {
-        int expectedGeneratedFilesSize = expectedTotalFiles - (hasREST ? 0 : expectedRestEndpoints * 2);
-        return assertThat(expectedGeneratedFilesSize).isEqualTo(generatedFiles.size());
+        int expectedGeneratedFilesSize = expectedTotalFiles + (hasREST ? expectedRestEndpoints * 2 : 0);
+        assertThat(generatedFiles).hasSize(expectedGeneratedFilesSize);
     }
 
-    static AbstractIntegerAssert<?> commonVerifyCompiledClasses(Collection<GeneratedFile> generatedFiles,
+    static void commonVerifyCompiledClasses(Collection<GeneratedFile> generatedFiles,
             int expectedCompiledClasses) {
-        return assertThat(expectedCompiledClasses).isEqualTo(generatedFiles.stream()
+        assertThat(expectedCompiledClasses).isEqualTo(generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.COMPILED_CLASS) &&
                         generatedFile.type().equals(COMPILED_CLASS))
                 .count());
     }
 
-    static AbstractIntegerAssert<?> commonVerifyReflectResource(Collection<GeneratedFile> generatedFiles,
+    static void commonVerifyReflectResource(Collection<GeneratedFile> generatedFiles,
             boolean assertReflect) {
         int expectedReflectResource = assertReflect ? 1 : 0;
-        return assertThat(expectedReflectResource).isEqualTo(generatedFiles.stream()
+        assertThat(expectedReflectResource).isEqualTo(generatedFiles.stream()
                 .filter(generatedFile -> generatedFile.category().equals(GeneratedFileType.Category.INTERNAL_RESOURCE) &&
                         generatedFile.type().name().equals(GeneratedFileType.INTERNAL_RESOURCE.name()) &&
                         generatedFile.relativePath().endsWith(REFLECT_JSON))

@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kie.kogito.test.utils.SocketUtils;
 import org.kie.kogito.tracing.decision.TrustyConstants;
 
 import io.quarkus.test.QuarkusDevModeTest;
@@ -49,11 +50,20 @@ public class QuarkusTracingAddonDevServicesIT {
     @RegisterExtension
     public static QuarkusDevModeTest test = new QuarkusDevModeTest()
             .withApplicationRoot(jar -> {
-                jar.addAsResource(new StringAsset(loadResource("/application.properties")),
+                jar.addAsResource(new StringAsset(applicationProperties()),
                         "application.properties");
                 jar.addAsResource(new StringAsset(loadResource("/LoanEligibility.dmn")),
                         "LoanEligibility.dmn");
             });
+
+    private static String applicationProperties() {
+        String loadedResource = loadResource("/application.properties");
+        String replacement = String.format("quarkus.kogito.dev-services-trusty.port-to-use-in-test=%s",
+                SocketUtils.findAvailablePort());
+        String toReturn = loadedResource.replace("quarkus.kogito.dev-services-trusty.port-to-use-in-test=-1",
+                replacement);
+        return toReturn;
+    }
 
     @Test
     public void testEvaluateLoanEligibility() {
