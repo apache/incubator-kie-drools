@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventContext;
 import io.cloudevents.CloudEventData;
 import io.cloudevents.CloudEventExtension;
 import io.cloudevents.core.builder.CloudEventBuilder;
@@ -256,5 +257,13 @@ public final class CloudEventUtils {
             return null;
         }
         return data instanceof JsonNode ? JsonCloudEventData.wrap((JsonNode) data) : PojoCloudEventData.wrap(data, toBytes);
+    }
+
+    public static boolean isValidRequest(CloudEventContext context, String expectedType, CloudEventExtension extension) {
+        return extension != null && expectedType.equals(context.getType());
+    }
+
+    public static boolean safeBoolean(Boolean bool) {
+        return bool != null && bool.booleanValue();
     }
 }

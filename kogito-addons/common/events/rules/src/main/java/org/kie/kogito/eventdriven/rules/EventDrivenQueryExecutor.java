@@ -15,14 +15,13 @@
  */
 package org.kie.kogito.eventdriven.rules;
 
-import io.cloudevents.CloudEvent;
+import org.kie.kogito.event.DataEvent;
 
-public interface EventDrivenQueryExecutor {
+public interface EventDrivenQueryExecutor<D> {
 
     String getRuleUnitId();
 
     String getQueryName();
 
-    Object executeQuery(CloudEvent input);
-
+    Object executeQuery(DataEvent<D> input);
 }

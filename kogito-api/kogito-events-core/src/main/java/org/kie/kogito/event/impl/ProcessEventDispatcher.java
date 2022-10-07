@@ -83,7 +83,7 @@ public class ProcessEventDispatcher<M extends Model, D> implements EventDispatch
     }
 
     private Optional<CompositeCorrelation> compositeCorrelation(DataEvent<?> event) {
-        return correlationKeys != null ? Optional.of(new CompositeCorrelation(
+        return correlationKeys != null && !correlationKeys.isEmpty() ? Optional.of(new CompositeCorrelation(
                 correlationKeys.stream().map(k -> new SimpleCorrelation<>(k, resolve(event, k))).collect(Collectors.toSet()))) : Optional.empty();
     }
 

@@ -74,4 +74,9 @@ public class KogitoRulesExtension implements CloudEventExtension {
     public void setRuleUnitQuery(String ruleUnitQuery) {
         this.ruleUnitQuery = ruleUnitQuery;
     }
+
+    @Override
+    public String toString() {
+        return "KogitoRulesExtension [ruleUnitId=" + ruleUnitId + ", ruleUnitQuery=" + ruleUnitQuery + "]";
+    }
 }

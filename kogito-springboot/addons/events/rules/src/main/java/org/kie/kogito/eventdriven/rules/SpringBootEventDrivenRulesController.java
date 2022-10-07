@@ -15,10 +15,6 @@
  */
 package org.kie.kogito.eventdriven.rules;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
@@ -29,12 +25,7 @@ import org.springframework.stereotype.Component;
 public class SpringBootEventDrivenRulesController extends EventDrivenRulesController {
 
     @Autowired
-    public SpringBootEventDrivenRulesController(List<EventDrivenQueryExecutor> executors, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
-        super(executors, config, eventEmitter, eventReceiver);
-    }
-
-    @PostConstruct
-    private void onPostConstruct() {
-        subscribe();
+    public SpringBootEventDrivenRulesController(ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+        super(config, eventEmitter, eventReceiver);
     }
 }

@@ -54,14 +54,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.dmn.DecisionTestUtils.DECISION_SERVICE_NODE_NAME;
 import static org.kie.kogito.dmn.DecisionTestUtils.MODEL_NAME;
 import static org.kie.kogito.dmn.DecisionTestUtils.MODEL_NAMESPACE;
 import static org.kie.kogito.eventdriven.decision.EventDrivenDecisionController.REQUEST_EVENT_TYPE;
-import static org.kie.kogito.eventdriven.decision.EventDrivenDecisionController.RESPONSE_ERROR_EVENT_TYPE;
 import static org.kie.kogito.eventdriven.decision.EventDrivenDecisionController.RESPONSE_EVENT_TYPE;
 import static org.kie.kogito.eventdriven.decision.EventDrivenDecisionController.RESPONSE_FULL_EVENT_TYPE;
 import static org.mockito.ArgumentMatchers.any;
@@ -205,11 +203,6 @@ class EventDrivenDecisionControllerTest {
     }
 
     @Test
-    void testHandleEventWithValidCloudEventWithNullDataProducingBadRequest() throws IOException {
-        testAllErrorCloudEventEmittedCombinations(REQUEST_DATA_NULL_CONTEXT, DecisionResponseError.BAD_REQUEST);
-    }
-
-    @Test
     void testHandleEventWithValidCloudEventProducingOkEvaluateAll() throws IOException {
         testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_ALL, (cloudEvent, kogitoExtension, responseEvent) -> {
             assertNull(kogitoExtension.getExecutionId());
@@ -249,32 +242,6 @@ class EventDrivenDecisionControllerTest {
             verify(decisionModelSpy).evaluateDecisionService(notNull(), notNull());
             clearInvocations(decisionModelSpy);
         });
-    }
-
-    @Test
-    void testHandleEventWithValidCloudEventProducingBadRequest() throws IOException {
-        for (RequestData badRequestData : REQUEST_DATA_BAD_REQUEST) {
-            testAllErrorCloudEventEmittedCombinations(badRequestData, DecisionResponseError.BAD_REQUEST);
-        }
-    }
-
-    @Test
-    void testHandleEventWithValidCloudEventWithExecutionIdProducingBadRequest() throws IOException {
-        mockDecisionModelWithExecutionIdSupplier();
-        for (RequestData badRequestData : REQUEST_DATA_BAD_REQUEST) {
-            testAllErrorCloudEventEmittedCombinations(badRequestData, DecisionResponseError.BAD_REQUEST);
-        }
-    }
-
-    @Test
-    void testHandleEventWithValidCloudEventProducingNotFound() throws IOException {
-        testAllErrorCloudEventEmittedCombinations(REQUEST_DATA_MODEL_NOT_FOUND, DecisionResponseError.MODEL_NOT_FOUND);
-    }
-
-    @Test
-    void testHandleEventWithValidCloudEventWithExecutionIdProducingNotFound() throws IOException {
-        mockDecisionModelWithExecutionIdSupplier();
-        testAllErrorCloudEventEmittedCombinations(REQUEST_DATA_MODEL_NOT_FOUND, DecisionResponseError.MODEL_NOT_FOUND);
     }
 
     private void assertSubject(CloudEvent event) {
@@ -386,27 +353,6 @@ class EventDrivenDecisionControllerTest {
         testFullCloudEventEmitted(requestData, true, null, consumer);
         testFullCloudEventEmitted(requestData, true, false, consumer);
         testFullCloudEventEmitted(requestData, true, true, consumer);
-    }
-
-    private void testErrorCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, DecisionResponseError expectedError) throws IOException {
-        testCloudEventEmitted(requestData, fullResult, filteredCtx, DecisionResponseError.class, RESPONSE_ERROR_EVENT_TYPE, (cloudEvent, kogitoExtension, data) -> {
-            assertSame(expectedError, data);
-            assertNull(kogitoExtension.getExecutionId());
-            verify(decisionModelSpy, never()).evaluateAll(any());
-            verify(decisionModelSpy, never()).evaluateDecisionService(any(), any());
-        });
-    }
-
-    private void testAllErrorCloudEventEmittedCombinations(RequestData requestData, DecisionResponseError expectedError) throws IOException {
-        testErrorCloudEventEmitted(requestData, null, null, expectedError);
-        testErrorCloudEventEmitted(requestData, null, false, expectedError);
-        testErrorCloudEventEmitted(requestData, null, true, expectedError);
-        testErrorCloudEventEmitted(requestData, false, null, expectedError);
-        testErrorCloudEventEmitted(requestData, false, false, expectedError);
-        testErrorCloudEventEmitted(requestData, false, true, expectedError);
-        testErrorCloudEventEmitted(requestData, true, null, expectedError);
-        testErrorCloudEventEmitted(requestData, true, false, expectedError);
-        testErrorCloudEventEmitted(requestData, true, true, expectedError);
     }
 
     @FunctionalInterface

@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.eventdriven.rules;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
@@ -34,18 +32,19 @@ class EventDrivenRulesControllerTest {
         ConfigBean configMock = mock(ConfigBean.class);
         EventEmitter eventEmitterMock = mock(EventEmitter.class);
         EventReceiver eventReceiverMock = mock(EventReceiver.class);
+        EventDrivenQueryExecutor queryExecutorMock = mock(EventDrivenQueryExecutor.class);
 
         // option #1: parameters via constructor + parameterless setup
-        EventDrivenRulesController controller1 = new EventDrivenRulesController(Collections.emptySet(), configMock, eventEmitterMock, eventReceiverMock);
-        controller1.subscribe();
+        EventDrivenRulesController controller1 = new EventDrivenRulesController(configMock, eventEmitterMock, eventReceiverMock);
+        controller1.subscribe(queryExecutorMock, Object.class);
         verify(eventReceiverMock).subscribe(any(), any());
 
         reset(eventReceiverMock);
 
         // option #2: parameterless via constructor + parameters via setup (introduced for Quarkus CDI)
         EventDrivenRulesController controller2 = new EventDrivenRulesController();
-        controller2.init(Collections.emptySet(), configMock, eventEmitterMock, eventReceiverMock);
-        controller2.subscribe();
+        controller1.subscribe(queryExecutorMock, Object.class);
+        controller2.init(configMock, eventEmitterMock, eventReceiverMock);
         verify(eventReceiverMock).subscribe(any(), any());
     }
 

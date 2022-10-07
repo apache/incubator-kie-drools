@@ -179,4 +179,9 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     public CloudEvent asCloudEvent() {
         return cloudEvent;
     }
+
+    @Override
+    public String toString() {
+        return "CloudEventWrapDataEvent [cloudEvent=" + cloudEvent + "]";
+    }
 }

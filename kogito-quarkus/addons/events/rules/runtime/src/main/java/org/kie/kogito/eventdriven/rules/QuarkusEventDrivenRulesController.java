@@ -16,7 +16,6 @@
 package org.kie.kogito.eventdriven.rules;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.kie.kogito.conf.ConfigBean;
@@ -29,9 +28,6 @@ import io.quarkus.runtime.Startup;
 public class QuarkusEventDrivenRulesController extends EventDrivenRulesController {
 
     @Inject
-    Instance<EventDrivenQueryExecutor> executors;
-
-    @Inject
     ConfigBean config;
 
     @Inject
@@ -42,7 +38,6 @@ public class QuarkusEventDrivenRulesController extends EventDrivenRulesControlle
 
     @PostConstruct
     private void onPostConstruct() {
-        init(executors, config, eventEmitter, eventReceiver);
-        subscribe();
+        init(config, eventEmitter, eventReceiver);
     }
 }
