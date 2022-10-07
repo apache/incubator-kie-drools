@@ -47,11 +47,11 @@ const WorkflowFormContainer: React.FC<WorkflowFormContainerProps &
           async getCustomWorkflowSchema(): Promise<Record<string, any>> {
             return gatewayApi.getCustomWorkflowSchema();
           },
-          async startWorkflow(formData: any): Promise<void> {
+          async startWorkflowCloudEvent(formData: any): Promise<void> {
             return gatewayApi
-              .startWorkflow(formData)
+              .startWorkflowCloudEvent(formData)
               .then((id: string) => {
-                onSubmitSuccess(id);
+                onSubmitSuccess(`A workflow with business key ${id} was triggered successfully.`);
               })
               .catch(error => {
                 console.error(error?.response);
@@ -69,7 +69,7 @@ const WorkflowFormContainer: React.FC<WorkflowFormContainerProps &
           },
           async startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<void> {
             return gatewayApi.startWorkflowRest(data, endpoint).then((id: string) => {
-              onSubmitSuccess(id)
+              onSubmitSuccess(`A workflow with id ${id} was triggered successfully.`)
             }).catch((error) => {
               console.error(error?.response);
               const message =

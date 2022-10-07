@@ -71,13 +71,12 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     });
   };
 
-  const onSubmitSuccess = (id: string): void => {
-    const message = `A cloud event with business key ${id} was triggered successfully.`;
+  const onSubmitSuccess = (message: string): void => {
     showNotification('success', message);
   };
 
   const onSubmitError = (details?: string) => {
-    const message = 'Failed to trigger cloud event.';
+    const message = 'Failed to trigger workflow.';
     showNotification('error', message, details);
   };
 
@@ -106,7 +105,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         variant="light"
       >
         <PageTitle
-          title={`Trigger cloud event`}
+          title={`Start New Workflow`}
           extra={
             <InlineEdit
               ref={inlineEditRef}

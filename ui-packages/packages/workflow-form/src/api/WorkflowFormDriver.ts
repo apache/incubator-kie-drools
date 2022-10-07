@@ -18,7 +18,7 @@
  * Interface that defines a Driver for WorkflowForm views.
  */
 export interface WorkflowFormDriver {
-  startWorkflow(formData: any): Promise<void>;
+  startWorkflowCloudEvent(formData: any): Promise<void>;
   resetBusinessKey(): Promise<void>;
   getCustomWorkflowSchema(): Promise<Record<string, any>>
   startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<void>;

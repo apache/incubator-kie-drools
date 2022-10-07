@@ -41,9 +41,9 @@ describe('WorkflowFormEnvelopeViewDriver tests', () => {
     const formJSON = {
       something: 'something'
     };
-    driver.startWorkflow(formJSON);
+    driver.startWorkflowCloudEvent(formJSON);
 
-    expect(requests.workflowForm__startWorkflow).toHaveBeenCalledWith(formJSON);
+    expect(requests.workflowForm__startWorkflowCloudEvent).toHaveBeenCalledWith(formJSON);
   });
 
   it('start custom workflow',()=>{

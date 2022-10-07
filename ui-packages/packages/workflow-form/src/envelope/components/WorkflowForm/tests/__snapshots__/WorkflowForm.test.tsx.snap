@@ -6,7 +6,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
     Object {
       "getCustomWorkflowSchema": [MockFunction],
       "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction],
+      "startWorkflowCloudEvent": [MockFunction],
       "startWorkflowRest": [MockFunction],
     }
   }
@@ -31,12 +31,12 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
         <FormGroup
           fieldId="formType"
           isRequired={true}
-          label="Type"
+          label="Cloud Event Type"
           labelIcon={
             <Popover
               bodyContent={
                 <div>
-                  The type of the cloud event.
+                  The type of the cloud event to be triggered.
                 </div>
               }
               id="workflow-form-type-help"
@@ -69,7 +69,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
                 <span
                   className="pf-c-form__label-text"
                 >
-                  Type
+                  Cloud Event Type
                 </span>
                 <span
                   aria-hidden="true"
@@ -83,7 +83,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
               <Popover
                 bodyContent={
                   <div>
-                    The type of the cloud event.
+                    The type of the cloud event to be triggered.
                   </div>
                 }
                 id="workflow-form-type-help"
@@ -146,7 +146,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
                           id="popover-workflow-form-type-help-body"
                         >
                           <div>
-                            The type of the cloud event.
+                            The type of the cloud event to be triggered.
                           </div>
                         </PopoverBody>
                       </PopoverContent>
@@ -272,7 +272,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
         <FormGroup
           fieldId="formData"
           isRequired={true}
-          label="Data"
+          label="Cloud Event Data"
           labelIcon={
             <Popover
               bodyContent={
@@ -310,7 +310,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
                 <span
                   className="pf-c-form__label-text"
                 >
-                  Data
+                  Cloud Event Data
                 </span>
                 <span
                   aria-hidden="true"
@@ -511,7 +511,7 @@ exports[`WorkflowForm Test Workflow Form rendering 1`] = `
                       role={null}
                       type="button"
                     >
-                      Send
+                      Start
                     </button>
                   </ButtonBase>
                 </Button>

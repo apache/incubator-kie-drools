@@ -32,9 +32,9 @@ describe('EmbeddedWorkflowFormChannelApiImpl tests', () => {
     const formJSON = {
       something: 'something'
     };
-    api.workflowForm__startWorkflow(formJSON);
+    api.workflowForm__startWorkflowCloudEvent(formJSON);
 
-    expect(driver.startWorkflow).toHaveBeenCalledWith(formJSON);
+    expect(driver.startWorkflowCloudEvent).toHaveBeenCalledWith(formJSON);
   });
 
   it('WorkflowForm__getCustomWorkflowSchema', () => {

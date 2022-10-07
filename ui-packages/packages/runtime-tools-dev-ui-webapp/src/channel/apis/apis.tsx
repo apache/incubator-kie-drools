@@ -408,7 +408,7 @@ export const startProcessInstance = (
   });
 };
 
-export const startWorkflowInstance = (
+export const startWorkflowCloudEvent = (
   formData: any,
   businessKey: string,
   devUIUrl: string
@@ -436,6 +436,15 @@ export const startWorkflowInstance = (
       });
   });
 };
+
+export const startWorkflowRest = (data: Record<string, any>, endpoint: string, businessKey: string): Promise<string> => {
+  const requestURL = `${endpoint}${businessKey.length > 0 ? `?businessKey=${businessKey}` : ''}`;
+  return new Promise((resolve, reject) => {
+    axios.post(requestURL, { workflowdata: data }).then((response: any) => {
+      resolve(response.data.id)
+    }).catch((err) => reject(err))
+  })
+}
 
 export const getCustomDashboard = (
   customDashboardFilter: string[]
@@ -474,14 +483,6 @@ export const getCustomWorkflowSchema = (devUIUrl: string, openApiPath: string): 
       } else {
         resolve(null);
       }
-    }).catch((err) => reject(err))
-  })
-}
-
-export const startWorkflowRest = (data: Record<string, any>, endpoint: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    axios.post(endpoint, { workflowdata: data }).then((response:any) => {
-      resolve(response.data.id)
     }).catch((err) => reject(err))
   })
 }

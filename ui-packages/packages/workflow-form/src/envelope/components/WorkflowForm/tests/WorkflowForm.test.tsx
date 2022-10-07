@@ -37,7 +37,7 @@ let props: WorkflowFormProps;
 let startWorkflowSpy;
 const getWorkflowFormDriver = (): WorkflowFormDriver => {
   const driver = new MockedWorkflowFormDriver();
-  startWorkflowSpy = jest.spyOn(driver, 'startWorkflow');
+  startWorkflowSpy = jest.spyOn(driver, 'startWorkflowCloudEvent');
   startWorkflowSpy.mockReturnValue(Promise.resolve('newKey'));
   props.driver = driver;
   return driver;
@@ -86,6 +86,6 @@ describe('WorkflowForm Test', () => {
         .onClick(formData);
       wait();
     });
-    expect(driver.startWorkflow).toHaveBeenCalled();
+    expect(driver.startWorkflowCloudEvent).toHaveBeenCalled();
   });
 });

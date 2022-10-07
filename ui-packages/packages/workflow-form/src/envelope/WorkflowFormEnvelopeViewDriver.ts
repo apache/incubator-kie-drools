@@ -25,8 +25,8 @@ export class WorkflowFormEnvelopeViewDriver implements WorkflowFormDriver {
     private readonly channelApi: MessageBusClientApi<WorkflowFormChannelApi>
   ) { }
 
-  startWorkflow(formData: any): Promise<void> {
-    return this.channelApi.requests.workflowForm__startWorkflow(formData);
+  startWorkflowCloudEvent(formData: any): Promise<void> {
+    return this.channelApi.requests.workflowForm__startWorkflowCloudEvent(formData);
   }
   resetBusinessKey(): Promise<void> {
     return this.channelApi.requests.workflowForm__resetBusinessKey();

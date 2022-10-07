@@ -33,7 +33,7 @@ exports[`CustomWorkflowForm Test Custom Workflow Form rendering 1`] = `
     Object {
       "getCustomWorkflowSchema": [MockFunction],
       "resetBusinessKey": [MockFunction],
-      "startWorkflow": [MockFunction],
+      "startWorkflowCloudEvent": [MockFunction],
       "startWorkflowRest": [MockFunction],
     }
   }

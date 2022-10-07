@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getCustomWorkflowSchema, startWorkflowInstance, startWorkflowRest } from '../../apis';
+import { getCustomWorkflowSchema, startWorkflowCloudEvent, startWorkflowRest } from '../../apis';
 import {
   WorkflowFormGatewayApi,
   WorkflowFormGatewayApiImpl
@@ -22,7 +22,7 @@ import {
 import { WorkflowDefinition } from '@kogito-apps/workflow-form/dist/api';
 
 jest.mock('../../apis/apis', () => ({
-  startWorkflowInstance: jest.fn(),
+  startWorkflowCloudEvent: jest.fn(),
   getCustomWorkflowSchema: jest.fn(),
   startWorkflowRest: jest.fn()
 }));
@@ -40,8 +40,8 @@ describe('WorkflowFormListGatewayApi tests', () => {
       workflowName: 'workflow1',
       endpoint: 'http://localhost:8080/hiring'
     };
-    await gatewayApi.startWorkflow(workflowDefinitionData);
-    expect(startWorkflowInstance).toHaveBeenCalledWith(
+    await gatewayApi.startWorkflowCloudEvent(workflowDefinitionData);
+    expect(startWorkflowCloudEvent).toHaveBeenCalledWith(
       workflowDefinitionData,
       '',
       'baseUrl'
@@ -55,6 +55,6 @@ describe('WorkflowFormListGatewayApi tests', () => {
 
   it('start workflow rest', async () => {
     await gatewayApi.startWorkflowRest({ name: 'John' }, 'http://localhost:8080/test');
-    expect(startWorkflowRest).toHaveBeenCalledWith({ name: 'John' }, 'http://localhost:8080/test');
+    expect(startWorkflowRest).toHaveBeenCalledWith({ name: 'John' }, 'http://localhost:8080/test',"");
   });
 });

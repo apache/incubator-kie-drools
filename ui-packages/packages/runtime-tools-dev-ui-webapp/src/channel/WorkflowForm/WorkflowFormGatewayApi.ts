@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { startWorkflowInstance, getCustomWorkflowSchema, startWorkflowRest } from '../apis';
+import { startWorkflowCloudEvent, getCustomWorkflowSchema, startWorkflowRest } from '../apis';
 
 export interface WorkflowFormGatewayApi {
-  startWorkflow(formData: any): Promise<string>;
+  startWorkflowCloudEvent(formData: any): Promise<string>;
   setBusinessKey(bk: string): void;
   getBusinessKey(): string;
   getCustomWorkflowSchema(): Promise<Record<string, any>>
@@ -43,8 +43,8 @@ export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
     return this.businessKey;
   }
 
-  startWorkflow(formData: any): Promise<string> {
-    return startWorkflowInstance(formData, this.businessKey, this.baseUrl);
+  startWorkflowCloudEvent(formData: any): Promise<string> {
+    return startWorkflowCloudEvent(formData, this.businessKey, this.baseUrl);
   }
 
   getCustomWorkflowSchema(): Promise<Record<string, any>> {
@@ -52,6 +52,6 @@ export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
   }
 
   startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<string> {
-    return startWorkflowRest(data, endpoint);
+    return startWorkflowRest(data, endpoint, this.businessKey);
   }
 }

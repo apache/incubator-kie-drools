@@ -20,8 +20,8 @@ export class EmbeddedWorkflowFormChannelApiImpl
   implements WorkflowFormChannelApi {
   constructor(private readonly driver: WorkflowFormDriver) { }
 
-  workflowForm__startWorkflow(formData: any): Promise<void> {
-    return this.driver.startWorkflow(formData);
+  workflowForm__startWorkflowCloudEvent(formData: any): Promise<void> {
+    return this.driver.startWorkflowCloudEvent(formData);
   }
 
   workflowForm__resetBusinessKey(): Promise<void> {

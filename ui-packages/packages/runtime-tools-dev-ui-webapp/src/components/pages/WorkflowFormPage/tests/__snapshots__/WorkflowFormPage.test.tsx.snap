@@ -21,7 +21,7 @@ exports[`WorkflowFormPage tests Snapshot 1`] = `
             setBusinessKey={[Function]}
           />
         }
-        title="Trigger cloud event"
+        title="Start New Workflow"
       >
         <Flex
           data-ouia-component-type="page-title"
@@ -52,7 +52,7 @@ exports[`WorkflowFormPage tests Snapshot 1`] = `
                     data-ouia-component-type="PF4/Title"
                     data-ouia-safe={true}
                   >
-                    Trigger cloud event
+                    Start New Workflow
                   </h1>
                 </Title>
               </div>

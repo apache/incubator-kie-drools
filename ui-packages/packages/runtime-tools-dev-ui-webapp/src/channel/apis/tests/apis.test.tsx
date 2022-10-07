@@ -1049,7 +1049,7 @@ describe('swf custom form tests', () => {
     expect(result).toEqual(null);
   });
 
-  it('get custom custom workflow schema - success - with workflowdata', async () => {
+  it('get custom workflow schema - success - with workflowdata', async () => {
     const schema = {
       type: "object",
       properties: {
@@ -1089,7 +1089,7 @@ describe('swf custom form tests', () => {
         id: '1234'
       }
     });
-    const result = await startWorkflowRest({ name: "John" }, 'http://localhost:8080/test');
+    const result = await startWorkflowRest({ name: "John" }, 'http://localhost:8080/test', '1234');
     expect(result).toEqual('1234');
   });
 
@@ -1097,7 +1097,7 @@ describe('swf custom form tests', () => {
     mockedAxios.post.mockRejectedValue({
       errorMessage: "Failed to start workflow instance"
     });
-    startWorkflowRest({ name: "John" }, 'http://localhost:8080/test').catch(error => {
+    startWorkflowRest({ name: "John" }, 'http://localhost:8080/test', '1234').catch(error => {
       expect(error).toEqual({ errorMessage: 'Failed to start workflow instance' })
     })
   });
