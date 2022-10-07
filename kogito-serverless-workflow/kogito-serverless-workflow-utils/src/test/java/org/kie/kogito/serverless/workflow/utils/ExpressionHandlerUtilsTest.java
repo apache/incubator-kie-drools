@@ -27,7 +27,7 @@ import org.kie.kogito.serverless.workflow.test.MockBuilder;
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils.trimExpr;
 import static org.mockito.Mockito.when;
 
@@ -35,15 +35,16 @@ public class ExpressionHandlerUtilsTest {
 
     @Test
     void testTrimExpression() {
-        assertEquals(".pepe", trimExpr("${ .pepe }"));
-        assertEquals("{name:.pepe}", trimExpr("${ {name:.pepe} }"));
+        assertThat(trimExpr("${.pepe}")).isEqualTo(".pepe");
+        assertThat(trimExpr("${ {name:.pepe} }")).isEqualTo("{name:.pepe}");
     }
 
     @ParameterizedTest(name = "{index} \"{0}\" is resolved to \"{1}\"")
     @MethodSource("provideExpressionsToTestWithWorkflow")
     public void testPrepareExpressionFromContextAndWorkflow(String expr, String result, Workflow workflow) {
         String resolvedExpr = ExpressionHandlerUtils.replaceExpr(workflow, expr);
-        assertEquals(result, resolvedExpr);
+
+        assertThat(resolvedExpr).isEqualTo(result);
     }
 
     private static Stream<Arguments> provideExpressionsToTestWithWorkflow() {

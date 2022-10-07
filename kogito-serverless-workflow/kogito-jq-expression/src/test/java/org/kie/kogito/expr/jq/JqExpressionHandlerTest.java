@@ -42,10 +42,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JqExpressionHandlerTest {
 
@@ -67,96 +65,96 @@ class JqExpressionHandlerTest {
     @Test
     void testStringExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("string", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, getContext())).isEqualTo("string");
     }
 
     @Test
     void testBooleanExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyBoolean");
-        assertTrue(parsedExpression.isValid());
-        assertTrue(parsedExpression.eval(getObjectNode(), Boolean.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), Boolean.class, getContext())).isTrue();
     }
 
     @Test
     void testNumericExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyNum*.propertyNum");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(144, parsedExpression.eval(getObjectNode(), JsonNode.class, getContext()).asInt());
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), JsonNode.class, getContext()).asInt()).isEqualTo(144);
     }
 
     @Test
     void testNumericAssignment() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "{\"result\" : .propertyNum*.propertyNum}");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(144, parsedExpression.eval(getObjectNode(), JsonNode.class, getContext()).get("result").asInt());
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), JsonNode.class, getContext()).get("result").asInt()).isEqualTo(144);
     }
 
     @Test
     void testJsonNodeExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".nested");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("value1", parsedExpression.eval(getObjectNode(), ObjectNode.class, getContext()).get("property1").asText());
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), ObjectNode.class, getContext()).get("property1").asText()).isEqualTo("value1");
     }
 
     @Test
     void testMultiExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString,.propertyNum,.propertyBoolean");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("string 12 true", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, getContext())).isEqualTo("string 12 true");
     }
 
     @Test
     void testMultiExpressionAsCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString,.propertyNum,.propertyBoolean");
-        assertEquals(Arrays.asList("string", 12, true), parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
+        assertThat(parsedExpression.eval(getObjectNode(), Collection.class, getContext())).containsExactly("string", 12, true);
     }
 
     @Test
     void testCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".arrayMixed");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(Arrays.asList("string1", 12, false, Arrays.asList(1.1, 1.2, 1.3)), parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), Collection.class, getContext())).containsExactly("string1", 12, false, Arrays.asList(1.1, 1.2, 1.3));
     }
 
     @Test
     void testCollectFromArrayJsonNode() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".arrayOfObjects | .[] | .property1");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         JsonNode eval = parsedExpression.eval(getObjectNode(), JsonNode.class, getContext());
-        assertTrue(eval.isArray(), "Expected array as a result.");
-        assertEquals(3, eval.size(), "Unexpected size of the array.");
-        assertEquals("p1-value1", eval.get(0).asText(), "Unexpected value in array at index 0.");
-        assertEquals("p1-value2", eval.get(1).asText(), "Unexpected value in array at index 1.");
-        assertEquals("p1-value3", eval.get(2).asText(), "Unexpected value in array at index 2.");
+        assertThat(eval.isArray()).as("Expected array as a result.").isTrue();
+        assertThat(eval).as("Unexpected size of the array.").hasSize(3);
+        assertThat(eval.get(0).asText()).as("Unexpected value in array at index 0.").isEqualTo("p1-value1");
+        assertThat(eval.get(1).asText()).as("Unexpected value in array at index 1.").isEqualTo("p1-value2");
+        assertThat(eval.get(2).asText()).as("Unexpected value in array at index 2.").isEqualTo("p1-value3");
 
     }
 
     @Test
     void testCollectFromArrayCollection() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".arrayOfObjects | .[] | .property1");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(Arrays.asList("p1-value1", "p1-value2", "p1-value3"), parsedExpression.eval(getObjectNode(), Collection.class, getContext()), "Unexpected contents of the collected values.");
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), Collection.class, getContext())).as("Unexpected contents of the collected values.").containsExactly("p1-value1", "p1-value2", "p1-value3");
     }
 
     @Test
     void testCollectFromArrayCollectionRecursive() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "..|.property1?//empty");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(Arrays.asList("value1", "p1-value1", "p1-value2", "p1-value3", "accessible_value1", "accessible_value2", "accessible_value3"),
-                parsedExpression.eval(getObjectNode(), Collection.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), Collection.class, getContext()))
+                .isEqualTo(Arrays.asList("value1", "p1-value1", "p1-value2", "p1-value3", "accessible_value1", "accessible_value2", "accessible_value3"));
     }
 
     @Test
     void testNonValidExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".-");
-        assertEquals(false, parsedExpression.isValid(), "Exception was not thrown for invalid expression.");
+        assertThat(parsedExpression.isValid()).as("Exception was not thrown for invalid expression.").isFalse();
     }
 
     @Test
     void testNonMatchingExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".foo | .bar");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         objectNode.putArray("foo").add(objectMapper.createArrayNode().add(objectMapper.createObjectNode().put("bar", "1")).add(objectMapper.createObjectNode().put("bar", "2")));
@@ -166,106 +164,106 @@ class JqExpressionHandlerTest {
     @Test
     void testAssignSimpleObjectUnderGivenProperty() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.put("bar", "value1");
         ObjectNode targetNode = getObjectNode();
         parsedExpression.assign(targetNode, toBeInserted, getContext());
-        assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
-        assertTrue(targetNode.has("propertyString"), "Property 'propertyString' is missing in root.");
-        assertTrue(targetNode.get("propertyString").has("bar"), "Property 'propertyString' should contain 'bar'.");
-        assertEquals("value1", targetNode.get("propertyString").get("bar").asText(), "Unexpected value under 'propertyString'->'bar' property.");
+        assertThat(targetNode.has("bar")).as("Property 'bar' should not be in root.").isFalse();
+        assertThat(targetNode.has("propertyString")).as("Property 'propertyString' is missing in root.").isTrue();
+        assertThat(targetNode.get("propertyString").has("bar")).as("Property 'propertyString' should contain 'bar'.").isTrue();
+        assertThat(targetNode.get("propertyString").get("bar").asText()).as("Unexpected value under 'propertyString'->'bar' property.").isEqualTo("value1");
     }
 
     @Test
     void testAssignArrayUnderGivenProperty() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.putArray("bar").add("value1").add("value2");
         ObjectNode targetNode = getObjectNode();
         parsedExpression.assign(targetNode, toBeInserted, getContext());
-        assertFalse(targetNode.has("bar"), "Property 'bar' should not be in root.");
-        assertTrue(targetNode.has("propertyString"), "Property 'propertyString' was removed.");
-        assertTrue(targetNode.get("propertyString").has("bar"), "Property 'bar' is not under 'propertyString'.");
-        assertTrue(targetNode.get("propertyString").get("bar").isArray(), "Property 'bar' is not an array.");
-        assertEquals(2, targetNode.get("propertyString").get("bar").size(), "'bar' array has unexpected size");
-        assertEquals("value1", targetNode.get("propertyString").get("bar").get(0).asText(), "Unexpected value in 'bar' array at index 0.");
-        assertEquals("value2", targetNode.get("propertyString").get("bar").get(1).asText(), "Unexpected value in 'bar' array at index 1.");
+        assertThat(targetNode.has("bar")).as("Property 'bar' should not be in root.").isFalse();
+        assertThat(targetNode.has("propertyString")).as("Property 'propertyString' was removed.").isTrue();
+        assertThat(targetNode.get("propertyString").has("bar")).as("Property 'bar' is not under 'propertyString'.").isTrue();
+        assertThat(targetNode.get("propertyString").get("bar").isArray()).as("Property 'bar' is not an array.").isTrue();
+        assertThat(targetNode.get("propertyString").get("bar")).as("'bar' array has unexpected size").hasSize(2);
+        assertThat(targetNode.get("propertyString").get("bar").get(0).asText()).as("Unexpected value in 'bar' array at index 0.").isEqualTo("value1");
+        assertThat(targetNode.get("propertyString").get("bar").get(1).asText()).as("Unexpected value in 'bar' array at index 1.").isEqualTo("value2");
     }
 
     @Test
     void testAssignCollectedFromArrayUnderRootAsFallback() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".arrayOfNestedObjects | .[] | .nested");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode targetNode = getObjectNode();
         ObjectNode toBeInserted = objectMapper.createObjectNode().put("propertyNum", 4);
 
         parsedExpression.assign(targetNode, toBeInserted, getContext());
 
-        assertTrue(targetNode.has("nested"), "A new property 'nested' should have been added at root as a fallback.");
-        assertTrue(targetNode.get("nested").isArray(), "Property 'nested' should contain array");
-        assertEquals(4, targetNode.get("nested").size(), "'nested' array length mismatch.");
-        assertEquals(1, targetNode.get("nested").get(0).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 0.");
-        assertEquals(2, targetNode.get("nested").get(1).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 1.");
-        assertEquals(3, targetNode.get("nested").get(2).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 2.");
-        assertEquals(4, targetNode.get("nested").get(3).get("propertyNum").asInt(), "Unexpected value in 'nested' array at index 3.");
+        assertThat(targetNode.has("nested")).as("A new property 'nested' should have been added at root as a fallback.").isTrue();
+        assertThat(targetNode.get("nested").isArray()).as("Property 'nested' should contain array").isTrue();
+        assertThat(targetNode.get("nested")).as("'nested' array length mismatch.").hasSize(4);
+        assertThat(targetNode.get("nested").get(0).get("propertyNum").asInt()).as("Unexpected value in 'nested' array at index 0.").isEqualTo(1);
+        assertThat(targetNode.get("nested").get(1).get("propertyNum").asInt()).as("Unexpected value in 'nested' array at index 1.").isEqualTo(2);
+        assertThat(targetNode.get("nested").get(2).get("propertyNum").asInt()).as("Unexpected value in 'nested' array at index 2.").isEqualTo(3);
+        assertThat(targetNode.get("nested").get(3).get("propertyNum").asInt()).as("Unexpected value in 'nested' array at index 3.").isEqualTo(4);
     }
 
     @Test
     void testAssignWithNonExistentNodePathExpression() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".property3");
-        assertTrue(parsedExpression.isValid());
+        assertThat(parsedExpression.isValid()).isTrue();
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode toBeInserted = objectMapper.createObjectNode();
         toBeInserted.put("property1", "value1");
         ObjectNode targetNode = objectMapper.createObjectNode();
         targetNode.put("property2", "value2");
         parsedExpression.assign(targetNode, toBeInserted, getContext());
-        assertFalse(targetNode.has("property1"), "Property 'property1' should not be in root.");
-        assertTrue(targetNode.has("property2"), "Property 'property2' is missing in root.");
-        assertTrue(targetNode.has("property3"), "Property 'property3' is missing in root.");
-        assertTrue(targetNode.get("property3").has("property1"), "Property 'property3' should contain 'property1'.");
-        assertEquals("value1", targetNode.get("property3").get("property1").asText(), "Unexpected value under 'property3'->'property1' property.");
+        assertThat(targetNode.has("property1")).as("Property 'property1' should not be in root.").isFalse();
+        assertThat(targetNode.has("property2")).as("Property 'property2' is missing in root.").isTrue();
+        assertThat(targetNode.has("property3")).as("Property 'property3' is missing in root.").isTrue();
+        assertThat(targetNode.get("property3").has("property1")).as("Property 'property3' should contain 'property1'.").isTrue();
+        assertThat(targetNode.get("property3").get("property1").asText()).as("Unexpected value under 'property3'->'property1' property.").isEqualTo("value1");
     }
 
     @Test
     void testMagicWord() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", "$WORKFLOW.instanceId");
-        assertTrue(parsedExpression.isValid());
-        assertEquals(new TextNode("1111-2222-3333"), parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(ObjectMapperFactory.get().createObjectNode(), JsonNode.class, getContext())).isEqualTo(new TextNode("1111-2222-3333"));
     }
 
     @Test
     void testConstPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".CONST.property1");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("accessible_value1", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, getContext())).isEqualTo("accessible_value1");
     }
 
     @Test
     void testSecretPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".SECRET.property1");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("accessible_value2", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, getContext())).isEqualTo("accessible_value2");
     }
 
     @Test
     void testWorkflowPropertyFromJsonAccessible() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".WORKFLOW.property1");
-        assertTrue(parsedExpression.isValid());
-        assertEquals("accessible_value3", parsedExpression.eval(getObjectNode(), String.class, getContext()));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, getContext())).isEqualTo("accessible_value3");
     }
 
     @ParameterizedTest(name = "{index} \"{0}\" is resolved to \"{1}\"")
     @MethodSource("provideMagicWordExpressionsToTest")
     void testMagicWordsExpressions(String expression, String expectedResult, KogitoProcessContext context) {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", expression);
-        assertTrue(parsedExpression.isValid());
-        assertEquals(expectedResult, parsedExpression.eval(getObjectNode(), String.class, context));
+        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.eval(getObjectNode(), String.class, context)).isEqualTo(expectedResult);
     }
 
     private static Stream<Arguments> provideMagicWordExpressionsToTest() {

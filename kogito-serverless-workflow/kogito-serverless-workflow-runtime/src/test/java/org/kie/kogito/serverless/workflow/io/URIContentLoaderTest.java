@@ -20,8 +20,9 @@ import java.io.UncheckedIOException;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.readAllBytes;
 import static org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory.runtimeLoader;
 
@@ -29,22 +30,22 @@ class URIContentLoaderTest {
 
     @Test
     void testExistingFile() throws IOException {
-        assertEquals("my name is javierito", new String(readAllBytes(runtimeLoader("file:/pepe.txt"))));
+        assertThat(new String(readAllBytes(runtimeLoader("file:/pepe.txt")))).isEqualTo("my name is javierito");
     }
 
     @Test
     void testExistingClasspath() throws IOException {
-        assertEquals("my name is javierito", new String(readAllBytes(runtimeLoader("classpath:/pepe.txt"))));
+        assertThat(new String(readAllBytes(runtimeLoader("classpath:/pepe.txt")))).isEqualTo("my name is javierito");
     }
 
     @Test
     void testNotExistingFile() {
-        assertThrows(UncheckedIOException.class, () -> readAllBytes(runtimeLoader("file:/noPepe.txt")));
+        assertThatExceptionOfType(UncheckedIOException.class).isThrownBy(() -> readAllBytes(runtimeLoader("file:/noPepe.txt")));
     }
 
     @Test
     void testNotExistingClasspath() {
-        assertThrows(IllegalArgumentException.class, () -> readAllBytes(runtimeLoader("classpath:/noPepe.txt")));
+        assertThatIllegalArgumentException().isThrownBy(() -> readAllBytes(runtimeLoader("classpath:/noPepe.txt")));
     }
 
 }

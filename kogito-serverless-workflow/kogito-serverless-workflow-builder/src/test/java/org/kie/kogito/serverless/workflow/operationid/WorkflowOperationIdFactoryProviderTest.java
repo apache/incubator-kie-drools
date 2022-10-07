@@ -19,17 +19,17 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class WorkflowOperationIdFactoryProviderTest {
 
     @Test
     void testFactories() {
-        assertEquals(WorkflowOperationIdFactoryType.FULL_URI.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.of("full_uri")));
-        assertEquals(WorkflowOperationIdFactoryType.SPEC_TITLE.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.of("spec_title")));
-        assertEquals(WorkflowOperationIdFactoryType.FUNCTION_NAME.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.of("function_name")));
-        assertEquals(WorkflowOperationIdFactoryType.FILE_NAME.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.of("file_name")));
-        assertEquals(WorkflowOperationIdFactoryType.FILE_NAME.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.empty()));
-        assertEquals(WorkflowOperationIdFactoryType.FILE_NAME.factory(), WorkflowOperationIdFactoryProvider.getFactory(Optional.of("random")));
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.of("full_uri"))).isEqualTo(WorkflowOperationIdFactoryType.FULL_URI.factory());
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.of("spec_title"))).isEqualTo(WorkflowOperationIdFactoryType.SPEC_TITLE.factory());
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.of("function_name"))).isEqualTo(WorkflowOperationIdFactoryType.FUNCTION_NAME.factory());
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.of("file_name"))).isEqualTo(WorkflowOperationIdFactoryType.FILE_NAME.factory());
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.empty())).isEqualTo(WorkflowOperationIdFactoryType.FILE_NAME.factory());
+        assertThat(WorkflowOperationIdFactoryProvider.getFactory(Optional.of("random"))).isEqualTo(WorkflowOperationIdFactoryType.FILE_NAME.factory());
     }
 }

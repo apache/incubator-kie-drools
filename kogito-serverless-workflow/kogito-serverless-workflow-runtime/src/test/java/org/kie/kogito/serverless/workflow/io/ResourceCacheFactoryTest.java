@@ -24,7 +24,7 @@ import java.util.function.Function;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceCacheFactoryTest {
 
@@ -42,7 +42,7 @@ public class ResourceCacheFactoryTest {
     void testDefaultResourceCache() {
         final int numOfTimes = 3;
         callIt(numOfTimes);
-        assertEquals(1, counter.get());
+        assertThat(counter.get()).isEqualTo(1);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ResourceCacheFactoryTest {
         try {
             ResourceCacheFactory.setResourceCache(new TestResourceCache());
             callIt(7);
-            assertEquals(1, counter.get());
+            assertThat(counter.get()).isEqualTo(1);
 
         } finally {
             ResourceCacheFactory.setResourceCache(defaultCache);

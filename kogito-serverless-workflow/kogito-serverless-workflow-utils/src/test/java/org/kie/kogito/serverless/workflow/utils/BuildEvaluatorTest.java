@@ -20,7 +20,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuildEvaluatorTest {
 
@@ -37,16 +37,16 @@ public class BuildEvaluatorTest {
 
     @Test
     void testSecretWithinExpression() {
-        assertEquals("value", BuildEvaluator.eval(ExpressionHandlerUtils.trimExpr("${ $SECRET.key}")));
+        assertThat(BuildEvaluator.eval(ExpressionHandlerUtils.trimExpr("${ $SECRET.key}"))).isEqualTo("value");
     }
 
     @Test
     void testSecret() {
-        assertEquals("value", BuildEvaluator.eval("$SECRET.key"));
+        assertThat(BuildEvaluator.eval("$SECRET.key")).isEqualTo("value");
     }
 
     @Test
     void testPlain() {
-        assertEquals("key", BuildEvaluator.eval("key"));
+        assertThat(BuildEvaluator.eval("key")).isEqualTo("key");
     }
 }

@@ -25,8 +25,8 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 import io.serverlessworkflow.api.workflow.Functions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,9 +40,10 @@ class BuildExpressionsTest {
         functionDefinition.setName("pepe");
         Functions functions = new Functions(Collections.singletonList(functionDefinition));
         when(flow.getFunctions()).thenReturn(functions);
-        assertEquals("\"fn:pepe\"", ExpressionHandlerUtils.replaceExpr(flow, "\"fn:pepe\""));
-        assertEquals(".pepe", ExpressionHandlerUtils.replaceExpr(flow, "fn:pepe"));
-        assertEquals(".pepe", ExpressionHandlerUtils.replaceExpr(flow, "${fn:pepe}"));
-        assertThrows(IllegalArgumentException.class, () -> ExpressionHandlerUtils.replaceExpr(flow, "${fn:NoPepe}"));
+
+        assertThat(ExpressionHandlerUtils.replaceExpr(flow, "\"fn:pepe\"")).isEqualTo("\"fn:pepe\"");
+        assertThat(ExpressionHandlerUtils.replaceExpr(flow, "fn:pepe")).isEqualTo(".pepe");
+        assertThat(ExpressionHandlerUtils.replaceExpr(flow, "${fn:pepe}")).isEqualTo(".pepe");
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> ExpressionHandlerUtils.replaceExpr(flow, "${fn:NoPepe}"));
     }
 }

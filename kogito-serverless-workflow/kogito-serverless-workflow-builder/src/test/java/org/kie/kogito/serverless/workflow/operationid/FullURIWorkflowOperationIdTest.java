@@ -25,8 +25,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 class FullURIWorkflowOperationIdTest {
@@ -46,12 +45,12 @@ class FullURIWorkflowOperationIdTest {
         definition.setType(Type.REST);
         definition.setOperation("http://myserver.com/spec/PePE1.yaml#doSomething");
         WorkflowOperationId id = WorkflowOperationIdFactoryType.FULL_URI.factory().from(workflow, definition, Optional.empty());
-        assertEquals("doSomething", id.getOperation());
-        assertEquals("/spec/PePE1.yaml", id.getFileName());
-        assertEquals("/spec/PePE1_doSomething", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
-        assertEquals("specpepe", id.getPackageName());
-        assertEquals("http://myserver.com/spec/PePE1.yaml", id.getUri().toString());
-        assertNull(id.getService());
+        assertThat(id.getOperation()).isEqualTo("doSomething");
+        assertThat(id.getFileName()).isEqualTo("/spec/PePE1.yaml");
+        assertThat(ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation())).isEqualTo("/spec/PePE1_doSomething");
+        assertThat(id.getPackageName()).isEqualTo("specpepe");
+        assertThat(id.getUri()).hasToString("http://myserver.com/spec/PePE1.yaml");
+        assertThat(id.getService()).isNull();
     }
 
 }

@@ -19,7 +19,6 @@ package org.kie.kogito.serverless.workflow.parser.handlers.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -33,6 +32,7 @@ import io.serverlessworkflow.api.switchconditions.DataCondition;
 import io.serverlessworkflow.api.switchconditions.EventCondition;
 import io.serverlessworkflow.api.transitions.Transition;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.CONDITIONS_NOT_FOUND_ERROR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.DATA_CONDITIONS_AND_EVENT_CONDITIONS_FOUND_ERROR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.validation.SwitchValidator.EVENT_TIMEOUT_REQUIRED_ERROR;
@@ -61,7 +61,7 @@ class SwitchValidatorTest {
 
     @Test
     void validateConditionsNoConditionsFoundError() {
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateConditions(switchState, workflow))
+        assertThatThrownBy(() -> SwitchValidator.validateConditions(switchState, workflow))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(CONDITIONS_NOT_FOUND_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -70,7 +70,7 @@ class SwitchValidatorTest {
     void validateConditionsBothConditionsFoundError() {
         switchState.getDataConditions().add(mock(DataCondition.class));
         switchState.getEventConditions().add(mock(EventCondition.class));
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateConditions(switchState, workflow))
+        assertThatThrownBy(() -> SwitchValidator.validateConditions(switchState, workflow))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(DATA_CONDITIONS_AND_EVENT_CONDITIONS_FOUND_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -78,7 +78,7 @@ class SwitchValidatorTest {
     @Test
     void validateDefaultConditionTransitionWithoutNextError() {
         DefaultConditionDefinition defaultCondition = mockDefaultConditionWithTransition();
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
+        assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(NEXT_STATE_REQUIRED_FOR_DEFAULT_CONDITION_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -88,7 +88,7 @@ class SwitchValidatorTest {
         DefaultConditionDefinition defaultCondition = mockDefaultConditionWithTransition();
         Transition transition = defaultCondition.getTransition();
         doReturn(NEXT_STATE).when(transition).getNextState();
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
+        assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(NEXT_STATE_NOT_FOUND_FOR_DEFAULT_CONDITION_ERROR, NEXT_STATE, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -96,7 +96,7 @@ class SwitchValidatorTest {
     @Test
     void validateDefaultConditionWithoutTransitionAndEndIsNullError() {
         DefaultConditionDefinition defaultCondition = mock(DefaultConditionDefinition.class);
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
+        assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(TRANSITION_OR_END_MUST_BE_CONFIGURED_FOR_DEFAULT_CONDITION_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -109,7 +109,7 @@ class SwitchValidatorTest {
         doReturn(NEXT_STATE).when(transition).getNextState();
         StateHandler<?> stateHandler = mock(StateHandler.class);
         doReturn(stateHandler).when(parserContext).getStateHandler(NEXT_STATE);
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
+        assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(EVENT_TIMEOUT_REQUIRED_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }
@@ -120,7 +120,7 @@ class SwitchValidatorTest {
         DefaultConditionDefinition defaultCondition = mock(DefaultConditionDefinition.class);
         End end = mock(End.class);
         doReturn(end).when(defaultCondition).getEnd();
-        Assertions.assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
+        assertThatThrownBy(() -> SwitchValidator.validateDefaultCondition(defaultCondition, switchState, workflow, parserContext))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format(EVENT_TIMEOUT_REQUIRED_ERROR, SWITCH_STATE_NAME, WORKFLOW_NAME));
     }

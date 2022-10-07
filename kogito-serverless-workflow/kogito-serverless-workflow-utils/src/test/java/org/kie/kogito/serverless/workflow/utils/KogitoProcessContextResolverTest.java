@@ -19,8 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.serverless.workflow.test.MockBuilder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.when;
 
 public class KogitoProcessContextResolverTest {
@@ -34,21 +34,21 @@ public class KogitoProcessContextResolverTest {
 
     @Test
     void testGetInstanceId() {
-        assertEquals("value-id", KogitoProcessContextResolver.get().readKey(context, "instanceId"));
+        assertThat(KogitoProcessContextResolver.get().readKey(context, "instanceId")).isEqualTo("value-id");
     }
 
     @Test
     void testGetId() {
-        assertEquals("value-process-id", KogitoProcessContextResolver.get().readKey(context, "id"));
+        assertThat(KogitoProcessContextResolver.get().readKey(context, "id")).isEqualTo("value-process-id");
     }
 
     @Test
     void testGetName() {
-        assertEquals("value-name", KogitoProcessContextResolver.get().readKey(context, "name"));
+        assertThat(KogitoProcessContextResolver.get().readKey(context, "name")).isEqualTo("value-name");
     }
 
     @Test
     void testGetNonExistentKey() {
-        assertThrows(IllegalArgumentException.class, () -> KogitoProcessContextResolver.get().readKey(context, "nonexistent"));
+        assertThatIllegalArgumentException().isThrownBy(() -> KogitoProcessContextResolver.get().readKey(context, "nonexistent"));
     }
 }

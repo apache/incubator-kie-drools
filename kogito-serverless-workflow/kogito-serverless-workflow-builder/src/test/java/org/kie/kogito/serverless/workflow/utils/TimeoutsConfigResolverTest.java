@@ -18,7 +18,6 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +27,7 @@ import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.timeouts.TimeoutsDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -62,7 +62,7 @@ class TimeoutsConfigResolverTest {
     @ParameterizedTest
     @MethodSource("unsuccessfulCaseParams")
     void resolveEventTimeoutUnsuccessful(State state, Workflow workflow, String expectedMessagePart) {
-        Assertions.assertThatThrownBy(() -> TimeoutsConfigResolver.resolveEventTimeout(state, workflow))
+        assertThatThrownBy(() -> TimeoutsConfigResolver.resolveEventTimeout(state, workflow))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(expectedMessagePart);
     }

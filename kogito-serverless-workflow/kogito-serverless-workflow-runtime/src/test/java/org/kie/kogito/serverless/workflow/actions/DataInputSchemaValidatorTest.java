@@ -30,8 +30,8 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 public class DataInputSchemaValidatorTest {
 
@@ -45,18 +45,18 @@ public class DataInputSchemaValidatorTest {
     @Test
     void testValidSchema() throws IOException {
         final Map<String, Object> model = Collections.singletonMap(SWFConstants.DEFAULT_WORKFLOW_VAR, createNode(new IntNode(4), new IntNode(3)));
-        assertDoesNotThrow(() -> validator.validate(model));
+        assertThatNoException().isThrownBy(() -> validator.validate(model));
     }
 
     @Test
     void testInvalidSchema() throws IOException {
         final Map<String, Object> model = Collections.singletonMap(SWFConstants.DEFAULT_WORKFLOW_VAR, createNode(new TextNode("xcdsfd"), new IntNode(3)));
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(model));
+        assertThatIllegalArgumentException().isThrownBy(() -> validator.validate(model));
     }
 
     @Test
     void testEmptyInput() throws IOException {
-        assertThrows(IllegalArgumentException.class, () -> validator.validate(Collections.emptyMap()));
+        assertThatIllegalArgumentException().isThrownBy(() -> validator.validate(Collections.emptyMap()));
     }
 
     private ObjectNode createNode(JsonNode x, JsonNode y) {

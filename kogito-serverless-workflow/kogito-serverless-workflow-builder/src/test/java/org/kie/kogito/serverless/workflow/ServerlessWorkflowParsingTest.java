@@ -47,10 +47,6 @@ import io.serverlessworkflow.api.states.DefaultState.Type;
 import io.serverlessworkflow.api.states.SleepState;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowParsingTest {
 
@@ -58,298 +54,296 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
     @ValueSource(strings = { "/exec/single-operation.sw.json", "/exec/single-operation.sw.yml" })
     public void testSingleOperationWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(3, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(3);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-operation-with-delay.sw.json", "/exec/single-operation-with-delay.sw.yml" })
     public void testSingleOperationWithDelayWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(4, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(4);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof TimerNode);
+        assertThat(node).isInstanceOf(TimerNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         TimerNode timerNode = (TimerNode) process.getNodes()[3];
-        assertEquals("PT1S", timerNode.getTimer().getDelay());
+        assertThat(timerNode.getTimer().getDelay()).isEqualTo("PT1S");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-service-operation.sw.json", "/exec/single-service-operation.sw.yml" })
     public void testSingleServiceOperationWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(3, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(3);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof WorkItemNode);
+        assertThat(node).isInstanceOf(WorkItemNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         WorkItemNode workItemNode = (WorkItemNode) compositeNode.getNodes()[1];
-        assertEquals("helloWorld", workItemNode.getName());
-        assertEquals("org.something.other.TestService", workItemNode.getWork().getParameter("Interface"));
-        assertEquals("get", workItemNode.getWork().getParameter("Operation"));
-        assertEquals("org.something.other.TestService", workItemNode.getWork().getParameter("interfaceImplementationRef"));
-        assertEquals("get", workItemNode.getWork().getParameter("operationImplementationRef"));
-        assertEquals("Java", workItemNode.getWork().getParameter("implementation"));
+        assertThat(workItemNode.getName()).isEqualTo("helloWorld");
+        assertThat(workItemNode.getWork().getParameter("Interface")).isEqualTo("org.something.other.TestService");
+        assertThat(workItemNode.getWork().getParameter("Operation")).isEqualTo("get");
+        assertThat(workItemNode.getWork().getParameter("interfaceImplementationRef")).isEqualTo("org.something.other.TestService");
+        assertThat(workItemNode.getWork().getParameter("operationImplementationRef")).isEqualTo("get");
+        assertThat(workItemNode.getWork().getParameter("implementation")).isEqualTo("Java");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-eventstate.sw.json", "/exec/single-eventstate.sw.yml" })
     public void testSingleEventStateWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(4, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(4);
 
         Node node = process.getNodes()[1];
-        assertTrue(node instanceof StartNode);
-        assertEquals(1, ((StartNode) node).getTriggers().size());
-        assertEquals("kafka", ((StartNode) node).getMetaData(Metadata.TRIGGER_REF));
+        assertThat(((StartNode) node).getMetaData(Metadata.TRIGGER_REF)).isEqualTo("kafka");
         node = process.getNodes()[0];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[3];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-eventstate-multi-eventrefs.sw.json", "/exec/single-eventstate-multi-eventrefs.sw.yml" })
     public void testSingleEventStateMultiEventRefsWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(7, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(7);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[6];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[5];
-        assertTrue(node instanceof Join);
+        assertThat(node).isInstanceOf(Join.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[6];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/single-operation-many-functions.sw.json", "/exec/single-operation-many-functions.sw.yml" })
     public void testSingleOperationWithManyFunctionsWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(3, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(3);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
 
-        assertEquals(6, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(6);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[4];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[5];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/multiple-operations.sw.json", "/exec/multiple-operations.sw.yml" })
     public void testMultipleOperationWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(5, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(5);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[2];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         compositeNode = (CompositeContextNode) process.getNodes()[3];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         compositeNode = (CompositeContextNode) process.getNodes()[4];
 
-        assertEquals(4, compositeNode.getNodes().length);
+        assertThat(compositeNode.getNodes()).hasSize(4);
 
         node = compositeNode.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = compositeNode.getNodes()[1];
-        assertTrue(node instanceof Node);
+        assertThat(node).isInstanceOf(Node.class);
         node = compositeNode.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = compositeNode.getNodes()[3];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
     }
 
@@ -357,264 +351,264 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
     @ValueSource(strings = { "/exec/single-inject-state.sw.json", "/exec/single-inject-state.sw.yml" })
     public void testSingleInjectWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("function", process.getId());
-        assertEquals("test-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("function");
+        assertThat(process.getName()).isEqualTo("test-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(3, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(3);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         ActionNode actionNode = (ActionNode) process.getNodes()[2];
-        assertEquals("SimpleInject", actionNode.getName());
+        assertThat(actionNode.getName()).isEqualTo("SimpleInject");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/parallel-state.sw.json", "/exec/parallel-state.sw.yml" })
     public void testParallelWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("parallelworkflow", process.getId());
-        assertEquals("parallel-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("parallelworkflow");
+        assertThat(process.getName()).isEqualTo("parallel-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(6, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(6);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof Split);
+        assertThat(node).isInstanceOf(Split.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof Join);
+        assertThat(node).isInstanceOf(Join.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[5];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/transition-produce-event.sw.json", "/exec/transition-produce-event.sw.yml" })
     public void testProduceEventOnTransition(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("produceeventontransition", process.getId());
-        assertEquals("Produce Event On Transition", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("produceeventontransition");
+        assertThat(process.getName()).isEqualTo("Produce Event On Transition");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(5, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(5);
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         ActionNode actionNode = (ActionNode) process.getNodes()[4];
-        assertEquals("TestKafkaEvent", actionNode.getName());
-        assertEquals("ProduceMessage", actionNode.getMetaData("TriggerType"));
-        assertEquals("workflowdata", actionNode.getMetaData("MappingVariable"));
-        assertEquals("kafka", actionNode.getMetaData("TriggerRef"));
-        assertEquals("com.fasterxml.jackson.databind.JsonNode", actionNode.getMetaData("MessageType"));
+        assertThat(actionNode.getName()).isEqualTo("TestKafkaEvent");
+        assertThat(actionNode.getMetaData("TriggerType")).isEqualTo("ProduceMessage");
+        assertThat(actionNode.getMetaData("MappingVariable")).isEqualTo("workflowdata");
+        assertThat(actionNode.getMetaData("TriggerRef")).isEqualTo("kafka");
+        assertThat(actionNode.getMetaData("MessageType")).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/eventbased-switch-state.sw.json", "/exec/eventbased-switch-state.sw.yml" })
     public void testEventBasedSwitchWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("eventswitchworkflow", process.getId());
-        assertEquals("event-switch-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("eventswitchworkflow");
+        assertThat(process.getName()).isEqualTo("event-switch-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(12, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(12);
 
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof Split);
+        assertThat(node).isInstanceOf(Split.class);
         node = process.getNodes()[5];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[6];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[7];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[8];
-        assertTrue(node instanceof EventNode);
+        assertThat(node).isInstanceOf(EventNode.class);
         node = process.getNodes()[10];
-        assertTrue(node instanceof EventNode);
+        assertThat(node).isInstanceOf(EventNode.class);
 
         Split split = (Split) process.getNodes()[4];
-        assertEquals("ChooseOnEvent", split.getName());
-        assertEquals(Split.TYPE_XAND, split.getType());
+        assertThat(split.getName()).isEqualTo("ChooseOnEvent");
+        assertThat(split.getType()).isEqualTo(Split.TYPE_XAND);
 
         EventNode firstEventNode = (EventNode) process.getNodes()[8];
-        assertEquals("visaApprovedEvent", firstEventNode.getName());
+        assertThat(firstEventNode.getName()).isEqualTo("visaApprovedEvent");
 
         EventNode secondEventNode = (EventNode) process.getNodes()[10];
-        assertEquals("visaDeniedEvent", secondEventNode.getName());
+        assertThat(secondEventNode.getName()).isEqualTo("visaDeniedEvent");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/prchecker.sw.json", "/exec/prchecker.sw.yml" })
     public void testPrCheckerWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("prchecker", process.getId());
-        assertEquals("Github PR Checker Workflow", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("prchecker");
+        assertThat(process.getName()).isEqualTo("Github PR Checker Workflow");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(11, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(11);
 
         Node node = process.getNodes()[5];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof Join);
+        assertThat(node).isInstanceOf(Join.class);
         node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[6];
-        assertTrue(node instanceof Split);
+        assertThat(node).isInstanceOf(Split.class);
         node = process.getNodes()[7];
-        assertTrue(node instanceof Split);
+        assertThat(node).isInstanceOf(Split.class);
         node = process.getNodes()[8];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[9];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[10];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
 
         Split split = (Split) process.getNodes()[6];
-        assertEquals("CheckBackend", split.getName());
-        assertEquals(2, split.getType());
-        assertEquals(2, split.getConstraints().size());
+        assertThat(split.getName()).isEqualTo("CheckBackend");
+        assertThat(split.getType()).isEqualTo(2);
+        assertThat(split.getConstraints()).hasSize(2);
 
         Split split2 = (Split) process.getNodes()[7];
-        assertEquals("CheckFrontend", split2.getName());
-        assertEquals(2, split2.getType());
-        assertEquals(2, split2.getConstraints().size());
+        assertThat(split2.getName()).isEqualTo("CheckFrontend");
+        assertThat(split2.getType()).isEqualTo(2);
+        assertThat(split2.getConstraints()).hasSize(2);
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/transition-produce-multi-events.sw.json", "/exec/transition-produce-multi-events.sw.yml" })
     public void testProduceMultiEventsOnTransition(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("produceeventontransition", process.getId());
-        assertEquals("Produce Event On Transition", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("produceeventontransition");
+        assertThat(process.getName()).isEqualTo("Produce Event On Transition");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(8, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(8);
         Node node = process.getNodes()[0];
-        assertTrue(node instanceof StartNode);
+        assertThat(node).isInstanceOf(StartNode.class);
         node = process.getNodes()[1];
-        assertTrue(node instanceof EndNode);
+        assertThat(node).isInstanceOf(EndNode.class);
         node = process.getNodes()[2];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[3];
-        assertTrue(node instanceof CompositeContextNode);
+        assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[4];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[5];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[6];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[7];
-        assertTrue(node instanceof ActionNode);
+        assertThat(node).isInstanceOf(ActionNode.class);
 
         ActionNode actionNode = (ActionNode) process.getNodes()[4];
-        assertEquals("TestKafkaEvent", actionNode.getName());
+        assertThat(actionNode.getName()).isEqualTo("TestKafkaEvent");
 
         ActionNode actionNode2 = (ActionNode) process.getNodes()[5];
-        assertEquals("TestKafkaEvent2", actionNode2.getName());
+        assertThat(actionNode2.getName()).isEqualTo("TestKafkaEvent2");
 
         ActionNode actionNode3 = (ActionNode) process.getNodes()[6];
-        assertEquals("TestKafkaEvent3", actionNode3.getName());
+        assertThat(actionNode3.getName()).isEqualTo("TestKafkaEvent3");
 
         ActionNode actionNode4 = (ActionNode) process.getNodes()[7];
-        assertEquals("TestKafkaEvent4", actionNode4.getName());
+        assertThat(actionNode4.getName()).isEqualTo("TestKafkaEvent4");
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "/exec/switch-state-produce-events.sw.json", "/exec/switch-state-produce-events.sw.yml" })
     public void testSwitchProduceEventsOnTransitionWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("switchworkflow", process.getId());
-        assertEquals("switch-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("switchworkflow");
+        assertThat(process.getName()).isEqualTo("switch-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(16, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(16);
 
         Split split = (Split) process.getNodes()[4];
-        assertEquals("ChooseOnAge", split.getName());
-        assertEquals(2, split.getType());
-        assertEquals(2, split.getConstraints().size());
+        assertThat(split.getName()).isEqualTo("ChooseOnAge");
+        assertThat(split.getType()).isEqualTo(2);
+        assertThat(split.getConstraints()).hasSize(2);
 
         boolean haveDefaultConstraint = false;
         for (Constraint constraint : split.getConstraints().values()) {
             haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
         }
 
-        assertTrue(haveDefaultConstraint);
+        assertThat(haveDefaultConstraint).isTrue();
     }
 
     @ParameterizedTest
     @ValueSource(strings = "/exec/switch-state-produce-events-default.sw.json")
     public void testSwitchProduceEventsDefaultOnTransitionWorkflow(String workflowLocation) throws Exception {
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertEquals("switchworkflow", process.getId());
-        assertEquals("switch-wf", process.getName());
-        assertEquals("1.0", process.getVersion());
-        assertEquals("SW", process.getType());
-        assertEquals("org.kie.kogito.serverless", process.getPackageName());
-        assertEquals(RuleFlowProcess.PUBLIC_VISIBILITY, process.getVisibility());
+        assertThat(process.getId()).isEqualTo("switchworkflow");
+        assertThat(process.getName()).isEqualTo("switch-wf");
+        assertThat(process.getVersion()).isEqualTo("1.0");
+        assertThat(process.getType()).isEqualTo("SW");
+        assertThat(process.getPackageName()).isEqualTo("org.kie.kogito.serverless");
+        assertThat(process.getVisibility()).isEqualTo(RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertEquals(17, process.getNodes().length);
+        assertThat(process.getNodes()).hasSize(17);
 
         Split split = (Split) process.getNodes()[4];
-        assertEquals("ChooseOnAge", split.getName());
-        assertEquals(2, split.getType());
-        assertEquals(2, split.getConstraints().size());
+        assertThat(split.getName()).isEqualTo("ChooseOnAge");
+        assertThat(split.getType()).isEqualTo(2);
+        assertThat(split.getConstraints()).hasSize(2);
 
         boolean haveDefaultConstraint = false;
         for (Constraint constraint : split.getConstraints().values()) {
             haveDefaultConstraint = haveDefaultConstraint || constraint.isDefault();
         }
 
-        assertTrue(haveDefaultConstraint);
+        assertThat(haveDefaultConstraint).isTrue();
     }
 
     @ParameterizedTest
@@ -623,15 +617,14 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
     public void testSpecExamplesParsing(String workflowLocation) throws IOException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
-        assertNotNull(workflow);
-        assertNotNull(workflow.getId());
-        assertNotNull(workflow.getName());
-        assertNotNull(workflow.getStates());
-        assertTrue(workflow.getStates().size() > 0);
+        assertThat(workflow).isNotNull();
+        assertThat(workflow.getId()).isNotNull();
+        assertThat(workflow.getName()).isNotNull();
+        assertThat(workflow.getStates()).isNotNull().hasSizeGreaterThan(0);
 
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertNotNull(process);
-        assertNotNull(process.getId());
+        assertThat(process).isNotNull();
+        assertThat(process.getId()).isNotNull();
     }
 
     @ParameterizedTest
@@ -639,15 +632,15 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
     public void testSpecWithInputSchema(String workflowLocation) throws IOException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 
-        assertNotNull(workflow);
-        assertNotNull(workflow.getDataInputSchema());
-        assertTrue(workflow.getStates().size() > 0);
+        assertThat(workflow).isNotNull();
+        assertThat(workflow.getDataInputSchema()).isNotNull();
+        assertThat(workflow.getStates()).hasSizeGreaterThan(0);
 
         RuleFlowProcess process = (RuleFlowProcess) getWorkflowParser(workflowLocation);
-        assertNotNull(process);
-        assertNotNull(process.getId());
+        assertThat(process).isNotNull();
+        assertThat(process.getId()).isNotNull();
 
-        assertEquals(SWFConstants.INPUT_MODEL_REF, process.getMetaData(Metadata.DATA_INPUT_SCHEMA_REF));
+        assertThat(process.getMetaData(Metadata.DATA_INPUT_SCHEMA_REF)).isEqualTo(SWFConstants.INPUT_MODEL_REF);
     }
 
     @Test
@@ -655,10 +648,10 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         Workflow workflow = createMinimumWorkflow();
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
         Process process = parser.getProcessInfo().info();
-        assertSame(process, parser.getProcessInfo().info());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_NAME, process.getName());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_VERSION, process.getVersion());
-        assertEquals(ServerlessWorkflowParser.DEFAULT_PACKAGE, process.getPackageName());
+        assertThat(parser.getProcessInfo().info()).isSameAs(process);
+        assertThat(process.getName()).isEqualTo(ServerlessWorkflowParser.DEFAULT_NAME);
+        assertThat(process.getVersion()).isEqualTo(ServerlessWorkflowParser.DEFAULT_VERSION);
+        assertThat(process.getPackageName()).isEqualTo(ServerlessWorkflowParser.DEFAULT_PACKAGE);
     }
 
     private static Workflow createMinimumWorkflow() {

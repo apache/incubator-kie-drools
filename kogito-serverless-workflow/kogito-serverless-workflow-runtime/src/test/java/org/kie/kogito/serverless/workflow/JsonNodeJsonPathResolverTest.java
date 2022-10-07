@@ -33,9 +33,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -65,9 +63,9 @@ class JsonNodeJsonPathResolverTest {
                 new JsonNodeResolver("jsonpath", ObjectMapperFactory.get().createArrayNode().add(ObjectMapperFactory.get().createObjectNode().put("leftElement", "$.fahrenheit"))
                         .add(ObjectMapperFactory.get().createObjectNode().put("rightElement", "$.subtractValue")), "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertTrue(processedNode.isArray());
-        assertThat(processedNode.findValue("leftElement").asInt(), equalTo(32));
-        assertThat(processedNode.findValue("rightElement").asInt(), equalTo(3));
+        assertThat(processedNode.isArray()).isTrue();
+        assertThat(processedNode.findValue("leftElement").asInt()).isEqualTo(32);
+        assertThat(processedNode.findValue("rightElement").asInt()).isEqualTo(3);
     }
 
     @Test
@@ -76,8 +74,8 @@ class JsonNodeJsonPathResolverTest {
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", "$.fahrenheit", "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertTrue(processedNode.isValueNode());
-        assertThat(processedNode.asInt(), equalTo(32));
+        assertThat(processedNode.isValueNode()).isTrue();
+        assertThat(processedNode.asInt()).isEqualTo(32);
     }
 
     @Test
@@ -86,8 +84,8 @@ class JsonNodeJsonPathResolverTest {
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final JsonNodeResolver resolver = new JsonNodeResolver("jsonpath", "\"$.fahrenheit\"", "pepe");
         final JsonNode processedNode = (JsonNode) resolver.apply(workItem);
-        assertTrue(processedNode.isValueNode());
-        assertThat(processedNode.asText(), equalTo("\"$.fahrenheit\""));
+        assertThat(processedNode.isValueNode()).isTrue();
+        assertThat(processedNode.asText()).isEqualTo("\"$.fahrenheit\"");
     }
 
     @Test
@@ -95,6 +93,6 @@ class JsonNodeJsonPathResolverTest {
         final JsonNode inputModel = mapper.readTree("{ \"fahrenheit\": \"32\", \"subtractValue\": \"3\" }");
         when(workItem.getParameter("pepe")).thenReturn(inputModel);
         final ObjectResolver resolver = new ObjectResolver("jsonpath", "pepa", "pepe");
-        assertThat(resolver.apply(workItem).toString(), equalTo("pepa"));
+        assertThat(resolver.apply(workItem)).hasToString("pepa");
     }
 }

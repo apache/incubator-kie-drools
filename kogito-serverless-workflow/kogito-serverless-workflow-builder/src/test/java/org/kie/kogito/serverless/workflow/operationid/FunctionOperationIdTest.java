@@ -25,8 +25,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,11 +46,11 @@ class FunctionOperationIdTest {
         definition.setType(Type.REST);
         definition.setOperation("specs/external-service.yaml#sendRequest");
         WorkflowOperationId id = WorkflowOperationIdFactoryType.FUNCTION_NAME.factory().from(workflow, definition, Optional.empty());
-        assertEquals("sendRequest", id.getOperation());
-        assertEquals("Test_function1", id.getFileName());
-        assertEquals("testfunction", id.getPackageName());
-        assertEquals("Test_function1_sendRequest", ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation()));
-        assertEquals("specs/external-service.yaml", id.getUri().toString());
-        assertNull(id.getService());
+        assertThat(id.getOperation()).isEqualTo("sendRequest");
+        assertThat(id.getFileName()).isEqualTo("Test_function1");
+        assertThat(id.getPackageName()).isEqualTo("testfunction");
+        assertThat(ServerlessWorkflowUtils.getOpenApiWorkItemName(id.getFileName(), id.getOperation())).isEqualTo("Test_function1_sendRequest");
+        assertThat(id.getUri()).hasToString("specs/external-service.yaml");
+        assertThat(id.getService()).isNull();
     }
 }
