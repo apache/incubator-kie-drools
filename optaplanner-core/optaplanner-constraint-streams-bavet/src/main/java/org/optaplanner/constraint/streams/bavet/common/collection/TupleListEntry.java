@@ -41,6 +41,10 @@ public final class TupleListEntry<T> {
         return element;
     }
 
+    public TupleList<T> getList() {
+        return list;
+    }
+
     @Override
     public String toString() {
         return element.toString();

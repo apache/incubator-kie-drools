@@ -27,4 +27,10 @@ final class AggregatedTupleLifecycle<Tuple_ extends Tuple> implements TupleLifec
             lifecycle.retract(tuple);
         }
     }
+
+    @Override
+    public String toString() {
+        return "size = " + lifecycles.length;
+    }
+
 }

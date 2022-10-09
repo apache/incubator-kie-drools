@@ -90,7 +90,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry = leftTuple.getStore(inputStoreIndexLeftCounterEntry);
+        TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry = leftTuple.removeStore(inputStoreIndexLeftCounterEntry);
         if (counterEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -153,13 +153,12 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.removeStore(inputStoreIndexRightEntry);
         if (rightEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
         rightEntry.remove();
-        rightTuple.setStore(inputStoreIndexRightEntry, null);
         if (!isFiltering) {
             leftCounterList.forEach(this::decrementCounterRight);
         } else {

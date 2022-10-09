@@ -34,4 +34,9 @@ public abstract class AbstractConditionalTupleLifecycle<Tuple_ extends Tuple>
 
     abstract protected boolean test(Tuple_ tuple);
 
+    @Override
+    public String toString() {
+        return "Conditional " + tupleLifecycle;
+    }
+
 }

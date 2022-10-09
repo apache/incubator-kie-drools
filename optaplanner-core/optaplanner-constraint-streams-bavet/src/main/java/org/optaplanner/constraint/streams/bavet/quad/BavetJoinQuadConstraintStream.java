@@ -15,6 +15,7 @@ import org.optaplanner.constraint.streams.bavet.tri.BavetJoinBridgeTriConstraint
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -26,15 +27,17 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
     private final BavetJoinBridgeUniConstraintStream<Solution_, D> rightParent;
 
     private final DefaultQuadJoiner<A, B, C, D> joiner;
+    private final QuadPredicate<A, B, C, D> filtering;
 
     public BavetJoinQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetJoinBridgeTriConstraintStream<Solution_, A, B, C> leftParent,
             BavetJoinBridgeUniConstraintStream<Solution_, D> rightParent,
-            DefaultQuadJoiner<A, B, C, D> joiner) {
+            DefaultQuadJoiner<A, B, C, D> joiner, QuadPredicate<A, B, C, D> filtering) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
         this.joiner = joiner;
+        this.filtering = filtering;
     }
 
     @Override
@@ -73,7 +76,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                downstream, outputStoreSize + 2,
+                                downstream, filtering, outputStoreSize + 2,
                                 outputStoreSize, outputStoreSize + 1,
                                 indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
                         : new UnindexedJoinQuadNode<>(
@@ -81,7 +84,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
                                 buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                downstream, outputStoreSize + 2,
+                                downstream, filtering, outputStoreSize + 2,
                                 outputStoreSize, outputStoreSize + 1);
         buildHelper.addNode(node, leftParent, rightParent);
     }
@@ -106,12 +109,13 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
          */
         return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
                 && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
-                && Objects.equals(joiner, other.joiner);
+                && Objects.equals(joiner, other.joiner)
+                && Objects.equals(filtering, other.filtering);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner, filtering);
     }
 
     @Override

@@ -90,20 +90,15 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
         BavetJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
                 new BavetJoinQuadConstraintStream<>(constraintFactory, leftBridge, rightBridge,
-                        joinerComber.getMergedJoiner());
+                        joinerComber.getMergedJoiner(), joinerComber.getMergedFiltering());
         leftBridge.setJoinStream(joinStream);
         rightBridge.setJoinStream(joinStream);
 
-        joinStream = constraintFactory.share(joinStream, joinStream_ -> {
+        return constraintFactory.share(joinStream, joinStream_ -> {
             // Connect the bridges upstream, as it is an actual new join.
             getChildStreamList().add(leftBridge);
             other.getChildStreamList().add(rightBridge);
         });
-        if (joinerComber.getMergedFiltering() == null) {
-            return joinStream;
-        } else {
-            return joinStream.filter(joinerComber.getMergedFiltering());
-        }
     }
 
     // ************************************************************************

@@ -25,4 +25,10 @@ final class LeftTupleLifecycleImpl<Tuple_ extends Tuple>
     public void retract(Tuple_ tuple) {
         leftTupleLifecycle.retractLeft(tuple);
     }
+
+    @Override
+    public String toString() {
+        return "left " + leftTupleLifecycle;
+    }
+
 }

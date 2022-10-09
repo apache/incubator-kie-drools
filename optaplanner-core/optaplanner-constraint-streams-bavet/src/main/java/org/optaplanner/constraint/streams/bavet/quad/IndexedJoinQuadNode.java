@@ -8,18 +8,20 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 
 final class IndexedJoinQuadNode<A, B, C, D>
         extends AbstractIndexedJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> {
 
     private final TriFunction<A, B, C, IndexProperties> mappingABC;
+    private final QuadPredicate<A, B, C, D> filtering;
     private final int outputStoreSize;
 
     public IndexedJoinQuadNode(TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
             int inputStoreIndexABC, int inputStoreIndexEntryABC, int inputStoreIndexOutTupleListABC,
             int inputStoreIndexD, int inputStoreIndexEntryD, int inputStoreIndexOutTupleListD,
-            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, QuadPredicate<A, B, C, D> filtering,
             int outputStoreSize,
             int outputStoreIndexOutEntryABC, int outputStoreIndexOutEntryD,
             Indexer<TriTuple<A, B, C>> indexerABC,
@@ -27,16 +29,23 @@ final class IndexedJoinQuadNode<A, B, C, D>
         super(mappingD,
                 inputStoreIndexABC, inputStoreIndexEntryABC, inputStoreIndexOutTupleListABC,
                 inputStoreIndexD, inputStoreIndexEntryD, inputStoreIndexOutTupleListD,
-                nextNodesTupleLifecycle,
+                nextNodesTupleLifecycle, filtering != null,
                 outputStoreIndexOutEntryABC, outputStoreIndexOutEntryD,
                 indexerABC, indexerD);
         this.mappingABC = mappingABC;
+        this.filtering = filtering;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
     protected IndexProperties createIndexPropertiesLeft(TriTuple<A, B, C> leftTuple) {
         return mappingABC.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC());
+    }
+
+    @Override
+    protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+        return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
+                outputStoreSize);
     }
 
     @Override
@@ -52,9 +61,8 @@ final class IndexedJoinQuadNode<A, B, C, D>
     }
 
     @Override
-    protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
-                outputStoreSize);
+    protected boolean testFiltering(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
     }
 
 }

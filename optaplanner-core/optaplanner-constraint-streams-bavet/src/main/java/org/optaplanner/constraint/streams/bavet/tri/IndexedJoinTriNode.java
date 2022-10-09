@@ -9,17 +9,19 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.TriPredicate;
 
 final class IndexedJoinTriNode<A, B, C>
         extends AbstractIndexedJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>, TriTupleImpl<A, B, C>> {
 
     private final BiFunction<A, B, IndexProperties> mappingAB;
+    private final TriPredicate<A, B, C> filtering;
     private final int outputStoreSize;
 
     public IndexedJoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexEntryAB, int inputStoreIndexOutTupleListAB,
             int inputStoreIndexC, int inputStoreIndexEntryC, int inputStoreIndexOutTupleListC,
-            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, TriPredicate<A, B, C> filtering,
             int outputStoreSize,
             int outputStoreIndexOutEntryAB, int outputStoreIndexOutEntryC,
             Indexer<BiTuple<A, B>> indexerAB,
@@ -27,10 +29,11 @@ final class IndexedJoinTriNode<A, B, C>
         super(mappingC,
                 inputStoreIndexAB, inputStoreIndexEntryAB, inputStoreIndexOutTupleListAB,
                 inputStoreIndexC, inputStoreIndexEntryC, inputStoreIndexOutTupleListC,
-                nextNodesTupleLifecycle,
+                nextNodesTupleLifecycle, filtering != null,
                 outputStoreIndexOutEntryAB, outputStoreIndexOutEntryC,
                 indexerAB, indexerC);
         this.mappingAB = mappingAB;
+        this.filtering = filtering;
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -53,6 +56,11 @@ final class IndexedJoinTriNode<A, B, C>
     @Override
     protected void setOutTupleRightFact(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
         outTuple.factC = rightTuple.getFactA();
+    }
+
+    @Override
+    protected boolean testFiltering(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
     }
 
 }

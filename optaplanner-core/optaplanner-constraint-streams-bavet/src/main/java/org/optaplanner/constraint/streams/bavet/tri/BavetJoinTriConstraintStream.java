@@ -15,6 +15,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -26,15 +27,17 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     private final BavetJoinBridgeUniConstraintStream<Solution_, C> rightParent;
 
     private final DefaultTriJoiner<A, B, C> joiner;
+    private final TriPredicate<A, B, C> filtering;
 
     public BavetJoinTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetJoinBridgeBiConstraintStream<Solution_, A, B> leftParent,
             BavetJoinBridgeUniConstraintStream<Solution_, C> rightParent,
-            DefaultTriJoiner<A, B, C> joiner) {
+            DefaultTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> filtering) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
         this.joiner = joiner;
+        this.filtering = filtering;
     }
 
     @Override
@@ -72,7 +75,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, outputStoreSize + 2,
+                        downstream, filtering, outputStoreSize + 2,
                         outputStoreSize, outputStoreSize + 1,
                         indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
                 : new UnindexedJoinTriNode<>(
@@ -80,7 +83,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
                         buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, outputStoreSize + 2,
+                        downstream, filtering, outputStoreSize + 2,
                         outputStoreSize, outputStoreSize + 1);
         buildHelper.addNode(node, leftParent, rightParent);
     }
@@ -105,12 +108,13 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
          */
         return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
                 && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
-                && Objects.equals(joiner, other.joiner);
+                && Objects.equals(joiner, other.joiner)
+                && Objects.equals(filtering, other.filtering);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner, filtering);
     }
 
     @Override

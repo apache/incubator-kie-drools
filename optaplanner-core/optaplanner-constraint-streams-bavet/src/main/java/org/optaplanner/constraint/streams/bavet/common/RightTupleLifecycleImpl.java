@@ -25,4 +25,10 @@ final class RightTupleLifecycleImpl<Tuple_ extends Tuple>
     public void retract(Tuple_ tuple) {
         rightTupleLifecycle.retractRight(tuple);
     }
+
+    @Override
+    public String toString() {
+        return "right " + rightTupleLifecycle;
+    }
+
 }

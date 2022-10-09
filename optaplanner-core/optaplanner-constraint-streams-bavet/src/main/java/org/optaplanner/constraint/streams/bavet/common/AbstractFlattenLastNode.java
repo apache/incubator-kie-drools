@@ -105,12 +105,11 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void retract(InTuple_ tuple) {
-        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.getStore(flattenLastStoreIndex);
+        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.removeStore(flattenLastStoreIndex);
         if (outTupleList == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tuple.setStore(flattenLastStoreIndex, null);
         for (OutTuple_ item : outTupleList) {
             removeTuple(item);
         }

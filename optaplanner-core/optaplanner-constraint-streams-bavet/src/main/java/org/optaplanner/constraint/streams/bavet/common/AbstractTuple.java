@@ -43,4 +43,19 @@ public abstract class AbstractTuple implements Tuple {
         }
         store = value;
     }
+
+    @Override
+    public <Value_> Value_ removeStore(int index) {
+        Value_ value;
+        if (storeIsArray) {
+            Object[] array = (Object[]) store;
+            value = (Value_) array[index];
+            array[index] = null;
+        } else {
+            value = (Value_) store;
+            store = null;
+        }
+        return value;
+    }
+
 }

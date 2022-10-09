@@ -60,12 +60,11 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
 
     @Override
     public void retract(InTuple_ tuple) {
-        UniTuple<Right_> outTuple = tuple.getStore(inputStoreIndex);
+        UniTuple<Right_> outTuple = tuple.removeStore(inputStoreIndex);
         if (outTuple == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tuple.setStore(inputStoreIndex, null);
         outTuple.setState(BavetTupleState.DYING);
         dirtyTupleQueue.add(outTuple);
     }

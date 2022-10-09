@@ -216,12 +216,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void retract(InTuple_ tuple) {
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupPart = tuple.getStore(groupStoreIndex);
+        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupPart = tuple.removeStore(groupStoreIndex);
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tuple.setStore(groupStoreIndex, null);
         Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         groupPart.undoAccumulate();
         killTuple(group);

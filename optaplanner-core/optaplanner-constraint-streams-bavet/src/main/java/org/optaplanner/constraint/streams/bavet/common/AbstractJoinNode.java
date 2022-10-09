@@ -20,24 +20,26 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         extends AbstractNode
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
+    protected final int inputStoreIndexLeftOutTupleList;
+    protected final int inputStoreIndexRightOutTupleList;
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
     private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
 
-    protected final int inputStoreIndexLeftOutTupleList;
-    protected final int inputStoreIndexRightOutTupleList;
+    protected final boolean isFiltering;
 
-    private final int outputStoreIndexLeftOutEntry;
-    private final int outputStoreIndexRightOutEntry;
+    protected final int outputStoreIndexLeftOutEntry;
+    protected final int outputStoreIndexRightOutEntry;
     protected final Queue<OutTuple_> dirtyTupleQueue;
 
     protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering,
             int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
         this.inputStoreIndexLeftOutTupleList = inputStoreIndexLeftOutTupleList;
         this.inputStoreIndexRightOutTupleList = inputStoreIndexRightOutTupleList;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
+        this.isFiltering = isFiltering;
         this.outputStoreIndexLeftOutEntry = outputStoreIndexLeftOutEntry;
         this.outputStoreIndexRightOutEntry = outputStoreIndexRightOutEntry;
         dirtyTupleQueue = new ArrayDeque<>(1000);
@@ -48,6 +50,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     protected abstract void setOutTupleLeftFacts(MutableOutTuple_ outTuple, LeftTuple_ leftTuple);
 
     protected abstract void setOutTupleRightFact(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple);
+
+    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     protected final void insertOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
         MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
@@ -60,7 +64,17 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         dirtyTupleQueue.add(outTuple);
     }
 
-    protected final void doUpdateOutTuple(OutTuple_ outTuple) {
+    protected void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple) {
+        setOutTupleLeftFacts(outTuple, leftTuple);
+        doUpdateOutTuple(outTuple);
+    }
+
+    protected void updateOutTupleRight(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple) {
+        setOutTupleRightFact(outTuple, rightTuple);
+        doUpdateOutTuple(outTuple);
+    }
+
+    private final void doUpdateOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -81,16 +95,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     }
 
     protected final void retractOutTuple(MutableOutTuple_ outTuple) {
-        TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
+        TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.removeStore(outputStoreIndexLeftOutEntry);
         outEntryLeft.remove();
-        outTuple.setStore(outputStoreIndexLeftOutEntry, null);
-        TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
+        TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.removeStore(outputStoreIndexRightOutEntry);
         outEntryRight.remove();
-        outTuple.setStore(outputStoreIndexRightOutEntry, null);
-        doRetractOutTuple(outTuple);
-    }
-
-    private final void doRetractOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
