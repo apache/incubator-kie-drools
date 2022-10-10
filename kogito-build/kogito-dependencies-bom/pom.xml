@@ -35,7 +35,7 @@
     <version.com.github.erosb>1.14.1</version.com.github.erosb>
     <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.33.2</version.com.github.tomakehurst.wiremock>
-    <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
+    <version.com.google.protobuf>3.19.6</version.com.google.protobuf>
     <!-- currently required for integration test only -->
     <version.com.oracle.database.jdbc>21.3.0.0</version.com.oracle.database.jdbc>
     <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
