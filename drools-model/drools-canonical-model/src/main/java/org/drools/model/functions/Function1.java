@@ -26,6 +26,10 @@ public interface Function1<T, R> extends Serializable {
         return a -> a;
     }
 
+    default <V> Function1<T, V> andThen(Function1<R, V> f2) {
+        return (T t) -> f2.apply(apply(t));
+    }
+
     class Impl<T,R> extends IntrospectableLambda implements Function1<T, R> {
 
         private final Function1<T,R> function;

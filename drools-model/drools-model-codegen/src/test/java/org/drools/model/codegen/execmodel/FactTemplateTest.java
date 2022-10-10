@@ -17,6 +17,7 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplateObjectType;
@@ -680,6 +681,40 @@ public class FactTemplateTest {
 
         Fact f3 = createMapBasedFact( prototype );
         f3.set( "i", new int[] {1, 3, 5} );
+        ksession.insert(f3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testInnerArrayAccess() {
+        // DROOLS-7194
+        Prototype prototype = prototype( "org.X" );
+
+        PrototypeVariable var1 = variable( prototype );
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(var1).expr( prototypeArrayItem( "i", 1 ).andThen( prototypeField("a") ), Index.ConstraintType.EQUAL, fixedValue( 3 ) ),
+                        on(var1).execute((p1, p2) -> { } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact f1 = createMapBasedFact( prototype );
+        f1.set( "i", Arrays.asList(Map.of("a", 3)) );
+        ksession.insert(f1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f2 = createMapBasedFact( prototype );
+        f2.set( "i", Arrays.asList(Map.of("a", 1), Map.of("b", 3), Map.of("c", 5)) );
+        ksession.insert(f2);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f3 = createMapBasedFact( prototype );
+        f3.set( "i", Arrays.asList(Map.of("c", 1), Map.of("a", 3), Map.of("b", 5)) );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }

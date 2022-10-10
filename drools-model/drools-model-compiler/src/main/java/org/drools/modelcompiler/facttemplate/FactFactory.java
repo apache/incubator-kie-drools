@@ -36,8 +36,16 @@ public class FactFactory {
         return new HashMapFactImpl( factTemplate );
     }
 
+    public static Fact createMapBasedFact(FactTemplate factTemplate, Map<String, Object> valuesMap) {
+        return new HashMapFactImpl( factTemplate, valuesMap );
+    }
+
     public static Fact createMapBasedFact(Prototype prototype) {
         return createMapBasedFact( prototypeToFactTemplate( prototype ) );
+    }
+
+    public static Fact createMapBasedFact(Prototype prototype, Map<String, Object> valuesMap) {
+        return createMapBasedFact( prototypeToFactTemplate( prototype ), valuesMap );
     }
 
     public static FactTemplate prototypeToFactTemplate( Prototype prototype ) {

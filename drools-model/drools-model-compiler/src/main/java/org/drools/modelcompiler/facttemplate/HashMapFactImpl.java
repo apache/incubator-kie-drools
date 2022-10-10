@@ -25,12 +25,17 @@ import org.drools.model.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact {
 
-    private FactTemplate factTemplate;
+    private final FactTemplate factTemplate;
 
-    private Map<String, Object> valuesMap = new HashMap<>();
+    private final Map<String, Object> valuesMap;
 
     public HashMapFactImpl( FactTemplate factTemplate ) {
+        this( factTemplate, new HashMap<>() );
+    }
+
+    public HashMapFactImpl( FactTemplate factTemplate, Map<String, Object> valuesMap ) {
         this.factTemplate = factTemplate;
+        this.valuesMap = valuesMap;
     }
 
     @Override
