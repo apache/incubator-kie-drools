@@ -1,17 +1,20 @@
 ecosystem:
   main_project: optaplanner
   projects:
-    - name: optaplanner
-      regexs:
-        - opta.*
+  - name: optaplanner
+    regexs:
+    - opta.*
 git:
   branches:
-    - name: main
-      seed:
-        branch: main
-    - name: 8.28.x
-      seed:
-        branch: seed-optaplanner-8.28.x
+  - name: main
+    seed:
+      branch: main
+  - name: 8.28.x
+    seed:
+      branch: seed-optaplanner-8.28.x
+  - name: 8.29.x
+    seed:
+      branch: seed-optaplanner-8.29.x
   main_branch:
     default: main
 seed:
