@@ -30,6 +30,8 @@ import static org.drools.model.PatternDSL.reactOn;
 
 public class PrototypeDSL {
 
+    public static final Prototype DEFAULT_PROTOTYPE = prototype("$DEFAULT_PROTOTYPE$");
+
     public static Prototype prototype(String name) {
         return new PrototypeImpl(name);
     }

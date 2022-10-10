@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function3;
 
 public interface PrototypeExpression {
-
 
     Function1<PrototypeFact, Object> asFunction(Prototype prototype);
 
@@ -42,6 +42,10 @@ public interface PrototypeExpression {
 
     static PrototypeExpression prototypeArrayItem(String fieldName, int pos) {
         return new PrototypeArrayItemValue(fieldName, pos);
+    }
+
+    default PrototypeExpression andThen(PrototypeExpression other) {
+        return new PrototypeCompositeExpression(this, other);
     }
 
     default PrototypeExpression composeWith(BinaryOperation.Operator op, PrototypeExpression right) {
@@ -157,6 +161,41 @@ public interface PrototypeExpression {
 
         public Collection<String> getImpactedFields() {
             return Collections.singletonList(fieldName);
+        }
+    }
+
+    class PrototypeCompositeExpression implements PrototypeExpression {
+        private final PrototypeExpression first;
+        private final PrototypeExpression second;
+
+        public PrototypeCompositeExpression(PrototypeExpression first, PrototypeExpression second) {
+            this.first = first;
+            this.second = second;
+        }
+        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+            return first.asFunction(prototype).andThen(this::object2PrototypeFact).andThen(second.asFunction(prototype));
+        }
+
+        private PrototypeFact object2PrototypeFact(Object object) {
+            if (object == Prototype.UNDEFINED_VALUE) {
+                return PrototypeFactFactory.get().createMapBasedFact(PrototypeDSL.DEFAULT_PROTOTYPE);
+            }
+            if (object instanceof PrototypeFact) {
+                return (PrototypeFact) object;
+            }
+            if (object instanceof Map) {
+                return PrototypeFactFactory.get().createMapBasedFact(PrototypeDSL.DEFAULT_PROTOTYPE, (Map<String, Object>) object);
+            }
+            throw new UnsupportedOperationException("Cannot convert " + object + " into a Prototype");
+        }
+
+        @Override
+        public String toString() {
+            return "PrototypeCompisiteExpression{" + first + " composed with " + second + "}";
+        }
+
+        public Collection<String> getImpactedFields() {
+            return first.getImpactedFields();
         }
     }
 
