@@ -32,10 +32,6 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-constraint-streams-bavet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-constraint-streams-drools</artifactId>
     </dependency>
     <dependency>
@@ -59,5 +55,22 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-streams-bavet</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

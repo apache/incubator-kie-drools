@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.testutil.DisabledInProductization;
 import org.optaplanner.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusEntity;
 import org.optaplanner.quarkus.testdata.normal.domain.TestdataQuarkusSolution;
@@ -19,6 +20,7 @@ import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
 import io.quarkus.test.QuarkusUnitTest;
 
+@DisabledInProductization
 class OptaPlannerConstraintVerifierBavetStreamImplTest {
 
     @RegisterExtension

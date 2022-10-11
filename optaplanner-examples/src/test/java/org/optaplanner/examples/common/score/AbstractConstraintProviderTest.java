@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.provider.Arguments;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.impl.testutil.DisabledInProductizationCheck;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 /**
@@ -34,9 +35,15 @@ public abstract class AbstractConstraintProviderTest<ConstraintProvider_ extends
     protected abstract ConstraintVerifier<ConstraintProvider_, Solution_> createConstraintVerifier();
 
     protected final Stream<? extends Arguments> getDroolsAndBavetConstraintVerifierImpls() {
-        return Stream.of(
-                arguments(named("BAVET", bavetConstraintVerifier)),
-                arguments(named("DROOLS (without ANC)", droolsWithoutAncConstraintVerifier)),
-                arguments(named("DROOLS (with ANC)", droolsWithAncConstraintVerifier)));
+        if (DisabledInProductizationCheck.isProductized()) {
+            return Stream.of(
+                    arguments(named("DROOLS (without ANC)", droolsWithoutAncConstraintVerifier)),
+                    arguments(named("DROOLS (with ANC)", droolsWithAncConstraintVerifier)));
+        } else {
+            return Stream.of(
+                    arguments(named("BAVET", bavetConstraintVerifier)),
+                    arguments(named("DROOLS (without ANC)", droolsWithoutAncConstraintVerifier)),
+                    arguments(named("DROOLS (with ANC)", droolsWithAncConstraintVerifier)));
+        }
     }
 }

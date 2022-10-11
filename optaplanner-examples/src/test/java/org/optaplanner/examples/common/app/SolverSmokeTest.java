@@ -31,6 +31,7 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.testutil.DisabledInProductization;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -66,23 +67,38 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicTest> runSpeedTest() {
-        return moveThreadCounts().flatMap(moveThreadCount -> testData().flatMap(testData -> {
-            Stream.Builder<DynamicTest> streamBuilder = Stream.builder();
-            streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
-                    EnvironmentMode.REPRODUCIBLE,
-                    testData.bestScoreLimitForReproducible, moveThreadCount));
-            if (testData.bestScoreLimitForFastAssert != null) {
-                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
-                        EnvironmentMode.FAST_ASSERT,
-                        testData.bestScoreLimitForFastAssert, moveThreadCount));
-            }
-            if (testData.bestScoreLimitForFullAssert != null) {
-                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
-                        FULL_ASSERT,
-                        testData.bestScoreLimitForFullAssert, moveThreadCount));
-            }
-            return streamBuilder.build();
-        }));
+        return runSpeedTest(ConstraintStreamImplType.DROOLS);
+    }
+
+    @DisabledInProductization
+    @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
+    @Timeout(600)
+    Stream<DynamicTest> runSpeedTestBavet() {
+        return runSpeedTest(ConstraintStreamImplType.BAVET);
+    }
+
+    private Stream<DynamicTest> runSpeedTest(ConstraintStreamImplType constraintStreamImplType) {
+        return moveThreadCounts()
+                .flatMap(moveThreadCount -> testData()
+                        .filter(testData -> testData.constraintStreamImplType == constraintStreamImplType)
+                        .flatMap(testData -> {
+                            Stream.Builder<DynamicTest> streamBuilder = Stream.builder();
+                            streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                                    EnvironmentMode.REPRODUCIBLE,
+                                    testData.bestScoreLimitForReproducible, moveThreadCount));
+                            if (testData.bestScoreLimitForFastAssert != null) {
+                                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                                        EnvironmentMode.FAST_ASSERT,
+                                        testData.bestScoreLimitForFastAssert, moveThreadCount));
+                            }
+                            if (testData.bestScoreLimitForFullAssert != null) {
+                                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                                        FULL_ASSERT,
+                                        testData.bestScoreLimitForFullAssert, moveThreadCount));
+                            }
+                            return streamBuilder.build();
+                        }));
     }
 
     private DynamicTest createSpeedTest(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
@@ -103,6 +119,7 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
     @TestFactory
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
+    @DisabledInProductization
     Stream<DynamicTest> runConstraintStreamsMutualCorrectnessTest() {
         SolverFactory<Solution_> solverFactory = buildMutualCorrectnessSolverFactory();
         return testData()

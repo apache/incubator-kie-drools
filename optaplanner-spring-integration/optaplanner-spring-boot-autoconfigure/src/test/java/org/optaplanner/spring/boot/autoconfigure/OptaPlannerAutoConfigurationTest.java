@@ -28,6 +28,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
+import org.optaplanner.core.impl.testutil.DisabledInProductization;
 import org.optaplanner.spring.boot.autoconfigure.chained.ChainedSpringTestConfiguration;
 import org.optaplanner.spring.boot.autoconfigure.chained.constraints.TestdataChainedSpringConstraintProvider;
 import org.optaplanner.spring.boot.autoconfigure.chained.domain.TestdataChainedSpringEntity;
@@ -197,6 +198,11 @@ class OptaPlannerAutoConfigurationTest {
                     assertThat(solverConfig.getMoveThreadCount()).isEqualTo("2");
                     assertThat(context.getBean(SolverFactory.class)).isNotNull();
                 });
+    }
+
+    @DisabledInProductization
+    @Test
+    void solverPropertiesBavet() {
         contextRunner
                 .withClassLoader(defaultConstraintsDrlFilteredClassLoader)
                 .withPropertyValues("optaplanner.solver.constraint-stream-impl-type=BAVET")
@@ -371,6 +377,7 @@ class OptaPlannerAutoConfigurationTest {
                 });
     }
 
+    @DisabledInProductization
     @Test
     void constraintVerifierBavet() {
         contextRunner

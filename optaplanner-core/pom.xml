@@ -28,9 +28,22 @@
     <module>optaplanner-core</module>
     <module>optaplanner-core-impl</module>
     <module>optaplanner-constraint-streams-common</module>
-    <module>optaplanner-constraint-streams-bavet</module>
     <module>optaplanner-constraint-streams-drools</module>
     <module>optaplanner-constraint-drl</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-constraint-streams-bavet</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

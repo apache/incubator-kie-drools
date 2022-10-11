@@ -18,6 +18,7 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.testutil.DisabledInProductizationCheck;
 import org.optaplanner.examples.common.TestSystemProperties;
 import org.optaplanner.examples.common.TurtleTest;
 
@@ -65,7 +66,11 @@ public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
     private static SolverConfig buildSolverConfig(String solverConfigResource) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null) {
-            solverConfig.getScoreDirectorFactoryConfig().setConstraintStreamImplType(resolveConstraintStreamType());
+            ConstraintStreamImplType constraintStreamImplType = resolveConstraintStreamType();
+            if (constraintStreamImplType == ConstraintStreamImplType.BAVET && DisabledInProductizationCheck.isProductized()) {
+                throw new UnsupportedOperationException("Bavet not supported in a productized profile.");
+            }
+            solverConfig.getScoreDirectorFactoryConfig().setConstraintStreamImplType(constraintStreamImplType);
         }
         // buildAndSolve() fills in minutesSpentLimit
         solverConfig.setTerminationConfig(new TerminationConfig());
