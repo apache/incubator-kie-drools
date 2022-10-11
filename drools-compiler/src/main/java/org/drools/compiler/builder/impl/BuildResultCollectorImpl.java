@@ -36,7 +36,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class BuildResultCollectorImpl implements BuildResultCollector {
-    private Collection<KnowledgeBuilderResult> results = new ArrayList<>(); // avoid duplicate errors
+    private final Collection<KnowledgeBuilderResult> results = new ArrayList<>();
 
     public BuildResultCollectorImpl() {
     }
@@ -56,7 +56,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
     }
 
     public Collection<KnowledgeBuilderResult> getAllResults() {
-        return Collections.unmodifiableCollection(results);
+        return results;
     }
 
     public KnowledgeBuilderResults getResults(ResultSeverity... problemTypes) {
