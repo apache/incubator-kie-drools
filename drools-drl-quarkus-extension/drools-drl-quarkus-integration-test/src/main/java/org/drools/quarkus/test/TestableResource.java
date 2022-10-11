@@ -62,7 +62,7 @@ public class TestableResource {
     
     @GET
     @Path("testFireUntiHalt")
-    public Response testFireUntiHalt() {
+    public Response testFireUntiHalt() throws InterruptedException {
         KieSession ksession = runtimeBuilder.newKieSession("probeKS");
 
         new Thread(ksession::fireUntilHalt).start();
@@ -79,6 +79,7 @@ public class TestableResource {
                     pc.wait();
                 } catch (InterruptedException e) {
                     fail("couldn't lock in test ProbeCounter", e);
+                    throw e; // for SonarCloud
                 }
             }
         }
