@@ -30,13 +30,13 @@ import org.kie.internal.builder.ResultSeverity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 
 public class BuildResultCollectorImpl implements BuildResultCollector {
-    private Collection<KnowledgeBuilderResult> results = new LinkedHashSet<>(); // avoid duplicate errors
+    private Collection<KnowledgeBuilderResult> results = new ArrayList<>(); // avoid duplicate errors
 
     public BuildResultCollectorImpl() {
     }
@@ -56,7 +56,7 @@ public class BuildResultCollectorImpl implements BuildResultCollector {
     }
 
     public Collection<KnowledgeBuilderResult> getAllResults() {
-        return results;
+        return Collections.unmodifiableCollection(results);
     }
 
     public KnowledgeBuilderResults getResults(ResultSeverity... problemTypes) {

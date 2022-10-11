@@ -19,6 +19,7 @@ package org.drools.compiler.builder.impl.processors;
 
 import org.drools.compiler.builder.PackageRegistryManager;
 import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -47,7 +48,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
     private final InternalKnowledgeBase kBase;
     private final KnowledgeBuilderConfigurationImpl configuration;
 
-    private final BuildResultCollector buildResultCollector;
+    private final BuildResultCollector buildResultCollector = new BuildResultCollectorImpl();
 
     public CompositePackageCompilationPhase(
             Collection<CompositePackageDescr> packages,
@@ -55,7 +56,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
             TypeDeclarationBuilder typeBuilder,
             GlobalVariableContext globalVariableContext,
             TypeDeclarationContext typeDeclarationContext,
-            BuildResultCollector buildResultCollector,
             InternalKnowledgeBase kBase,
             KnowledgeBuilderConfigurationImpl configuration) {
         this.packages = packages;
@@ -63,7 +63,6 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         this.typeBuilder = typeBuilder;
         this.globalVariableContext = globalVariableContext;
         this.typeDeclarationContext = typeDeclarationContext;
-        this.buildResultCollector = buildResultCollector;
         this.kBase = kBase;
         this.configuration = configuration;
     }
