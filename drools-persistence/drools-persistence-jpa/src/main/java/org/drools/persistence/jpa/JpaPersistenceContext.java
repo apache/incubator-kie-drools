@@ -27,7 +27,6 @@ import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
-import org.kie.api.runtime.process.WorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +146,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         if( this.pessimisticLocking ) { 
             if( em.contains(workItem) ) { 
                 em.lock(workItem, lockMode);
-            } else { 
+            } else if (workItem.getId() != null){ 
                 // Yes, this is a hack, but for detached entities, it's the only way to lock before merging
                 WorkItemInfo dbWorkItemInfo = em.find(WorkItemInfo.class, workItem.getId(), lockMode);
                 for( Field field : WorkItemInfo.class.getDeclaredFields() ) { 
