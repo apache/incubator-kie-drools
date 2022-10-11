@@ -16,6 +16,7 @@
 package org.drools.quarkus.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +78,7 @@ public class TestableResource {
                 try {
                     pc.wait();
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    fail("couldn't lock in test ProbeCounter", e);
                 }
             }
         }
