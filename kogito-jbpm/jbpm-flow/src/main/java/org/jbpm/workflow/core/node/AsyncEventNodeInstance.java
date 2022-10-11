@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.kie.api.definition.process.Node;
@@ -161,7 +160,7 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
 
         NodeInstance actualInstance = instanceContainer.getNodeInstance(getNode());
         //trigger the actual node
-        triggerNodeInstance((org.jbpm.workflow.instance.NodeInstance) actualInstance, NodeImpl.CONNECTION_DEFAULT_TYPE);
+        triggerNodeInstance((org.jbpm.workflow.instance.NodeInstance) actualInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         clearAsyncStatus();
     }
 }

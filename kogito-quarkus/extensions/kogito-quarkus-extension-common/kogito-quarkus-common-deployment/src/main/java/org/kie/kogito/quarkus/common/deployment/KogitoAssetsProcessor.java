@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.jboss.jandex.DotName;
@@ -242,7 +243,7 @@ public class KogitoAssetsProcessor {
         // disable REST if OptaPlanner capability is available but REST is not (user can override via property)
         if (hasOptaPlannerCapability && !hasRestCapabilities &&
                 kogitoGenerateRest(context).isEmpty()) {
-            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            context.setApplicationProperty(DroolsModelBuildContext.KOGITO_GENERATE_REST, "false");
             LOGGER.info("Disabling Kogito REST generation because OptaPlanner extension is available, specify `kogito.generate.rest = true` to re-enable it");
         }
 
@@ -252,7 +253,7 @@ public class KogitoAssetsProcessor {
     }
 
     private Optional<Boolean> kogitoGenerateRest(KogitoBuildContext context) {
-        return context.getApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST)
+        return context.getApplicationProperty(DroolsModelBuildContext.KOGITO_GENERATE_REST)
                 .map("true"::equalsIgnoreCase);
     }
 

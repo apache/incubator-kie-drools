@@ -36,7 +36,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -56,6 +55,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     private Map<String, Object> metaData = new HashMap<>();
     private int level;
 
-    protected int slaCompliance = ProcessInstance.SLA_NA;
+    protected int slaCompliance = KogitoProcessInstance.SLA_NA;
     protected Date slaDueDate;
     protected String slaTimerId;
     protected Date triggerTime;

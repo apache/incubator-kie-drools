@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.drools.core.time.impl.CronExpression;
+import org.drools.core.time.impl.KieCronExpression;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
@@ -78,6 +78,7 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -989,7 +990,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 try {
                     switch (timer.getTimeType()) {
                         case Timer.TIME_CYCLE:
-                            if (!CronExpression.isValidExpression(timer.getDelay())) {
+                            if (!KieCronExpression.isValidExpression(timer.getDelay())) {
                                 // when using ISO date/time period is not set
                                 DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
                             }
@@ -1013,7 +1014,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
         if (timer.getPeriod() != null && !timer.getPeriod().contains("#{")) {
             try {
-                if (!CronExpression.isValidExpression(timer.getPeriod())) {
+                if (!KieCronExpression.isValidExpression(timer.getPeriod())) {
                     // when using ISO date/time period is not set
                     DateTimeUtils.parseRepeatableDateTime(timer.getPeriod());
                 }
@@ -1150,7 +1151,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     @Override
     public boolean accept(Process process, Resource resource) {
-        return RuleFlowProcess.BPMN_TYPE.equals(process.getType()) || RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType());
+        return KogitoWorkflowProcess.BPMN_TYPE.equals(process.getType()) || KogitoWorkflowProcess.RULEFLOW_TYPE.equals(process.getType());
     }
 
     protected void validateCompensationIntermediateOrEndEvent(org.kie.api.definition.process.Node node,

@@ -21,9 +21,9 @@ import org.jbpm.compiler.xml.Handler;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.compiler.xml.core.BaseAbstractHandler;
 import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Constrainable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -67,7 +67,7 @@ public class ConstraintHandler extends BaseAbstractHandler implements Handler {
         if (toNodeIdString != null && toNodeIdString.trim().length() > 0) {
             int toNodeId = new Integer(toNodeIdString);
             if (toType == null || toType.trim().length() == 0) {
-                toType = NodeImpl.CONNECTION_DEFAULT_TYPE;
+                toType = Node.CONNECTION_DEFAULT_TYPE;
             }
             connectionRef = new ConnectionRef(toNodeId, toType);
         }

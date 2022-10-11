@@ -32,6 +32,7 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.rule.Agenda;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
 /**
  * Default implementation of a process instance.
@@ -249,10 +250,10 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
     @Override
     public void start(String trigger) {
         synchronized (this) {
-            if (getState() != ProcessInstanceImpl.STATE_PENDING) {
+            if (getState() != KogitoProcessInstance.STATE_PENDING) {
                 throw new IllegalArgumentException("A process instance can only be started once");
             }
-            setState(ProcessInstanceImpl.STATE_ACTIVE);
+            setState(KogitoProcessInstance.STATE_ACTIVE);
             internalStart(trigger);
         }
     }

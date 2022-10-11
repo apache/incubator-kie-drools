@@ -33,7 +33,6 @@ import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.WorkflowProcess;
 
@@ -248,11 +247,11 @@ public class XmlWorkflowProcessDumper {
 
     public void visitConnection(Connection connection, StringBuilder xmlDump, boolean includeMeta) {
         xmlDump.append("    <connection from=\"" + connection.getFrom().getId() + "\" ");
-        if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getFromType())) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(connection.getFromType())) {
             xmlDump.append("fromType=\"" + connection.getFromType() + "\" ");
         }
         xmlDump.append("to=\"" + connection.getTo().getId() + "\" ");
-        if (!NodeImpl.CONNECTION_DEFAULT_TYPE.equals(connection.getToType())) {
+        if (!Node.CONNECTION_DEFAULT_TYPE.equals(connection.getToType())) {
             xmlDump.append("toType=\"" + connection.getToType() + "\" ");
         }
         if (includeMeta) {

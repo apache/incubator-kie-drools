@@ -44,6 +44,7 @@ import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         if (process == null) {
             logger.error("Could not find process {}", processId);
             logger.error("Aborting process");
-            getProcessInstance().setState(ProcessInstance.STATE_ABORTED);
+            getProcessInstance().setState(KogitoProcessInstance.STATE_ABORTED);
             throw new RuntimeException("Could not find process " + processId);
         } else {
             KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime());
@@ -140,8 +141,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             kruntime.startProcessInstance(processInstance.getStringId());
             if (!getSubProcessNode().isWaitForCompletion()) {
                 triggerCompleted();
-            } else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED
-                    || processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+            } else if (processInstance.getState() == KogitoProcessInstance.STATE_COMPLETED
+                    || processInstance.getState() == KogitoProcessInstance.STATE_ABORTED) {
                 processInstanceCompleted(processInstance);
             } else {
                 addProcessListener();
@@ -158,7 +159,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             ProcessInstance processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
 
             if (processInstance != null) {
-                processInstance.setState(ProcessInstance.STATE_ABORTED);
+                processInstance.setState(KogitoProcessInstance.STATE_ABORTED);
             }
         }
     }
@@ -207,7 +208,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         Map<String, Object> outputSet = processInstance.getVariables();
         NodeIoHelper.processOutputs(this, varRef -> outputSet.get(varRef), varName -> this.getVariable(varName));
 
-        if (processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+        if (processInstance.getState() == KogitoProcessInstance.STATE_ABORTED) {
             String faultName = processInstance.getOutcome() == null ? "" : processInstance.getOutcome();
             // handle exception as sub process failed with error code
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
@@ -224,7 +225,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 }
                 return;
             } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()) {
-                getProcessInstance().setState(ProcessInstance.STATE_ABORTED, faultName);
+                getProcessInstance().setState(KogitoProcessInstance.STATE_ABORTED, faultName);
                 return;
             }
         }

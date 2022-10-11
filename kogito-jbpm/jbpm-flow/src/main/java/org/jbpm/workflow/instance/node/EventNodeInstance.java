@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
@@ -37,6 +36,7 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
@@ -94,18 +94,18 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
             if (timer != null) {
                 this.slaTimerId = timer.getId();
                 this.slaDueDate = new Date(System.currentTimeMillis() + timer.getDelay());
-                this.slaCompliance = ProcessInstance.SLA_PENDING;
+                this.slaCompliance = KogitoProcessInstance.SLA_PENDING;
                 logger.debug("SLA for node instance {} is PENDING with due date {}", this.getStringId(), this.slaDueDate);
             }
         }
     }
 
     protected void handleSLAViolation() {
-        if (slaCompliance == ProcessInstance.SLA_PENDING) {
+        if (slaCompliance == KogitoProcessInstance.SLA_PENDING) {
             InternalProcessRuntime processRuntime = ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime());
             processRuntime.getProcessEventSupport().fireBeforeSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
             logger.debug("SLA violated on node instance {}", getStringId());
-            this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+            this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
             this.slaTimerId = null;
             processRuntime.getProcessEventSupport().fireAfterSLAViolated(getProcessInstance(), this, getProcessInstance().getKnowledgeRuntime());
         }
@@ -139,12 +139,12 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
     public void triggerCompleted() {
         getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
         removeTimerListeners();
-        if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+        if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
             if (System.currentTimeMillis() > slaDueDate.getTime()) {
                 // completion of the node instance is after expected SLA due date, mark it accordingly
-                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+                this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
             } else {
-                this.slaCompliance = ProcessInstance.STATE_COMPLETED;
+                this.slaCompliance = KogitoProcessInstance.STATE_COMPLETED;
             }
         }
         cancelSlaTimer();
@@ -156,12 +156,12 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
     public void cancel() {
         getProcessInstance().removeEventListener(getEventType(), getEventListener(), true);
         removeTimerListeners();
-        if (this.slaCompliance == ProcessInstance.SLA_PENDING) {
+        if (this.slaCompliance == KogitoProcessInstance.SLA_PENDING) {
             if (System.currentTimeMillis() > slaDueDate.getTime()) {
                 // completion of the process instance is after expected SLA due date, mark it accordingly
-                this.slaCompliance = ProcessInstance.SLA_VIOLATED;
+                this.slaCompliance = KogitoProcessInstance.SLA_VIOLATED;
             } else {
-                this.slaCompliance = ProcessInstance.SLA_ABORTED;
+                this.slaCompliance = KogitoProcessInstance.SLA_ABORTED;
             }
         }
         removeTimerListeners();

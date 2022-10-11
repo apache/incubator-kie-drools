@@ -70,7 +70,7 @@ public class ExceptionHandlerHandler extends BaseAbstractHandler implements Hand
             org.w3c.dom.Node xmlNode = element.getFirstChild();
             if (xmlNode instanceof Element) {
                 Element actionXml = (Element) xmlNode;
-                DroolsAction action = ActionNodeHandler.extractAction(actionXml);
+                DroolsAction action = AbstractNodeHandler.extractAction(actionXml);
                 ((ActionExceptionHandler) exceptionHandler).setAction(action);
             }
         } else {

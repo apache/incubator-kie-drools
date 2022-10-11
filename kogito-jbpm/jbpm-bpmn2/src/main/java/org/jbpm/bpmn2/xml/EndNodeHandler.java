@@ -22,6 +22,7 @@ import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.xml.sax.Attributes;
 
@@ -51,7 +52,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
             endNode("endEvent", xmlDump);
         } else {
             String scope = (String) endNode.getMetaData("customScope");
-            List<DroolsAction> actions = endNode.getActions(EndNode.EVENT_NODE_ENTER);
+            List<DroolsAction> actions = endNode.getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
             if (actions != null && !actions.isEmpty()) {
                 if (actions.size() == 1) {
                     DroolsConsequenceAction action = (DroolsConsequenceAction) actions.get(0);

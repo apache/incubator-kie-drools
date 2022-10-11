@@ -25,7 +25,6 @@ import org.jbpm.compiler.xml.Parser;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.ForEachNode;
@@ -117,7 +116,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
     protected void applyAsync(Node node, boolean isAsync) {
         for (org.kie.api.definition.process.Node subNode : ((CompositeContextNode) node).getNodes()) {
             if (isAsync) {
-                List<Connection> incoming = subNode.getIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE);
+                List<Connection> incoming = subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE);
                 if (incoming != null) {
                     for (Connection con : incoming) {
                         if (con.getFrom() instanceof StartNode) {

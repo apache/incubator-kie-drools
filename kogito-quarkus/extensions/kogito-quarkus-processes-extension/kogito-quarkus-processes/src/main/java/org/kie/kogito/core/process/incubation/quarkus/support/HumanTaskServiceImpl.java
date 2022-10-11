@@ -33,6 +33,7 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.incubation.common.*;
 import org.kie.kogito.incubation.processes.*;
 import org.kie.kogito.incubation.processes.services.contexts.Policy;
+import org.kie.kogito.incubation.processes.services.contexts.ProcessMetaDataContext;
 import org.kie.kogito.incubation.processes.services.contexts.TaskMetaDataContext;
 import org.kie.kogito.incubation.processes.services.humantask.HumanTaskService;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
@@ -104,7 +105,7 @@ class HumanTaskServiceImpl implements HumanTaskService {
                 .orElseThrow();
 
         MapDataContext dataContext = MapDataContext.from(workItem);
-        return ExtendedDataContext.of(TaskMetaDataContext.of(taskId), dataContext);
+        return ExtendedDataContext.of(ProcessMetaDataContext.of(taskId), dataContext);
     }
 
     @Override

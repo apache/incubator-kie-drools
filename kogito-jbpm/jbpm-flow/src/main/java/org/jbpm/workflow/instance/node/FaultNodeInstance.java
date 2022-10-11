@@ -33,6 +33,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
+import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +100,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             }
         } else {
 
-            ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName, getFaultData());
+            ((ProcessInstance) getProcessInstance()).setState(KogitoProcessInstance.STATE_ABORTED, faultName, getFaultData());
 
         }
     }

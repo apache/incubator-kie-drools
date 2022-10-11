@@ -293,8 +293,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 throwLink.getUniqueId());
                         if (throwNode != null) {
                             Connection result = new ConnectionImpl(throwNode,
-                                    NodeImpl.CONNECTION_DEFAULT_TYPE, catchNode,
-                                    NodeImpl.CONNECTION_DEFAULT_TYPE);
+                                    org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, catchNode,
+                                    org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
                             result.setMetaData("linkNodeHidden", "yes");
                         }
                     }
@@ -404,8 +404,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 Node target = findNodeByIdOrUniqueIdInMetadata(nodeContainer, targetRef, "Could not find target node for connection:" + targetRef);
 
                 Connection result = new ConnectionImpl(
-                        source, NodeImpl.CONNECTION_DEFAULT_TYPE,
-                        target, NodeImpl.CONNECTION_DEFAULT_TYPE);
+                        source, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
+                        target, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
                 result.setMetaData("bendpoints", connection.getBendpoints());
                 result.setMetaData("UniqueId", connection.getId());
 
@@ -413,7 +413,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     NodeImpl nodeImpl = (NodeImpl) source;
                     Constraint constraint = buildConstraint(connection, nodeImpl);
                     if (constraint != null) {
-                        nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+                        nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
                                 constraint);
                     }
 
@@ -421,7 +421,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     Split split = (Split) source;
                     Constraint constraint = buildConstraint(connection, split);
                     split.addConstraint(
-                            new ConnectionRef(connection.getId(), target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
+                            new ConnectionRef(connection.getId(), target.getId(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
                             constraint);
                 }
             }
@@ -487,14 +487,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
 
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", "");
             cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
             actions.add(cancelAction);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         }
     }
 
@@ -521,14 +521,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             exceptionScope.setExceptionHandler(errorStructureRef, exceptionHandler);
         }
 
-        List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+        List<DroolsAction> actions = ((EventNode) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
         if (actions == null) {
             actions = new ArrayList<>();
         }
         DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", null);
         cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
         actions.add(cancelAction);
-        ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+        ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
     }
 
     private static void linkBoundaryTimerEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
@@ -569,13 +569,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
 
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         }
     }
 
@@ -601,13 +601,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     private static void linkBoundarySignalEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         }
     }
 
@@ -617,13 +617,13 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
         if (cancelActivity) {
-            List<DroolsAction> actions = ((EventNode) node).getActions(EndNode.EVENT_NODE_EXIT);
+            List<DroolsAction> actions = ((EventNode) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
             if (actions == null) {
                 actions = new ArrayList<>();
             }
             DroolsConsequenceAction action = createJavaAction(new CancelNodeInstanceAction(attachedTo));
             actions.add(action);
-            ((EventNode) node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+            ((EventNode) node).setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         }
     }
 
@@ -674,7 +674,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     }
 
                     // connect boundary event to compensation activity
-                    ConnectionImpl connection = new ConnectionImpl(sourceNode, NodeImpl.CONNECTION_DEFAULT_TYPE, targetNode, NodeImpl.CONNECTION_DEFAULT_TYPE);
+                    ConnectionImpl connection = new ConnectionImpl(sourceNode, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, targetNode, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
                     connection.setMetaData("UniqueId", null);
                     connection.setMetaData("hidden", true);
                     connection.setMetaData("association", true);
@@ -1095,7 +1095,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             } else if (throwEventNode instanceof EndNode) {
                 List<DroolsAction> actions = new ArrayList<>();
                 actions.add(compensationAction);
-                ((EndNode) throwEventNode).setActions(EndNode.EVENT_NODE_ENTER, actions);
+                ((EndNode) throwEventNode).setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
             }
         }
     }

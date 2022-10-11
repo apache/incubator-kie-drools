@@ -30,6 +30,7 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.IOSpecification;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.EndNode;
@@ -166,7 +167,7 @@ public class EndEventHandler extends AbstractNodeHandler {
 
                 List<DroolsAction> actions = new ArrayList<>();
                 actions.add(action);
-                endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
+                endNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -199,7 +200,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 DroolsConsequenceAction action = createJavaAction(new HandleMessageAction(message.getType(), variable));
 
                 actions.add(action);
-                endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
+                endNode.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
             }
             xmlNode = xmlNode.getNextSibling();
         }
