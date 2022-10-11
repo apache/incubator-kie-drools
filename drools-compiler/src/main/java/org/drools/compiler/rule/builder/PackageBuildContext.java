@@ -103,27 +103,6 @@ public class PackageBuildContext {
         }
     }
 
-    /**
-     *
-     * Maintained only for retro-compat with external code. It assumes the {@link DroolsAssemblerContext} is also
-     * a {@link TypeDeclarationContext}, which is generally only true when the instance is a {@link org.drools.compiler.builder.impl.KnowledgeBuilderImpl}.
-     *
-     * @deprecated use {@link #initContext(TypeDeclarationContext, InternalKnowledgePackage, BaseDescr, DialectCompiletimeRegistry, Dialect, Dialectable)}
-     *
-     * @throws ClassCastException
-     */
-    @Deprecated
-    public void init(final DroolsAssemblerContext kBuilder,
-                     final InternalKnowledgePackage pkg,
-                     final BaseDescr parentDescr,
-                     final DialectCompiletimeRegistry dialectRegistry,
-                     final Dialect defaultDialect,
-                     final Dialectable component) {
-        // this cast still breaks encapsulation https://issues.redhat.com/browse/DROOLS-6887
-        initContext((TypeDeclarationContext) kBuilder, pkg, parentDescr, dialectRegistry, defaultDialect, component);
-    }
-
-
         private boolean isStrictMode( DialectCompiletimeRegistry dialectRegistry ) {
         return dialectRegistry.getDialect( "mvel" ) == null || dialectRegistry.getDialect( "mvel" ).isStrictMode();
     }
