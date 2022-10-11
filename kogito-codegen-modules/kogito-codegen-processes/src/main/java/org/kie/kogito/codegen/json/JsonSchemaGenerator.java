@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.json;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -128,7 +127,7 @@ public class JsonSchemaGenerator {
             }
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 writer.writeValue(outputStream, merged);
-                files.add(new GeneratedFile(JSON_SCHEMA_TYPE, pathFor(entry.getKey()), outputStream.toByteArray()));
+                files.add(new GeneratedFile(JSON_SCHEMA_TYPE, JsonSchemaUtil.pathFor(entry.getKey()), outputStream.toByteArray()));
             }
         }
         return files;
@@ -167,7 +166,4 @@ public class JsonSchemaGenerator {
                 || (fieldScope.getDeclaringType().getErasedType().isAnnotationPresent(ProcessInput.class) && fieldScope.getAnnotation(VariableInfo.class) == null);
     }
 
-    private Path pathFor(String name) {
-        return JsonSchemaUtil.getJsonDir().resolve(JsonSchemaUtil.getFileName(name));
-    }
 }

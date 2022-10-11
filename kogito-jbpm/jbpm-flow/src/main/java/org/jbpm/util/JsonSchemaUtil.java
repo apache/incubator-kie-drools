@@ -18,7 +18,6 @@ package org.jbpm.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,7 +40,7 @@ public class JsonSchemaUtil {
     }
 
     private static ObjectMapper mapper = new ObjectMapper();
-    private static Path jsonDir = Paths.get("META-INF", "jsonSchema");
+    private static String jsonDir = "META-INF/jsonSchema/";
 
     public static String getJsonSchemaName(String id) {
         return id.replace('.', '#').replaceAll("\\s", "_");
@@ -52,7 +51,7 @@ public class JsonSchemaUtil {
     }
 
     public static Path getJsonDir() {
-        return jsonDir;
+        return Path.of(jsonDir);
     }
 
     public static String getFileName(String key) {
@@ -68,8 +67,8 @@ public class JsonSchemaUtil {
     }
 
     private static Map<String, Object> loadSchema(ClassLoader cl, String schemaId) {
-        Path jsonFile = jsonDir.resolve(getFileName(schemaId));
-        try (InputStream in = cl.getResourceAsStream(jsonFile.toString())) {
+        String jsonFile = pathFor(schemaId);
+        try (InputStream in = cl.getResourceAsStream(jsonFile)) {
             if (in == null) {
                 throw new IllegalArgumentException("Cannot find file " + jsonFile + " in classpath");
             }
@@ -103,5 +102,9 @@ public class JsonSchemaUtil {
 
     public static Set<String> allowedPhases(KogitoWorkItemHandler handler, WorkItem workItem) {
         return HumanTaskWorkItemHandler.allowedPhases(handler, workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
+    }
+
+    public static String pathFor(String key) {
+        return jsonDir + getFileName(key);
     }
 }
