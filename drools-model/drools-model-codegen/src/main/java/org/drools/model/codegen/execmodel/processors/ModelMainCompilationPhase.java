@@ -90,7 +90,7 @@ public class ModelMainCompilationPhase<T> implements CompilationPhase {
             phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
         }
         phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
-        phases.add(iteratingPhase((reg, acc) -> new GlobalCompilationPhase(reg, acc, kBase, globalVariableContext, acc.getFilter())));
+        phases.add(iteratingPhase((reg, acc) -> GlobalCompilationPhase.of(reg, acc, kBase, globalVariableContext, acc.getFilter())));
         phases.add(new DeclaredTypeDeregistrationPhase(packages, pkgRegistryManager));
 
         phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames

@@ -450,8 +450,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         List<CompilationPhase> phases = asList(
                 new RuleValidator(packageRegistry, packageDescr, configuration), // validateUniqueRuleNames
-                new FunctionCompiler(pkgRegistry, packageDescr, assetFilter, rootClassLoader),
-                new RuleCompilationPhase(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
+                FunctionCompiler.of(pkgRegistry, packageDescr, assetFilter, rootClassLoader),
+                RuleCompilationPhase.of(pkgRegistry, packageDescr, kBase, parallelRulesBuildThreshold,
                         assetFilter, packageAttributes, resource, this));
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> this.results.addAll(p.getResults()));

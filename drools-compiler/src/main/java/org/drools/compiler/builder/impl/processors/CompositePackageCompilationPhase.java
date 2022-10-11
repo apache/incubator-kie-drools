@@ -87,7 +87,7 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 iteratingPhase(AccumulateFunctionCompilationPhase::new),
                 iteratingPhase((reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, typeDeclarationContext)),
                 iteratingPhase((reg, desc) -> new FunctionCompilationPhase(reg, desc, configuration)),
-                iteratingPhase((reg, desc) -> new GlobalCompilationPhase(reg, desc, kBase, globalVariableContext, desc.getFilter())),
+                iteratingPhase((reg, desc) -> GlobalCompilationPhase.of(reg, desc, kBase, globalVariableContext, desc.getFilter())),
                 // end OtherDeclarationCompilationPhase
 
                 iteratingPhase((pkgRegistry, packageDescr) ->
