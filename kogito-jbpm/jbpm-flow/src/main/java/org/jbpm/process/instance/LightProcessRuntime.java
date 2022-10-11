@@ -283,7 +283,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
 
         @Override
         public String[] getEventTypes() {
-            return null;
+            return new String[0];
         }
 
         @Override

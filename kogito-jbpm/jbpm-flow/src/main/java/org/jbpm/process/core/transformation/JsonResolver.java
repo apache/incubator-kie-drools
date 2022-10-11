@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -63,7 +64,7 @@ public class JsonResolver {
      */
     public Map<String, Object> resolveOnlyAnnotatedItems(Map<String, Object> items) {
         if (Objects.isNull(items)) {
-            return null;
+            return Collections.emptyMap();
         }
         Map<String, Map> resolved = items.entrySet().stream()
                 .filter(v -> Objects.nonNull(v.getValue()))

@@ -264,7 +264,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     public Connection getFrom() {
         final List<Connection> list =
                 getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE);
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return null;
         }
         if (list.size() == 1) {
@@ -284,7 +284,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     public Connection getTo() {
         final List<Connection> list =
                 getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return null;
         }
         if (list.size() == 1) {

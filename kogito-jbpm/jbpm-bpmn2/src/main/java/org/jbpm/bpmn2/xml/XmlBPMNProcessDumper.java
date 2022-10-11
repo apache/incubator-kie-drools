@@ -505,7 +505,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                 }
             } else if (node instanceof EventNode) {
                 List<EventFilter> filters = ((EventNode) node).getEventFilters();
-                if (filters.size() > 0) {
+                if (!filters.isEmpty()) {
                     String messageRef = ((EventTypeFilter) filters.get(0)).getType();
                     if (messageRef.startsWith("Message-")) {
                         messageRef = messageRef.substring(8);

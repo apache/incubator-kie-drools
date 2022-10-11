@@ -16,6 +16,7 @@
 package org.jbpm.process.instance;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.drools.core.common.EndOperationListener;
@@ -177,7 +178,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Map<String, Channel> getChannels() {
-        return null;
+        return Collections.emptyMap();
     }
 
     @Override
@@ -202,7 +203,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -217,7 +218,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -232,7 +233,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -288,12 +289,12 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<ProcessInstance> getProcessInstances() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<KogitoProcessInstance> getKogitoProcessInstances() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -333,7 +334,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<? extends EntryPoint> getEntryPoints() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
@@ -393,22 +394,22 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public Collection<? extends Object> getObjects() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public Collection<? extends Object> getObjects(ObjectFilter filter) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public <T extends FactHandle> Collection<T> getFactHandles() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

@@ -945,7 +945,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 handleIntermediateOrEndThrowCompensationEvent((ActionNode) node);
             } else if (node instanceof EventNode) {
                 final EventNode eventNode = (EventNode) node;
-                if (!(eventNode instanceof BoundaryEventNode) && eventNode.getDefaultIncomingConnections().size() == 0) {
+                if (!(eventNode instanceof BoundaryEventNode) && eventNode.getDefaultIncomingConnections().isEmpty()) {
                     throw new ProcessParsingValidationException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
                 }
             }

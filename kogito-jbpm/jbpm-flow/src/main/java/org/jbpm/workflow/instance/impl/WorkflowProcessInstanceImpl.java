@@ -354,7 +354,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         if (getKnowledgeRuntime() == null) {
             List<ContextInstance> variableScopeInstances = getContextInstances(VariableScope.VARIABLE_SCOPE);
             if (variableScopeInstances == null) {
-                return null;
+                return Collections.emptyMap();
             }
             Map<String, Object> result = new HashMap<>();
             for (ContextInstance contextInstance : variableScopeInstances) {
@@ -366,7 +366,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         // else retrieve the variable scope
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);
         if (variableScopeInstance == null) {
-            return null;
+            return Collections.emptyMap();
         }
         return variableScopeInstance.getVariables();
     }

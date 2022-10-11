@@ -322,7 +322,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected void writeScripts(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {
-        if (actions != null && actions.size() > 0) {
+        if (!actions.isEmpty()) {
             for (DroolsAction action : actions) {
                 writeScript(action, type, xmlDump);
             }

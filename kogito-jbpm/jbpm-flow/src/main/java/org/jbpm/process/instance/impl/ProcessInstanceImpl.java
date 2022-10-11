@@ -273,7 +273,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance,
 
     @Override
     public String[] getEventTypes() {
-        return null;
+        return new String[0];
     }
 
     @Override

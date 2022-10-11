@@ -114,7 +114,7 @@ public class XmlWorkflowProcessDumper {
     }
 
     private void visitImports(Collection<String> imports, StringBuilder xmlDump) {
-        if (imports != null && imports.size() > 0) {
+        if (imports != null && !imports.isEmpty()) {
             xmlDump.append("    <imports>" + EOL);
             for (String importString : imports) {
                 xmlDump.append("      <import name=\"" + importString + "\" />" + EOL);
@@ -124,7 +124,7 @@ public class XmlWorkflowProcessDumper {
     }
 
     private void visitFunctionImports(List<String> imports, StringBuilder xmlDump) {
-        if (imports != null && imports.size() > 0) {
+        if (imports != null && !imports.isEmpty()) {
             xmlDump.append("    <functionImports>" + EOL);
             for (String importString : imports) {
                 xmlDump.append("      <functionImport name=\"" + importString + "\" />" + EOL);
@@ -144,7 +144,7 @@ public class XmlWorkflowProcessDumper {
     }
 
     public static void visitVariables(List<Variable> variables, StringBuilder xmlDump) {
-        if (variables != null && variables.size() > 0) {
+        if (variables != null && !variables.isEmpty()) {
             xmlDump.append("    <variables>" + EOL);
             for (Variable variable : variables) {
                 xmlDump.append("      <variable name=\"" + variable.getName() + "\" >" + EOL);
@@ -160,7 +160,7 @@ public class XmlWorkflowProcessDumper {
     }
 
     private void visitSwimlanes(Collection<Swimlane> swimlanes, StringBuilder xmlDump) {
-        if (swimlanes != null && swimlanes.size() > 0) {
+        if (swimlanes != null && !swimlanes.isEmpty()) {
             xmlDump.append("    <swimlanes>" + EOL);
             for (Swimlane swimlane : swimlanes) {
                 xmlDump.append("      <swimlane name=\"" + swimlane.getName() + "\" />" + EOL);

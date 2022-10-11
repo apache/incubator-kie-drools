@@ -62,7 +62,7 @@ public class ProcessInstanceEventBatchTest {
         KogitoWorkflowProcessInstance pi = mock(KogitoWorkflowProcessInstance.class);
 
         when(pi.milestones()).thenReturn(null);
-        assertThat(batch.createMilestones(pi)).isNull();
+        assertThat(batch.createMilestones(pi)).isEmpty();
 
         when(pi.milestones()).thenReturn(emptyList());
         assertThat(batch.createMilestones(pi)).isEmpty();

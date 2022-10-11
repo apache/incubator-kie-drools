@@ -17,6 +17,7 @@ package org.kie.kogito.event.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -252,7 +253,7 @@ public class ProcessInstanceEventBatch implements EventBatch {
 
     protected Set<MilestoneEventBody> createMilestones(KogitoWorkflowProcessInstance pi) {
         if (pi.milestones() == null) {
-            return null;
+            return Collections.emptySet();
         }
 
         return pi.milestones().stream()

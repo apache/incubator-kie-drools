@@ -39,7 +39,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
             writeNode("intermediateCatchEvent", eventNode, xmlDump, metaDataType);
             xmlDump.append(">" + EOL);
             writeExtensionElements(eventNode, xmlDump);
-            if (eventNode.getEventFilters().size() > 0) {
+            if (!eventNode.getEventFilters().isEmpty()) {
                 String type = ((EventTypeFilter) eventNode.getEventFilters().get(0)).getType();
                 if (type.startsWith("Message-")) {
                     type = type.substring(8);

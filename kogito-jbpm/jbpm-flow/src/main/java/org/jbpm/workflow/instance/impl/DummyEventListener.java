@@ -30,7 +30,7 @@ public class DummyEventListener implements KogitoEventListener {
 
     @Override
     public String[] getEventTypes() {
-        return null;
+        return new String[0];
     }
 
 }

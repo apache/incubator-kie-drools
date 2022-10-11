@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.process.bpmn2;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -43,7 +44,7 @@ public class BpmnProcessInstance extends AbstractProcessInstance<BpmnVariables> 
     @Override
     protected Map<String, Object> bind(BpmnVariables variables) {
         if (variables == null) {
-            return null;
+            return Collections.emptyMap();
         }
         return variables.toMap();
     }
