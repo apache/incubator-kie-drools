@@ -26,6 +26,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PackageWalker {
+
+    private PackageWalker() {
+
+    }
+
     public static List<File> getAllSiblings(Collection<File> filesToCompile) {
         return filesToCompile.stream()
                 .map(f -> f.getParentFile().toPath())

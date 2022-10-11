@@ -51,6 +51,10 @@ public class DecisionValidation {
 
     public static final Logger LOG = LoggerFactory.getLogger(DecisionValidation.class);
 
+    private DecisionValidation() {
+
+    }
+
     public static enum ValidationOption {
         /**
          * Perform DMN Validation and blocks if any Errors is found. This is the default.

@@ -37,6 +37,10 @@ public class WidMVELEvaluator {
         WID_PARSER_CONTEXT.setRetainParserState(false);
     }
 
+    private WidMVELEvaluator() {
+
+    }
+
     public static Object eval(final String expression) {
         ExpressionCompiler compiler = new ExpressionCompiler(getRevisedExpression(expression),
                 WID_PARSER_CONTEXT);

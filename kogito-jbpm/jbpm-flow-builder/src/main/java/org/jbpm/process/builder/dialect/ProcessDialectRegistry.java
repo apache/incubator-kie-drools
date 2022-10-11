@@ -24,6 +24,10 @@ import org.jbpm.process.builder.dialect.mvel.MVELProcessDialect;
 
 public class ProcessDialectRegistry {
 
+    private ProcessDialectRegistry() {
+
+    }
+
     private static ConcurrentMap<String, ProcessDialect> dialects;
 
     static {

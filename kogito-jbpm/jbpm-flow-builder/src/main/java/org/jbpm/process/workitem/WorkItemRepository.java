@@ -34,6 +34,10 @@ import org.slf4j.LoggerFactory;
 
 public class WorkItemRepository {
 
+    private WorkItemRepository() {
+
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
     public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {

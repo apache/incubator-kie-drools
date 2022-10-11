@@ -23,6 +23,10 @@ import org.kie.kogito.incubation.common.LocalId;
  * Utility class to parse a String into a process identifier of the given type.
  */
 public final class ProcessIdParser {
+    private ProcessIdParser() {
+
+    }
+
     public static <T extends LocalId> T parse(String id, Class<T> expected) {
         StringTokenizer tok = new StringTokenizer(id, "/");
         if (!tok.hasMoreTokens())

@@ -20,6 +20,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public class BPMN2ProcessFactory {
 
+    private BPMN2ProcessFactory() {
+
+    }
+
     private static class LazyHolder {
         private static BPMN2ProcessProvider provider = KieService.load(BPMN2ProcessProvider.class);
     }

@@ -34,6 +34,10 @@ final class MvelSubstitutions {
 @TargetClass(MVEL.class)
 final class MVEL_Target {
 
+    private MVEL_Target() {
+
+    }
+
     @Substitute
     public static Class analyze(char[] expression, ParserContext ctx) {
         throw new UnsupportedOperationException("Cannot run MVEL#analyze in native mode");

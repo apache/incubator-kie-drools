@@ -27,6 +27,11 @@ import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.process.NodeInstance;
 
 public class VariableUtil {
+
+    private VariableUtil() {
+
+    }
+
     public static String resolveVariable(String s, NodeInstance nodeInstance) {
         if (s == null) {
             return null;

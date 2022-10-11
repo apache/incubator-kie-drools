@@ -23,6 +23,10 @@ import org.slf4j.LoggerFactory;
 
 public class JobIdResolver {
 
+    private JobIdResolver() {
+
+    }
+
     private static final MessageFormat format = new MessageFormat("{0}:");
     private static final Logger LOGGER = LoggerFactory.getLogger(JobIdResolver.class);
 

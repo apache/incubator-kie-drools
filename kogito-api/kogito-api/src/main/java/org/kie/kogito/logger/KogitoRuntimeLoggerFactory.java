@@ -21,6 +21,10 @@ import org.kie.api.logger.KieRuntimeLogger;
 
 public class KogitoRuntimeLoggerFactory {
 
+    private KogitoRuntimeLoggerFactory() {
+
+    }
+
     private static KieLoggers knowledgeRuntimeLoggerFactoryService;
 
     /**

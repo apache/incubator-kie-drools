@@ -20,6 +20,11 @@ import java.util.StringTokenizer;
 import org.kie.kogito.incubation.common.LocalId;
 
 public class RuleUnitIdParser {
+
+    private RuleUnitIdParser() {
+
+    }
+
     public static LocalId parse(String id) {
         return parse(id, LocalId.class);
     }

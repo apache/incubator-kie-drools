@@ -22,6 +22,10 @@ import org.kie.kogito.ExecutionIdSupplier;
 
 public class DecisionExecutionIdUtils {
 
+    private DecisionExecutionIdUtils() {
+
+    }
+
     private static final String EXECUTION_ID_KEY = "__kogito_execution_id__";
 
     public static String get(DMNContext context) {

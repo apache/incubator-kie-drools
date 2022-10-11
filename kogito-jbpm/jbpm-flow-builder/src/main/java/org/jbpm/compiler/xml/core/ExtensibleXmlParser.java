@@ -449,6 +449,10 @@ public class ExtensibleXmlParser extends DefaultHandler implements Parser {
     }
 
     public static class Null {
+        private Null() {
+
+        }
+
         public static final Null instance = new Null();
     }
 

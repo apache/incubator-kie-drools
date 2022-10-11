@@ -22,6 +22,11 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 public class ProcessKnowledgeHelperFixer {
+
+    private ProcessKnowledgeHelperFixer() {
+
+    }
+
     private static final Map macros;
 
     static {

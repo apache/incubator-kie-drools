@@ -33,6 +33,10 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 public class WorkflowProcessInstanceUpgrader {
 
+    private WorkflowProcessInstanceUpgrader() {
+
+    }
+
     public static void upgradeProcessInstance(KogitoProcessRuntime kruntime, String processInstanceId, String processId,
             Map<String, Long> nodeMapping) {
         if (nodeMapping == null) {

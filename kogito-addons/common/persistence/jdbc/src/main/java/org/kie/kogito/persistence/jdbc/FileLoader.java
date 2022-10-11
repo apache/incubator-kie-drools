@@ -20,6 +20,10 @@ import java.util.List;
 
 public class FileLoader {
 
+    private FileLoader() {
+
+    }
+
     static List<String> getQueryFromFile(final String dbType, final String scriptName) {
         final String fileName = String.format("sql/%s_%s.sql", scriptName, dbType);
         try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName)) {
