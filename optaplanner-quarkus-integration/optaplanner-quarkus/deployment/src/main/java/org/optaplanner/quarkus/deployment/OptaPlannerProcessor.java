@@ -443,7 +443,7 @@ class OptaPlannerProcessor {
                                     ") for @" + annotationInstance.name().withoutPackagePrefix() + ".");
             }
 
-            if (!declaringClass.annotations().containsKey(DotNames.PLANNING_ENTITY)) {
+            if (!declaringClass.annotationsMap().containsKey(DotNames.PLANNING_ENTITY)) {
                 throw new IllegalStateException(prefix + "with a @" +
                         annotationInstance.name().withoutPackagePrefix() +
                         " annotation is in a class (" + declaringClass.name()

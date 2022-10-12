@@ -103,6 +103,12 @@
         <scope>import</scope>
       </dependency>
       <!-- Normal dependencies versions-->
+      <!-- TODO: remove after upgrading to Quarkus 2.14.0.Final -->
+      <dependency>
+        <groupId>io.smallrye</groupId>
+        <artifactId>jandex</artifactId>
+        <version>3.0.1</version>
+      </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
