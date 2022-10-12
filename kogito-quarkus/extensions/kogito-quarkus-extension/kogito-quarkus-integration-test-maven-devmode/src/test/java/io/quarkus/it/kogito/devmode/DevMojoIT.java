@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.maven.it.RunAndCheckMojoTestBase;
 import io.quarkus.maven.it.verifier.RunningInvoker;
@@ -46,32 +47,32 @@ import static org.hamcrest.Matchers.is;
 //@DisableForNative: it is not yet available as of 1.11, and I doubt is ever needed for this module
 public class DevMojoIT extends RunAndCheckMojoTestBase {
 
-    private static final String HTTP_TEST_PORT = "65535";
     private static final String PROPERTY_MAVEN_REPO_LOCAL = "maven.repo.local";
     private static final String PROPERTY_MAVEN_SETTINGS = "maven.settings";
     private static final String MAVEN_REPO_LOCAL = System.getProperty(PROPERTY_MAVEN_REPO_LOCAL);
     private static final String MAVEN_SETTINGS = System.getProperty(PROPERTY_MAVEN_SETTINGS);
 
-    private static final long INIT_POLL_DELAY = 1;
+    // during parallel builds, the machine might need an extra time to recover
+    private static final long INIT_POLL_DELAY = 3;
     private static final TimeUnit INIT_POLL_DELAY_UNIT = TimeUnit.SECONDS;
-    private static final long INIT_POLL_TIMEOUT = 3;
+    private static final long INIT_POLL_TIMEOUT = 15;
     private static final TimeUnit INIT_POLL_TIMEOUT_UNIT = TimeUnit.MINUTES;
     private static final long RELOAD_POLL_DELAY = INIT_POLL_DELAY;
     private static final TimeUnit RELOAD_POLL_DELAY_UNIT = INIT_POLL_DELAY_UNIT;
-    private static final long RELOAD_POLL_TIMEOUT = 25;
-    private static final TimeUnit RELOAD_POLL_TIMEOUT_UNIT = TimeUnit.SECONDS;
+    private static final long RELOAD_POLL_TIMEOUT = 3;
+    private static final TimeUnit RELOAD_POLL_TIMEOUT_UNIT = TimeUnit.MINUTES;
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    private String getRestResponse(String url) throws Exception {
+    private String getRestResponse(String port, String url) throws Exception {
         AtomicReference<String> resp = new AtomicReference<>();
         // retry on exceptions for connection refused, connection errors, etc. which will occur until the Kogito Quarkus maven project is fully built and running
         await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
                 .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> {
                     try {
-                        String content = DevModeTestUtils.get("http://localhost:" + HTTP_TEST_PORT + url);
+                        String content = DevModeTestUtils.get("http://localhost:" + port + url);
                         resp.set(content);
                         return true;
                     } catch (Exception e) {
@@ -83,7 +84,7 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
 
     /* copy-paste from quarkus */
     @Override
-    protected void run(boolean performCompile, String... options) throws FileNotFoundException, MavenInvocationException {
+    protected void run(boolean performCompile, String... options) throws MavenInvocationException {
         assertThat(testDir).isDirectory();
         running = new RunningInvoker(testDir, false);
         final List<String> args = new ArrayList<>(2 + options.length);
@@ -111,6 +112,12 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         running.execute(args, Collections.emptyMap());
     }
 
+    private String run(boolean performCompile) throws MavenInvocationException, FileNotFoundException {
+        final String httpPort = String.valueOf(SocketUtils.findAvailablePort());
+        run(performCompile, "-Dquarkus.http.port=" + httpPort, "-Dquarkus.kogito.devservices.enabled=false");
+        return httpPort;
+    }
+
     private List<String> getProvidedMavenProperties() {
         List<String> additionalArguments = new ArrayList<>();
         if (MAVEN_REPO_LOCAL != null) {
@@ -133,16 +140,16 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
     @Test
     public void testBPMN2HotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-intrumentation-reload-bpmn");
-        run(true);
+        String httpPort = run(true);
 
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
         await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
-                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Hello, v1"));
 
-        System.out.println("Starting bpmn process");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testBPMN2HotReload] Starting bpmn process");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -157,15 +164,15 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body("s2", is("Hello, v1"));
 
         // --- Change #1
-        System.out.println("Beginning Change #1");
+        System.out.println("[testBPMN2HotReload] Beginning Change #1");
         File source = new File(testDir, "src/main/resources/simple.bpmn2");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Ciao, v1"));
 
-        System.out.println("Starting bpmn process");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testBPMN2HotReload] Starting bpmn process");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -180,14 +187,14 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body("s2", is("Ciao, v1"));
 
         // --- Change #2
-        System.out.println("Beginning Change #2");
+        System.out.println("[testBPMN2HotReload] Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Bonjour, v1"));
 
-        System.out.println("Starting bpmn process");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testBPMN2HotReload] Starting bpmn process");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -201,22 +208,22 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .statusCode(201)
                 .body("s2", is("Bonjour, v1"));
 
-        System.out.println("done.");
+        System.out.println("[testBPMN2HotReload] done.");
     }
 
     @Test
     public void testDMNHotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-intrumentation-reload-dmn");
-        run(true);
+        final String httpPort = run(true);
 
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
         await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
-                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Hello, v1"));
 
-        System.out.println("Evaluate DMN");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DMN");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -230,15 +237,15 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body("greeting", is("Hello, v1"));
 
         // --- Change #1
-        System.out.println("Beginning Change #1");
+        System.out.println("[testDMNHotReload] Beginning Change #1");
         File source = new File(testDir, "src/main/resources/hello.dmn");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Ciao, v1"));
 
-        System.out.println("Evaluate DMN");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DMN");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -252,14 +259,14 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body("greeting", is("Ciao, v1"));
 
         // --- Change #2
-        System.out.println("Beginning Change #2");
+        System.out.println("[testDMNHotReload] Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Bonjour, v1"));
 
-        System.out.println("Evaluate DMN");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DMN");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -272,22 +279,22 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .statusCode(200)
                 .body("greeting", is("Bonjour, v1"));
 
-        System.out.println("done.");
+        System.out.println("[testDMNHotReload] done.");
     }
 
     @Test
     public void testDRLHotReload() throws Exception {
         testDir = initProject("projects/classic-inst", "projects/project-intrumentation-reload-drl");
-        run(true);
+        final String httpPort = run(true);
 
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
         await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
-                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Hello, v1"));
 
-        System.out.println("Evaluate DRL");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DRL");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -301,15 +308,15 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body(containsString("Hello, v1"));
 
         // --- Change #1
-        System.out.println("Beginning Change #1");
+        System.out.println("[testDMNHotReload] Beginning Change #1");
         File source = new File(testDir, "src/main/resources/acme/rules.drl");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Ciao, v1"));
 
-        System.out.println("Evaluate DRL");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DRL");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -323,14 +330,14 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
                 .body(containsString("Ciao, v1"));
 
         // --- Change #2
-        System.out.println("Beginning Change #2");
+        System.out.println("[testDMNHotReload] Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
-                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Bonjour, v1"));
 
-        System.out.println("Evaluate DRL");
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        System.out.println("[testDMNHotReload] Evaluate DRL");
+        given().baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +
@@ -349,14 +356,14 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
     @Test
     public void testStaticResource() throws Exception {
         testDir = initProject("projects/simple-dmn", "projects/simple-dmn-static-resource");
-        run(true);
+        final String httpPort = run(true);
 
         // await Quarkus
         await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
-                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse(httpPort, "/control").contains("Hello, v1"));
 
         // static resource
-        given().baseUri("http://localhost:" + HTTP_TEST_PORT)
+        given().baseUri("http://localhost:" + httpPort)
                 .get("/dmnDefinitions.json")
                 .then()
                 .statusCode(200)

@@ -23,6 +23,20 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- this is used implicitly by Maven parallel builds so let's make Maven aware of it -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-deployment</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
 </project>

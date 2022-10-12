@@ -19,20 +19,24 @@ package io.quarkus.it.kogito.process;
 import java.time.Duration;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-import static io.quarkus.it.kogito.process.HotReloadTest.HTTP_TEST_PORT;
+import net.jcip.annotations.NotThreadSafe;
+
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
+@NotThreadSafe
 public class KogitoDevServiceTest {
 
     private static Duration TIMEOUT = Duration.ofMinutes(1);
@@ -41,11 +45,15 @@ public class KogitoDevServiceTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
+    final static int httpPort = SocketUtils.findAvailablePort();
+    final static int dataIndexHttpPort = SocketUtils.findAvailablePort();
+
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClass(CalculationService.class)
                     .addClass(Order.class)
+                    .addAsResource(new StringAsset("quarkus.http.port=" + httpPort + "\n" + "quarkus.kogito.devservices.port=" + dataIndexHttpPort), "application.properties")
                     .addAsResource("orderItems.bpmn")
                     .addAsResource("orders.bpmn"));
 
@@ -55,7 +63,7 @@ public class KogitoDevServiceTest {
                 .atMost(TIMEOUT)
                 .ignoreExceptions()
                 .untilAsserted(() -> given()
-                        .baseUri("http://localhost:8180")
+                        .baseUri("http://localhost:" + dataIndexHttpPort)
                         .contentType(ContentType.JSON)
                         .accept(ContentType.JSON)
                         .body("{ \"query\" : \"{ ProcessInstances { id } }\"}")
@@ -66,7 +74,7 @@ public class KogitoDevServiceTest {
 
         String addOrderPayload = "{\"approver\" : \"john\", \"order\" : {\"orderNumber\" : \"12345\", \"shipped\" : false}}";
         String processId = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(addOrderPayload)
@@ -82,7 +90,7 @@ public class KogitoDevServiceTest {
         await()
                 .atMost(TIMEOUT)
                 .untilAsserted(() -> given()
-                        .baseUri("http://localhost:8180")
+                        .baseUri("http://localhost:" + dataIndexHttpPort)
                         .contentType(ContentType.JSON)
                         .accept(ContentType.JSON)
                         .body("{ \"query\" : \"{ ProcessInstances (where: { id: {equal: \\\"" + processId + "\\\"}}) { id, processId, processName } }\"}")

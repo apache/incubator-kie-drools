@@ -18,7 +18,7 @@ package org.kie.kogito.quarkus.workflows;
 import java.util.Map;
 
 import org.apache.groovy.util.Maps;
-import org.kie.kogito.quarkus.utils.SocketUtils;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 

@@ -17,6 +17,7 @@ package org.kie.kogito.quarkus.rules.hotreload;
 
 import java.util.List;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,6 @@ public class HotReloadIT {
 
     private static final String PACKAGE = "org.kie.kogito.quarkus.rules.hotreload";
     private static final String RESOURCE_FILE = PACKAGE.replace('.', '/') + "/adult.drl";
-    private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
@@ -43,8 +43,10 @@ public class HotReloadIT {
     public void testServletChange() throws InterruptedException {
         String personsPayload = "{\"persons\":[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]}";
 
+        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
+
         List<String> names = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(personsPayload)
@@ -61,7 +63,7 @@ public class HotReloadIT {
         test.modifyResourceFile(RESOURCE_FILE, s -> s.replaceAll("18", "16"));
 
         names = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(personsPayload).when()

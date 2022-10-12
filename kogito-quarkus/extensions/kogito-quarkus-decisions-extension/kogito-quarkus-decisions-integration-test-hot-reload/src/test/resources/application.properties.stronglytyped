@@ -14,5 +14,6 @@
 # limitations under the License.
 #
 
-quarkus.http.port=65535
+quarkus.http.port=0
 kogito.decisions.stronglytyped=true
+quarkus.kogito.devservices.enabled=false

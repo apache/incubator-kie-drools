@@ -202,6 +202,9 @@ MavenCommand getFullMavenCommand(String directory) {
         if (builderImage) {
             mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
         }
+    } else {
+        // Do not use parallel for native checks
+        mvnCmd.withOptions(['-T 1C'])
     }
     return mvnCmd
 }

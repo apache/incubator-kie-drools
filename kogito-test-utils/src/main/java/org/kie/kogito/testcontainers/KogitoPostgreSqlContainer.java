@@ -30,11 +30,12 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
  */
 public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgreSqlContainer> implements TestResource {
 
+    public static final String NAME = "postgres";
     public static final String POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoPostgreSqlContainer.class);
 
     public KogitoPostgreSqlContainer() {
-        super("postgres:13.4-alpine3.14");
+        super(KogitoGenericContainer.getImageName(NAME));
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);

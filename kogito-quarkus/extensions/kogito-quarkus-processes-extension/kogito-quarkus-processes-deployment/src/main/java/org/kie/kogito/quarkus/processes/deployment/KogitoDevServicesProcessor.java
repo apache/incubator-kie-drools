@@ -131,7 +131,6 @@ public class KogitoDevServicesProcessor {
             systemProperties.produce(new SystemPropertyBuildItem("kogito.service.url", "http://localhost:" + port));
         }
 
-        LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
         if (closeable != null) {
             boolean shouldShutdown = !configuration.equals(cfg);
             if (!shouldShutdown) {
@@ -178,6 +177,7 @@ public class KogitoDevServicesProcessor {
         cfg = configuration;
 
         if (dataIndex != null && dataIndex.isOwner()) {
+            LOGGER.info("Dev Services for Kogito Data Index using image {}", configuration.imageName);
             LOGGER.info(
                     "Dev Services for Kogito Data Index started at {}",
                     dataIndex.getUrl());
@@ -200,7 +200,7 @@ public class KogitoDevServicesProcessor {
     private DataIndexInstance startDataIndex(DataIndexDevServiceConfig config, LaunchModeBuildItem launchMode, boolean useSharedNetwork) {
         if (!config.devServicesEnabled) {
             // explicitly disabled
-            LOGGER.debug("Not starting dev services for Kogito, as it has been disabled in the config.");
+            LOGGER.info("Not starting dev services for Kogito, as it has been disabled in the config.");
             return null;
         }
 

@@ -53,6 +53,7 @@
     <container.image.wurstmeister.kafka>wurstmeister/kafka:${version.wurstmeister.kafka}</container.image.wurstmeister.kafka>
     <container.image.mongodb>library/mongo:${version.org.mongo-image}</container.image.mongodb>
     <container.image.redis>redislabs/redisearch:${version.org.redis}</container.image.redis>
+    <container.image.postgres>postgres:${version.org.postgres}</container.image.postgres>
 
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
@@ -327,11 +328,12 @@
               <exclude>${tests.surefire.include}</exclude>
               <exclude>**/Native*</exclude>
             </excludes>
-            <argLine>-Xmx2048m -Xmx4g</argLine>
+            <argLine>-Xms2048m -Xmx4g  -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none</argLine>
             <systemPropertyVariables>
               <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
             </systemPropertyVariables>
+            <parallel>all</parallel>
           </configuration>
         </plugin>
         <plugin>
@@ -345,7 +347,7 @@
             <excludes>
               <exclude>${tests.failsafe.include}</exclude>
             </excludes>
-            <argLine>-Xmx2048m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xms2048m -Xmx4g -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Dfile.encoding=UTF-8</argLine>
             <systemPropertyVariables>
               <apple.awt.UIElement>true</apple.awt.UIElement>
               <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
@@ -354,6 +356,7 @@
               <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
             </systemPropertyVariables>
+            <parallel>all</parallel>
           </configuration>
         </plugin>
         <plugin>
@@ -742,7 +745,7 @@ limitations under the License.
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <!-- Append jacoco.agent.argLine property populated by JaCoCo's prepare-agent goal. -->
-              <argLine>@{jacoco.agent.argLine} -Xms1024m -Xmx4g -Dfile.encoding=UTF-8</argLine>
+              <argLine>@{jacoco.agent.argLine} -Xms1024m -Xmx4g  -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none -Dfile.encoding=UTF-8</argLine>
             </configuration>
           </plugin>
           <plugin>

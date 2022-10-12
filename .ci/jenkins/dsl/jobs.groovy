@@ -27,13 +27,15 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    // No parallel build for native
+                    BUILD_MVN_OPTS_CURRENT: !(jobFolder.isNative() || jobFolder.isMandrel() || jobFolder.isMandrelLTS()) ? '-T 1C' : '',
                 ]
             ], [
                 id: 'kogito-apps',
                 dependsOn: 'kogito-runtimes',
                 repository: 'kogito-apps',
                 env : [
-                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
+                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() || jobFolder.isMandrelLTS() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',

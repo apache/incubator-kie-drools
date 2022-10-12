@@ -17,7 +17,6 @@
 package org.kie.kogito.quarkus.it.openapi.client.mocks;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +60,11 @@ public abstract class MockServiceConfigurer implements QuarkusTestResourceLifecy
                 this.doStub(server);
             }
         });
-        return Collections.emptyMap();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put("quarkus.rest-client.swagger2_0_security_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_20.getPort() + "/iq9MzY");
+        properties.put("quarkus.rest-client.openapi3_0_security_yaml.url", "http://localhost:" + AuthSecurityMockService.SEC_30.getPort());
+        properties.put("quarkus.oidc-client.oauth.auth-server-url", "http://localhost:" + AuthSecurityMockService.SEC_30.getPort());
+        return properties;
     }
 
     @Override

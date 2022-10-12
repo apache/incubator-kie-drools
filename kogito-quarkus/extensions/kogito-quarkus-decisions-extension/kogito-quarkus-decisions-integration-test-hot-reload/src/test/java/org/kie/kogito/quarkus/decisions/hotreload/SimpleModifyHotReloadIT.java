@@ -17,6 +17,7 @@ package org.kie.kogito.quarkus.decisions.hotreload;
 
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,6 @@ public class SimpleModifyHotReloadIT {
     private static final String PACKAGE = "org.kie.kogito.quarkus.decisions.hotreload";
     private static final String RESOURCE_FILE_PATH = PACKAGE.replace('.', '/');
     private static final String DMN_RESOURCE_FILE = RESOURCE_FILE_PATH + "/TrafficViolation.dmn";
-
-    private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
@@ -72,8 +71,9 @@ public class SimpleModifyHotReloadIT {
     }
 
     private void executeTest(String result) {
+        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         ValidatableResponse response = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +

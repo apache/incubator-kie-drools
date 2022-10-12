@@ -27,9 +27,10 @@
         </property>
       </activation>
       <modules>
+        <!-- TODO:Figure out Kafka containers, ports, resources -->
         <module>integration-tests-quarkus-rules</module>
         <module>integration-tests-quarkus-decisions</module>
-        <module>integration-tests-quarkus-predictions</module>
+        <!-- module>integration-tests-quarkus-predictions</module -->
         <module>integration-tests-quarkus-resteasy-classic</module>
         <module>integration-tests-quarkus-resteasy-reactive</module>
         <module>integration-tests-kogito-plugin</module>

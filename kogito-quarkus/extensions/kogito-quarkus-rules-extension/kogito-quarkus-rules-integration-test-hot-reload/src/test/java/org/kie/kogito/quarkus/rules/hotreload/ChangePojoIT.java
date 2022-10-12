@@ -18,6 +18,7 @@ package org.kie.kogito.quarkus.rules.hotreload;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,6 @@ public class ChangePojoIT {
 
     private static final String PACKAGE = "org.kie.kogito.quarkus.rules.hotreload";
     private static final String RESOURCE_FILE = PACKAGE.replace('.', '/') + "/adult.drl";
-    private static final String HTTP_TEST_PORT = "65535";
 
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
@@ -62,8 +62,10 @@ public class ChangePojoIT {
         String personsPayload1 = "{\"persons\":[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]}";
         String personsPayload2 = "{\"persons\":[{\"name\":\"Mario\",\"surname\":\"Fusco\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"surname\":\"Fusco\",\"age\":17,\"adult\":false}]}";
 
+        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
+
         List<Map> persons = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(personsPayload1)
@@ -81,7 +83,7 @@ public class ChangePojoIT {
 
         if (!allChangesAtOnce) {
             persons = given()
-                    .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                    .baseUri("http://localhost:" + httpPort)
                     .contentType(ContentType.JSON)
                     .accept(ContentType.JSON)
                     .body(personsPayload2)
@@ -99,7 +101,7 @@ public class ChangePojoIT {
         test.modifyResourceFile(RESOURCE_FILE, s -> DRL2);
 
         persons = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(personsPayload2).when()

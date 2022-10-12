@@ -168,6 +168,12 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <!-- override Infinispan BOM -->
+        <version>@version.compiler.plugin@</version>
+      </plugin>
     </plugins>
   </build>
 </project>

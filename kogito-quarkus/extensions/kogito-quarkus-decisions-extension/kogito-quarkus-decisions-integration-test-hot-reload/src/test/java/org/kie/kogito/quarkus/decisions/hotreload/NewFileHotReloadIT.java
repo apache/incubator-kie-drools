@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
@@ -43,8 +44,6 @@ public class NewFileHotReloadIT {
     private static final String RESOURCE_FILE_PATH = PACKAGE.replace('.', '/');
     private static final String DMN_RESOURCE_FILE = RESOURCE_FILE_PATH + "/TrafficViolation.dmn";
 
-    private static final String HTTP_TEST_PORT = "65535";
-
     @RegisterExtension
     final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
             () -> ShrinkWrap.create(JavaArchive.class)
@@ -52,6 +51,7 @@ public class NewFileHotReloadIT {
 
     @Test
     void newFileTest() throws IOException {
+        String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(requireNonNull(classLoader.getResource("TrafficViolation.txt")).getFile());
         String xml = new String(java.nio.file.Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
@@ -59,7 +59,7 @@ public class NewFileHotReloadIT {
         test.addResourceFile(DMN_RESOURCE_FILE, xml);
 
         ValidatableResponse response = given()
-                .baseUri("http://localhost:" + HTTP_TEST_PORT)
+                .baseUri("http://localhost:" + httpPort)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body("{\n" +

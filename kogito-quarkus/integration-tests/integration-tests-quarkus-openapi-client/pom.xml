@@ -28,6 +28,22 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-serverless-workflow</artifactId>
     </dependency>
+
+    <!-- this is used implicitly by kogito-quarkus-serverless-workflow, let's make Maven parallel build to be aware of it. -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-serverless-workflow-deployment</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!-- Required by OAuth2 use cases -->
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -62,6 +78,11 @@
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

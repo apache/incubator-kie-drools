@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.conf.StaticConfigBean;
 import org.kie.kogito.explainability.model.PredictOutput;
+import org.kie.kogito.test.utils.SocketUtils;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.common.mapper.TypeRef;
@@ -45,7 +46,7 @@ public class QuarkusExplainableResourceIT {
 
     @Singleton
     public static ConfigBean configBeanProducer() {
-        return new StaticConfigBean("http://localhost:8081", true, null);
+        return new StaticConfigBean("http://localhost:" + SocketUtils.findAvailablePort(), true, null);
     }
 
     @Test

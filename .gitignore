@@ -20,3 +20,5 @@ target/
 .vscode
 .run/
 .checkstyle
+
+*.log

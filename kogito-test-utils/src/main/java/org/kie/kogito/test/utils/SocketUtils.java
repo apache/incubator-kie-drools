@@ -23,14 +23,19 @@ import javax.net.ServerSocketFactory;
 
 public final class SocketUtils {
 
-    protected static final int PORT_RANGE_MIN = 1024;
-    protected static final int PORT_RANGE_MAX = 65535;
+    /**
+     * Minimal port to use.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Dynamic.2C_private_or_ephemeral_ports">Dynamic, private or ephemeral ports</a>
+     */
+    static final int PORT_RANGE_MIN = 49152;
+    static final int PORT_RANGE_MAX = 65535;
     private static final SecureRandom RND = new SecureRandom();
 
     private SocketUtils() {
     }
 
-    public static final int findAvailablePort() {
+    public static int findAvailablePort() {
         int portRange = PORT_RANGE_MAX - PORT_RANGE_MIN;
         int candidatePort;
         int searchCounter = 0;
@@ -47,12 +52,12 @@ public final class SocketUtils {
         return candidatePort;
     }
 
-    private static final int findRandomPort(int minPort, int maxPort) {
+    private static int findRandomPort(int minPort, int maxPort) {
         int portRange = maxPort - minPort;
         return minPort + RND.nextInt(portRange + 1);
     }
 
-    private static final boolean isPortAvailable(int port) {
+    private static boolean isPortAvailable(int port) {
         try {
             ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(port, 1, InetAddress.getByName("localhost"));
             serverSocket.close();

@@ -44,6 +44,8 @@ jobs:
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+        env:
+          BUILD_MVN_OPTS_CURRENT: '-T 1.5C'
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}

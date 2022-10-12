@@ -26,9 +26,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+@NotThreadSafe
 public class QuarkusEventThreadPoolTest {
 
     private static final String CHANNEL_NAME = "nevermind";

@@ -18,6 +18,7 @@ package org.kie.kogito.integrationtests.quarkus;
 import java.util.Collections;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
@@ -26,6 +27,7 @@ import io.restassured.RestAssured;
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testDescriptive;
 import static org.kie.kogito.integrationtests.quarkus.CommonTestUtils.testResult;
 
+@Disabled
 @QuarkusIntegrationTest
 class PMMLRegressionIT {
 
