@@ -1080,10 +1080,9 @@ public class MyConstraintProviderTest {
 
 Constraint streams come in two flavors:
 
-* *CS Drools* (default): a fast, feature-complete implementation that uses Drools underneath.
+* *CS Drools* (default): fast implementation that uses Drools underneath.
 
-* *Bavet*: a fast, experimental implementation.
-It lacks features and therefore many of the xref:use-cases-and-examples/examples-overview/examples-overview.adoc#examplesOverview[examples] are not supported.
+* *Bavet*: even faster, more recent in-house implementation. 
 To try it out set the `constraintStreamImplType` to `BAVET` in your solver config:
 +
 [source,xml,options="nowrap"]
