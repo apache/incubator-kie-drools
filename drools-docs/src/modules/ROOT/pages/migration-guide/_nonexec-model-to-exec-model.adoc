@@ -20,7 +20,7 @@ then
   myUtils.doWork((String) $p.age )));
 end
 ----
-This rule can be built with  `non executable model` even if `$p.age` is `int` that is not acceptable in Java syntax.
+This rule can be built with  `non-executable model` even if `$p.age` is `int` which is not acceptable in Java syntax.
 
 With `executable model`, the rule fails with a build error.
 ----
