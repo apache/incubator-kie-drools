@@ -22,15 +22,14 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.prediction.PredictionEventListenerConfig;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AbstractPredictionConfigTest {
 
     @Test
     void predictionEventListenersWithoutPredictionEventListenerConfigs() {
         AbstractPredictionConfig abstractPredictionConfig = getAbstractPredictionConfig(null);
-        assertNull(abstractPredictionConfig.predictionEventListeners());
+        assertThat(abstractPredictionConfig.predictionEventListeners()).isNull();
     }
 
     @Test
@@ -40,7 +39,7 @@ class AbstractPredictionConfigTest {
                 .mapToObj(i -> getPredictionEventListenerConfig())
                 .collect(Collectors.toList());
         AbstractPredictionConfig abstractPredictionConfig = getAbstractPredictionConfig(predictionEventListenerConfigs);
-        assertEquals(predictionEventListenerConfigs.get(0), abstractPredictionConfig.predictionEventListeners());
+        assertThat(abstractPredictionConfig.predictionEventListeners()).isEqualTo(predictionEventListenerConfigs.get(0));
     }
 
     private AbstractPredictionConfig getAbstractPredictionConfig(Iterable<PredictionEventListenerConfig> predictionEventListenerConfigs) {

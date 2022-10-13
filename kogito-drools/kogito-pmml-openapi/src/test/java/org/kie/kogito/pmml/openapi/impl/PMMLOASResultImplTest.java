@@ -15,9 +15,7 @@
  */
 package org.kie.kogito.pmml.openapi.impl;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -33,10 +31,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.pmml.CommonTestUtility.getRandomMiningFields;
 import static org.kie.kogito.pmml.CommonTestUtility.getRandomOutputFields;
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.CORRELATION_ID;
@@ -61,13 +56,13 @@ class PMMLOASResultImplTest {
     @Test
     void constructor() {
         PMMLOASResultImpl retrieved = (PMMLOASResultImpl) new PMMLOASResultImpl.Builder().build();
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         ObjectNode jsonNodes = retrieved.jsonNodes;
-        assertNotNull(jsonNodes);
+        assertThat(jsonNodes).isNotNull();
         ObjectNode definitions = (ObjectNode) jsonNodes.get(DEFINITIONS);
-        assertNotNull(definitions);
+        assertThat(definitions).isNotNull();
         ObjectNode outputSet = (ObjectNode) definitions.get(OUTPUT_SET);
-        assertNotNull(outputSet);
+        assertThat(outputSet).isNotNull();
         commonValidateOutputSet(outputSet);
     }
 
@@ -77,11 +72,11 @@ class PMMLOASResultImplTest {
         final List<MiningField> miningFields = getRandomMiningFields();
         retrieved.addMiningFields(miningFields);
         ObjectNode jsonNodes = retrieved.jsonNodes;
-        assertNotNull(jsonNodes);
+        assertThat(jsonNodes).isNotNull();
         ObjectNode definitions = (ObjectNode) jsonNodes.get(DEFINITIONS);
-        assertNotNull(definitions);
+        assertThat(definitions).isNotNull();
         ObjectNode inputSet = (ObjectNode) definitions.get(INPUT_SET);
-        assertNotNull(inputSet);
+        assertThat(inputSet).isNotNull();
     }
 
     @Test
@@ -91,21 +86,20 @@ class PMMLOASResultImplTest {
         ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
         ObjectNode outputSetNode = (ObjectNode) definitionsNode.get(OUTPUT_SET);
         ObjectNode outputSetPropertiesNode = (ObjectNode) outputSetNode.get(PROPERTIES);
-        assertNull(outputSetPropertiesNode.get(RESULT_VARIABLES));
+        assertThat(outputSetPropertiesNode.get(RESULT_VARIABLES)).isNull();
         List<OutputField> toAdd = getRandomOutputFields();
         pmmlOAResult.addOutputFields(toAdd);
-        assertNotNull(outputSetPropertiesNode.get(RESULT_VARIABLES));
+        assertThat(outputSetPropertiesNode.get(RESULT_VARIABLES)).isNotNull();
         ObjectNode resultVariablesNode = (ObjectNode) outputSetPropertiesNode.get(RESULT_VARIABLES);
-        assertNotNull(resultVariablesNode.get(PROPERTIES));
+        assertThat(resultVariablesNode.get(PROPERTIES)).isNotNull();
         ObjectNode resultVariablesPropertiesNode = (ObjectNode) resultVariablesNode.get(PROPERTIES);
-        assertEquals(toAdd.size(), resultVariablesPropertiesNode.size());
+        assertThat(resultVariablesPropertiesNode).hasSameSizeAs(toAdd);
+
         List<JsonNode> nodeList = StreamSupport
                 .stream(resultVariablesPropertiesNode.spliterator(), false)
                 .collect(Collectors.toList());
-        nodeList.forEach(resultNode -> assertTrue(resultNode instanceof ObjectNode));
-        toAdd.forEach(outputField -> {
-            assertNotNull(resultVariablesPropertiesNode.get(outputField.getName()));
-        });
+        assertThat(nodeList).isNotEmpty().allMatch(resultNode -> resultNode instanceof ObjectNode);
+        assertThat(toAdd).allSatisfy(outputField -> assertThat(resultVariablesPropertiesNode.get(outputField.getName())).isNotNull());
 
     }
 
@@ -115,15 +109,15 @@ class PMMLOASResultImplTest {
         ObjectNode jsonNodes = pmmlOAResult.jsonNodes;
         ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
         definitionsNode.removeAll();
-        assertNull(definitionsNode.get(RESULT_SET));
+        assertThat(definitionsNode.get(RESULT_SET)).isNull();
         String fieldName = "fieldName";
         DATA_TYPE dataType = DATA_TYPE.DOUBLE;
         pmmlOAResult.addToResultSet(fieldName, dataType, Collections.emptyList());
-        assertNotNull(definitionsNode.get(RESULT_SET));
+        assertThat(definitionsNode.get(RESULT_SET)).isNotNull();
         ObjectNode resultSetNode = (ObjectNode) definitionsNode.get(RESULT_SET);
         ObjectNode resultSetPropertiesNode = (ObjectNode) resultSetNode.get(PROPERTIES);
-        assertNotNull(resultSetPropertiesNode);
-        assertNotNull(resultSetPropertiesNode.get(fieldName));
+        assertThat(resultSetPropertiesNode).isNotNull();
+        assertThat(resultSetPropertiesNode.get(fieldName)).isNotNull();
     }
 
     @Test
@@ -133,15 +127,15 @@ class PMMLOASResultImplTest {
         ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
         ObjectNode outputSetNode = (ObjectNode) definitionsNode.get(OUTPUT_SET);
         ObjectNode propertiesNode = (ObjectNode) outputSetNode.get(PROPERTIES);
-        assertNull(propertiesNode.get(RESULT_VARIABLES));
+        assertThat(propertiesNode.get(RESULT_VARIABLES)).isNull();
         String fieldName = "fieldName";
         DATA_TYPE dataType = DATA_TYPE.DOUBLE;
         pmmlOAResult.addToResultVariables(fieldName, dataType, Collections.emptyList());
-        assertNotNull(propertiesNode.get(RESULT_VARIABLES));
+        assertThat(propertiesNode.get(RESULT_VARIABLES)).isNotNull();
         ObjectNode resultVariablesNode = (ObjectNode) propertiesNode.get(RESULT_VARIABLES);
         ObjectNode resultVariablesPropertiesNode = (ObjectNode) resultVariablesNode.get(PROPERTIES);
-        assertNotNull(resultVariablesPropertiesNode);
-        assertNotNull(resultVariablesPropertiesNode.get(fieldName));
+        assertThat(resultVariablesPropertiesNode).isNotNull();
+        assertThat(resultVariablesPropertiesNode.get(fieldName)).isNotNull();
     }
 
     @Test
@@ -150,12 +144,12 @@ class PMMLOASResultImplTest {
         ObjectNode jsonNodes = pmmlOAResult.jsonNodes;
         ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
         definitionsNode.removeAll();
-        assertNull(definitionsNode.get(RESULT_SET));
+        assertThat(definitionsNode.get(RESULT_SET)).isNull();
         ObjectNode created = pmmlOAResult.conditionallyCreateResultSetNode();
-        assertNotNull(created);
-        assertEquals(created, definitionsNode.get(RESULT_SET));
+        assertThat(created).isNotNull();
+        assertThat(definitionsNode.get(RESULT_SET)).isEqualTo(created);
         ObjectNode notCreated = pmmlOAResult.conditionallyCreateResultSetNode();
-        assertEquals(created, notCreated);
+        assertThat(notCreated).isEqualTo(created);
     }
 
     @Test
@@ -166,12 +160,12 @@ class PMMLOASResultImplTest {
         ObjectNode outputSetNode = (ObjectNode) definitionsNode.get(OUTPUT_SET);
         ObjectNode propertiesNode = (ObjectNode) outputSetNode.get(PROPERTIES);
         propertiesNode.removeAll();
-        assertNull(propertiesNode.get(RESULT_VARIABLES));
+        assertThat(propertiesNode.get(RESULT_VARIABLES)).isNull();
         ObjectNode created = pmmlOAResult.conditionallyCreateResultVariablesNode();
-        assertNotNull(created);
-        assertEquals(created, propertiesNode.get(RESULT_VARIABLES));
+        assertThat(created).isNotNull();
+        assertThat(propertiesNode.get(RESULT_VARIABLES)).isEqualTo(created);
         ObjectNode notCreated = pmmlOAResult.conditionallyCreateResultVariablesNode();
-        assertEquals(created, notCreated);
+        assertThat(notCreated).isEqualTo(created);
     }
 
     @Test
@@ -180,80 +174,73 @@ class PMMLOASResultImplTest {
         ObjectNode jsonNodes = pmmlOAResult.jsonNodes;
         ObjectNode definitionsNode = (ObjectNode) jsonNodes.get(DEFINITIONS);
         String nodeToCreate = "nodeToCreate";
-        assertNull(definitionsNode.get(nodeToCreate));
+        assertThat(definitionsNode.get(nodeToCreate)).isNull();
         ObjectNode created = pmmlOAResult.conditionallyCreateSetNode(nodeToCreate);
-        assertNotNull(created);
-        assertEquals(created, definitionsNode.get(nodeToCreate));
+        assertThat(created).isNotNull();
+        assertThat(definitionsNode.get(nodeToCreate)).isEqualTo(created);
         ObjectNode notCreated = pmmlOAResult.conditionallyCreateSetNode(nodeToCreate);
-        assertEquals(created, notCreated);
+        assertThat(notCreated).isEqualTo(created);
     }
 
     private void commonValidateOutputSet(ObjectNode toValidate) {
         JsonNode typeNode = toValidate.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(OBJECT, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(OBJECT);
         JsonNode propertiesNode = toValidate.get(PROPERTIES);
-        assertNotNull(propertiesNode);
-        assertTrue(propertiesNode instanceof ObjectNode);
+        assertThat(propertiesNode).isNotNull();
+        assertThat(propertiesNode).isInstanceOf(ObjectNode.class);
         JsonNode correlationIdNode = propertiesNode.get(CORRELATION_ID);
-        assertNotNull(correlationIdNode);
-        assertTrue(correlationIdNode instanceof ObjectNode);
+        assertThat(correlationIdNode).isNotNull();
+        assertThat(correlationIdNode).isInstanceOf(ObjectNode.class);
         typeNode = correlationIdNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(STRING, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(STRING);
         JsonNode segmentationIdNode = propertiesNode.get(SEGMENTATION_ID);
-        assertNotNull(segmentationIdNode);
-        assertTrue(segmentationIdNode instanceof ObjectNode);
+        assertThat(segmentationIdNode).isNotNull();
+        assertThat(segmentationIdNode).isInstanceOf(ObjectNode.class);
         typeNode = segmentationIdNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(STRING, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(STRING);
         JsonNode segmentIdNode = propertiesNode.get(SEGMENT_ID);
-        assertNotNull(segmentIdNode);
-        assertTrue(segmentIdNode instanceof ObjectNode);
+        assertThat(segmentIdNode).isNotNull();
+        assertThat(segmentIdNode).isInstanceOf(ObjectNode.class);
         typeNode = segmentIdNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(STRING, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(STRING);
         JsonNode segmentIndexNode = propertiesNode.get(SEGMENT_INDEX);
-        assertNotNull(segmentIndexNode);
-        assertTrue(segmentIndexNode instanceof ObjectNode);
+        assertThat(segmentIndexNode).isNotNull();
+        assertThat(segmentIndexNode).isInstanceOf(ObjectNode.class);
         typeNode = segmentIndexNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals("integer", ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo("integer");
         JsonNode resultCodeNode = propertiesNode.get(RESULT_CODE);
-        assertNotNull(resultCodeNode);
-        assertTrue(resultCodeNode instanceof ObjectNode);
+        assertThat(resultCodeNode).isNotNull();
+        assertThat(resultCodeNode).isInstanceOf(ObjectNode.class);
         typeNode = resultCodeNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(STRING, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(STRING);
         JsonNode enumNode = resultCodeNode.get(ENUM);
-        assertNotNull(enumNode);
-        assertTrue(enumNode instanceof ArrayNode);
-        assertEquals(ResultCode.values().length, ((ArrayNode) enumNode).size());
-        final Iterator<JsonNode> enumElements = enumNode.elements();
-        Arrays.stream(ResultCode.values()).forEach(resultCode -> {
-            boolean find = false;
-            while (enumElements.hasNext()) {
-                JsonNode node = enumElements.next();
-                assertTrue(node instanceof TextNode);
-                if (resultCode.getName().equals(((TextNode) node).asText())) {
-                    find = true;
-                    break;
-                }
-            }
-            assertTrue(find);
-        });
+        assertThat(enumNode).isNotNull();
+        assertThat(enumNode).isInstanceOf(ArrayNode.class);
+        assertThat(((ArrayNode) enumNode)).hasSameSizeAs(ResultCode.values());
+        List<JsonNode> enumElements = StreamSupport
+                .stream(enumNode.spliterator(), false)
+                .collect(Collectors.toList());
+        assertThat(enumElements).allMatch(node -> node instanceof TextNode);
+        assertThat(ResultCode.values()).extracting(resultCode -> resultCode.getName()).allSatisfy(name -> assertThat(enumElements).extracting(enumElement -> enumElement.asText()).contains(name));
+
         JsonNode resultObjectNameNode = propertiesNode.get(RESULT_OBJECT_NAME);
-        assertNotNull(resultObjectNameNode);
-        assertTrue(resultObjectNameNode instanceof ObjectNode);
+        assertThat(resultObjectNameNode).isNotNull();
+        assertThat(resultObjectNameNode).isInstanceOf(ObjectNode.class);
         typeNode = resultObjectNameNode.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(STRING, ((TextNode) typeNode).asText());
+        assertThat(typeNode).isNotNull();
+        assertThat(typeNode).isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(STRING);
     }
 }

@@ -24,7 +24,7 @@ import org.kie.kogito.ModelDomain;
 import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.decision.DecisionModelResource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultDecisionModelResourceTest {
 
@@ -39,11 +39,11 @@ public class DefaultDecisionModelResourceTest {
                 "name",
                 new DecisionModelMetadata("http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
-        assertEquals(GAV, resource.getGav());
-        assertEquals("name", resource.getModelName());
-        assertEquals("namespace", resource.getNamespace());
-        assertEquals(ModelDomain.DECISION, resource.getModelMetadata().getModelDomain());
-        assertEquals("http://www.omg.org/spec/DMN/20151101/dmn.xsd", resource.getModelMetadata().getSpecVersion());
+        assertThat(resource.getGav()).isEqualTo(GAV);
+        assertThat(resource.getModelName()).isEqualTo("name");
+        assertThat(resource.getNamespace()).isEqualTo("namespace");
+        assertThat(resource.getModelMetadata().getModelDomain()).isEqualTo(ModelDomain.DECISION);
+        assertThat(resource.getModelMetadata().getSpecVersion()).isEqualTo("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
     }
 
     @Test
@@ -53,6 +53,6 @@ public class DefaultDecisionModelResourceTest {
                 "name",
                 new DecisionModelMetadata("http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
                 new InputStreamReader(new ByteArrayInputStream(CONTENT.getBytes())));
-        assertEquals(CONTENT, resource.get().trim());
+        assertThat(resource.get().trim()).isEqualTo(CONTENT);
     }
 }

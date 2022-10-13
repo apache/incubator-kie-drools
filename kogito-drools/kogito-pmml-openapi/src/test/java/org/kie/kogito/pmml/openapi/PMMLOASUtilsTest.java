@@ -45,11 +45,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 import io.smallrye.openapi.runtime.io.JsonUtil;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.pmml.openapi.PMMLOASUtils.INFINITY_SYMBOL;
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.BOOLEAN;
 import static org.kie.kogito.pmml.openapi.api.PMMLOASResult.DOUBLE;
@@ -80,7 +76,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertFalse(PMMLOASUtils.isRequired(toVerify));
+        assertThat(PMMLOASUtils.isRequired(toVerify)).isFalse();
         toVerify = new MiningField(null,
                 FIELD_USAGE_TYPE.TARGET,
                 null,
@@ -91,7 +87,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertFalse(PMMLOASUtils.isRequired(toVerify));
+        assertThat(PMMLOASUtils.isRequired(toVerify)).isFalse();
         toVerify = new MiningField(null,
                 null,
                 null,
@@ -102,7 +98,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertFalse(PMMLOASUtils.isRequired(toVerify));
+        assertThat(PMMLOASUtils.isRequired(toVerify)).isFalse();
         toVerify = new MiningField(null,
                 null,
                 null,
@@ -113,7 +109,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertTrue(PMMLOASUtils.isRequired(toVerify));
+        assertThat(PMMLOASUtils.isRequired(toVerify)).isTrue();
     }
 
     @Test
@@ -128,7 +124,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertTrue(PMMLOASUtils.isPredicted(toVerify));
+        assertThat(PMMLOASUtils.isPredicted(toVerify)).isTrue();
         toVerify = new MiningField(null,
                 FIELD_USAGE_TYPE.TARGET,
                 null,
@@ -139,7 +135,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertTrue(PMMLOASUtils.isPredicted(toVerify));
+        assertThat(PMMLOASUtils.isPredicted(toVerify)).isTrue();
         toVerify = new MiningField(null,
                 null,
                 null,
@@ -150,7 +146,7 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null);
-        assertFalse(PMMLOASUtils.isPredicted(toVerify));
+        assertThat(PMMLOASUtils.isPredicted(toVerify)).isFalse();
         Arrays.stream(FIELD_USAGE_TYPE.values())
                 .filter(usageType -> usageType != FIELD_USAGE_TYPE.TARGET
                         && usageType != FIELD_USAGE_TYPE.PREDICTED)
@@ -165,7 +161,7 @@ class PMMLOASUtilsTest {
                             null,
                             null,
                             null);
-                    assertFalse(PMMLOASUtils.isPredicted(miningField));
+                    assertThat(PMMLOASUtils.isPredicted(miningField)).isFalse();
                 });
     }
 
@@ -188,7 +184,7 @@ class PMMLOASUtilsTest {
                 default:
                     expected = NUMBER;
             }
-            assertEquals(expected, PMMLOASUtils.getMappedType(dataType));
+            assertThat(PMMLOASUtils.getMappedType(dataType)).isEqualTo(expected);
         });
     }
 
@@ -206,7 +202,7 @@ class PMMLOASUtilsTest {
                 default:
                     expected = null;
             }
-            assertEquals(expected, PMMLOASUtils.getMappedFormat(dataType));
+            assertThat(PMMLOASUtils.getMappedFormat(dataType)).isEqualTo(expected);
         });
     }
 
@@ -214,54 +210,54 @@ class PMMLOASUtilsTest {
     void addIntervals() {
         ObjectNode typeFieldNode = JsonUtil.objectNode();
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.emptyList());
-        assertEquals(0, typeFieldNode.size());
+        assertThat(typeFieldNode).isEmpty();
         //
         Interval interval = new Interval(-34.23, null);
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.singletonList(interval));
-        assertNotNull(typeFieldNode.get(MINIMUM));
+        assertThat(typeFieldNode.get(MINIMUM)).isNotNull();
         NumericNode numericNode = (NumericNode) typeFieldNode.get(MINIMUM);
-        assertEquals(interval.getLeftMargin().doubleValue(), numericNode.asDouble());
-        assertNull(typeFieldNode.get(MAXIMUM));
-        assertNull(typeFieldNode.get(INTERVALS));
+        assertThat(numericNode.asDouble()).isEqualTo(interval.getLeftMargin().doubleValue());
+        assertThat(typeFieldNode.get(MAXIMUM)).isNull();
+        assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
         typeFieldNode = JsonUtil.objectNode();
         interval = new Interval(null, 35.0);
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.singletonList(interval));
-        assertNull(typeFieldNode.get(MINIMUM));
-        assertNotNull(typeFieldNode.get(MAXIMUM));
+        assertThat(typeFieldNode.get(MINIMUM)).isNull();
+        assertThat(typeFieldNode.get(MAXIMUM)).isNotNull();
         numericNode = (NumericNode) typeFieldNode.get(MAXIMUM);
-        assertEquals(interval.getRightMargin().doubleValue(), numericNode.asDouble());
-        assertNull(typeFieldNode.get(INTERVALS));
+        assertThat(numericNode.asDouble()).isEqualTo(interval.getRightMargin().doubleValue());
+        assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
         typeFieldNode = JsonUtil.objectNode();
         interval = new Interval(-34.23, 35.0);
         PMMLOASUtils.addIntervals(typeFieldNode, Collections.singletonList(interval));
-        assertNotNull(typeFieldNode.get(MINIMUM));
+        assertThat(typeFieldNode.get(MINIMUM)).isNotNull();
         numericNode = (NumericNode) typeFieldNode.get(MINIMUM);
-        assertEquals(interval.getLeftMargin().doubleValue(), numericNode.asDouble());
-        assertNotNull(typeFieldNode.get(MAXIMUM));
+        assertThat(numericNode.asDouble()).isEqualTo(interval.getLeftMargin().doubleValue());
+        assertThat(typeFieldNode.get(MAXIMUM)).isNotNull();
         numericNode = (NumericNode) typeFieldNode.get(MAXIMUM);
-        assertEquals(interval.getRightMargin().doubleValue(), numericNode.asDouble());
-        assertNull(typeFieldNode.get(INTERVALS));
+        assertThat(numericNode.asDouble()).isEqualTo(interval.getRightMargin().doubleValue());
+        assertThat(typeFieldNode.get(INTERVALS)).isNull();
         //
         typeFieldNode = JsonUtil.objectNode();
         List<Interval> intervals = IntStream.range(0, 3)
                 .mapToObj(i -> new Interval(i * 2 + 3, i * 3 + 4))
                 .collect(Collectors.toList());
         PMMLOASUtils.addIntervals(typeFieldNode, intervals);
-        assertNull(typeFieldNode.get(MINIMUM));
-        assertNull(typeFieldNode.get(MAXIMUM));
-        assertNotNull(typeFieldNode.get(INTERVALS));
+        assertThat(typeFieldNode.get(MINIMUM)).isNull();
+        assertThat(typeFieldNode.get(MAXIMUM)).isNull();
+        assertThat(typeFieldNode.get(INTERVALS)).isNotNull();
         ArrayNode intervalsNode = (ArrayNode) typeFieldNode.get(INTERVALS);
         List<JsonNode> nodeList = StreamSupport
                 .stream(intervalsNode.spliterator(), false)
                 .collect(Collectors.toList());
-        nodeList.forEach(intervalNode -> assertTrue(intervalNode instanceof TextNode));
-        intervals.forEach(intervalValue -> {
+        assertThat(nodeList).allMatch(node -> node instanceof TextNode);
+        assertThat(intervals).allSatisfy(intervalValue -> {
             String leftMargin = intervalValue.getLeftMargin() != null ? intervalValue.getLeftMargin().toString() : "-" + INFINITY_SYMBOL;
             String rightMargin = intervalValue.getRightMargin() != null ? intervalValue.getRightMargin().toString() : INFINITY_SYMBOL;
             String expected = String.format("%s %s", leftMargin, rightMargin);
-            assertTrue(nodeList.stream().anyMatch(node -> expected.equals(node.asText())));
+            assertThat(nodeList).anySatisfy(node -> expected.equals(node.asText()));
         });
     }
 
@@ -271,51 +267,53 @@ class PMMLOASUtilsTest {
         DATA_TYPE dataType = DATA_TYPE.DOUBLE;
         ObjectNode setNode = PMMLOASUtils.createSetNode();
         ObjectNode propertiesNode = (ObjectNode) setNode.get(PROPERTIES);
-        assertTrue(propertiesNode.isEmpty());
+        assertThat(propertiesNode).isEmpty();
+
         PMMLOASUtils.addToSetNode(fieldName, dataType, Collections.emptyList(), setNode);
-        assertNotNull(propertiesNode.get(fieldName));
+        assertThat(propertiesNode.get(fieldName)).isNotNull();
+
         ObjectNode fieldNameNode = (ObjectNode) propertiesNode.get(fieldName);
-        assertNotNull(fieldNameNode.get(TYPE));
-        assertEquals(NUMBER, fieldNameNode.get(TYPE).asText());
-        assertNotNull(fieldNameNode.get(FORMAT));
-        assertEquals(DOUBLE, fieldNameNode.get(FORMAT).asText());
-        assertNull(fieldNameNode.get(ENUM));
+        assertThat(fieldNameNode.get(TYPE)).isNotNull();
+        assertThat(fieldNameNode.get(TYPE).asText()).isEqualTo(NUMBER);
+        assertThat(fieldNameNode.get(FORMAT)).isNotNull();
+        assertThat(fieldNameNode.get(FORMAT).asText()).isEqualTo(DOUBLE);
+        assertThat(fieldNameNode.get(ENUM)).isNull();
         //
         List<String> allowedValues = IntStream.range(0, 3)
                 .mapToObj(it -> "VALUE" + it)
                 .collect(Collectors.toList());
         setNode = PMMLOASUtils.createSetNode();
         propertiesNode = (ObjectNode) setNode.get(PROPERTIES);
-        assertTrue(propertiesNode.isEmpty());
+        assertThat(propertiesNode).isEmpty();
+
         PMMLOASUtils.addToSetNode(fieldName, dataType, allowedValues, setNode);
-        assertNotNull(propertiesNode.get(fieldName));
+        assertThat(propertiesNode.get(fieldName)).isNotNull();
         fieldNameNode = (ObjectNode) propertiesNode.get(fieldName);
-        assertNotNull(fieldNameNode.get(TYPE));
-        assertEquals(NUMBER, fieldNameNode.get(TYPE).asText());
-        assertNotNull(fieldNameNode.get(FORMAT));
-        assertEquals(DOUBLE, fieldNameNode.get(FORMAT).asText());
+        assertThat(fieldNameNode.get(TYPE)).isNotNull();
+        assertThat(fieldNameNode.get(TYPE).asText()).isEqualTo(NUMBER);
+        assertThat(fieldNameNode.get(FORMAT)).isNotNull();
+        assertThat(fieldNameNode.get(FORMAT).asText()).isEqualTo(DOUBLE);
         ArrayNode availableValuesNode = (ArrayNode) fieldNameNode.get(ENUM);
-        assertEquals(allowedValues.size(), availableValuesNode.size());
+        assertThat(availableValuesNode).hasSameSizeAs(allowedValues);
         List<JsonNode> nodeList = StreamSupport
                 .stream(availableValuesNode.spliterator(), false)
                 .collect(Collectors.toList());
-        nodeList.forEach(availableValueNode -> assertTrue(availableValueNode instanceof TextNode));
-        allowedValues.forEach(allowedValue -> assertTrue(nodeList.stream()
-                .anyMatch(availableValueNode -> availableValueNode.asText().equals(allowedValue))));
+        assertThat(nodeList).allMatch(node -> node instanceof TextNode);
+        assertThat(allowedValues).allSatisfy(allowedValue -> assertThat(nodeList)
+                .anyMatch(availableValueNode -> availableValueNode.asText().equals(allowedValue)));
     }
 
     @Test
     void conditionallyCreateEnumNode() {
         ObjectNode parentNode = JsonUtil.objectNode();
         ArrayNode created = PMMLOASUtils.conditionallyCreateEnumNode(parentNode);
-        assertNotNull(created);
-        assertEquals(0, created.size());
+        assertThat(created).isNotNull().isEmpty();
+
         JsonNode jsonNode = parentNode.get(ENUM);
-        assertNotNull(jsonNode);
-        assertEquals(created, jsonNode);
+        assertThat(jsonNode).isNotNull().isEqualTo(created);
+
         ArrayNode notCreated = PMMLOASUtils.conditionallyCreateEnumNode(parentNode);
-        assertNotNull(notCreated);
-        assertEquals(created, notCreated);
+        assertThat(notCreated).isNotNull().isEqualTo(created);
     }
 
     @Test
@@ -324,7 +322,7 @@ class PMMLOASUtilsTest {
         String nodeToCreate = "nodeToCreate";
         ObjectNode retrieved = PMMLOASUtils.createSetNodeInParent(parentNode, nodeToCreate);
         commonValidateSetNode(retrieved);
-        assertEquals(retrieved, parentNode.get(nodeToCreate));
+        assertThat(parentNode.get(nodeToCreate)).isEqualTo(retrieved);
     }
 
     @Test
@@ -359,47 +357,46 @@ class PMMLOASUtilsTest {
     }
 
     private void commonValidateSetNode(ObjectNode toValidate) {
-        assertNotNull(toValidate);
+        assertThat(toValidate).isNotNull();
         JsonNode typeNode = toValidate.get(TYPE);
-        assertNotNull(typeNode);
-        assertTrue(typeNode instanceof TextNode);
-        assertEquals(OBJECT, ((TextNode) typeNode).asText());
+
+        assertThat(typeNode).isNotNull().isInstanceOf(TextNode.class);
+        assertThat(((TextNode) typeNode).asText()).isEqualTo(OBJECT);
+
         JsonNode propertiesNode = toValidate.get(PROPERTIES);
-        assertNotNull(propertiesNode);
-        assertTrue(propertiesNode instanceof ObjectNode);
-        assertEquals(0, propertiesNode.size());
+        assertThat(propertiesNode).isNotNull().isInstanceOf(ObjectNode.class).isEmpty();
     }
 
     private void commonValidateNumericNode(NumericNode toValidate, Number number) {
         String className = number.getClass().getSimpleName();
         switch (className) {
             case "Integer":
-                assertTrue(toValidate instanceof IntNode);
-                assertEquals(number, ((IntNode) toValidate).intValue());
+                assertThat(toValidate).isInstanceOf(IntNode.class);
+                assertThat(((IntNode) toValidate).intValue()).isEqualTo(number);
                 break;
             case "Float":
-                assertTrue(toValidate instanceof FloatNode);
-                assertEquals(number, ((FloatNode) toValidate).floatValue());
+                assertThat(toValidate).isInstanceOf(FloatNode.class);
+                assertThat(((FloatNode) toValidate).floatValue()).isEqualTo(number);
                 break;
             case "Double":
-                assertTrue(toValidate instanceof DoubleNode);
-                assertEquals(number, ((DoubleNode) toValidate).doubleValue());
+                assertThat(toValidate).isInstanceOf(DoubleNode.class);
+                assertThat(((DoubleNode) toValidate).doubleValue()).isEqualTo(number);
                 break;
             case "BigInteger":
-                assertTrue(toValidate instanceof BigIntegerNode);
-                assertEquals(number, ((BigIntegerNode) toValidate).bigIntegerValue());
+                assertThat(toValidate).isInstanceOf(BigIntegerNode.class);
+                assertThat(((BigIntegerNode) toValidate).bigIntegerValue()).isEqualTo(number);
                 break;
             case "Short":
-                assertTrue(toValidate instanceof ShortNode);
-                assertEquals(number, ((ShortNode) toValidate).shortValue());
+                assertThat(toValidate).isInstanceOf(ShortNode.class);
+                assertThat(((ShortNode) toValidate).shortValue()).isEqualTo(number);
                 break;
             case "Long":
-                assertTrue(toValidate instanceof LongNode);
-                assertEquals(number, ((LongNode) toValidate).longValue());
+                assertThat(toValidate).isInstanceOf(LongNode.class);
+                assertThat(((LongNode) toValidate).longValue()).isEqualTo(number);
                 break;
             case "BigDecimal":
-                assertTrue(toValidate instanceof DecimalNode);
-                assertEquals(number, ((DecimalNode) toValidate).decimalValue());
+                assertThat(toValidate).isInstanceOf(DecimalNode.class);
+                assertThat(((DecimalNode) toValidate).decimalValue()).isEqualTo(number);
                 break;
             default:
                 throw new IllegalArgumentException("Failed to find a NumericNode for " + number.getClass());

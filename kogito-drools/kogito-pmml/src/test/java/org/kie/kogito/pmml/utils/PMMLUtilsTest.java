@@ -23,9 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PMMLUtilsTest {
 
@@ -34,15 +32,16 @@ class PMMLUtilsTest {
         final String modelName = "MODEL_NAME";
         final Map<String, Object> parameters = getParameters();
         final PMMLRequestData retrieved = PMMLUtils.getPMMLRequestData(modelName, parameters);
-        assertNotNull(retrieved);
-        assertEquals(modelName, retrieved.getModelName());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getModelName()).isEqualTo(modelName);
         final Map<String, ParameterInfo> parameterInfos = retrieved.getMappedRequestParams();
-        assertEquals(parameters.size(), parameterInfos.size());
-        parameters.forEach((key, value) -> {
-            assertTrue(parameterInfos.containsKey(key));
+        assertThat(parameterInfos).hasSameSizeAs(parameters);
+
+        assertThat(parameters).allSatisfy((key, value) -> {
+            assertThat(parameterInfos).containsKey(key);
             ParameterInfo parameterInfo = parameterInfos.get(key);
-            assertEquals(value, parameterInfo.getValue());
-            assertEquals(value.getClass(), parameterInfo.getType());
+            assertThat(parameterInfo.getValue()).isEqualTo(value);
+            assertThat(parameterInfo.getType()).isEqualTo(value.getClass());
         });
     }
 
