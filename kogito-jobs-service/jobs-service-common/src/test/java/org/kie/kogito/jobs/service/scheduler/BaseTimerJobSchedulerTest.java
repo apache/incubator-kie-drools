@@ -141,7 +141,7 @@ public abstract class BaseTimerJobSchedulerTest {
                 .map(e -> JobDetails.builder()
                         .status(jobStatus)
                         .id(JOB_ID)
-                        .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))
+                        .trigger(new PointInTimeTrigger(System.currentTimeMillis() - 1, null, null))
                         .build())
                 .orElse(JobDetails.builder().of(scheduledJob).status(jobStatus).build());
 

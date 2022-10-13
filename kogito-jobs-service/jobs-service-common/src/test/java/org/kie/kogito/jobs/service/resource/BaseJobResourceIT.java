@@ -58,6 +58,8 @@ public abstract class BaseJobResourceIT {
     public static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
     public static final String NODE_INSTANCE_ID = "nodeInstanceId";
     public static final int PRIORITY = 1;
+    public static final int BAD_REQUEST = 400;
+    public static final int OK = 200;
 
     @ConfigProperty(name = "quarkus.http.test-port")
     int port;
@@ -82,7 +84,7 @@ public abstract class BaseJobResourceIT {
                         .accept(ContentType.JSON)
                         .get(HEALTH_ENDPOINT)
                         .then()
-                        .statusCode(200));
+                        .statusCode(OK));
     }
 
     @AfterEach
@@ -94,7 +96,7 @@ public abstract class BaseJobResourceIT {
     void create() throws Exception {
         final Job job = getJob("1");
         final ScheduledJob response = create(jobToJson(job))
-                .statusCode(200)
+                .statusCode(OK)
                 .extract()
                 .as(ScheduledJob.class);
         assertEquals(job, response);
@@ -108,7 +110,7 @@ public abstract class BaseJobResourceIT {
                 .callbackEndpoint(getCallbackEndpoint())
                 .build();
         create(jobToJson(job))
-                .statusCode(500);
+                .statusCode(BAD_REQUEST);
     }
 
     private String getCallbackEndpoint() {
@@ -162,7 +164,7 @@ public abstract class BaseJobResourceIT {
                 .when()
                 .delete(JobResource.JOBS_PATH + "/{id}")
                 .then()
-                .statusCode(200)
+                .statusCode(OK)
                 .contentType(ContentType.JSON)
                 .extract()
                 .as(ScheduledJob.class);
@@ -265,7 +267,7 @@ public abstract class BaseJobResourceIT {
                 .when()
                 .delete(JobResource.JOBS_PATH + "/{id}")
                 .then()
-                .statusCode(200)
+                .statusCode(OK)
                 .contentType(ContentType.JSON)
                 .assertThat()
                 .extract()
@@ -287,7 +289,7 @@ public abstract class BaseJobResourceIT {
                 .when()
                 .get(JobResource.JOBS_PATH + "/{id}")
                 .then()
-                .statusCode(200)
+                .statusCode(OK)
                 .contentType(ContentType.JSON)
                 .assertThat()
                 .extract()
@@ -318,7 +320,7 @@ public abstract class BaseJobResourceIT {
     @Test
     void testForcingCreateExpiredJob() throws Exception {
         scheduler.setForceExecuteExpiredJobs(true);
-        createExpiredJob().statusCode(200);
+        createExpiredJob().statusCode(OK);
     }
 
     private ValidatableResponse createExpiredJob() throws JsonProcessingException {
@@ -347,25 +349,25 @@ public abstract class BaseJobResourceIT {
         final String newCallbackEndpoint = "http://localhost/newcallback";
         Job toPatch = JobBuilder.builder().callbackEndpoint(newCallbackEndpoint).build();
 
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().processId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().rootProcessId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().rootProcessInstanceId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().processInstanceId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().priority(10).build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
 
         toPatch = JobBuilder.builder().repeatLimit(1).repeatInterval(1l).build();
-        assertPatch(id, toPatch, 200);
+        assertPatch(id, toPatch, OK);
     }
 
     private void assertPatch(String id, Job toPatch, int i) throws JsonProcessingException {
@@ -392,7 +394,7 @@ public abstract class BaseJobResourceIT {
 
         //different id on the job object from path id
         toPatch = JobBuilder.builder().id("differentId").build();
-        assertPatch(id, toPatch, 500);
+        assertPatch(id, toPatch, BAD_REQUEST);
     }
 
     @Test
@@ -405,7 +407,7 @@ public abstract class BaseJobResourceIT {
 
         Job toPatch = JobBuilder.builder().expirationTime(DateUtil.now().plusSeconds(20)).build();
 
-        assertPatch(id, toPatch, 200);
+        assertPatch(id, toPatch, OK);
 
         //ensure the job was scheduled in vertx
         assertJobScheduledOnVertx(assertGetScheduledJob(id), true);
