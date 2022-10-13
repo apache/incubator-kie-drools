@@ -65,6 +65,7 @@ public class ScheduledJobAdapter {
                                 .filter(IntervalTrigger.class::isInstance)
                                 .map(IntervalTrigger.class::cast)
                                 .map(IntervalTrigger::getRepeatLimit)
+                                .map(i -> i + 1)
                                 .orElse(null))
                         .repeatInterval(Optional.ofNullable(jobDetails.getTrigger())
                                 .filter(IntervalTrigger.class::isInstance)
@@ -111,7 +112,7 @@ public class ScheduledJobAdapter {
                         .<Trigger> map(interval -> new IntervalTrigger(0l,
                                 toDate(scheduledJob.getExpirationTime()),
                                 null,
-                                scheduledJob.getRepeatLimit(),
+                                scheduledJob.getRepeatLimit() + 1, //IntervalTrigger uses repeatCount >= repeatLimit
                                 0,
                                 interval,
                                 null,

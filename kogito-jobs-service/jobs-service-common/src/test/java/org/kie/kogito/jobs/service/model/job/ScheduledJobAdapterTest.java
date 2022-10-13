@@ -81,7 +81,7 @@ class ScheduledJobAdapterTest {
 
         ScheduledJob scheduledJob = ScheduledJobAdapter.of(jobDetails);
         assertScheduledJob(scheduledJob);
-        assertThat(scheduledJob.getRepeatLimit()).isEqualTo(REPEAT_LIMIT);
+        assertThat(scheduledJob.getRepeatLimit()).isEqualTo(REPEAT_LIMIT + 1);
         assertThat(scheduledJob.getRepeatInterval()).isEqualTo(INTERVAL);
     }
 
@@ -95,7 +95,7 @@ class ScheduledJobAdapterTest {
         assertThat(jobDetails.getTrigger()).isInstanceOf(IntervalTrigger.class);
         IntervalTrigger intervalTrigger = (IntervalTrigger) jobDetails.getTrigger();
         assertThat(intervalTrigger.getNextFireTime()).isEqualTo(DateUtil.toDate(TIME));
-        assertThat(intervalTrigger.getRepeatLimit()).isEqualTo(REPEAT_LIMIT);
+        assertThat(intervalTrigger.getRepeatLimit()).isEqualTo(REPEAT_LIMIT + 1);
         assertThat(intervalTrigger.getPeriod()).isEqualTo(INTERVAL);
     }
 

@@ -87,7 +87,7 @@ class HttpJobExecutorTest {
                         .executionCounter(1).build();
 
         Map queryParams = assertExecuteAndReturnQueryParams(request, params, scheduledJob, false);
-        assertThat(queryParams).hasSize(1).containsEntry("limit", "8");
+        assertThat(queryParams).hasSize(1).containsEntry("limit", "9");
     }
 
     private Map assertExecuteAndReturnQueryParams(@Mock HttpRequest<Buffer> request, @Mock MultiMap params,
