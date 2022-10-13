@@ -2,7 +2,7 @@
 == Migration from non-executable model to executable model
 The `drools-engine-classic` and `drools-mvel` execute rules with `non executable model`. `drools-engine` executes rules with `executable model`. For more details about the executable model, see xref:KIE/index.adoc#executable-model-con_packaging-deploying[Executable rule models].
 
-As we mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, so we recommend you to migrate from `non executable model` to `executable model` by changing dependencies.
+As mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, it is recommended to migrate from a `non-executable model` to an `executable model` by changing dependencies.
 
 In general, from an external perspective, rule evaluation and rule consequence executions results can be expected to be the same using either `non executable model` and `executable model`. You may however encounter a few edge cases during compile time or runtime; if you find any issues, please do report it to {PRODUCT} community. We have already identified some small known differences, reported below.
 
