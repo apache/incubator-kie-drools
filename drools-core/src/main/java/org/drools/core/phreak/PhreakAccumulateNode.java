@@ -246,7 +246,10 @@ public class PhreakAccumulateNode {
                 for ( LeftTuple leftTuple = accNode.getFirstLeftTuple( rightTuple, ltm, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
                     if ( constraints.isAllowedCachedRight( contextEntry,
                                                            leftTuple ) ) {
-                        final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                        BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                        if (accctx == null) {
+                            accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                        }
                         addMatch( accNode, accumulate, leftTuple, rightTuple,
                                   null, null, reteEvaluator, am,
                                   accctx, true, false );
@@ -280,7 +283,9 @@ public class PhreakAccumulateNode {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
-
+            if (accctx == null) {
+                accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+            }
             if (accNode.isRightInputIsRiaNode()) {
                 // This is a subnetwork, do not process further. As all matches will processed
                 // by the right updates. This is to avoid double iteration (first right side iteration
@@ -481,7 +486,10 @@ public class PhreakAccumulateNode {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
                         trgLeftTuples.addUpdate(leftTuple);
                     }
-                    final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    if (accctx == null) {
+                        accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                    }
                     // add a new match
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
                              null, null, reteEvaluator, am,
@@ -496,7 +504,10 @@ public class PhreakAccumulateNode {
                     if (leftTuple.getStagedType() == LeftTuple.NONE) {
                         trgLeftTuples.addUpdate(leftTuple);
                     }
-                    final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    if (accctx == null) {
+                        accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                    }
                     LeftTuple temp;
                     if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                         temp = childLeftTuple.getRightParentNext();
@@ -522,7 +533,10 @@ public class PhreakAccumulateNode {
                     }
 
                     LeftTuple temp = childLeftTuple.getRightParentNext();
-                    final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                    if (accctx == null) {
+                        accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                    }
                     // FIXME This will be really slow, if it re-accumulates on the same LeftTuple (MDP)
                     // remove the match
                     removeMatch(accNode,
@@ -559,6 +573,9 @@ public class PhreakAccumulateNode {
                 ltm.remove(leftTuple);
 
                 BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                if (accctx == null) {
+                    accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                }
                 leftTuple.setContextObject( null );
 
                 removePreviousMatchesForLeftTuple(accumulate, leftTuple, reteEvaluator, am, accctx, false);
@@ -600,7 +617,10 @@ public class PhreakAccumulateNode {
                         LeftTuple nextLeft = match.getRightParentNext();
 
                         LeftTuple leftTuple = match.getLeftParent();
-                        final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                        BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+                        if (accctx == null) {
+                            accctx = initAccumulationContext( am, reteEvaluator, accumulate, leftTuple );
+                        }
                         // FIXME This will be really slow, if it re-accumulates on the same LeftTuple (MDP)
                         removeMatch(accNode, accumulate, rightTuple, match, reteEvaluator, am, accctx, true);
 
@@ -840,7 +860,10 @@ public class PhreakAccumulateNode {
             final LeftTuple next = match.getRightParentNext();
 
             final LeftTuple leftTuple = match.getLeftParent();
-            final BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+            BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
+            if (accctx == null) {
+                accctx = initAccumulationContext( memory, reteEvaluator, accumulate, leftTuple );
+            }
             removeMatch(accNode,
                         accumulate,
                         rightTuple,

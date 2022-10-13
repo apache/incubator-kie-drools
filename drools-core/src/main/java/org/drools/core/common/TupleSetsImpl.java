@@ -164,7 +164,10 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
             if ( next != null ) {
                 setPreviousTuple( next, previous );
             }
-            setNextTuple( previous, next );
+            if (previous != null)
+            {
+                setNextTuple(previous, next);
+            }
         }
         tuple.clearStaged();
         insertSize--;
@@ -202,7 +205,10 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
             if ( next != null ) {
                 setPreviousTuple( next, previous );
             }
-            setNextTuple( previous, next );
+            if(previous != null)
+            {
+                setNextTuple(previous, next);
+            }
         }
         tuple.clearStaged();
     }
