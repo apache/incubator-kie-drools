@@ -1,0 +1,36 @@
+[id='nonexec-model-to-exec-model_{context}']
+== Migration from non-executable model to executable model
+The `drools-engine-classic` and `drools-mvel` execute rules with `non executable model`. `drools-engine` executes rules with `executable model`. For more details about the executable model, see xref:KIE/index.adoc#executable-model-con_packaging-deploying[Executable rule models].
+
+As mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, it is recommended to migrate from a `non-executable model` to an `executable model` by changing dependencies.
+
+In general, from an external perspective, rule evaluation and rule consequence execution results can be expected to be the same using either the `non-executable` model or the `executable model`. You may however encounter a few edge cases during compile time or runtime. If you find any issues, please report them to the {PRODUCT} community. We have already identified some small known differences, reported below.
+
+=== Invalid cast
+When you specify `dialect "mvel"` in a rule, the `non-executable model` is tolerant of invalid type cast, because of type coercion behavior in MVEL. For example,
+[source]
+----
+global MyUtils myUtils;
+
+rule Rule1
+dialect "mvel"
+when
+  $p : Person()
+then
+  myUtils.doWork((String) $p.age )));
+end
+----
+This rule can be built with  `non-executable model` even if `$p.age` is `int` which is not acceptable in Java syntax.
+
+With `executable model`, the rule fails with a build error.
+----
+Cannot cast from int to String
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  myUtils.doWork(java.util.Objects.toString( $p.age ));
+end
+----
