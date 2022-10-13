@@ -1002,7 +1002,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         String nodeInstanceId = ((InternalKogitoWorkItem) workItem).getNodeInstanceStringId();
         long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
 
-        assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
         assertThat(nodeInstanceId).isNotNull();
     }
@@ -1024,7 +1023,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
         String deploymentId = ((InternalKogitoWorkItem) workItem).getDeploymentId();
 
-        assertThat(nodeId).isNotNull();
         assertThat(nodeId > 0).isTrue();
         assertThat(nodeInstanceId).isNotNull();
         assertThat(deploymentId).isNull();
@@ -1873,8 +1871,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
         assertNodeTriggered(processInstance.getStringId(), "StartProcess", "UserTask", "EndProcess", "event");
         String var = getProcessVarValue(processInstance, "x");
-        assertThat(var).isNotNull();
-        assertThat(var).isEqualTo("SOMEVALUE");
+        assertThat(var).isNotNull().isEqualTo("SOMEVALUE");
     }
 
     @Test
@@ -1890,8 +1887,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         kruntime.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getStringId());
         assertProcessInstanceFinished(processInstance, kruntime);
         String var = getProcessVarValue(processInstance, "x");
-        assertThat(var).isNotNull();
-        assertThat(var).isEqualTo("SOMEVALUE");
+        assertThat(var).isNotNull().isEqualTo("SOMEVALUE");
     }
 
     @Test
@@ -1911,9 +1907,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 "Sub Process 1", "start-sub", "end-sub");
 
         String var = getProcessVarValue(processInstance, "x");
-        assertThat(var).isNotNull();
-        assertThat(var).isEqualTo("JOHN");
-
+        assertThat(var).isNotNull().isEqualTo("JOHN");
     }
 
     @Test

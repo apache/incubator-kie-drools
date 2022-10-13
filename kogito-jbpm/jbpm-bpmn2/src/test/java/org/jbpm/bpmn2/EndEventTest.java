@@ -103,7 +103,6 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         long nodeId = workItem.getNodeId();
         String deploymentId = workItem.getDeploymentId();
 
-        assertNotNull(nodeId);
         assertTrue(nodeId > 0);
         assertNotNull(nodeInstanceId);
         assertNull(deploymentId);
@@ -120,7 +119,6 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         nodeInstanceId = workItem.getNodeInstanceStringId();
         nodeId = workItem.getNodeId();
 
-        assertNotNull(nodeId);
         assertTrue(nodeId > 0);
         assertNotNull(nodeInstanceId);
     }

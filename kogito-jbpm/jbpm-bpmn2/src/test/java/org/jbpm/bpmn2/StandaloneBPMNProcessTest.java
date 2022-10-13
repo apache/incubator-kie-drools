@@ -515,7 +515,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getKieSession().fireAllRules();
         workItem = workItemHandler.getWorkItem();
-        assertThat(workItem).isNotNull().withFailMessage("KogitoWorkItem should not be null.");
+        assertThat(workItem).withFailMessage("KogitoWorkItem should not be null.").isNotNull();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
@@ -760,7 +760,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
+        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
         workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
         assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
@@ -768,7 +768,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         // Complete process
         processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        assertThat(processInstance == null || processInstance.getState() == KogitoProcessInstance.STATE_ABORTED).isTrue().withFailMessage("Process instance has not been aborted.");
+        assertThat(processInstance == null || processInstance.getState() == KogitoProcessInstance.STATE_ABORTED).withFailMessage("Process instance has not been aborted.").isTrue();
 
     }
 
@@ -851,18 +851,18 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("ServiceProcess", params);
 
         // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).isTrue().withFailMessage("Event was not passed to Event Subprocess.");
+        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
         KogitoWorkItem workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
         Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
         assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
         assertThat(((Throwable) throwObj).getMessage()).withFailMessage("Exception message does not match service input.").endsWith(input);
 
         // Complete process
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE).withFailMessage("Process instance is not active.");
+        assertThat(processInstance.getState()).withFailMessage("Process instance is not active.").isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         processInstance = kruntime.getProcessInstance(processInstance.getStringId());
         if (processInstance != null) {
-            assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED).withFailMessage("Process instance is not completed.");
+            assertThat(processInstance.getState()).withFailMessage("Process instance is not completed.").isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
         } // otherwise, persistence use => processInstance == null => process is completed
     }
 

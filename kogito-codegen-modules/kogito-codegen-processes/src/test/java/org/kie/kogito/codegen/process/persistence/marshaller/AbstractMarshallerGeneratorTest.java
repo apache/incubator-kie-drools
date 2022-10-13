@@ -73,8 +73,7 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         MarshallerGenerator marshallerGenerator = withGenerator(Person.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
-        assertThat(classes).isNotNull();
-        assertThat(classes).hasSize(1);
+        assertThat(classes).isNotNull().hasSize(1);
 
         Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonMessageMarshaller");
         assertThat(marshallerClass).isPresent();
@@ -91,8 +90,7 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         MarshallerGenerator marshallerGenerator = withGenerator(PersonWithList.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
-        assertThat(classes).isNotNull();
-        assertThat(classes).hasSize(1);
+        assertThat(classes).isNotNull().hasSize(1);
 
         Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("PersonWithListMessageMarshaller");
         assertThat(marshallerClass).isPresent();
@@ -109,8 +107,7 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         MarshallerGenerator marshallerGenerator = withGenerator(PersonWithAddresses.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
-        assertThat(classes).isNotNull();
-        assertThat(classes).hasSize(2);
+        assertThat(classes).isNotNull().hasSize(2);
 
         Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("AddressMessageMarshaller");
         assertThat(marshallerClass).isPresent();
@@ -129,8 +126,7 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         MarshallerGenerator marshallerGenerator = withGenerator(PersonWithAddresses.class);
 
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
-        assertThat(classes).isNotNull();
-        assertThat(classes).hasSize(2);
+        assertThat(classes).isNotNull().hasSize(2);
 
         Optional<ClassOrInterfaceDeclaration> marshallerClass = classes.get(0).getClassByName("AddressMessageMarshaller");
         assertThat(marshallerClass).isPresent();

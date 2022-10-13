@@ -119,8 +119,7 @@ class ManagementAddOnIT {
 
         // since node instance was retriggered it must have different ids
         List<String> newNodeInstanceIds = whenGetNodeInstances(pid);
-        assertThat(newNodeInstanceIds).isNotEmpty();
-        assertThat(newNodeInstanceIds).doesNotContainAnyElementsOf(nodeInstanceIds);
+        assertThat(newNodeInstanceIds).isNotEmpty().doesNotContainAnyElementsOf(nodeInstanceIds);
     }
 
     private String givenGreetingsProcess() {

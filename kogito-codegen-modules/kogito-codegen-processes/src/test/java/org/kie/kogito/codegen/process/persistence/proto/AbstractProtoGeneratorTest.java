@@ -695,9 +695,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         byte[] list = listFile.contents();
         final ObjectMapper mapper = new ObjectMapper();
         List<String> files = mapper.readValue(list, List.class);
-        assertThat(files).isNotEmpty();
-        assertThat(files)
-                .hasAtLeastOneElementOfType(String.class)
+        assertThat(files).isNotEmpty().hasAtLeastOneElementOfType(String.class)
                 .contains("protofile.0.proto")
                 .hasSize(5);
     }
