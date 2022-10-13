@@ -27,7 +27,7 @@ With `executable model`, the rule fails with a build error.
 Cannot cast from int to String
 ----
 
-In this case, the rule needs to be fixed. For example,
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
 ----
  ...
 then
