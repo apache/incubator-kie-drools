@@ -1,5 +1,5 @@
 [id='nonexec-model-to-exec-model_{context}']
-== Migration from non executable model to executable model
+== Migration from non-executable model to executable model
 The `drools-engine-classic` and `drools-mvel` execute rules with `non executable model`. `drools-engine` executes rules with `executable model`. Refer to xref:KIE/index.adoc#executable-model-con_packaging-deploying[Executable rule models] for executable model details.
 
 As we mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, so we recommend you to migrate from `non executable model` to `executable model` by changing dependencies.
