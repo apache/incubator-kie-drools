@@ -4,7 +4,7 @@ The `drools-engine-classic` and `drools-mvel` execute rules with `non executable
 
 As mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, it is recommended to migrate from a `non-executable model` to an `executable model` by changing dependencies.
 
-In general, from an external perspective, rule evaluation and rule consequence executions results can be expected to be the same using either `non executable model` and `executable model`. You may however encounter a few edge cases during compile time or runtime; if you find any issues, please do report it to {PRODUCT} community. We have already identified some small known differences, reported below.
+In general, from an external perspective, rule evaluation and rule consequence execution results can be expected to be the same using either the `non-executable` model or the `executable model`. You may however encounter a few edge cases during compile time or runtime. If you find any issues, please report them to the {PRODUCT} community. We have already identified some small known differences, reported below.
 
 === Invalid cast
 When you specify `dialect "mvel"` in a rule, `non executable model` is tolerant of invalid type cast, because of type coercion behaviour in MVEL. For example,
