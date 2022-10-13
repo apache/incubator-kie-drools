@@ -205,6 +205,7 @@ if (Utils.isMainBranch(this)) {
 // Tools folder
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
   modules: [ 'optaplanner-build-parent' ],
+  compare_deps_remote_poms: [ 'io.quarkus:quarkus-bom' ],
   properties: [ 'version.io.quarkus' ],
 ])
 
