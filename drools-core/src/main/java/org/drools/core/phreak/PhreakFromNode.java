@@ -199,8 +199,6 @@ public class PhreakFromNode {
 
             ltm.remove(leftTuple);
 
-            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
-
             if (leftTuple.getFirstChild() != null) {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
@@ -212,27 +210,8 @@ public class PhreakFromNode {
                 }
             }
 
-            // if matches == null, the deletion might be happening before the fact was even propagated. See BZ-1019473 for details.
-            if( matches != null ) {
-                
-                // @TODO (mdp) is this really necessary? won't the entire FH and RightTuple chaines just et GC'd?
-                unlinkCreatedHandles(leftTuple);
-            }
-
             leftTuple.clearStaged();
             leftTuple = next;
-        }
-    }
-
-    public static void unlinkCreatedHandles(final LeftTuple leftTuple) {
-        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
-        FastIterator rightIt = LinkedList.fastIterator;
-        for (RightTuple rightTuple : matches.values()) {
-            for (RightTuple current = rightTuple; current != null; ) {
-                RightTuple next = (RightTuple) rightIt.next(current);
-                current.unlinkFromRightParent();
-                current = next;
-            }
         }
     }
 
