@@ -32,7 +32,7 @@ import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.event.DataEvent;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javaparser.ast.CompilationUnit;
@@ -166,7 +166,7 @@ public class MessageConsumerGenerator {
                     .setType(parseClassOrInterfaceType(Function.class.getCanonicalName()).setTypeArguments(
                             NodeList.nodeList(parseClassOrInterfaceType(DataEvent.class.getCanonicalName()).setTypeArguments(NodeList.nodeList(dataTypeClass)), dataTypeClass)))
                     .setBody(new BlockStmt().addStatement(new ReturnStmt(
-                            new MethodReferenceExpr(new NameExpr(ServerlessWorkflowUtils.class.getCanonicalName()), NodeList.nodeList(), "dataOnlyIsFalse"))));
+                            new MethodReferenceExpr(new NameExpr(JsonObjectUtils.class.getCanonicalName()), NodeList.nodeList(), "fromValue"))));
         }
     }
 

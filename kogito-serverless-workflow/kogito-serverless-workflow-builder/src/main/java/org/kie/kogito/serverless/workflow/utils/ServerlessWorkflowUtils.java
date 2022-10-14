@@ -31,9 +31,7 @@ import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.VariableDeclarations;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
 import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
@@ -43,7 +41,6 @@ import org.kie.kogito.serverless.workflow.suppliers.ConfigWorkItemSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.expr.Expression;
 
 import io.serverlessworkflow.api.Workflow;
@@ -245,9 +242,5 @@ public class ServerlessWorkflowUtils {
     private static ModelMetaData getModelMetadata(WorkflowProcess process, Class<?> modelClass) {
         return new ModelMetaData(process.getId(), modelClass.getPackage().getName(), modelClass.getSimpleName(), KogitoWorkflowProcess.PUBLIC_VISIBILITY,
                 VariableDeclarations.of(Collections.emptyMap()), false);
-    }
-
-    public static JsonNode dataOnlyIsFalse(DataEvent<?> dataEvent) {
-        return JsonObjectUtils.fromValue(dataEvent);
     }
 }
