@@ -9,6 +9,9 @@ on:
 
 jobs:
   dsl-tests:
+    concurrency:
+      group: ${{ github.repository.name }}_jenkinsfile_tests-${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
     - name: Setup correct base branch
