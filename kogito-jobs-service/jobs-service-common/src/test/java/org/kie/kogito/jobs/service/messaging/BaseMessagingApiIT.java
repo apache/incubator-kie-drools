@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.kogito.jobs.api.Job;
@@ -42,9 +43,11 @@ import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.HEALTH_ENDPOINT;
 
 public abstract class BaseMessagingApiIT {
 
@@ -80,6 +83,20 @@ public abstract class BaseMessagingApiIT {
     public Emitter<String> jobEventsEmitter;
 
     private final JobCloudEventSerializer serializer = new JobCloudEventSerializer();
+
+    @BeforeEach
+    void init() throws Exception {
+        //health check - wait to be ready
+        await()
+                .atMost(2, MINUTES)
+                .pollInterval(1, SECONDS)
+                .untilAsserted(() -> given()
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .get(HEALTH_ENDPOINT)
+                        .then()
+                        .statusCode(200));
+    }
 
     @Test
     @Timeout(value = 10, unit = TimeUnit.MINUTES)
@@ -246,7 +263,7 @@ public abstract class BaseMessagingApiIT {
     private static <T> void waitUntilResult(Supplier<T> resultProducer, Predicate<T> condition, int pollIntervalInMillis, int timoutInSeconds) {
         await()
                 .pollInterval(pollIntervalInMillis, MILLISECONDS)
-                .timeout(timoutInSeconds, SECONDS)
+                .atMost(timoutInSeconds, SECONDS)
                 .until(() -> {
                     T result = resultProducer.get();
                     return condition.test(result);

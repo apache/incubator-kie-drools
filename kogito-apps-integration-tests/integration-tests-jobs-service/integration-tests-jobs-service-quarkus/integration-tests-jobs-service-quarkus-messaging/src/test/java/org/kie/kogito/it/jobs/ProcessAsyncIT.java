@@ -15,37 +15,21 @@
  */
 package org.kie.kogito.it.jobs;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.test.resources.JobServiceKafkaQuarkusTestResource;
 import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
-import io.restassured.http.ContentType;
 
-import static io.restassured.RestAssured.given;
-import static org.awaitility.Awaitility.await;
+import static org.kie.kogito.test.resources.JobServiceKafkaQuarkusTestResource.JOBS_SERVICE_KAFKA_URL;
 
 @QuarkusIntegrationTest
 @QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
 @QuarkusTestResource(JobServiceKafkaQuarkusTestResource.class)
 class ProcessAsyncIT extends BaseProcessAsyncIT {
 
-    @BeforeEach
-    public void setup() {
-        //health check - wait to be ready
-        await()
-                .atMost(TIMEOUT)
-                .pollDelay(2, TimeUnit.SECONDS)
-                .pollInterval(1, TimeUnit.SECONDS)
-                .untilAsserted(() -> given()
-                        .contentType(ContentType.JSON)
-                        .accept(ContentType.JSON)
-                        .get("/q/health")
-                        .then()
-                        .statusCode(200));
+    @Override
+    public String jobServiceUrl() {
+        return System.getProperty(JOBS_SERVICE_KAFKA_URL);
     }
-
 }

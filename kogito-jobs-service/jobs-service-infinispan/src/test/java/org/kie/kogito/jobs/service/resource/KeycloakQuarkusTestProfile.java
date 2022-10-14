@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -35,8 +34,7 @@ public class KeycloakQuarkusTestProfile implements QuarkusTestProfile {
     @Override
     public List<TestResourceEntry> testResources() {
         return Arrays.asList(
-                new TestResourceEntry(KeycloakQuarkusTestResource.class, Collections.emptyMap(), true),
-                new TestResourceEntry(InfinispanQuarkusTestResource.class, Collections.emptyMap(), true));
+                new TestResourceEntry(KeycloakQuarkusTestResource.class, Collections.emptyMap(), true));
     }
 
     @Override

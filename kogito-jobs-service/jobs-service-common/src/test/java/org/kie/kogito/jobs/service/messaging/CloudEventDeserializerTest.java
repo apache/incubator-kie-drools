@@ -50,5 +50,4 @@ class CloudEventDeserializerTest {
         assertThat(cloudEvent.getExtension("extension1")).isEqualTo("eventExtension1");
         assertThat(cloudEvent.getExtension("extension2")).isEqualTo("eventExtension2");
     }
-
 }

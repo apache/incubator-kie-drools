@@ -26,6 +26,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import io.restassured.RestAssured;
 
+import static org.kie.kogito.test.resources.JobServiceSpringBootTestResource.JOBS_SERVICE_URL;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = { KogitoApplication.class })
 @ContextConfiguration(initializers = { KogitoServiceRandomPortSpringBootTestResource.class, JobServiceSpringBootTestResource.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -34,8 +36,17 @@ public class ProcessTimerIT extends BaseProcessTimerIT {
     @Value("${server.port}")
     private int httpPort;
 
+    @Value("${" + JOBS_SERVICE_URL + "}")
+    private String jobServiceUrl;
+
     @BeforeEach
     public void setup() {
         RestAssured.port = httpPort;
+        healthCheck();
+    }
+
+    @Override
+    public String jobServiceUrl() {
+        return jobServiceUrl;
     }
 }

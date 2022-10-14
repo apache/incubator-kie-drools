@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.kie.kogito.jobs.service.exception.InvalidScheduleTimeException;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
@@ -40,6 +41,8 @@ import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.smallrye.mutiny.Uni;
 
 /**
  * Base reactive Job Scheduler that performs the fundamental operations and let to the concrete classes to
@@ -134,7 +137,7 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
                 .peek(delay -> Optional
                         .of(delay.isNegative())
                         .filter(Boolean.FALSE::equals)
-                        .orElseThrow(() -> new RuntimeException("The expirationTime should be greater than current " +
+                        .orElseThrow(() -> new InvalidScheduleTimeException("The expirationTime should be greater than current " +
                                 "time")))
                 //schedule the job on the scheduler
                 .map(delay -> scheduleRegistering(job, Optional.empty()))
@@ -293,20 +296,16 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
     }
 
     public CompletionStage<JobDetails> cancel(CompletionStage<JobDetails> futureJob) {
-        return ReactiveStreams
-                .fromCompletionStageNullable(futureJob)
-                .peek(job -> LOGGER.debug("Cancel Job Scheduling {}", job))
-                .flatMap(scheduledJob -> Optional.ofNullable(scheduledJob.getScheduledId())
-                        .map(id -> ReactiveStreams
-                                .fromPublisher(this.doCancel(scheduledJob))
-                                .map(b -> scheduledJob))
-                        .orElse(ReactiveStreams.of(scheduledJob)))
+        return Uni.createFrom().completionStage(futureJob)
+                .onItem().invoke(job -> LOGGER.debug("Cancel Job Scheduling {}", job))
+                .chain(scheduledJob -> Optional.ofNullable(scheduledJob.getScheduledId())
+                        .map(id -> Uni.createFrom().publisher(this.doCancel(scheduledJob))
+                                .onItem().transform(b -> scheduledJob))
+                        .orElse(Uni.createFrom().item(scheduledJob)))
                 //final state, removing the job
-                .flatMapCompletionStage(jobRepository::delete)
-                .peek(this::unregisterScheduledJob)
-                .findFirst()
-                .run()
-                .thenApply(job -> job.orElse(null));
+                .chain(job -> Uni.createFrom().completionStage(jobRepository.delete(job)))
+                .onItem().invoke(this::unregisterScheduledJob)
+                .convert().toCompletionStage();
     }
 
     @Override

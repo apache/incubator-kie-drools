@@ -24,6 +24,7 @@ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.jobs.service.management.MessagingChangeEvent;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
@@ -91,6 +92,7 @@ class JobSchedulerManagerTest {
                 .thenReturn(Optional.empty());
         lenient().when(scheduler.schedule(scheduledJob))
                 .thenReturn(ReactiveStreams.of(scheduledJob).buildRs());
+        tested.onMessagingStatusChange(new MessagingChangeEvent(true));
     }
 
     @Test
@@ -112,7 +114,7 @@ class JobSchedulerManagerTest {
 
     @Test
     void testLoadJobDetailss() {
-        tested.loadJobDetailss();
+        tested.loadJobDetails();
         verify(scheduler).schedule(scheduledJob);
     }
 
@@ -120,7 +122,7 @@ class JobSchedulerManagerTest {
     void testLoadAlreadyJobDetailss() {
         when(scheduler.scheduled(JOB_ID)).thenReturn(Optional.of(DateUtil.now()));
 
-        tested.loadJobDetailss();
+        tested.loadJobDetails();
         verify(scheduler, never()).schedule(scheduledJob);
     }
 }

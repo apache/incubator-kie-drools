@@ -27,7 +27,6 @@ import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.mutiny.pgclient.PgPool;
 
 @QuarkusTest
@@ -44,7 +43,9 @@ public class PostgreSqlJobRepositoryIT extends BaseJobRepositoryTest {
     public void setUp() throws Exception {
         client.query("DELETE FROM job_details")
                 .execute()
-                .emitOn(Infrastructure.getDefaultExecutor())
+                .await().atMost(Duration.ofSeconds(10L));
+        client.query("DELETE FROM job_service_management")
+                .execute()
                 .await().atMost(Duration.ofSeconds(10L));
         super.setUp();
     }

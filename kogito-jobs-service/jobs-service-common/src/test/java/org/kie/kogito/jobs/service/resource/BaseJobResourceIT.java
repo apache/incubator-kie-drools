@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class BaseJobResourceIT {
 
-    private static final String HEALTH_ENDPOINT = "/q/health";
+    public static final String HEALTH_ENDPOINT = "/q/health";
     private static final String CALLBACK_ENDPOINT = "http://localhost:%d/callback";
     public static final String PROCESS_ID = "processId";
     public static final String PROCESS_INSTANCE_ID = "processInstanceId";
@@ -314,7 +314,7 @@ public abstract class BaseJobResourceIT {
 
     @Test
     void testCreateExpiredJob() throws Exception {
-        createExpiredJob().statusCode(500);
+        createExpiredJob().statusCode(BAD_REQUEST);
     }
 
     @Test

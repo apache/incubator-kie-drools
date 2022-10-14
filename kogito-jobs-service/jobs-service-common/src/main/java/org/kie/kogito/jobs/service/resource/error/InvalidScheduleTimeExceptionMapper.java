@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.jobs.service.resource.error;
 
-package org.kie.kogito.jobs.service.resource;
+import javax.ws.rs.ext.Provider;
 
-import io.quarkus.test.junit.QuarkusTest;
+import org.kie.kogito.jobs.service.exception.InvalidScheduleTimeException;
 
-@QuarkusTest
-class InfinispanJobResourceIT extends BaseJobResourceIT {
+@Provider
+public class InvalidScheduleTimeExceptionMapper extends BaseExceptionMapper<InvalidScheduleTimeException> {
 
+    public InvalidScheduleTimeExceptionMapper() {
+        super(400, false);
+    }
 }

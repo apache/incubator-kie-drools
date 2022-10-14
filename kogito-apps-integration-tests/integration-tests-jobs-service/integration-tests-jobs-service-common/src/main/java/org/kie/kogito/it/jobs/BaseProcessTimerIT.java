@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
-public abstract class BaseProcessTimerIT {
+public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
 
     public static final String TIMERS = "timers";
     public static final String TIMERS_CYCLE = "timerscycle";

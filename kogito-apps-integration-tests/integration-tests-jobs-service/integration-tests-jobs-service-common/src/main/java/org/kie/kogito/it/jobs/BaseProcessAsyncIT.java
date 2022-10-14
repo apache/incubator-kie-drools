@@ -30,7 +30,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 
-public abstract class BaseProcessAsyncIT {
+public abstract class BaseProcessAsyncIT implements JobServiceHealthAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseProcessAsyncIT.class);
     public static final String ASYNC = "async";

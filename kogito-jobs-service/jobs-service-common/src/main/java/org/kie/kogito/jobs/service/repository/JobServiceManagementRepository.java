@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.jobs.service.repository;
 
-package org.kie.kogito.jobs.service.resource;
+import java.util.function.Function;
 
-import io.quarkus.test.junit.QuarkusTest;
+import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 
-@QuarkusTest
-class InfinispanJobResourceIT extends BaseJobResourceIT {
+import io.smallrye.mutiny.Uni;
+
+public interface JobServiceManagementRepository {
+
+    Uni<JobServiceManagementInfo> getAndUpdate(String id, Function<JobServiceManagementInfo, JobServiceManagementInfo> computeUpdate);
+
+    Uni<JobServiceManagementInfo> set(JobServiceManagementInfo info);
+
+    Uni<JobServiceManagementInfo> heartbeat(JobServiceManagementInfo info);
 
 }

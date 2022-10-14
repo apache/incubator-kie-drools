@@ -21,8 +21,15 @@ import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
+import static org.kie.kogito.test.resources.JobServiceKafkaQuarkusTestResource.JOBS_SERVICE_KAFKA_URL;
+
 @QuarkusIntegrationTest
 @QuarkusTestResource(KogitoServiceRandomPortQuarkusTestResource.class)
 @QuarkusTestResource(JobServiceKafkaQuarkusTestResource.class)
 class ProcessTimerIT extends BaseProcessTimerIT {
+
+    @Override
+    public String jobServiceUrl() {
+        return System.getProperty(JOBS_SERVICE_KAFKA_URL);
+    }
 }

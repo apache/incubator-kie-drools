@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.service.scheduler;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -26,6 +27,7 @@ import javax.interceptor.Interceptor;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.kie.kogito.jobs.service.management.MessagingChangeEvent;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
@@ -71,6 +73,7 @@ public class JobSchedulerManager {
 
     @Inject
     Vertx vertx;
+    private AtomicBoolean enabled = new AtomicBoolean(false);
 
     void onStartup(@Observes @Priority(Interceptor.Priority.PLATFORM_AFTER) StartupEvent startupEvent) {
         if (loadJobIntervalInMinutes > schedulerChunkInMinutes) {
@@ -83,13 +86,21 @@ public class JobSchedulerManager {
         }
 
         //first execution
-        vertx.runOnContext(this::loadJobDetailss);
+        vertx.runOnContext(this::loadJobDetails);
         //periodic execution
-        vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadJobDetailss());
+        vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadJobDetails());
+    }
+
+    protected void onMessagingStatusChange(@Observes MessagingChangeEvent event) {
+        this.enabled.set(event.isEnabled());
     }
 
     //Runs periodically loading the jobs from the repository in chunks
-    void loadJobDetailss() {
+    void loadJobDetails() {
+        if (!enabled.get()) {
+            LOGGER.info("Skip loading scheduled jobs");
+            return;
+        }
         loadJobsInCurrentChunk()
                 .filter(j -> !scheduler.scheduled(j.getId()).isPresent())//not consider already scheduled jobs
                 .flatMapRsPublisher(t -> ErrorHandling.skipErrorPublisher(scheduler::schedule, t))

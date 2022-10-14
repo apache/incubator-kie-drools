@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.jobs.api.Job;
@@ -39,8 +40,12 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.HEALTH_ENDPOINT;
 import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.NODE_INSTANCE_ID;
 import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.PRIORITY;
 import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.PROCESS_ID;
@@ -61,10 +66,24 @@ public abstract class BaseKeycloakJobServiceIT {
     private ObjectMapper objectMapper;
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws Exception {
         System.setProperty("quarkus.http.auth.policy.role-policy1.roles-allowed", "confidential");
         System.setProperty("quarkus.http.auth.permission.roles1.paths", "/*");
         System.setProperty("quarkus.http.auth.permission.roles1.policy", "role-policy1");
+    }
+
+    @BeforeEach
+    public void init() throws Exception {
+        //health check - wait to be ready
+        await()
+                .atMost(2, MINUTES)
+                .pollInterval(1, SECONDS)
+                .untilAsserted(() -> given()
+                        .contentType(ContentType.JSON)
+                        .accept(ContentType.JSON)
+                        .get(HEALTH_ENDPOINT)
+                        .then()
+                        .statusCode(OK_CODE));
     }
 
     @Test

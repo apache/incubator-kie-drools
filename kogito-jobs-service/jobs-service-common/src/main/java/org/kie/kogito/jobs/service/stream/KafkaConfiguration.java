@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -72,7 +71,7 @@ public class KafkaConfiguration {
      * 
      * @param event Startup event
      */
-    void topicConfiguration(@Observes StartupEvent event) {
+    void topicConfiguration(StartupEvent event) {
         LOGGER.info("Kafka topic configuration check.");
         final Map<String, String> config = defaultKafkaConfiguration.get().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, el -> (String) el.getValue()));
