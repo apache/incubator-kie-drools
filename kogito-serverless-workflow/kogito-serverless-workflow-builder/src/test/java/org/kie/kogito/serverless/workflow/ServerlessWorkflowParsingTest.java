@@ -39,6 +39,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaUtil;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.end.End;
@@ -640,7 +641,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         assertThat(process).isNotNull();
         assertThat(process.getId()).isNotNull();
 
-        assertThat(process.getMetaData(Metadata.DATA_INPUT_SCHEMA_REF)).isEqualTo(SWFConstants.INPUT_MODEL_REF);
+        assertThat(process.getMetaData(Metadata.DATA_INPUT_SCHEMA_REF)).isEqualTo(OpenApiModelSchemaUtil.getInputModelRef(process.getId()));
     }
 
     @Test

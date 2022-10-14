@@ -17,6 +17,7 @@ package org.kie.kogito.serverless.workflow.openapi;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.OASFilter;
@@ -24,46 +25,74 @@ import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.PathItem;
 import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.kie.kogito.serverless.workflow.SWFConstants;
 
 import io.smallrye.openapi.api.util.MergeUtil;
 
+import static java.util.function.Predicate.not;
+
 public final class ServerlessWorkflowOASFilter implements OASFilter {
 
-    private final Collection<OpenAPI> inputModelSchemas;
+    private final Collection<SchemaInfo> inputModelSchemaInfos;
 
-    public ServerlessWorkflowOASFilter(Collection<OpenAPI> inputModelSchemas) {
-        this.inputModelSchemas = inputModelSchemas;
+    public ServerlessWorkflowOASFilter(Collection<SchemaInfo> inputModelSchemaInfos) {
+        this.inputModelSchemaInfos = inputModelSchemaInfos;
     }
 
     @Override
     public void filterOpenAPI(OpenAPI openAPI) {
-        if (!inputModelSchemas.isEmpty()) {
-            inputModelSchemas.forEach(modelSchema -> MergeUtil.merge(openAPI, modelSchema));
-            addWorkflowdataSchemaReferences(openAPI);
-        } else {
-            removeJsonModelInfoSchemaReferences(openAPI);
+        for (SchemaInfo inputModelSchemaInfo : inputModelSchemaInfos) {
+            if (inputModelSchemaInfo.openAPI != null) {
+                MergeUtil.merge(openAPI, inputModelSchemaInfo.openAPI);
+                addWorkflowdataSchemaRefs(inputModelSchemaInfo, openAPI);
+            }
         }
+
+        removeJsonModelInfoSchemaReferences(openAPI);
     }
 
-    private static void removeJsonModelInfoSchemaReferences(OpenAPI openAPI) {
-        openAPI.getPaths()
-                .getPathItems()
-                .values()
-                .forEach(pathItem -> getMediaTypes(pathItem).stream()
-                        .filter(mediaType -> mediaType.getSchema() != null)
-                        .filter(mediaType -> "#/components/schemas/JsonNodeModelInput".equals(mediaType.getSchema().getRef()))
-                        .forEach(mediaType -> mediaType.setSchema(OASFactory.createSchema().type(Schema.SchemaType.OBJECT))));
+    private void removeJsonModelInfoSchemaReferences(OpenAPI openAPI) {
+        getPathItemsWithoutDefinedSchema(openAPI)
+                .forEach(pathItem -> getMediaTypesThatHaveJsonNodeModelInputSchema(pathItem)
+                        .forEach(this::setObjectSchema));
     }
 
-    private static void addWorkflowdataSchemaReferences(OpenAPI openAPI) {
-        Schema schema = OASFactory.createSchema().ref(SWFConstants.INPUT_MODEL_REF);
+    private void setObjectSchema(MediaType mediaType) {
+        mediaType.setSchema(OASFactory.createSchema().type(Schema.SchemaType.OBJECT));
+    }
 
-        openAPI.getPaths()
+    private Stream<MediaType> getMediaTypesThatHaveJsonNodeModelInputSchema(PathItem pathItem) {
+        return getMediaTypes(pathItem).stream().filter(this::mediaTypeHasJsonNodeModelInputSchema);
+    }
+
+    private boolean mediaTypeHasJsonNodeModelInputSchema(MediaType mediaType) {
+        return mediaType != null && "#/components/schemas/JsonNodeModelInput".equals(mediaType.getSchema().getRef());
+    }
+
+    private Stream<PathItem> getPathItemsWithoutDefinedSchema(OpenAPI openAPI) {
+        return openAPI.getPaths()
                 .getPathItems()
-                .values()
-                .forEach(pathItem -> getMediaTypes(pathItem)
-                        .forEach(mediaType -> mediaType.setSchema(schema)));
+                .values().stream()
+                .filter(not(this::doesExistSchemaForPathItem));
+    }
+
+    private boolean doesExistSchemaForPathItem(PathItem pathItem) {
+        return inputModelSchemaInfos.stream().anyMatch(schemaInfo -> pathItemHasWorkflowId(pathItem, schemaInfo.workflowId));
+    }
+
+    private static boolean pathItemHasWorkflowId(PathItem pathItem, String workflowId) {
+        return pathItem.getPOST() != null
+                && pathItem.getPOST().getOperationId() != null
+                && pathItem.getPOST().getOperationId().matches("createResource_" + workflowId);
+    }
+
+    private static void addWorkflowdataSchemaRefs(SchemaInfo schemaInfo, OpenAPI openAPI) {
+        Schema schema = OASFactory.createSchema().ref(schemaInfo.inputModelRef);
+
+        for (PathItem pathItem : openAPI.getPaths().getPathItems().values()) {
+            if (pathItemHasWorkflowId(pathItem, schemaInfo.workflowId)) {
+                getMediaTypes(pathItem).forEach(mediaType -> mediaType.setSchema(schema));
+            }
+        }
     }
 
     private static Collection<MediaType> getMediaTypes(PathItem pathItem) {
@@ -83,5 +112,20 @@ public final class ServerlessWorkflowOASFilter implements OASFilter {
                 && pathItem.getPOST().getRequestBody() != null
                 && pathItem.getPOST().getRequestBody().getContent() != null
                 && pathItem.getPOST().getRequestBody().getContent().getMediaTypes() != null;
+    }
+
+    public static final class SchemaInfo {
+
+        private final String workflowId;
+
+        private final OpenAPI openAPI;
+
+        private final String inputModelRef;
+
+        public SchemaInfo(String workflowId, OpenAPI openAPI, String inputModelRef) {
+            this.workflowId = workflowId;
+            this.openAPI = openAPI;
+            this.inputModelRef = inputModelRef;
+        }
     }
 }

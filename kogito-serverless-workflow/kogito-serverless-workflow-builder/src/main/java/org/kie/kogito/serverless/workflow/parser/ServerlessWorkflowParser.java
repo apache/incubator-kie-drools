@@ -37,6 +37,7 @@ import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactory
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.validation.WorkflowValidator;
+import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaUtil;
 import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaValidatorSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
@@ -115,7 +116,7 @@ public class ServerlessWorkflowParser {
         }
 
         if (workflowHasDataInputSchema()) {
-            factory.metaData(Metadata.DATA_INPUT_SCHEMA_REF, SWFConstants.INPUT_MODEL_REF);
+            factory.metaData(Metadata.DATA_INPUT_SCHEMA_REF, OpenApiModelSchemaUtil.getInputModelRef(workflow.getId()));
         }
 
         return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());

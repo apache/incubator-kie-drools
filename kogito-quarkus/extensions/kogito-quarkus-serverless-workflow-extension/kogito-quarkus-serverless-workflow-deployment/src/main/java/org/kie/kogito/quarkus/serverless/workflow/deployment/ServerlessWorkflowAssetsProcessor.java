@@ -19,12 +19,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
-import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
@@ -40,6 +39,7 @@ import org.kie.kogito.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
+import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaUtil;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -89,14 +89,18 @@ public class ServerlessWorkflowAssetsProcessor {
 
     @BuildStep
     void addOpenAPIModelSchema(KogitoBuildContextBuildItem contextBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
-        Collection<OpenAPI> inputModelSchemas = getWorkflows(contextBuildItem.getKogitoBuildContext())
-                .map(OpenApiModelSchemaGenerator::new)
-                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema)
-                .filter(Optional::isPresent)
-                .map(Optional::orElseThrow)
+        Collection<ServerlessWorkflowOASFilter.SchemaInfo> inputModelSchemaInfos = getWorkflows(contextBuildItem.getKogitoBuildContext())
+                .map(ServerlessWorkflowAssetsProcessor::workflowToSchemaInfo)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(inputModelSchemas)));
+        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(inputModelSchemaInfos)));
+    }
+
+    private static ServerlessWorkflowOASFilter.SchemaInfo workflowToSchemaInfo(Workflow workflow) {
+        return OpenApiModelSchemaGenerator.generateOpenAPIModelSchema(workflow)
+                .map(openAPI -> new ServerlessWorkflowOASFilter.SchemaInfo(workflow.getId(), openAPI, OpenApiModelSchemaUtil.getInputModelRef(workflow.getId())))
+                .orElse(null);
     }
 
     private static Stream<Workflow> getWorkflows(KogitoBuildContext kogitoBuildContext) {

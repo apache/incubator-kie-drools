@@ -23,12 +23,4 @@ public class SWFConstants {
 
     public static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
     public static final String MODEL_WORKFLOW_VAR = "_INPUT_MODEL";
-
-    /**
-     * Path to save the partial OpenAPI file with the additional model provided by the Workflow definition
-     *
-     * @see <a href="https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.asciidoc#location-and-formats">MicroProfile OpenAPI Specification -
-     *      Location And Formats</a>
-     */
-    public static final String INPUT_MODEL_REF = "#/components/schemas/" + SWFConstants.DEFAULT_WORKFLOW_VAR;
 }
