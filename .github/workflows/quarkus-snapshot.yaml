@@ -34,20 +34,20 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       
       - name: Checkout Drools repository on main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: kiegroup/drools
           path: drools
           ref: main
       
       - name: Checkout current repository on main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: current-repo
           ref: main
 
       - name: Checkout Ecosystem
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.ECOSYSTEM_CI_REPO }}
           ref: main
@@ -72,20 +72,20 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Checkout drools repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: kiegroup/drools
           path: drools
           ref: main
 
       - name: Checkout current repository on main
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: current-repo
           ref: main
 
       - name: Checkout Ecosystem
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ env.ECOSYSTEM_CI_REPO }}
           ref: main

@@ -11,16 +11,18 @@ on:
 
 jobs:
   jenkinsfile-tests:
+    concurrency:
+      group: ${{ github.repository.name }}_jenkinsfile_tests-${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout 
-      uses: actions/checkout@v2
+    - name: Checkout repo
+      uses: actions/checkout@v3
       with:
         path: main
 
     - name: Checkout shared libraries
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: kiegroup/jenkins-pipeline-shared-libraries
         path: shared-libs
@@ -37,6 +39,9 @@ jobs:
       run: cd $GITHUB_WORKSPACE/main/.ci/jenkins/tests && mvn -B clean test
 
   dsl-tests:
+    concurrency:
+      group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
     - name: DSL tests
