@@ -27,6 +27,8 @@ import org.drools.model.impl.PrototypeVariableImpl;
 
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
+import static org.drools.model.PrototypeExpression.prototypeArrayItem;
+import static org.drools.model.PrototypeExpression.prototypeField;
 
 public class PrototypeDSL {
 
@@ -87,49 +89,44 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, Object value) {
-            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
-
-            Prototype prototype = protoVar.getPrototype();
-            Prototype.Field field = prototype.getField(fieldName);
-
-            Function1<PrototypeFact, Object> extractor;
-            AlphaIndex alphaIndex = null;
-            if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
-                extractor = prototypeFact -> prototypeFact.has(fieldName);
-                constraintType = Index.ConstraintType.EQUAL;
-            } else {
-                extractor = getFieldValueExtractor(prototype, fieldName);
-                int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
-
-                Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
-                if (fieldClass != null) {
-                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, extractor, value);
-                }
-            }
-
-            expr("expr:" + fieldName + ":" + constraintType + ":" + value,
-                    asPredicate1(extractor, constraintType, value),
-                    alphaIndex,
-                    reactOn( fieldName ));
-
-            return this;
+            return expr(fieldName2PrototypeExpression(fieldName), constraintType, PrototypeExpression.fixedValue(value));
         }
 
         @Override
         public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right) {
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
-                return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, ((PrototypeExpression.FixedValue) right).getValue());
-            }
-
             PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
             Prototype prototype = protoVar.getPrototype();
+
+            Function1<PrototypeFact, Object> leftExtractor;
+            AlphaIndex alphaIndex = null;
+            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
+                String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+                if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
+                    leftExtractor = prototypeFact -> prototypeFact.has(fieldName);
+                    constraintType = Index.ConstraintType.EQUAL;
+                } else {
+                    Prototype.Field field = prototype.getField(fieldName);
+                    Object value = ((PrototypeExpression.FixedValue) right).getValue();
+
+                    leftExtractor = getFieldValueExtractor(prototype, fieldName);
+                    int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
+
+                    Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
+                    if (fieldClass != null) {
+                        alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, leftExtractor, value);
+                    }
+                }
+            } else {
+                leftExtractor = left.asFunction(prototype);
+            }
 
             Set<String> reactOnFields = new HashSet<>();
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
             expr("expr:" + left + ":" + constraintType + ":" + right,
-                    asPredicate1(left.asFunction(prototype), constraintType, right.asFunction(prototype)),
+                    asPredicate1(leftExtractor, constraintType, right.asFunction(prototype)),
+                    alphaIndex,
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
@@ -137,27 +134,11 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName) {
-            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
-
-            Prototype prototype = protoVar.getPrototype();
-            Function1<PrototypeFact, Object> extractor = getFieldValueExtractor(prototype, fieldName);
-
-            Prototype otherPrototype = other.getPrototype();
-            Function1<PrototypeFact, Object> otherExtractor = getFieldValueExtractor(otherPrototype, otherFieldName);
-
-            expr("expr:" + fieldName + ":" + constraintType + ":" + otherFieldName,
-                    other, asPredicate2(extractor, constraintType, otherExtractor),
-                    reactOn( fieldName ));
-
-            return this;
+            return expr(fieldName2PrototypeExpression(fieldName), constraintType, other, fieldName2PrototypeExpression(otherFieldName));
         }
 
         @Override
         public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right) {
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.PrototypeFieldValue) {
-                return expr(((PrototypeExpression.PrototypeFieldValue) left).getFieldName(), constraintType, other, ((PrototypeExpression.PrototypeFieldValue) right).getFieldName());
-            }
-
             PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
             Prototype prototype = protoVar.getPrototype();
             Prototype otherPrototype = other.getPrototype();
@@ -171,13 +152,6 @@ public class PrototypeDSL {
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
-        }
-
-        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Object rightValue) {
-            return p -> {
-                Object leftValue = extractor.apply(p);
-                return leftValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
-            };
         }
 
         private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> right) {
@@ -199,5 +173,22 @@ public class PrototypeDSL {
         private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
             return prototype.getFieldValueExtractor(fieldName)::apply;
         }
+    }
+
+    public static PrototypeExpression fieldName2PrototypeExpression(String fieldName) {
+        int arrayStart = fieldName.indexOf('[');
+        if (arrayStart >= 0) {
+            int arrayEnd = fieldName.indexOf(']');
+            int pos = Integer.parseInt(fieldName.substring(arrayStart+1, arrayEnd));
+            PrototypeExpression arrayExpr = prototypeArrayItem(fieldName.substring(0, arrayStart), pos);
+            if (arrayEnd+1 < fieldName.length()) {
+                if (fieldName.charAt(arrayEnd+1) != '.') {
+                    throw new UnsupportedOperationException("Invalid expression: " + fieldName);
+                }
+                arrayExpr = arrayExpr.andThen(fieldName2PrototypeExpression(fieldName.substring(arrayEnd+2)));
+            }
+            return arrayExpr;
+        }
+        return prototypeField(fieldName);
     }
 }
