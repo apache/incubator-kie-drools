@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-quarkus-extension</artifactId>
-    <version>2.0.0-SNAPSHOT</version>    
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kogito-quarkus</artifactId>
@@ -22,24 +22,34 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-rules</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-predictions</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-quarkus-rules</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-quarkus-decisions</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-quarkus-predictions</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
