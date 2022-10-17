@@ -18,8 +18,7 @@ package org.kie.kogito.test.resources;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConditionHolderTest {
 
@@ -35,27 +34,27 @@ public class ConditionHolderTest {
 
     @Test
     public void shouldBeEnabledByDefault() {
-        assertTrue(condition.isEnabled());
+        assertThat(condition.isEnabled()).isTrue();
     }
 
     @Test
     public void shouldBeDisabledIfSystemPropertyDoesNotExist() {
         System.clearProperty(RESOURCE_PROPERTY);
         condition.enableConditional();
-        assertFalse(condition.isEnabled());
+        assertThat(condition.isEnabled()).isFalse();
     }
 
     @Test
     public void shouldBeDisabledIfSystemPropertyIsNotTrue() {
         System.setProperty(RESOURCE_PROPERTY, "anything");
         condition.enableConditional();
-        assertFalse(condition.isEnabled());
+        assertThat(condition.isEnabled()).isFalse();
     }
 
     @Test
     public void shouldBeEnabledIfSystemPropertyIsTrue() {
         System.setProperty(RESOURCE_PROPERTY, "true");
         condition.enableConditional();
-        assertTrue(condition.isEnabled());
+        assertThat(condition.isEnabled()).isTrue();
     }
 }

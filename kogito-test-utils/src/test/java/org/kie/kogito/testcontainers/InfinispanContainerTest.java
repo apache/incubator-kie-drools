@@ -18,8 +18,7 @@ package org.kie.kogito.testcontainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.testcontainers.Constants.CONTAINER_NAME_PREFIX;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -42,18 +41,18 @@ public class InfinispanContainerTest {
 
     @Test
     public void shouldAddDefaultSettings() {
-        assertTrue(container.getExposedPorts().contains(KogitoInfinispanContainer.PORT));
+        assertThat(container.getExposedPorts()).contains(KogitoInfinispanContainer.PORT);
     }
 
     @Test
     public void shouldGetResourceName() {
-        assertEquals(KogitoInfinispanContainer.NAME, container.getResourceName());
+        assertThat(container.getResourceName()).isEqualTo(KogitoInfinispanContainer.NAME);
     }
 
     @Test
     public void shouldGetMapperPort() {
         doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoInfinispanContainer.PORT);
-        assertEquals(MAPPED_PORT, container.getMappedPort());
+        assertThat(container.getMappedPort()).isEqualTo(MAPPED_PORT);
     }
 
 }

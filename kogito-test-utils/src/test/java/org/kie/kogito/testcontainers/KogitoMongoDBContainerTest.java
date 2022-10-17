@@ -18,7 +18,7 @@ package org.kie.kogito.testcontainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -37,17 +37,17 @@ class KogitoMongoDBContainerTest {
 
     @Test
     void shouldGetResourceName() {
-        assertEquals(KogitoMongoDBContainer.NAME, container.getResourceName());
+        assertThat(container.getResourceName()).isEqualTo(KogitoMongoDBContainer.NAME);
     }
 
     @Test
     void shouldGetMapperPort() {
         doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoMongoDBContainer.MONGODB_INTERNAL_PORT);
-        assertEquals(MAPPED_PORT, container.getMappedPort());
+        assertThat(container.getMappedPort()).isEqualTo(MAPPED_PORT);
     }
 
     @Test
     void shouldGetDockerImageName() {
-        assertEquals(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME), container.getDockerImageName());
+        assertThat(container.getDockerImageName()).isEqualTo(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME));
     }
 }

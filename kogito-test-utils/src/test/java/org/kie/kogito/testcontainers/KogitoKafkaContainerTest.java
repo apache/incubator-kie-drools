@@ -18,7 +18,7 @@ package org.kie.kogito.testcontainers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -40,13 +40,13 @@ public class KogitoKafkaContainerTest {
 
     @Test
     public void shouldGetResourceName() {
-        assertEquals(KogitoKafkaContainer.NAME, container.getResourceName());
+        assertThat(container.getResourceName()).isEqualTo(KogitoKafkaContainer.NAME);
     }
 
     @Test
     public void shouldGetMapperPort() {
         doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoKafkaContainer.KAFKA_PORT);
-        assertEquals(MAPPED_PORT, container.getMappedPort());
+        assertThat(container.getMappedPort()).isEqualTo(MAPPED_PORT);
     }
 
 }
