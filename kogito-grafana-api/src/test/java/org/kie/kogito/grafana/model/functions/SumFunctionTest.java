@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SumFunctionTest {
 
@@ -36,6 +36,6 @@ public class SumFunctionTest {
         String result = sumFunction.render("body", labels);
 
         // Assert
-        assertEquals("sum(prefix_body_suffix{key=value})", result);
+        assertThat(result).isEqualTo("sum(prefix_body_suffix{key=value})");
     }
 }

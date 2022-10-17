@@ -17,9 +17,10 @@ package org.kie.kogito.grafana;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.KogitoGAV;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GrafanaConfigurationWriterTest {
 
@@ -31,7 +32,7 @@ public class GrafanaConfigurationWriterTest {
 
         String dashboardName = GrafanaConfigurationWriter.buildDashboardName(Optional.of(gav), handlerName);
 
-        Assertions.assertEquals(expected, dashboardName);
+        assertThat(dashboardName).isEqualTo(expected);
     }
 
     @Test
@@ -41,6 +42,6 @@ public class GrafanaConfigurationWriterTest {
 
         String dashboardName = GrafanaConfigurationWriter.buildDashboardName(Optional.empty(), handlerName);
 
-        Assertions.assertEquals(expected, dashboardName);
+        assertThat(dashboardName).isEqualTo(expected);
     }
 }

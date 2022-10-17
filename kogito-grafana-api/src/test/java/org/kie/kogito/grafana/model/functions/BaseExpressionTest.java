@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseExpressionTest {
 
@@ -34,7 +34,7 @@ public class BaseExpressionTest {
         String result = baseExpression.render("body", Collections.singletonList(new Label("test", "test")));
 
         // Assert
-        assertEquals("prefix_body_suffix{test=test}", result);
+        assertThat(result).isEqualTo("prefix_body_suffix{test=test}");
     }
 
     @Test
@@ -49,6 +49,6 @@ public class BaseExpressionTest {
         String result = baseExpression.render("body", labels);
 
         // Assert
-        assertEquals("prefix_body_suffix{first=value,second=\"value\"}", result);
+        assertThat(result).isEqualTo("prefix_body_suffix{first=value,second=\"value\"}");
     }
 }

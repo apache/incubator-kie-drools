@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BiGrafanaOperationTest {
 
@@ -37,6 +37,6 @@ public class BiGrafanaOperationTest {
         String result = biGrafanaOperation.render("body", labels);
 
         // Assert
-        assertEquals("(prefix1_body_suffix1{key=value})/(prefix2_body_suffix2{key=value})", result);
+        assertThat(result).isEqualTo("(prefix1_body_suffix1{key=value})/(prefix2_body_suffix2{key=value})");
     }
 }

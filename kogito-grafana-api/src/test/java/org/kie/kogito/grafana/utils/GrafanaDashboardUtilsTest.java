@@ -20,8 +20,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_DOMAIN_DASHBOARDS;
 import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_OPERATIONAL_DASHBOARDS;
 
@@ -30,55 +29,55 @@ class GrafanaDashboardUtilsTest {
     @Test
     void isOperationDashboardEnabled() {
         Map<String, String> propertiesMap = new HashMap<>();
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan"));
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello")).isTrue();
         propertiesMap.put(DISABLED_OPERATIONAL_DASHBOARDS, "");
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan"));
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello")).isTrue();
 
         String values = "Hello";
         propertiesMap.put(DISABLED_OPERATIONAL_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello")).isFalse();
 
         values = "Hello,Loan";
         propertiesMap.put(DISABLED_OPERATIONAL_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Traffic"));
-        assertFalse(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Traffic")).isTrue();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan")).isFalse();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello")).isFalse();
 
         values = " Hello, Loan ";
         propertiesMap.put(DISABLED_OPERATIONAL_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Traffic"));
-        assertFalse(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Traffic")).isTrue();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Loan")).isFalse();
+        assertThat(GrafanaDashboardUtils.isOperationDashboardEnabled(propertiesMap, "Hello")).isFalse();
     }
 
     @Test
     void isDomainDashboardEnabled() {
         Map<String, String> propertiesMap = new HashMap<>();
 
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan"));
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello")).isTrue();
         propertiesMap.put(DISABLED_DOMAIN_DASHBOARDS, "");
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan"));
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello")).isTrue();
 
         String values = "Hello";
         propertiesMap.put(DISABLED_DOMAIN_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan")).isTrue();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello")).isFalse();
 
         values = "Hello,Loan";
         propertiesMap.put(DISABLED_DOMAIN_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Traffic"));
-        assertFalse(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Traffic")).isTrue();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan")).isFalse();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello")).isFalse();
 
         values = " Hello, Loan ";
         propertiesMap.put(DISABLED_DOMAIN_DASHBOARDS, values);
-        assertTrue(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Traffic"));
-        assertFalse(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan"));
-        assertFalse(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello"));
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Traffic")).isTrue();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Loan")).isFalse();
+        assertThat(GrafanaDashboardUtils.isDomainDashboardEnabled(propertiesMap, "Hello")).isFalse();
     }
 }

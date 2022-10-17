@@ -17,7 +17,7 @@ package org.kie.kogito.grafana.model.functions;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LabelTest {
 
@@ -27,8 +27,8 @@ public class LabelTest {
         Label label = new Label("key", "value");
 
         // Act and Assert
-        assertEquals("key", label.getKey());
-        assertEquals("value", label.getValue());
+        assertThat(label.getKey()).isEqualTo("key");
+        assertThat(label.getValue()).isEqualTo("value");
     }
 
     @Test
@@ -37,6 +37,6 @@ public class LabelTest {
         Label label = new Label("key", "value");
 
         // Act and Assert
-        assertEquals("key=value", label.render());
+        assertThat(label.render()).isEqualTo("key=value");
     }
 }
