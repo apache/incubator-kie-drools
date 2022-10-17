@@ -62,7 +62,6 @@ import static org.drools.model.PrototypeDSL.protoPattern;
 import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.model.PrototypeExpression.fixedValue;
-import static org.drools.model.PrototypeExpression.prototypeArrayItem;
 import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
@@ -660,7 +659,7 @@ public class FactTemplateTest {
 
         Rule rule = rule( "alpha" )
                 .build(
-                        protoPattern(var1).expr( prototypeArrayItem( "i", 1 ), Index.ConstraintType.EQUAL, fixedValue( 3 ) ),
+                        protoPattern(var1).expr( "i[1]", Index.ConstraintType.EQUAL, 3 ),
                         on(var1).execute((p1, p2) -> { } )
                 );
 
@@ -694,7 +693,7 @@ public class FactTemplateTest {
 
         Rule rule = rule( "alpha" )
                 .build(
-                        protoPattern(var1).expr( prototypeArrayItem( "i", 1 ).andThen( prototypeField("a") ), Index.ConstraintType.EQUAL, fixedValue( 3 ) ),
+                        protoPattern(var1).expr( "i[1].a", Index.ConstraintType.EQUAL, 3 ),
                         on(var1).execute((p1, p2) -> { } )
                 );
 
