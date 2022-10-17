@@ -24,12 +24,12 @@ jobs:
           major=${ver[0]}
           base_branch="$((major-7)).$minor.$release"
         fi
-        echo "BRANCH_CONFIG_NAME=${base_branch}" >> $GITHUB_ENV
+        echo "BASE_BRANCH=${base_branch}" >> $GITHUB_ENV
 
     - name: DSL tests
       uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
       with:
         main-config-file-repo: kiegroup/kogito-pipelines
-        main-config-file-ref: main
         main-config-file-path: dsl/config/main.yaml
-        branch-config-name: ${{ env.BRANCH_CONFIG_NAME }}
+        branch-config-file-repo: kiegroup/kogito-pipelines
+        base-branch: ${{ env.BASE_BRANCH }}
