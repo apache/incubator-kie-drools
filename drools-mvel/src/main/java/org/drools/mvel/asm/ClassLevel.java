@@ -71,6 +71,8 @@ public class ClassLevel {
             return V11;
         } else if ( level.startsWith( "12" ) ) {
             return V12;
+        } else if ( level.startsWith( "17" ) ) {
+            return V17;
         } else {
             return V1_8;
         }
