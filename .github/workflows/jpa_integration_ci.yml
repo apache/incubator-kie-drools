@@ -55,7 +55,7 @@ jobs:
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Java and Maven Setup
         uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
         with:

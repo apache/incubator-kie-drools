@@ -5,14 +5,18 @@ on:
   pull_request:
     paths: 
     - '.ci/jenkins/**'
+    - '.github/workflows/jenkins-tests-PR.yml'
 
 jobs:
   dsl-tests:
+    concurrency:
+      group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
     - name: DSL tests
       uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
       with:
         main-config-file-repo: kiegroup/optaplanner
-        main-config-file-ref: main
         main-config-file-path: .ci/jenkins/config/main.yaml
+        branch-config-file-repo: kiegroup/optaplanner
