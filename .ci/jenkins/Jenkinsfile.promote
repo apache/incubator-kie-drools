@@ -206,8 +206,7 @@ pipeline {
             }
         }
 
-// TODO: enable after the 8.29.x branch is created.
-        /*stage('Push the final OptaPlanner operator image') {
+        stage('Push the final OptaPlanner operator image') {
             when {
                 expression { return isRelease() }
             }
@@ -217,7 +216,7 @@ pipeline {
                     removeOperatorImageTemporaryTag()
                 }
             }
-        }*/
+        }
     }
     post {
         unsuccessful {

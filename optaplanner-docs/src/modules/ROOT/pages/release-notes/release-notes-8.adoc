@@ -1,8 +1,6 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
-////
-TODO: enable after the 8.29.x branch is created.
 [[releaseNotes-8.30.0.Final]]
 === OptaPlanner 8.30.0.Final
 
@@ -11,7 +9,6 @@ TODO: enable after the 8.29.x branch is created.
 While the OptaPlanner operator remains experimental, it has now become a part of the https://download.jboss.org/optaplanner/release/latestFinal[OptaPlanner distribution].
 
 If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo]
-////
 
 [[releaseNotes-8.29.0.Final]]
 === OptaPlanner 8.29.0.Final

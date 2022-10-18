@@ -54,11 +54,10 @@
       </excludes>
     </fileSet>
     <!-- OptaPlanner Operator distribution. -->
-    <!-- TODO: enable the module by default after the 8.29.x branch is created. -->
-    <!--<fileSet>
+    <fileSet>
       <directory>../../optaplanner-operator/target/install</directory>
       <outputDirectory>extra/optaplanner-operator</outputDirectory>
-    </fileSet>-->
+    </fileSet>
   </fileSets>
 
   <dependencySets>
@@ -66,11 +65,10 @@
       <includes>
         <include>org.optaplanner:*:jar</include>
       </includes>
-      <!-- TODO: enable the module by default after the 8.29.x branch is created. -->
-      <!--<excludes>
+      <excludes>
         <exclude>org.optaplanner:optaplanner-operator:jar</exclude>
         <exclude>*:sources</exclude>
-      </excludes>-->
+      </excludes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>examples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>

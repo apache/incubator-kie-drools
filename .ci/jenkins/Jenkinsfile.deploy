@@ -248,8 +248,7 @@ pipeline {
             }
         }
 
-        // TODO: enable after the 8.29.x branch is created.
-        /*stage('Push a temporary operator image to a registry') {
+        stage('Push a temporary operator image to a registry') {
             when {
                 expression { return isRelease() }
             }
@@ -263,7 +262,7 @@ pipeline {
                     setDeployPropertyIfNeeded('operator.image.temporary_tag', getOperatorImageTemporaryTag())
                 }
             }
-        }*/
+        }
     }
     post {
         always {
