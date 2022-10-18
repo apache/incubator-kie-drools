@@ -282,6 +282,8 @@
         <module>drools-templates</module>
         <module>drools-decisiontables</module>
         <module>drools-alphanetwork-compiler</module>
+        <module>drools-engine</module>
+        <module>drools-engine-classic</module>
         <module>kie-dmn</module>
         <module>kie-drl</module>
         <module>kie-pmml-trusty</module>
