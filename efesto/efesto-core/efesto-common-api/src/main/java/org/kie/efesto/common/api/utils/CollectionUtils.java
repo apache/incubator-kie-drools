@@ -3,7 +3,6 @@ package org.kie.efesto.common.api.utils;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class CollectionUtils {
 
@@ -23,7 +22,4 @@ public class CollectionUtils {
         return Optional.ofNullable(result);
     }
 
-    public static <T, X extends RuntimeException> T findExactlyOne(Iterable<T> collection, Predicate<T> filter, BiFunction<T, T, X> multipleValuesExceptionSupplier, Supplier<X> missingValueExceptionSupplier) {
-        return findAtMostOne(collection, filter, multipleValuesExceptionSupplier).orElseThrow(missingValueExceptionSupplier);
-    }
 }

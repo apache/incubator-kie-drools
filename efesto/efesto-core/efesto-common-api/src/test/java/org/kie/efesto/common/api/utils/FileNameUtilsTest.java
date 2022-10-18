@@ -17,30 +17,51 @@ package org.kie.efesto.common.api.utils;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 
+import static java.io.File.separator;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
+import static org.kie.efesto.common.api.utils.FileNameUtils.getSuffix;
+import static org.kie.efesto.common.api.utils.FileNameUtils.removeSuffix;
 
 class FileNameUtilsTest {
 
 
     @Test
-    void getFileName() {
-        String fileName = "file_name.txt";
-        String source = fileName;
-        assertThat(FileNameUtils.getFileName(source)).isEqualTo(fileName);
-        source = File.separator + "dir" + File.separator + fileName;
-        assertThat(FileNameUtils.getFileName(source)).isEqualTo(fileName);
+    void getFileName_noDirectories() {
+        assertThat(getFileName("file_name.txt")).isEqualTo("file_name.txt");
+    }
+    
+    @Test
+    void getFileName_oneDirectory() {
+        assertThat(getFileName("dir" + separator + "file_name.txt")).isEqualTo("file_name.txt");
+    }
+
+    
+    @Test
+    void getFileName_manyDirectories() {
+        assertThat(getFileName("dir" + separator + "dir" + separator + "file_name.txt")).isEqualTo("file_name.txt");
     }
 
     @Test
-    void getSuffix() {
-        String fileName = "file_name.model_json";
-        String expected = "model_json";
-        String source = fileName;
-        assertThat(FileNameUtils.getSuffix(source)).isEqualTo(expected);
-        source = File.separator + "dir" + File.separator + fileName;
-        assertThat(FileNameUtils.getSuffix(source)).isEqualTo(expected);
+    void getSuffix_noSuffix() {
+        assertThat(getSuffix("file_name")).isEqualTo("file_name");
     }
 
+    @Test
+    void getSuffix_withSuffix() {
+        assertThat(getSuffix("file_name.model_json")).isEqualTo("model_json");
+    }
+    
+    @Test
+    void getSuffix_pathIsIrrelevant() {
+        assertThat(getSuffix("dir" + separator + "file_name.model_json")).isEqualTo("model_json");
+    }
+
+    @Test
+    void removeSuffix_noSuffix() {
+        assertThat(removeSuffix("file_name.model_json")).isEqualTo("file_name");
+    }
+
+    
 }

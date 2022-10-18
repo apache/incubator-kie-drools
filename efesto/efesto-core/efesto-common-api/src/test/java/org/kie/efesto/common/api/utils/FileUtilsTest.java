@@ -17,7 +17,6 @@ package org.kie.efesto.common.api.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -30,165 +29,169 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.MemoryFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.efesto.common.api.utils.FileUtils.getFile;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromJar;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromResource;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromURL;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
+import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
+import static org.kie.efesto.common.api.utils.FileUtils.getInputStreamFromFileName;
+import static org.kie.efesto.common.api.utils.FileUtils.getOptionalFileFromJar;
+import static org.kie.efesto.common.api.utils.FileUtils.getOptionalFileFromResource;
+import static org.kie.efesto.common.api.utils.FileUtils.getOptionalFileFromURLFile;
 
 class FileUtilsTest {
 
-    private final static String TEST_FILE = "TestingEmptyFile.txt";
+    private final static String EMPTY_TEST_FILE = "TestingEmptyFile.txt";
+    private final static String NOT_EMPTY_TEST_FILE = "IndexFile.test_json";
     private final static String NOT_EXISTING_FILE = "NotExistingFile.txt";
-
-    private final static String NOT_EMPTY_FILE = "IndexFile.test_json";
 
     private static String content;
 
     @BeforeAll
     public static void setup() throws IOException {
-        File testingFile = getFile(NOT_EMPTY_FILE);
-        assertThat(testingFile).isNotNull();
-        assertThat(testingFile).exists();
+        File testingFile = getFile(NOT_EMPTY_TEST_FILE);
+        assertThat(testingFile).isNotNull().exists();
+        
         content = new String(Files.readAllBytes(testingFile.toPath()));
         assertThat(content).isNotNull().isNotEmpty();
     }
 
     @Test
-    void getFileFromFileNameExisting() {
-        File retrieved = FileUtils.getFile(TEST_FILE);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).exists();
+    void getFile_existing() {
+        assertThat(getFile(EMPTY_TEST_FILE)).isNotNull().exists();
     }
 
     @Test
-    void getFileFromFileNameNotExisting() {
-        try {
-            FileUtils.getFile(NOT_EXISTING_FILE);
-            fail("Expecting KieEfestoCommonException");
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(KieEfestoCommonException.class);
-        }
+    void getFile_nonExisting() {
+        assertThatExceptionOfType(KieEfestoCommonException.class).isThrownBy(()-> getFile(NOT_EXISTING_FILE));
     }
 
     @Test
-    void getFileInputStreamExisting() throws IOException {
-        InputStream retrieved = FileUtils.getFileInputStream(TEST_FILE);
-        assertThat(retrieved).isNotNull();
+    void getFileInputStream_existing() throws IOException {
+        assertThat(getFileInputStream(EMPTY_TEST_FILE)).isNotNull();
     }
 
     @Test
-    void getFileInputStreamNotExisting() {
-        try {
-            FileUtils.getFileInputStream(NOT_EXISTING_FILE);
-            fail("Expecting KieEfestoCommonException");
-        } catch (Exception e) {
-            assertThat(e).isInstanceOf(KieEfestoCommonException.class);
-        }
+    void getFileInputStreamNotExisting_nonExisting() {
+        assertThatExceptionOfType(KieEfestoCommonException.class).isThrownBy(()-> getFileInputStream(NOT_EXISTING_FILE));
     }
 
     @Test
-    void getFileContent() throws IOException {
-        String retrieved = FileUtils.getFileContent(NOT_EMPTY_FILE);
+    void getFileContent_existingNonEmpty() throws IOException {
+        assertThat(getFileContent(NOT_EMPTY_TEST_FILE)).isNotNull().isNotEmpty();
+    }
+
+    @Test
+    void getInputStreamFromFileName_existing() {
+        assertThat(getInputStreamFromFileName(EMPTY_TEST_FILE)).isNotNull();
+    }
+
+    @Test
+    void getInputStreamFromFileName_nonExisting() {
+        assertThatExceptionOfType(KieEfestoCommonException.class).isThrownBy(()-> getInputStreamFromFileName(NOT_EXISTING_FILE));
+    }
+
+    @Test
+    void getFileFromFileNameOrFilePath_existingInBothFileSystemAndClassLoader() {
+        Optional<File> retrieved = getFileFromFileNameOrFilePath(EMPTY_TEST_FILE, EMPTY_TEST_FILE);
+
+        assertThat(retrieved).isNotNull().isNotEmpty();
+    }
+    
+    @Test
+    void getFileFromFileNameOrFilePathExisting_existingInFileSystem() {
+        String path = String.format("target%1$stest-classes%1$s%2$s", File.separator, EMPTY_TEST_FILE);
+        Optional<File> retrieved = getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, path);
+
+        assertThat(retrieved).isNotNull().isNotEmpty();
+    }
+    
+    @Test
+    void getFileFromFileNameOrFilePathExisting_existingInClassLoader() {
+        String path = String.format("target%1$stest-classes%1$s%2$s", File.separator, EMPTY_TEST_FILE);
+        Optional<File> retrieved = getFileFromFileNameOrFilePath(path, NOT_EXISTING_FILE);
+
         assertThat(retrieved).isNotNull().isNotEmpty();
     }
 
     @Test
-    void getInputStreamFromFileNameExisting() {
-        InputStream retrieved = FileUtils.getInputStreamFromFileName(TEST_FILE);
-        assertThat(retrieved).isNotNull();
-    }
-
-    @Test
-    void getInputStreamFromFileNameNotExisting() {
-        try {
-            FileUtils.getInputStreamFromFileName(NOT_EXISTING_FILE);
-            fail("Expecting KieEfestoCommonException thrown");
-        } catch (Exception e) {
-            assertThat(e instanceof KieEfestoCommonException).isTrue();
-        }
-    }
-
-    @Test
-    void getFileFromFileNameOrFilePathExisting() {
-        Optional<File> retrieved = FileUtils.getFileFromFileNameOrFilePath(TEST_FILE, TEST_FILE);
-        assertThat(retrieved).isNotNull().isNotEmpty();
-        String path = String.format("target%1$stest-classes%1$s%2$s", File.separator, TEST_FILE);
-        retrieved = FileUtils.getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, path);
-        assertThat(retrieved).isNotNull().isNotEmpty();
-        retrieved = FileUtils.getFileFromFileNameOrFilePath(path, NOT_EXISTING_FILE);
-        assertThat(retrieved).isNotNull().isNotEmpty();
-    }
-
-    @Test
-    void getFileFromFileNameOrFilePathNotExisting() {
-        Optional<File> retrieved = FileUtils.getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, NOT_EXISTING_FILE);
+    void getFileFromFileNameOrFilePath_nonExisting() {
+        Optional<File> retrieved = getFileFromFileNameOrFilePath(NOT_EXISTING_FILE, NOT_EXISTING_FILE);
+        
         assertThat(retrieved).isNotNull().isEmpty();
     }
 
     @Test
-    void getFileFromURL() throws IOException {
+    void getFileFromURL_urlIsAJar() throws IOException {
         URL url = getJarUrl();
-        assertThat(url).isNotNull();
-        Optional<File> retrieved = FileUtils.getFileFromURL(url);
+        Optional<File> retrieved = getFileFromURL(url);
+
         assertThat(retrieved).isNotNull().isPresent();
         assertThat(retrieved.get()).isInstanceOf(MemoryFile.class);
         assertThat(retrieved.get()).canRead();
+    }
+    
 
-        url = getResourceUrl();
-        assertThat(url).isNotNull();
-        retrieved = FileUtils.getFileFromURL(url);
+    @Test
+    void getFileFromURL_urlIsAResource() throws IOException {
+        URL url = getResourceUrl();
+        Optional<File> retrieved = getFileFromURL(url);
+
         assertThat(retrieved).isNotNull().isPresent();
         assertThat(retrieved.get()).isInstanceOf(File.class);
         assertThat(retrieved.get()).canRead();
     }
+    
 
     @Test
-    void getOptionalFileFromJar() throws IOException {
+    void getOptionalFileFromJar_existing() throws IOException {
         URL jarUrl = getJarUrl();
-        assertThat(jarUrl).isNotNull();
-        Optional<File> retrieved = FileUtils.getOptionalFileFromJar(jarUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
+        
+        Optional<File> retrieved = getOptionalFileFromJar(jarUrl);
+
+        assertThat(retrieved).isNotNull().isPresent();
         assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
     }
 
     @Test
-    void getOptionalFileFromResource() {
+    void getOptionalFileFromResource_fileIsPresent() {
         URL resourceUrl = getResourceUrl();
-        Optional<File> retrieved = FileUtils.getOptionalFileFromResource(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
+        Optional<File> retrieved = getOptionalFileFromResource(resourceUrl);
+
+        assertThat(retrieved).isNotNull().isPresent();
         assertThat(retrieved).get().isInstanceOf(MemoryFile.class);
     }
 
     @Test
-    void getOptionalFileFromURLFile() {
+    void getOptionalFileFromURLFile_existing() {
         URL resourceUrl = getResourceUrl();
-        Optional<File> retrieved = FileUtils.getOptionalFileFromURLFile(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.isPresent()).isTrue();
+        Optional<File> retrieved = getOptionalFileFromURLFile(resourceUrl);
+
+        assertThat(retrieved).isNotNull().isPresent();
         assertThat(retrieved).get().isInstanceOf(File.class);
     }
 
     @Test
-    void getFileFromResource() throws IOException {
+    void getFileFromResource_existing() throws IOException {
         URL resourceUrl = getResourceUrl();
-        File retrieved = FileUtils.getFileFromResource(resourceUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(MemoryFile.class);
-        assertThat(retrieved).canRead();
+        File retrieved = getFileFromResource(resourceUrl);
+        
+        assertThat(retrieved).isNotNull().isInstanceOf(MemoryFile.class).canRead();
     }
 
     @Test
-    void getFileFromJar() throws URISyntaxException, IOException {
+    void getFileFromJar_existing() throws URISyntaxException, IOException {
         URL jarUrl = getJarUrl();
-        assertThat(jarUrl).isNotNull();
-        File retrieved = FileUtils.getFileFromJar(jarUrl);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).isInstanceOf(MemoryFile.class);
-        assertThat(retrieved).canRead();
+        File retrieved = getFileFromJar(jarUrl);
+        
+        assertThat(retrieved).isNotNull().isInstanceOf(MemoryFile.class).canRead();
     }
 
     private static URL getResourceUrl() {
-        URL toReturn = Thread.currentThread().getContextClassLoader().getResource(NOT_EMPTY_FILE);
+        URL toReturn = Thread.currentThread().getContextClassLoader().getResource(NOT_EMPTY_TEST_FILE);
         assertThat(toReturn).isNotNull();
         return toReturn;
     }
