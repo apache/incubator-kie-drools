@@ -261,8 +261,8 @@ public class PatternDSL extends DSL {
     }
 
     public static class PatternDefImpl<T> implements PatternDef<T> {
-        private final Variable<T> variable;
-        private final List<PatternItem<T>> items = new ArrayList<>();
+        protected final Variable<T> variable;
+        protected final List<PatternItem<T>> items = new ArrayList<>();
 
         private String[] watch;
         private boolean passive;

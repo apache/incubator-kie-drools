@@ -80,11 +80,24 @@ public class PrototypeDSL {
 
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName);
         PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right);
+
+        PrototypePatternDef and();
+        PrototypePatternDef or();
     }
 
     public static class PrototypePatternDefImpl extends PatternDSL.PatternDefImpl<PrototypeFact> implements PrototypePatternDef {
         public PrototypePatternDefImpl(PrototypeVariable variable) {
             super(variable);
+        }
+
+        @Override
+        public PrototypePatternDef and() {
+            return new PrototypeSubPatternDefImpl( this, PatternDSL.LogicalCombiner.AND );
+        }
+
+        @Override
+        public PrototypePatternDef or() {
+            return new PrototypeSubPatternDefImpl( this, PatternDSL.LogicalCombiner.OR );
         }
 
         @Override
@@ -172,6 +185,35 @@ public class PrototypeDSL {
 
         private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
             return prototype.getFieldValueExtractor(fieldName)::apply;
+        }
+    }
+
+    public static class PrototypeSubPatternDefImpl<T> extends PrototypePatternDefImpl {
+        private final PrototypePatternDefImpl parent;
+        private final PatternDSL.LogicalCombiner combiner;
+
+        public PrototypeSubPatternDefImpl(PrototypePatternDefImpl parent, PatternDSL.LogicalCombiner combiner ) {
+            super((PrototypeVariable) parent.variable);
+            this.parent = parent;
+            this.combiner = combiner;
+        }
+
+        @Override
+        public PrototypePatternDefImpl endAnd() {
+            if (combiner == PatternDSL.LogicalCombiner.OR) {
+                throw new UnsupportedOperationException();
+            }
+            parent.items.add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
+            return parent;
+        }
+
+        @Override
+        public PrototypePatternDefImpl endOr() {
+            if (combiner == PatternDSL.LogicalCombiner.AND) {
+                throw new UnsupportedOperationException();
+            }
+            parent.items.add( new PatternDSL.CombinedPatternExprItem<>( combiner, this.getItems() ));
+            return parent;
         }
     }
 

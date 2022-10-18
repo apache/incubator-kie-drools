@@ -685,6 +685,40 @@ public class FactTemplateTest {
     }
 
     @Test
+    public void testArrayAccessWithOr() {
+        // DROOLS-7194
+        Prototype prototype = prototype( "org.X" );
+
+        PrototypeVariable var1 = variable( prototype );
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(var1).or().expr( "i[1]", Index.ConstraintType.EQUAL, 3 ).expr( "i[2]", Index.ConstraintType.EQUAL, 3 ).endOr(),
+                        on(var1).execute((p1, p2) -> { } )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact f1 = createMapBasedFact( prototype );
+        f1.set( "i", Arrays.asList(3) );
+        ksession.insert(f1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact f2 = createMapBasedFact( prototype );
+        f2.set( "i", Arrays.asList(1, 3, 5) );
+        ksession.insert(f2);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Fact f3 = createMapBasedFact( prototype );
+        f3.set( "i", new int[] {1, 5, 3} );
+        ksession.insert(f3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
     public void testInnerArrayAccess() {
         // DROOLS-7194
         Prototype prototype = prototype( "org.X" );
