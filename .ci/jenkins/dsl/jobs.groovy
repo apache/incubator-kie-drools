@@ -22,7 +22,7 @@ jenkins_path = '.ci/jenkins'
 jenkins_path_project = "${jenkins_path}/project"
 
 // Init branch
-setupProjectInitBranchJob()
+createProjectSetupBranchJob()
 
 // Nightly jobs
 setupProjectNightlyJob()
@@ -55,15 +55,21 @@ void setupProjectDroolsJob(String droolsBranch) {
     }
 }
 
-void setupProjectInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, '0-init-branch', Folder.INIT_BRANCH, "${jenkins_path_project}/Jenkinsfile.init-branch", 'Optaplanner Project Init Branch')
+void createProjectSetupBranchJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, '0-setup-branch', Folder.SETUP_BRANCH, "${jenkins_path_project}/Jenkinsfile.setup-branch", 'Optaplanner Project Setup Branch')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('OPTAPLANNER_VERSION', '', 'OptaPlanner version')
+        }
+    }
 }
 
 void setupProjectNightlyJob() {
@@ -179,8 +185,8 @@ Map getMultijobPRConfig(Folder jobFolder) {
 KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
 setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
-// Init branch
-setupInitBranchJob()
+// Setup branch branch
+createSetupBranchJob()
 
 // Nightly jobs
 setupDeployJob(Folder.NIGHTLY)
@@ -231,8 +237,8 @@ void setupSpecificNightlyJob(Folder specificNightlyFolder) {
     }
 }
 
-void setupInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'OptaPlanner Init Branch')
+void createSetupBranchJob() {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'OptaPlanner Setup Branch')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'optaplanner',
@@ -244,6 +250,8 @@ void setupInitBranchJob() {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {

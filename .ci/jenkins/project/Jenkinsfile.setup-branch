@@ -17,7 +17,7 @@ pipeline {
     }
 
     options {
-        timeout(time: 180, unit: 'MINUTES')
+        timeout(time: 360, unit: 'MINUTES')
     }
 
     // parameters {
@@ -139,7 +139,7 @@ void addUnstableStage(String jobKey = '') {
 }
 
 void sendPipelineErrorNotification() {
-    String bodyMsg = "OptaPlanner init job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
+    String bodyMsg = "OptaPlanner Setup branch job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
 
     if (FAILED_STAGES.size()) {
         bodyMsg += '\nFailed stages: \n- '
@@ -185,7 +185,7 @@ String getGitAuthor() {
 }
 
 String getOptaPlannerVersion() {
-    return getVersionFromReleaseBranch(getBuildBranch())
+    return params.OPTAPLANNER_VERSION ?: getVersionFromReleaseBranch(getBuildBranch())
 }
 
 String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, String suffix = 'SNAPSHOT') {
