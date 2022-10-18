@@ -177,7 +177,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     }
 
     public RuleFlowProcessFactory variable(String name, Class<?> clazz) {
-        return variable(name, DataTypeResolver.fromType(clazz.getName(), clazz.getClassLoader()), null);
+        return variable(name, DataTypeResolver.fromClass(clazz), null);
     }
 
     @Override

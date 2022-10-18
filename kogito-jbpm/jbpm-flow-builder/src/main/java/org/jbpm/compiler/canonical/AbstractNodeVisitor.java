@@ -41,6 +41,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
@@ -104,10 +105,8 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     public Expression buildDataResolver(String type) {
-        MethodCallExpr currentThread = new MethodCallExpr(null, "java.lang.Thread.currentThread");
-        MethodCallExpr classLoaderMethodCallExpr = new MethodCallExpr(currentThread, "getContextClassLoader");
-        return new MethodCallExpr(null, "org.jbpm.process.core.datatype.DataTypeResolver.fromType",
-                new NodeList<>(new StringLiteralExpr(type), classLoaderMethodCallExpr));
+        return new MethodCallExpr(null, "org.jbpm.process.core.datatype.DataTypeResolver.fromClass",
+                new NodeList<>(new ClassExpr(parseClassOrInterfaceType(type))));
     }
 
     protected AssignExpr getAssignedFactoryMethod(String factoryField, Class<?> typeClass, String variableName, String methodName, Type parentType, Expression... args) {
