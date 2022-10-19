@@ -21,6 +21,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
-import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusIntegrationTest
 class EventFlowIT {
@@ -66,12 +67,12 @@ class EventFlowIT {
 
     @Test
     void testNotStartingMultipleEventTimeout() {
-        doIt("nonStartMultipleEventTimeout", Duration.ofSeconds(5), "eventTimeout1", "eventTimeout2");
+        doIt("nonStartMultipleEventTimeout", "eventTimeout1", "eventTimeout2");
     }
 
     @Test
     void testNotStartingMultipleEventTimeoutExclusive() {
-        doIt("nonStartMultipleEventTimeoutExclusive", Duration.ofSeconds(5));
+        doIt("nonStartMultipleEventTimeoutExclusive");
     }
 
     @Test
@@ -79,12 +80,17 @@ class EventFlowIT {
         doIt("nonStartMultipleEventExclusive", "event1Exclusive");
     }
 
-    private void doIt(String flowName, String... eventTypes) {
-        doIt(flowName, null, eventTypes);
+    @Test
+    void testNotStartingMultipleEventRainy() {
+        final String flowName = "nonStartMultipleEvent";
+        final String id = startProcess(flowName);
+        sendEvents(id, "quiet");
+        assertThrows(ConditionTimeoutException.class, () -> waitForFinish(flowName, id, Duration.ofSeconds(5)));
+        sendEvents(id, "never");
+        waitForFinish(flowName, id, Duration.ofSeconds(5));
     }
 
-    private void doIt(String flowName, Duration timeout, String... eventTypes) {
-
+    private String startProcess(String flowName) {
         String id = given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -100,7 +106,11 @@ class EventFlowIT {
                 .get("/" + flowName + "/{id}", id)
                 .then()
                 .statusCode(200);
+        return id;
 
+    }
+
+    private void sendEvents(String id, String... eventTypes) {
         for (String eventType : eventTypes) {
             given()
                     .contentType(ContentType.JSON)
@@ -110,16 +120,10 @@ class EventFlowIT {
                     .then()
                     .statusCode(202);
         }
+    }
 
-        if (timeout != null) {
-            Duration aliveTime = timeout.minus(Duration.ofSeconds(2));
-            await("alive").during(aliveTime).pollInterval(Duration.ofMillis(500)).atMost(aliveTime.plus(Duration.ofSeconds(1))).until(() -> given()
-                    .contentType(ContentType.JSON)
-                    .accept(ContentType.JSON)
-                    .get("/" + flowName + "/{id}", id).statusCode(), is(200));
-        }
-
-        await("dead").atMost(15, SECONDS)
+    private void waitForFinish(String flowName, String id, Duration duration) {
+        await("dead").atMost(duration)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> given()
                         .contentType(ContentType.JSON)
@@ -127,6 +131,13 @@ class EventFlowIT {
                         .get("/" + flowName + "/{id}", id)
                         .then()
                         .statusCode(404));
+    }
+
+    private void doIt(String flowName, String... eventTypes) {
+        String id = startProcess(flowName);
+        sendEvents(id, eventTypes);
+        waitForFinish(flowName, id, Duration.ofSeconds(15));
+
     }
 
     private String generateCloudEvent(String id, String type) {
