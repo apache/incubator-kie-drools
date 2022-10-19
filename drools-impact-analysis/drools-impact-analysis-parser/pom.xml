@@ -24,6 +24,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wiring-dynamic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-impact-analysis-model</artifactId>
     </dependency>
 
