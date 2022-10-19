@@ -142,14 +142,17 @@ void mergeOnIntegrationBranch(String repoName, String baseBranch, boolean pushCh
     }
 }
 
-MavenCommand getBasicMavenCommand(String directory) {
-    return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kogito_release_settings')
+MavenCommand getBasicMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .inDirectory(directory)
+    if (includeSettings) {
+        mvnCmd.withSettingsXmlId('kogito_release_settings')
+    }
+    return mvnCmd
 }
 
-MavenCommand getEcosystemMavenCommand(String directory) {
-    def mvnCmd = getBasicMavenCommand(directory)
+MavenCommand getEcosystemMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = getBasicMavenCommand(directory, includeSettings)
 
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
@@ -158,8 +161,8 @@ MavenCommand getEcosystemMavenCommand(String directory) {
     return mvnCmd
 }
 
-MavenCommand getFullMavenCommand(String directory) {
-    def mvnCmd = getEcosystemMavenCommand(directory)
+MavenCommand getFullMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = getEcosystemMavenCommand(directory, includeSettings)
     if (isNative()) {
         mvnCmd.withProfiles(['native'])
                 .withProperty('quarkus.native.container-build', true)
@@ -235,18 +238,22 @@ void getOrCreateGitBranch(String branch) {
 String getReproducer() {
     String droolsBranch = useIntegrationBranch() ? getIntegrationBranch() : getDroolsBranch()
     String reproducer = """
+```spoiler Commands to reproduce
 git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/drools.git
 """
     if (getQuarkusBranch()) {
         reproducer += """
 git clone --branch ${getQuarkusBranch()} --depth 1 https://github.com/quarkusio/quarkus.git
-mvn -f quarkus/pom.xml clean install -Dquickly
-mvn -f drools/pom.xml -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
-mvn -f drools/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd quarkus && ${getBasicMavenCommand('quarkus', false).withProperty('quickly').getFullRunCommand('clean install')}
+cd ../drools
+mvn -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+mvn -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd ..
 """
     }
     reproducer += """
-mvn -f drools/pom.xml clean install
+cd drools && ${getFullMavenCommand(droolsRepo, false).withProperty('maven.test.failure.ignore', true).getFullRunCommand('clean install')}
 """
+    reproducer += '```'
     return reproducer
 }
