@@ -98,13 +98,13 @@ class CallbackStateServerlessWorkflowParsingTest extends AbstractServerlessWorkf
         WorkItemNode stateActionNode = assertClassAndGetNode(callbackState, 1, WorkItemNode.class);
         assertHasName(stateActionNode, "callbackFunction");
         ActionNode afterStateActionMergeNode = assertClassAndGetNode(callbackState, 2, ActionNode.class);
-        Split stateSplitNode = assertClassAndGetNode(callbackState, 3, Split.class);
-        assertHasName(stateSplitNode, "ExclusiveSplit_" + stateSplitNode.getId());
-        Join stateJoinNode = assertClassAndGetNode(callbackState, 4, Join.class);
+        Split stateSplitNode = assertClassAndGetNode(callbackState, 5, Split.class);
+        assertHasName(stateSplitNode, "EventSplit_" + stateSplitNode.getId());
+        Join stateJoinNode = assertClassAndGetNode(callbackState, 6, Join.class);
         assertHasName(stateJoinNode, "ExclusiveJoin_" + stateJoinNode.getId());
-        EventNode stateEventNode = assertClassAndGetNode(callbackState, 5, EventNode.class);
+        EventNode stateEventNode = assertClassAndGetNode(callbackState, 3, EventNode.class);
         assertHasName(stateEventNode, "callbackEvent");
-        ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 6, ActionNode.class);
+        ActionNode afterStateEventMergeNode = assertClassAndGetNode(callbackState, 4, ActionNode.class);
         TimerNode stateTimerNode = assertClassAndGetNode(callbackState, 7, TimerNode.class);
         assertHasName(stateTimerNode, "TimerNode_" + stateTimerNode.getId());
         assertThat(stateTimerNode.getTimer().getDelay()).isEqualTo("PT5S");

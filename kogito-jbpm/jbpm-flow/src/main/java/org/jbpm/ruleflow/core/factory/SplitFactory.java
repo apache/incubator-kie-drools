@@ -32,7 +32,7 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
         super(nodeContainerFactory, nodeContainer, new Split(), id);
     }
 
-    protected Split getSplit() {
+    public Split getSplit() {
         return (Split) getNode();
     }
 

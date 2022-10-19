@@ -46,7 +46,9 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return joinNodes(factory, state.getOnEvents().stream().map(onEvent -> processOnEvent(factory, onEvent)).collect(Collectors.toList()));
+        MakeNodeResult currentBranch = joinNodes(factory, state.getOnEvents().stream().map(onEvent -> processOnEvent(factory, onEvent)).collect(Collectors.toList()));
+        // ignore timeout for start states
+        return isStartState ? currentBranch : makeTimeoutNode(factory, currentBranch, Split.TYPE_AND);
     }
 
     private MakeNodeResult processOnEvent(RuleFlowNodeContainerFactory<?, ?> factory, OnEvents onEvent) {
@@ -59,25 +61,23 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
     }
 
     private MakeNodeResult joinNodes(RuleFlowNodeContainerFactory<?, ?> factory, List<MakeNodeResult> nodes) {
-        NodeFactory<?, ?> incomingNode = null;
+        NodeFactory<?, ?> incomingNode;
         NodeFactory<?, ?> outgoingNode;
         if (nodes.size() == 1) {
             incomingNode = nodes.get(0).getIncomingNode();
             outgoingNode = nodes.get(0).getOutgoingNode();
         } else {
-            if (!isStartState) {
-                incomingNode = factory.splitNode(parserContext.newId()).name(state.getName() + "Split").type(Split.TYPE_AND);
-            }
+            incomingNode = isStartState ? null : factory.splitNode(parserContext.newId()).name(state.getName() + "Split").type(Split.TYPE_AND);
             outgoingNode = factory.joinNode(parserContext.newId()).name(state.getName() + "Join").type(state.isExclusive() ? Join.TYPE_XOR : Join.TYPE_AND);
             for (MakeNodeResult node : nodes) {
                 connectNode(node, incomingNode, outgoingNode);
             }
         }
-        return isStartState ? new MakeNodeResult(outgoingNode) : new MakeNodeResult(incomingNode, outgoingNode);
+        return incomingNode != null ? new MakeNodeResult(incomingNode, outgoingNode) : new MakeNodeResult(outgoingNode);
     }
 
     private void connectNode(MakeNodeResult node, NodeFactory<?, ?> incomingNode, NodeFactory<?, ?> outgoingNode) {
-        if (!isStartState) {
+        if (incomingNode != null) {
             connect(incomingNode, node.getIncomingNode());
         }
         connect(node.getOutgoingNode(), outgoingNode);

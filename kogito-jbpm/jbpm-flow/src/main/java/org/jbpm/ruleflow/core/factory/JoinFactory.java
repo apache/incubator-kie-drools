@@ -27,7 +27,7 @@ public class JoinFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends N
         super(nodeContainerFactory, nodeContainer, new Join(), id);
     }
 
-    protected Join getJoin() {
+    public Join getJoin() {
         return (Join) getNode();
     }
 

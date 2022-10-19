@@ -16,6 +16,7 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -36,6 +37,7 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusIntegrationTest
 class EventFlowIT {
@@ -62,7 +64,27 @@ class EventFlowIT {
         doIt("nonStartMultipleEvent", "quiet", "never");
     }
 
+    @Test
+    void testNotStartingMultipleEventTimeout() {
+        doIt("nonStartMultipleEventTimeout", Duration.ofSeconds(5), "eventTimeout1", "eventTimeout2");
+    }
+
+    @Test
+    void testNotStartingMultipleEventTimeoutExclusive() {
+        doIt("nonStartMultipleEventTimeoutExclusive", Duration.ofSeconds(5));
+    }
+
+    @Test
+    void testNotStartingMultipleEventExclusive() {
+        doIt("nonStartMultipleEventExclusive", "event1Exclusive");
+    }
+
     private void doIt(String flowName, String... eventTypes) {
+        doIt(flowName, null, eventTypes);
+    }
+
+    private void doIt(String flowName, Duration timeout, String... eventTypes) {
+
         String id = given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -89,9 +111,15 @@ class EventFlowIT {
                     .statusCode(202);
         }
 
-        await()
-                .atLeast(1, SECONDS)
-                .atMost(30, SECONDS)
+        if (timeout != null) {
+            Duration aliveTime = timeout.minus(Duration.ofSeconds(2));
+            await("alive").during(aliveTime).pollInterval(Duration.ofMillis(500)).atMost(aliveTime.plus(Duration.ofSeconds(1))).until(() -> given()
+                    .contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .get("/" + flowName + "/{id}", id).statusCode(), is(200));
+        }
+
+        await("dead").atMost(15, SECONDS)
                 .with().pollInterval(1, SECONDS)
                 .untilAsserted(() -> given()
                         .contentType(ContentType.JSON)
