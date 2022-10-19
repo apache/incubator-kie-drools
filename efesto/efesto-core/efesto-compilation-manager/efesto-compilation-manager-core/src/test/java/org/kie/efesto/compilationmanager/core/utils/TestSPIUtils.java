@@ -39,13 +39,13 @@ class TestSPIUtils {
     @Test
     void getKieCompilerService() {
         Optional<KieCompilerService> retrieved = SPIUtils.getKieCompilerService(new MockEfestoRedirectOutputA(), false);
-        assertThat(retrieved.isPresent()).isTrue();
+        assertThat(retrieved).isPresent();
         assertThat(retrieved.get() instanceof MockKieCompilerServiceAB).isTrue();
         retrieved = SPIUtils.getKieCompilerService(new MockEfestoRedirectOutputB(), false);
-        assertThat(retrieved.isPresent()).isTrue();
+        assertThat(retrieved).isPresent();
         assertThat(retrieved.get() instanceof MockKieCompilerServiceAB).isTrue();
         retrieved = SPIUtils.getKieCompilerService(new MockEfestoRedirectOutputC(), false);
-        assertThat(retrieved.isPresent()).isTrue();
+        assertThat(retrieved).isPresent();
         assertThat(retrieved.get() instanceof MockKieCompilerServiceC).isTrue();
         retrieved = SPIUtils.getKieCompilerService(new MockEfestoRedirectOutputD(), false);
         assertThat(retrieved).isNotPresent();
@@ -54,7 +54,6 @@ class TestSPIUtils {
     @Test
     void getKieCompilerServices() {
         List<KieCompilerService> retrieved = SPIUtils.getKieCompilerServices(false);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved).hasSize(KIE_COMPILER_SERVICES.size());
+        assertThat(retrieved).isNotNull().hasSize(KIE_COMPILER_SERVICES.size());
     }
 }
