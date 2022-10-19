@@ -34,8 +34,10 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
+import org.drools.wiring.api.ComponentsSupplier;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
+import org.kie.api.internal.utils.KieService;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
@@ -55,6 +57,12 @@ public class DroolsQuarkusResourceUtils {
 
     private DroolsQuarkusResourceUtils() {
         // utility class
+    }
+
+    static {
+        if (!KieService.load(ComponentsSupplier.class).getClass().getSimpleName().equals("StaticComponentsSupplier")) {
+            throw new IllegalStateException("Cannot run quarkus extension with module org.drools:drools-wiring-dynamic. Please remove it from your classpath.");
+        }
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsQuarkusResourceUtils.class);
