@@ -194,14 +194,17 @@ void mergeOnIntegrationBranch(String repoName, String baseBranch, boolean pushCh
     }
 }
 
-MavenCommand getBasicMavenCommand(String directory) {
-    return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kogito_release_settings')
+MavenCommand getBasicMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .inDirectory(directory)
+    if (includeSettings) {
+        mvnCmd.withSettingsXmlId('kogito_release_settings')
+    }
+    return mvnCmd
 }
 
-MavenCommand getEcosystemMavenCommand(String directory) {
-    def mvnCmd = getBasicMavenCommand(directory)
+MavenCommand getEcosystemMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = getBasicMavenCommand(directory, includeSettings)
     
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
@@ -210,8 +213,8 @@ MavenCommand getEcosystemMavenCommand(String directory) {
     return mvnCmd
 }
 
-MavenCommand getFullMavenCommand(String directory) {
-    def mvnCmd = getEcosystemMavenCommand(directory)
+MavenCommand getFullMavenCommand(String directory, boolean includeSettings = true) {
+    def mvnCmd = getEcosystemMavenCommand(directory, includeSettings)
     if (isNative()) {
         mvnCmd.withProfiles(['native'])
                 .withProperty('quarkus.native.container-build', true)
@@ -288,24 +291,32 @@ String getReproducer() {
     String kogitoBranch = useIntegrationBranch() ? getIntegrationBranch() : getKogitoBranch()
     String droolsBranch = useIntegrationBranch() ? getIntegrationBranch() : getDroolsBranch()
     String reproducer = """
-git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/drools.git
-git clone --branch ${kogitoBranch} --depth 1 https://github.com/kiegroup/kogito-runtimes.git
-git clone --branch ${kogitoBranch} --depth 1 https://github.com/kiegroup/kogito-apps.git
+```spoiler Commands to reproduce
+git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/${droolsRepo}.git
+git clone --branch ${kogitoBranch} --depth 1 https://github.com/kiegroup/${kogitoRuntimesRepo}.git
+git clone --branch ${kogitoBranch} --depth 1 https://github.com/kiegroup/${kogitoAppsRepo}.git
 """
     if (getQuarkusBranch()) {
         reproducer += """
 git clone --branch ${getQuarkusBranch()} --depth 1 https://github.com/quarkusio/quarkus.git
-mvn -f quarkus/pom.xml clean install -Dquickly
-mvn -f drools/pom.xml -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
-mvn -f drools/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
-mvn -f kogito-runtimes/pom.xml -pl :kogito-dependencies-bom -pl :kogito-build-parent -pl :kogito-quarkus-bom -pl :kogito-build-no-bom-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
-mvn -f kogito-runtimes/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd quarkus && ${getBasicMavenCommand('quarkus', false).withProperty('quickly').getFullRunCommand('clean install')}
+cd ../${droolsRepo}
+mvn -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+mvn -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd ../${kogitoRuntimesRepo}
+mvn -pl :kogito-dependencies-bom -pl :kogito-build-parent -pl :kogito-quarkus-bom -pl :kogito-build-no-bom-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+mvn -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd ..
 """
     }
     reproducer += """
-mvn -f drools/pom.xml clean install -Dquickly
-mvn -f kogito-runtimes/pom.xml clean install -Dquickly
-mvn -f kogito-apps/pom.xml clean install
+cd ${droolsRepo}
+${getEcosystemMavenCommand(droolsRepo, false).withProperty('quickly').getFullRunCommand('clean install')}
+cd ../${kogitoRuntimesRepo}
+${getEcosystemMavenCommand(kogitoRuntimesRepo, false).withProperty('quickly').getFullRunCommand('clean install')}
+cd ../${kogitoAppsRepo}
+${getFullMavenCommand(kogitoRuntimesRepo, false).withProperty('maven.test.failure.ignore', true).getFullRunCommand('clean install')}
 """
+    reproducer += '```'
     return reproducer
 }
