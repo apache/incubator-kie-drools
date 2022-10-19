@@ -235,6 +235,7 @@ void getOrCreateGitBranch(String branch) {
 String getReproducer() {
     String droolsBranch = useIntegrationBranch() ? getIntegrationBranch() : getDroolsBranch()
     String reproducer = """
+```spoiler Commands to reproduce
 git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/drools.git
 """
     if (getQuarkusBranch()) {
@@ -248,5 +249,6 @@ mvn -f drools/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -Dn
     reproducer += """
 mvn -f drools/pom.xml clean install
 """
+    reproducer += '```'
     return reproducer
 }
