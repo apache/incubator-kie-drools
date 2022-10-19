@@ -167,8 +167,8 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
             }
         }
-        throw new IllegalArgumentException("The scoreDirectorFactory lacks a configuration for an "
-                + "easyScoreCalculatorClass or an incrementalScoreCalculatorClass.");
+        throw new IllegalArgumentException("The scoreDirectorFactory lacks configuration for "
+                + "either constraintProviderClass, easyScoreCalculatorClass or incrementalScoreCalculatorClass.");
     }
 
     private void assertOnlyOneScoreDirectorFactory(
