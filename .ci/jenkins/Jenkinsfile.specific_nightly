@@ -241,13 +241,15 @@ git clone --branch ${droolsBranch} --depth 1 https://github.com/kiegroup/drools.
     if (getQuarkusBranch()) {
         reproducer += """
 git clone --branch ${getQuarkusBranch()} --depth 1 https://github.com/quarkusio/quarkus.git
-mvn -f quarkus/pom.xml clean install -Dquickly
-mvn -f drools/pom.xml -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
-mvn -f drools/pom.xml -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd quarkus && ${getBasicMavenCommand('quarkus').withProperty('quickly').getFullRunCommand('clean install')}
+cd ../drools
+mvn -pl :drools-build-parent versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:999-SNAPSHOT -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false
+mvn -e versions:set-property -Dproperty=version.io.quarkus -DnewVersion=999-SNAPSHOT -DallowSnapshots=true -DgenerateBackupPoms=false
+cd ..
 """
     }
     reproducer += """
-mvn -f drools/pom.xml clean install
+cd drools && ${getFullMavenCommand(droolsRepo).withProperty('maven.test.failure.ignore', true).getFullRunCommand('clean install')}
 """
     reproducer += '```'
     return reproducer
