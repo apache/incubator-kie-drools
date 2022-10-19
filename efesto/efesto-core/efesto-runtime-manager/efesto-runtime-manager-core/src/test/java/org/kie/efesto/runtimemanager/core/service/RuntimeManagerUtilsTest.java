@@ -92,18 +92,18 @@ class RuntimeManagerUtilsTest {
                                                                              kieRuntimeServiceC);
         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
         RuntimeManagerUtils.populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
-        assertThat(toPopulate.size()).isEqualTo(2);
-        assertThat(toPopulate.containsKey(efestoClassKeyA)).isTrue(); // Those two are the same
-        assertThat(toPopulate.containsKey(efestoClassKeyB)).isTrue(); // Those two are the same
-        assertThat(toPopulate.containsKey(efestoClassKeyC)).isTrue();
+        assertThat(toPopulate).hasSize(2);
+        assertThat(toPopulate).containsKey(efestoClassKeyA); // Those two are the same
+        assertThat(toPopulate).containsKey(efestoClassKeyB); // Those two are the same
+        assertThat(toPopulate).containsKey(efestoClassKeyC);
         List<KieRuntimeService> servicesA = toPopulate.get(efestoClassKeyA);
         List<KieRuntimeService> servicesB = toPopulate.get(efestoClassKeyB);
         assertThat(servicesA).isEqualTo(servicesB);
-        assertThat(servicesA.size()).isEqualTo(2);
+        assertThat(servicesA).hasSize(2);
         assertThat(servicesA).contains(kieRuntimeServiceA);
         assertThat(servicesA).contains(kieRuntimeServiceB);
         List<KieRuntimeService> servicesC = toPopulate.get(efestoClassKeyC);
-        assertThat(servicesC.size()).isEqualTo(1);
+        assertThat(servicesC).hasSize(1);
         assertThat(servicesC).contains(kieRuntimeServiceC);
     }
 
