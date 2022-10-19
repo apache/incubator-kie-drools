@@ -47,6 +47,6 @@ public class KieCompilerServicePMMLInputStream implements KieCompilerService<Efe
 
     @Override
     public String getModelType() {
-        return "pmml";
+        return PMML_STRING;
     }
 }

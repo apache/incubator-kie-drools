@@ -46,6 +46,6 @@ public class KieCompilerServicePMMLFile implements KieCompilerService<EfestoComp
 
     @Override
     public String getModelType() {
-        return "pmml";
+        return PMML_STRING;
     }
 }

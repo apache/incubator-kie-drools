@@ -57,20 +57,20 @@ class KieRuntimeServicePMMLTest {
     @Test
     void canManageInput() {
         PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
-        BaseEfestoInput darInputPMML = new EfestoInputPMML(modelLocalUriId, context);
-        assertThat(kieRuntimeServicePMML.canManageInput(darInputPMML, context)).isTrue();
+        BaseEfestoInput inputPMML = new EfestoInputPMML(modelLocalUriId, context);
+        assertThat(kieRuntimeServicePMML.canManageInput(inputPMML, context)).isTrue();
     }
 
     @Test
     void evaluateCorrectInput() {
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
+        EfestoInputPMML inputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                memoryCompilerClassLoader));
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(darInputPMML,
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(inputPMML,
                                                                                    getPMMLContext(FILE_NAME,
                                                                                                   MODEL_NAME,
                                                                                                   memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isPresent();
-        commonEvaluateEfestoOutputPMML(retrieved.get(), darInputPMML);
+        commonEvaluateEfestoOutputPMML(retrieved.get(), inputPMML);
     }
 
     @Test
@@ -78,9 +78,9 @@ class KieRuntimeServicePMMLTest {
         ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName("wrongmodel"));
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
+        EfestoInputPMML inputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                memoryCompilerClassLoader));
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(darInputPMML,
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(inputPMML,
                                                                                    getPMMLContext(FILE_NAME,
                                                                                                   MODEL_NAME,
                                                                                                   memoryCompilerClassLoader));
@@ -91,11 +91,11 @@ class KieRuntimeServicePMMLTest {
     void evaluateEfestoRuntimeContext() {
         EfestoRuntimeContext runtimeContext =
                 EfestoRuntimeContextUtils.buildWithParentClassLoader(memoryCompilerClassLoader);
-        EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
+        EfestoInputPMML inputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                memoryCompilerClassLoader));
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(darInputPMML,
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMML.evaluateInput(inputPMML,
                                                                                    runtimeContext);
         assertThat(retrieved).isNotNull().isPresent();
-        commonEvaluateEfestoOutputPMML(retrieved.get(), darInputPMML);
+        commonEvaluateEfestoOutputPMML(retrieved.get(), inputPMML);
     }
 }

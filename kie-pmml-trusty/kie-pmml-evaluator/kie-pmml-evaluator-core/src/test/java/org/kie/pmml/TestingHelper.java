@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -39,6 +40,8 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.ResultCode.OK;
+import static org.kie.pmml.commons.Constants.PMML_FILE_NAME;
+import static org.kie.pmml.commons.Constants.PMML_MODEL_NAME;
 
 public class TestingHelper {
 
@@ -62,14 +65,20 @@ public class TestingHelper {
         toReturn.setModelName(modelName);
         toReturn.setCorrelationId("CORRELATION_ID");
         IntStream.range(0, 3).forEach(i -> toReturn.addRequestParam("PARAM_" + i, i));
-        toReturn.addRequestParam("_pmml_file_name_", fileName);
+        toReturn.addRequestParam(PMML_FILE_NAME, fileName);
         return toReturn;
     }
 
-    public static void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, EfestoInputPMML darInputPMML) {
+    public static void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, EfestoInputPMML inputPMML) {
         assertThat(toEvaluate).isNotNull();
-        assertThat(toEvaluate.getModelLocalUriId()).isEqualTo(darInputPMML.getModelLocalUriId());
-        commonEvaluatePMML4Result(toEvaluate.getOutputData(), darInputPMML.getInputData().getRequestData());
+        assertThat(toEvaluate.getModelLocalUriId()).isEqualTo(inputPMML.getModelLocalUriId());
+        commonEvaluatePMML4Result(toEvaluate.getOutputData(), inputPMML.getInputData().getRequestData());
+    }
+
+    public static void commonEvaluateEfestoOutputPMML(EfestoOutputPMML toEvaluate, BaseEfestoInput<PMMLRequestData> inputPMML) {
+        assertThat(toEvaluate).isNotNull();
+        assertThat(toEvaluate.getModelLocalUriId()).isEqualTo(inputPMML.getModelLocalUriId());
+        commonEvaluatePMML4Result(toEvaluate.getOutputData(), inputPMML.getInputData());
     }
 
     public static void commonEvaluatePMML4Result(PMML4Result toEvaluate, PMMLRequestData pmmlRequestData) {
@@ -101,16 +110,24 @@ public class TestingHelper {
             Class class1 = pValue.getClass();
             pmmlRequestDataBuilder.addParameter(entry.getKey(), pValue, class1);
         }
-        pmmlRequestDataBuilder.addParameter("_pmml_file_name_", fileName, String.class);
+        pmmlRequestDataBuilder.addParameter(PMML_FILE_NAME, fileName, String.class);
+        pmmlRequestDataBuilder.addParameter(PMML_MODEL_NAME, modelName, String.class);
         return pmmlRequestDataBuilder.build();
     }
 
-    static Map<String, Object> getInputData() {
+    public static Map<String, Object> getInputData() {
         final Map<String, Object> toReturn = new HashMap<>();
         toReturn.put("fld1", 23.2);
         toReturn.put("fld2", 11.34);
         toReturn.put("fld3", "x");
         toReturn.put("fld4", 34.1);
+        return toReturn;
+    }
+
+    public static Map<String, Object> getInputData(String modelName, String fileName) {
+        final Map<String, Object> toReturn = getInputData();
+        toReturn.put(PMML_FILE_NAME, fileName);
+        toReturn.put(PMML_MODEL_NAME, modelName);
         return toReturn;
     }
 

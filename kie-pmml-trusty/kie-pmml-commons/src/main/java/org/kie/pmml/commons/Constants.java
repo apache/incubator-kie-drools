@@ -62,6 +62,9 @@ public class Constants {
     public static final String PMML_STRING = "pmml";
     public static final String PMML_SUFFIX = "." + PMML_STRING;
 
+    public static final String PMML_FILE_NAME = "_pmml_file_name_";
+
+    public static final String PMML_MODEL_NAME = "_model_name_";
 
     private Constants() {
         // Avoid instantiation
