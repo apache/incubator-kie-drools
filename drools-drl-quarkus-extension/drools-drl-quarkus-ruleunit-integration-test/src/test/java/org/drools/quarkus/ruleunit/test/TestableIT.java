@@ -15,31 +15,21 @@
  */
 package org.drools.quarkus.ruleunit.test;
 
-import javax.inject.Inject;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.RestAssured;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.drools.ruleunits.api.RuleUnit;
-import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.restassured.RestAssured.given;
 
-@QuarkusTest
-public class RuntimeIT {
-
-    @Inject
-    RuleUnit<HelloWorldUnit> ruleUnit;
-
+@QuarkusIntegrationTest
+public class TestableIT {
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+    
     @Test
     public void testRuleUnit() {
-        HelloWorldUnit unit = new HelloWorldUnit();
-        unit.getStrings().add("Mario");
-
-        try ( RuleUnitInstance<HelloWorldUnit> instance = ruleUnit.createInstance(unit)  ) {
-            instance.fire();
-        }
-
-        assertEquals(1, unit.getResults().size());
-        assertEquals("Hello Mario", unit.getResults().get(0));
+        given().when().get("/test/testRuleUnit").then().statusCode(200);
     }
 }

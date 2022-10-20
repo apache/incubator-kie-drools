@@ -25,7 +25,16 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-core</artifactId>
         </dependency>
-
+        
+        
+        <dependency> <!-- enable REST endpoint as hook point for E2E opaque testing -->
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
+        </dependency>
+        <dependency> <!-- enable assertions in REST endpoint as hook point for E2E opaque testing -->
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
