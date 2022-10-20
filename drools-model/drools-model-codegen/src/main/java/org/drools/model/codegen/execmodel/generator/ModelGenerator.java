@@ -40,6 +40,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.core.base.CoreComponentsBuilder;
@@ -128,7 +129,20 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
-    public static void generateModel(TypeDeclarationContext kbuilder, InternalKnowledgePackage pkg, PackageDescr packageDescr, PackageModel packageModel) {
+    public static void generateModel(
+            KnowledgeBuilderImpl knowledgeBuilder,
+            InternalKnowledgePackage pkg,
+            PackageDescr packageDescr,
+            PackageModel packageModel) {
+        generateModel(knowledgeBuilder, knowledgeBuilder, pkg, packageDescr, packageModel);
+    }
+
+    public static void generateModel(
+            TypeDeclarationContext typeDeclarationContext,
+            BuildResultCollector resultCollector,
+            InternalKnowledgePackage pkg,
+            PackageDescr packageDescr,
+            PackageModel packageModel) {
         TypeResolver typeResolver = pkg.getTypeResolver();
 
         List<RuleDescr> ruleDescrs = packageDescr.getRules();
@@ -136,14 +150,27 @@ public class ModelGenerator {
             return;
         }
 
-        packageModel.addRuleUnits( processRules(kbuilder, packageDescr, packageModel, typeResolver, ruleDescrs) );
+        packageModel.addRuleUnits( processRules(
+                typeDeclarationContext,
+                resultCollector,
+                packageDescr,
+                packageModel,
+                typeResolver,
+                ruleDescrs) );
     }
 
-    private static Set<RuleUnitDescription> processRules(TypeDeclarationContext kbuilder, PackageDescr packageDescr, PackageModel packageModel, TypeResolver typeResolver, List<RuleDescr> ruleDescrs) {
+    private static Set<RuleUnitDescription> processRules(
+            TypeDeclarationContext typeDeclarationContext,
+            BuildResultCollector resultCollector,
+            PackageDescr packageDescr,
+            PackageModel packageModel,
+            TypeResolver typeResolver,
+            List<RuleDescr> ruleDescrs) {
         Set<RuleUnitDescription> ruleUnitDescrs = new HashSet<>();
 
         for (RuleDescr descr : ruleDescrs) {
-            RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, descr);
+            RuleContext context = new RuleContext(
+                    typeDeclarationContext, resultCollector, packageModel, typeResolver, descr);
             if (context.getRuleUnitDescr() != null) {
                 ruleUnitDescrs.add(context.getRuleUnitDescr());
             }
@@ -153,14 +180,14 @@ public class ModelGenerator {
             }
         }
 
-        int parallelRulesBuildThreshold = kbuilder.getBuilderConfiguration().getParallelRulesBuildThreshold();
+        int parallelRulesBuildThreshold = typeDeclarationContext.getBuilderConfiguration().getParallelRulesBuildThreshold();
         boolean parallelRulesBuild = parallelRulesBuildThreshold != -1 && ruleDescrs.size() > parallelRulesBuildThreshold;
 
         if (parallelRulesBuild) {
             List<RuleContext> ruleContexts = new ArrayList<>();
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
+                RuleContext context = new RuleContext(typeDeclarationContext, resultCollector, packageModel, typeResolver, ruleDescr, i++ );
                 ruleContexts.add(context);
             }
             KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() ->
@@ -169,7 +196,7 @@ public class ModelGenerator {
         } else {
             int i = 0;
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, ruleDescr, i++ );
+                RuleContext context = new RuleContext(typeDeclarationContext, resultCollector, packageModel, typeResolver, ruleDescr, i++ );
                 processRuleDescr(context, packageDescr);
             }
         }
