@@ -44,8 +44,6 @@ To add this starter to your project:
 </dependencies>
 ```
 
-> If you are planning to use Serverless Workflow with events, consider adding the `kogito-serverless-workflow-spring-boot-starter` as well to the project. This starter will include CloudEvents support required by Serverless Workflows.
-
 ## Kogito Decisions Spring Boot Starter
 
 Starter only for Decisions (DMN) support. To add it to your project, use:
@@ -101,22 +99,3 @@ Adds the Kogito Rules engine support (DRLs) to your project:
   </dependency>
 </dependencies>
 ```
-
-## Kogito Serverless Workflow Spring Boot Starter
-
-If you're planning to try the Serverless Workflow implementation, add the following dependency to your project:
-
-```xml
-
-<dependencies>
-  <dependency>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-serverless-workflows-spring-boot-starter</artifactId>
-  </dependency>
-</dependencies>
-```
-
-Please note that this starter will auto-include the [CloudEvents](../addons/cloudevents)
-and [Kafka](../addons/events/kafka) addons to the project as well
-for [eventing processing](https://github.com/serverlessworkflow/specification/blob/0.6.x/specification.md#Event-Definition)
-.

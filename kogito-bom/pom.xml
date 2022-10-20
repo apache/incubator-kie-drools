@@ -667,25 +667,7 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-addons-monitoring-api</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
+       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-addons-monitoring-core</artifactId>
         <version>${project.version}</version>
@@ -779,18 +761,6 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>grafana-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>protobuf-serialization-protobuf</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>protobuf-serialization-protobuf</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1847,17 +1817,6 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-predictions-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-serverless-workflow-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-serverless-workflow-spring-boot-starter</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
