@@ -52,7 +52,7 @@ import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getSimplePr
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLCharacteristicFactoryTest {
 

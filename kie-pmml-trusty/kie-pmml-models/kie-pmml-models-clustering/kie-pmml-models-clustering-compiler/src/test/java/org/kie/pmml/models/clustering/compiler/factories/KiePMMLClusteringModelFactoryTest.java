@@ -77,7 +77,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileNam
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.AGGREGATE_FN_MAP;
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringModelFactory.KIE_PMML_CLUSTERING_MODEL_TEMPLATE;
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringModelFactory.KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLClusteringModelFactoryTest {
 

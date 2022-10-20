@@ -60,7 +60,7 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassific
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.KIE_PMML_CLASSIFICATION_TABLE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.SUPPORTED_NORMALIZATION_METHODS;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLClassificationTableFactory.UNSUPPORTED_NORMALIZATION_METHODS;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLClassificationTableFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
