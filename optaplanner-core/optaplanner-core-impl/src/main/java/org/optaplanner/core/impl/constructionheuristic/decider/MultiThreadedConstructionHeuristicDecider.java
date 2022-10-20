@@ -136,26 +136,28 @@ public class MultiThreadedConstructionHeuristicDecider<Solution_> extends Constr
     public void decideNextStep(ConstructionHeuristicStepScope<Solution_> stepScope, Placement<Solution_> placement) {
         int stepIndex = stepScope.getStepIndex();
         resultQueue.startNextStep(stepIndex);
-        int selectingMoveIndex = 0;
-        int foragingMoveIndex = 0;
+
+        int selectMoveIndex = 0;
+        int movesInPlay = 0;
         Iterator<Move<Solution_>> moveIterator = placement.iterator();
         do {
-            boolean moveIteratorEmpty = !moveIterator.hasNext();
+            boolean hasNextMove = moveIterator.hasNext();
             // First fill the buffer so move evaluation can run freely in parallel
             // For reproducibility, the selectedMoveBufferSize always need to be entirely selected,
             // even if some of those moves won't end up being evaluated or foraged
-            if (selectingMoveIndex >= selectedMoveBufferSize || moveIteratorEmpty) {
+            if (movesInPlay > 0 && (selectMoveIndex >= selectedMoveBufferSize || !hasNextMove)) {
                 if (forageResult(stepScope, stepIndex)) {
                     break;
                 }
-                foragingMoveIndex++;
+                movesInPlay--;
             }
-            if (!moveIteratorEmpty) {
-                Move<Solution_> selectingMove = moveIterator.next();
-                operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectingMoveIndex, selectingMove));
-                selectingMoveIndex++;
+            if (hasNextMove) {
+                Move<Solution_> move = moveIterator.next();
+                operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectMoveIndex, move));
+                selectMoveIndex++;
+                movesInPlay++;
             }
-        } while (foragingMoveIndex < selectingMoveIndex);
+        } while (movesInPlay > 0);
 
         // Do not evaluate the remaining selected moves for this step that haven't started evaluation yet
         operationQueue.clear();

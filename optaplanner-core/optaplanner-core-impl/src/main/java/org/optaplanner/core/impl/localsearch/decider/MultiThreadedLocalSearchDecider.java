@@ -138,26 +138,27 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
         int stepIndex = stepScope.getStepIndex();
         resultQueue.startNextStep(stepIndex);
 
-        int selectingMoveIndex = 0;
-        int foragingMoveIndex = 0;
+        int selectMoveIndex = 0;
+        int movesInPlay = 0;
         Iterator<Move<Solution_>> moveIterator = moveSelector.iterator();
         do {
-            boolean moveIteratorEmpty = !moveIterator.hasNext();
+            boolean hasNextMove = moveIterator.hasNext();
             // First fill the buffer so move evaluation can run freely in parallel
             // For reproducibility, the selectedMoveBufferSize always need to be entirely selected,
             // even if some of those moves won't end up being evaluated or foraged
-            if (selectingMoveIndex >= selectedMoveBufferSize || moveIteratorEmpty) {
+            if (movesInPlay > 0 && (selectMoveIndex >= selectedMoveBufferSize || !hasNextMove)) {
                 if (forageResult(stepScope, stepIndex)) {
                     break;
                 }
-                foragingMoveIndex++;
+                movesInPlay--;
             }
-            if (!moveIteratorEmpty) {
-                Move<Solution_> selectingMove = moveIterator.next();
-                operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectingMoveIndex, selectingMove));
-                selectingMoveIndex++;
+            if (hasNextMove) {
+                Move<Solution_> move = moveIterator.next();
+                operationQueue.add(new MoveEvaluationOperation<>(stepIndex, selectMoveIndex, move));
+                selectMoveIndex++;
+                movesInPlay++;
             }
-        } while (foragingMoveIndex < selectingMoveIndex);
+        } while (movesInPlay > 0);
 
         // Do not evaluate the remaining selected moves for this step that haven't started evaluation yet
         operationQueue.clear();
@@ -180,18 +181,6 @@ public class MultiThreadedLocalSearchDecider<Solution_> extends LocalSearchDecid
     }
 
     private boolean forageResult(LocalSearchStepScope<Solution_> stepScope, int stepIndex) {
-        if (resultQueue.isEmpty() && operationQueue.size() <= moveThreadCount) {
-            /*
-             * When the phase starts, there might be up to _moveThreadCount_ unprocessed SetupOperations.
-             * Similarly, when the phase ends, there might be up to _moveThreadCount_ unprocessed DestroyOperations.
-             * If there is no MoveEvaluationOperation in the _operationQueue_, the _resultQueue_ will remain empty.
-             */
-            boolean operationQueueContainsNoMoveEvaluation = operationQueue.stream()
-                    .noneMatch(moveThreadOperation -> moveThreadOperation instanceof MoveEvaluationOperation);
-            if (operationQueueContainsNoMoveEvaluation) {
-                return true;
-            }
-        }
         OrderByMoveIndexBlockingQueue.MoveResult<Solution_> result;
         try {
             result = resultQueue.take();
