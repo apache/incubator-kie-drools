@@ -22,7 +22,8 @@ pipeline {
     // }
     environment {
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
-        OPTAPLANNER_CI_EMAIL = credentials('OPTAPLANNER_CI_EMAIL') // Contains the email address of the team's Zulip channel.
+        // Contains the email address of the team's Zulip channel.
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
     stages {
         stage('Initialize') {
