@@ -40,6 +40,7 @@ public class TestUtils {
     public static String getFileContent(String fileName) throws IOException {
         String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
         String filePath = ResourceHelper.getResourcesByExtension(extension)
+                .stream()
                 .filter(path -> path.endsWith(fileName))
                 .findFirst()
                 .orElse(null);

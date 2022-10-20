@@ -59,6 +59,7 @@ public class FileUtils {
     public static File getFile(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
         File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
+                .stream()
                 .filter(file -> file.getName().equals(fileName))
                 .findFirst()
                 .orElse(null);

@@ -18,16 +18,15 @@ package org.drools.util;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.util.ResourceHelper.getClassPathElements;
 import static org.drools.util.ResourceHelper.getFileResourcesByExtension;
 import static org.drools.util.ResourceHelper.getFileResourcesFromDirectory;
 import static org.drools.util.ResourceHelper.getResourcesByExtension;
@@ -40,53 +39,52 @@ public class ResourceHelperTest {
 
     @Test
     public void getResourcesByExtensionTest() {
-        Stream<String> txtResources = getResourcesByExtension("txt");
-        List<String> resources = txtResources.collect(Collectors.toList());
-        assertThat(resources.size()).isEqualTo(1);
-        assertThat(resources.stream().anyMatch(elem -> elem.endsWith(TEST_FILE))).isTrue();
+        Collection<String> resources = getResourcesByExtension("txt");
+        assertThat(resources).hasSize(1);
+        assertThat(resources).anyMatch(elem -> elem.endsWith(TEST_FILE));
     }
 
     @Test
     public void getResourcesByExtensionExisting() {
-        final Stream<File> retrieved = getFileResourcesByExtension("txt");
-        commonVerifyStream(retrieved, TEST_FILE);
+        final Collection<File> retrieved = getFileResourcesByExtension("txt");
+        commonVerifyCollection(retrieved, TEST_FILE);
     }
 
     @Test
     public void getResourcesByExtensionNotExisting() {
-        final Stream<File> retrieved = getFileResourcesByExtension("arg");
-        commonVerifyStream(retrieved, null);
+        final Collection<File> retrieved = getFileResourcesByExtension("arg");
+        commonVerifyCollection(retrieved, null);
     }
 
     @Test
     public void getResourcesFromDirectoryTest() {
         List<String> classPathElements = Arrays.asList(ResourceHelper.getClassPathElements());
-        Optional<String> testFolder = classPathElements.stream().filter(elem -> elem.contains("test-classes")).findFirst();
+        Optional<String> testFolder =
+                classPathElements.stream().filter(elem -> elem.contains("test-classes")).findFirst();
         assertThat(testFolder.isPresent()).isTrue();
         File dir = new File(testFolder.get());
-        String regex = ".*"+ TEST_FILE;
-        List<String> filesFound = getResourcesFromDirectory(dir, Pattern.compile(regex))
-                .collect(Collectors.toList());
-        assertThat(filesFound.size()).isEqualTo(1);
+        String regex = ".*" + TEST_FILE;
+        Collection<String> filesFound = getResourcesFromDirectory(dir, Pattern.compile(regex));
+        assertThat(filesFound).hasSize(1);
 
-        assertThat(getResourcesFromDirectory(null, null).count()).isEqualTo(0);
-        assertThat(getResourcesFromDirectory(dir, Pattern.compile("noMatch")).count()).isEqualTo(0);
+        assertThat(getResourcesFromDirectory(null, null)).isEmpty();
+        assertThat(getResourcesFromDirectory(dir, Pattern.compile("noMatch"))).isEmpty();
     }
 
     @Test
     public void getResourcesFromDirectoryExisting() {
         File directory = new File("." + File.separator + "target" + File.separator + "test-classes");
         Pattern pattern = Pattern.compile(".*txt");
-        final Stream<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
-        commonVerifyStream(retrieved, TEST_FILE);
+        final Collection<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
+        commonVerifyCollection(retrieved, TEST_FILE);
     }
 
     @Test
     public void getResourcesFromDirectoryNotExisting() {
         File directory = new File("." + File.separator + "target" + File.separator + "test-classes");
         Pattern pattern = Pattern.compile(".*arg");
-        final Stream<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
-        commonVerifyStream(retrieved, null);
+        final Collection<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
+        commonVerifyCollection(retrieved, null);
     }
 
     @Test
@@ -108,37 +106,35 @@ public class ResourceHelperTest {
         List<String> classPathElements = Arrays.asList(ResourceHelper.getClassPathElements());
         Optional<String> testFolder = classPathElements.stream().filter(elem -> elem.contains("test-classes")).findFirst();
         assertThat(testFolder.isPresent()).isTrue();
-        File dir = new File(testFolder.get());
-        List<String> filesFound = internalGetResources(testFolder.get(), Pattern.compile(".*\\.txt$")).collect(Collectors.toList());
+        Collection<String> filesFound = internalGetResources(testFolder.get(), Pattern.compile(".*\\.txt$"));
         assertThat(filesFound.size()).isEqualTo(1);
 
-        assertThat(internalGetResources(filesFound.get(0), Pattern.compile(".*\\.txt$")).count()).isEqualTo(0);
+        assertThat(internalGetResources(filesFound.iterator().next(), Pattern.compile(".*\\.txt$"))).isEmpty();
     }
 
     @Test
     public void internalGetResourcesExisting() {
         String path = "." + File.separator + "target" + File.separator + "test-classes";
         Pattern pattern = Pattern.compile(".*txt");
-        final Stream<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
-        commonVerifyStream(retrieved, TEST_FILE);
+        final Collection<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
+        commonVerifyCollection(retrieved, TEST_FILE);
     }
 
     @Test
     public void internalGetResourcesNotExisting() {
         String path = "." + File.separator + "target" + File.separator + "test-classes";
         Pattern pattern = Pattern.compile(".*arg");
-        final Stream<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
-        commonVerifyStream(retrieved, null);
+        final Collection<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
+        commonVerifyCollection(retrieved, null);
     }
 
-    private void commonVerifyStream(final Stream<File> toVerify, String expectedFile) {
+    private void commonVerifyCollection(final Collection<File> toVerify, String expectedFile) {
         assertThat(toVerify).isNotNull();
-        final List<File> retrieved = toVerify.collect(Collectors.toList());
         if (expectedFile != null) {
-            assertThat(retrieved).hasSize(1);
-            assertThat(retrieved).allMatch(file -> file.exists() && file.getName().equals(expectedFile));
+            assertThat(toVerify).hasSize(1);
+            assertThat(toVerify).allMatch(file -> file.exists() && file.getName().equals(expectedFile));
         } else {
-            assertThat(retrieved).isEmpty();
+            assertThat(toVerify).isEmpty();
         }
     }
 }

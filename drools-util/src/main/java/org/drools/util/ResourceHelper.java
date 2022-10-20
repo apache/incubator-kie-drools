@@ -19,8 +19,11 @@ package org.drools.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -30,13 +33,14 @@ public class ResourceHelper {
 
     /**
      * Scan into classpath folders to find resources with the required extension
-     *
      * @param extension to find
      * @return stream of matching resources
      */
-    public static Stream<File> getFileResourcesByExtension(String extension) {
+    public static Collection<File> getFileResourcesByExtension(String extension) {
         return Arrays.stream(getClassPathElements())
-                .flatMap(elem -> internalGetFileResources(elem, Pattern.compile(".*\\." + extension + "$")));
+                .flatMap(elem -> internalGetFileResources(elem, Pattern.compile(".*\\." + extension + "$"))
+                        .stream())
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -44,38 +48,11 @@ public class ResourceHelper {
      * @param extension to find
      * @return stream of matching resources
      */
-    public static Stream<String> getResourcesByExtension(String extension) {
+    public static Collection<String> getResourcesByExtension(String extension) {
         return Arrays.stream(getClassPathElements())
-                .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$")));
-    }
-
-
-    /**
-     * Scan folder to find resources that match with pattern
-     *
-     * @param directory where to start the search
-     * @param pattern   to find
-     * @return stream of matching resources
-     */
-    public static Stream<File> getFileResourcesFromDirectory(File directory, Pattern pattern) {
-        if (directory == null || directory.listFiles() == null) {
-            return Stream.empty();
-        }
-        return Arrays.stream(Objects.requireNonNull(directory.listFiles())).flatMap(
-                elem -> {
-                    if (elem.isDirectory()) {
-                        return getFileResourcesFromDirectory(elem, pattern);
-                    } else {
-                        try {
-                            if (pattern.matcher(elem.getCanonicalPath()).matches()) {
-                                return Stream.of(elem);
-                            }
-                        } catch (final IOException e) {
-                            throw new RuntimeException("Failed to retrieve resources from directory " + directory.getAbsolutePath() + " with pattern " + pattern.pattern(), e);
-                        }
-                    }
-                    return Stream.empty();
-                });
+                .flatMap(elem -> internalGetResources(elem, Pattern.compile(".*\\." + extension + "$"))
+                        .stream())
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -84,25 +61,58 @@ public class ResourceHelper {
      * @param pattern to find
      * @return stream of matching resources
      */
-    public static Stream<String> getResourcesFromDirectory(File directory, Pattern pattern) {
+    public static Collection<File> getFileResourcesFromDirectory(File directory, Pattern pattern) {
         if (directory == null || directory.listFiles() == null) {
-            return Stream.empty();
+            return Collections.emptySet();
         }
-        return Arrays.stream(directory.listFiles()).flatMap(elem -> {
-            if (elem.isDirectory()) {
-                return getResourcesFromDirectory(elem, pattern);
-            } else {
-                try {
-                    String fileName = elem.getCanonicalPath();
-                    if (pattern.matcher(fileName).matches()) {
-                        return Stream.of(fileName);
+        return Arrays.stream(Objects.requireNonNull(directory.listFiles()))
+                .flatMap(
+                        elem -> {
+                            if (elem.isDirectory()) {
+                                return getFileResourcesFromDirectory(elem, pattern).stream();
+                            } else {
+                                try {
+                                    if (pattern.matcher(elem.getCanonicalPath()).matches()) {
+                                        return Stream.of(elem);
+                                    }
+                                } catch (final IOException e) {
+                                    throw new RuntimeException("Failed to retrieve resources from directory " + directory.getAbsolutePath() + " with pattern " + pattern.pattern(), e);
+                                }
+                            }
+                            return Stream.empty();
+                        })
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Scan folder to find resources that match with pattern
+     * @param directory where to start the search
+     * @param pattern to find
+     * @return stream of matching resources
+     */
+    public static Collection<String> getResourcesFromDirectory(File directory, Pattern pattern) {
+        if (directory == null || directory.listFiles() == null) {
+            return Collections.emptySet();
+        }
+        return Arrays.stream(Objects.requireNonNull(directory.listFiles()))
+                .flatMap(elem -> {
+                    if (elem.isDirectory()) {
+                        return getResourcesFromDirectory(elem, pattern)
+                                .stream();
+                    } else {
+                        try {
+                            String fileName = elem.getCanonicalPath();
+                            if (pattern.matcher(fileName).matches()) {
+                                return Stream.of(fileName);
+                            } else {
+                                return Stream.empty();
+                            }
+                        } catch (final IOException e) {
+                            throw new RuntimeException("Impossible to access to resources", e);
+                        }
                     }
-                } catch (final IOException e) {
-                    throw new RuntimeException("Impossible to access to resources", e);
-                }
-            }
-            return Stream.empty();
-        });
+                })
+                .collect(Collectors.toSet());
     }
 
     static String[] getClassPathElements() {
@@ -111,15 +121,14 @@ public class ResourceHelper {
 
     /**
      * This method is internal because it works only with folder to explore (classPath folder) and not with exact paths
-     *
-     * @param path    to folder or jar
+     * @param path to folder or jar
      * @param pattern to find
      * @return stream of matching resources
      */
-    static Stream<File> internalGetFileResources(String path, Pattern pattern) {
+    static Collection<File> internalGetFileResources(String path, Pattern pattern) {
         final File file = new File(path);
         if (!file.isDirectory()) {
-            return Stream.empty();
+            return Collections.emptySet();
         }
         return getFileResourcesFromDirectory(file, pattern);
     }
@@ -130,10 +139,10 @@ public class ResourceHelper {
      * @param pattern to find
      * @return stream of matching resources
      */
-    static Stream<String> internalGetResources(String path, Pattern pattern) {
+    static Collection<String> internalGetResources(String path, Pattern pattern) {
         final File file = new File(path);
         if (!file.isDirectory()) {
-            return Stream.empty();
+            return Collections.emptySet();
         }
         return getResourcesFromDirectory(file, pattern);
     }

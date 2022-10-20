@@ -97,7 +97,7 @@ public class ScenarioJunitActivatorTest {
 
             @Override
             Stream<String> getResources() {
-                return ResourceHelper.getResourcesByExtension("txt");
+                return ResourceHelper.getResourcesByExtension("txt").stream();
             }
 
             @Override

@@ -95,7 +95,7 @@ public class ScenarioJunitActivator extends ParentRunner<ScenarioRunnerDTO> {
     }
 
     Stream<String> getResources() {
-        return getResourcesByExtension(FILE_EXTENSION);
+        return getResourcesByExtension(FILE_EXTENSION).stream();
     }
 
     KieContainer getKieContainer() {
