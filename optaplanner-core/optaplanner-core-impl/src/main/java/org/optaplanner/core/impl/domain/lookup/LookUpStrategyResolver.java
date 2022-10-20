@@ -80,9 +80,8 @@ public class LookUpStrategyResolver {
      * @return never null
      */
     public LookUpStrategy determineLookUpStrategy(Object object) {
-        Class<?> objectClass = object.getClass();
-        return decisionCache.computeIfAbsent(objectClass, key -> {
-            if (object.getClass().isEnum()) {
+        return decisionCache.computeIfAbsent(object.getClass(), objectClass -> {
+            if (objectClass.isEnum()) {
                 return new ImmutableLookUpStrategy();
             }
             switch (lookUpStrategyType) {
@@ -109,18 +108,18 @@ public class LookUpStrategyResolver {
                     Method equalsMethod;
                     Method hashCodeMethod;
                     try {
-                        equalsMethod = object.getClass().getMethod("equals", Object.class);
-                        hashCodeMethod = object.getClass().getMethod("hashCode");
+                        equalsMethod = objectClass.getMethod("equals", Object.class);
+                        hashCodeMethod = objectClass.getMethod("hashCode");
                     } catch (NoSuchMethodException e) {
                         throw new IllegalStateException(
                                 "Impossible state because equals() and hashCode() always exist.", e);
                     }
                     if (equalsMethod.getDeclaringClass().equals(Object.class)) {
-                        throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                        throw new IllegalArgumentException("The class (" + objectClass.getSimpleName()
                                 + ") doesn't override the equals() method, neither does any superclass.");
                     }
                     if (hashCodeMethod.getDeclaringClass().equals(Object.class)) {
-                        throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                        throw new IllegalArgumentException("The class (" + objectClass.getSimpleName()
                                 + ") overrides equals() but neither it nor any superclass"
                                 + " overrides the hashCode() method.");
                     }
