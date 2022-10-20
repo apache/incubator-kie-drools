@@ -33,7 +33,7 @@ abstract class RunnableBaseTest<T extends RunnableBase> {
 
     protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    protected static final long TEST_TIMEOUT = 50;
+    protected static final long TEST_TIMEOUT = 80;
 
     protected T runnableBase;
 
