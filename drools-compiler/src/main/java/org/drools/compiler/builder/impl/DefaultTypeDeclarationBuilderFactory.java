@@ -20,6 +20,6 @@ public class DefaultTypeDeclarationBuilderFactory implements TypeDeclarationBuil
 
     @Override
     public TypeDeclarationBuilder createTypeDeclarationBuilder(KnowledgeBuilderImpl kbuilder) {
-        return new TypeDeclarationBuilder(kbuilder);
+        return new TypeDeclarationBuilder(kbuilder, kbuilder);
     }
 }

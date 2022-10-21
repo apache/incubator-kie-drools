@@ -28,7 +28,7 @@ public class ImpactAnalysisRuleContext extends RuleContext {
     private Map<String, Object> bindVariableLiteralMap = new HashMap<>();
 
     public ImpactAnalysisRuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
-        super(kbuilder, packageModel, typeResolver, ruleDescr);
+        super(kbuilder, kbuilder, packageModel, typeResolver, ruleDescr);
     }
 
     public Map<String, Object> getBindVariableLiteralMap() {

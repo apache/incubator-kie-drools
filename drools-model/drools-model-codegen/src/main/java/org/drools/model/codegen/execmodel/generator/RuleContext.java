@@ -41,6 +41,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
@@ -77,6 +78,7 @@ public class RuleContext {
     private static final String SCOPE_SUFFIX = "_sCoPe";
 
     private final TypeDeclarationContext typeDeclarationContext;
+    private final BuildResultCollector resultCollector;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
     private final RuleDescr ruleDescr;
@@ -132,12 +134,13 @@ public class RuleContext {
 
     private AndDescr parentDescr;
 
-    public RuleContext(TypeDeclarationContext typeDeclarationContext, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
-        this(typeDeclarationContext, packageModel, typeResolver, ruleDescr, -1);
+    public RuleContext(TypeDeclarationContext typeDeclarationContext, BuildResultCollector resultCollector, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+        this(typeDeclarationContext, resultCollector, packageModel, typeResolver, ruleDescr, -1);
     }
 
-    public RuleContext(TypeDeclarationContext typeDeclarationContext, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
+    public RuleContext(TypeDeclarationContext typeDeclarationContext, BuildResultCollector resultCollector, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.typeDeclarationContext = typeDeclarationContext;
+        this.resultCollector = resultCollector;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
@@ -193,8 +196,8 @@ public class RuleContext {
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
             (( BaseKnowledgeBuilderResultImpl ) error).setResource( ruleDescr.getResource() );
         }
-        synchronized (typeDeclarationContext) {
-            typeDeclarationContext.addBuilderResult(error);
+        synchronized (resultCollector) {
+            resultCollector.addBuilderResult(error);
         }
     }
 
@@ -202,8 +205,8 @@ public class RuleContext {
         if ( warn instanceof BaseKnowledgeBuilderResultImpl ) {
             (( BaseKnowledgeBuilderResultImpl ) warn).setResource( ruleDescr.getResource() );
         }
-        synchronized (typeDeclarationContext) {
-            typeDeclarationContext.addBuilderResult(warn);
+        synchronized (resultCollector) {
+            resultCollector.addBuilderResult(warn);
         }
     }
 
@@ -212,7 +215,7 @@ public class RuleContext {
     }
 
     public boolean hasErrors() {
-        return typeDeclarationContext.hasResults( ResultSeverity.ERROR );
+        return resultCollector.hasResults( ResultSeverity.ERROR );
     }
 
     public void addInlineCastType(String field, Type type) {

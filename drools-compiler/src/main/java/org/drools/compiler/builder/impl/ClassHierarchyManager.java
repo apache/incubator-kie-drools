@@ -52,9 +52,9 @@ public class ClassHierarchyManager {
     protected List<AbstractClassTypeDeclarationDescr> sortedDescriptors;
     protected Map<QualifiedName, Collection<QualifiedName>> taxonomy;
 
-    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext) {
+    public ClassHierarchyManager(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext, BuildResultCollector results) {
         this.tdContext = tdContext;
-        this.sortedDescriptors = sortByHierarchy(unsortedDescrs, tdContext);
+        this.sortedDescriptors = sortByHierarchy(unsortedDescrs, tdContext, results);
     }
 
     public List<AbstractClassTypeDeclarationDescr> getSortedDescriptors() {
@@ -68,7 +68,7 @@ public class ClassHierarchyManager {
      * resulting collection. This ensures that superclasses are processed before
      * their subclasses
      */
-    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext) {
+    protected List<AbstractClassTypeDeclarationDescr> sortByHierarchy(Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, TypeDeclarationContext tdContext, BuildResultCollector results) {
 
         taxonomy = new HashMap<>();
         Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<>();
@@ -85,7 +85,7 @@ public class ClassHierarchyManager {
                 supers = new ArrayList<>();
                 taxonomy.put(name, supers);
             } else {
-                tdContext.addBuilderResult(new TypeDeclarationError(tdescr,
+                results.addBuilderResult(new TypeDeclarationError(tdescr,
                                                                    "Found duplicate declaration for type " + tdescr.getType()));
             }
 
@@ -98,7 +98,7 @@ public class ClassHierarchyManager {
                         }
                     } else {
                         circular = true;
-                        tdContext.addBuilderResult(new TypeDeclarationError(tdescr,
+                        results.addBuilderResult(new TypeDeclarationError(tdescr,
                                                                            "Found circular dependency for type " + tdescr.getTypeName()));
                         break;
                     }
@@ -155,12 +155,13 @@ public class ClassHierarchyManager {
 
     public void inheritFields(PackageRegistry pkgRegistry,
                               AbstractClassTypeDeclarationDescr typeDescr,
+                              BuildResultCollector results,
                               Map<String, AbstractClassTypeDeclarationDescr> unprocessableDescrs) {
         TypeDeclarationDescr tDescr = (TypeDeclarationDescr) typeDescr;
         boolean isNovel = TypeDeclarationUtils.isNovelClass(typeDescr, pkgRegistry);
         boolean inferFields = !isNovel && typeDescr.getFields().isEmpty();
 
-        mergeInheritedFields(tDescr, unprocessableDescrs, pkgRegistry.getTypeResolver());
+        mergeInheritedFields(tDescr, unprocessableDescrs, pkgRegistry.getTypeResolver(), results);
 
         if (inferFields) {
             // not novel, but only an empty declaration was provided.
@@ -218,7 +219,8 @@ public class ClassHierarchyManager {
      */
     protected void mergeInheritedFields(TypeDeclarationDescr typeDescr,
                                         Map<String, AbstractClassTypeDeclarationDescr> unprocessableDescrs,
-                                        TypeResolver typeResolver) {
+                                        TypeResolver typeResolver,
+                                        BuildResultCollector results) {
 
         if (typeDescr.getSuperTypes().isEmpty()) {
             return;
@@ -235,7 +237,8 @@ public class ClassHierarchyManager {
                         fullSuper,
                         typeDescr,
                         unprocessableDescrs,
-                        typeResolver);
+                        typeResolver,
+                        results);
         }
     }
 
@@ -244,7 +247,8 @@ public class ClassHierarchyManager {
                                String fullSuper,
                                TypeDeclarationDescr typeDescr,
                                Map<String, AbstractClassTypeDeclarationDescr> unprocessableDescrs,
-                               TypeResolver resolver) {
+                               TypeResolver resolver,
+                               BuildResultCollector results) {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<>();
 
@@ -337,7 +341,7 @@ public class ClassHierarchyManager {
                     }
                 }
                 if (clash) {
-                    tdContext.addBuilderResult(new TypeDeclarationError(typeDescr,
+                    results.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2));
                     typeDescr.setType(null, null);
                     return;

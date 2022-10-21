@@ -98,7 +98,7 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 
-public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, GlobalVariableContext {
+public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, BuildResultCollector, GlobalVariableContext {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
