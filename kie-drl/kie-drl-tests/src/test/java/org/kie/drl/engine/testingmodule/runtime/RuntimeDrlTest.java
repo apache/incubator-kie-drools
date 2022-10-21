@@ -21,12 +21,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.api.identifiers.DrlIdFactory;
+import org.kie.drl.api.identifiers.KieDrlAppRoot;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
@@ -51,7 +50,7 @@ class RuntimeDrlTest {
 
     @Test
     void evaluateWithKieSessionLocalStaticCompilation() {
-        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("")
+        ModelLocalUriId modelLocalUriId = new KieDrlAppRoot()
                 .get(DrlIdFactory.class)
                 .get(basePath);
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(modelLocalUriId, "");
