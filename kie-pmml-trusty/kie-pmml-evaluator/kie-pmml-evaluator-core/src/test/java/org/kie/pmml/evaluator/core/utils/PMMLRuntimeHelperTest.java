@@ -130,7 +130,7 @@ class PMMLRuntimeHelperTest {
                                                                                                           MODEL_NAME,
                                                                                                           memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isPresent();
-        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.get().getModelLocalUriId()).isNotNull();
         assertThat(retrieved.get().getModelLocalUriId()).isEqualTo(inputPMML.getModelLocalUriId());
     }
 

@@ -55,11 +55,11 @@ class KieRuntimeServicePMMLMapInputTest {
     }
 
     @Test
-    void canManageEfestoInput() {
-        EfestoRuntimeContext runtimeContext = getEfestoContext(memoryCompilerClassLoader);
+    void canManageManageableInput() {
         Map<String, Object> inputData = new HashMap<>();
         EfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId, inputData);
-        assertThat(kieRuntimeServicePMMLMapInput.canManageInput(inputPMML, runtimeContext)).isTrue();
+        assertThat(kieRuntimeServicePMMLMapInput.canManageInput(inputPMML,
+                                                                getEfestoContext(memoryCompilerClassLoader))).isTrue();
     }
 
     @Test
@@ -84,11 +84,10 @@ class KieRuntimeServicePMMLMapInputTest {
 
     @Test
     void evaluatePMMLRuntimeContext() {
-        EfestoRuntimeContext runtimeContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                                                                getInputData(MODEL_NAME, FILE_NAME));
 
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML, runtimeContext);
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML, getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader));
         assertThat(retrieved).isNotNull().isPresent();
     }
 }
