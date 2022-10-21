@@ -1,0 +1,3 @@
+# SPI implementations
+org.kie.drl.api.identifiers.DrlIdFactory
+org.kie.drl.api.identifiers.DrlSessionIdFactory

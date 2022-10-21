@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.identifiers;
+package org.kie.drl.api.identifiers;
 
-public class PmmlIdFactory implements PmmlComponentRoot {
+import org.kie.efesto.common.api.identifiers.ComponentRoot;
 
-    public LocalComponentIdPmml get(String fileName, String name) {
-        return new LocalComponentIdPmml(fileName, name);
-    }
+public interface DrlComponentRoot extends ComponentRoot {
 
 }

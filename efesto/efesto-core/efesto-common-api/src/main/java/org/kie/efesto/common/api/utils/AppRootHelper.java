@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.drl.api.identifiers;
+package org.kie.efesto.common.api.utils;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
-import org.kie.efesto.common.api.identifiers.AppRoot;
 import org.kie.efesto.common.api.identifiers.ComponentRoot;
 
-import static org.kie.efesto.common.api.utils.AppRootHelper.getComponentRootBySPI;
+public class AppRootHelper {
 
-public class KieDrlAppRoot extends AppRoot {
-
-    private static final String PREFIX = LocalComponentIdDrlSession.PREFIX + "-app";
-
-    private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
-
-    static {
-        INSTANCES = getComponentRootBySPI(DrlComponentRoot.class);
+    private AppRootHelper() {
     }
 
-    public KieDrlAppRoot() {
-        super(PREFIX);
+    public static Map<Class<? extends ComponentRoot>, ComponentRoot> getComponentRootBySPI(Class<? extends ComponentRoot> toLoad) {
+        Map<Class<? extends ComponentRoot>, ComponentRoot> toReturn = new HashMap<>();
+        ServiceLoader<? extends ComponentRoot> componentRootLoader = ServiceLoader.load(toLoad);
+        componentRootLoader.iterator()
+                .forEachRemaining(componentRoot -> toReturn.put(componentRoot.getClass(), componentRoot));
+        return toReturn;
     }
-
-    @Override
-    public <T extends ComponentRoot> T get(Class<T> providerId) {
-        return (T) INSTANCES.get(providerId);
-    }
-
 }

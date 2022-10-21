@@ -15,11 +15,12 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.efesto.common.api.identifiers.AppRoot;
 import org.kie.efesto.common.api.identifiers.ComponentRoot;
+
+import static org.kie.efesto.common.api.utils.AppRootHelper.getComponentRootBySPI;
 
 public class KiePmmlAppRoot extends AppRoot {
 
@@ -27,9 +28,7 @@ public class KiePmmlAppRoot extends AppRoot {
     private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
 
     static {
-        INSTANCES = new HashMap<>();
-        INSTANCES.put(PmmlIdFactory.class, new PmmlIdFactory());
-        INSTANCES.put(PmmlIdRedirectFactory.class, new PmmlIdRedirectFactory());
+        INSTANCES = getComponentRootBySPI(PmmlComponentRoot.class);
     }
 
     public KiePmmlAppRoot() {
