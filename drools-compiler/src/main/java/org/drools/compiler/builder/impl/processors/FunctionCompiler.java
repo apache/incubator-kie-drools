@@ -25,9 +25,17 @@ import org.kie.internal.builder.ResourceChange;
 
 public class FunctionCompiler extends ImmutableFunctionCompiler {
 
+    public static CompilationPhase of(PackageRegistry pkgRegistry, PackageDescr packageDescr, AssetFilter assetFilter, ClassLoader rootClassLoader) {
+        if (assetFilter == null) {
+            return new ImmutableFunctionCompiler(pkgRegistry, packageDescr, rootClassLoader);
+        } else {
+            return new FunctionCompiler(pkgRegistry, packageDescr, assetFilter, rootClassLoader);
+        }
+    }
+
     private final AssetFilter assetFilter;
 
-    public FunctionCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, AssetFilter assetFilter, ClassLoader rootClassLoader) {
+    private FunctionCompiler(PackageRegistry pkgRegistry, PackageDescr packageDescr, AssetFilter assetFilter, ClassLoader rootClassLoader) {
         super(pkgRegistry, packageDescr, rootClassLoader);
         this.assetFilter = assetFilter;
     }

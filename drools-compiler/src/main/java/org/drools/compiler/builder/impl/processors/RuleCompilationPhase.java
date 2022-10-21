@@ -37,10 +37,41 @@ import java.util.Map;
 
 public class RuleCompilationPhase extends ImmutableRuleCompilationPhase {
 
+    public static CompilationPhase of(
+            PackageRegistry pkgRegistry,
+                                 PackageDescr packageDescr,
+                                 InternalKnowledgeBase kBase,
+                                 int parallelRulesBuildThreshold,
+                                 AssetFilter assetFilter,
+                                 Map<String, AttributeDescr> packageAttributes,
+                                 Resource resource,
+                                 TypeDeclarationContext typeDeclarationContext) {
+
+        if (kBase == null) {
+            return new ImmutableRuleCompilationPhase(
+                    pkgRegistry,
+                    packageDescr,
+                    parallelRulesBuildThreshold,
+                    packageAttributes,
+                    resource,
+                    typeDeclarationContext);
+        } else {
+            return new RuleCompilationPhase(
+                    pkgRegistry,
+                    packageDescr,
+                    kBase,
+                    parallelRulesBuildThreshold,
+                    assetFilter,
+                    packageAttributes,
+                    resource,
+                    typeDeclarationContext);
+        }
+    }
+
     private InternalKnowledgeBase kBase;
     private final AssetFilter assetFilter;
 
-    public RuleCompilationPhase(
+    private RuleCompilationPhase(
             PackageRegistry pkgRegistry,
             PackageDescr packageDescr,
             InternalKnowledgeBase kBase,
@@ -61,14 +92,10 @@ public class RuleCompilationPhase extends ImmutableRuleCompilationPhase {
     }
 
     protected boolean parallelRulesBuild(List<RuleDescr> rules) {
-        return this.kBase == null && super.parallelRulesBuild(rules);
+        return false;
     }
 
     private void preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        if (this.kBase == null) {
-            return;
-        }
-
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
         boolean needsRemoval = false;
 

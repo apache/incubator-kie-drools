@@ -42,7 +42,7 @@ public class OtherDeclarationCompilationPhase extends AbstractPackageCompilation
                 new AccumulateFunctionCompilationPhase(pkgRegistry, packageDescr),
                 new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, typeDeclarationContext),
                 new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, globalVariableContext, assetFilter));
+                GlobalCompilationPhase.of(pkgRegistry, packageDescr, kBase, globalVariableContext, assetFilter));
 
         phases.forEach(CompilationPhase::process);
         phases.forEach(p -> results.addAll(p.getResults()));
