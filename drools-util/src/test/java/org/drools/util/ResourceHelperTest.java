@@ -40,20 +40,21 @@ public class ResourceHelperTest {
     @Test
     public void getResourcesByExtensionTest() {
         Collection<String> resources = getResourcesByExtension("txt");
-        assertThat(resources).hasSize(1);
-        assertThat(resources).anyMatch(elem -> elem.endsWith(TEST_FILE));
+        assertThat(resources)
+                .hasSize(1)
+                .anyMatch(elem -> elem.endsWith(TEST_FILE));
     }
 
     @Test
     public void getResourcesByExtensionExisting() {
         final Collection<File> retrieved = getFileResourcesByExtension("txt");
-        commonVerifyCollection(retrieved, TEST_FILE);
+        commonVerifyCollectionWithExpectedFile(retrieved, TEST_FILE);
     }
 
     @Test
     public void getResourcesByExtensionNotExisting() {
         final Collection<File> retrieved = getFileResourcesByExtension("arg");
-        commonVerifyCollection(retrieved, null);
+        commonVerifyCollectionWithoutExpectedFile(retrieved);
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ResourceHelperTest {
         File directory = new File("." + File.separator + "target" + File.separator + "test-classes");
         Pattern pattern = Pattern.compile(".*txt");
         final Collection<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
-        commonVerifyCollection(retrieved, TEST_FILE);
+        commonVerifyCollectionWithExpectedFile(retrieved, TEST_FILE);
     }
 
     @Test
@@ -84,7 +85,7 @@ public class ResourceHelperTest {
         File directory = new File("." + File.separator + "target" + File.separator + "test-classes");
         Pattern pattern = Pattern.compile(".*arg");
         final Collection<File> retrieved = getFileResourcesFromDirectory(directory, pattern);
-        commonVerifyCollection(retrieved, null);
+        commonVerifyCollectionWithoutExpectedFile(retrieved);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class ResourceHelperTest {
         String path = "." + File.separator + "target" + File.separator + "test-classes";
         Pattern pattern = Pattern.compile(".*txt");
         final Collection<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
-        commonVerifyCollection(retrieved, TEST_FILE);
+        commonVerifyCollectionWithExpectedFile(retrieved, TEST_FILE);
     }
 
     @Test
@@ -125,16 +126,17 @@ public class ResourceHelperTest {
         String path = "." + File.separator + "target" + File.separator + "test-classes";
         Pattern pattern = Pattern.compile(".*arg");
         final Collection<File> retrieved = ResourceHelper.internalGetFileResources(path, pattern);
-        commonVerifyCollection(retrieved, null);
+        commonVerifyCollectionWithoutExpectedFile(retrieved);
     }
 
-    private void commonVerifyCollection(final Collection<File> toVerify, String expectedFile) {
+    private void commonVerifyCollectionWithExpectedFile(final Collection<File> toVerify, String expectedFile) {
         assertThat(toVerify).isNotNull();
-        if (expectedFile != null) {
-            assertThat(toVerify).hasSize(1);
-            assertThat(toVerify).allMatch(file -> file.exists() && file.getName().equals(expectedFile));
-        } else {
-            assertThat(toVerify).isEmpty();
-        }
+        assertThat(toVerify).hasSize(1)
+                .allMatch(file -> file.exists() && file.getName().equals(expectedFile));
+    }
+
+    private void commonVerifyCollectionWithoutExpectedFile(final Collection<File> toVerify) {
+        assertThat(toVerify).isNotNull();
+        assertThat(toVerify).isEmpty();
     }
 }

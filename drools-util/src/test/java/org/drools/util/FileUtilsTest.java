@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertThrows;
 
 public class FileUtilsTest {
@@ -39,7 +40,7 @@ public class FileUtilsTest {
 
     @Test
     public void getFileNotExisting() {
-        assertThrows(RuntimeException.class, () -> FileUtils.getFile(NOTEXISTING_FILE));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFile(NOTEXISTING_FILE));
     }
 
     @Test
