@@ -36,7 +36,10 @@ if (Utils.isMainBranch(this)) {
 }
 
 // Tools
-KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 'OptaPlanner Pipelines', [ 'optaplanner', 'optaplanner-quickstarts' ])
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 
+        [ 'optaplanner', 'optaplanner-quickstarts' ],
+        [ 'rsynek', 'triceo']
+)
 
 void setupProjectDroolsJob(String droolsBranch) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-drools-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path_project}/Jenkinsfile.drools", 'Optaplanner testing against Drools snapshot')
