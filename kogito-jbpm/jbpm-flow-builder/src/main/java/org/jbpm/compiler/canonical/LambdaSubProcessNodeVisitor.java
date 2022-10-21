@@ -100,11 +100,11 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
                     .forEach(t -> t.setName(subProcessModelClassName));
 
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("bind"))
-                    .ifPresent(m -> m.setBody(bind(variableScope, node, subProcessModel)));
+                    .ifPresent(m -> m.setBody(bind(node, subProcessModel)));
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("createInstance"))
                     .ifPresent(m -> m.setBody(createInstance(node, metadata)));
             retValueExpression.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("unbind"))
-                    .ifPresent(m -> m.setBody(unbind(variableScope, node)));
+                    .ifPresent(m -> m.setBody(unbind(node)));
             body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey(), retValueExpression));
         }, () -> body.addStatement(getFactoryMethod(getNodeId(node), getNodeKey())));
 
@@ -113,7 +113,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 
-    private BlockStmt bind(VariableScope variableScope, SubProcessNode subProcessNode, ModelMetaData subProcessModel) {
+    private BlockStmt bind(SubProcessNode subProcessNode, ModelMetaData subProcessModel) {
         BlockStmt actionBody = new BlockStmt();
         actionBody.addStatement(subProcessModel.newInstance("model"));
 
@@ -168,7 +168,7 @@ public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessN
         return new BlockStmt().addStatement(new ReturnStmt(processInstanceSupplier));
     }
 
-    private BlockStmt unbind(VariableScope variableScope, SubProcessNode subProcessNode) {
+    private BlockStmt unbind(SubProcessNode subProcessNode) {
         BlockStmt actionBody = new BlockStmt();
 
         // process the outputs of the task

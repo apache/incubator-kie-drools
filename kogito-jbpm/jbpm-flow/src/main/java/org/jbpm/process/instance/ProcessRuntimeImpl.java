@@ -353,7 +353,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                     if (ruleName.startsWith("RuleFlow-Start-")) {
                         String processId = ruleName.replace("RuleFlow-Start-", "");
 
-                        startProcessWithParamsAndTrigger(processId, null, "conditional", true);
+                        startProcessWithParamsAndTrigger(processId, null, "conditional");
                     }
                 }
             }
@@ -372,7 +372,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         });
     }
 
-    private void startProcessWithParamsAndTrigger(String processId, Map<String, Object> params, String type, boolean dispose) {
+    private void startProcessWithParamsAndTrigger(String processId, Map<String, Object> params, String type) {
 
         startProcess(processId, params, type);
     }
@@ -528,7 +528,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             }
 
             Map<String, Object> parameters = NodeIoHelper.processOutputs(trigger.getInAssociations(), key -> outputSet.get(key));
-            startProcessWithParamsAndTrigger(processId, parameters, type, false);
+            startProcessWithParamsAndTrigger(processId, parameters, type);
 
         }
     }

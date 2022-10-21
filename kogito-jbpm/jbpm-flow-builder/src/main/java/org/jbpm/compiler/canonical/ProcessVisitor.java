@@ -146,7 +146,7 @@ public class ProcessVisitor extends AbstractVisitor {
         visitVariableScope(FACTORY_FIELD_NAME, variableScope, body, visitedVariables, metadata.getProcessClassName());
         visitSubVariableScopes(process.getNodes(), body, visitedVariables);
 
-        visitInterfaces(process.getNodes(), body);
+        visitInterfaces(process.getNodes());
 
         metadata.setDynamic(((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic());
         // the process itself
@@ -233,7 +233,7 @@ public class ProcessVisitor extends AbstractVisitor {
     }
 
     // KOGITO-1882 Finish implementation or delete completely
-    private void visitInterfaces(org.kie.api.definition.process.Node[] nodes, BlockStmt body) {
+    private void visitInterfaces(org.kie.api.definition.process.Node[] nodes) {
         for (org.kie.api.definition.process.Node node : nodes) {
             if (node instanceof WorkItemNode) {
                 Work work = ((WorkItemNode) node).getWork();

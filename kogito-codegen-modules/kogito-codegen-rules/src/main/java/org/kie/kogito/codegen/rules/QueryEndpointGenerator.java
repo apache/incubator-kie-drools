@@ -75,7 +75,7 @@ public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
                 .orElseThrow(() -> new NoSuchElementException("ClassOrInterfaceDeclaration doesn't contain a field named ruleUnit!"));
         setUnitGeneric(ruleUnitDeclaration.getElementType());
 
-        String returnType = getReturnType(clazz);
+        String returnType = getReturnType();
         generateConstructors(clazz);
         generateQueryMethods(cu, clazz, returnType);
         clazz.getMembers().sort(new BodyDeclarationComparator());
@@ -182,7 +182,7 @@ public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
         return new BlockStmt(new NodeList<>(ts));
     }
 
-    private String getReturnType(ClassOrInterfaceDeclaration clazz) {
+    private String getReturnType() {
         if (query.model().getBindings().size() == 1) {
             Map.Entry<String, Class<?>> binding = query.model().getBindings().entrySet().iterator().next();
             return binding.getValue().getCanonicalName();
