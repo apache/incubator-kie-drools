@@ -21,8 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
-import io.cloudevents.jackson.JsonFormat;
-
 public class ObjectMapperFactory {
 
     private ObjectMapperFactory() {
@@ -34,10 +32,6 @@ public class ObjectMapperFactory {
                 .build()
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .setTypeFactory(TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader()))
-                // native mode is not working properly in older versions
-                // so explicitly registering the cloud event module is needed for them
-                // this can be removed when we update Mandrel version
-                .registerModule(JsonFormat.getCloudEventJacksonModule())
                 .findAndRegisterModules();
     }
 

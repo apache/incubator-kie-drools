@@ -34,6 +34,7 @@ import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.DescriptorProtos.MethodDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
@@ -111,7 +112,7 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
 
             if (methodType == MethodType.CLIENT_STREAMING) {
                 return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncClientStreamingCall(call, responseObserver),
-                        nodes -> nodes.isEmpty() ? JsonObjectUtils.fromValue(null) : nodes.get(0));
+                        nodes -> nodes.isEmpty() ? NullNode.instance : nodes.get(0));
             } else if (methodType == MethodType.BIDI_STREAMING) {
                 return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncBidiStreamingCall(call, responseObserver), JsonObjectUtils::fromValue);
             } else if (methodType == MethodType.SERVER_STREAMING) {
