@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.identifiers.KiePmmlAppRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.PMMLModel;
@@ -87,7 +87,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntime {
     }
 
     static EfestoInputPMML getEfestoInputPMML(String modelName, PMMLRuntimeContext context) {
-        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+        LocalComponentIdPmml modelLocalUriId = new KiePmmlAppRoot()
                 .get(PmmlIdFactory.class)
                 .get(context.getFileNameNoSuffix(), getSanitizedClassName(modelName));
 

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.drl.ast.descr.PackageDescr;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.pmml.api.identifiers.KiePmmlAppRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.MiningField;
@@ -58,7 +58,7 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLModelWithSources imple
         super(fileName, modelName, kmodulePackageName, miningFields, outputFields, targetFields, sourcesMap, false);
         this.pkgUUID = pkgUUID;
         this.packageDescr = packageDescr;
-        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+        LocalComponentIdPmml modelLocalUriId = new KiePmmlAppRoot()
                 .get(PmmlIdFactory.class)
                 .get(fileName, getSanitizedClassName(modelName));
         redirectOutput = new EfestoRedirectOutputPMMLDrl(modelLocalUriId, packageDescr);

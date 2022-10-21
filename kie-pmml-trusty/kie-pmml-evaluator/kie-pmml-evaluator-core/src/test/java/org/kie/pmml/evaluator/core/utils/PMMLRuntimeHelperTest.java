@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -35,6 +34,7 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;
+import org.kie.pmml.api.identifiers.KiePmmlAppRoot;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.PMMLModel;
@@ -73,7 +73,7 @@ class PMMLRuntimeHelperTest {
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         modelMock = getKiePMMLModelMock();
-        modelLocalUriId = new ReflectiveAppRoot("")
+        modelLocalUriId = new KiePmmlAppRoot()
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName(MODEL_NAME));
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.drl.api.identifiers;
+package org.kie.pmml.api.identifiers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +21,18 @@ import java.util.Map;
 import org.kie.efesto.common.api.identifiers.AppRoot;
 import org.kie.efesto.common.api.identifiers.ComponentRoot;
 
-public class KieDrlAppRoot extends AppRoot {
+public class KiePmmlAppRoot extends AppRoot {
 
-    private static final String PREFIX = LocalComponentIdDrlSession.PREFIX + "-app";
-
+    private static final String PREFIX = LocalComponentIdPmml.PREFIX + "-app";
     private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
 
     static {
         INSTANCES = new HashMap<>();
-        INSTANCES.put(DrlSessionIdFactory.class, new DrlSessionIdFactory());
-        INSTANCES.put(DrlIdFactory.class, new DrlIdFactory());
+        INSTANCES.put(PmmlIdFactory.class, new PmmlIdFactory());
+        INSTANCES.put(PmmlIdRedirectFactory.class, new PmmlIdRedirectFactory());
     }
 
-    public KieDrlAppRoot() {
+    public KiePmmlAppRoot() {
         super(PREFIX);
     }
 
@@ -41,5 +40,4 @@ public class KieDrlAppRoot extends AppRoot {
     public <T extends ComponentRoot> T get(Class<T> providerId) {
         return (T) INSTANCES.get(providerId);
     }
-
 }
