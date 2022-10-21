@@ -43,51 +43,61 @@ class KieRuntimeServicePMMLMapInputTest {
     private static KieRuntimeServicePMMLMapInput kieRuntimeServicePMMLMapInput;
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
 
-    private static ModelLocalUriId modelLocalUriId;
+    private ModelLocalUriId modelLocalUriId;
+
+    private EfestoInput<Map<String, Object>> inputPMML;
+    private EfestoRuntimeContext efestoRuntimeContext;
 
     @BeforeAll
     public static void setup() {
         kieRuntimeServicePMMLMapInput = new KieRuntimeServicePMMLMapInput();
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        modelLocalUriId = new ReflectiveAppRoot("").get(PmmlIdFactory.class).get(FILE_NAME,
-                                                                                 getSanitizedClassName(MODEL_NAME));
     }
 
     @Test
     void canManageManageableInput() {
+        modelLocalUriId = getModelLocalUriId(FILE_NAME, getSanitizedClassName(MODEL_NAME));
         Map<String, Object> inputData = new HashMap<>();
-        EfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId, inputData);
+        inputPMML = new BaseEfestoInput<>(modelLocalUriId, inputData);
         assertThat(kieRuntimeServicePMMLMapInput.canManageInput(inputPMML,
                                                                 getEfestoContext(memoryCompilerClassLoader))).isTrue();
     }
 
     @Test
     void evaluateCorrectInput() {
-        BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
-                                                                               getInputData(MODEL_NAME, FILE_NAME));
+        modelLocalUriId = getModelLocalUriId(FILE_NAME, getSanitizedClassName(MODEL_NAME));
+        inputPMML = new BaseEfestoInput<>(modelLocalUriId,
+                                          getInputData(MODEL_NAME, FILE_NAME));
+        efestoRuntimeContext = getEfestoContext(memoryCompilerClassLoader);
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
-                                                                                           getEfestoContext(memoryCompilerClassLoader));
+                                                                                           efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isPresent();
     }
 
     @Test
     void evaluateWrongIdentifier() {
-        ModelLocalUriId modelLocalUriId = new ReflectiveAppRoot("").get(PmmlIdFactory.class).get(FILE_NAME,
-                                                                                                 getSanitizedClassName("wrongmodel"));
-        BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
-                                                                               getInputData(MODEL_NAME, FILE_NAME));
+        modelLocalUriId = getModelLocalUriId(FILE_NAME, getSanitizedClassName("wrongmodel"));
+        inputPMML = new BaseEfestoInput<>(modelLocalUriId,
+                                          getInputData(MODEL_NAME, FILE_NAME));
+        efestoRuntimeContext = getEfestoContext(memoryCompilerClassLoader);
         Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
-                                                                                           getEfestoContext(memoryCompilerClassLoader));
+                                                                                           efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isNotPresent();
     }
 
     @Test
     void evaluatePMMLRuntimeContext() {
-        BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
-                                                                               getInputData(MODEL_NAME, FILE_NAME));
-
-        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML, getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader));
+        modelLocalUriId = getModelLocalUriId(FILE_NAME, getSanitizedClassName(MODEL_NAME));
+        inputPMML = new BaseEfestoInput<>(modelLocalUriId, getInputData(MODEL_NAME, FILE_NAME));
+        efestoRuntimeContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
+        Optional<EfestoOutputPMML> retrieved = kieRuntimeServicePMMLMapInput.evaluateInput(inputPMML,
+                                                                                           efestoRuntimeContext);
         assertThat(retrieved).isNotNull().isPresent();
+    }
+
+    private static ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {
+        return new ReflectiveAppRoot("").get(PmmlIdFactory.class).get(fileName,
+                                                                      modelName);
     }
 }
