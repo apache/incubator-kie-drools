@@ -16,13 +16,13 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.13.2.Final</version.io.quarkus>
+    <version.io.quarkus>2.13.3.Final</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
 
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.13.4</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.databind>2.13.4.2</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.6.0</version.com.jayway.jsonpath>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20220705</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>1.1.0</version.io.quarkiverse.jackson-jq>
