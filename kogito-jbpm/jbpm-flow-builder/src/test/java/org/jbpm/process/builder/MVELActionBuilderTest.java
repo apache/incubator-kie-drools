@@ -56,7 +56,7 @@ public class MVELActionBuilderTest extends AbstractBaseTest {
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect("mvel");
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init(builder, pkg, null, dialectRegistry, mvelDialect, null);
+        context.initContext(builder, pkg, null, dialectRegistry, mvelDialect, null);
 
         builder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
 

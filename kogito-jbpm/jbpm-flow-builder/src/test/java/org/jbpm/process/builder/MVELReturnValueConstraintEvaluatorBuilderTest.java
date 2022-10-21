@@ -53,7 +53,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect("mvel");
 
         PackageBuildContext context = new PackageBuildContext();
-        context.init(builder,
+        context.initContext(builder,
                 pkg,
                 null,
                 dialectRegistry,

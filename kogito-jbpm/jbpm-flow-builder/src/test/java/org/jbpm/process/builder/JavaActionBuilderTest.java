@@ -65,7 +65,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
 
         ProcessBuildContext context = new ProcessBuildContext(builder, builder.getPackage("pkg1"), null, processDescr, dialectRegistry, javaDialect);
 
-        context.init(builder, pkg, null, dialectRegistry, javaDialect, null);
+        context.initContext(builder, pkg, null, dialectRegistry, javaDialect, null);
 
         builder.addPackageFromDrl(new StringReader("package pkg1;\nglobal java.util.List list;\n"));
 
