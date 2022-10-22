@@ -26,12 +26,12 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
     protected final RuleUnits ruleUnits;
 
     public AbstractRuleUnit(Class<T> ruleUnitDataClass) {
-        this(ruleUnitDataClass, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
+        this(ruleUnitDataClass, null);
     }
 
     public AbstractRuleUnit(Class<T> ruleUnitDataClass, RuleUnits ruleUnits) {
         this.ruleUnitDataClass = ruleUnitDataClass;
-        this.ruleUnits = ruleUnits;
+        this.ruleUnits = ruleUnits != null ? ruleUnits : AbstractRuleUnits.DummyRuleUnits.INSTANCE;
     }
 
     protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
