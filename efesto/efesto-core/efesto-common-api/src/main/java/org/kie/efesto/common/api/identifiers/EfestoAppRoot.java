@@ -24,8 +24,10 @@ import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getEfestoCompo
  * <p>
  * Its top-level children are <code>EfestoComponentRoot</code> instances, the efesto-specific subclass of
  * <code>ComponentRoot</code>
+ *
+ * It also implements <code>ComponentRoot</code> so that it can be used as top-level <code>path</code> inside another <code>AppRoot</code>
  */
-public final class EfestoAppRoot extends AppRoot {
+public final class EfestoAppRoot extends AppRoot implements ComponentRoot {
 
     public static final String EGESTO_ENGINES = "engines";
 
@@ -43,4 +45,5 @@ public final class EfestoAppRoot extends AppRoot {
     public <T extends ComponentRoot> T get(Class<T> providerId) {
         return (T) INSTANCES.get(providerId);
     }
+
 }
