@@ -43,6 +43,7 @@ public class DrlResourceHandler extends ResourceHandler {
 
     public PackageDescr process(Resource resource, ResourceConfiguration resourceConfig) throws DroolsParserException, IOException {
         PackageDescr pkg;
+        this.results.clear();
         boolean hasErrors = false;
         if (resource instanceof DescrResource) {
             pkg = (PackageDescr) ((DescrResource) resource).getDescr();
