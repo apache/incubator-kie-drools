@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.drools.util.ResourceHelper;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.MemoryFile;
 import org.slf4j.Logger;
@@ -57,7 +58,8 @@ public class FileUtils {
      */
     public static File getFile(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        File toReturn = ResourceHelper.getResourcesByExtension(extension)
+        File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
+                .stream()
                 .filter(file -> file.getName().equals(fileName))
                 .findFirst()
                 .orElse(null);

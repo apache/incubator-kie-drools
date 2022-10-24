@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.test.util.filesystem;
+package org.drools.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Utility to access files
@@ -38,15 +37,17 @@ public class FileUtils {
      * Retrieve the <code>File</code> of the given <b>file</b>
      * @param fileName
      * @return
-     * @throws IOException
      */
     public static File getFile(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        File toReturn = ResourceHelper.getResourcesByExtension(extension)
+        File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
+                .stream()
                 .filter(file -> file.getName().equals(fileName))
                 .findFirst()
                 .orElse(null);
-        assertThat(toReturn).isNotNull();
+        if (toReturn == null) {
+            throw new RuntimeException("Failed to find file " + fileName);
+        }
         return toReturn;
     }
 

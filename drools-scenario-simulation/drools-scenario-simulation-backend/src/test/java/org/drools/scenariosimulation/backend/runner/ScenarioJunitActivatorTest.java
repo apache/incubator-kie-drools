@@ -22,7 +22,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerDTO;
-import org.drools.scenariosimulation.backend.util.ResourceHelper;
+import org.drools.util.ResourceHelper;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +97,7 @@ public class ScenarioJunitActivatorTest {
 
             @Override
             Stream<String> getResources() {
-                return ResourceHelper.getResourcesByExtension("txt");
+                return ResourceHelper.getResourcesByExtension("txt").stream();
             }
 
             @Override

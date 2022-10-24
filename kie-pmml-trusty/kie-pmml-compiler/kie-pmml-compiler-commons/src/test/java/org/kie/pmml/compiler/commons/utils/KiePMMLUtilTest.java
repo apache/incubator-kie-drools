@@ -57,7 +57,7 @@ import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTMODELNAME_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.TARGETFIELD_TEMPLATE;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.getMiningTargetFields;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
+import static org.drools.util.FileUtils.getFileInputStream;
 
 public class KiePMMLUtilTest {
 
