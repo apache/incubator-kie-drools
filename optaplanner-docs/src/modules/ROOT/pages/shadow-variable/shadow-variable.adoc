@@ -152,6 +152,101 @@ public class Customer {
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
 
 
+[[listVariableShadows]]
+== List variable shadows
+
+When the planning entity uses a xref:planner-configuration/planner-configuration.adoc#planningListVariable[list variable], its elements can use a number of built-in shadow variables.
+
+=== Inverse relation shadow variable
+
+Use the same `@InverseRelationShadowVariable` annotation as with basic or chained planning variable to establish bi-directional relationship between the entity and the elements assigned to its list variable.
+The type of the inverse shadow variable is the planning entity itself because there is a one-to-many relationship between the entity and the element classes.
+
+The planning entity side has a genuine list variable:
+
+[source,java]
+----
+@PlanningEntity
+public class Vehicle {
+
+    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {...}
+}
+----
+
+On the element side:
+
+- Annotate the class with `@PlanningEntity` to make it a shadow planning entity.
+- <<shadowVariableIntroduction,Register this class as a planning entity>>, otherwise OptaPlanner won't detect it and the shadow variable won't update.
+- Create a property with the genuine planning entity type.
+- Annotate it with `@InverseRelationShadowVariable` and set `sourceVariableName` to the name of the genuine planning list variable.
+
+[source,java]
+----
+@PlanningEntity
+public class Customer {
+
+    @InverseRelationShadowVariable(sourceVariableName = "customers")
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {...}
+}
+----
+
+=== Previous and next element shadow variable
+
+Use `@PreviousElementShadowVariable` or `@NextElementShadowVariable` to get a reference to an element that is assigned to the same entity's list variable one index lower (previous element) or one index higher (next element).
+
+[NOTE]
+====
+The previous and next element shadow variables may be `null` even in a fully initialized solution.
+The first element's previous shadow variable is `null` and the last element's next shadow variable is `null`.
+====
+
+The planning entity side has a genuine list variable:
+
+[source,java]
+----
+@PlanningEntity
+public class Vehicle {
+
+    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {...}
+}
+----
+
+On the element side:
+
+[source,java]
+----
+@PlanningEntity
+public class Customer {
+
+    @PreviousElementShadowVariable(sourceVariableName = "customers")
+    public Customer getPreviousCustomer() {
+        return previousCustomer;
+    }
+
+    public void setPreviousCustomer(Customer previousCustomer) {...}
+
+    @NextElementShadowVariable(sourceVariableName = "customers")
+    public Customer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(Customer nextCustomer) {...}
+----
+
 [[customVariableListener]]
 == Custom `VariableListener`
 

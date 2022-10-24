@@ -17,8 +17,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  *
  * <h2>List variable</h2>
  * <p>
- * A planning entity's property annotated with {@code @PlanningListVariable} is referred to
- * as a <strong>list variable</strong>.
+ * A planning entity's property annotated with {@code @PlanningListVariable} is referred to as a <strong>list variable</strong>.
  * The way solver optimizes a list variable is by adding, removing, or changing order of elements in the {@code List} object
  * held by the list variable.
  *

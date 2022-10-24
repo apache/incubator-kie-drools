@@ -722,6 +722,10 @@ A `ValueRangeProvider` on the planning entity consumes more memory than `ValueRa
 ====
 A `ValueRangeProvider` on the planning entity is not currently compatible with a <<chainedPlanningVariable,chained>> variable.
 ====
+[WARNING]
+====
+A `ValueRangeProvider` on the planning entity is not compatible with a <<planningListVariable,list variable>>.
+====
 
 
 [[valueRangeFactory]]
@@ -860,6 +864,57 @@ For example in bin packing: small container < medium container < big container.
 
 _None of the current planning variable state in any of the planning entities should be used to compare planning values._ During construction heuristics, those variables are likely to be ``null``.
 For example, none of the `row` variables of any `Queen` may be used to determine the strength of a ``Row``.
+
+
+[[planningListVariable]]
+==== Planning list variable (VRP, Task assigning, ...)
+
+The planning list variable is a successor to the chained planning variable.
+All problems that have previously been modelled using the <<chainedPlanningVariable, chained planning variable>> can now be modelled using the planning list variable.
+
+For example, the Vehicle Routing problem can be modelled as follows:
+
+image::use-cases-and-examples/vehicle-routing/vehicleRoutingClassDiagram.png[]
+
+This model is closer to the reality than the chained model.
+Each vehicle has a list of customers to go to in the order given by the list.
+And indeed, the object model matches the natural language description of the problem:
+
+[source,java]
+----
+@PlanningEntity
+class Vehicle {
+
+    int capacity;
+    Depot depot;
+
+    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    List<Customer> customers = new ArrayList<>();
+}
+----
+
+Planning list variable can be used if the domain meets the following criteria:
+
+. There is a one-to-many relationship between the planning entity and the planning value.
+
+. The order in which planning values are assigned to an entity's list variable is significant.
+
+. Each planning value is assigned to exactly one planning entity.
+No planning value may appear in multiple entities.
+
+[WARNING]
+====
+Planning list variable is a new feature and does not yet support the following advanced features:
+
+- overconstrained planning,
+- pinning,
+- value strength comparison,
+- nearby selection,
+- construction heuristic phase configuration,
+- exhaustive search,
+- partitioned search,
+- coexistence with another list or basic planning variable.
+====
 
 
 [[chainedPlanningVariable]]

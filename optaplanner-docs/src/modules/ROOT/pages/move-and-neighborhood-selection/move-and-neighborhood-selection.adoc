@@ -126,6 +126,14 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 |Swap 2 sets of entities with the same values
 |`+[Process-A, Process-B, Process-C] {Computer-1} <-> [Process-E, Process-F] {Computer-2}+`
 
+|<<subListChangeMoveSelector,SubList change move>>
+|Move a list variable subList from one entity to another
+|`+\|2\| {Vehicle-2[1..3] -> Vehicle-4[1]}+`
+
+|<<subListSwapMoveSelector,SubList swap move>>
+|Swap 2 list variable subLists between 2 entities
+|`+{Vehicle-5[1..3]} <-> {Vehicle-1[1..6]}+`
+
 |<<tailChainSwapMoveSelector,Tail chain swap move>>
 |Swap 2 tails chains
 |`+Visit-A5 {Visit-A4} <-tailChainSwap-> Visit-B3 {Visit-B2}+`
@@ -396,6 +404,63 @@ An advanced configuration looks like this:
 ----
 
 In this case, the entity being operated on need not be `Comparable`. The given `subPillarSequenceComparatorClass` is used to establish the sequence instead. Also, the size of the sub pillars is limited in length of up to 1000 entities.
+
+[[subListMoveSelectors]]
+=== Move selectors for list variables
+
+A _subList_ is a sequence of elements in a specific entity's list variable between `fromIndex` and `toIndex`.
+
+[[subListChangeMoveSelector]]
+==== `SubListChangeMoveSelector`
+
+The `SubListChangeMoveSelector` selects a source subList by selecting a source entity and the source subList's `fromIndex` and `toIndex`.
+Then it selects a destination entity and a `destinationIndex` in the destination entity's list variable.
+Selecting these parameters results in a `SubListChangeMove` that removes the source subList elements from the source entity and adds them to the destination entity's list variable at the `destinationIndex`.
+
+Simplest configuration:
+
+[source,xml]
+----
+    <subListChangeMoveSelector/>
+----
+
+Advanced configuration:
+
+[source,xml]
+----
+    <subListChangeMoveSelector>
+      ... <!-- Normal selector properties -->
+      <minimumSubListSize>2</minimumSubListSize>
+      <maximumSubListSize>40</maximumSubListSize>
+      <selectReversingMoveToo>true</selectReversingMoveToo>
+    </subListChangeMoveSelector>
+----
+
+[[subListSwapMoveSelector]]
+==== `SubListSwapMoveSelector`
+
+The `SubListSwapMoveSelector` selects a left subList by selecting a left entity and the left subList's `fromIndex` and `toIndex`.
+Then it selects a right subList by selecting a right entity and the right subList's `fromIndex` and `toIndex`.
+Selecting these parameters results in a `SubListSwapMove` that swaps the right and left subLists between right and left entities.
+
+Simplest configuration:
+
+[source,xml]
+----
+    <subListSwapMoveSelector/>
+----
+
+Advanced configuration:
+
+[source,xml]
+----
+    <subListSwapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <minimumSubListSize>2</minimumSubListSize>
+      <maximumSubListSize>40</maximumSubListSize>
+      <selectReversingMoveToo>true</selectReversingMoveToo>
+    </subListSwapMoveSelector>
+----
 
 [[chainMoveSelectors]]
 === Move selectors for chained variables
