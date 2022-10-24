@@ -34,15 +34,16 @@ The sections below describe in detail the current status of the supported featur
 
 | State         | Status      |
 | ------------- | ----------- |
-| Event         | :full_moon: |
+| Event         | :first_quarter_moon: |
 | Operation     | :full_moon: |
 | Switch        | :full_moon: |
 | Delay         | :full_moon: |
 | Parallel      | :full_moon: |
 | Inject        | :full_moon: |
-| ForEach       | :first_quarter_moon: |
+| ForEach       | :full_moon: |
 | Callback      | :full_moon: |
 
+> Event state is not supported as starting state if exclusive flag is set to false.
 > ⚠️ Quarkus is the only supported runtime for Kogito Serverless Workflow.
 
 #### Examples
@@ -58,7 +59,7 @@ The sections below describe in detail the current status of the supported featur
 | Function Type | Status             | Obs |
 | ------------- | ------------------ | --- |
 | rest          | :full_moon: | You can find more details about the Kogito OpenAPI implementation [here](../kogito-codegen-modules/kogito-codegen-openapi) |
-| rpc           | :construction: | |
+| rpc           | :full_moon: | |
 | expression    | :full_moon: | Either `jq` or `jsonpath` |
 | asyncapi      | :construction: | |
 | graphql       | :construction: | |
