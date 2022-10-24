@@ -95,7 +95,12 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
 
         for (CompilationPhase phase : phases) {
             phase.process();
-            phase.getResults().forEach(this.buildResultCollector::addBuilderResult);
+            Collection<? extends KnowledgeBuilderResult> results = phase.getResults();
+            results.forEach(this.buildResultCollector::addBuilderResult);
+            if (!results.isEmpty()) {
+                // early exit on error
+                break;
+            }
         }
 
     }
