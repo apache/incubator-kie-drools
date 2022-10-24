@@ -43,7 +43,7 @@ public class ConstraintParserTest {
         Set<String> imports = new HashSet<>();
         imports.add(Person.class.getCanonicalName());
         TypeResolver typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-        RuleContext context = new RuleContext(null, packageModel, typeResolver, null, 0);
+        RuleContext context = new RuleContext(null, null, packageModel, typeResolver, null, 0);
         parser = ConstraintParser.defaultConstraintParser(context, packageModel);
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.test.util.filesystem;
+package org.drools.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +23,8 @@ import java.io.IOException;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertThrows;
 
 public class FileUtilsTest {
 
@@ -32,13 +34,13 @@ public class FileUtilsTest {
     @Test
     public void getFileExisting() {
         final File retrieved = FileUtils.getFile(TEST_FILE);
-        assertThat(retrieved.exists()).isTrue();
+        assertThat(retrieved).exists();
         assertThat(retrieved.getName()).isEqualTo(TEST_FILE);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void getFileNotExisting() {
-        FileUtils.getFile(NOTEXISTING_FILE);
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFile(NOTEXISTING_FILE));
     }
 
     @Test
@@ -48,8 +50,8 @@ public class FileUtilsTest {
         retrieved.close();
     }
 
-    @Test(expected = AssertionError.class)
-    public void getFileInputStreamNotExisting() throws IOException {
-        FileUtils.getFileInputStream(NOTEXISTING_FILE);
+    @Test
+    public void getFileInputStreamNotExisting() {
+        assertThrows(RuntimeException.class, () -> FileUtils.getFileInputStream(NOTEXISTING_FILE));
     }
 }

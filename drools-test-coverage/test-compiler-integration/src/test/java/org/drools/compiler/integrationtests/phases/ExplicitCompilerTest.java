@@ -88,7 +88,7 @@ public class ExplicitCompilerTest {
 
         TypeDeclarationContextImpl typeDeclarationContext =
                 new TypeDeclarationContextImpl(configuration, packageRegistryManager, globalVariableContext);
-        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext);
+        TypeDeclarationBuilder typeBuilder = new TypeDeclarationBuilder(typeDeclarationContext, results);
         typeDeclarationContext.setTypeDeclarationManager(new TypeDeclarationManagerImpl(typeBuilder, kBase));
 
 

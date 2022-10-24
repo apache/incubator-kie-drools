@@ -22,6 +22,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -85,13 +86,13 @@ public class WindowReferenceGenerator {
         }
     }
 
-    public void addWindowReferences(TypeDeclarationContext kbuilder, Set<WindowDeclarationDescr> windowReferences ) {
+    public void addWindowReferences(TypeDeclarationContext typeDeclarationContext, BuildResultCollector results, Set<WindowDeclarationDescr> windowReferences ) {
         for (WindowDeclarationDescr descr : windowReferences) {
-            addField(kbuilder, packageModel, descr);
+            addField(typeDeclarationContext, results, packageModel, descr);
         }
     }
 
-    private void addField( TypeDeclarationContext kbuilder, PackageModel packageModel, WindowDeclarationDescr descr ) {
+    private void addField( TypeDeclarationContext typeDeclarationContext, BuildResultCollector results, PackageModel packageModel, WindowDeclarationDescr descr ) {
 
         final String windowName = toVar(descr.getName());
 
@@ -123,12 +124,12 @@ public class WindowReferenceGenerator {
             initializer.addArgument( entryPointCall );
         }
 
-        parseConditions(kbuilder, packageModel, pattern, initClass).forEach(initializer::addArgument);
+        parseConditions(typeDeclarationContext, results, packageModel, pattern, initClass).forEach(initializer::addArgument);
 
         packageModel.addAllWindowReferences(windowName, initializer);
     }
 
-    private List<Expression> parseConditions( TypeDeclarationContext kbuilder, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
+    private List<Expression> parseConditions(TypeDeclarationContext typeDeclarationContext, BuildResultCollector results, PackageModel packageModel, PatternDescr pattern, Class<?> patternType ) {
         List<? extends BaseDescr> descrs = pattern.getConstraint().getDescrs();
         if (descrs == null) {
             return Collections.emptyList();
@@ -136,7 +137,7 @@ public class WindowReferenceGenerator {
         return descrs.stream()
                 .map( descr -> {
                     String expression = descr.toString();
-                    RuleContext context = new RuleContext(kbuilder, packageModel, typeResolver, null);
+                    RuleContext context = new RuleContext(typeDeclarationContext, results, packageModel, typeResolver, null);
                     DrlxParseResult drlxParseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(patternType, pattern.getIdentifier(), expression);
                     return drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<Expression>>() {
                         @Override

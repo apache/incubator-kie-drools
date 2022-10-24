@@ -77,7 +77,7 @@ import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressio
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.KIE_PMML_REGRESSION_TABLE_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.SUPPORTED_NORMALIZATION_METHODS;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.UNSUPPORTED_NORMALIZATION_METHODS;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegressionTableRegressionFactoryTest {
 
@@ -604,17 +604,6 @@ public class KiePMMLRegressionTableFactoryTest extends AbstractKiePMMLRegression
         assertThat(JavaParserUtils.equalsNode(expected, retrieved)).isTrue();
     }
 
-    @Test
-    void populateOutputFieldsMap() {
-        final List<KiePMMLOutputField> outputFields = new ArrayList<>();
-        KiePMMLOutputField predictedOutputField = getOutputField("KOF-TARGET", RESULT_FEATURE.PREDICTED_VALUE,
-                "TARGET");
-        outputFields.add(predictedOutputField);
-        final List<KiePMMLOutputField> probabilityOutputFields = IntStream.range(0, 2)
-                .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
-                .collect(Collectors.toList());
-        outputFields.addAll(probabilityOutputFields);
-    }
     private void commonEvaluateRegressionTable(KiePMMLRegressionTable retrieved, RegressionTable source) {
         Map<String, SerializableFunction<Double, Double>> numericFunctionMap = retrieved.getNumericFunctionMap();
         assertThat(numericFunctionMap).hasSameSizeAs(source.getNumericPredictors());

@@ -52,7 +52,7 @@ public class ExpressionTyperTest {
         imports = new HashSet<>();
         packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, ruleDescr);
+        ruleContext = new RuleContext(knowledgeBuilder, knowledgeBuilder, packageModel, typeResolver, ruleDescr);
         imports.add(Person.class.getCanonicalName());
     }
 

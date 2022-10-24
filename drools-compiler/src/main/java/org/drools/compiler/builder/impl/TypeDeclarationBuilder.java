@@ -43,6 +43,8 @@ public class TypeDeclarationBuilder {
 
     protected final TypeDeclarationContext context;
 
+    protected final BuildResultCollector results;
+
     protected final Set<String> generatedTypes = new HashSet<>();
 
     protected TypeDeclarationCache classDeclarationExtractor;
@@ -52,14 +54,15 @@ public class TypeDeclarationBuilder {
     protected TypeDeclarationConfigurator typeDeclarationConfigurator;
     protected DeclaredClassBuilder declaredClassBuilder;
 
-    public TypeDeclarationBuilder(TypeDeclarationContext context) {
+    public TypeDeclarationBuilder(TypeDeclarationContext context, BuildResultCollector results) {
         this.context = context;
-        this.classDeclarationExtractor = new TypeDeclarationCache(context);
-        this.typeDeclarationNameResolver = new TypeDeclarationNameResolver(context);
-        this.typeDeclarationFactory = new TypeDeclarationFactory(context);
-        this.classDefinitionFactory = new ClassDefinitionFactory(context);
-        this.typeDeclarationConfigurator = new TypeDeclarationConfigurator(context);
-        this.declaredClassBuilder = new DeclaredClassBuilder(context);
+        this.results = results;
+        this.classDeclarationExtractor = new TypeDeclarationCache(context, results);
+        this.typeDeclarationNameResolver = new TypeDeclarationNameResolver(context, results);
+        this.typeDeclarationFactory = new TypeDeclarationFactory(context, results);
+        this.classDefinitionFactory = new ClassDefinitionFactory(context, results);
+        this.typeDeclarationConfigurator = new TypeDeclarationConfigurator(context, results);
+        this.declaredClassBuilder = new DeclaredClassBuilder(context, results);
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
@@ -139,11 +142,11 @@ public class TypeDeclarationBuilder {
         unsortedDescrs = compactDefinitionsAndDeclarations( unsortedDescrs, unprocesseableDescrs );
 
         // now sort declarations by mutual dependencies
-        ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, context);
+        ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, context, results );
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
             PackageRegistry pkgReg = getPackageRegistry( pkgRegistry, packageDescr, typeDescr );
-            createBean( typeDescr, pkgReg, classHierarchyManager, unresolvedTypes, unprocesseableDescrs );
+            createBean( typeDescr, results, pkgReg, classHierarchyManager, unresolvedTypes, unprocesseableDescrs );
         }
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
@@ -173,7 +176,7 @@ public class TypeDeclarationBuilder {
                 boolean res = mergeTypeDescriptors( prev, descr );
                 if ( ! res ) {
                     unprocesseableDescrs.put( prev.getType().getFullName(), prev );
-                    context.addBuilderResult( new TypeDeclarationError( prev,
+                    results.addBuilderResult( new TypeDeclarationError( prev,
                                                                          "Found duplicate declaration for type " + prev.getType().getFullName() + ", unable to reconcile " ) );
                 }
             } else {
@@ -230,6 +233,7 @@ public class TypeDeclarationBuilder {
     }
 
     protected void createBean( AbstractClassTypeDeclarationDescr typeDescr,
+                             BuildResultCollector results,
                              PackageRegistry pkgRegistry,
                              ClassHierarchyManager hierarchyManager,
                              List<TypeDefinition> unresolvedTypes,
@@ -237,11 +241,11 @@ public class TypeDeclarationBuilder {
 
         //descriptor needs fields inherited from superclass
         if ( typeDescr instanceof TypeDeclarationDescr ) {
-            hierarchyManager.inheritFields( pkgRegistry, typeDescr, unprocesseableDescrs );
+            hierarchyManager.inheritFields( pkgRegistry, typeDescr, results, unprocesseableDescrs );
         }
 
         TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry, typeDescr );
-        boolean success = ! context.hasErrors();
+        boolean success = ! results.hasErrors();
 
         try {
             // the type declaration is generated in any case (to be used by subclasses, if any)
@@ -261,12 +265,12 @@ public class TypeDeclarationBuilder {
                 }
 
             }
-            success = ( def != null ) && ( ! context.hasErrors() );
+            success = ( def != null ) && ( ! results.hasErrors() );
 
             if(success) {
                 this.postGenerateDeclaredBean(typeDescr, type, def, pkgRegistry);
             }
-            success = ! context.hasErrors();
+            success = ! results.hasErrors();
 
             if ( success ) {
                 ClassBuilder classBuilder = ClassBuilderFactory.get().getClassBuilder(type);
@@ -275,7 +279,7 @@ public class TypeDeclarationBuilder {
                                                                 pkgRegistry,
                                                                 def, classBuilder);
             }
-            success = ! context.hasErrors();
+            success = ! results.hasErrors();
 
             if ( success ) {
                 Class<?> clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
@@ -290,7 +294,7 @@ public class TypeDeclarationBuilder {
 
         } catch ( final ClassNotFoundException e ) {
             unprocesseableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
-            context.addBuilderResult(new TypeDeclarationError( typeDescr,
+            results.addBuilderResult(new TypeDeclarationError( typeDescr,
                                                                 "Class '" + type.getTypeClassName() +
                                                                 "' not found for type declaration of '" +
                                                                 type.getTypeName() + "'" ) );

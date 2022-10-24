@@ -37,7 +37,7 @@ import org.drools.traits.core.factmodel.TraitRegistryImpl;
 public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
 
     TraitsTypeDeclarationBuilderImpl(KnowledgeBuilderImpl kbuilder) {
-        super(kbuilder);
+        super(kbuilder, kbuilder);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
                     Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
                     if (!Thing.class.isAssignableFrom(resolvedType)) {
                         if ( ! resolvedType.isInterface() ) {
-                            context.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
+                            results.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
                             return;
                         }
                         updateTraitDefinition(type,
@@ -120,7 +120,7 @@ public class TraitsTypeDeclarationBuilderImpl extends TypeDeclarationBuilder {
                                                    tempDef );
 
                         } catch (ClassNotFoundException cnfe) {
-                            context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                            results.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                                "Internal Trait extension Class '" + target +
                                                                                         "' could not be generated correctly'" ) );
                         } finally {

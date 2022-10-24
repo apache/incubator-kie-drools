@@ -37,9 +37,9 @@
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
-    <version.common-text>1.9</version.common-text>
+    <version.common-text>1.10.0</version.common-text>
     <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.13.4</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.databind>2.13.4.2</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.13.4</version.com.fasterxml.jackson.annotations>
     <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
@@ -55,7 +55,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.4</version.io.micrometer>
-    <version.io.quarkus>2.13.2.Final</version.io.quarkus>
+    <version.io.quarkus>2.13.3.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.2.1</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>

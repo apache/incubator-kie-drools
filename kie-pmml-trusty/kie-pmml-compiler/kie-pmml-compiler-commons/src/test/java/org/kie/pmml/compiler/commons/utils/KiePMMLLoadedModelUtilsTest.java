@@ -36,7 +36,7 @@ import static org.kie.pmml.compiler.api.utils.ModelUtils.getOpType;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.getTargetFields;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.MODELNAME_TEMPLATE;
-import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
+import static org.drools.util.FileUtils.getFileInputStream;
 
 public class KiePMMLLoadedModelUtilsTest {
 

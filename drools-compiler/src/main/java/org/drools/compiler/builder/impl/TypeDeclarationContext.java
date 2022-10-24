@@ -29,7 +29,6 @@ import java.util.List;
  */
 public interface TypeDeclarationContext extends
         RootClassLoaderProvider,
-        BuildResultCollector,
         BuilderConfigurationProvider,
         PackageRegistryManager,
         InternalKnowledgeBaseProvider,

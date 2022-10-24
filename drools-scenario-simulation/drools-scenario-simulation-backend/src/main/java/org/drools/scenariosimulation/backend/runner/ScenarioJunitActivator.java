@@ -38,7 +38,7 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
 import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
-import static org.drools.scenariosimulation.backend.util.ResourceHelper.getResourcesByExtension;
+import static org.drools.util.ResourceHelper.getResourcesByExtension;
 
 public class ScenarioJunitActivator extends ParentRunner<ScenarioRunnerDTO> {
 
@@ -95,7 +95,7 @@ public class ScenarioJunitActivator extends ParentRunner<ScenarioRunnerDTO> {
     }
 
     Stream<String> getResources() {
-        return getResourcesByExtension(FILE_EXTENSION);
+        return getResourcesByExtension(FILE_EXTENSION).stream();
     }
 
     KieContainer getKieContainer() {

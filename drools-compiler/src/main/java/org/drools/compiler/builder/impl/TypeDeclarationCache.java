@@ -46,10 +46,12 @@ import static org.drools.core.util.Drools.hasMvel;
 public class TypeDeclarationCache {
 
     private final TypeDeclarationContext context;
+    private final BuildResultCollector results;
     private final Map<String, TypeDeclaration> cacheTypes = new HashMap<>();
 
-    TypeDeclarationCache( TypeDeclarationContext context ) {
+    TypeDeclarationCache(TypeDeclarationContext context, BuildResultCollector results) {
         this.context = context;
+        this.results = results;
         if ( hasMvel() ) {
             initBuiltinTypeDeclarations();
         }
@@ -213,12 +215,12 @@ public class TypeDeclarationCache {
             Position pos = fld.getAnnotation(Position.class);
             if (pos != null) {
                 if (pos.value() < 0 || pos.value() >= fields.size()) {
-                    context.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                    results.addBuilderResult(new TypeDeclarationError(typeDeclaration,
                                                                        "Out of range position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
                     continue;
                 }
                 if (orderedFields[pos.value()] != null) {
-                    context.addBuilderResult(new TypeDeclarationError(typeDeclaration,
+                    results.addBuilderResult(new TypeDeclarationError(typeDeclaration,
                                                                        "Duplicated position " + pos.value() + " for field '" + fld.getName() + "' on class " + cls.getName()));
                     continue;
                 }
@@ -245,7 +247,7 @@ public class TypeDeclarationCache {
         String namespace = ClassUtils.getPackage( cls );
         PackageRegistry pkgRegistry = context.getOrCreatePackageRegistry( new PackageDescr(namespace) );
 
-        processMvelBasedAccessors(context, pkgRegistry, annotated, typeDeclaration );
+        processMvelBasedAccessors(context, results, pkgRegistry, annotated, typeDeclaration );
         return typeDeclaration;
     }
 
