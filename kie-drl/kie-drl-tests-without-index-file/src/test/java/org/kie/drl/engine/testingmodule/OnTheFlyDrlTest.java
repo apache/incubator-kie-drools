@@ -24,12 +24,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.api.identifiers.DrlIdFactory;
-import org.kie.drl.api.identifiers.KieDrlAppRoot;
+import org.kie.drl.api.identifiers.KieDrlComponentRoot;
 import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
@@ -65,7 +66,8 @@ class OnTheFlyDrlTest {
         EfestoRuntimeContext runtimeContext =
                 EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader(),
                                                                      compilationContext.getGeneratedResourcesMap());
-        ModelLocalUriId modelLocalUriId = new KieDrlAppRoot()
+        ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
+                .get(KieDrlComponentRoot.class)
                 .get(DrlIdFactory.class)
                 .get(onTheFlyPath);
         EfestoInputDrlKieSessionLocal toEvaluate = new EfestoInputDrlKieSessionLocal(modelLocalUriId, "");

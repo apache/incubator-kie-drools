@@ -19,12 +19,13 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.identifiers.KiePmmlAppRoot;
+import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
@@ -48,7 +49,8 @@ class KieRuntimeServicePMMLTest {
         kieRuntimeServicePMML = new KieRuntimeServicePMML();
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        modelLocalUriId = new KiePmmlAppRoot()
+        modelLocalUriId = new EfestoAppRoot()
+                .get(KiePmmlComponentRoot.class)
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName(MODEL_NAME));
     }
@@ -74,7 +76,8 @@ class KieRuntimeServicePMMLTest {
 
     @Test
     void evaluateWrongIdentifier() {
-        ModelLocalUriId modelLocalUriId = new KiePmmlAppRoot()
+        ModelLocalUriId modelLocalUriId = new EfestoAppRoot()
+                .get(KiePmmlComponentRoot.class)
                 .get(PmmlIdFactory.class)
                 .get(FILE_NAME, getSanitizedClassName("wrongmodel"));
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,

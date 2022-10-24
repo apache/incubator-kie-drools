@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.identifiers;
+package org.kie.drl.api.identifiers;
 
 import java.util.Map;
 
-import org.kie.efesto.common.api.identifiers.AppRoot;
 import org.kie.efesto.common.api.identifiers.ComponentRoot;
+import org.kie.efesto.common.api.identifiers.EfestoComponentRoot;
 
-import static org.kie.efesto.common.api.utils.AppRootHelper.getComponentRootBySPI;
+import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getComponentRootBySPI;
 
-public class KiePmmlAppRoot extends AppRoot {
+public class KieDrlComponentRoot implements EfestoComponentRoot {
 
-    private static final String PREFIX = LocalComponentIdPmml.PREFIX + "-app";
     private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
 
     static {
-        INSTANCES = getComponentRootBySPI(PmmlComponentRoot.class);
-    }
-
-    public KiePmmlAppRoot() {
-        super(PREFIX);
+        INSTANCES = getComponentRootBySPI(DrlComponentRoot.class);
     }
 
     @Override
     public <T extends ComponentRoot> T get(Class<T> providerId) {
         return (T) INSTANCES.get(providerId);
     }
+
 }
