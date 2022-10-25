@@ -23,12 +23,16 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     }
 
     public CLASS_NAME() {
-        this(null);
+        this((RuleUnits) null);
     }
 
     @javax.inject.Inject
     public CLASS_NAME(javax.enterprise.inject.Instance<RuleUnits> ruleUnits) {
-        super(RULE_UNIT_CLASS.class, ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
+        this(ruleUnits == null || ruleUnits.isUnsatisfied() ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits.get());
+    }
+
+    public CLASS_NAME(RuleUnits ruleUnits) {
+        super(RULE_UNIT_CLASS.class, ruleUnits);
         this.ruleUnits.register(this);
     }
 
