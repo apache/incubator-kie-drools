@@ -76,9 +76,16 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         Map<String, Supplier<AnnotationNormalizer>> annotationNormalizers =
                 initAnnotationNormalizers();
 
+        IteratingPhase initialPhase = iteratingPhase("TypeDeclarationAnnotationNormalizer", (pkgRegistry, packageDescr) ->
+                new TypeDeclarationAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr));
+        initialPhase.process();
+        initialPhase.getResults().forEach(this.buildResultCollector::add);
+        if (buildResultCollector.hasErrors()) {
+            // early exit
+            return;
+        }
+
         Collection<CompilationPhase> phases = asList(
-                iteratingPhase("TypeDeclarationAnnotationNormalizer", (pkgRegistry, packageDescr) ->
-                        new TypeDeclarationAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr)),
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
                 iteratingPhase("ImportCompilationPhase", ImportCompilationPhase::new),
                 iteratingPhase("EntryPointDeclarationCompilationPhase", EntryPointDeclarationCompilationPhase::new),
