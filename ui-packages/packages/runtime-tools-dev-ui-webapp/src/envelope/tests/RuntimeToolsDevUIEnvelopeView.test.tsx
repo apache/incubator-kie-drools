@@ -43,6 +43,7 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setOpenApiPath('/docs/openapi.json');
         forwardRef.current.setProcessEnabled(true);
         forwardRef.current.setTracingEnabled(true);
+        forwardRef.current.setIsStunnerEnabled(false);
       }
     });
     const envelopeView = wrapper.update().find(RuntimeToolsDevUIEnvelopeView);
@@ -69,6 +70,7 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('test');
+        forwardRef.current.setIsStunnerEnabled(false);
       }
     });
     const envelopeView = wrapper.update().find(RuntimeToolsDevUIEnvelopeView);
@@ -95,6 +97,7 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('test');
+        forwardRef.current.setIsStunnerEnabled(false);
       }
     });
     const envelopeView = wrapper.update().find(RuntimeToolsDevUIEnvelopeView);
@@ -121,6 +124,7 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('test');
+        forwardRef.current.setIsStunnerEnabled(false);
       }
     });
     const envelopeView = wrapper.update().find(RuntimeToolsDevUIEnvelopeView);
@@ -147,6 +151,7 @@ describe('RuntimeToolsDevUIEnvelopeView tests', () => {
         forwardRef.current.setTrustyServiceUrl('http://localhost:8081');
         forwardRef.current.setUsers([]);
         forwardRef.current.navigateTo('');
+        forwardRef.current.setIsStunnerEnabled(false);
       }
     });
     const envelopeView = wrapper.update().find(RuntimeToolsDevUIEnvelopeView);

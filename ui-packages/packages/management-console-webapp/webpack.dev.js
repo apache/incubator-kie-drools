@@ -43,7 +43,7 @@ module.exports = function (env) {
     module: {
       rules: [
         {
-          test: /\.css$/,
+          test: /\.(css|sass|scss)$/,
           include: [
             path.resolve(__dirname, 'src'),
             path.resolve('../../node_modules/patternfly'),
@@ -87,9 +87,12 @@ module.exports = function (env) {
             ),
             path.resolve(
               '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
+            ),
+            path.resolve(
+              '../../node_modules/@kie-tools-core/guided-tour/dist/components'
             )
           ],
-          use: ['style-loader', 'css-loader']
+          use: ['style-loader', 'css-loader','sass-loader']
         }
       ]
     },

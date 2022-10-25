@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwfCombinedEditor component tests snapshot of the emedded editor 1`] = `
+<Card
+  data-ouia-component-type="swf-diagram"
+  data-ouia-safe={true}
+  style={
+    Object {
+      "height": 600,
+      "width": 600,
+    }
+  }
+>
+  <CardHeader>
+    <Title
+      headingLevel="h3"
+      size="xl"
+    >
+      Serverless Workflow Diagram
+    </Title>
+  </CardHeader>
+  <CardBody>
+    <ForwardRef(RefForwardingEmbeddedEditor)
+      channelType="ONLINE_MULTI_FILE"
+      customChannelApiImpl={
+        SwfCombinedEditorChannelApiImpl {
+          "defaultApiImpl": EmbeddedEditorChannelApiImpl {
+            "file": Object {
+              "fileExtension": "sw.yaml",
+              "fileName": "*.sw.yaml",
+              "getFileContents": [Function],
+              "isReadOnly": true,
+            },
+            "locale": "en",
+            "overrides": Object {
+              "kogitoEditor_ready": [Function],
+            },
+            "stateControl": StateControl {
+              "commandStack": Array [],
+              "registeredCallbacks": Array [],
+            },
+          },
+          "swfFeatureToggleApiImpl": SwfFeatureToggleChannelApiImpl {
+            "featureToggle": Object {
+              "stunnerEnabled": true,
+            },
+          },
+          "swfLanguageServiceChannelApiImpl": null,
+          "swfPreviewOptionsChannelApiImpl": SwfPreviewOptionsChannelApiImpl {
+            "swfPreviewOptions": Object {
+              "diagramDefaultWidth": "100%",
+            },
+          },
+          "swfServiceCatalogApiImpl": null,
+        }
+      }
+      editorEnvelopeLocator={
+        EditorEnvelopeLocator {
+          "envelopeMappings": Array [
+            EnvelopeMapping {
+              "args": Object {
+                "envelopePath": "resources/serverless-workflow-combined-editor-envelope.html",
+                "filePathGlob": "**/*.sw.+(json|yml|yaml)",
+                "resourcesPathPrefix": ".",
+                "type": "swf",
+              },
+              "matcher": Minimatch {
+                "comment": false,
+                "empty": false,
+                "globParts": Array [
+                  Array [
+                    "**",
+                    "*.sw.+(json|yml|yaml)",
+                  ],
+                ],
+                "globSet": Array [
+                  "**/*.sw.+(json|yml|yaml)",
+                ],
+                "negate": false,
+                "options": Object {
+                  "dot": true,
+                  "nocase": true,
+                },
+                "pattern": "**/*.sw.+(json|yml|yaml)",
+                "regexp": null,
+                "set": Array [
+                  Array [
+                    Object {},
+                    /\\^\\(\\?!\\(\\?:\\^\\|\\\\/\\)\\\\\\.\\{1,2\\}\\(\\?:\\$\\|\\\\/\\)\\)\\(\\?=\\.\\)\\[\\^/\\]\\*\\?\\\\\\.sw\\\\\\.\\(\\?:json\\|yml\\|yaml\\)\\+\\$/i,
+                  ],
+                ],
+              },
+            },
+          ],
+          "targetOrigin": "http://localhost",
+        }
+      }
+      file={
+        Object {
+          "fileExtension": "sw.yaml",
+          "fileName": "*.sw.yaml",
+          "getFileContents": [Function],
+          "isReadOnly": true,
+        }
+      }
+      isReady={false}
+      locale="en"
+      stateControl={
+        StateControl {
+          "commandStack": Array [],
+          "registeredCallbacks": Array [],
+        }
+      }
+    />
+  </CardBody>
+</Card>
+`;

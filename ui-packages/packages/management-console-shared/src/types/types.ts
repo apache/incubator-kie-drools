@@ -134,6 +134,7 @@ export interface ProcessInstance {
   isOpen?: boolean;
   diagram?: string;
   nodeDefinitions?: TriggerableNode[];
+  source?: string;
 }
 
 export interface ProcessInstanceFilter {

@@ -48,7 +48,7 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.(css|sass|scss)$/,
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -120,8 +120,17 @@ module.exports = merge(common, {
           path.resolve(
             '../../node_modules/@kogito-apps/workflow-form/dist/styles/styles.css'
           ),
+          path.resolve(
+            '../../node_modules/@kie-tools-core/guided-tour/dist/components'
+          ),
+          path.resolve(
+            '../../node_modules/@kie-tools-core/editor/dist/envelope'
+          ),
+          path.resolve(
+            '../../node_modules/@kie-tools/serverless-workflow-mermaid-viewer/dist/viewer'
+          )
         ],
-        use: ['style-loader', 'css-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.css$/,

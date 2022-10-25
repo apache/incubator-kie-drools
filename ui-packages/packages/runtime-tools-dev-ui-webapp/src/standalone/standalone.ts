@@ -43,6 +43,7 @@ export interface Consoles {
     customLabels?: CustomLabels;
     omittedProcessTimelineEvents?: string[];
     diagramPreviewSize?: DiagramPreviewSize;
+    isStunnerEnabled: boolean;
   }) => StandaloneDevUIApi;
 }
 
@@ -57,6 +58,7 @@ const createEnvelopeServer = (
   devUIUrl: string,
   openApiPath: string,
   customLabels: CustomLabels,
+  isStunnerEnabled: boolean,
   diagramPreviewSize?: DiagramPreviewSize,
   origin?: string,
   availablePages?: string[],
@@ -88,6 +90,7 @@ const createEnvelopeServer = (
           customLabels,
           availablePages,
           omittedProcessTimelineEvents,
+          isStunnerEnabled,
           diagramPreviewSize
         }
       );
@@ -132,6 +135,7 @@ export function open(args: {
   availablePages?: string[];
   customLabels?: CustomLabels;
   omittedProcessTimelineEvents?: string[];
+  isStunnerEnabled: boolean;
   diagramPreviewSize?: DiagramPreviewSize;
 }): StandaloneDevUIApi {
   const iframe = document.createElement('iframe');
@@ -155,6 +159,7 @@ export function open(args: {
       singularProcessLabel: 'Process',
       pluralProcessLabel: 'Processes'
     },
+    args.isStunnerEnabled,
     args.diagramPreviewSize,
     args.origin,
     args.availablePages,

@@ -129,7 +129,8 @@ describe('ProcessDetailsEnvelopeApiImpl tests', () => {
         origin: 'origin'
       },
       {
-        processInstance: data
+        processInstance: data,
+        showSwfDiagram: false
       }
     );
 

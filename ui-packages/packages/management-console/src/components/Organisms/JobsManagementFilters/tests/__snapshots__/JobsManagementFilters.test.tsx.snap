@@ -91,12 +91,10 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                           favorites={Array []}
                           favoritesLabel="Favorites"
                           hasInlineFilter={false}
-                          hasPlaceholderStyle={false}
                           id="status-select"
                           inlineFilterPlaceholderText={null}
                           inputIdPrefix=""
                           isCreatable={false}
-                          isCreateSelectOptionObject={false}
                           isDisabled={false}
                           isGrouped={false}
                           isInputValuePersisted={false}
@@ -112,7 +110,6 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                           onTypeaheadInputChanged={null}
                           ouiaSafe={true}
                           placeholderText="Status"
-                          position="left"
                           removeSelectionAriaLabel="Remove"
                           selections={
                             Array [
@@ -143,7 +140,6 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                                 handleTypeaheadKeys={[Function]}
                                 hasClearButton={false}
                                 hasFooter={false}
-                                hasPlaceholderStyle={false}
                                 id="pf-select-toggle-id-1"
                                 isActive={false}
                                 isDisabled={false}

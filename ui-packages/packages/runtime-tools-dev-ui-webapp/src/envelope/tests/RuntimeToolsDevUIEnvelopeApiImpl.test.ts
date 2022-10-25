@@ -57,7 +57,8 @@ describe('JobsManagementEnvelopeApiImpl tests', () => {
         devUIUrl: '',
         openApiPath: '',
         isProcessEnabled: true,
-        isTracingEnabled: true
+        isTracingEnabled: true,
+        isStunnerEnabled: false
       }
     );
 

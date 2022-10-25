@@ -47,4 +47,5 @@ export interface RuntimeToolsDevUIInitArgs {
   customLabels: CustomLabels;
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  isStunnerEnabled:boolean;
 }

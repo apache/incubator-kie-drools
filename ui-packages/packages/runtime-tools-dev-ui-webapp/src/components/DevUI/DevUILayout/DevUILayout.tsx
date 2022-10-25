@@ -49,6 +49,7 @@ interface IOwnProps {
   customLabels: CustomLabels;
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  isStunnerEnabled: boolean;
 }
 
 const DevUILayout: React.FC<IOwnProps> = ({
@@ -62,6 +63,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   customLabels,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
+  isStunnerEnabled,
   children
 }) => {
   const renderPage = routeProps => {
@@ -88,6 +90,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         customLabels={customLabels}
         omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         diagramPreviewSize={diagramPreviewSize}
+        isStunnerEnabled={isStunnerEnabled}
       >
         <TaskConsoleContextsProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>

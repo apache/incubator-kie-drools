@@ -96,6 +96,7 @@ const GET_PROCESS_INSTANCE = gql`
       endpoint
       addons
       serviceUrl
+      source
       error {
         nodeDefinitionId
         message

@@ -69,6 +69,7 @@ module.exports = typeDefs = gql`
     childProcessInstances: [ProcessInstance!]
     error: ProcessInstanceError
     addons: [String!]
+    source: String
     lastUpdate: DateTime!
     diagram: String
   }

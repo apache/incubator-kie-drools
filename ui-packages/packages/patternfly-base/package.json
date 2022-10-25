@@ -15,10 +15,10 @@
     "@patternfly/patternfly": "^4.108.2",
     "@patternfly/react-charts": "^6.14.29",
     "@patternfly/react-code-editor": "4.2.92",
-    "@patternfly/react-core": "4.128.2",
-    "@patternfly/react-icons": "4.11.0",
-    "@patternfly/react-styles": "4.11.0",
+    "@patternfly/react-core": "4.157.3",
+    "@patternfly/react-icons": "4.11.17",
+    "@patternfly/react-styles": "4.18.8",
     "@patternfly/react-table": "4.29.0",
-    "@patternfly/react-tokens": "4.12.0"
+    "@patternfly/react-tokens": "4.33.1"
   }
 }

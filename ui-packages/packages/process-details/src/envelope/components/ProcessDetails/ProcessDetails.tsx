@@ -60,6 +60,7 @@ import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger/ProcessDetai
 import ProcessVariables from '../ProcessVariables/ProcessVariables';
 import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel';
 import ProcessDetailsTimelinePanel from '../ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel';
+import SwfCombinedEditor from '../SwfCombinedEditor/SwfCombinedEditor';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -67,6 +68,8 @@ interface ProcessDetailsProps {
   processDetails: ProcessInstance;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  showSwfDiagram: boolean;
+  isStunnerEnabled?: boolean;
 }
 
 type svgResponse = SvgSuccessResponse | SvgErrorResponse;
@@ -76,7 +79,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   driver,
   processDetails,
   omittedProcessTimelineEvents,
-  diagramPreviewSize
+  diagramPreviewSize,
+  showSwfDiagram,
+  isStunnerEnabled
 }) => {
   const [data, setData] = useState<ProcessInstance>({} as ProcessInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -95,7 +100,6 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const [infoModalTitle, setInfoModalTitle] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [infoModalContent, setInfoModalContent] = useState<string>('');
-
   const handleReload = async (): Promise<void> => {
     setIsLoading(true);
     try {
@@ -155,7 +159,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   }, [data]);
 
   useEffect(() => {
-    if (svgError && svgError.length > 0) {
+    if (svgError && svgError.length > 0 && !showSwfDiagram) {
       setSvgErrorModalOpen(true);
     }
   }, [svgError]);
@@ -300,6 +304,21 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     );
   };
 
+  const renderSwfDiagram = (): JSX.Element => {
+    return (
+      <Flex>
+        <FlexItem>
+          <SwfCombinedEditor
+            sourceString={data?.source}
+            isStunnerEnabled={isStunnerEnabled}
+            height={diagramPreviewSize?.height}
+            width={diagramPreviewSize?.width}
+          />
+        </FlexItem>
+      </Flex>
+    );
+  };
+
   const renderProcessTimeline = (): JSX.Element => {
     return (
       <FlexItem>
@@ -348,7 +367,17 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   };
 
   const renderPanels = (): JSX.Element => {
-    if (svg !== null && svg.props.src) {
+    if (showSwfDiagram) {
+      return (
+        <Flex direction={{ default: 'column' }}>
+          {renderSwfDiagram()}
+          <Flex>
+            {renderProcessDetails()}
+            {renderProcessVariables()}
+          </Flex>
+        </Flex>
+      );
+    } else if (svg !== null && svg.props.src) {
       return (
         <Flex direction={{ default: 'column' }}>
           {renderProcessDiagram()}

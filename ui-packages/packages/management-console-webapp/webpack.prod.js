@@ -23,7 +23,7 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.(css|sass|scss)$/,
         include: [
           path.resolve(__dirname, 'src'),
           path.resolve('../../node_modules/patternfly'),
@@ -67,9 +67,12 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kie-tools-core/guided-tour/dist/components'
           )
         ],
-        loaders: ['style-loader', 'css-loader']
+        loaders: ['style-loader', 'css-loader','sass-loader']
       }
     ]
   }

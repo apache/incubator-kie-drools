@@ -18,8 +18,6 @@ exports[`PageToolbarUsersDropdownGroup tests Test render TestUserSystem enabled 
   >
     <section
       className=""
-      data-ouia-component-type="test-user-dropdown-group"
-      data-ouia-safe={true}
     >
       <h1
         aria-hidden={true}
@@ -66,8 +64,6 @@ exports[`PageToolbarUsersDropdownGroup tests Test render TestUserSystem enabled 
   >
     <section
       className=""
-      data-ouia-component-type="test-user-dropdown-group"
-      data-ouia-safe={true}
     >
       <h1
         aria-hidden={true}

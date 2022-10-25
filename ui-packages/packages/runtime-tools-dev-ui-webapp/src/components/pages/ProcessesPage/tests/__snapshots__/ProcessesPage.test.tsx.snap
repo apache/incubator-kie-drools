@@ -108,7 +108,6 @@ exports[`ProcessesPage tests Snapshot - processList page 1`] = `
       leftScrollAriaLabel="Scroll left"
       mountOnEnter={false}
       onSelect={[Function]}
-      onToggle={[Function]}
       ouiaSafe={true}
       rightScrollAriaLabel="Scroll right"
       style={

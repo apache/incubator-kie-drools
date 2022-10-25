@@ -536,6 +536,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
               "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
             }
           }
+          showSwfDiagram={false}
           targetOrigin="http://localhost"
         >
           <ForwardRef>

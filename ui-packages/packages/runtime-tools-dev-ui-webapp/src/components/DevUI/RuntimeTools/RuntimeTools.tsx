@@ -39,6 +39,7 @@ interface IOwnProps {
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
+  isStunnerEnabled: boolean;
 }
 
 const RuntimeTools: React.FC<IOwnProps> = ({
@@ -53,7 +54,8 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
-  diagramPreviewSize
+  diagramPreviewSize,
+  isStunnerEnabled
 }) => {
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -76,6 +78,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           customLabels={customLabels}
           omittedProcessTimelineEvents={omittedProcessTimelineEvents}
           diagramPreviewSize={diagramPreviewSize}
+          isStunnerEnabled={isStunnerEnabled}
         >
           <ServerUnavailablePage
             displayName={'Runtime Dev UI'}
@@ -105,6 +108,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       customLabels={customLabels}
       omittedProcessTimelineEvents={omittedProcessTimelineEvents}
       diagramPreviewSize={diagramPreviewSize}
+      isStunnerEnabled={isStunnerEnabled}
     >
       <DevUIRoutes
         navigate={navigate}

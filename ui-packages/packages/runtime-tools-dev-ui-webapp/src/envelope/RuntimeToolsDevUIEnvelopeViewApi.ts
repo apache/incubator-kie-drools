@@ -33,4 +33,5 @@ export interface RuntimeToolsDevUIEnvelopeViewApi {
     omittedProcessTimelineEvents: string[]
   ) => void;
   setDiagramPreviewSize: (diagramPreviewSize?: DiagramPreviewSize) => void;
+  setIsStunnerEnabled: (isStunnerEnabled: boolean) => void;
 }

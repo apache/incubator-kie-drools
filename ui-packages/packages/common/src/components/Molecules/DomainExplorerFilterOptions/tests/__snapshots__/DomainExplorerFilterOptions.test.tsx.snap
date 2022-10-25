@@ -280,12 +280,10 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         favorites={Array []}
         favoritesLabel="Favorites"
         hasInlineFilter={false}
-        hasPlaceholderStyle={false}
         id="select-field"
         inlineFilterPlaceholderText={null}
         inputIdPrefix=""
         isCreatable={false}
-        isCreateSelectOptionObject={false}
         isDisabled={false}
         isGrouped={true}
         isInputValuePersisted={false}
@@ -302,7 +300,6 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="Select a field"
-        position="left"
         removeSelectionAriaLabel="Remove"
         selections=""
         toggleAriaLabel="Options menu"
@@ -329,7 +326,6 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
               hasFooter={false}
-              hasPlaceholderStyle={false}
               id="pf-select-toggle-id-2"
               isActive={false}
               isDisabled={false}
@@ -463,12 +459,10 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         favorites={Array []}
         favoritesLabel="Favorites"
         hasInlineFilter={false}
-        hasPlaceholderStyle={false}
         id="select-operator"
         inlineFilterPlaceholderText={null}
         inputIdPrefix=""
         isCreatable={false}
-        isCreateSelectOptionObject={false}
         isDisabled={false}
         isGrouped={false}
         isInputValuePersisted={false}
@@ -484,7 +478,6 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="operator"
-        position="left"
         removeSelectionAriaLabel="Remove"
         selections=""
         toggleAriaLabel="Options menu"
@@ -511,7 +504,6 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
               hasFooter={false}
-              hasPlaceholderStyle={false}
               id="pf-select-toggle-id-3"
               isActive={false}
               isDisabled={false}

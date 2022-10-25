@@ -49,6 +49,7 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
       driver={gatewayApi}
       targetOrigin={window.location.origin}
       processInstance={processInstance}
+      showSwfDiagram={false}
     />
   );
 };

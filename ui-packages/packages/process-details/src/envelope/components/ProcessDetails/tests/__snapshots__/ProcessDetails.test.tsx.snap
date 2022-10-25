@@ -222,6 +222,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
       "variables": "{\\"trip\\":{\\"begin\\":\\"2019-10-22T22:00:00Z[UTC]\\",\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"end\\":\\"2019-10-30T22:00:00Z[UTC]\\",\\"visaRequired\\":false},\\"hotel\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"India\\",\\"street\\":\\"street\\",\\"zipCode\\":\\"12345\\"},\\"bookingNumber\\":\\"XX-012345\\",\\"name\\":\\"Perfect hotel\\",\\"phone\\":\\"09876543\\"},\\"traveller\\":{\\"address\\":{\\"city\\":\\"Bangalore\\",\\"country\\":\\"US\\",\\"street\\":\\"Bangalore\\",\\"zipCode\\":\\"560093\\"},\\"email\\":\\"ajaganat@redhat.com\\",\\"firstName\\":\\"Ajay\\",\\"lastName\\":\\"Jaganathan\\",\\"nationality\\":\\"US\\"}}",
     }
   }
+  showSwfDiagram={true}
 >
   <Grid
     hasGutter={true}
@@ -548,27 +549,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                 <div
                   className=""
                 >
-                  <Card>
-                    <article
-                      className="pf-c-card"
-                      data-ouia-component-id="OUIA-Generated-Card-2"
-                      data-ouia-component-type="PF4/Card"
-                      data-ouia-safe={true}
-                      id=""
-                    >
-                       
-                      <MockedProcessDiagram
-                        svg={
-                          <InlineSVG
-                            cacheRequests={true}
-                            src="<svg version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" width=\\"800\\" height=\\"300\\" viewBox=\\"0 0 1748 632\\"></g></g></svg>"
-                            uniquifyIDs={false}
-                          />
-                        }
-                      />
-                       
-                    </article>
-                  </Card>
+                  <MockedSwfCombinedEditor />
                 </div>
               </FlexItem>
             </div>

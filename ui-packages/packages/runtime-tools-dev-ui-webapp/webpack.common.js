@@ -7,16 +7,22 @@ const BG_IMAGES_DIRNAME = 'bgimages';
 const CopyPlugin = require("copy-webpack-plugin");
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 
 module.exports = {
   entry: {
     standalone: path.resolve(__dirname, 'src', 'standalone', 'standalone.ts'),
     envelope: path.resolve(__dirname, 'src', 'standalone', 'EnvelopeApp.ts'),
-    'resources/form-displayer': './src/resources/form-displayer.ts'
+    'resources/form-displayer': './src/resources/form-displayer.ts',
+    "resources/serverless-workflow-text-editor-envelope": "./src/resources/ServerlessWorkflowTextEditorEnvelopeApp.ts",
+    "resources/serverless-workflow-mermaid-viewer-envelope": "./src/resources/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
+    "resources/serverless-workflow-combined-editor-envelope": "./src/resources/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+    "resources/serverless-workflow-diagram-editor-envelope": "./src/resources/ServerlessWorkflowDiagramEditorEnvelopeApp.ts"
+
   },
   plugins: [
     new MonacoWebpackPlugin({
-      languages: ['typescript', 'html', 'json'],
+      languages: ['typescript', 'html', 'json','yaml'],
       globalAPI: true
     }),
     new webpack.EnvironmentPlugin({
@@ -29,16 +35,22 @@ module.exports = {
         { from: "./src/static", to: "./static" },
         { from: "./src/components/styles.css", to: "./components/styles.css" },
         { from: "../monitoring-webapp/dist/", to: "./monitoring-webapp" },
-        { from: "../custom-dashboard-view/dist/", to: "./custom-dashboard-view" }
+        { from: "../custom-dashboard-view/dist/", to: "./custom-dashboard-view" },
+        {
+          from: swEditor.swEditorPath(),
+          to: "./diagram",
+          globOptions: { ignore: ["**/WEB-INF/**/*"] },
+        }
       ]
     }),
     new FileManagerPlugin({
       events: {
         onEnd: {
+          mkdir:['./dist/resources/webapp/'],
           copy: [
-            { source: './dist/*.js', destination: './dist/resources/webapp' },
-            { source: './dist/*.map', destination: './dist/resources/webapp' },
-            { source: './dist/fonts', destination: './dist/resources/webapp' },
+            { source: './dist/*.js', destination: './dist/resources/webapp/' },
+            { source: './dist/*.map', destination: './dist/resources/webapp/' },
+            { source: './dist/fonts', destination: './dist/resources/webapp/' },
             { source: './dist/monitoring-webapp', destination: './dist/resources/webapp/monitoring-webapp' },
             { source: './dist/custom-dashboard-view', destination: './dist/resources/webapp/custom-dashboard-view' }
           ]

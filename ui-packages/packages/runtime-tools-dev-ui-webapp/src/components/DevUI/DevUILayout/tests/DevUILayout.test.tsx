@@ -41,7 +41,8 @@ describe('DevUILayout tests', () => {
       customLabels: {
         singularProcessLabel: 'Workflow',
         pluralProcessLabel: 'Workflows'
-      }
+      },
+      isStunnerEnabled:false
     };
     const wrapper = mount(
       <DevUILayout {...props}>
@@ -84,7 +85,8 @@ describe('DevUILayout tests', () => {
       customLabels: {
         singularProcessLabel: 'Workflow',
         pluralProcessLabel: 'Workflows'
-      }
+      },
+      isStunnerEnabled:false
     };
     const wrapper = mount(
       <DevUILayout {...props}>
@@ -127,7 +129,8 @@ describe('DevUILayout tests', () => {
       customLabels: {
         singularProcessLabel: 'Workflow',
         pluralProcessLabel: 'Workflows'
-      }
+      },
+      isStunnerEnabled:false
     };
     const wrapper = mount(
       <DevUILayout {...props}>

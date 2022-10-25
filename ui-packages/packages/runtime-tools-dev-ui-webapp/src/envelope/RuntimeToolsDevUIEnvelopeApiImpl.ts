@@ -35,7 +35,7 @@ export class RuntimeToolsDevUIEnvelopeApiImpl
       RuntimeToolsDevUIEnvelopeViewApi,
       RuntimeToolsDevUIEnvelopeContextType
     >
-  ) {}
+  ) { }
 
   private hasCapturedInitRequestYet() {
     return this.capturedInitRequestYet;
@@ -78,7 +78,7 @@ export class RuntimeToolsDevUIEnvelopeApiImpl
         .setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents);
     this.args.view().setDiagramPreviewSize &&
       this.args.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);
-
+    this.args.view().setIsStunnerEnabled && this.args.view().setIsStunnerEnabled(initArgs.isStunnerEnabled)
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
     // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
     this.args.view().setProcessEnabled(initArgs.isDataIndexAvailable);

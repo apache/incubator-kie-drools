@@ -36,6 +36,7 @@ jest.mock('../../ProcessDetailsPanel/ProcessDetailsPanel');
 jest.mock('../../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel');
 jest.mock('../../ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel');
 jest.mock('../../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger');
+jest.mock('../../SwfCombinedEditor/SwfCombinedEditor');
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
@@ -125,7 +126,8 @@ describe('ProcessDetails tests', () => {
       driver: MockedProcessDetailsDriver(),
       id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
       processDetails: data,
-      omittedProcessTimelineEvents: []
+      omittedProcessTimelineEvents: [],
+      showSwfDiagram: true
     };
 
     const Jobs: Job[] = [
@@ -307,7 +309,8 @@ describe('ProcessDetails tests', () => {
       driver: MockedProcessDetailsDriver(),
       id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
       processDetails: data,
-      omittedProcessTimelineEvents: []
+      omittedProcessTimelineEvents: [],
+      showSwfDiagram: false
     };
 
     const Jobs: Job[] = [

@@ -81,7 +81,7 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
   }
 
   async getProcessDetails(id: string): Promise<ProcessInstance> {
-    return Promise.resolve(getProcessDetails(id, this.client));
+    return getProcessDetails(id, this.client);
   }
 
   async getJobs(id: string): Promise<Job[]> {

@@ -29,6 +29,7 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
       }
     }
     processInstance={Object {}}
+    showSwfDiagram={false}
     targetOrigin="http://localhost"
   >
     <ForwardRef>

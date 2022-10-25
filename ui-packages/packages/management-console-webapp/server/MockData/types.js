@@ -57,6 +57,7 @@ module.exports = typeDefs = gql`
     error: ProcessInstanceError
     addons: [String!]
     lastUpdate: DateTime!
+    source: String
   }
 
   type KogitoMetadata {

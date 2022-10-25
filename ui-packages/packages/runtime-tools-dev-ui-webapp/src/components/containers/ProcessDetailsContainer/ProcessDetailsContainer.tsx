@@ -22,6 +22,7 @@ import { ProcessDetailsGatewayApi } from '../../../channel/ProcessDetails';
 import { useProcessDetailsGatewayApi } from '../../../channel/ProcessDetails/ProcessDetailsContext';
 import { useHistory } from 'react-router-dom';
 import { DiagramPreviewSize } from '@kogito-apps/process-details/dist/api';
+import { useDevUIAppContext } from '../../contexts/DevUIAppContext';
 
 interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
@@ -38,6 +39,7 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
   ouiaSafe
 }) => {
   const history = useHistory();
+  const appContext = useDevUIAppContext();
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   useEffect(() => {
     const unSubscribeHandler = gatewayApi.onOpenProcessInstanceDetailsListener({
@@ -51,7 +53,6 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
       unSubscribeHandler.unSubscribe();
     };
   }, [processInstance]);
-
   return (
     <EmbeddedProcessDetails
       {...componentOuiaProps(ouiaId, 'process-details-container', ouiaSafe)}
@@ -60,6 +61,8 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
       processInstance={processInstance}
       omittedProcessTimelineEvents={omittedProcessTimelineEvents}
       diagramPreviewSize={diagramPreviewSize}
+      showSwfDiagram={appContext.isWorkflow()}
+      isStunnerEnabled={appContext.getIsStunnerEnabled()}
     />
   );
 };

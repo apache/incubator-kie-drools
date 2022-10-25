@@ -9,6 +9,7 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process and Tracing enabl
     dataIndexUrl="http://localhost:4000"
     devUIUrl="http://localhost:8080"
     isProcessEnabled={true}
+    isStunnerEnabled={false}
     isTracingEnabled={true}
     navigate="test"
     omittedProcessTimelineEvents={Array []}
@@ -28,6 +29,7 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process disabled, Trusty 
     dataIndexUrl="http://localhost:4000"
     devUIUrl=""
     isProcessEnabled={false}
+    isStunnerEnabled={false}
     isTracingEnabled={true}
     navigate="test"
     omittedProcessTimelineEvents={Array []}
@@ -45,6 +47,7 @@ exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot::Process enabled, Trusty d
     dataIndexUrl="http://localhost:4000"
     devUIUrl=""
     isProcessEnabled={true}
+    isStunnerEnabled={false}
     isTracingEnabled={false}
     navigate="test"
     omittedProcessTimelineEvents={Array []}

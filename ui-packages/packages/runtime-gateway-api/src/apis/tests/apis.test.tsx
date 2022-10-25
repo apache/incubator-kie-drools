@@ -1005,6 +1005,15 @@ describe('process details tests', () => {
       })
       .catch(error => {});
   });
+  it('test getProcessDetails method with failure response', () => {
+    getProcessDetails(id, client)
+      .then(value => {
+        //do nothing
+      })
+      .catch(error => {
+        expect(error['graphQLErrors'][0]['message']).toEqual("error");
+      });
+  });
   it('test getTriggerableNodes method with success response', () => {
     client.query.mockResolvedValue(
       mGraphQLResponseProcess.data.ProcessInstances[0]

@@ -123,7 +123,7 @@ describe('WebApp - ProcessDetailsPage tests', () => {
     ]
   };
 
-  const getProcessDetails = jest.fn();
+  const getProcessDetails = jest.fn().mockResolvedValue(data);
   const MockProcessDetailsGatewayApi = jest.fn<ProcessDetailsGatewayApi, []>(
     () => ({
       getProcessDiagram: jest.fn(),
@@ -149,7 +149,7 @@ describe('WebApp - ProcessDetailsPage tests', () => {
 
   jest
     .spyOn(ProcessDetailsContext, 'useProcessDetailsGatewayApi')
-    .mockImplementation(() => gatewayApi);
+    .mockImplementation(() => MockProcessDetailsGatewayApi);
 
   jest
     .spyOn(RuntimeToolsDevUIAppContext, 'useDevUIAppContext')
@@ -167,7 +167,13 @@ describe('WebApp - ProcessDetailsPage tests', () => {
         customLabels: {
           singularProcessLabel: 'Workflow',
           pluralProcessLabel: 'Workflows'
-        }
+        },
+        diagramPreviewSize:{
+          width: 600,
+          height: 600
+        },
+        isStunnerEnabled:false,
+        isWorkflow:jest.fn()
       };
     });
 
@@ -176,8 +182,6 @@ describe('WebApp - ProcessDetailsPage tests', () => {
     gatewayApi = new MockProcessDetailsGatewayApi();
   });
   it('Snapshot test with default values', async () => {
-    // eslint-disable-next-line
-    getProcessDetails.mockReturnValue(data);
     const wrapper = await mount(
       <MemoryRouter initialEntries={['/']} keyLength={0}>
         <ProcessDetailsPage {...props} />
