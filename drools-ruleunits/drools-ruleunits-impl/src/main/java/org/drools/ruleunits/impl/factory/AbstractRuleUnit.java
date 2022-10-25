@@ -36,7 +36,7 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
 
     public AbstractRuleUnit(Class<T> ruleUnitDataClass, RuleUnits ruleUnits) {
         this.ruleUnitDataClass = ruleUnitDataClass;
-        this.ruleUnits = ruleUnits;
+        this.ruleUnits = ruleUnits == null ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits;
     }
 
     protected abstract RuleUnitInstance<T> internalCreateInstance(T data);

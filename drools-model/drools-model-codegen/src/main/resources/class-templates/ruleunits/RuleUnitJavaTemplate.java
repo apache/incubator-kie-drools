@@ -22,12 +22,12 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     }
 
     public CLASS_NAME() {
-        this(AbstractRuleUnits.DummyRuleUnits.INSTANCE);
+        this(null);
     }
 
     public CLASS_NAME(RuleUnits ruleUnits) {
         super(RULE_UNIT_CLASS.class, ruleUnits);
-        ruleUnits.register(this);
+        this.ruleUnits.register(this);
     }
 
     @Override
