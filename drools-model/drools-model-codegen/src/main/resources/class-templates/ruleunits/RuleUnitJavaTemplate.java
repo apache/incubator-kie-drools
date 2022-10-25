@@ -7,6 +7,7 @@ import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.impl.RuleUnits;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
+import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 
@@ -20,15 +21,13 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
         sessionConfiguration.setClockType($ClockType$);
     }
 
-    private final Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator;
-
     public CLASS_NAME() {
-        this(null, Function.identity());
+        this(AbstractRuleUnits.DummyRuleUnits.INSTANCE);
     }
 
-    public CLASS_NAME(RuleUnits ruleUnits, Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator) {
+    public CLASS_NAME(RuleUnits ruleUnits) {
         super(RULE_UNIT_CLASS.class, ruleUnits);
-        this.evaluatorConfigurator = evaluatorConfigurator;
+        ruleUnits.register(this);
     }
 
     @Override
