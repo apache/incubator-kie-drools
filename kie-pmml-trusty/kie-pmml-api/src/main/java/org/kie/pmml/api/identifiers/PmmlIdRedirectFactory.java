@@ -15,12 +15,9 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
-
-public class PmmlIdRedirectFactory implements ComponentRoot {
+public class PmmlIdRedirectFactory implements PmmlComponentRoot {
 
     public LocalComponentIdRedirectPmml get(String redirectModel, String fileName, String name) {
         return new LocalComponentIdRedirectPmml(redirectModel, fileName, name);
     }
-
 }

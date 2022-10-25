@@ -34,9 +34,11 @@ import org.drools.drl.ast.descr.TypeFieldDescr;
 public class TypeDeclarationNameResolver {
 
     private final TypeDeclarationContext context;
+    private final BuildResultCollector results;
 
-    public TypeDeclarationNameResolver(TypeDeclarationContext context) {
+    public TypeDeclarationNameResolver(TypeDeclarationContext context, BuildResultCollector results) {
         this.context = context;
+        this.results = results;
     }
 
     public void resolveTypes(Collection<? extends PackageDescr> packageDescrs,
@@ -158,7 +160,7 @@ public class TypeDeclarationNameResolver {
             if (resolved != null) {
                 qname.setName(resolved);
             } else {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                results.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Cannot resolve supertype '" + declaredSuperType +
                                                                            " for declared type " + typeDescr.getTypeName()));
             }
@@ -173,7 +175,7 @@ public class TypeDeclarationNameResolver {
         for (TypeFieldDescr field : typeDescr.getFields().values()) {
             GenericTypeDefinition typeDef = GenericTypeDefinition.parseType(field.getPattern().getObjectType(), type -> resolveName(type, typeDescr, packageDescr, typeResolver, unresolvedTypes, true) );
             if (typeDef == null) {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                results.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Cannot resolve type '" + field.getPattern().getObjectType() + " for field " + field.getFieldName() +
                                                                            " in declared type " + typeDescr.getTypeName()));
             } else {

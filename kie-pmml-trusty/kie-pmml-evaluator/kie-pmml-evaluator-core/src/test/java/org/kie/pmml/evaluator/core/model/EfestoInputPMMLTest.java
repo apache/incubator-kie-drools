@@ -16,7 +16,7 @@
 package org.kie.pmml.evaluator.core.model;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
@@ -31,7 +31,7 @@ class EfestoInputPMMLTest {
 
     @Test
     void constructor() {
-        LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+        LocalComponentIdPmml modelLocalUriId = new KiePmmlComponentRoot()
                 .get(PmmlIdFactory.class)
                 .get(fileNameNoSuffix, modelName);
         PMMLRuntimeContext inputData = new

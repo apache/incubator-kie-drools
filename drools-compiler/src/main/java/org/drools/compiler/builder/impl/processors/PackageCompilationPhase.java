@@ -53,7 +53,7 @@ public final class PackageCompilationPhase extends AbstractPackageCompilationPha
                 new TypeDeclarationCompilationPhase(packageDescr, typeBuilder, pkgRegistry, currentResource),
                 new WindowDeclarationCompilationPhase(pkgRegistry, packageDescr, knowledgeBuilder),
                 new FunctionCompilationPhase(pkgRegistry, packageDescr, configuration),
-                new GlobalCompilationPhase(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),
+                GlobalCompilationPhase.of(pkgRegistry, packageDescr, kBase, knowledgeBuilder, filterCondition),
                 new RuleAnnotationNormalizer(annotationNormalizer, packageDescr));
 
         phases.forEach(CompilationPhase::process);

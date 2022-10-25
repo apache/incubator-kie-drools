@@ -19,10 +19,11 @@ import java.util.Optional;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.drl.api.identifiers.DrlSessionIdFactory;
+import org.kie.drl.api.identifiers.KieDrlComponentRoot;
 import org.kie.drl.api.identifiers.LocalComponentIdDrlSession;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoInputDrlKieSessionLocal;
 import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessionLocal;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
@@ -58,7 +59,8 @@ public class DrlRuntimeHelper {
             return Optional.empty();
         }
         try {
-            LocalComponentIdDrlSession modelLocalUriId = new ReflectiveAppRoot("")
+            LocalComponentIdDrlSession modelLocalUriId = new EfestoAppRoot()
+                    .get(KieDrlComponentRoot.class)
                     .get(DrlSessionIdFactory.class)
                     .get(toEvaluate.getModelLocalUriId().basePath(), kieSession.getIdentifier());
             return Optional.of(new EfestoOutputDrlKieSessionLocal(modelLocalUriId, kieSession));

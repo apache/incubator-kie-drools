@@ -15,9 +15,7 @@
  */
 package org.kie.pmml.api.identifiers;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
-
-public class PmmlIdFactory implements ComponentRoot {
+public class PmmlIdFactory implements PmmlComponentRoot {
 
     public LocalComponentIdPmml get(String fileName, String name) {
         return new LocalComponentIdPmml(fileName, name);

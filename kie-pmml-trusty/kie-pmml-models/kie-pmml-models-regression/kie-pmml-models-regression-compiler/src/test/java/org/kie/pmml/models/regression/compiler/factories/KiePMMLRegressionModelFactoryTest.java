@@ -84,7 +84,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileNam
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionModelFactory.KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA;
 import static org.kie.pmml.models.regression.compiler.factories.KiePMMLRegressionTableFactory.GETKIEPMML_TABLE;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLRegressionModelFactoryTest {
 

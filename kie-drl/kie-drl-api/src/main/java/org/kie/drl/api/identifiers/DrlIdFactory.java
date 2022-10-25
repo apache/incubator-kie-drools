@@ -15,12 +15,9 @@
  */
 package org.kie.drl.api.identifiers;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
-
-public class DrlIdFactory implements ComponentRoot {
+public class DrlIdFactory implements DrlComponentRoot {
 
     public LocalComponentIdDrl get(String basePath) {
         return new LocalComponentIdDrl(basePath);
     }
-
 }

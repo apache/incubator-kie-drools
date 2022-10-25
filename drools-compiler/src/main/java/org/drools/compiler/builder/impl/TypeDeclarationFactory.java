@@ -46,9 +46,11 @@ public class TypeDeclarationFactory {
     private static final Logger LOG = LoggerFactory.getLogger(TypeDeclarationFactory.class);
 
     protected TypeDeclarationContext context;
+    private final BuildResultCollector results;
 
-    public TypeDeclarationFactory( TypeDeclarationContext context) {
+    public TypeDeclarationFactory( TypeDeclarationContext context, BuildResultCollector results ) {
         this.context = context;
+        this.results = results;
     }
 
     public TypeDeclaration processTypeDeclaration( PackageRegistry pkgRegistry,
@@ -76,7 +78,7 @@ public class TypeDeclarationFactory {
         try {
             processAnnotations( typeDescr, type );
         } catch (Exception e) {
-            context.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage() ) );
+            results.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage() ) );
         }
     }
 
@@ -127,7 +129,7 @@ public class TypeDeclarationFactory {
                                     ) {
                                 if ( ! typeDescr.getFields().containsKey( existingFieldName ) ) {
                                     type.setValid(false);
-                                    context.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
+                                    results.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
                                                                                                   " does not include field " + existingFieldName ) );
                                 } else {
                                     String fldType = cfi.getFieldType( existingFieldName ).getName();
@@ -135,7 +137,7 @@ public class TypeDeclarationFactory {
                                     TypeFieldDescr declaredField = typeDescr.getFields().get( existingFieldName );
                                     if ( ! fldType.equals( type.getTypeClassDef().getField( existingFieldName ).getTypeName() ) ) {
                                         type.setValid(false);
-                                        context.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
+                                        results.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
                                                                                                       " redeclared field " + existingFieldName + " : \n" +
                                                                                                       "existing : " + fldType + " vs declared : " + declaredField.getPattern().getObjectType() ) );
                                     } else {
@@ -147,15 +149,15 @@ public class TypeDeclarationFactory {
                         }
 
                         if ( fieldCount != typeDescr.getFields().size() ) {
-                            context.addBuilderResult( reportDeclarationDiff( cfi, typeDescr ) );
+                            results.addBuilderResult( reportDeclarationDiff( cfi, typeDescr ) );
                         }
                     } catch ( IOException e ) {
                         LOG.error("Exception", e);
                         type.setValid(false);
-                        context.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
+                        results.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
                     } catch ( ClassNotFoundException e ) {
                         type.setValid(false);
-                        context.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
+                        results.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
                     }
                 }
             } else if (previousTypeDeclaration != null) { // previous declaration can be null during an incremental compilation
@@ -164,12 +166,12 @@ public class TypeDeclarationFactory {
 
                 if (typeComparisonResult < 0) {
                     //oldDeclaration is "less" than newDeclaration -> error
-                    context.addBuilderResult(new TypeDeclarationError(typeDescr, typeDescr.getType().getFullName()
+                    results.addBuilderResult(new TypeDeclarationError(typeDescr, typeDescr.getType().getFullName()
                                                                                   + " declares more fields than the already existing version"));
                     type.setValid(false);
                 } else if (typeComparisonResult > 0 && !type.getTypeClassDef().getFields().isEmpty()) {
                     //oldDeclaration is "grater" than newDeclaration -> error
-                    context.addBuilderResult(new TypeDeclarationError(typeDescr, typeDescr.getType().getFullName()
+                    results.addBuilderResult(new TypeDeclarationError(typeDescr, typeDescr.getType().getFullName()
                                                                                   + " declares less fields than the already existing version"));
                     type.setValid(false);
                 }
@@ -185,7 +187,7 @@ public class TypeDeclarationFactory {
 
         } catch (IncompatibleClassChangeError error) {
             //if the types are incompatible -> error
-            context.addBuilderResult(new TypeDeclarationError(typeDescr, error.getMessage()));
+            results.addBuilderResult(new TypeDeclarationError(typeDescr, error.getMessage()));
         }
 
     }

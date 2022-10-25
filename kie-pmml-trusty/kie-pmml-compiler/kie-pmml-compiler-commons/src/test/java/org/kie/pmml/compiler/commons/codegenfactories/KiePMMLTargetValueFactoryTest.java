@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.testutils.PMMLModelTestUtils.getRandomTargetValue;
 import static org.kie.pmml.compiler.api.utils.ModelUtils.convertToKieTargetValue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLTargetValueFactoryTest {
 

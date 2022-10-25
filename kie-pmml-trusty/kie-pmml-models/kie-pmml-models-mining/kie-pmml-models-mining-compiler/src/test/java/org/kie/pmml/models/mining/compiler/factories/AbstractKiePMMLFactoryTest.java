@@ -29,9 +29,8 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
-import org.junit.jupiter.api.BeforeEach;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.kie.test.util.filesystem.FileUtils;
+import org.drools.util.FileUtils;
 import org.xml.sax.SAXException;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -36,7 +36,6 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     private KnowledgeBuilderConfigurationImpl configuration;
     private final PackageRegistryManager packageRegistryManager;
     private GlobalVariableContext globalVariableContext;
-    private final BuildResultCollectorImpl buildResultAccumulator = new BuildResultCollectorImpl();
 
     private TypeDeclarationManagerImpl typeDeclarationManager;
 
@@ -114,32 +113,6 @@ public class TypeDeclarationContextImpl implements TypeDeclarationContext {
     @Override
     public ClassLoader getRootClassLoader() {
         return configuration.getClassLoader();
-    }
-
-    @Override
-    public void addBuilderResult(KnowledgeBuilderResult result) {
-        buildResultAccumulator.addBuilderResult(result);
-    }
-
-    @Override
-    public boolean hasErrors() {
-        return buildResultAccumulator.hasErrors();
-    }
-
-    public PackageBuilderErrors getErrors() {
-        // this is not really used by TypeDeclarationContext!!
-        return buildResultAccumulator.getErrors();
-    }
-
-    @Override
-    public KnowledgeBuilderResults getResults(ResultSeverity... severities) {
-        // this is not really used by TypeDeclarationContext!!
-        return buildResultAccumulator.getResults(severities);
-    }
-
-    @Override
-    public boolean hasResults(ResultSeverity... problemTypes) {
-        return buildResultAccumulator.hasResults(problemTypes);
     }
 
     @Override

@@ -38,9 +38,11 @@ import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 public class TypeDeclarationConfigurator {
 
     protected final TypeDeclarationContext context;
+    private final BuildResultCollector results;
 
-    public TypeDeclarationConfigurator( TypeDeclarationContext context) {
+    public TypeDeclarationConfigurator( TypeDeclarationContext context, BuildResultCollector results ) {
         this.context = context;
+        this.results = results;
     }
 
     public void finalizeConfigurator(TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, Map<String, PackageRegistry> pkgRegistryMap, ClassHierarchyManager hierarchyManager ) {
@@ -83,7 +85,7 @@ public class TypeDeclarationConfigurator {
             try {
                 pkgRegistry.getPackage().buildFieldAccessors( type );
             } catch ( Throwable e ) {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                results.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for TypeDeclaration '" + type.getTypeName() +
                                                                    "' for type '" +
                                                                    type.getTypeName() +
@@ -94,17 +96,17 @@ public class TypeDeclarationConfigurator {
         }
 
         Annotated annotatedType = toAnnotated(typeDescr);
-        processMvelBasedAccessors(context, pkgRegistry, annotatedType, type );
+        processMvelBasedAccessors(context, results, pkgRegistry, annotatedType, type );
         processTypeAnnotations( type, annotatedType, context.getBuilderConfiguration().getPropertySpecificOption());
         return true;
     }
 
-    static void processMvelBasedAccessors(TypeDeclarationContext context, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
-        wireTimestampAccessor(context, annotated, type, pkgRegistry );
-        wireDurationAccessor(context, annotated, type, pkgRegistry );
+    static void processMvelBasedAccessors(TypeDeclarationContext context, BuildResultCollector results, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
+        wireTimestampAccessor(context, results, annotated, type, pkgRegistry );
+        wireDurationAccessor(context, results, annotated, type, pkgRegistry );
     }
 
-    private static void wireTimestampAccessor(TypeDeclarationContext context, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireTimestampAccessor(TypeDeclarationContext context, BuildResultCollector resultCollector, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Timestamp timestamp = annotated.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -112,7 +114,7 @@ public class TypeDeclarationConfigurator {
             try {
                 timestampField = timestamp.value();
             } catch (Exception e) {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                resultCollector.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
                 return;
             }
             type.setTimestampAttribute( timestampField );
@@ -122,14 +124,14 @@ public class TypeDeclarationConfigurator {
             if (results != null) {
                 type.setTimestampExtractor(pkg.getFieldExtractor( type, timestampField, results.getReturnType() ));
             } else {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                resultCollector.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for timestamp field '" + timestamp +
                                                                    "' for type '" + type.getTypeName() + "'"));
             }
         }
     }
 
-    private static void wireDurationAccessor(TypeDeclarationContext context, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+    private static void wireDurationAccessor(TypeDeclarationContext context, BuildResultCollector resultCollector, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
         Duration duration = annotated.getTypedAnnotation(Duration.class);
         if (duration != null) {
             BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
@@ -137,7 +139,7 @@ public class TypeDeclarationConfigurator {
             try {
                 durationField = duration.value();
             } catch (Exception e) {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                resultCollector.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
                 return;
             }
             type.setDurationAttribute(durationField);
@@ -147,7 +149,7 @@ public class TypeDeclarationConfigurator {
             if (results != null) {
                 type.setDurationExtractor(pkg.getFieldExtractor( type, durationField, results.getReturnType() ));
             } else {
-                context.addBuilderResult(new TypeDeclarationError(typeDescr,
+                resultCollector.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error processing @duration for TypeDeclaration '" + type.getFullName() +
                                                                    "': cannot access the field '" + durationField + "'"));
             }

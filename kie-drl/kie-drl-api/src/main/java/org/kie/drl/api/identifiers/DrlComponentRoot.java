@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.quarkus.test;
+package org.kie.drl.api.identifiers;
 
-import io.quarkus.test.junit.NativeImageTest;
+import org.kie.efesto.common.api.identifiers.ComponentRoot;
 
-@NativeImageTest
-public class NativeRuntimeIT extends RuntimeIT {
+public interface DrlComponentRoot extends ComponentRoot {
+
 }

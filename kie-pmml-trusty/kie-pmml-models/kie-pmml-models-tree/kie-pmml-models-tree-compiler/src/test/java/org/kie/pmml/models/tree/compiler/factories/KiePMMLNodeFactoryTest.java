@@ -73,7 +73,7 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.NOD
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE_DISTRIBUTIONS;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileContent;
 
 public class KiePMMLNodeFactoryTest {
 

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoMapInputDTO;
@@ -39,6 +39,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdRedirectPmml;
 import org.kie.pmml.api.identifiers.PmmlIdRedirectFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
@@ -102,7 +103,8 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         EfestoMapInputDTO darMapInputDTO = new EfestoMapInputDTO(inserts, globals, requestData, convertedFieldTypeMap
                 , this.getName(), this.getKModulePackageName());
 
-        LocalComponentIdRedirectPmml modelLocalUriId = new ReflectiveAppRoot("")
+        LocalComponentIdRedirectPmml modelLocalUriId = new EfestoAppRoot()
+                .get(KiePmmlComponentRoot.class)
                 .get(PmmlIdRedirectFactory.class)
                 .get("drl", context.getFileNameNoSuffix(), getSanitizedClassName(this.getName()));
 

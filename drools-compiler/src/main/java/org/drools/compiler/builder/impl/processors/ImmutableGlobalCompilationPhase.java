@@ -73,6 +73,6 @@ public class ImmutableGlobalCompilationPhase extends AbstractPackageCompilationP
     }
 
     protected void removeGlobal(InternalKnowledgePackage pkg, String toBeRemoved) {
-        pkg.removeGlobal(toBeRemoved);
+        // default to no-op. This has only effect with asset filters.
     }
 }

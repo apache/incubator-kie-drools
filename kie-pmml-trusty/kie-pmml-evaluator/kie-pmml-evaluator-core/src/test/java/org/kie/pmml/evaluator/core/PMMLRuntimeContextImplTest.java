@@ -86,7 +86,7 @@ class PMMLRuntimeContextImplTest {
         Random rand = new Random();
         List<Double> doubles = IntStream.range(0, 3).mapToDouble(value -> {
                     double currentTotal = totalReference.get();
-                    int nextInt = rand.nextInt((int) (currentTotal * 100));
+                    int nextInt = Math.abs(rand.nextInt((int) (currentTotal * 100)));
                     double toReturn = (double) nextInt / 100;
                     totalReference.set(currentTotal - toReturn);
                     return toReturn;

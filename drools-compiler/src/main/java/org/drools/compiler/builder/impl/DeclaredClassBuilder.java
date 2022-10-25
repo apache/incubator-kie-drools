@@ -30,10 +30,12 @@ import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 public class DeclaredClassBuilder {
 
-    protected final TypeDeclarationContext kbuilder;
+    protected final TypeDeclarationContext typeDeclarationContext;
+    protected final BuildResultCollector results;
 
-    public DeclaredClassBuilder(TypeDeclarationContext kbuilder) {
-        this.kbuilder = kbuilder;
+    public DeclaredClassBuilder(TypeDeclarationContext typeDeclarationContext, BuildResultCollector results) {
+        this.typeDeclarationContext = typeDeclarationContext;
+        this.results = results;
     }
 
     public void generateBeanFromDefinition(AbstractClassTypeDeclarationDescr typeDescr,
@@ -54,22 +56,22 @@ public class DeclaredClassBuilder {
 
     private void buildClass(AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, ClassDefinition def, ClassBuilder classBuilder, String fullName, JavaDialectRuntimeData dialect, String errorMessage) {
         try {
-            byte[] bytecode = classBuilder.buildClass(def, kbuilder.getRootClassLoader());
+            byte[] bytecode = classBuilder.buildClass(def, typeDeclarationContext.getRootClassLoader());
             String resourceName = convertClassToResourcePath(fullName);
             dialect.putClassDefinition(resourceName, bytecode);
-            if (kbuilder.getKnowledgeBase() != null) {
-                Class<?> clazz = kbuilder.getKnowledgeBase().registerAndLoadTypeDefinition(fullName, bytecode);
+            if (typeDeclarationContext.getKnowledgeBase() != null) {
+                Class<?> clazz = typeDeclarationContext.getKnowledgeBase().registerAndLoadTypeDefinition(fullName, bytecode);
                 pkgRegistry.getTypeResolver().registerClass(fullName, clazz);
             } else {
-                if (kbuilder.getRootClassLoader() instanceof ProjectClassLoader ) {
-                    Class<?> clazz = ((ProjectClassLoader) kbuilder.getRootClassLoader()).defineClass(fullName, resourceName, bytecode);
+                if (typeDeclarationContext.getRootClassLoader() instanceof ProjectClassLoader ) {
+                    Class<?> clazz = ((ProjectClassLoader) typeDeclarationContext.getRootClassLoader()).defineClass(fullName, resourceName, bytecode);
                     pkgRegistry.getTypeResolver().registerClass(fullName, clazz);
                 } else {
                     dialect.write(resourceName, bytecode);
                 }
             }
         } catch (Exception e) {
-            this.kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, String.format("%s%s: %s;", errorMessage, fullName, e.getMessage())));
+            this.results.addBuilderResult(new TypeDeclarationError(typeDescr, String.format("%s%s: %s;", errorMessage, fullName, e.getMessage())));
         }
     }
 
@@ -83,12 +85,12 @@ public class DeclaredClassBuilder {
 
             for (String sup : def.getInterfaces()) {
                 if (!typeResolver.resolveType(sup).isInterface()) {
-                    kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Non-interface type used as super interface : " + sup));
+                    results.addBuilderResult(new TypeDeclarationError(typeDescr, "Non-interface type used as super interface : " + sup));
                     return false;
                 }
             }
         } catch (ClassNotFoundException cnfe) {
-            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to resolve parent type :" + cnfe.getMessage()));
+            results.addBuilderResult(new TypeDeclarationError(typeDescr, "Unable to resolve parent type :" + cnfe.getMessage()));
             return false;
         }
         return true;
