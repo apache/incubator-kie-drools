@@ -22,14 +22,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.kie.efesto.runtimemanager.api.utils.SPIUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
-import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 
@@ -38,7 +36,7 @@ import static org.kie.pmml.TestingHelper.getEfestoContext;
 import static org.kie.pmml.TestingHelper.getInputData;
 import static org.kie.pmml.TestingHelper.getPMMLContext;
 import static org.kie.pmml.TestingHelper.getPMMLRequestDataWithInputData;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.CommonTestingUtility.getModelLocalUriIdFromPmmlIdFactory;
 
 public class RuntimeServicesTest {
 
@@ -48,7 +46,7 @@ public class RuntimeServicesTest {
 
     private static RuntimeManager runtimeManager;
 
-    private static ModelLocalUriId modelLocalUriId;
+    private ModelLocalUriId modelLocalUriId;
 
     @BeforeAll
     public static void setup() {
@@ -57,12 +55,11 @@ public class RuntimeServicesTest {
                                                                                                           "manager"));
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
-        modelLocalUriId = new ReflectiveAppRoot("").get(PmmlIdFactory.class).get(FILE_NAME,
-                                                                                 getSanitizedClassName(MODEL_NAME));
     }
 
     @Test
     void canManageInputPMMLRuntimeContext() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRuntimeContext context = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         BaseEfestoInput inputPMML = new EfestoInputPMML(modelLocalUriId, context);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(context, inputPMML);
@@ -71,6 +68,7 @@ public class RuntimeServicesTest {
 
     @Test
     void canManageInputPMMLRequestData() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRequestData pmmlRequestData = getPMMLRequestDataWithInputData(MODEL_NAME, FILE_NAME);
         EfestoInput<PMMLRequestData> inputPMML = new BaseEfestoInput<>(modelLocalUriId, pmmlRequestData);
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(getEfestoContext(memoryCompilerClassLoader)
@@ -80,6 +78,7 @@ public class RuntimeServicesTest {
 
     @Test
     void canManageInputPMMLMapInput() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                                                                getInputData(MODEL_NAME, FILE_NAME));
         Collection<EfestoOutput> retrieved = runtimeManager.evaluateInput(getEfestoContext(memoryCompilerClassLoader)

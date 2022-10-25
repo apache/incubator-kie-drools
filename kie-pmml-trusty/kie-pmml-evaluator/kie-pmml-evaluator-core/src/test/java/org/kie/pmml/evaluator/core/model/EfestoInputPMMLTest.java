@@ -16,13 +16,12 @@
 package org.kie.pmml.evaluator.core.model;
 
 import org.junit.jupiter.api.Test;
-import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
-import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.runtime.PMMLRuntimeContext;
 import org.kie.pmml.commons.testingutility.PMMLRuntimeContextTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.pmml.commons.CommonTestingUtility.getModelLocalUriIdFromPmmlIdFactory;
 
 class EfestoInputPMMLTest {
 
@@ -31,9 +30,7 @@ class EfestoInputPMMLTest {
 
     @Test
     void constructor() {
-        LocalComponentIdPmml modelLocalUriId = new KiePmmlComponentRoot()
-                .get(PmmlIdFactory.class)
-                .get(fileNameNoSuffix, modelName);
+        LocalComponentIdPmml modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(fileNameNoSuffix, modelName);
         PMMLRuntimeContext inputData = new
                 PMMLRuntimeContextTest();
         EfestoInputPMML retrieved = new EfestoInputPMML(modelLocalUriId, inputData);

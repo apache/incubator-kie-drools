@@ -29,10 +29,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -42,8 +40,6 @@ import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;
-import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
-import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.models.PMMLStep;
@@ -66,7 +62,7 @@ import static org.kie.pmml.TestingHelper.getInputData;
 import static org.kie.pmml.TestingHelper.getPMMLContext;
 import static org.kie.pmml.TestingHelper.getPMMLRequestData;
 import static org.kie.pmml.TestingHelper.getPMMLRequestDataWithInputData;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.CommonTestingUtility.getModelLocalUriIdFromPmmlIdFactory;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -77,21 +73,18 @@ class PMMLRuntimeHelperTest {
     private static KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader;
     private static KiePMMLModel modelMock;
 
-    private static ModelLocalUriId modelLocalUriId;
+    private ModelLocalUriId modelLocalUriId;
 
     @BeforeAll
     static void setUp() {
         memoryCompilerClassLoader =
                 new KieMemoryCompiler.MemoryCompilerClassLoader(Thread.currentThread().getContextClassLoader());
         modelMock = getKiePMMLModelMock();
-        modelLocalUriId = new EfestoAppRoot()
-                .get(KiePmmlComponentRoot.class)
-                .get(PmmlIdFactory.class)
-                .get(FILE_NAME, getSanitizedClassName(MODEL_NAME));
     }
 
     @Test
     void canManageEfestoInput() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         EfestoRuntimeContext runtimeContext =
                 EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         PMMLRequestData pmmlRequestData = new PMMLRequestData();
@@ -101,6 +94,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void executeEfestoInputPMML() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         EfestoInputPMML darInputPMML = new EfestoInputPMML(modelLocalUriId, getPMMLContext(FILE_NAME, MODEL_NAME,
                                                                                            memoryCompilerClassLoader));
         Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.executeEfestoInputPMML(darInputPMML,
@@ -113,6 +107,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void executeEfestoInput() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         BaseEfestoInput<PMMLRequestData> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                                                            getPMMLRequestDataWithInputData(MODEL_NAME
                                                                                    , FILE_NAME));
@@ -126,6 +121,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void executeEfestoInputFromMap() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         BaseEfestoInput<Map<String, Object>> inputPMML = new BaseEfestoInput<>(modelLocalUriId,
                                                                                getInputData(MODEL_NAME, FILE_NAME));
         Optional<EfestoOutputPMML> retrieved = PMMLRuntimeHelper.executeEfestoInputFromMap(inputPMML,
@@ -147,6 +143,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getEfestoOutput() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
 
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(modelLocalUriId, pmmlContext);
@@ -158,6 +155,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getEfestoInputPMML() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRuntimeContext pmmlRuntimeContext = new PMMLRuntimeContextTest();
         EfestoInputPMML retrieved = PMMLRuntimeHelper.getEfestoInputPMML(modelLocalUriId,
                                                                          pmmlRuntimeContext);
@@ -216,6 +214,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void evaluate() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME, memoryCompilerClassLoader);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(modelLocalUriId, pmmlContext);
         List<KiePMMLModel> kiePMMLModels = kiePmmlModelFactory.getKiePMMLModels();
@@ -226,6 +225,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     public void evaluateWithPMMLContextListeners() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         final List<PMMLStep> pmmlSteps = new ArrayList<>();
         PMMLRuntimeContext pmmlContext = getPMMLContext(FILE_NAME, MODEL_NAME,
                                                         Collections.singleton(getPMMLListener(pmmlSteps)),
@@ -245,6 +245,7 @@ class PMMLRuntimeHelperTest {
 
     @Test
     void getPMMLModelFromClassLoader() {
+        modelLocalUriId = getModelLocalUriIdFromPmmlIdFactory(FILE_NAME, MODEL_NAME);
         KiePMMLModelFactory kiePmmlModelFactory = PMMLLoaderUtils.loadKiePMMLModelFactory(modelLocalUriId,
                                                                                           getPMMLContext(FILE_NAME,
                                                                                                          MODEL_NAME,
