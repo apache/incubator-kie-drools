@@ -22,7 +22,7 @@ import java.io.InputStream;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.PMML;
-import org.kie.efesto.common.api.utils.FileUtils;
+import org.drools.util.FileUtils;
 import org.xml.sax.SAXException;
 
 public class TestUtils {

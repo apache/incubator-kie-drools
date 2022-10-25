@@ -18,6 +18,7 @@ package org.drools.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
@@ -75,5 +76,20 @@ public class FileUtils {
         String toReturn = lines.collect(Collectors.joining("\n"));
         lines.close();
         return toReturn;
+    }
+
+
+    public static InputStream getInputStreamFromFileName(String fileName) {
+        try {
+            InputStream toReturn = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+            if (toReturn == null) {
+                throw new RuntimeException(String.format("Failed to find %s", fileName));
+            } else {
+                return toReturn;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Failed to find %s due to %s", fileName,
+                                                             e.getMessage()), e);
+        }
     }
 }

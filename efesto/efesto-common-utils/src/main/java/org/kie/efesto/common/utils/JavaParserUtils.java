@@ -15,6 +15,8 @@
  */
 package org.kie.efesto.common.utils;
 
+import java.io.InputStream;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -22,9 +24,7 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-
-import static org.kie.efesto.common.api.utils.FileUtils.getInputStreamFromFileName;
+import static org.drools.util.FileUtils.getInputStreamFromFileName;
 
 public class JavaParserUtils {
 

@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.utils.FileNameUtils.getFileName;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileByFileNameFromClassloader;
+import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileByFileNameFromClassloader;
 
 
 /**
@@ -154,7 +154,6 @@ public final class IndexFile extends File {
             byte[] toReturn = out.toByteArray();
             out.flush();
             out.close();
-            input.close();
             return toReturn;
         } catch (Exception e) {
             logger.warn("Failed to read content of {} ", this, e);

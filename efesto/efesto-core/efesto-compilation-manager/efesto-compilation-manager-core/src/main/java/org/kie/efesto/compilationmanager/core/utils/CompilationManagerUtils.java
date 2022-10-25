@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.efesto.common.api.constants.Constants.INDEXFILE_DIRECTORY_PROPERTY;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
+import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileNameOrFilePath;
 import static org.kie.efesto.common.core.utils.JSONUtils.getGeneratedResourcesObject;
 import static org.kie.efesto.common.core.utils.JSONUtils.writeGeneratedResourcesObject;
 import static org.kie.efesto.compilationmanager.api.utils.SPIUtils.getKieCompilerService;

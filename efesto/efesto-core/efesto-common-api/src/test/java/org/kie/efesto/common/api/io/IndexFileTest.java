@@ -25,8 +25,8 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileByFilePath;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileNameOrFilePath;
+import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileByFilePath;
+import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileNameOrFilePath;
 
 class IndexFileTest {
 

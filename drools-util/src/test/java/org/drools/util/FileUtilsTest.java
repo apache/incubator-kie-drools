@@ -19,17 +19,19 @@ package org.drools.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertThrows;
 
 public class FileUtilsTest {
 
     private static final String TEST_FILE = "TestFile.txt";
-    private static final String NOTEXISTING_FILE = "NotExisting.txt";
+    private static final String NOT_EXISTING_FILE = "NotExisting.txt";
 
     @Test
     public void getFileExisting() {
@@ -40,7 +42,7 @@ public class FileUtilsTest {
 
     @Test
     public void getFileNotExisting() {
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFile(NOTEXISTING_FILE));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFile(NOT_EXISTING_FILE));
     }
 
     @Test
@@ -52,6 +54,18 @@ public class FileUtilsTest {
 
     @Test
     public void getFileInputStreamNotExisting() {
-        assertThrows(RuntimeException.class, () -> FileUtils.getFileInputStream(NOTEXISTING_FILE));
+        assertThrows(RuntimeException.class, () -> FileUtils.getFileInputStream(NOT_EXISTING_FILE));
+    }
+
+
+    @Test
+    public void getInputStreamFromFileNameExisting() {
+        InputStream retrieved = FileUtils.getInputStreamFromFileName(TEST_FILE);
+        assertThat(retrieved).isNotNull();
+    }
+
+    @Test
+    public void getInputStreamFromFileNameNotExisting() {
+        assertThrows(RuntimeException.class, () -> FileUtils.getInputStreamFromFileName(NOT_EXISTING_FILE));
     }
 }
