@@ -1,5 +1,14 @@
 [
   {
+    "name" : "org.kie.pmml.api.identifiers.KiePmmlAppRoot",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
     "name" : "org.kie.pmml.api.identifiers.PmmlIdFactory",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,

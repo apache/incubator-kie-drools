@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.kie.efesto.common.api.identifiers.ReflectiveAppRoot;
+import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.pmml.api.compilation.PMMLCompilationContext;
+import org.kie.pmml.api.identifiers.KiePmmlComponentRoot;
 import org.kie.pmml.api.identifiers.LocalComponentIdPmml;
 import org.kie.pmml.api.identifiers.PmmlIdFactory;
 import org.kie.pmml.commons.HasRedirectOutput;
@@ -64,7 +65,8 @@ public class PMMLCompilerService {
         kiePMMLFactoryModels.forEach(kiePMMLFactoryModel -> {
             String modelName = kiePMMLFactoryModel.getName().substring(0, kiePMMLFactoryModel.getName().lastIndexOf(
                     "Factory"));
-            LocalComponentIdPmml modelLocalUriId = new ReflectiveAppRoot("")
+            LocalComponentIdPmml modelLocalUriId = new EfestoAppRoot()
+                    .get(KiePmmlComponentRoot.class)
                     .get(PmmlIdFactory.class)
                     .get(fileName, modelName);
 

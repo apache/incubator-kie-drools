@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.api.identifiers;
 
-public class PmmlIdFactory implements PmmlComponentRoot {
+package org.kie.efesto.common.api.identifiers;
 
-    public LocalComponentIdPmml get(String fileName, String name) {
-        return new LocalComponentIdPmml(fileName, name);
-    }
+/**
+ * Efesto-specific root path of a component.
+ * <p>
+ * Those are the top-level chidlren of <code>EfestoAppRoot</code>,
+ * the efesto-specific subclass of <code>AppRoot</code>
+ */
+public interface EfestoComponentRoot extends ComponentRoot {
 
+    <T extends ComponentRoot> T get(Class<T> providerId);
 }
