@@ -20,6 +20,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Optional;
 
+import org.kie.api.runtime.conf.ClockTypeOption;
+
 public interface RuleUnitDescription {
 
     default Class<?> getRuleUnitClass() {
@@ -51,4 +53,6 @@ public interface RuleUnitDescription {
     Collection<? extends RuleUnitVariable> getUnitVarDeclarations();
 
     boolean hasDataSource( String name );
+
+    ClockTypeOption getClockType();
 }

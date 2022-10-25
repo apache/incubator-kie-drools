@@ -15,6 +15,9 @@
  */
 package org.drools.ruleunits.impl.factory;
 
+import java.util.function.Function;
+
+import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.impl.RuleUnits;
@@ -25,13 +28,15 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
     private final Class<T> ruleUnitDataClass;
     protected final RuleUnits ruleUnits;
 
+    protected Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator = Function.identity();
+
     public AbstractRuleUnit(Class<T> ruleUnitDataClass) {
         this(ruleUnitDataClass, AbstractRuleUnits.DummyRuleUnits.INSTANCE);
     }
 
     public AbstractRuleUnit(Class<T> ruleUnitDataClass, RuleUnits ruleUnits) {
         this.ruleUnitDataClass = ruleUnitDataClass;
-        this.ruleUnits = ruleUnits;
+        this.ruleUnits = ruleUnits == null ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits;
     }
 
     protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
@@ -53,5 +58,10 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
             ruleUnits.register(name, instance);
         }
         return instance;
+    }
+
+    @Override
+    public void setEvaluatorConfigurator(Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator) {
+        this.evaluatorConfigurator = evaluatorConfigurator;
     }
 }

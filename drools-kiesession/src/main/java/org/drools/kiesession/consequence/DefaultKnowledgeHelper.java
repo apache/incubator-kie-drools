@@ -95,6 +95,10 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         this.tuple = agendaItem.getTuple();
     }
 
+    public Activation getActivation() {
+        return activation;
+    }
+
     public void reset() {
         this.activation = null;
         this.tuple = null;
@@ -273,7 +277,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         return toStatefulKnowledgeSession();
     }
 
-    protected StatefulKnowledgeSessionForRHS toStatefulKnowledgeSession() {
+    public StatefulKnowledgeSessionForRHS toStatefulKnowledgeSession() {
         if (wrappedEvaluator != null) {
             return wrappedEvaluator;
         }

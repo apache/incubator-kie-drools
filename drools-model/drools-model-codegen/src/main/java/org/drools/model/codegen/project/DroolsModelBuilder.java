@@ -15,6 +15,16 @@
  */
 package org.drools.model.codegen.project;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
@@ -39,16 +49,6 @@ import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.loadResourceConfiguration;
 import static org.kie.internal.builder.KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration;
@@ -70,8 +70,8 @@ public class DroolsModelBuilder {
     public DroolsModelBuilder(
             DroolsModelBuildContext context,
             Collection<Resource> resources,
-            boolean decisionTableSupported, Function<PackageModel,
-            PackageModelWriter> packageModelWriterProvider) {
+            boolean decisionTableSupported,
+            Function<PackageModel, PackageModelWriter> packageModelWriterProvider) {
         this.context = context;
         this.resources = resources;
         this.decisionTableSupported = decisionTableSupported;
