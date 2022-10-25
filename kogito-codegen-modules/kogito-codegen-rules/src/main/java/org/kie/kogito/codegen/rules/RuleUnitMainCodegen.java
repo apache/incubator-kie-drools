@@ -55,19 +55,7 @@ public class RuleUnitMainCodegen {
 
         for (RuleUnitGenerator ruleUnit : ruleUnitGenerators) {
             ruleUnitHelper.initRuleUnitHelper(ruleUnit.getRuleUnitDescription());
-
-            // fixme: verify why this is broken?
-            // excluding this does not break any test: remove?
-            //            if (!context().hasDI()) {
-            //                generatedFiles.add(new RuleUnitDTOSourceClass(ruleUnit.getRuleUnitDescription(), ruleUnitHelper).generate());
-            //            }
-
-            RuleUnitInstanceGenerator ruleUnitInstance = ruleUnit.instance(ruleUnitHelper);
-
-            generatedFiles.add(ruleUnit.generate());
-            generatedFiles.add(ruleUnitInstance.generate());
             ruleUnit.pojo(ruleUnitHelper).ifPresent(p -> generatedFiles.add(p.generate()));
-
         }
 
         for (QueryGenerator query : validQueries) {

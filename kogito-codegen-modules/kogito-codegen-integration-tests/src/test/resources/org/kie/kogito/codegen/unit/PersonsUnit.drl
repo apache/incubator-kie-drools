@@ -17,9 +17,9 @@ package org.kie.kogito.codegen.unit;
 unit PersonsUnit;
 
 rule Birthday no-loop when
-    $p: Person( $age : age )
+    $p: /persons
 then
-    modify($p) { setAge($age+1); }
+    modify($p) { setAge($p.getAge()+1); }
 end
 
 rule CheckAdult when

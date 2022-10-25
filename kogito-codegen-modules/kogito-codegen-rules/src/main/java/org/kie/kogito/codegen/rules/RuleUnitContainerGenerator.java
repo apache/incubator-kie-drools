@@ -67,7 +67,7 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
             switchEntry.getLabels().add(new StringLiteralExpr(ruleUnit.getRuleUnitDescription().getCanonicalName()));
             ObjectCreationExpr ruleUnitConstructor = new ObjectCreationExpr()
                     .setType(ruleUnit.targetCanonicalName())
-                    .addArgument("application");
+                    .addArgument("this");
             CastExpr castExpr = new CastExpr(parseType("RuleUnit<T>"), ruleUnitConstructor);
             switchEntry.getStatements().add(new ReturnStmt(castExpr));
             switchStmt.getEntries().add(switchEntry);
@@ -86,11 +86,8 @@ public class RuleUnitContainerGenerator extends AbstractApplicationSection {
     public CompilationUnit compilationUnit() {
         CompilationUnit compilationUnit = templatedGenerator.compilationUnitOrThrow("No CompilationUnit");
 
-        if (!context.hasDI()) {
-            // only in a non DI context
-            compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("create"))
-                    .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing
-        }
+        compilationUnit.findFirst(MethodDeclaration.class, m -> m.getNameAsString().equals("internalCreate"))
+                .ifPresent(m -> m.setBody(factoryByIdBody())); // ignore if missing
         return compilationUnit;
     }
 }
