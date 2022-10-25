@@ -70,7 +70,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitAndDescr(final AndDescr descr) {
-        this.template = new String();
+        this.template = "";
         if (descr.getDescrs() != Collections.EMPTY_LIST) {
             if (!this.patternContext)
                 this.template = "<and-conditional-element>" + processDescrList(descr.getDescrs()) + "</and-conditional-element>";
@@ -80,18 +80,18 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitAttributeDescr(final AttributeDescr attributeDescr) {
-        this.template = new String();
+        this.template = "";
         this.template = "<rule-attribute name=\"" + attributeDescr.getName() + "\" value=\"" + attributeDescr.getValue() + "\" />" + XmlDumper.eol;
     }
 
     public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
-        this.template = new String();
+        this.template = "";
         this.template = "<variable-restriction evaluator=\"" + replaceIllegalChars(descr.getEvaluator()) + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
     }
 
     public void visitPatternDescr(final PatternDescr descr) {
         this.patternContext = true;
-        this.template = new String();
+        this.template = "";
         StringBuilder localString = new StringBuilder();
 
         if (descr.getDescrs() != Collections.EMPTY_LIST) {
@@ -138,7 +138,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
-        String tmpstr = new String();
+        String tmpstr = "";
         tmpstr += this.template + " <from> <accumulate> ";
 
         if (descr.isSinglePattern()) {
@@ -159,7 +159,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitFromDescr(final FromDescr descr) {
-        String tmpstr = new String();
+        String tmpstr = "";
         tmpstr += this.template + " <from> <expression> ";
         tmpstr += descr.getDataSource();
         this.template = tmpstr + " </expression> </from> ";
@@ -170,7 +170,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitEvalDescr(final EvalDescr descr) {
-        this.template = new String();
+        this.template = "";
         this.template = "<eval>" + replaceIllegalChars((String) descr.getContent()) + "</eval>" + XmlDumper.eol;
     }
 
@@ -260,7 +260,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     private String processRules(final List rules) {
-        String ruleList = "";
+        StringBuilder ruleList = new StringBuilder();
         for (final Iterator iterator = rules.iterator(); iterator.hasNext();) {
             final RuleDescr ruleDescr = (RuleDescr) iterator.next();
             String rule = "<rule name=\"" + ruleDescr.getName() + "\">" + XmlDumper.eol;
@@ -278,7 +278,7 @@ public class XmlDumper extends ReflectiveVisitor
             rule += lhs;
             rule += rhs;
             rule += "</rule>";
-            ruleList += rule;
+            ruleList.append(rule);
         }
 
         return ruleList + XmlDumper.eol;
@@ -307,21 +307,21 @@ public class XmlDumper extends ReflectiveVisitor
     //    }
 
     private String processDescrList(final List descr) {
-        String descrString = "";
+        StringBuilder descrString = new StringBuilder();
         for (final Iterator iterator = descr.iterator(); iterator.hasNext();) {
             visit(iterator.next());
-            descrString += this.template;
-            descrString += XmlDumper.eol;
+            descrString.append(this.template);
+            descrString.append(XmlDumper.eol);
         }
         return descrString + XmlDumper.eol;
     }
 
     private String processFunctionsList(final List functions) {
-        String functionList = "";
+        StringBuilder functionList = new StringBuilder();
 
         for (final Iterator iterator = functions.iterator(); iterator.hasNext();) {
             visit(iterator.next());
-            functionList += this.template;
+            functionList.append(this.template);
         }
 
         return functionList + XmlDumper.eol;
@@ -329,59 +329,59 @@ public class XmlDumper extends ReflectiveVisitor
 
     private String processAttribute(final Collection<AttributeDescr> attributes) {
 
-        String attributeList = "";
+        StringBuilder attributeList = new StringBuilder();
         for (final AttributeDescr attributeDescr : attributes) {
             visit(attributeDescr);
-            attributeList += this.template;
+            attributeList.append(this.template);
         }
         return attributeList + XmlDumper.eol;
     }
 
     private String processParameters(final List parameterNames,
             final List parameterTypes) {
-        String paramList = "";
+        StringBuilder paramList = new StringBuilder();
         int i = 0;
         for (final Iterator iterator = parameterNames.iterator(); iterator.hasNext(); i++) {
             final String paramName = (String) iterator.next();
             final String paramType = (String) parameterTypes.get(i);
             final String paramTemplate = "<parameter identifier=\"" + paramName + "\" type=\"" + paramType + "\" />" + XmlDumper.eol;
-            paramList += paramTemplate;
+            paramList.append(paramTemplate);
         }
 
         return paramList + XmlDumper.eol;
     }
 
     private String processFunctionImportsList(final List imports) {
-        String importList = "";
+        StringBuilder importList = new StringBuilder();
 
         for (final Iterator it = imports.iterator(); it.hasNext();) {
             final String importString = ((FunctionImportDescr) it.next()).getTarget();
             final String importTemplate = "<importfunction name=\"" + importString + "\"/>" + XmlDumper.eol;
-            importList += importTemplate;
+            importList.append(importTemplate);
         }
         return importList + XmlDumper.eol;
     }
 
     private String processGlobalsList(final List globals) {
-        String globalList = "";
+        StringBuilder globalList = new StringBuilder();
         for (final Iterator iterator = globals.iterator(); iterator.hasNext();) {
             final GlobalDescr global = (GlobalDescr) iterator.next();
             final String identifier = global.getIdentifier();
             final String type = global.getType();
             final String globalTemplate = "<global identifier=\"" + identifier + "\" type=\"" + type + "\" />" + XmlDumper.eol;
-            globalList += globalTemplate;
+            globalList.append(globalTemplate);
         }
 
         return globalList + XmlDumper.eol;
     }
 
     private String processImportsList(final List imports) {
-        String importList = "";
+        StringBuilder importList = new StringBuilder();
 
         for (final Iterator iterator = imports.iterator(); iterator.hasNext();) {
             final String importString = ((ImportDescr) iterator.next()).getTarget();
             final String importTemplate = "<import name=\"" + importString + "\" /> " + XmlDumper.eol;
-            importList += importTemplate;
+            importList.append(importTemplate);
         }
         return importList + XmlDumper.eol;
     }

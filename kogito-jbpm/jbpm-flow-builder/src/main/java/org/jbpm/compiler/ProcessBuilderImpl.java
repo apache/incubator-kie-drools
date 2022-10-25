@@ -432,11 +432,11 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     }
 
     private String createStateRules(Process process, StateNode state) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (Map.Entry<ConnectionRef, Constraint> entry : state.getConstraints().entrySet()) {
-            result += createStateRule(process, state, entry.getKey(), entry.getValue());
+            result.append(createStateRule(process, state, entry.getKey(), entry.getValue()));
         }
-        return result;
+        return result.toString();
     }
 
     private String createStartConstraintRule(Process process, NodeContainer nodeContainer,
@@ -445,24 +445,24 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             return createEventSubprocessStateRule(process, (EventSubProcessNode) nodeContainer, trigger);
         }
 
-        String result =
-                "rule \"RuleFlow-Start-" + process.getId() + "\" @Propagation(EAGER) \n" +
+        StringBuilder result =
+                new StringBuilder("rule \"RuleFlow-Start-" + process.getId() + "\" @Propagation(EAGER) \n" +
                         (trigger.getHeader() == null ? "" : "        " + trigger.getHeader() + " \n") +
                         "    when\n" +
                         "        " + trigger.getConstraint() + "\n" +
-                        "    then\n";
+                        "    then\n");
         Map<String, String> inMappings = trigger.getInMappings();
         if (inMappings != null && !inMappings.isEmpty()) {
-            result += "        java.util.Map params = new java.util.HashMap();\n";
+            result.append("        java.util.Map params = new java.util.HashMap();\n");
             for (Map.Entry<String, String> entry : inMappings.entrySet()) {
-                result += "        params.put(\"" + entry.getValue() + "\", " + entry.getKey() + ");\n";
+                result.append("        params.put(\"").append(entry.getValue()).append("\", ").append(entry.getKey()).append(");\n");
             }
-            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\""
-                    + process.getId() + "\", params, \"conditional\");\n" + "end\n\n";
+            result.append("        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\"")
+                    .append(process.getId()).append("\", params, \"conditional\");\n").append("end\n\n");
         } else {
-            result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\""
-                    + process.getId() + "\", null, \"conditional\");\n" + "end\n\n";
+            result.append("        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKieRuntime()).getProcessRuntime()).startProcess(\"")
+                    .append(process.getId()).append("\", null, \"conditional\");\n").append("end\n\n");
         }
-        return result;
+        return result.toString();
     }
 }

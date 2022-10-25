@@ -85,7 +85,7 @@ public class AbstractJavaProcessBuilder {
                     text);
 
             map.put("hashCode",
-                    new Integer(text.hashCode()));
+                    text.hashCode());
         }
 
         final List globalTypes = new ArrayList(globals.length);

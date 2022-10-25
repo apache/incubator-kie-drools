@@ -535,14 +535,14 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     public String getUniqueId() {
-        String result = "" + getStringId();
+        StringBuilder result = new StringBuilder("" + getStringId());
         NodeInstanceContainer parent = getNodeInstanceContainer();
         while (parent instanceof CompositeNodeInstance) {
             CompositeNodeInstance nodeInstance = (CompositeNodeInstance) parent;
-            result = nodeInstance.getStringId() + ":" + result;
+            result.insert(0, nodeInstance.getStringId() + ":");
             parent = nodeInstance.getNodeInstanceContainer();
         }
-        return result;
+        return result.toString();
     }
 
     public Map<String, Object> getMetaData() {

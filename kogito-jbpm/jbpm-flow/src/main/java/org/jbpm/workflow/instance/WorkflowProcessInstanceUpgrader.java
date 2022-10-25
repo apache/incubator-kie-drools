@@ -138,18 +138,18 @@ public class WorkflowProcessInstanceUpgrader {
             throw new IllegalArgumentException("No node with name " + nodeName);
         }
 
-        String id = "";
+        StringBuilder id = new StringBuilder();
 
         if (unique) {
             while (!(((Node) match).getParentContainer() instanceof Process)) {
-                id = ":" + match.getId() + id;
+                id.insert(0, ":" + match.getId());
                 match = (org.kie.api.definition.process.Node) ((Node) match).getParentContainer();
             }
         }
 
-        id = match.getId() + id;
+        id.insert(0, match.getId());
 
-        return id;
+        return id.toString();
     }
 
     private static void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<String, Long> nodeMapping) {

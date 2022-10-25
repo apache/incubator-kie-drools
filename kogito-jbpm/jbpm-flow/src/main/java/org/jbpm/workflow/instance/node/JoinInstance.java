@@ -84,7 +84,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 break;
             case Join.TYPE_DISCRIMINATOR:
                 boolean triggerCompleted = triggers.isEmpty();
-                triggers.put(from.getNodeId(), new Integer(1));
+                triggers.put(from.getNodeId(), 1);
                 if (checkAllActivated()) {
                     resetAllTriggers();
                 }

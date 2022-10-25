@@ -63,7 +63,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
             final Parser parser) throws SAXException {
         Element element = parser.endElementBuilder();
         // now get bendpoints
-        String bendpoints = null;
+        StringBuilder bendpoints = null;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode instanceof Element) {
             String nodeName = xmlNode.getNodeName();
@@ -75,10 +75,10 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
                     int xValue = new Float(x).intValue();
                     int yValue = new Float(y).intValue();
                     if (bendpoints == null) {
-                        bendpoints = "[";
+                        bendpoints = new StringBuilder("[");
                     } else if (xmlNode.getNextSibling() != null) {
-                        bendpoints += xValue + "," + yValue;
-                        bendpoints += ";";
+                        bendpoints.append(xValue).append(",").append(yValue);
+                        bendpoints.append(";");
                     }
                 } catch (NumberFormatException e) {
                     throw new ProcessParsingValidationException("Invalid bendpoint value");

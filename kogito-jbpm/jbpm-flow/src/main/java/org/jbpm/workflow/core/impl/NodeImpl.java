@@ -124,14 +124,14 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
     }
 
     public String getUniqueId() {
-        String result = id + "";
+        StringBuilder result = new StringBuilder(id + "");
         NodeContainer nodeContainer = getParentContainer();
         while (nodeContainer instanceof CompositeNode) {
             CompositeNode composite = (CompositeNode) nodeContainer;
-            result = composite.getId() + ":" + result;
+            result.insert(0, composite.getId() + ":");
             nodeContainer = composite.getParentContainer();
         }
-        return result;
+        return result.toString();
     }
 
     public void setId(final long id) {

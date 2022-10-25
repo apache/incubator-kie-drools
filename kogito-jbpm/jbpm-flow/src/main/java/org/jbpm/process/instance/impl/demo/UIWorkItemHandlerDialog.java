@@ -145,14 +145,14 @@ public class UIWorkItemHandlerDialog extends JDialog {
     }
 
     private String getParameters() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (workItem.getParameters() != null) {
             for (Iterator<Map.Entry<String, Object>> iterator = workItem.getParameters().entrySet().iterator(); iterator.hasNext();) {
                 Map.Entry<String, Object> entry = iterator.next();
-                result += entry.getKey() + " = " + entry.getValue() + "\n";
+                result.append(entry.getKey()).append(" = ").append(entry.getValue()).append("\n");
             }
         }
-        return result;
+        return result.toString();
     }
 
     private void addResult() {
