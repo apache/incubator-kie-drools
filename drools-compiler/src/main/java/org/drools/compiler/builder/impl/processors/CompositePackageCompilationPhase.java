@@ -34,6 +34,7 @@ import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -76,20 +77,20 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
                 initAnnotationNormalizers();
 
         Collection<CompilationPhase> phases = asList(
-                iteratingPhase((pkgRegistry, packageDescr) ->
+                iteratingPhase("TypeDeclarationAnnotationNormalizer", (pkgRegistry, packageDescr) ->
                         new TypeDeclarationAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr)),
                 new TypeDeclarationCompositeCompilationPhase(packages, typeBuilder),
-                iteratingPhase(ImportCompilationPhase::new),
-                iteratingPhase(EntryPointDeclarationCompilationPhase::new),
+                iteratingPhase("ImportCompilationPhase", ImportCompilationPhase::new),
+                iteratingPhase("EntryPointDeclarationCompilationPhase", EntryPointDeclarationCompilationPhase::new),
 
                 // begin OtherDeclarationCompilationPhase
-                iteratingPhase(AccumulateFunctionCompilationPhase::new),
-                iteratingPhase((reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, typeDeclarationContext)),
-                iteratingPhase((reg, desc) -> new FunctionCompilationPhase(reg, desc, configuration)),
-                iteratingPhase((reg, desc) -> GlobalCompilationPhase.of(reg, desc, kBase, globalVariableContext, desc.getFilter())),
+                iteratingPhase("AccumulateFunctionCompilationPhase", AccumulateFunctionCompilationPhase::new),
+                iteratingPhase("WindowDeclarationCompilationPhase", (reg, desc) -> new WindowDeclarationCompilationPhase(reg, desc, typeDeclarationContext)),
+                iteratingPhase("FunctionCompilationPhase", (reg, desc) -> new FunctionCompilationPhase(reg, desc, configuration)),
+                iteratingPhase("GlobalCompilationPhase", (reg, desc) -> GlobalCompilationPhase.of(reg, desc, kBase, globalVariableContext, desc.getFilter())),
                 // end OtherDeclarationCompilationPhase
 
-                iteratingPhase((pkgRegistry, packageDescr) ->
+                iteratingPhase("RuleAnnotationNormalizer", (pkgRegistry, packageDescr) ->
                         new RuleAnnotationNormalizer(annotationNormalizers.get(packageDescr.getNamespace()).get(), packageDescr))
         );
 
@@ -123,8 +124,8 @@ public class CompositePackageCompilationPhase implements CompilationPhase {
         return annotationNormalizers;
     }
 
-    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
-        return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
+    private IteratingPhase iteratingPhase(String name, SinglePackagePhaseFactory phaseFactory) {
+        return new IteratingPhase(name, packages, pkgRegistryManager, phaseFactory);
     }
 
     @Override

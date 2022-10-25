@@ -25,6 +25,7 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -363,7 +364,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         createAndDeployJar(ks, model2, releaseId2, drl1b);
 
         // try to update the container to version 1.1.0
-        kc.updateToVersion(releaseId2);
+        Results results = kc.updateToVersion(releaseId2);
+
+
 
         ksession.insert(new Person("Paul"));
 
