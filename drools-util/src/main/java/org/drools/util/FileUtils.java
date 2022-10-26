@@ -80,16 +80,11 @@ public class FileUtils {
 
 
     public static InputStream getInputStreamFromFileName(String fileName) {
-        try {
-            InputStream toReturn = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
-            if (toReturn == null) {
-                throw new RuntimeException(String.format("Failed to find %s", fileName));
-            } else {
-                return toReturn;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("Failed to find %s due to %s", fileName,
-                                                             e.getMessage()), e);
+        InputStream toReturn = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+        if (toReturn == null) {
+            throw new RuntimeException(String.format("Failed to find %s", fileName));
+        } else {
+            return toReturn;
         }
     }
 }
