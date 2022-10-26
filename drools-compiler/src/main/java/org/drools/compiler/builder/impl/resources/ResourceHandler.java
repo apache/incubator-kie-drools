@@ -108,7 +108,7 @@ public abstract class ResourceHandler {
     protected PackageDescr dslrReaderToPackageDescr(Resource resource, Reader dslrReader, DefaultExpander expander) throws DroolsParserException {
         boolean hasErrors;
         PackageDescr pkg;
-
+        this.results.clear();
         DrlParser parser = new DrlParser(configuration.getLanguageLevel());
 
         try {
