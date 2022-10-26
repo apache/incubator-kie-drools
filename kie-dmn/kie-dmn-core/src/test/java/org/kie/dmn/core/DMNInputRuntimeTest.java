@@ -41,7 +41,6 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-import static org.mockito.ArgumentMatchers.isA;
 
 public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
