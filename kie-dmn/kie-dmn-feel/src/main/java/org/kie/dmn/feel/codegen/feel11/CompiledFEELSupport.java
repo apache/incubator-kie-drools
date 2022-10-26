@@ -203,10 +203,7 @@ public class CompiledFEELSupport {
                 // list of contexts/elements as defined in the spec, page 114
                 List results = new ArrayList();
                 for (Object element : list) {
-                    Object r = fetchValue(element, names);
-                    if (r != null) {
-                        results.add(r);
-                    }
+                    results.add(fetchValue(element, names));
                 }
                 return results;
             } else {
