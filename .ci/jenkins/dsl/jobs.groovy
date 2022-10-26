@@ -393,7 +393,10 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, "optaplanner-turtle-tests-${constraintStreamImplType}", Folder.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
             "Run OptaPlanner turtle tests with CS-${constraintStreamImplType} on a weekly basis.")
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.env.put('CONSTRAINT_STREAM_IMPL_TYPE', "${constraintStreamImplType}")
+    jobParams.env.putAll([
+            CONSTRAINT_STREAM_IMPL_TYPE: "${constraintStreamImplType}",
+            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}"
+    ])
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
