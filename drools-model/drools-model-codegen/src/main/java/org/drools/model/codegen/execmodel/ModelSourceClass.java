@@ -229,6 +229,7 @@ public class ModelSourceClass {
                 kieBaseModelPackages();
                 kieBaseModelIncludes();
                 kieBaseSessionsPool();
+                kieBaseMutability();
                 sessionModels();
             }
 
@@ -246,6 +247,11 @@ public class ModelSourceClass {
             private void eventProcessingType() {
                 createEnum(stmt, kieBaseModelNameExpr, kieBaseModel.getEventProcessingMode().getClass().getCanonicalName(), kieBaseModel.getEventProcessingMode().getMode().toUpperCase(), "setEventProcessingMode");
                 createEnum(confBlock, confExpr, kieBaseModel.getEventProcessingMode().getClass().getCanonicalName(), kieBaseModel.getEventProcessingMode().getMode().toUpperCase(), "setEventProcessingMode");
+            }
+
+            private void kieBaseMutability() {
+                createEnum(stmt, kieBaseModelNameExpr, kieBaseModel.getMutability().getClass().getCanonicalName(), kieBaseModel.getMutability().toString(), "setMutability");
+                createEnum(confBlock, confExpr, kieBaseModel.getMutability().getClass().getCanonicalName(), kieBaseModel.getMutability().toString(), "setMutability");
             }
 
             private void kieBaseModelPackages() {
