@@ -25,8 +25,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertThrows;
 
 public class FileUtilsTest {
 
@@ -54,9 +52,8 @@ public class FileUtilsTest {
 
     @Test
     public void getFileInputStreamNotExisting() {
-        assertThrows(RuntimeException.class, () -> FileUtils.getFileInputStream(NOT_EXISTING_FILE));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFileInputStream(NOT_EXISTING_FILE));
     }
-
 
     @Test
     public void getInputStreamFromFileNameExisting() {
@@ -66,6 +63,6 @@ public class FileUtilsTest {
 
     @Test
     public void getInputStreamFromFileNameNotExisting() {
-        assertThrows(RuntimeException.class, () -> FileUtils.getInputStreamFromFileName(NOT_EXISTING_FILE));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getInputStreamFromFileName(NOT_EXISTING_FILE));
     }
 }
