@@ -52,6 +52,22 @@ The `@CustomShadowVariable` has been deprecated.
 Read more about xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom shadow variables] in the documentation.
 
 
+=== Planning list variable
+
+OptaPlanner now adds a limited support for planning list variables that can hold multiple planning values.
+The planning list variable provides an alternative approach to modeling planning problems that were previously modeled using the xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
+
+Both the planning list variable and the chained planning variable should be used with problems where the goal is to distribute a number of workload elements among limited resources in a specific order.
+For example, in vehicle routing, vehicles represent the limited resource and customers represent the workload elements.
+
+The chained planning variable defines a recursive data structure, in which customers form chains ending with vehicles.
+On the other hand, the planning list variable allows for a more intuitive model where each vehicle holds a list of customers it goes to.
+It is defined using the new `@PlaningListVariable` annotation.
+
+WARNING: The planning list variable is a new feature and lacks some advanced features, that are available with the chained planning variable.
+
+See xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
+
 [[releaseNotes-8.27.0.Final]]
 === OptaPlanner 8.27.0.Final
 

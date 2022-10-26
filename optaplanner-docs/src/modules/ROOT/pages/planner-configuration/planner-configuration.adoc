@@ -870,9 +870,9 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 ==== Planning list variable (VRP, Task assigning, ...)
 
 The planning list variable is a successor to the chained planning variable.
-All problems that have previously been modelled using the <<chainedPlanningVariable, chained planning variable>> can now be modelled using the planning list variable.
+All problems that have previously been modeled using the <<chainedPlanningVariable, chained planning variable>> can now be modeled using the planning list variable.
 
-For example, the Vehicle Routing problem can be modelled as follows:
+For example, the Vehicle Routing problem can be modeled as follows:
 
 image::use-cases-and-examples/vehicle-routing/vehicleRoutingClassDiagram.png[]
 

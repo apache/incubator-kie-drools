@@ -152,8 +152,8 @@ public class Customer {
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
 
 
-[[listVariableShadows]]
-== List variable shadows
+[[listVariableShadowVariables]]
+== List variable shadow variables
 
 When the planning entity uses a xref:planner-configuration/planner-configuration.adoc#planningListVariable[list variable], its elements can use a number of built-in shadow variables.
 
