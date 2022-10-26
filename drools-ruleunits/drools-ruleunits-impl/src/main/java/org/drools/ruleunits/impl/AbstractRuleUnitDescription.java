@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
@@ -81,6 +82,11 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
 
     public RuleUnitConfig getConfig() {
         return config;
+    }
+
+    @Override
+    public ClockTypeOption getClockType() {
+        return (config.getDefaultedClockType() == org.drools.ruleunits.api.conf.ClockType.PSEUDO) ? ClockTypeOption.PSEUDO : ClockTypeOption.REALTIME;
     }
 
     @Override

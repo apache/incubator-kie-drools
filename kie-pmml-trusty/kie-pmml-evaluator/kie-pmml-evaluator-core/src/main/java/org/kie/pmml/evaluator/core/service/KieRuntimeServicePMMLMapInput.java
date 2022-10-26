@@ -15,28 +15,28 @@
  */
 package org.kie.pmml.evaluator.core.service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-import org.kie.pmml.api.runtime.PMMLRuntimeContext;
-import org.kie.pmml.evaluator.core.PMMLRuntimeContextImpl;
-import org.kie.pmml.evaluator.core.model.EfestoInputPMML;
 import org.kie.pmml.evaluator.core.model.EfestoOutputPMML;
 
 import static org.kie.pmml.commons.Constants.PMML_STRING;
 import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.canManageEfestoInput;
-import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputPMML;
+import static org.kie.pmml.evaluator.core.utils.PMMLRuntimeHelper.executeEfestoInputFromMap;
 
-public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeContext, PMML4Result, EfestoInputPMML,
-        EfestoOutputPMML, EfestoRuntimeContext> {
+public class KieRuntimeServicePMMLMapInput implements KieRuntimeService<Map<String, Object>, PMML4Result,
+        EfestoInput<Map<String, Object>>, EfestoOutputPMML, EfestoRuntimeContext> {
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(EfestoInputPMML.class, PMMLRuntimeContextImpl.class);
+        return new EfestoClassKey(BaseEfestoInput.class, HashMap.class);
     }
 
     @Override
@@ -45,8 +45,9 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
     }
 
     @Override
-    public Optional<EfestoOutputPMML> evaluateInput(EfestoInputPMML toEvaluate, EfestoRuntimeContext context) {
-        return executeEfestoInputPMML(toEvaluate, context);
+    public Optional<EfestoOutputPMML> evaluateInput(EfestoInput<Map<String, Object>> toEvaluate,
+                                                    EfestoRuntimeContext context) {
+        return executeEfestoInputFromMap(toEvaluate, context);
     }
 
     @Override

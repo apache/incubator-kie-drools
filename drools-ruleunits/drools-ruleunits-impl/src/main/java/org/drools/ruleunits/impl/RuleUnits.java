@@ -23,6 +23,8 @@ public interface RuleUnits {
 
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
 
+    void register(InternalRuleUnit<?> unit);
+
     void register(String name, RuleUnitInstance<?> unitInstance);
 
     RuleUnitInstance<?> getRegisteredInstance(String name);
