@@ -1636,4 +1636,73 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertThat(results).containsExactly(expectedResults);
     }
+
+    @Test
+    public void testBindOnlyProp() {
+        // DROOLS-7214
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "dialect \"mvel\"\n" +
+                           "rule R when\n" +
+                           "    $p : Person( name == \"Mario\", $age : age )\n" +
+                           "then\n" +
+                           "    modify($p) { age = $age + 1 };\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10); // intentional loop
+
+        assertThat(fired).isEqualTo(10);
+    }
+
+    @Test
+    public void testBindOnlyPropMap() {
+        // DROOLS-7214
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "dialect \"mvel\"\n" +
+                           "rule R when\n" +
+                           "    $p : Person( name == \"Mario\", $map : itemsString )\n" +
+                           "then\n" +
+                           "    $p.itemsString[\"B\"] = \"itemB\";\n" +
+                           "    modify($p) { itemsString = $p.itemsString };\n" +
+                           "end\n";
+        System.out.println(str);
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        p.getItemsString().put("A", "itemA");
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10); // intentional loop
+
+        assertThat(fired).isEqualTo(10);
+    }
+
+    @Test
+    public void testBindOnlyPropMapAccessOperator() {
+        // DROOLS-7214
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "dialect \"mvel\"\n" +
+                           "rule R when\n" +
+                           "    $p : Person( name == \"Mario\", $mapDataA : itemsString[\"A\"] )\n" +
+                           "then\n" +
+                           "    $p.itemsString[\"B\"] = \"itemB\";\n" +
+                           "    modify($p) { itemsString = $p.itemsString };\n" +
+                           "end\n";
+        System.out.println(str);
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        p.getItemsString().put("A", "itemA");
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10); // intentional loop
+
+        assertThat(fired).isEqualTo(10);
+    }
 }
