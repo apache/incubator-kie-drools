@@ -1670,7 +1670,6 @@ public class PropertyReactivityTest extends BaseModelTest {
                            "    $p.itemsString[\"B\"] = \"itemB\";\n" +
                            "    modify($p) { itemsString = $p.itemsString };\n" +
                            "end\n";
-        System.out.println(str);
 
         KieSession ksession = getKieSession(str);
 
@@ -1694,12 +1693,36 @@ public class PropertyReactivityTest extends BaseModelTest {
                            "    $p.itemsString[\"B\"] = \"itemB\";\n" +
                            "    modify($p) { itemsString = $p.itemsString };\n" +
                            "end\n";
-        System.out.println(str);
 
         KieSession ksession = getKieSession(str);
 
         Person p = new Person("Mario", 40);
         p.getItemsString().put("A", "itemA");
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10); // intentional loop
+
+        assertThat(fired).isEqualTo(10);
+    }
+
+    @Test
+    public void testBindOnlyPropListAccessOperator() {
+        // DROOLS-7214
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "import " + Address.class.getCanonicalName() + ";\n" +
+                           "dialect \"mvel\"\n" +
+                           "rule R when\n" +
+                           "    $p : Person( name == \"Mario\", $listData0 : addresses[0] )\n" +
+                           "then\n" +
+                           "    $p.addresses.add(new Address(\"C\"));\n" +
+                           "    modify($p) { addresses = $p.addresses };\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("Mario", 40);
+        p.getAddresses().add(new Address("A"));
+        p.getAddresses().add(new Address("B"));
         ksession.insert(p);
         int fired = ksession.fireAllRules(10); // intentional loop
 
