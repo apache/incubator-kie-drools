@@ -30,6 +30,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "not( true )", Boolean.FALSE , null},
                 { "not( false )", Boolean.TRUE , null},
                 { "not( 10 = 3 )", Boolean.TRUE , null},
+                { "not( 100e-1 = 3 )", Boolean.TRUE , null},
                 { "not(list contains([1,2,3,4,5,6], 3))", Boolean.FALSE , null},
                 { "not( \"foo\" )", null, FEELEvent.Severity.ERROR},
                 {"{x : 10, r : not( x = 3 )}.r", Boolean.TRUE, null},
@@ -40,6 +41,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "10 between 20 and 30", Boolean.FALSE , null},
                 { "10 between 5 and \"foo\"", null , FEELEvent.Severity.ERROR},
                 { "10 between 20 and \"foo\"", Boolean.FALSE , FEELEvent.Severity.ERROR},
+                { "100e-1 between 5 and 12", Boolean.TRUE , null},
                 {"\"foo\" between 5 and 12", null , FEELEvent.Severity.ERROR},
                 { "\"foo\" between \"bar\" and \"zap\"", Boolean.TRUE , null},
                 { "\"foo\" between null and \"zap\"", null , FEELEvent.Severity.ERROR},
@@ -49,6 +51,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
 
                 // in operator
                 { "10 in ( 3, 5*2, 20 )", Boolean.TRUE , null},
+                { "10 in ( 3, 100e-1, 20 )", Boolean.TRUE , null},
                 { "null in ( 10, \"foo\", null )", Boolean.TRUE , null},
                 { "\"foo\" in ( \"bar\", \"baz\" )", Boolean.FALSE , null},
                 { "\"foo\" in null", null , FEELEvent.Severity.ERROR},
@@ -75,6 +78,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
 
                 // instance of
                 {"10 instance of number", Boolean.TRUE , null},
+                {"100e-1 instance of number", Boolean.TRUE , null},
                 {"\"foo\" instance of string", Boolean.TRUE , null},
                 {"date(\"2016-08-11\") instance of date", Boolean.TRUE , null},
                 {"time(\"23:59:00\") instance of time", Boolean.TRUE , null},
