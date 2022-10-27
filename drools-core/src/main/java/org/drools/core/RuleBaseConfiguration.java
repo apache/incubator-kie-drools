@@ -888,6 +888,7 @@ public class RuleBaseConfiguration
     }
 
     public void setMutabilityEnabled( boolean mutabilityEnabled ) {
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.mutabilityEnabled = mutabilityEnabled;
     }
 

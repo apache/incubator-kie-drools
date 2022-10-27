@@ -28,6 +28,11 @@ import org.kie.api.conf.KieBaseOption;
  * Basic provider class for KieBaseModel instances.
  */
 public interface KieBaseModelProvider {
+    int IDENTITY = 1 << 0;
+    int STREAM_MODE = 1 << 1;
+    int ALPHA_NETWORK_COMPILER = 1 << 2;
+    int IMMUTABLE = 1 << 3;
+
     KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
     KieBaseConfiguration getKieBaseConfiguration();
     void setAdditionalKieBaseOptions(KieBaseOption... options);
@@ -35,4 +40,5 @@ public interface KieBaseModelProvider {
     boolean isStreamMode();
     Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass();
     boolean useAlphaNetworkCompiler();
+    boolean isImmutable();
 }

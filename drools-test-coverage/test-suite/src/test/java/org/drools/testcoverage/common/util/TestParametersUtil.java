@@ -65,6 +65,10 @@ public final class TestParametersUtil {
                                                     final EngineTestConfiguration[] engineConfigurations) {
         final Set<EngineTestConfiguration> engineTestConfigurationSet = new HashSet<>(Arrays.asList(engineConfigurations));
 
+        if (testConfiguration.isImmutable() && !engineTestConfigurationSet.contains(EngineTestConfiguration.IMMUTABLE_KIE_BASE)) {
+            return false;
+        }
+
         if (testConfiguration.isStreamMode() && !engineTestConfigurationSet.contains(EngineTestConfiguration.STREAM_MODE)) {
             return false;
         }
@@ -112,7 +116,8 @@ public final class TestParametersUtil {
     public static Collection<Object[]> getKieBaseConfigurations() {
         final List<EngineTestConfiguration> engineTestConfigurations = Arrays.stream(EngineTestConfiguration.values())
                 .filter(config -> (TEST_WITH_ALPHA_NETWORK || config != EngineTestConfiguration.ALPHA_NETWORK_COMPILER_TRUE)
-                        && config != EngineTestConfiguration.EQUALITY_MODE)
+                        && config != EngineTestConfiguration.EQUALITY_MODE
+                        && config != EngineTestConfiguration.IMMUTABLE_KIE_BASE)
                 .collect(Collectors.toList());
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
     }

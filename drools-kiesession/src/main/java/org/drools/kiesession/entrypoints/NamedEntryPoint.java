@@ -327,7 +327,13 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
                 // the handle might have been disconnected, so reconnect if it has
                 if (handle.isDisconnected()) {
-                    handle = this.objectStore.reconnect(handle);
+                    InternalFactHandle reconnectedHandle = this.objectStore.reconnect(handle);
+                    if (reconnectedHandle == null) {
+                        handle.setDisconnected(false);
+                        insert(handle, object, null, null, getObjectTypeConfigurationRegistry().getObjectTypeConf(object));
+                        return handle;
+                    }
+                    handle = reconnectedHandle;
                 }
 
                 final Object originalObject = handle.getObject();
