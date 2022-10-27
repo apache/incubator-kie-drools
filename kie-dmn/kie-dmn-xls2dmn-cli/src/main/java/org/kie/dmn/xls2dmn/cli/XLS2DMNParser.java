@@ -186,19 +186,11 @@ public class XLS2DMNParser implements DecisionTableParser {
             dt.setOutputLabel(hi.getSheetName());
             dt.setId("ddt_" + CodegenStringUtil.escapeIdentifier(hi.getSheetName()));
             dt.setHitPolicy(HitPolicy.ANY);
-            for (String ri : hi.getRequiredInput()) {
+            for (String req : hi.getOriginal().subList(0, hi.gethIndex())) {
                 InputClause ic = new TInputClause();
-                ic.setLabel(ri);
+                ic.setLabel(req);
                 LiteralExpression le = new TLiteralExpression();
-                le.setText(ri);
-                ic.setInputExpression(le);
-                dt.getInput().add(ic);
-            }
-            for (String rd : hi.getRequiredDecision()) {
-                InputClause ic = new TInputClause();
-                ic.setLabel(rd);
-                LiteralExpression le = new TLiteralExpression();
-                le.setText(rd);
+                le.setText(req);
                 ic.setInputExpression(le);
                 dt.getInput().add(ic);
             }
