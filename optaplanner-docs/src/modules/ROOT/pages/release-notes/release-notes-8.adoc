@@ -49,7 +49,7 @@ We always test our releases against the long-term supported versions of the JDK,
 
 The `@CustomShadowVariable` has been deprecated.
 
-Read more about link:https://www.optaplanner.org/docs/optaplanner/latest/shadow-variable/shadow-variable.html#customVariableListener[custom shadow variables] in the documentation.
+Read more about xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom shadow variables] in the documentation.
 
 
 [[releaseNotes-8.27.0.Final]]
@@ -79,7 +79,7 @@ We encourage users to check out the https://github.com/kiegroup/optaplanner-quic
 
 ==== Score DRL deprecated in favor of Constraint Streams
 
-Support for Score DRL has been deprecated and users are encouraged to migrate to https://www.optaplanner.org/docs/optaplanner/latest/constraint-streams/constraint-streams.html[Constraint Streams] at their earliest convenience.
+Support for Score DRL has been deprecated and users are encouraged to migrate to xref:constraint-streams/constraint-streams.adoc[Constraint Streams] at their earliest convenience.
 link:https://www.optaplanner.org/download/upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
 Score DRL is not going away in OptaPlanner 8.
 
@@ -99,7 +99,7 @@ the problem change has been passed to a user-defined `Consumer`.
 ==== Real-time planning available on the `SolverManager`
 
 The `SolverManager` now accepts problem changes via the `addProblemChange()` method,
-allowing for https://www.optaplanner.org/docs/optaplanner/latest/repeated-planning/repeated-planning.html#realTimePlanning[real-time planning]
+allowing for xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]
 without much boilerplate code.
 
 ==== Faster `Solver` creation
@@ -135,7 +135,7 @@ OptaPlanner is now fully compatible with the recently released https://quarkus.i
 
 ==== OptaPlanner quickstarts repository
 
-There is a new `quarkus-call-center` quickstart that shows https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#realTimePlanning[real-time planning] of incoming calls in a call center.
+There is a new `quarkus-call-center` quickstart that shows xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning] of incoming calls in a call center.
 
 image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
 
@@ -145,8 +145,8 @@ image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
 
 ==== Mapping in Constraint Streams
 
-The link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API] received a major new functionality.
-You can now modify your streams using link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsMappingTuples[mapping functions].
+The xref:constraint-streams/constraint-streams.adoc[Constraint Streams API] received a major new functionality.
+You can now modify your streams using xref:constraint-streams/constraint-streams.adoc#constraintStreamsMappingTuples[mapping functions].
 
 ==== Ready for OpenJDK 16
 
@@ -155,9 +155,9 @@ so that your experience with the recently released link:https://openjdk.java.net
 
 ==== Inject and Autowire ConstraintVerifier in Quarkus and Spring Boot
 
-You can now link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTestingQuarkus[inject the Constraint Verifier in Quarkus] and
-link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTestingSpringBoot[autowire the Constraint Verifier in Spring Boot], allowing
-you to link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsTesting[test your constraint streams] more easily.
+You can now xref:constraint-streams/constraint-streams.adoc#constraintStreamsTestingQuarkus[inject the Constraint Verifier in Quarkus] and
+xref:constraint-streams/constraint-streams.adoc#constraintStreamsTestingSpringBoot[autowire the Constraint Verifier in Spring Boot], allowing
+you to xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[test your constraint streams] more easily.
 
 ==== OptaWebs on Quarkus
 
@@ -171,7 +171,7 @@ Client-server communication, that was previously done using WebSockets, now uses
 
 ==== Faster Domain Accessors and Cloning with Gizmo
 
-We have added link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#domainAccess[Gizmo generated domain accessors and solution
+We have added xref:planner-configuration/planner-configuration.adoc#domainAccess[Gizmo generated domain accessors and solution
 cloners], which offer better performance than the reflection based
 domain accessors and solution cloners.
 
@@ -185,18 +185,18 @@ There is a new `activemq-quarkus-school-timetabling` quickstart that shows how t
 
 ==== Major performance improvements for Constraint Streams
 
-The default implementation of the link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API]
+The default implementation of the xref:constraint-streams/constraint-streams.adoc[Constraint Streams API]
 has seen major performance improvements.
 Use cases with tri and quad streams may experience order of magnitude speedups.
-Use cases with link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsGroupingAndCollectors[grouping]
+Use cases with xref:constraint-streams/constraint-streams.adoc#constraintStreamsGroupingAndCollectors[grouping]
 are likely to experience some speedups too, albeit comparatively smaller.
 
 Kudos to the link:https://drools.org/[Drools] team for helping make this possible!
 
 ==== Constraint Streams `groupBy()` overloads for multiple collectors
 
-The link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreams[Constraint Streams API]
-has been extended to allow using more than 2 collectors in a single link:https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#constraintStreamsGroupingAndCollectors[grouping].
+The xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams API]
+has been extended to allow using more than 2 collectors in a single xref:constraint-streams/constraint-streams.adoc#constraintStreamsGroupingAndCollectors[grouping].
 The following is now possible:
 
 [source,java]
