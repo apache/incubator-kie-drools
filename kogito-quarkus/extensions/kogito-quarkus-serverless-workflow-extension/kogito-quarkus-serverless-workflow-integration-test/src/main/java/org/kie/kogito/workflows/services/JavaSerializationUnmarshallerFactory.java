@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.test;
+package org.kie.kogito.workflows.services;
 
-import org.kie.kogito.event.EventEmitter;
-import org.kie.kogito.event.impl.AbstractMessageProducer;
+import org.kie.kogito.event.CloudEventUnmarshaller;
+import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 
-@org.springframework.stereotype.Component()
-public class MessageProducer extends AbstractMessageProducer<$DataType$> {
+public class JavaSerializationUnmarshallerFactory implements CloudEventUnmarshallerFactory<Object> {
 
-    @org.springframework.beans.factory.annotation.Autowired()
-    MessageProducer(EventEmitter emitter) {
-        super(emitter,"$Trigger$");
+    @Override
+    public <S> CloudEventUnmarshaller<Object, S> unmarshaller(Class<S> targetClass) {
+        return new JavaSerializationUnmarshaller<>(targetClass);
     }
 }

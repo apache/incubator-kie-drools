@@ -15,8 +15,11 @@
  */
 package org.kie.kogito.event;
 
+import java.util.function.Function;
+
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventContext;
+import io.cloudevents.CloudEventData;
 
 /**
  * Represents top level data event structure that can be emitted
@@ -65,5 +68,5 @@ public interface DataEvent<T> extends CloudEventContext {
 
     String getKogitoProcessType();
 
-    CloudEvent asCloudEvent();
+    CloudEvent asCloudEvent(Function<T, CloudEventData> converter);
 }

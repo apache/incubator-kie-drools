@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.test;
+package org.kie.kogito.event.impl;
 
-import org.kie.kogito.event.EventEmitter;
-import org.kie.kogito.event.impl.AbstractMessageProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@org.springframework.stereotype.Component()
-public class MessageProducer extends AbstractMessageProducer<$DataType$> {
+public class JacksonCloudEventDataFactory<T> extends AbstractCloudEventDataFactory<T> {
 
-    @org.springframework.beans.factory.annotation.Autowired()
-    MessageProducer(EventEmitter emitter) {
-        super(emitter,"$Trigger$");
+    private final ObjectMapper mapper;
+
+    public JacksonCloudEventDataFactory(ObjectMapper objectMapper) {
+        this.mapper = objectMapper;
+    }
+
+    @Override
+    protected byte[] toBytes(T event) throws JsonProcessingException {
+        return mapper.writeValueAsBytes(event);
     }
 }

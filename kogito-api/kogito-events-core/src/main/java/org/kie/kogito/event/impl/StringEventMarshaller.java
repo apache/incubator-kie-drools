@@ -16,15 +16,11 @@
 package org.kie.kogito.event.impl;
 
 import org.kie.kogito.event.EventMarshaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class StringEventMarshaller implements EventMarshaller<String> {
-
-    private static final Logger logger = LoggerFactory.getLogger(StringEventMarshaller.class);
 
     private final ObjectMapper mapper;
 
@@ -33,13 +29,7 @@ public class StringEventMarshaller implements EventMarshaller<String> {
     }
 
     @Override
-    public <T> String marshall(T event) {
-        logger.debug("Marshalling event {}", event);
-        try {
-            return mapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            logger.error("Error marshalling event {}", event);
-            throw new IllegalStateException(e);
-        }
+    public <T> String marshall(T event) throws JsonProcessingException {
+        return mapper.writeValueAsString(event);
     }
 }

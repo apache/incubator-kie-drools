@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * This interface is one of the extension point for customers to incorporate more event formats when NOT using cloud events.
  * It is responsible for converting objects received in the external service format into business objects consumed by Kogito.
- * Default implementation of Kogito uses Jackson and JSON.
+ * Default implementation of Kogito uses Jackson.
  *
  * @param <S> the external service object type
  */

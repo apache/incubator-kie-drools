@@ -34,8 +34,17 @@ public class ChannelMappingStrategy {
 
     private static final String OUTGOING_PREFIX = "mp.messaging.outgoing.";
     private static final String INCOMING_PREFIX = "mp.messaging.incoming.";
-    private static final String INCOMING_TRIGGER = "kogito.addon.messaging.incoming.trigger.";
-    private static final String OUTGOING_TRIGGER = "kogito.addon.messaging.outgoing.trigger.";
+
+    private static final String KOGITO_MESSAGING_PREFIX = "kogito.addon.messaging.";
+    private static final String KOGITO_INCOMING_PREFIX = "kogito.addon.messaging.incoming.";
+    private static final String KOGITO_OUTGOING_PREFIX = "kogito.addon.messaging.outgoing.";
+    private static final String INCOMING_TRIGGER = KOGITO_INCOMING_PREFIX + "trigger.";
+    private static final String OUTGOING_TRIGGER = KOGITO_OUTGOING_PREFIX + "trigger.";
+    private static final String INCOMING_DEFAULT_CHANNEL = KOGITO_INCOMING_PREFIX + "defaultName";
+    private static final String OUTGOING_DEFAULT_CHANNEL = KOGITO_OUTGOING_PREFIX + "defaultName";
+
+    private static final String MARSHALLER_PREFIX = KOGITO_MESSAGING_PREFIX + "marshaller.";
+    private static final String UNMARSHALLLER_PREFIX = KOGITO_MESSAGING_PREFIX + "unmarshaller.";
 
     private static Config config = ConfigProvider.getConfig();
 
@@ -52,8 +61,8 @@ public class ChannelMappingStrategy {
         }
 
         Collection<ChannelInfo> result = new ArrayList<>();
-        final String defaultIncomingChannel = config.getOptionalValue("kogito.addon.messaging.incoming.defaultName", String.class).orElse(KogitoEventStreams.INCOMING);
-        final String defaultOutgoingChannel = config.getOptionalValue("kogito.addon.messaging.outgoing.defaultName", String.class).orElse(KogitoEventStreams.OUTGOING);
+        final String defaultIncomingChannel = config.getOptionalValue(INCOMING_DEFAULT_CHANNEL, String.class).orElse(KogitoEventStreams.INCOMING);
+        final String defaultOutgoingChannel = config.getOptionalValue(OUTGOING_DEFAULT_CHANNEL, String.class).orElse(KogitoEventStreams.OUTGOING);
         for (String property : config.getPropertyNames()) {
             if (property.startsWith(INCOMING_PREFIX) && property.endsWith(".connector")) {
                 result.add(getChannelInfo(property, INCOMING_PREFIX, true, defaultIncomingChannel, inTriggers));
@@ -80,7 +89,7 @@ public class ChannelMappingStrategy {
         String name = property.substring(prefix.length(), property.lastIndexOf('.'));
         return new ChannelInfo(name, triggers.getOrDefault(name, Collections.singleton(name)),
                 getClassName(config.getOptionalValue(getPropertyName(prefix, name, "value." + (isInput ? "deserializer" : "serializer")), String.class)), isInput,
-                name.equals(defaultChannelName));
+                name.equals(defaultChannelName), config.getOptionalValue((isInput ? UNMARSHALLLER_PREFIX : MARSHALLER_PREFIX) + name, String.class));
     }
 
     private static String getClassName(Optional<String> serializerClassName) {

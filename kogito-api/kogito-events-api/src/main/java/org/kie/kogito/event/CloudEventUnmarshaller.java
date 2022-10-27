@@ -21,7 +21,7 @@ import io.cloudevents.CloudEventData;
 /**
  * This interface is one of the extension point for customers to incorporate more event formats when using cloud events.
  * It is responsible for converting objects received in the external service format into Cloud Events consumed by Kogito.
- * Default implementation of Kogito uses Jackson and JSON.
+ * Default implementation uses Jackson.
  *
  * @param <I> the external service object type
  * @param <O> kogito business object type
@@ -36,7 +36,7 @@ public interface CloudEventUnmarshaller<I, O> {
     Converter<I, CloudEvent> cloudEvent();
 
     /**
-     * Create Cloud Event Data from bynary event payload
+     * Create Cloud Event from binary event payload
      * 
      * @return Cloud Event Data
      */

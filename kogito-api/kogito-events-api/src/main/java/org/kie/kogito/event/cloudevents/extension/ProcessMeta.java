@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.process.meta;
+package org.kie.kogito.event.cloudevents.extension;
 
-import org.kie.kogito.event.cloudevents.extension.KogitoProcessExtension;
+import java.util.Collections;
+
+import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ERROR;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_PENDING;
+import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_SUSPENDED;
 
 /**
  * Holds Process Metadata Information from a given process.
@@ -42,11 +51,34 @@ public class ProcessMeta extends KogitoProcessExtension {
             meta.setKogitoRootProcessInstanceId(pi.getRootProcessInstanceId());
             meta.setKogitoProcessId(pi.getProcessId());
             meta.setKogitoRootProcessId(pi.getRootProcessId());
-            meta.setKogitoProcessInstanceState(String.valueOf(pi.getState()));
+            meta.setKogitoProcessInstanceState(fromState(pi.getState()));
             meta.setKogitoReferenceId(pi.getReferenceId());
             meta.setKogitoBusinessKey(pi.getBusinessKey());
+            meta.setKogitoProcessType(pi.getProcess().getType());
+            if (pi.unwrap() != null) {
+                pi.unwrap().correlation().map(c -> c instanceof CompositeCorrelation ? ((CompositeCorrelation) c).getValue() : Collections.singleton(c))
+                        .ifPresent(correlations -> correlations.forEach(c -> meta.addExtension(c.getKey(), c.asString())));
+            }
         }
         return meta;
     }
 
+    private static String fromState(int state) {
+        switch (state) {
+            case STATE_ABORTED:
+                return "Aborted";
+            case STATE_ACTIVE:
+                return "Active";
+            case STATE_COMPLETED:
+                return "Completed";
+            case STATE_ERROR:
+                return "Error";
+            case STATE_PENDING:
+                return "Pending";
+            case STATE_SUSPENDED:
+                return "Suspended";
+            default:
+                return null;
+        }
+    }
 }

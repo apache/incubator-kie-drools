@@ -16,13 +16,11 @@
 package org.kie.kogito.eventdriven.decision;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +32,7 @@ import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.DecisionTestUtils;
 import org.kie.kogito.dmn.DmnDecisionModel;
+import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;
@@ -44,17 +43,13 @@ import org.kie.kogito.event.impl.CloudEventConverter;
 import org.kie.kogito.event.impl.ObjectCloudEventUnmarshallerFactory;
 import org.mockito.ArgumentCaptor;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.ExtensionProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.dmn.DecisionTestUtils.DECISION_SERVICE_NODE_NAME;
 import static org.kie.kogito.dmn.DecisionTestUtils.MODEL_NAME;
@@ -108,19 +103,6 @@ class EventDrivenDecisionControllerTest {
             "    \"type\": \"SomeType\",\n" +
             "    \"data\": {}\n" +
             "}";
-
-    private static final List<RequestData> REQUEST_DATA_BAD_REQUEST = Stream.of(
-            new RequestData(null, null, null, null),
-            new RequestData("aName", null, null, null),
-            new RequestData(null, "aNamespace", null, null),
-            new RequestData(null, null, null, "{}"),
-            new RequestData("aName", "aNamespace", null, null),
-            new RequestData("aName", null, null, "{}"),
-            new RequestData(null, "aNamespace", null, "{}")).collect(Collectors.toList());
-
-    private static final RequestData REQUEST_DATA_MODEL_NOT_FOUND = new RequestData("aName", "aNamespace", null, "{}");
-
-    private static final RequestData REQUEST_DATA_NULL_CONTEXT = new RequestData(MODEL_NAME, MODEL_NAMESPACE, null, null);
 
     private static final RequestData REQUEST_DATA_EVALUATE_ALL = new RequestData(MODEL_NAME, MODEL_NAMESPACE, null, "" +
             "{\n" +
@@ -199,23 +181,24 @@ class EventDrivenDecisionControllerTest {
     @Test
     void testHandleEventWithIgnoredCloudEvent() throws IOException {
         testEventReceiver.accept(CLOUDEVENT_IGNORED);
-        verify(eventEmitterMock, never()).emit(any(), any(), any());
+        verify(eventEmitterMock, never()).emit(any());
     }
 
     @Test
     void testHandleEventWithValidCloudEventProducingOkEvaluateAll() throws IOException {
-        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_ALL, (cloudEvent, kogitoExtension, responseEvent) -> {
+        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_ALL, kogitoExtension -> {
             assertNull(kogitoExtension.getExecutionId());
             verify(decisionModelSpy).evaluateAll(notNull());
             verify(decisionModelSpy, never()).evaluateDecisionService(any(), any());
             clearInvocations(decisionModelSpy);
         });
+
     }
 
     @Test
     void testHandleEventWithValidCloudEventWithExecutionIdProducingOkEvaluateAll() throws IOException {
         mockDecisionModelWithExecutionIdSupplier();
-        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_ALL, (cloudEvent, kogitoExtension, responseEvent) -> {
+        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_ALL, kogitoExtension -> {
             assertEquals(TEST_EXECUTION_ID, kogitoExtension.getExecutionId());
             verify(decisionModelSpy).evaluateAll(notNull());
             verify(decisionModelSpy, never()).evaluateDecisionService(any(), any());
@@ -225,26 +208,28 @@ class EventDrivenDecisionControllerTest {
 
     @Test
     void testHandleEventWithValidCloudEventProducingOkEvaluateDecisionService() throws IOException {
-        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_DECISION_SERVICE, (cloudEvent, kogitoExtension, responseEvent) -> {
+        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_DECISION_SERVICE, kogitoExtension -> {
             assertNull(kogitoExtension.getExecutionId());
             verify(decisionModelSpy, never()).evaluateAll(any());
             verify(decisionModelSpy).evaluateDecisionService(notNull(), notNull());
             clearInvocations(decisionModelSpy);
         });
+
     }
 
     @Test
     void testHandleEventWithValidCloudEventWithExecutionIdProducingOkEvaluateDecisionService() throws IOException {
         mockDecisionModelWithExecutionIdSupplier();
-        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_DECISION_SERVICE, (cloudEvent, kogitoExtension, responseEvent) -> {
+        testAllDefaultAndFullCloudEventEmittedCombinations(REQUEST_DATA_EVALUATE_DECISION_SERVICE, kogitoExtension -> {
             assertEquals(TEST_EXECUTION_ID, kogitoExtension.getExecutionId());
             verify(decisionModelSpy, never()).evaluateAll(any());
             verify(decisionModelSpy).evaluateDecisionService(notNull(), notNull());
             clearInvocations(decisionModelSpy);
         });
+
     }
 
-    private void assertSubject(CloudEvent event) {
+    private void assertSubject(DataEvent<?> event) {
         assertNotNull(event.getSubject());
         assertEquals(CLOUDEVENT_SUBJECT, event.getSubject());
     }
@@ -276,16 +261,16 @@ class EventDrivenDecisionControllerTest {
     }
 
     private <T> void testCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, Class<T> responseDataClass, String expectedType,
-            TriConsumer<CloudEvent, KogitoExtension, T> callback) throws IOException {
+            TriConsumer<DataEvent<T>, KogitoExtension, T> callback) throws IOException {
         try {
-            ArgumentCaptor<Map> eventCaptor = ArgumentCaptor.forClass(Map.class);
+            ArgumentCaptor<DataEvent<T>> eventCaptor = ArgumentCaptor.forClass(DataEvent.class);
 
             String inputEvent = cloudEventOkWith(requestData, fullResult, filteredCtx);
             testEventReceiver.accept(inputEvent);
 
-            verify(eventEmitterMock).emit(eventCaptor.capture(), any(), any());
+            verify(eventEmitterMock).emit(eventCaptor.capture());
 
-            CloudEvent emittedCloudEvent = CloudEventUtils.decode(objectMapper.writeValueAsString(eventCaptor.getValue())).get();
+            DataEvent<T> emittedCloudEvent = eventCaptor.getValue();
 
             assertEquals(expectedType, emittedCloudEvent.getType());
 
@@ -300,50 +285,36 @@ class EventDrivenDecisionControllerTest {
             assertEquals(requestData.getModelNamespace(), kogitoExtension.getDmnModelNamespace());
             assertEquals(requestData.getDecision(), kogitoExtension.getDmnEvaluateDecision());
 
-            Optional<T> optResponseEvent = CloudEventUtils.decodeData(emittedCloudEvent, responseDataClass);
-
-            if (!optResponseEvent.isPresent()) {
-                fail("Can't decode emitted CloudEvent data of: " + emittedCloudEvent);
-            }
-
             assertSubject(emittedCloudEvent);
 
             if (callback != null) {
-                callback.accept(emittedCloudEvent, kogitoExtension, optResponseEvent.get());
+                callback.accept(emittedCloudEvent, kogitoExtension, emittedCloudEvent.getData());
             }
         } finally {
             reset(eventEmitterMock);
         }
     }
 
-    private void testDefaultCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, TriConsumer<CloudEvent, KogitoExtension, JsonNode> callback)
+    private void testDefaultCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, Consumer<KogitoExtension> callback)
             throws IOException {
-        testCloudEventEmitted(requestData, fullResult, filteredCtx, JsonNode.class, RESPONSE_EVENT_TYPE, (cloudEvent, kogitoExtension, data) -> {
-            if (data.isObject()) {
-                assertFalse(data.hasNonNull("namespace"));
-                assertFalse(data.hasNonNull("modelName"));
-                assertFalse(data.hasNonNull("dmnContext"));
-                assertFalse(data.hasNonNull("messages"));
-                assertFalse(data.hasNonNull("decisionResults"));
-            }
-            callback.accept(cloudEvent, kogitoExtension, data);
+        testCloudEventEmitted(requestData, fullResult, filteredCtx, Map.class, RESPONSE_EVENT_TYPE, (cloudEvent, kogitoExtension, data) -> {
+            callback.accept(kogitoExtension);
         });
     }
 
-    private void testFullCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, TriConsumer<CloudEvent, KogitoExtension, JsonNode> callback)
+    private void testFullCloudEventEmitted(RequestData requestData, Boolean fullResult, Boolean filteredCtx, Consumer<KogitoExtension> callback)
             throws IOException {
-        testCloudEventEmitted(requestData, fullResult, filteredCtx, JsonNode.class, RESPONSE_FULL_EVENT_TYPE, (cloudEvent, kogitoExtension, data) -> {
-            assertTrue(data.isObject());
-            assertTrue(data.hasNonNull("namespace"));
-            assertTrue(data.hasNonNull("modelName"));
-            assertTrue(data.hasNonNull("dmnContext"));
-            assertTrue(data.hasNonNull("messages"));
-            assertTrue(data.hasNonNull("decisionResults"));
-            callback.accept(cloudEvent, kogitoExtension, data);
+        testCloudEventEmitted(requestData, fullResult, filteredCtx, KogitoDMNResult.class, RESPONSE_FULL_EVENT_TYPE, (cloudEvent, kogitoExtension, data) -> {
+            assertNotNull(data.getNamespace());
+            assertNotNull(data.getModelName());
+            assertNotNull(data.getDmnContext());
+            assertNotNull(data.getMessages());
+            assertNotNull(data.getDecisionResults());
+            callback.accept(kogitoExtension);
         });
     }
 
-    private void testAllDefaultAndFullCloudEventEmittedCombinations(RequestData requestData, TriConsumer<CloudEvent, KogitoExtension, JsonNode> consumer) throws IOException {
+    private void testAllDefaultAndFullCloudEventEmittedCombinations(RequestData requestData, Consumer<KogitoExtension> consumer) throws IOException {
         testDefaultCloudEventEmitted(requestData, null, null, consumer);
         testDefaultCloudEventEmitted(requestData, null, false, consumer);
         testDefaultCloudEventEmitted(requestData, null, true, consumer);

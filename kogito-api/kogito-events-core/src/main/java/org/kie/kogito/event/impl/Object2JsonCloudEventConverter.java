@@ -31,7 +31,7 @@ public class Object2JsonCloudEventConverter extends AbstractCloudEventConverter<
 
     @Override
     protected CloudEvent toValue(Object value) throws IOException {
-        return objectMapper.readValue(value.toString(), CloudEvent.class);
+        return value instanceof CloudEvent ? (CloudEvent) value : objectMapper.readValue(value.toString(), CloudEvent.class);
     }
 
 }

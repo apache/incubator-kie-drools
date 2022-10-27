@@ -20,6 +20,7 @@ import java.util.Map;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -45,9 +46,8 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
                 metaData.get(ProcessInstanceEventBody.PROCESS_ID_META_DATA),
                 metaData.get(ProcessInstanceEventBody.ROOT_PROCESS_ID_META_DATA),
                 addons);
-
-        this.kogitoUserTaskinstanceState = metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA);
-        this.kogitoUserTaskinstanceId = metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA);
+        addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE, metaData.get(UserTaskInstanceEventBody.UT_STATE_META_DATA));
+        addExtensionAttribute(CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID, metaData.get(metaData.get(UserTaskInstanceEventBody.UT_ID_META_DATA)));
     }
 
     public String getKogitoUserTaskinstanceId() {
@@ -56,5 +56,20 @@ public class UserTaskInstanceDataEvent extends AbstractDataEvent<UserTaskInstanc
 
     public String getKogitoUserTaskinstanceState() {
         return kogitoUserTaskinstanceState;
+    }
+
+    @Override
+    @JsonAnySetter
+    public void addExtensionAttribute(String name, Object value) {
+        if (value != null) {
+            switch (name) {
+                case CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_STATE:
+                    this.kogitoUserTaskinstanceState = (String) value;
+                    break;
+                case CloudEventExtensionConstants.PROCESS_USER_TASK_INSTANCE_ID:
+                    this.kogitoUserTaskinstanceId = (String) value;
+            }
+            super.addExtensionAttribute(name, value);
+        }
     }
 }

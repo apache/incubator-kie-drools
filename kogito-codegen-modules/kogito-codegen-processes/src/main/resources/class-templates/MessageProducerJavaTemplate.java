@@ -15,6 +15,7 @@
  */
 package com.myspace.demo;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.kie.kogito.event.EventMarshaller;
@@ -39,7 +40,7 @@ public class MessageProducer extends org.kie.kogito.event.impl.AbstractMessagePr
 
     }
 
-    private String marshall(KogitoProcessInstance pi, $Type$ eventData) {
+    private String marshall(KogitoProcessInstance pi, $Type$ eventData) throws IOException {
         return marshaller.marshall(useCloudEvents.orElse(true) ? new ProcessDataEvent<>(
                 "",
                 "",

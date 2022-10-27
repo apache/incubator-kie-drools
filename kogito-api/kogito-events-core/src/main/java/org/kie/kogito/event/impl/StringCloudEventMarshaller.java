@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,32 @@
  */
 package org.kie.kogito.event.impl;
 
-import org.kie.kogito.event.EventMarshaller;
+import java.io.IOException;
+import java.util.function.Function;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.kie.kogito.event.CloudEventMarshaller;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ByteArrayEventMarshaller implements EventMarshaller<byte[]> {
+import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventData;
+
+public class StringCloudEventMarshaller implements CloudEventMarshaller<String> {
+
     private final ObjectMapper mapper;
 
-    public ByteArrayEventMarshaller(ObjectMapper mapper) {
+    public StringCloudEventMarshaller(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
     @Override
-    public <T> byte[] marshall(T event) throws JsonProcessingException {
-        return mapper.writeValueAsBytes(event);
+    public String marshall(CloudEvent event) throws IOException {
+        return mapper.writeValueAsString(event);
     }
+
+    @Override
+    public <T> Function<T, CloudEventData> cloudEventDataFactory() {
+        return new JacksonCloudEventDataFactory<>(mapper);
+    }
+
 }

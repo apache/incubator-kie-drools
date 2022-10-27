@@ -16,6 +16,7 @@
 package $Package$;
 
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,9 +34,13 @@ public class $Trigger$EventEmitter extends AbstractQuarkusCloudEventEmitter<$Typ
     @Inject
     @Channel("$Trigger$")
     Emitter<$Type$> emitter;
-
+    
     @Override
     protected void emit (Message<$Type$> message) {
         emitter.send(message);
+    }
+    
+    @PostConstruct
+    void init () {
     }
 }

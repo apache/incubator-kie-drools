@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event.impl;
+package org.kie.kogito.workflows.services;
 
 import java.io.IOException;
 
-import org.kie.kogito.event.Converter;
+import org.kie.kogito.event.impl.AbstractCloudEventDataConverter;
 
 import io.cloudevents.CloudEventData;
-import io.cloudevents.core.data.BytesCloudEventData;
 
-public class ObjectCloudEventDataConverter implements Converter<Object, CloudEventData> {
+public class JavaSerializationCloudEventDataConverter<O> extends AbstractCloudEventDataConverter<O> {
+
+    protected JavaSerializationCloudEventDataConverter(Class<O> targetClass) {
+        super(targetClass);
+    }
+
     @Override
-    public CloudEventData convert(Object value) throws IOException {
-        if (value instanceof CloudEventData) {
-            return (CloudEventData) value;
-        }
-        return value == null ? null : BytesCloudEventData.wrap(value.toString().getBytes());
+    protected O toValue(CloudEventData cloudEventData) throws IOException {
+        return JavaSerializationUtils.fromBytes(cloudEventData.toBytes(), targetClass);
     }
 }

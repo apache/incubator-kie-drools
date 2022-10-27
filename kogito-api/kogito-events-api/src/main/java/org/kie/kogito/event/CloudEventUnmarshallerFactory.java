@@ -19,7 +19,6 @@ package org.kie.kogito.event;
  * This interface is one of the extension point for customers to incorporate more event formats when using cloud events.
  * It is responsible for creating CloudEventUnmarshaller instance for an specific business target class.
  *
- * @param <S> Kogito business object type
  * @param <T> External service object type
  */
 public interface CloudEventUnmarshallerFactory<T> {

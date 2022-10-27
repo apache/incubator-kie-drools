@@ -47,11 +47,11 @@ public class ProcessDataEvent<T> extends AbstractDataEvent<T> {
                 kogitoProcessId,
                 kogitoRootProcessId,
                 kogitoAddons);
-        this.kogitoProcessInstanceVersion = kogitoProcessInstanceVersion;
-        this.kogitoParentProcessInstanceId = kogitoParentProcessInstanceId;
-        this.kogitoProcessInstanceState = kogitoProcessInstanceState;
-        this.kogitoReferenceId = kogitoReferenceId;
-        this.kogitoProcessType = kogitoProcessType;
+        setKogitoProcessInstanceVersion(kogitoProcessInstanceVersion);
+        setKogitoParentProcessInstanceId(kogitoParentProcessInstanceId);
+        setKogitoProcessInstanceState(kogitoProcessInstanceState);
+        setKogitoReferenceId(kogitoReferenceId);
+        setKogitoProcessType(kogitoProcessType);
     }
 
 }

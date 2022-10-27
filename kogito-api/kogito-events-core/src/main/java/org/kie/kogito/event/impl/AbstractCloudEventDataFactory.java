@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.test;
+package org.kie.kogito.event.impl;
 
-import org.kie.kogito.event.EventEmitter;
-import org.kie.kogito.event.impl.AbstractMessageProducer;
+import java.io.IOException;
+import java.util.function.Function;
 
-@org.springframework.stereotype.Component()
-public class MessageProducer extends AbstractMessageProducer<$DataType$> {
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 
-    @org.springframework.beans.factory.annotation.Autowired()
-    MessageProducer(EventEmitter emitter) {
-        super(emitter,"$Trigger$");
+import io.cloudevents.CloudEventData;
+
+public abstract class AbstractCloudEventDataFactory<T> implements Function<T, CloudEventData> {
+
+    @Override
+    public CloudEventData apply(T event) {
+        return CloudEventUtils.fromObject(event, this::toBytes);
     }
+
+    protected abstract byte[] toBytes(T event) throws IOException;
+
 }

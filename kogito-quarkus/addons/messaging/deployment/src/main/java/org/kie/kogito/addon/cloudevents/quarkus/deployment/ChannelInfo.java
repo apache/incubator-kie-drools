@@ -16,6 +16,7 @@
 package org.kie.kogito.addon.cloudevents.quarkus.deployment;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class ChannelInfo {
 
@@ -26,12 +27,15 @@ public class ChannelInfo {
     private final boolean isInput;
     private final boolean isDefault;
 
-    public ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault) {
+    private final Optional<String> marshaller;
+
+    public ChannelInfo(String channelName, Collection<String> triggers, String className, boolean isInput, boolean isDefault, Optional<String> marshaller) {
         this.className = className;
         this.channelName = channelName;
         this.isInput = isInput;
         this.isDefault = isDefault;
         this.triggers = triggers;
+        this.marshaller = marshaller;
     }
 
     public Collection<String> getTriggers() {
@@ -74,6 +78,10 @@ public class ChannelInfo {
 
     public boolean isOutputDefault() {
         return !isInput && isDefault;
+    }
+
+    public Optional<String> getMarshaller() {
+        return marshaller;
     }
 
 }

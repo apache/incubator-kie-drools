@@ -24,24 +24,23 @@ import io.cloudevents.core.data.PojoCloudEventData;
 import io.cloudevents.jackson.JsonCloudEventData;
 import io.cloudevents.jackson.PojoCloudEventDataMapper;
 
-public class POJOCloudEventDataConverter<O> extends AbstractCloudEventDataConverter<O> {
+public class POJOJacksonCloudEventDataConverter<O> extends AbstractCloudEventDataConverter<O> {
 
     private ObjectMapper objectMapper;
-    private Class<O> outputClass;
 
-    public POJOCloudEventDataConverter(ObjectMapper objectMapper, Class<O> outputClass) {
+    public POJOJacksonCloudEventDataConverter(ObjectMapper objectMapper, Class<O> outputClass) {
+        super(outputClass);
         this.objectMapper = objectMapper;
-        this.outputClass = outputClass;
     }
 
     @Override
     protected O toValue(CloudEventData value) throws IOException {
         if (value instanceof PojoCloudEventData) {
-            return PojoCloudEventDataMapper.from(objectMapper, outputClass).map(value).getValue();
+            return PojoCloudEventDataMapper.from(objectMapper, targetClass).map(value).getValue();
         } else if (value instanceof JsonCloudEventData) {
-            return objectMapper.convertValue(((JsonCloudEventData) value).getNode(), outputClass);
+            return objectMapper.convertValue(((JsonCloudEventData) value).getNode(), targetClass);
         } else {
-            return objectMapper.readValue(value.toBytes(), outputClass);
+            return objectMapper.readValue(value.toBytes(), targetClass);
         }
     }
 }

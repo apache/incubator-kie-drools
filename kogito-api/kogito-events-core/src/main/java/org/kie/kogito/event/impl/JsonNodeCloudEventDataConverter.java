@@ -16,6 +16,7 @@
 package org.kie.kogito.event.impl;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +29,17 @@ public class JsonNodeCloudEventDataConverter extends AbstractCloudEventDataConve
     private ObjectMapper objectMapper;
 
     public JsonNodeCloudEventDataConverter(ObjectMapper objectMapper) {
+        super(JsonNode.class);
         this.objectMapper = objectMapper;
     }
 
     @Override
+    protected Optional<JsonNode> isTargetInstanceAlready(CloudEventData value) {
+        return value instanceof JsonCloudEventData ? Optional.of(((JsonCloudEventData) value).getNode()) : super.isTargetInstanceAlready(value);
+    }
+
+    @Override
     protected JsonNode toValue(CloudEventData value) throws IOException {
-        return value instanceof JsonCloudEventData ? ((JsonCloudEventData) value).getNode() : objectMapper.readTree(value.toBytes());
+        return objectMapper.readTree(value.toBytes());
     }
 }

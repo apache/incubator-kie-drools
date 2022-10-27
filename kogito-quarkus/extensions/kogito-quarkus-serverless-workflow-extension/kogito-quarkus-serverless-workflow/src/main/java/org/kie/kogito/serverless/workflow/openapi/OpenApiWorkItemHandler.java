@@ -24,8 +24,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 
+import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.meta.ProcessMeta;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 

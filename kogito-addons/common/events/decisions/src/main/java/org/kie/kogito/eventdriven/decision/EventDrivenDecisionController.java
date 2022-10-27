@@ -18,7 +18,6 @@ package org.kie.kogito.eventdriven.decision;
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -32,6 +31,7 @@ import org.kie.kogito.decision.DecisionModels;
 import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.DataEventFactory;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
@@ -39,7 +39,6 @@ import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.ExtensionProvider;
 
 /**
@@ -82,12 +81,24 @@ public class EventDrivenDecisionController {
         if (CloudEventUtils.isValidRequest(event, REQUEST_EVENT_TYPE, kogitoExtension)) {
             getDecisionModel(kogitoExtension.getDmnModelNamespace(), kogitoExtension.getDmnModelName())
                     .map(model -> processRequest(model, event, kogitoExtension))
-                    .flatMap(result -> buildResponseCloudEvent(result, event, kogitoExtension))
-                    .ifPresentOrElse(e -> eventEmitter.emit(e, e.getType(), Optional.empty()), () -> LOG.warn("Discarding request because not model is found for {}", kogitoExtension));
+                    .ifPresentOrElse(result -> eventEmitter.emit(buildResponseEvent(result, event, kogitoExtension)),
+                            () -> LOG.warn("Discarding request because not model is found for {}", kogitoExtension));
         } else {
             LOG.warn("Event {} is not valid. Ignoring it", event);
         }
         return CompletableFuture.completedFuture(null);
+    }
+
+    private DataEvent<?> buildResponseEvent(DMNResult result, DataEvent<Map> srcEvent, KogitoExtension extension) {
+        URI source = buildResponseCloudEventSource(extension);
+        Optional<String> subject = Optional.ofNullable(srcEvent.getSubject());
+        KogitoExtension publishedExtension = publishedExtension(extension, result);
+        KogitoDMNResult restResult = new KogitoDMNResult(extension.getDmnModelNamespace(), extension.getDmnModelName(), result);
+        if (CloudEventUtils.safeBoolean(extension.isDmnFilteredCtx())) {
+            restResult.getDmnContext().keySet().removeAll(srcEvent.getData().keySet());
+        }
+        return CloudEventUtils.safeBoolean(extension.isDmnFullResult()) ? DataEventFactory.from(restResult, RESPONSE_FULL_EVENT_TYPE, source, subject, publishedExtension)
+                : DataEventFactory.from(restResult.getDmnContext(), RESPONSE_EVENT_TYPE, source, subject, publishedExtension);
     }
 
     private DMNResult processRequest(DecisionModel model, DataEvent<Map> event, KogitoExtension kogitoExtension) {
@@ -103,19 +114,6 @@ public class EventDrivenDecisionController {
             LOG.warn("Model not found with name=\"{}\" namespace=\"{}\"", modelName, modelNamespace);
             return Optional.empty();
         }
-    }
-
-    private Optional<CloudEvent> buildResponseCloudEvent(DMNResult result, DataEvent<Map> event, KogitoExtension extension) {
-        String id = UUID.randomUUID().toString();
-        URI source = buildResponseCloudEventSource(extension);
-        String subject = event.getSubject();
-        KogitoExtension publishedExtension = publishedExtension(extension, result);
-        KogitoDMNResult restResult = new KogitoDMNResult(extension.getDmnModelNamespace(), extension.getDmnModelName(), result);
-        if (CloudEventUtils.safeBoolean(extension.isDmnFilteredCtx())) {
-            restResult.getDmnContext().keySet().removeAll(event.getData().keySet());
-        }
-        return CloudEventUtils.safeBoolean(extension.isDmnFullResult()) ? CloudEventUtils.build(id, source, RESPONSE_FULL_EVENT_TYPE, subject, restResult, publishedExtension)
-                : CloudEventUtils.build(id, source, RESPONSE_EVENT_TYPE, subject, restResult.getDmnContext(), publishedExtension);
     }
 
     private static KogitoExtension publishedExtension(KogitoExtension extension, DMNResult result) {

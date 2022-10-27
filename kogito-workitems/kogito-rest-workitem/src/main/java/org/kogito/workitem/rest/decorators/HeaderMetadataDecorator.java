@@ -17,8 +17,8 @@ package org.kogito.workitem.rest.decorators;
 
 import java.util.Map;
 
+import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.meta.ProcessMeta;
 
 import io.vertx.mutiny.ext.web.client.HttpRequest;
 

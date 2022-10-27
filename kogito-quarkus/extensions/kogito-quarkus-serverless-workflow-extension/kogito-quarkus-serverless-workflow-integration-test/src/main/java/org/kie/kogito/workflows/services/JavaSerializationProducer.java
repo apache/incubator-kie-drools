@@ -13,12 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
 
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+package org.kie.kogito.workflows.services;
 
-import io.cloudevents.CloudEvent;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
-public interface CloudEventFactory {
-    CloudEvent build(Object data, String trigger, KogitoProcessInstance pi);
+import org.kie.kogito.addon.quarkus.messaging.common.ChannelFormat;
+import org.kie.kogito.event.CloudEventUnmarshallerFactory;
+
+@ApplicationScoped
+public class JavaSerializationProducer {
+
+    @Produces
+    @Named("java")
+    @ChannelFormat
+    public CloudEventUnmarshallerFactory<Object> getJavaCloudEventUnmarshallerFactory() {
+        return new JavaSerializationUnmarshallerFactory();
+    }
+
 }

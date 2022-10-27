@@ -15,9 +15,7 @@
  */
 package org.kie.kogito.event.impl;
 
-import java.util.Optional;
-
-import org.kie.kogito.event.CloudEventFactory;
+import org.kie.kogito.event.DataEventFactory;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
@@ -29,7 +27,6 @@ public abstract class AbstractMessageProducer<D> {
 
     private String trigger;
     private EventEmitter emitter;
-    private CloudEventFactory eventFactory;
 
     // in general, we should favor the non-empty constructor
     // but there is an issue with Quarkus https://github.com/quarkusio/quarkus/issues/2949#issuecomment-513017781
@@ -37,18 +34,18 @@ public abstract class AbstractMessageProducer<D> {
     public AbstractMessageProducer() {
     }
 
-    public AbstractMessageProducer(EventEmitter emitter, String trigger, CloudEventFactory cloudEventFactory) {
-        init(emitter, trigger, cloudEventFactory);
+    public AbstractMessageProducer(EventEmitter emitter, String trigger) {
+        init(emitter, trigger);
     }
 
-    protected void init(EventEmitter emitter, String trigger, CloudEventFactory cloudEventFactory) {
+    protected void init(EventEmitter emitter, String trigger) {
         this.emitter = emitter;
         this.trigger = trigger;
-        this.eventFactory = cloudEventFactory;
+
     }
 
     public void produce(KogitoProcessInstance pi, D eventData) {
-        emitter.emit(eventData, trigger, Optional.of(e -> eventFactory.build(e, trigger, pi)))
+        emitter.emit(DataEventFactory.from(eventData, trigger, pi))
                 .exceptionally(ex -> {
                     logger.error("An error was caught while process " + pi.getProcessId() + " produced message " + eventData, ex);
                     return null;

@@ -16,16 +16,37 @@
 package org.kie.kogito.event.impl;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.kie.kogito.event.Converter;
 
 import io.cloudevents.CloudEventData;
+import io.cloudevents.core.data.PojoCloudEventData;
 
 public abstract class AbstractCloudEventDataConverter<O> implements Converter<CloudEventData, O> {
 
+    protected final Class<O> targetClass;
+
+    protected AbstractCloudEventDataConverter(Class<O> targetClass) {
+        this.targetClass = targetClass;
+    }
+
     @Override
     public O convert(CloudEventData value) throws IOException {
-        return value == null ? null : toValue(value);
+        if (value == null) {
+            return null;
+        }
+        return isTargetInstanceAlready(value).orElse(toValue(value));
+    }
+
+    protected Optional<O> isTargetInstanceAlready(CloudEventData value) {
+        if (value instanceof PojoCloudEventData) {
+            Object pojo = ((PojoCloudEventData<?>) value).getValue();
+            if (targetClass.isAssignableFrom(pojo.getClass())) {
+                return Optional.of(targetClass.cast(pojo));
+            }
+        }
+        return Optional.empty();
     }
 
     protected abstract O toValue(CloudEventData value) throws IOException;

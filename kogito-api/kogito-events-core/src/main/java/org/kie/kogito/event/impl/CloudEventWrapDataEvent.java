@@ -19,8 +19,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import org.kie.kogito.event.Converter;
 import org.kie.kogito.event.DataEvent;
@@ -37,6 +39,7 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     private final AtomicReference<T> data;
 
     public CloudEventWrapDataEvent(CloudEvent cloudEvent, Converter<CloudEventData, T> unmarshaller) {
+        Objects.requireNonNull(unmarshaller, "A cloudevent data wrapper should be associated to an unmarshaller");
         this.cloudEvent = cloudEvent;
         this.unmarshaller = unmarshaller;
         data = new AtomicReference<>();
@@ -107,10 +110,10 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
         if (result == null) {
             try {
                 result = unmarshaller.convert(cloudEventData);
+                data.set(result);
             } catch (IOException io) {
                 throw new UncheckedIOException(io);
             }
-            data.set(result);
         }
         return result;
     }
@@ -176,7 +179,7 @@ public class CloudEventWrapDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public CloudEvent asCloudEvent() {
+    public CloudEvent asCloudEvent(Function<T, CloudEventData> factory) {
         return cloudEvent;
     }
 

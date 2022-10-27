@@ -22,13 +22,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEventData;
 
-class JacksonMarshallUtils {
+public class CloudEventDataConverterFactory {
 
-    static <O> Converter<CloudEventData, O> getDataConverter(Class<O> targetClass, ObjectMapper objectMapper) {
+    public static <O> Converter<CloudEventData, O> getDataConverter(Class<O> targetClass, ObjectMapper objectMapper) {
         return JsonNode.class.isAssignableFrom(targetClass) ? (Converter<CloudEventData, O>) new JsonNodeCloudEventDataConverter(objectMapper)
-                : new POJOCloudEventDataConverter<>(objectMapper, targetClass);
+                : new POJOJacksonCloudEventDataConverter<>(objectMapper, targetClass);
     }
 
-    private JacksonMarshallUtils() {
+    private CloudEventDataConverterFactory() {
     }
 }

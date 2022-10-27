@@ -15,20 +15,24 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.CloudEventMarshaller;
+import org.kie.kogito.event.impl.ByteArrayCloudEventMarshaller;
+import org.kie.kogito.workflows.services.JavaSerializationMarshaller;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
@@ -43,45 +47,45 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @QuarkusIntegrationTest
 class EventFlowIT {
 
+    private static Map<String, CloudEventMarshaller<byte[]>> marshallers;
+
+    private static CloudEventMarshaller<byte[]> defaultMarshaller;
+
     @BeforeAll
     static void init() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setup() {
-        objectMapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule()).configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        ObjectMapper mapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+        marshallers = Map.of("quiet", new JavaSerializationMarshaller());
+        defaultMarshaller = new ByteArrayCloudEventMarshaller(mapper);
     }
 
     @Test
-    void testNotStartingEvent() {
+    void testNotStartingEvent() throws IOException {
         doIt("nonStartEvent", "move");
     }
 
     @Test
-    void testNotStartingMultipleEvent() {
+    void testNotStartingMultipleEvent() throws IOException {
         doIt("nonStartMultipleEvent", "quiet", "never");
     }
 
     @Test
-    void testNotStartingMultipleEventTimeout() {
+    void testNotStartingMultipleEventTimeout() throws IOException {
         doIt("nonStartMultipleEventTimeout", "eventTimeout1", "eventTimeout2");
     }
 
     @Test
-    void testNotStartingMultipleEventTimeoutExclusive() {
+    void testNotStartingMultipleEventTimeoutExclusive() throws IOException {
         doIt("nonStartMultipleEventTimeoutExclusive");
     }
 
     @Test
-    void testNotStartingMultipleEventExclusive() {
+    void testNotStartingMultipleEventExclusive() throws IOException {
         doIt("nonStartMultipleEventExclusive", "event1Exclusive");
     }
 
     @Test
-    void testNotStartingMultipleEventRainy() {
+    void testNotStartingMultipleEventRainy() throws IOException {
         final String flowName = "nonStartMultipleEvent";
         final String id = startProcess(flowName);
         sendEvents(id, "quiet");
@@ -110,7 +114,8 @@ class EventFlowIT {
 
     }
 
-    private void sendEvents(String id, String... eventTypes) {
+    private void sendEvents(String id, String... eventTypes) throws IOException {
+
         for (String eventType : eventTypes) {
             given()
                     .contentType(ContentType.JSON)
@@ -133,25 +138,26 @@ class EventFlowIT {
                         .statusCode(404));
     }
 
-    private void doIt(String flowName, String... eventTypes) {
+    private void doIt(String flowName, String... eventTypes) throws IOException {
         String id = startProcess(flowName);
         sendEvents(id, eventTypes);
         waitForFinish(flowName, id, Duration.ofSeconds(15));
-
     }
 
-    private String generateCloudEvent(String id, String type) {
-        try {
-            return objectMapper.writeValueAsString(CloudEventBuilder.v1()
-                    .withId(UUID.randomUUID().toString())
-                    .withSource(URI.create(""))
-                    .withType(type)
-                    .withTime(OffsetDateTime.now())
-                    .withExtension("kogitoprocrefid", id)
-                    .withData(objectMapper.writeValueAsBytes(Collections.singletonMap(type, "This has been injected by the event")))
-                    .build());
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        }
+    private byte[] generateCloudEvent(String id, String type) throws IOException {
+        CloudEventMarshaller<byte[]> marshaller = marshallers.getOrDefault(type, defaultMarshaller);
+        return marshaller.marshall(buildCloudEvent(id, type, marshaller));
     }
+
+    private CloudEvent buildCloudEvent(String id, String type, CloudEventMarshaller<byte[]> marshaller) {
+        return CloudEventBuilder.v1()
+                .withId(UUID.randomUUID().toString())
+                .withSource(URI.create(""))
+                .withType(type)
+                .withTime(OffsetDateTime.now())
+                .withExtension("kogitoprocrefid", id)
+                .withData(marshaller.cloudEventDataFactory().apply(Collections.singletonMap(type, "This has been injected by the event")))
+                .build();
+    }
+
 }
