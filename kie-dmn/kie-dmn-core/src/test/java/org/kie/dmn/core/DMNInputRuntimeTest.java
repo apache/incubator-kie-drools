@@ -175,18 +175,33 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testInputNumberEvaluateAll() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0002-input-data-number.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0002-input-data-number" );
+        inputNumberEvaluateAll(
+            "0002-input-data-number.dmn", 
+            "0002-input-data-number");
+    }
+
+    @Test
+    public void testInputNumberEvaluateAllDMNWithScientificNotation() {
+        inputNumberEvaluateAll(
+            "0002-input-data-number-scientific-notation.dmn", 
+            "0002-input-data-number-scientific-notation");
+    }
+
+    private void inputNumberEvaluateAll(final String testDMNFileName, final String modelName) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(testDMNFileName, this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", modelName);
         assertThat(dmnModel).isNotNull();
 
         final DMNContext context = DMNFactory.newContext();
-        context.set( "Monthly Salary", new BigDecimal( 1000 ) );
+        context.set("Monthly Salary", new BigDecimal(1000));
 
-        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
         final DMNContext result = dmnResult.getContext();
 
-        assertThat( result.get( "Yearly Salary" )).isEqualTo(new BigDecimal( 12000 ) );
+        final Object resultValue = result.get("Yearly Salary");
+        assertThat(resultValue).isInstanceOf(BigDecimal.class);
+        assertThat((BigDecimal) resultValue).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal(12000));
     }
 
     @Test

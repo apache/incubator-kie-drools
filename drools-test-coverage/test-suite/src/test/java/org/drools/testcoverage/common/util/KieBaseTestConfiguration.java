@@ -29,6 +29,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
 
 /**
@@ -42,7 +43,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is not used.
      */
-    CLOUD_IDENTITY(true, false, false),
+    CLOUD_IDENTITY(IDENTITY),
 
     /**
      * Represents KieBase configuration with
@@ -50,7 +51,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is not used.
      */
-    CLOUD_IDENTITY_ALPHA_NETWORK(true, false, true),
+    CLOUD_IDENTITY_ALPHA_NETWORK(IDENTITY + ALPHA_NETWORK_COMPILER),
 
     /**
      * Represents KieBase configuration with
@@ -58,7 +59,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_IDENTITY_MODEL_PATTERN(true, false, false, ExecutableModelProject.class),
+    CLOUD_IDENTITY_MODEL_PATTERN(IDENTITY, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -66,7 +67,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(true, false, true, ExecutableModelProject.class),
+    CLOUD_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(IDENTITY + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -74,7 +75,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is not used.
      */
-    CLOUD_EQUALITY(false, false, false),
+    CLOUD_EQUALITY(0),
 
     /**
      * Represents KieBase configuration with
@@ -82,7 +83,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is not used.
      */
-    CLOUD_EQUALITY_ALPHA_NETWORK(false, false, true),
+    CLOUD_EQUALITY_ALPHA_NETWORK(ALPHA_NETWORK_COMPILER),
 
     /**
      * Represents KieBase configuration with
@@ -90,7 +91,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_EQUALITY_MODEL_PATTERN(false, false, false, ExecutableModelProject.class),
+    CLOUD_EQUALITY_MODEL_PATTERN(0, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -98,7 +99,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(false, false, true, ExecutableModelProject.class),
+    CLOUD_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -106,7 +107,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is not used.
      */
-    STREAM_IDENTITY(true, true, false),
+    STREAM_IDENTITY(IDENTITY + STREAM_MODE),
 
     /**
      * Represents KieBase configuration with
@@ -114,7 +115,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model is not used.
      */
-    STREAM_IDENTITY_ALPHA_NETWORK(true, true, true),
+    STREAM_IDENTITY_ALPHA_NETWORK(IDENTITY + STREAM_MODE + ALPHA_NETWORK_COMPILER),
 
     /**
      * Represents KieBase configuration with
@@ -122,7 +123,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_IDENTITY_MODEL_PATTERN(true, true, false, ExecutableModelProject.class),
+    STREAM_IDENTITY_MODEL_PATTERN(IDENTITY + STREAM_MODE, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -130,7 +131,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.IDENTITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(true, true, true, ExecutableModelProject.class),
+    STREAM_IDENTITY_MODEL_PATTERN_ALPHA_NETWORK(IDENTITY + STREAM_MODE + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -138,7 +139,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is not used.
      */
-    STREAM_EQUALITY(false, true, false),
+    STREAM_EQUALITY(STREAM_MODE),
 
     /**
      * Represents KieBase configuration with
@@ -146,7 +147,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model is not used.
      */
-    STREAM_EQUALITY_ALPHA_NETWORK(false, true, true),
+    STREAM_EQUALITY_ALPHA_NETWORK(STREAM_MODE + ALPHA_NETWORK_COMPILER),
 
     /**
      * Represents KieBase configuration with
@@ -154,7 +155,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_EQUALITY_MODEL_PATTERN(false, true, false, ExecutableModelProject.class),
+    STREAM_EQUALITY_MODEL_PATTERN(STREAM_MODE, ExecutableModelProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -162,26 +163,39 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
-    STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(false, true, true, ExecutableModelProject.class);
+    STREAM_EQUALITY_MODEL_PATTERN_ALPHA_NETWORK(STREAM_MODE + ALPHA_NETWORK_COMPILER, ExecutableModelProject.class),
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model is not used.
+     */
+    CLOUD_IDENTITY_IMMUTABLE(IDENTITY + IMMUTABLE),
+
+    /**
+     * Represents KieBase configuration with
+     * <code>EventProcessingOption.CLOUD</code> and
+     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
+     * Canonical rule model with pattern dialect is used.
+     */
+    CLOUD_IDENTITY_IMMUTABLE_MODEL_PATTERN(IDENTITY + IMMUTABLE, ExecutableModelProject.class);
+
 
     public static final String KIE_BASE_MODEL_NAME = "KieBaseModelName";
 
     private static List<KieBaseOption> additionalKieBaseOptions = Collections.emptyList();
 
-    private boolean identity;
-    private boolean streamMode;
-    private final boolean alphaNetworkCompiler;
+    private final int options;
     private final Class<? extends KieBuilder.ProjectType> executableModelProjectClass;
 
-    KieBaseTestConfiguration(final boolean identity, final boolean streamMode, final boolean alphaNetworkCompiler) {
-        this(identity, streamMode, alphaNetworkCompiler, null);
+    KieBaseTestConfiguration(final int options) {
+        this(options, null);
     }
 
-    KieBaseTestConfiguration(final boolean identity, final boolean streamMode, final boolean alphaNetworkCompiler,
+    KieBaseTestConfiguration(final int options,
                              final Class<? extends KieBuilder.ProjectType> executableModelProjectClass) {
-        this.identity = identity;
-        this.streamMode = streamMode;
-        this.alphaNetworkCompiler = alphaNetworkCompiler;
+        this.options = options;
         this.executableModelProjectClass = executableModelProjectClass;
     }
 
@@ -193,17 +207,22 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
     @Override
     public boolean isIdentity() {
-        return identity;
+        return (options & IDENTITY) != 0;
     }
 
     @Override
     public boolean isStreamMode() {
-        return streamMode;
+        return (options & STREAM_MODE) != 0;
     }
 
     @Override
     public boolean useAlphaNetworkCompiler() {
-        return alphaNetworkCompiler;
+        return (options & ALPHA_NETWORK_COMPILER) != 0;
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return (options & IMMUTABLE) != 0;
     }
 
     @Override
@@ -228,6 +247,11 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         } else {
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
         }
+        if (isImmutable()) {
+            kieBaseModel.setMutability(KieBaseMutabilityOption.DISABLED);
+        } else {
+            kieBaseModel.setMutability(KieBaseMutabilityOption.ALLOWED);
+        }
         kieBaseModel.setDefault(true);
         return kieBaseModel;
     }
@@ -244,6 +268,11 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
         } else {
             kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+        }
+        if (isImmutable()) {
+            kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED);
+        } else {
+            kieBaseConfiguration.setOption(KieBaseMutabilityOption.ALLOWED);
         }
         additionalKieBaseOptions.forEach(kieBaseConfiguration::setOption);
         return kieBaseConfiguration;

@@ -56,7 +56,10 @@ public interface InternalFactHandle
     int getObjectHashCode();
     
     boolean isDisconnected();
-    
+    default void setDisconnected( boolean disconnected ) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns true if this FactHandle represents
      * and Event or false if this FactHandle represents
@@ -133,9 +136,15 @@ public interface InternalFactHandle
 
     LinkedTuples getLinkedTuples();
 
+    default boolean hasMatches() {
+        return getLinkedTuples().hasTuples();
+    }
+
     interface LinkedTuples extends Serializable {
         LinkedTuples clone();
         LinkedTuples newInstance();
+
+        boolean hasTuples();
 
         void addFirstLeftTuple( LeftTuple leftTuple );
         void addLastLeftTuple( LeftTuple leftTuple );
