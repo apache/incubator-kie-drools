@@ -80,7 +80,7 @@ We encourage users to check out the https://github.com/kiegroup/optaplanner-quic
 ==== Score DRL deprecated in favor of Constraint Streams
 
 Support for Score DRL has been deprecated and users are encouraged to migrate to https://www.optaplanner.org/docs/optaplanner/latest/constraint-streams/constraint-streams.html[Constraint Streams] at their earliest convenience.
-link:../upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
+link:https://www.optaplanner.org/download/upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
 Score DRL is not going away in OptaPlanner 8.
 
 
