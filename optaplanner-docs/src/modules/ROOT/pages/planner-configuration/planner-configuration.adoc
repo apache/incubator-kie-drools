@@ -869,10 +869,26 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 [[planningListVariable]]
 ==== Planning list variable (VRP, Task assigning, ...)
 
-The planning list variable is a successor to the chained planning variable.
-All problems that have previously been modeled using the <<chainedPlanningVariable, chained planning variable>> can now be modeled using the planning list variable.
+Use the planning list variable to model problems where the goal is to distribute a number of workload elements among limited resources in a specific order.
+This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable, chained planning variable>>.
 
-For example, the Vehicle Routing problem can be modeled as follows:
+The planning list variable is a successor to the chained planning variable and provides a more intuitive way to express the problem domain with Java classes.
+
+[WARNING]
+====
+As a new feature, planning list variable does not yet support all the advanced planning features that work with the chained planning variable.
+Do not use it, if you need any of the following planning techniques:
+
+- xref:repeated-planning/repeated-planning.adoc#overconstrainedPlanning[overconstrained planning],
+- xref:repeated-planning/repeated-planning.adoc#continuousPlanning[continuous planning] or xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[entity pinning],
+- <<planningEntityDifficulty,planning entity difficulty comparison>> or <<planningValueStrength,planning value strength comparison>>,
+- xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[nearby selection],
+- xref:exhaustive-search/exhaustive-search.adoc[exhaustive search],
+- xref:partitioned-search/partitioned-search.adoc[partitioned search],
+- coexistence with another list or basic planning variable.
+====
+
+For example, the vehicle routing problem can be modeled as follows:
 
 image::use-cases-and-examples/vehicle-routing/vehicleRoutingClassDiagram.png[]
 
@@ -902,25 +918,11 @@ Planning list variable can be used if the domain meets the following criteria:
 . Each planning value is assigned to exactly one planning entity.
 No planning value may appear in multiple entities.
 
-[WARNING]
-====
-Planning list variable is a new feature and does not yet support the following advanced features:
-
-- overconstrained planning,
-- pinning,
-- value strength comparison,
-- nearby selection,
-- construction heuristic phase configuration,
-- exhaustive search,
-- partitioned search,
-- coexistence with another list or basic planning variable.
-====
-
 
 [[chainedPlanningVariable]]
 ==== Chained planning variable (TSP, VRP, ...)
 
-Some use cases, such as TSP and Vehicle Routing, require __chaining__.
+Some use cases, such as TSP and vehicle routing, require __chaining__.
 This means the planning entities point to each other and form a chain.
 By modeling the problem as a set of chains (instead of a set of trees/loops), the search space is heavily reduced.
 
