@@ -50,7 +50,7 @@ public class ImmutableFactsTest {
     }
 
     @Test
-    public void test() {
+    public void testAlphaConstraint() {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -70,6 +70,7 @@ public class ImmutableFactsTest {
             assertThat(ksession.fireAllRules()).isEqualTo(0);
 
             Collection<?> persons = ksession.getObjects(new ClassObjectFilter(Person.class));
+            // Person("Edson") won't match any rule so it can be automatically evicted
             assertThat(persons.size()).isEqualTo(1);
             assertThat(((Person) persons.iterator().next()).getName()).isEqualTo("Mark");
 
@@ -81,6 +82,49 @@ public class ImmutableFactsTest {
             assertThat(ksession.fireAllRules()).isEqualTo(0);
             persons = ksession.getObjects(new ClassObjectFilter(Person.class));
             assertThat(persons.size()).isEqualTo(1);
+
+            p.setName("Mario");
+            ksession.update(fh, p);
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+            persons = ksession.getObjects(new ClassObjectFilter(Person.class));
+            assertThat(persons.size()).isEqualTo(2);
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testBetaConstraint() {
+        final String drl = "package org.drools.compiler\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "    $s: String()\n" +
+                "    Person( name.startsWith($s) )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("immutable-facts-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        try {
+            Person p = new Person("Edson");
+            FactHandle fh = ksession.insert(p);
+
+            ksession.insert(new Person("Mark"));
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+            Collection<?> persons = ksession.getObjects(new ClassObjectFilter(Person.class));
+            // this time nothing can be said about Person("Edson") so it cannot be automatically evicted
+            assertThat(persons.size()).isEqualTo(2);
+
+            ksession.insert("M");
+            assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+            p.setName("Sofia");
+            ksession.update(fh, p);
+            assertThat(ksession.fireAllRules()).isEqualTo(0);
+            persons = ksession.getObjects(new ClassObjectFilter(Person.class));
+            assertThat(persons.size()).isEqualTo(2);
 
             p.setName("Mario");
             ksession.update(fh, p);
