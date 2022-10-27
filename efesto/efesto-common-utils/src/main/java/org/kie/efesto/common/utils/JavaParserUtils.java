@@ -24,7 +24,7 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.util.FileUtils.getInputStreamFromFileName;
+import static org.drools.util.FileUtils.getInputStreamFromFileNameAndClassLoader;
 
 public class JavaParserUtils {
 
@@ -74,7 +74,7 @@ public class JavaParserUtils {
 
     private static CompilationUnit getFromFileName(String fileName) {
         try {
-            final InputStream resource = getInputStreamFromFileName(fileName);
+            final InputStream resource = getInputStreamFromFileNameAndClassLoader(fileName, JavaParserUtils.class.getClassLoader());
             return StaticJavaParser.parse(resource);
         } catch (Exception e) {
             throw new KieEfestoCommonException(String.format("Failed to parse %s due to %s", fileName,

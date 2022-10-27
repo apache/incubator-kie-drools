@@ -40,7 +40,7 @@ public class FileUtilsTest {
 
     @Test
     public void getFileNotExisting() {
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFile(NOT_EXISTING_FILE));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getFile(NOT_EXISTING_FILE));
     }
 
     @Test
@@ -52,17 +52,17 @@ public class FileUtilsTest {
 
     @Test
     public void getFileInputStreamNotExisting() {
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getFileInputStream(NOT_EXISTING_FILE));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getFileInputStream(NOT_EXISTING_FILE));
     }
 
     @Test
     public void getInputStreamFromFileNameExisting() {
-        InputStream retrieved = FileUtils.getInputStreamFromFileName(TEST_FILE);
+        InputStream retrieved = FileUtils.getInputStreamFromFileNameAndClassLoader(TEST_FILE, FileUtilsTest.class.getClassLoader());
         assertThat(retrieved).isNotNull();
     }
 
     @Test
     public void getInputStreamFromFileNameNotExisting() {
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> FileUtils.getInputStreamFromFileName(NOT_EXISTING_FILE));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getInputStreamFromFileNameAndClassLoader(NOT_EXISTING_FILE, FileUtilsTest.class.getClassLoader()));
     }
 }

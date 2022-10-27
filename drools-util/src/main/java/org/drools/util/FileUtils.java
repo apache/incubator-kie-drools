@@ -47,7 +47,7 @@ public class FileUtils {
                 .findFirst()
                 .orElse(null);
         if (toReturn == null) {
-            throw new RuntimeException("Failed to find file " + fileName);
+            throw new IllegalArgumentException("Failed to find file " + fileName);
         }
         return toReturn;
     }
@@ -78,9 +78,17 @@ public class FileUtils {
         return toReturn;
     }
 
-
-    public static InputStream getInputStreamFromFileName(String fileName) {
-        InputStream toReturn = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+    /**
+     * Utility method that throws a <code>IllegalArgumentException</code> if the given <b>fileName</b>
+     * is not found is the given <code>ClassLoader</code>
+     * @param fileName
+     * @param classLoader
+     * @return
+     *
+     * @throws IllegalArgumentException
+     */
+    public static InputStream getInputStreamFromFileNameAndClassLoader(String fileName, ClassLoader classLoader) {
+        InputStream toReturn = classLoader.getResourceAsStream(fileName);
         if (toReturn == null) {
             throw new IllegalArgumentException(String.format("Failed to find %s", fileName));
         } else {
