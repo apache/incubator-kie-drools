@@ -1002,10 +1002,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         typeDeclarationManager.getTypeDeclarationBuilder(),
                         globals,
                         this, // as DroolsAssemblerContext
-                        results,
                         kBase,
                         configuration);
         compositePackageCompilationPhase.process();
+        results.addAll(compositePackageCompilationPhase.getResults());
     }
 
     private void buildRules(Collection<CompositePackageDescr> packages) {

@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
@@ -39,10 +38,10 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.io.ResourceConfigurationImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.util.StringUtils;
-import org.drools.io.ResourceConfigurationImpl;
 import org.drools.wiring.api.ResourceProvider;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
@@ -61,7 +60,6 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.builder.RuleTemplateConfiguration;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.util.maven.support.DependencyFilter;
 import org.kie.util.maven.support.PomModel;
@@ -242,6 +240,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
         kbConf.setOption(kBaseModel.getDeclarativeAgenda());
         kbConf.setOption(kBaseModel.getSequential());
         kbConf.setOption(kBaseModel.getSessionsPool());
+        kbConf.setOption(kBaseModel.getMutability());
         return kbConf;
     }
 

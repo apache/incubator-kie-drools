@@ -190,7 +190,7 @@ public interface PropagationEntry {
     }
 
     class Insert extends AbstractPropagationEntry {
-        private static final transient ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
+        private static final ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
 
         private final InternalFactHandle handle;
         private final PropagationContext context;
@@ -217,6 +217,14 @@ public interface PropagationEntry {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, reteEvaluator );
             }
+            if ( isOrphanHandle(handle, reteEvaluator) ) {
+                handle.setDisconnected(true);
+                handle.getEntryPoint(reteEvaluator).getObjectStore().removeHandle( handle );
+            }
+        }
+
+        private static boolean isOrphanHandle(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
+            return !handle.hasMatches() && !reteEvaluator.getKnowledgeBase().getConfiguration().isMutabilityEnabled();
         }
 
         public void execute( ReteEvaluator reteEvaluator ) {

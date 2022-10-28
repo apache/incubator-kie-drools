@@ -65,10 +65,7 @@ public class PathExpressionNode
                 // list of contexts/elements as defined in the spec, page 114
                 List results = new ArrayList();
                 for( Object element : list ) {
-                    Object r = fetchValue( element );
-                    if( r != null ) {
-                        results.add( r );
-                    }
+                    results.add( fetchValue( element ) );
                 }
                 return results;
             } else {
