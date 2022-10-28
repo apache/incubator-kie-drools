@@ -259,8 +259,8 @@ public class DirectCompilerTest {
     public void test_filterPathSelection() {
         // Selection
         assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].y")).asList().containsExactly(BigDecimal.valueOf(2), BigDecimal.valueOf(3));
-        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2} ].y")).asList().containsExactly(BigDecimal.valueOf(2));
-        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].z")).asList().isEmpty();
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2} ].y")).asList().containsExactly(BigDecimal.valueOf(2), null);
+        assertThat(parseCompileEvaluate("[ {x:1, y:2}, {x:2, y:3} ].z")).asList().containsExactly(null, null);
     }
 
     @Test
