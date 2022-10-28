@@ -64,6 +64,7 @@ public class FileUtilsTest {
 
     @Test
     public void getInputStreamFromFileNameNotExisting() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> FileUtils.getInputStreamFromFileNameAndClassLoader(NOT_EXISTING_FILE, FileUtilsTest.class.getClassLoader()));
+        Optional<InputStream> retrieved = FileUtils.getInputStreamFromFileNameAndClassLoader(NOT_EXISTING_FILE, FileUtilsTest.class.getClassLoader());
+        assertThat(retrieved).isNotPresent();
     }
 }
