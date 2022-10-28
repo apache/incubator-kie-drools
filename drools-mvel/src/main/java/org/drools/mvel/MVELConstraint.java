@@ -535,8 +535,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         if (!isAccessor) {
-            String lookAhead = lookAheadIgnoringSpaces(expression, cursor);
-            boolean isMethodInvocation = lookAhead != null && lookAhead.equals("(");
+            Character lookAhead = lookAheadIgnoringSpaces(expression, cursor);
+            boolean isMethodInvocation = lookAhead != null && lookAhead.equals('(');
             if (isMethodInvocation) {
                 return nextPropertyName(expression, names, cursor);
             }

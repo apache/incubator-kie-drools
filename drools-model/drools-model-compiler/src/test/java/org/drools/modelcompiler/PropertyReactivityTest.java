@@ -1638,7 +1638,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
-    public void testBindOnlyProp() {
+    public void bindOnlyPropertyReacts() {
         // DROOLS-7214
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1659,7 +1659,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
-    public void testBindOnlyPropMap() {
+    public void bindOnlyMapPropertyReacts() {
         // DROOLS-7214
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1682,7 +1682,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
-    public void testBindOnlyPropMapAccessOperator() {
+    public void bindOnlyMapPropertyWithAccessOperatorReacts() {
         // DROOLS-7214
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1705,7 +1705,7 @@ public class PropertyReactivityTest extends BaseModelTest {
     }
 
     @Test
-    public void testBindOnlyPropListAccessOperator() {
+    public void bindOnlyListPropertyWithAccessOperatorReacts() {
         // DROOLS-7214
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +

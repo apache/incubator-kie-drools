@@ -1381,15 +1381,15 @@ public class StringUtils {
     public static boolean doesFirstPropHaveListMapAccessor(String expression) {
         StringBuilder propertyNameBuilder = new StringBuilder();
         int cursor = extractFirstIdentifier(expression, propertyNameBuilder, 0);
-        String nextChar = lookAheadIgnoringSpaces(expression, cursor);
-        return "[".equals(nextChar);
+        Character nextChar = lookAheadIgnoringSpaces(expression, cursor);
+        return nextChar != null && nextChar.equals('[');
     }
 
-    public static String lookAheadIgnoringSpaces(String expression, int cursor) {
+    public static Character lookAheadIgnoringSpaces(String expression, int cursor) {
         while (cursor < expression.length()) {
             char c = expression.charAt(cursor);
             if (!Character.isWhitespace(c)) {
-                return "" + c;
+                return c;
             }
             cursor++;
         }
