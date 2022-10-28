@@ -94,6 +94,9 @@ public class ProtoDomainModelProducer {
                 case BOOLEAN:
                     return Boolean.class.getName();
                 case MESSAGE:
+                    if (fd.getOption("kogito_java_class") != null) {
+                        return fd.getOption("kogito_java_class").getValue().toString();
+                    }
                     return fd.getMessageType().getFullName();
                 default:
                     return String.class.getName();

@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.index.graphql;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,12 +39,16 @@ public class DefaultDateTimeCoercingTest {
         assertThat(dateTimeCoercing.parseValue("2019-11-20T03:14:03.075Z"))
                 .isEqualTo(ZonedDateTime.parse("2019-11-20T03:14:03.075Z").truncatedTo(ChronoUnit.MILLIS).toInstant()
                         .toEpochMilli());
+        LocalDateTime testLocalDateTime = LocalDateTime.now();
+        assertThat(dateTimeCoercing.parseValue(testLocalDateTime.format(DateTimeFormatter.ISO_DATE_TIME)))
+                .isEqualTo(testLocalDateTime.truncatedTo(ChronoUnit.MILLIS).toInstant(ZoneOffset.UTC).toEpochMilli());
     }
 
     @Test
     public void testParseLiteral() {
         assertThat(dateTimeCoercing.parseLiteral(null)).isNull();
         assertThat(dateTimeCoercing.parseLiteral(new StringValue("2019-11-20T03:14:03.075Z"))).isEqualTo(1574219643075l);
+        assertThat(dateTimeCoercing.parseLiteral(new StringValue("2019-11-20T03:14:03.07"))).isEqualTo(1574219643070l);
     }
 
     @Test

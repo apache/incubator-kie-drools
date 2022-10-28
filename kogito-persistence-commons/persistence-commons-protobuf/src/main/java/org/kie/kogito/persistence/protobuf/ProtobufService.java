@@ -92,7 +92,6 @@ public class ProtobufService {
     public void registerProtoBufferType(String content) throws ProtobufValidationException {
         LOGGER.debug("Registering new ProtoBuffer file with content: \n{}", content);
 
-        content = content.replaceAll("kogito.Date", "string");
         SerializationContext ctx = createSerializationContext(kogitoDescriptors, FileDescriptorSource.fromString(DOMAIN_MODEL_PROTO_NAME, content));
         FileDescriptor desc = ctx.getFileDescriptors().get(DOMAIN_MODEL_PROTO_NAME);
         Option processIdOption = desc.getOption("kogito_id");

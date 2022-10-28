@@ -266,8 +266,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].traveller.locations[0].zipCode", is("zc1"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
-                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
-                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
+                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.34Z"))
+                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.34Z"));
 
         ProcessInstanceDataEvent endEvent = getProcessCloudEvent(processId, processInstanceId, COMPLETED, null, null, null);
         indexProcessCloudEvent(endEvent);
@@ -320,8 +320,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
-                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
-                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
+                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.34Z"))
+                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.34Z"));
 
         UserTaskInstanceDataEvent secondUserTaskEvent = getUserTaskCloudEvent(secondTaskId, processId, processInstanceId, null,
                 null, state);
@@ -378,8 +378,8 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("data.Travels[0].traveller.firstName", is("Maciej"))
                 .body("data.Travels[0].hotel.name", is("Meriton"))
                 .body("data.Travels[0].flight.flightNumber", is("MX555"))
-                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.340Z"))
-                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.340Z"));
+                .body("data.Travels[0].flight.arrival", is("2019-08-20T22:12:57.34Z"))
+                .body("data.Travels[0].flight.departure", is("2019-08-20T07:12:57.34Z"));
     }
 
     @Test

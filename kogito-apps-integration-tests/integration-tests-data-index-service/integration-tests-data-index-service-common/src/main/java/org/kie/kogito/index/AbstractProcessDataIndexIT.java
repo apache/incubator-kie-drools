@@ -80,7 +80,9 @@ public abstract class AbstractProcessDataIndexIT {
     public void testProcessInstanceEvents() throws IOException {
         String pId = given()
                 .contentType(ContentType.JSON)
-                .body("{\"traveller\" : {\"firstName\" : \"Darth\",\"lastName\" : \"Vader\",\"email\" : \"darth.vader@deathstar.com\",\"nationality\" : \"Tatooine\"}}")
+                .body("{\"traveller\" : {\"firstName\" : \"Darth\",\"lastName\" : \"Vader\",\"email\" : \"darth.vader@deathstar.com\",\"nationality\" : \"Tatooine\", " +
+                        "\"testDate\" : \"2022-03-09T23:00:00Z\", " + "    \"testInstant\": \"2022-03-10T16:15:50Z\"" +
+                        "}}")
                 .when()
                 .post("/approvals")
                 .then()
@@ -105,16 +107,20 @@ public abstract class AbstractProcessDataIndexIT {
                 .path("[0].id");
 
         if (validateDomainData()) {
+
             await()
                     .atMost(TIMEOUT)
                     .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                            .body("{ \"query\" : \"{Approvals{ id, traveller { firstName, lastName }, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
+                            .body("{ \"query\" : \"{Approvals{ id, traveller { firstName, lastName, testDate, " +
+                                    "testInstant}, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
                             .when().post("/graphql")
                             .then().statusCode(200)
                             .body("data.Approvals.size()", is(1))
                             .body("data.Approvals[0].id", is(pId))
                             .body("data.Approvals[0].traveller.firstName", is("Darth"))
                             .body("data.Approvals[0].traveller.lastName", is("Vader"))
+                            .body("data.Approvals[0].traveller.testDate", is("2022-03-09T23:00:00Z"))
+                            .body("data.Approvals[0].traveller.testInstant", is("2022-03-10T16:15:50Z"))
                             .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
                             .body("data.Approvals[0].metadata.processInstances.size()", is(1))
                             .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
@@ -660,7 +666,7 @@ public abstract class AbstractProcessDataIndexIT {
         assertEquals(2, schemaJsonNode.at("/$defs").size());
 
         assertEquals("object", schemaJsonNode.at("/$defs/Traveller/type").asText());
-        assertEquals(6, schemaJsonNode.at("/$defs/Traveller/properties").size());
+        assertEquals(8, schemaJsonNode.at("/$defs/Traveller/properties").size());
         assertEquals("#/$defs/Address", schemaJsonNode.at("/$defs/Traveller/properties/address/$ref").asText());
         assertEquals("string",
                 schemaJsonNode.at("/$defs/Traveller/properties/email/type").asText());

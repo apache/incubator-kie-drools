@@ -33,6 +33,7 @@ import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
 import org.kie.kogito.persistence.api.schema.SchemaRegistrationException;
 import org.kie.kogito.persistence.api.schema.SchemaType;
 import org.kie.kogito.persistence.infinispan.cache.ProtobufCacheService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,7 +44,10 @@ import io.quarkus.qute.TemplateInstance;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -95,12 +99,12 @@ class ProtoSchemaManagerTest {
     }
 
     @Test
-    void onSchemaRegisteredEvent() {
+    void onSchemaRegisteredEvent() throws Exception {
         String processId = "testProcessId";
         String processType = "testProcessType";
         ProcessDescriptor processDescriptor = new ProcessDescriptor(processId, processType);
         String name = "testName";
-        String content = "testContent";
+        String content = TestUtils.getTestProtoBufferFile();
         SchemaDescriptor schemaDescriptor = new SchemaDescriptor(name, content, emptyMap(), processDescriptor);
         SchemaType schemaType = new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE);
         SchemaRegisteredEvent event = new SchemaRegisteredEvent(schemaDescriptor, schemaType);
@@ -108,7 +112,20 @@ class ProtoSchemaManagerTest {
         protoSchemaManager.onSchemaRegisteredEvent(event);
 
         verify(protoSchemaAcceptor).accept(eq(schemaType));
-        verify(protobufCache).put(eq(name), eq(content));
+
+        ArgumentCaptor<String> contentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(protobufCache).put(eq(name), contentCaptor.capture());
+        assertTrue(content.contains("kogito.Date"));
+        assertFalse(contentCaptor.getValue().contains("kogito.Date"));
+        assertTrue(content.contains("kogito.Instant"));
+        assertFalse(contentCaptor.getValue().contains("kogito.Instant"));
+        assertTrue(content.contains("kogito.Serializable"));
+        assertFalse(contentCaptor.getValue().contains("kogito.Serializable"));
+
+        assertThat(contentCaptor.getValue()).isEqualTo(content.replaceAll("kogito.Date", "string")
+                .replaceAll("kogito.Instant", "string")
+                .replaceAll("kogito.Serializable", "string"));
+
         verify(processIdModelCache).put(eq(processId), eq(processType));
         verify(remoteCacheManagerAdmin).getOrCreateCache(eq(processId + "_domain"), any(BasicConfiguration.class));
         verify(cacheManager).getDomainModelCacheName(processId);

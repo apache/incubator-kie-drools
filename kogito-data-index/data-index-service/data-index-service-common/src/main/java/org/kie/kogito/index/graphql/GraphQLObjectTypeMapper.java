@@ -86,12 +86,20 @@ public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, Graph
                         type = ExtendedScalars.GraphQLLong;
                         break;
                     case "java.lang.String":
-                    case "java.util.Date":
                         type = Scalars.GraphQLString;
                         break;
                     case "java.lang.Boolean":
                         type = Scalars.GraphQLBoolean;
                         break;
+                    case "java.time.LocalDate":
+                        type = ExtendedScalars.Date;
+                        break;
+                    case "java.util.Date":
+                    case "java.time.LocalDateTime":
+                    case "java.time.ZonedDateTime":
+                    case "kogito.Date":
+                    case "kogito.Instant":
+                        field.setTypeName("DateTime");
                     default:
                         type = getGraphQLType(field, schema, additionalTypes, allTypes);
                 }

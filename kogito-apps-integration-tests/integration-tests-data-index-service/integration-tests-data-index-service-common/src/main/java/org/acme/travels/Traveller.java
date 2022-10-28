@@ -16,6 +16,8 @@
 package org.acme.travels;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.util.Date;
 
 public class Traveller implements Serializable {
 
@@ -24,6 +26,8 @@ public class Traveller implements Serializable {
     private String email;
     private String nationality;
     private Address address;
+    private Date testDate;
+    private Instant testInstant;
 
     private boolean processed;
 
@@ -40,6 +44,18 @@ public class Traveller implements Serializable {
         this.email = email;
         this.nationality = nationality;
         this.address = address;
+    }
+
+    public Traveller(String firstName, String lastName, String email, String nationality, Address address,
+            Date testDate, Instant testInstant, boolean processed) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.nationality = nationality;
+        this.address = address;
+        this.testDate = testDate;
+        this.testInstant = testInstant;
+        this.processed = processed;
     }
 
     public String getFirstName() {
@@ -90,10 +106,27 @@ public class Traveller implements Serializable {
         this.processed = processed;
     }
 
+    public Date getTestDate() {
+        return testDate;
+    }
+
+    public void setTestDate(Date testDate) {
+        this.testDate = testDate;
+    }
+
+    public Instant getTestInstant() {
+        return testInstant;
+    }
+
+    public void setTestInstant(Instant testInstant) {
+        this.testInstant = testInstant;
+    }
+
     @Override
     public String toString() {
         return "Traveller [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", nationality=" +
-                nationality + ", address=" + address + ", processed=" + processed + "]";
+                nationality + ", address=" + address + ", processed=" + processed + " testDate=" + testDate +
+                " testInstant=" + testInstant + "]";
     }
 
     @Override
