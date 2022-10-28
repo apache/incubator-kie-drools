@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -57,8 +58,8 @@ public class FileUtilsTest {
 
     @Test
     public void getInputStreamFromFileNameExisting() {
-        InputStream retrieved = FileUtils.getInputStreamFromFileNameAndClassLoader(TEST_FILE, FileUtilsTest.class.getClassLoader());
-        assertThat(retrieved).isNotNull();
+        Optional<InputStream> retrieved = FileUtils.getInputStreamFromFileNameAndClassLoader(TEST_FILE, FileUtilsTest.class.getClassLoader());
+        assertThat(retrieved).isPresent();
     }
 
     @Test

@@ -73,12 +73,15 @@ public class JavaParserUtils {
     }
 
     private static CompilationUnit getFromFileName(String fileName) {
+        InputStream resource = getInputStreamFromFileNameAndClassLoader(fileName,
+                                                                        JavaParserUtils.class.getClassLoader())
+                .orElseThrow(() -> new KieEfestoCommonException(String.format("Failed to find InputStream for %s",
+                                                                              fileName)));
         try {
-            final InputStream resource = getInputStreamFromFileNameAndClassLoader(fileName, JavaParserUtils.class.getClassLoader());
             return StaticJavaParser.parse(resource);
         } catch (Exception e) {
             throw new KieEfestoCommonException(String.format("Failed to parse %s due to %s", fileName,
-                    e.getMessage()), e);
+                                                             e.getMessage()), e);
         }
     }
 }

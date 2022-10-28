@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -79,20 +80,12 @@ public class FileUtils {
     }
 
     /**
-     * Utility method that throws a <code>IllegalArgumentException</code> if the given <b>fileName</b>
-     * is not found is the given <code>ClassLoader</code>
      * @param fileName
      * @param classLoader
      * @return
      *
-     * @throws IllegalArgumentException
      */
-    public static InputStream getInputStreamFromFileNameAndClassLoader(String fileName, ClassLoader classLoader) {
-        InputStream toReturn = classLoader.getResourceAsStream(fileName);
-        if (toReturn == null) {
-            throw new IllegalArgumentException(String.format("Failed to find %s", fileName));
-        } else {
-            return toReturn;
-        }
+    public static Optional<InputStream> getInputStreamFromFileNameAndClassLoader(String fileName, ClassLoader classLoader) {
+        return Optional.ofNullable(classLoader.getResourceAsStream(fileName));
     }
 }
