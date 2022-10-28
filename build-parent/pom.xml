@@ -38,9 +38,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.11.0</version.commons-io>
     <version.common-text>1.9</version.common-text>
-    <version.com.fasterxml.jackson>2.13.4</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.13.4</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.13.4</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.13.3</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.13.3</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.13.3</version.com.fasterxml.jackson.annotations>
     <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
@@ -48,15 +48,15 @@
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.protobuf>3.19.3</version.com.google.protobuf>
-    <version.com.h2database>2.1.214</version.com.h2database>
+    <version.com.h2database>1.4.197</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
-    <version.io.micrometer>1.9.4</version.io.micrometer>
-    <version.io.quarkus>2.13.1.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>2.2.1</version.io.smallrye.openapi.core>
+    <version.io.micrometer>1.8.3</version.io.micrometer>
+    <version.io.quarkus>2.7.6.Final</version.io.quarkus>
+    <version.io.smallrye.openapi.core>2.1.22</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.antlr>2.7.7</version.antlr>
@@ -70,10 +70,10 @@
     <version.org.apache.httpcomponents.httpcore>4.4.15</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.maven>3.8.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
-    <version.org.apache.maven.wagon>3.5.1</version.org.apache.maven.wagon>
+    <version.org.apache.maven.wagon>3.4.3</version.org.apache.maven.wagon>
     <version.org.apache.poi>5.1.0</version.org.apache.poi>
     <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.assertj>3.23.1</version.org.assertj>
+    <version.org.assertj>3.21.0</version.org.assertj>
     <version.org.eclipse.jdt>3.18.0</version.org.eclipse.jdt>
     <version.org.glassfish.jaxb>2.3.6</version.org.glassfish.jaxb>
     <!--This needs to be in sync with JUnit-->
@@ -81,7 +81,7 @@
     <version.org.hibernate>5.6.0.Final</version.org.hibernate>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>5.13.1.Alpha1</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>5.12.4.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
@@ -100,7 +100,7 @@
     <version.jakarta.json.bind-api>1.0.2</version.jakarta.json.bind-api>
     <version.jakarta.json-api>1.1.6</version.jakarta.json-api>
     <version.org.jpmml.model>1.5.1</version.org.jpmml.model> <!-- jpmml-model BSD 3C license - ATTENTION 1.5.1 intentional, because 1.5.1 evaluators works with 1.5.1 -->
-    <version.org.junit>5.9.1</version.org.junit>
+    <version.org.junit>5.8.2</version.org.junit>
     <version.org.mvel>2.4.14.Final</version.org.mvel>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.slf4j>1.7.30</version.org.slf4j>
@@ -131,7 +131,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.8.0</version.org.mockito>
+    <version.org.mockito>4.3.1</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
@@ -189,10 +189,10 @@
 
     <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
 
-    <version.org.postgresql>42.5.0</version.org.postgresql>
+    <version.org.postgresql>42.3.3</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.org.jboss.jandex>2.4.3.Final</version.org.jboss.jandex>
+    <version.org.jboss.jandex>2.4.2.Final</version.org.jboss.jandex>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
@@ -202,7 +202,7 @@
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
 
-    <version.org.awaitility>4.2.0</version.org.awaitility>
+    <version.org.awaitility>4.1.1</version.org.awaitility>
     <version.io.github.bonigarcia>5.1.1</version.io.github.bonigarcia>
 
     <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule --> 
