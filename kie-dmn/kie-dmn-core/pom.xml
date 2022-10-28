@@ -160,11 +160,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <scope>test</scope>
