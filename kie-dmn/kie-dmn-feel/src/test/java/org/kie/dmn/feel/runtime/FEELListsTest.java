@@ -106,8 +106,10 @@ public class FEELListsTest extends BaseFEELTest {
                 
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ), null },
-                {"[ {x:1, y:2}, {x:2} ].y", Collections.singletonList(BigDecimal.valueOf(2)), null },
-                {"[ {x:1, y:2}, {x:2, y:3} ].z", Collections.emptyList(), null },
+                {"[ {x:1, y:2}, {x:2} ].y", Arrays.asList(BigDecimal.valueOf(2), null), null },
+                {"[ {x:1, y:2}, {x:2, y:3} ].z", Arrays.asList(null, null), null },
+                {"{ Data: [{v: \"A1\"}, {v: null}, {v: \"C1\"}], r: Data.v }.r", Arrays.asList("A1", null, "C1"), null },
+                {"{ Data: [{v: \"A1\"}, {v: null}, {v: \"C1\"}], r: Data[v != \"D1\"].v }.r", Arrays.asList("A1", null, "C1"), null },
 
                 // lists of intervals
                 {"[ ( 10 .. 20 ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(10),
