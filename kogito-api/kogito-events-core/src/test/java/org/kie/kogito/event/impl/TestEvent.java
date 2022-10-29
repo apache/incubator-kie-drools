@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package org.kie.kogito.event.impl;
 
 import java.util.Objects;
 
-public class DummyEvent {
+public class TestEvent {
 
     private String dummyField;
 
     @SuppressWarnings("unused")
-    public DummyEvent() {
+    public TestEvent() {
     }
 
-    public DummyEvent(String dummyField) {
+    public TestEvent(String dummyField) {
         this.dummyField = dummyField;
     }
 
@@ -39,10 +39,10 @@ public class DummyEvent {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DummyEvent)) {
+        if (!(o instanceof TestEvent)) {
             return false;
         }
-        DummyEvent that = (DummyEvent) o;
+        TestEvent that = (TestEvent) o;
         return Objects.equals(getDummyField(), that.getDummyField());
     }
 

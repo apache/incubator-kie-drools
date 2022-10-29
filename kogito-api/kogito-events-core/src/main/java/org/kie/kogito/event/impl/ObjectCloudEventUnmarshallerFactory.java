@@ -30,7 +30,7 @@ public class ObjectCloudEventUnmarshallerFactory implements CloudEventUnmarshall
     @Override
     public <S> CloudEventUnmarshaller<Object, S> unmarshaller(Class<S> targetClass) {
         return new DefaultCloudEventUnmarshaller<>(new Object2JsonCloudEventConverter(objectMapper),
-                CloudEventDataConverterFactory.getDataConverter(targetClass, objectMapper),
+                new JacksonCloudEventDataConverter<>(objectMapper, targetClass),
                 new ObjectCloudEventDataConverter());
     }
 }

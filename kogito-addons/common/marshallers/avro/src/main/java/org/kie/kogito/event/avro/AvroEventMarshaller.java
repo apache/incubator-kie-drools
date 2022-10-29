@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.workflows.services;
+package org.kie.kogito.event.avro;
 
-import org.kie.kogito.event.CloudEventUnmarshaller;
-import org.kie.kogito.event.CloudEventUnmarshallerFactory;
+import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kie.kogito.event.EventMarshaller;
 
-public class JavaSerializationUnmarshallerFactory implements CloudEventUnmarshallerFactory<Object> {
+public class AvroEventMarshaller implements EventMarshaller<byte[]> {
 
-    private final ObjectMapper objectMapper;
+    private final AvroIO avroUtils;
 
-    public JavaSerializationUnmarshallerFactory(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public AvroEventMarshaller(AvroIO avroUtils) {
+        this.avroUtils = avroUtils;
     }
 
     @Override
-    public <S> CloudEventUnmarshaller<Object, S> unmarshaller(Class<S> targetClass) {
-        return new JavaSerializationUnmarshaller<>(objectMapper, targetClass);
+    public <T> byte[] marshall(T dataEvent) throws IOException {
+        return avroUtils.writeObject(dataEvent);
     }
 }

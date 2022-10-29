@@ -32,6 +32,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessTimerTest extends AbstractBaseTest {
@@ -116,13 +118,9 @@ public class ProcessTimerTest extends AbstractBaseTest {
         assertEquals(0, myList.size());
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
-        try {
-            TimeUnit.MILLISECONDS.sleep(400);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
-        assertEquals(1, myList.size());
-
+        await("dead").atMost(5, SECONDS)
+                .with().pollInterval(500, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertEquals(1, myList.size()));
         kruntime.getKieSession().dispose();
     }
 }

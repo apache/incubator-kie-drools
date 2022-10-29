@@ -24,6 +24,8 @@ import java.time.OffsetDateTime;
 import org.kie.kogito.event.CloudEventUnmarshaller;
 import org.kie.kogito.event.Converter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
 import io.cloudevents.SpecVersion;
@@ -33,9 +35,11 @@ import io.vertx.core.buffer.Buffer;
 
 public class JavaSerializationUnmarshaller<T> implements CloudEventUnmarshaller<Object, T> {
 
+    private final ObjectMapper objectMapper;
     private final Class<T> javaDataClass;
 
-    public JavaSerializationUnmarshaller(Class<T> javaDataClass) {
+    public JavaSerializationUnmarshaller(ObjectMapper objectMapper, Class<T> javaDataClass) {
+        this.objectMapper = objectMapper;
         this.javaDataClass = javaDataClass;
     }
 
@@ -81,12 +85,12 @@ public class JavaSerializationUnmarshaller<T> implements CloudEventUnmarshaller<
 
     @Override
     public Converter<Object, CloudEventData> binaryCloudEvent() {
-        return bytes -> PojoCloudEventData.wrap(JavaSerializationUtils.fromBytes(((Buffer) bytes).getBytes(), javaDataClass), JavaSerializationCloudEventDataFactory::convert);
+        return bytes -> PojoCloudEventData.wrap(JavaSerializationUtils.fromBytes(((Buffer) bytes).getBytes(), javaDataClass, objectMapper), JavaSerializationCloudEventDataFactory::convert);
     }
 
     @Override
     public Converter<CloudEventData, T> data() {
-        return new JavaSerializationCloudEventDataConverter<>(javaDataClass);
+        return new JavaSerializationCloudEventDataConverter<>(objectMapper, javaDataClass);
     }
 
 }

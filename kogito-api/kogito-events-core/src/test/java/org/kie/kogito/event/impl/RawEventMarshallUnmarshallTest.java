@@ -19,16 +19,14 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.DummyEvent;
-import org.kie.kogito.event.EventMarshaller;
-import org.kie.kogito.event.EventUnmarshaller;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.kie.kogito.event.impl.DataEventTestUtils.getRawEvent;
+import static org.kie.kogito.event.impl.DataEventTestUtils.testEventMarshalling;
 
-class MarshallUnmarshallTest {
+class RawEventMarshallUnmarshallTest {
 
     private static ObjectMapper mapper;
 
@@ -39,20 +37,16 @@ class MarshallUnmarshallTest {
 
     @Test
     void testStringMarshaller() throws IOException {
-        testIt(new DummyEvent("pepe"), new StringEventMarshaller(mapper), new JacksonEventDataUnmarshaller<>(mapper));
+        testEventMarshalling(getRawEvent(), new StringEventMarshaller(mapper), new JacksonEventDataUnmarshaller<>(mapper));
     }
 
     @Test
     void testObjectMarshaller() throws IOException {
-        testIt(new DummyEvent("pepe"), new NoOpEventMarshaller(), new JacksonEventDataUnmarshaller<>(mapper));
+        testEventMarshalling(getRawEvent(), new NoOpEventMarshaller(), new JacksonEventDataUnmarshaller<>(mapper));
     }
 
     @Test
     void testByteArrayMarshaller() throws IOException {
-        testIt(new DummyEvent("pepe"), new ByteArrayEventMarshaller(mapper), new JacksonEventDataUnmarshaller<>(mapper));
-    }
-
-    private <T> void testIt(Object event, EventMarshaller<T> marshaller, EventUnmarshaller<T> unmarshaller) throws IOException {
-        assertEquals(event, unmarshaller.unmarshall(marshaller.marshall(event), event.getClass()));
+        testEventMarshalling(getRawEvent(), new ByteArrayEventMarshaller(mapper), new JacksonEventDataUnmarshaller<>(mapper));
     }
 }

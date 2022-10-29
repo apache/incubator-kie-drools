@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.workflows.services;
+package org.kie.kogito.event.avro;
 
 import java.io.IOException;
+import java.util.function.Function;
 
-import org.kie.kogito.event.impl.AbstractCloudEventDataConverter;
+import org.kie.kogito.event.CloudEventMarshaller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventData;
 
-public class JavaSerializationCloudEventDataConverter<O> extends AbstractCloudEventDataConverter<O> {
+public class AvroCloudEventMarshaller implements CloudEventMarshaller<byte[]> {
 
-    protected JavaSerializationCloudEventDataConverter(ObjectMapper objectMapper, Class<O> targetClass) {
-        super(objectMapper, targetClass);
+    private final AvroIO avroUtils;
+
+    public AvroCloudEventMarshaller(AvroIO avroUtils) {
+        this.avroUtils = avroUtils;
     }
 
     @Override
-    protected O toValue(byte[] bytes) throws IOException {
-        return JavaSerializationUtils.fromBytes(bytes, targetClass, objectMapper);
+    public byte[] marshall(CloudEvent event) throws IOException {
+        return avroUtils.writeCloudEvent(event);
+    }
+
+    @Override
+    public <T> Function<T, CloudEventData> cloudEventDataFactory() {
+        return new AvroCloudEventDataFactory<>(avroUtils);
     }
 }

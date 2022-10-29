@@ -15,30 +15,26 @@
  */
 package org.kie.kogito.event.cloudevents.utils;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.CloudEvent;
@@ -57,11 +53,23 @@ import static io.cloudevents.core.CloudEventUtils.mapData;
 
 public final class CloudEventUtils {
 
+    public static final String DATA = "data";
+
     private static final Logger LOG = LoggerFactory.getLogger(CloudEventUtils.class);
     public static final String UNKNOWN_SOURCE_URI_STRING = urlEncodedStringFrom("__UNKNOWN_SOURCE__")
             .orElseThrow(IllegalStateException::new);
 
     private CloudEventUtils() {
+    }
+
+    public static JsonNode fromValue(DataEvent<JsonNode> dataEvent) {
+        ObjectNode node = ObjectMapperFactory.listenerAware().createObjectNode();
+        if (dataEvent.getData() != null) {
+            node.set(DATA, dataEvent.getData());
+        }
+        dataEvent.getAttributeNames().forEach(k -> node.set(k, JsonObjectUtils.fromValue(dataEvent.getAttribute(k))));
+        dataEvent.getExtensionNames().forEach(extensionName -> node.set(extensionName, JsonObjectUtils.fromValue(dataEvent.getExtension(extensionName))));
+        return node;
     }
 
     public static <E> Optional<CloudEvent> build(String id, URI source, E data, Class<E> dataType) {
@@ -136,19 +144,6 @@ public final class CloudEventUtils {
         }
     }
 
-    public static <K, V> Optional<Map<K, V>> decodeMapData(CloudEvent event, Class<K> keyClass, Class<V> valueClass) {
-        if (event == null || event.getData() == null) {
-            return Optional.empty();
-        }
-        try {
-            JavaType mapType = Mapper.mapper().getTypeFactory().constructMapType(HashMap.class, keyClass, valueClass);
-            return Optional.ofNullable(Mapper.mapper().readValue(event.getData().toBytes(), mapType));
-        } catch (IOException e) {
-            LOG.error("Unable to decode CloudEvent data to Map<" + keyClass.getName() + "," + valueClass.getName() + ">", e);
-            return Optional.empty();
-        }
-    }
-
     public static Optional<String> urlEncodedStringFrom(String input) {
         return Optional.ofNullable(input)
                 .map(i -> {
@@ -201,7 +196,6 @@ public final class CloudEventUtils {
                 .orElse(UNKNOWN_SOURCE_URI_STRING));
     }
 
-    // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic
     public static final class Mapper {
 
         private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
@@ -217,22 +211,21 @@ public final class CloudEventUtils {
         }
     }
 
-    public static Object getAttribute(String name, Object instance) throws IllegalArgumentException {
-        try {
-            return Arrays.stream(Introspector.getBeanInfo(instance.getClass()).getPropertyDescriptors())
-                    .filter(p -> Objects.equals(p.getName(), name))
-                    .map(p -> {
-                        try {
-                            return p.getReadMethod().invoke(instance);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new IllegalArgumentException("Error getting attribute " + name, e);
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .orElse(null);
-        } catch (IntrospectionException e) {
-            throw new IllegalArgumentException("Error getting attribute " + name, e);
+    public static void withAttribute(CloudEventBuilder builder, String k, Object v) {
+        if (v instanceof Integer) {
+            builder.withContextAttribute(k, (Integer) v);
+        } else if (v instanceof Boolean) {
+            builder.withContextAttribute(k, (Boolean) v);
+        } else if (v instanceof byte[]) {
+            builder.withContextAttribute(k, (byte[]) v);
+        } else if (v instanceof URI) {
+            builder.withContextAttribute(k, (URI) v);
+        } else if (v instanceof OffsetDateTime) {
+            builder.withContextAttribute(k, (OffsetDateTime) v);
+        } else if (v instanceof ByteBuffer) {
+            builder.withContextAttribute(k, ((ByteBuffer) v).array());
+        } else if (v != null) {
+            builder.withContextAttribute(k, v.toString());
         }
     }
 
@@ -247,6 +240,8 @@ public final class CloudEventUtils {
             builder.withExtension(k, (URI) v);
         } else if (v instanceof OffsetDateTime) {
             builder.withExtension(k, (OffsetDateTime) v);
+        } else if (v instanceof ByteBuffer) {
+            builder.withExtension(k, ((ByteBuffer) v).array());
         } else if (v != null) {
             builder.withExtension(k, v.toString());
         }

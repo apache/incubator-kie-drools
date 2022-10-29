@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event.impl;
+package org.kie.kogito.event.avro;
 
 import org.kie.kogito.event.CloudEventUnmarshaller;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
+import org.kie.kogito.event.impl.DefaultCloudEventUnmarshaller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cloudevents.CloudEventData;
+import io.cloudevents.core.data.BytesCloudEventData;
 
-public class ByteArrayCloudEventUnmarshallerFactory implements CloudEventUnmarshallerFactory<byte[]> {
+public class AvroCloudEventUnmarshallerFactory implements CloudEventUnmarshallerFactory<byte[]> {
 
-    private final ObjectMapper objectMapper;
+    private final AvroIO avroUtils;
 
-    public ByteArrayCloudEventUnmarshallerFactory(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public AvroCloudEventUnmarshallerFactory(AvroIO avroUtils) {
+        this.avroUtils = avroUtils;
     }
 
     @Override
     public <S> CloudEventUnmarshaller<byte[], S> unmarshaller(Class<S> targetClass) {
-        return new DefaultCloudEventUnmarshaller<>(new ByteArray2JsonCloudEventConverter(objectMapper),
-                new JacksonCloudEventDataConverter<>(objectMapper, targetClass),
-                new ByteArrayCloudEventDataConverter());
+        return new DefaultCloudEventUnmarshaller<>(avroUtils::readCloudEvent, new AvroCloudEventDataConverter<>(avroUtils, targetClass), this::getCloudEventData);
+    }
+
+    private CloudEventData getCloudEventData(byte[] bytes) {
+        return bytes == null ? null : BytesCloudEventData.wrap(bytes);
     }
 }

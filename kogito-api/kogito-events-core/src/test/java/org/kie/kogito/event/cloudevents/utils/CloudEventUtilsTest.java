@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.event.cloudevents.utils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -23,18 +24,24 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.DataEventFactory;
 import org.kie.kogito.event.cloudevents.extension.KogitoExtension;
+import org.kie.kogito.event.cloudevents.utils.CloudEventUtils.Mapper;
 import org.mockito.MockedStatic;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.provider.ExtensionProvider;
+import io.cloudevents.jackson.JsonCloudEventData;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -215,5 +222,21 @@ class CloudEventUtilsTest {
             mockedStaticMapper.when(CloudEventUtils.Mapper::mapper).thenReturn(mockedMapper);
             runnable.run();
         }
+    }
+
+    @Test
+    void testFromValue() throws IOException {
+        ObjectMapper objectMapper = Mapper.mapper();
+        CloudEventBuilder builder =
+                CloudEventBuilder.v1().withId("1").withType("type").withSource(URI.create("/pepe/pepa")).withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("name", "Javierito")))
+                        .withExtension("pepe", "pepa");
+        DataEvent<JsonNode> dataEvent = DataEventFactory.from(builder.build(), ced -> objectMapper.readTree(ced.toBytes()));
+        JsonNode deserialized = CloudEventUtils.fromValue(dataEvent);
+        System.out.println(deserialized);
+        JsonNode data = deserialized.get("data");
+        assertNotNull(data);
+        assertEquals("Javierito", data.get("name").asText());
+        assertEquals("type", deserialized.get("type").asText());
+        assertEquals("pepa", deserialized.get("pepe").asText());
     }
 }

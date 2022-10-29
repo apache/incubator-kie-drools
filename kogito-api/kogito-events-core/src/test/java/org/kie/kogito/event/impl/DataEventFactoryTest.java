@@ -39,12 +39,15 @@ public class DataEventFactoryTest {
     void testIsJacksonSerializable() throws JsonProcessingException, IOException {
         ObjectMapper objectMapper = ObjectMapperFactory.get();
         CloudEventBuilder builder =
-                CloudEventBuilder.v1().withId("1").withType("type").withSource(URI.create("/pepe/pepa")).withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("name", "Javierito")));
+                CloudEventBuilder.v1().withId("1").withType("type").withSource(URI.create("/pepe/pepa")).withData(JsonCloudEventData.wrap(objectMapper.createObjectNode().put("name", "Javierito")))
+                        .withExtension("pepe", "pepa");
         DataEvent<JsonNode> dataEvent = DataEventFactory.from(builder.build(), ced -> objectMapper.readTree(ced.toBytes()));
-        JsonNode deserialized = objectMapper.readTree(objectMapper.writeValueAsBytes(dataEvent));
+        JsonNode deserialized = objectMapper.readTree(objectMapper.writeValueAsBytes(dataEvent.asCloudEvent(JsonCloudEventData::wrap)));
+        System.out.println(deserialized);
         JsonNode data = deserialized.get("data");
         assertNotNull(data);
         assertEquals("Javierito", data.get("name").asText());
         assertEquals("type", deserialized.get("type").asText());
+        assertEquals("pepa", deserialized.get("pepe").asText());
     }
 }

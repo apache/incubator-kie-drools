@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
-
-import java.util.Optional;
+package org.kie.kogito.event.impl;
 
 import org.kie.kogito.event.process.ProcessDataEvent;
 
-public class StringCloudEvent extends ProcessDataEvent<String> {
+public class TestCloudEvent<T> extends ProcessDataEvent<T> {
 
-    public StringCloudEvent() {
+    public TestCloudEvent() {
     }
 
-    public StringCloudEvent(String dummyEvent, String type) {
+    public TestCloudEvent(T dummyEvent, String type) {
         this(dummyEvent, type, null);
     }
 
-    public StringCloudEvent(String dummyEvent, String type, String source) {
+    public TestCloudEvent(T dummyEvent, String type, String source) {
         this(dummyEvent, type, source, null);
     }
 
-    public StringCloudEvent(String dummyEvent, String type, String source, String referenceId) {
-        super(type, Optional.ofNullable(source).orElse(StringCloudEvent.class.getSimpleName()), dummyEvent, "1", "1", "1", "1", "1", "1", "1", null, null, referenceId);
+    public TestCloudEvent(T dummyEvent, String type, String source, String referenceId) {
+        super(type, source == null ? "KogitoTest" : source, dummyEvent, "1", "1", "1", "1", "1", "1", "1", null, null, referenceId);
     }
 }

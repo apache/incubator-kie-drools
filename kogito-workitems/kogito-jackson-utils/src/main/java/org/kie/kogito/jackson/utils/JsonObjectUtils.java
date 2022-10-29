@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.kie.kogito.event.DataEvent;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -79,35 +77,6 @@ public class JsonObjectUtils {
         } else {
             return ObjectMapperFactory.listenerAware().convertValue(value, JsonNode.class);
         }
-    }
-
-    // see: https://issues.redhat.com/browse/KOGITO-8161 why we are not using the CloudEvent SDK
-    public static JsonNode fromValue(DataEvent<JsonNode> dataEvent) {
-        ObjectNode node = ObjectMapperFactory.listenerAware().createObjectNode();
-        if (dataEvent.getData() != null) {
-            node.set("data", dataEvent.getData());
-        }
-        node.put("id", dataEvent.getId());
-        if (dataEvent.getSource() != null) {
-            node.put("source", dataEvent.getSource().toString());
-        }
-        if (dataEvent.getSpecVersion() != null) {
-            node.put("specversion", dataEvent.getSpecVersion().toString());
-        }
-        node.put("type", dataEvent.getType());
-        if (dataEvent.getDataContentType() != null) {
-            node.put("datacontenttype", dataEvent.getDataContentType());
-        }
-        if (dataEvent.getDataSchema() != null) {
-            node.put("dataschema", dataEvent.getDataContentType());
-        }
-        if (dataEvent.getSubject() != null) {
-            node.put("subject", dataEvent.getDataContentType());
-        }
-        if (dataEvent.getTime() != null) {
-            node.put("time", dataEvent.getTime().toString());
-        }
-        return node;
     }
 
     public static Object toJavaValue(JsonNode jsonNode) {

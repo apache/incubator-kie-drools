@@ -55,6 +55,7 @@
     <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
     <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
     <version.io.smallrye-open-api>2.2.1</version.io.smallrye-open-api>
+    <version.org.awaitility>4.2.0</version.org.awaitility>
 
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.27.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
@@ -245,7 +246,11 @@
         <artifactId>jackson-module-jaxb-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
       </dependency>
-
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-avro</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
       <dependency>
         <groupId>com.jayway.jsonpath</groupId>
         <artifactId>json-path</artifactId>
@@ -327,6 +332,12 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${version.org.junit.jupiter}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${version.org.awaitility}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

@@ -16,6 +16,7 @@
 
   <!-- Please keep in alphabetical order -->
   <modules>
+    <module>marshallers</module>
     <module>messaging</module>
     <module>persistence</module>
     <module>rest-exception-handler</module>

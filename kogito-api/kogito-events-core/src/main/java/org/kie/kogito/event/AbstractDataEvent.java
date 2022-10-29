@@ -44,6 +44,8 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
 import io.cloudevents.SpecVersion;
 import io.cloudevents.core.builder.CloudEventBuilder;
+import io.cloudevents.core.v03.CloudEventV03;
+import io.cloudevents.core.v1.CloudEventV1;
 
 /**
  * This is an implementation of the {@link DataEvent} that contains basic common attributes referring to
@@ -265,8 +267,29 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     }
 
     @Override
-    public Object getAttribute(String name) throws IllegalArgumentException {
-        return CloudEventUtils.getAttribute(name, this);
+    public Object getAttribute(String name) {
+        switch (name) {
+            case CloudEventV1.DATACONTENTTYPE:
+            case CloudEventV03.DATACONTENTENCODING:
+                return getDataContentType();
+            case CloudEventV1.DATASCHEMA:
+            case CloudEventV03.SCHEMAURL:
+                return getDataSchema();
+            case CloudEventV1.ID:
+                return getId();
+            case CloudEventV1.SOURCE:
+                return getSource();
+            case CloudEventV1.SPECVERSION:
+                return getSpecVersion();
+            case CloudEventV1.TIME:
+                return getTime();
+            case CloudEventV1.TYPE:
+                return getType();
+            case CloudEventV1.SUBJECT:
+                return getSubject();
+            default:
+                throw new IllegalArgumentException(name + " is not valid attribute for specVersion " + specVersion);
+        }
     }
 
     @Override
