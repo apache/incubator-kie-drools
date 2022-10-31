@@ -1366,4 +1366,22 @@ public class StringUtils {
     public static String uuid() {
         return "x" + UUID.randomUUID().toString().replace( '-', 'x' );
     }
+
+    public static boolean doesFirstPropHaveListMapAccessor(String expression) {
+        StringBuilder propertyNameBuilder = new StringBuilder();
+        int cursor = extractFirstIdentifier(expression, propertyNameBuilder, 0);
+        Character nextChar = lookAheadIgnoringSpaces(expression, cursor);
+        return nextChar != null && nextChar.equals('[');
+    }
+
+    public static Character lookAheadIgnoringSpaces(String expression, int cursor) {
+        while (cursor < expression.length()) {
+            char c = expression.charAt(cursor);
+            if (!Character.isWhitespace(c)) {
+                return c;
+            }
+            cursor++;
+        }
+        return null;
+    }
 }
