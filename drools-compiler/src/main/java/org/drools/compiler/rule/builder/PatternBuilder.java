@@ -108,6 +108,8 @@ import org.kie.internal.builder.ResultSeverity;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
+import static org.drools.core.util.StringUtils.doesFirstPropHaveListMapAccessor;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
@@ -1398,8 +1400,12 @@ public class PatternBuilder
 
         declr.setReadAccessor(extractor);
 
-        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof ClassFieldReader) {
-            addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
+        if (!declr.isFromXpathChunk() && typeDeclaration != null) {
+            if (extractor instanceof ClassFieldReader) {
+                addFieldToPatternWatchlist(pattern, typeDeclaration, ((ClassFieldReader) extractor).getFieldName());
+            } else if (doesFirstPropHaveListMapAccessor(fieldBindingDescr.getBindingField())) {
+                addFieldToPatternWatchlist(pattern, typeDeclaration, extractFirstIdentifier(fieldBindingDescr.getBindingField(), 0)); // extractor is MVELObjectClassFieldReader
+            }
         }
     }
 
