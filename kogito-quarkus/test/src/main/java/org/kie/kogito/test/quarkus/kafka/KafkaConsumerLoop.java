@@ -31,18 +31,18 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KafkaConsumerLoop implements Runnable {
+public class KafkaConsumerLoop<T> implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerLoop.class);
 
-    private final KafkaConsumer<String, String> consumer;
+    private final KafkaConsumer<String, T> consumer;
     private final Collection<String> topics;
-    private final Consumer<String> callback;
+    private final Consumer<T> callback;
     private final UnaryOperator<Void> onSubscribe;
     private final CountDownLatch shutdownLatch;
     private final AtomicBoolean running = new AtomicBoolean(true);
 
-    public KafkaConsumerLoop(KafkaConsumer<String, String> consumer, Collection<String> topics, Consumer<String> callback, UnaryOperator<Void> onSubscribe) {
+    public KafkaConsumerLoop(KafkaConsumer<String, T> consumer, Collection<String> topics, Consumer<T> callback, UnaryOperator<Void> onSubscribe) {
         this.consumer = consumer;
         this.topics = topics;
         this.callback = callback;
@@ -60,6 +60,7 @@ public class KafkaConsumerLoop implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         try {
             consumer.subscribe(topics, new ConsumerRebalanceListener() {
@@ -78,7 +79,7 @@ public class KafkaConsumerLoop implements Runnable {
             onSubscribe.apply(null);
 
             while (running.get()) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
+                ConsumerRecords<String, T> records = consumer.poll(Duration.ofSeconds(1));
                 LOGGER.debug("Kafka consumer received records: {}", records);
                 if (doCommitSync()) {
                     records.forEach(record -> callback.accept(record.value()));

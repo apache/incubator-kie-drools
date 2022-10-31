@@ -43,6 +43,7 @@
                       "boolean",
                       { "type": "map", "values": "CloudEventData" },
                       { "type": "array", "items": "CloudEventData" },
+                      "int",
                       "double",
                       "string"
                     ]
@@ -50,6 +51,7 @@
                 }
               ]
             },
+            "int",
             "double",
             "string"
           ]

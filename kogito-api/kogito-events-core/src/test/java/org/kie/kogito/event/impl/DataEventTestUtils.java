@@ -61,7 +61,7 @@ public class DataEventTestUtils {
     }
 
     private static JsonNode getJsonNode() {
-        return ObjectMapperFactory.get().createObjectNode().put("name", "pepe");
+        return ObjectMapperFactory.get().createObjectNode().put("name", "pepe").put("salary", 12312);
     }
 
     public static TestEvent getRawEvent() {
