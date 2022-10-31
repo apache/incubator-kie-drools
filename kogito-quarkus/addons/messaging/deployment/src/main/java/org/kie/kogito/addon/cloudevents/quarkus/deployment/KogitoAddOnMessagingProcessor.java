@@ -123,11 +123,13 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
         }
     }
 
-    private void collect(Map<String, CompilationUnit> map, ChannelInfo channelInfo, Map<DotName, EventGenerator> eventGenerators, Map<String, EventGenerator> channels, KogitoBuildContext context) {
+    private void collect(Map<String, Collection<CompilationUnit>> map, ChannelInfo channelInfo, Map<DotName, EventGenerator> eventGenerators, Map<String, EventGenerator> channels,
+            KogitoBuildContext context) {
         for (String trigger : channelInfo.getTriggers()) {
-            CompilationUnit cu = map.get(trigger);
-            if (cu != null) {
-                eventGenerators.computeIfAbsent(DotNamesHelper.createDotName(cu), k -> channels.computeIfAbsent(channelInfo.getChannelName(), c -> buildEventGenerator(context, channelInfo)));
+            Collection<CompilationUnit> cus = map.get(trigger);
+            if (cus != null) {
+                cus.forEach(cu -> eventGenerators.computeIfAbsent(DotNamesHelper.createDotName(cu),
+                        k -> channels.computeIfAbsent(channelInfo.getChannelName(), c -> buildEventGenerator(context, channelInfo))));
             }
         }
     }

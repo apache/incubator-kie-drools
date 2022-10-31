@@ -382,14 +382,14 @@ public class ProcessCodegen extends AbstractGenerator {
                                 applicationCanonicalName(),
                                 trigger);
                         megs.add(messageConsumerGenerator);
-                        metaData.getConsumers().put(trigger.getName(), messageConsumerGenerator.compilationUnit());
+                        metaData.addConsumer(trigger.getName(), messageConsumerGenerator.compilationUnit());
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
                         MessageProducerGenerator messageProducerGenerator = new MessageProducerGenerator(
                                 context(),
                                 workFlowProcess,
                                 trigger);
                         mpgs.add(messageProducerGenerator);
-                        metaData.getProducers().put(trigger.getName(), messageProducerGenerator.compilationUnit());
+                        metaData.addProducer(trigger.getName(), messageProducerGenerator.compilationUnit());
                     }
                 }
 

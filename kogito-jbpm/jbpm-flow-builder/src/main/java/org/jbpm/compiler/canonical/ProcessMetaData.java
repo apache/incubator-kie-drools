@@ -16,6 +16,8 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +49,8 @@ public class ProcessMetaData {
 
     private List<TriggerMetaData> triggers = new ArrayList<>();
 
-    private Map<String, CompilationUnit> consumers = new HashMap<>();
-    private Map<String, CompilationUnit> producers = new HashMap<>();
+    private Map<String, Collection<CompilationUnit>> consumers = new HashMap<>();
+    private Map<String, Collection<CompilationUnit>> producers = new HashMap<>();
 
     private boolean startable;
     private boolean dynamic;
@@ -160,12 +162,20 @@ public class ProcessMetaData {
         this.generatedListeners = generatedListeners;
     }
 
-    public Map<String, CompilationUnit> getConsumers() {
-        return consumers;
+    public Map<String, Collection<CompilationUnit>> getConsumers() {
+        return Collections.unmodifiableMap(consumers);
     }
 
-    public Map<String, CompilationUnit> getProducers() {
-        return producers;
+    public void addConsumer(String triggerName, CompilationUnit unit) {
+        consumers.computeIfAbsent(triggerName, k -> new ArrayList<>()).add(unit);
+    }
+
+    public Map<String, Collection<CompilationUnit>> getProducers() {
+        return Collections.unmodifiableMap(producers);
+    }
+
+    public void addProducer(String triggerName, CompilationUnit unit) {
+        producers.computeIfAbsent(triggerName, k -> new ArrayList<>()).add(unit);
     }
 
     public Map<String, String> getSignals() {

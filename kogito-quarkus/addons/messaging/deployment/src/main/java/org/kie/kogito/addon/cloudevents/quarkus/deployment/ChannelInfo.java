@@ -84,4 +84,9 @@ public class ChannelInfo {
         return marshaller;
     }
 
+    @Override
+    public String toString() {
+        return "ChannelInfo [channelName=" + channelName + ", className=" + className + ", triggers=" + triggers
+                + ", isInput=" + isInput + ", isDefault=" + isDefault + ", marshaller=" + marshaller + "]";
+    }
 }
