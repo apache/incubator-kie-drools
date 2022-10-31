@@ -539,7 +539,7 @@
             </execution>
           </executions>
           <configuration>
-            <clearOutputDir>true</clearOutputDir>
+            <clearOutputDir>false</clearOutputDir>
             <createJavaDocAnnotations>false</createJavaDocAnnotations>
             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
             <transformSchemas>
