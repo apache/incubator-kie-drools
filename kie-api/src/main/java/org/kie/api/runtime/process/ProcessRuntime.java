@@ -83,7 +83,7 @@ public interface ProcessRuntime {
      * @param nodeIds the node id list that should be triggered
      * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
      */
-    ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeId);
+    ProcessInstance startProcessFromNodeIds(String processId, Map<String, Object> params, String... nodeIds);
 
     /**
      * Creates a new process instance (but does not yet start it).  The process
