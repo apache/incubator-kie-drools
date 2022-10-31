@@ -74,16 +74,6 @@
         <ksession name="DecisionTableKS" type="stateless"/>
     </kbase>
 
-    <kbase name="DTableWithTemplateKB" packages="org.drools.examples.decisiontable-template">
-        <ruleTemplate dtable="org/drools/examples/decisiontable-template/ExamplePolicyPricingTemplateData.xls"
-                      template="org/drools/examples/decisiontable-template/BasePricing.drt"
-                      row="3" col="3"/>
-        <ruleTemplate dtable="org/drools/examples/decisiontable-template/ExamplePolicyPricingTemplateData.xls"
-                      template="org/drools/examples/decisiontable-template/PromotionalPricing.drt"
-                      row="18" col="3"/>
-        <ksession name="DTableWithTemplateKS"/>
-    </kbase>
-
     <kbase name="FibonacciKB" packages="org.drools.examples.fibonacci">
         <ksession name="FibonacciKS"/>
     </kbase>
@@ -135,13 +125,6 @@
     
     <kbase name="SudokuKB" packages="org.drools.examples.sudoku">
         <ksession name="SudokuKS"/>
-    </kbase>
-
-    <kbase name="TemplatesKB" packages="org.drools.examples.templates">
-        <ruleTemplate dtable="org/drools/examples/templates/ExampleCheese.xls"
-                      template="org/drools/examples/templates/Cheese.drt"
-                      row="2" col="2"/>
-        <ksession name="TemplatesKS"/>
     </kbase>
 
     <kbase name="TroubleTicketKB" packages="org.drools.examples.troubleticket">

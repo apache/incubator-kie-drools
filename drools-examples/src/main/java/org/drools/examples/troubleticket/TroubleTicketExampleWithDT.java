@@ -82,6 +82,8 @@ public class TroubleTicketExampleWithDT {
 
         System.err.println( "[[ awake ]]" );
 
+        ksession.fireAllRules();
+
         ksession.dispose();
     }
 
