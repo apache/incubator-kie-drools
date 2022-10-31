@@ -18,7 +18,7 @@
   </description>
 
   <properties>
-    <version.org.kie>8.30.0-SNAPSHOT</version.org.kie>
+    <version.org.kie>8.31.0-SNAPSHOT</version.org.kie>
   </properties>
 
   <dependencyManagement>
