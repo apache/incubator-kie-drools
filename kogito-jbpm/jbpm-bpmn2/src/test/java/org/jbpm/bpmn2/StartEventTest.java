@@ -30,7 +30,6 @@ import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -73,13 +72,13 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerStartCycleLegacy() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 2);
         kruntime = createKogitoProcessRuntime("BPMN2-TimerStartCycleLegacy.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -94,13 +93,13 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerStart() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);
         kruntime = createKogitoProcessRuntime("BPMN2-TimerStart.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -112,7 +111,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerStartDateISO() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
         byte[] content = Files.readAllBytes(Paths.get(this.getClass().getResource("/BPMN2-TimerStartDate.bpmn2").getPath()));
@@ -129,6 +127,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -140,13 +139,13 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerStartCycleISO() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 6);
         kruntime = createKogitoProcessRuntime("BPMN2-TimerStartISO.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -158,13 +157,13 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerStartDuration() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
         kruntime = createKogitoProcessRuntime("BPMN2-TimerStartDuration.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -206,6 +205,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-SignalStart.bpmn2");
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -229,6 +229,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 logger.info("{}", ((KogitoProcessInstance) event.getProcessInstance()).getStringId());
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
@@ -273,7 +274,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testMultipleStartEventsStartOnTimer() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartTimer", 2);
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleStartEventProcess.bpmn2");
@@ -284,6 +284,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
                 workItemHandler);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -305,6 +306,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -337,6 +339,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -359,7 +362,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testMultipleEventBasedStartEventsTimerDifferentPaths() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartTimer", 2);
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleStartEventProcessDifferentPaths.bpmn2");
@@ -371,6 +373,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -407,6 +410,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -430,7 +434,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testMultipleEventBasedStartEventsStartOnTimer()
             throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartTimer", 2);
@@ -441,6 +444,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
                 workItemHandler);
         final List<String> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
@@ -453,7 +457,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerCycle() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("start", 5);
         kruntime = createKogitoProcessRuntime("timer/BPMN2-StartTimerCycle.bpmn2");
@@ -467,13 +470,13 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testSignalStartWithTransformation() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
         kruntime = createKogitoProcessRuntime("BPMN2-SignalStartWithTransformation.bpmn2");
         kruntime.getProcessEventManager().addEventListener(countDownListener);
         final List<KogitoProcessInstance> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add((KogitoProcessInstance) event.getProcessInstance());
             }
@@ -490,7 +493,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
      * This is how I would expect the start event to work (same as the recurring event)
      */
     @Test
-    @Timeout(10)
     public void testTimerDelay() throws Exception {
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("start", 1);
         kruntime = createKogitoProcessRuntime("timer/BPMN2-StartTimerDuration.bpmn2");
@@ -507,6 +509,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("BPMN2-SingalStartWithCustomEvent.bpmn2");
         final List<KogitoProcessInstance> list = new ArrayList<>();
         kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add((KogitoProcessInstance) event.getProcessInstance());
             }
@@ -576,6 +579,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
     private static class StartCountingListener extends DefaultKogitoProcessEventListener {
         private Map<String, Integer> map = new HashMap<>();
 
+        @Override
         public void beforeProcessStarted(ProcessStartedEvent event) {
             String processId = event.getProcessInstance().getProcessId();
             Integer count = map.get(processId);
