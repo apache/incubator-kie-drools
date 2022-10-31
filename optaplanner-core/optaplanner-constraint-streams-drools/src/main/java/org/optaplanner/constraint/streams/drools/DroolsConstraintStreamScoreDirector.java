@@ -190,19 +190,29 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     private void update(Object fact) {
         FactHandle factHandle = session.getFactHandle(fact);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The fact (" + fact
-                    + ") was never added to this ScoreDirector.\n"
-                    + "Maybe that specific instance is not in the return values of the "
-                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
-                    + solutionDescriptor.getEntityMemberAndEntityCollectionMemberNames() + ") or fact members ("
-                    + solutionDescriptor.getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
+            /*
+             * Drools will eliminate all facts that do not match any rules.
+             * Therefore fact handle can be null here even if the fact/entity was inserted before.
+             * We could solve this by introducing a tracking map in the score director,
+             * but in the interest of saving memory, we just re-insert it here.
+             */
+            session.insert(fact);
+        } else {
+            session.update(factHandle, fact);
         }
-        session.update(factHandle, fact);
     }
 
     private void retract(Object fact) {
         FactHandle factHandle = session.getFactHandle(fact);
-        session.delete(factHandle);
+        if (factHandle != null) {
+            /*
+             * Drools will eliminate all facts that do not match any rules.
+             * Therefore fact handle can be null here even if the fact/entity was inserted before.
+             * We could solve this by introducing a tracking map in the score director,
+             * but in the interest of saving memory, we just ignore null fact handles.
+             */
+            session.delete(factHandle);
+        }
     }
 
 }

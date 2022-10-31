@@ -169,29 +169,37 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
     private void update(Object entity, String variableName) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The entity (" + entity
-                    + ") was never added to this ScoreDirector.\n"
-                    + "Maybe that specific instance is not in the return values of the "
-                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
-                    + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
+            /*
+             * Drools will eliminate all facts that do not match any rules.
+             * Therefore fact handle can be null here even if the fact/entity was inserted before.
+             * We could solve this by introducing a tracking map in the score director,
+             * but in the interest of saving memory, we just re-insert the fact here.
+             */
+            kieSession.insert(entity);
+        } else {
+            kieSession.update(factHandle, entity, variableName);
         }
-        kieSession.update(factHandle, entity, variableName);
     }
 
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override
     public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        FactHandle factHandle = kieSession.getFactHandle(entity);
-        if (factHandle == null) {
-            throw new IllegalArgumentException("The entity (" + entity
-                    + ") was never added to this ScoreDirector.\n"
-                    + "Maybe that specific instance is not in the return values of the "
-                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
-                    + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
-        }
-        kieSession.delete(factHandle);
+        deleteIfExists(entity);
         super.afterEntityRemoved(entityDescriptor, entity);
+    }
+
+    private void deleteIfExists(Object factOrEntity) {
+        FactHandle factHandle = kieSession.getFactHandle(factOrEntity);
+        if (factHandle != null) {
+            /*
+             * Drools will eliminate all facts that do not match any rules.
+             * Therefore fact handle can be null here even if the fact/entity was inserted before.
+             * We could solve this by introducing a tracking map in the score director,
+             * but in the interest of saving memory, we just ignore null fact handles.
+             */
+            kieSession.delete(factHandle);
+        }
     }
 
     // ************************************************************************
@@ -220,15 +228,16 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
     public void afterProblemPropertyChanged(Object problemFactOrEntity) {
         FactHandle factHandle = kieSession.getFactHandle(problemFactOrEntity);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The problemFact (" + problemFactOrEntity
-                    + ") was never added to this ScoreDirector.\n"
-                    + "Maybe that specific instance is not in the "
-                    + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
-                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
-                    + "Maybe first translate that external instance to the workingSolution's instance"
-                    + " with " + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
+            /*
+             * Drools will eliminate all facts that do not match any rules.
+             * Therefore fact handle can be null here even if the fact/entity was inserted before.
+             * We could solve this by introducing a tracking map in the score director,
+             * but in the interest of saving memory, we just re-insert it here.
+             */
+            kieSession.insert(problemFactOrEntity);
+        } else {
+            kieSession.update(factHandle, problemFactOrEntity);
         }
-        kieSession.update(factHandle, problemFactOrEntity);
         super.afterProblemPropertyChanged(problemFactOrEntity);
     }
 
@@ -236,17 +245,7 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
-        FactHandle factHandle = kieSession.getFactHandle(problemFact);
-        if (factHandle == null) {
-            throw new IllegalArgumentException("The problemFact (" + problemFact
-                    + ") was never added to this ScoreDirector.\n"
-                    + "Maybe that specific instance is not in the "
-                    + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
-                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
-                    + "Maybe first translate that external instance to the workingSolution's instance"
-                    + " with " + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
-        }
-        kieSession.delete(factHandle);
+        deleteIfExists(problemFact);
         super.afterProblemFactRemoved(problemFact);
     }
 
