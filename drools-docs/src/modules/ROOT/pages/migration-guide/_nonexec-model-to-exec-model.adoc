@@ -34,3 +34,34 @@ then
   myUtils.doWork(java.util.Objects.toString( $p.age ));
 end
 ----
+
+=== Generics support
+`non-executable model` is tolerant of generics type. For example,
+[source]
+----
+rule Rule1
+  no-loop true
+  when
+    $fact : Fact( str == "ADD", $val : "100")
+  then
+    modify($fact) {
+      bdList.add($val);
+    }
+end
+----
+`non-executable model` allows to add a `String` object to `bdList` even if `Fact.bdList` is `List<BigDecimal>` which is not acceptable in Java syntax.
+
+With `executable model`, the rule fails with a build error.
+----
+The method add(BigDecimal) in the type List<BigDecimal> is not applicable for the arguments (String)
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  modify($fact) {
+    bdList.add(new BigDecimal($val));
+  }
+end
+----
