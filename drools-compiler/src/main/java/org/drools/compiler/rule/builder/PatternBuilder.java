@@ -114,6 +114,8 @@ import static org.drools.compiler.rule.builder.util.AnnotationFactory.getTypedAn
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.getNormalizeDate;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeEmptyKeyword;
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
+import static org.drools.util.StringUtils.doesFirstPropHaveListMapAccessor;
+import static org.drools.util.StringUtils.extractFirstIdentifier;
 import static org.drools.util.StringUtils.isIdentifier;
 
 /**
@@ -1474,8 +1476,12 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
         declr.setReadAccessor(extractor);
 
-        if (!declr.isFromXpathChunk() && typeDeclaration != null && extractor instanceof FieldNameSupplier) {
-            addFieldToPatternWatchlist(pattern, typeDeclaration, ((FieldNameSupplier) extractor).getFieldName());
+        if (!declr.isFromXpathChunk() && typeDeclaration != null) {
+            if (extractor instanceof FieldNameSupplier) {
+                addFieldToPatternWatchlist(pattern, typeDeclaration, ((FieldNameSupplier) extractor).getFieldName());
+            } else if (doesFirstPropHaveListMapAccessor(fieldBindingDescr.getBindingField())) {
+                addFieldToPatternWatchlist(pattern, typeDeclaration, extractFirstIdentifier(fieldBindingDescr.getBindingField(), 0)); // extractor is MVELObjectClassFieldReader
+            }
         }
     }
 

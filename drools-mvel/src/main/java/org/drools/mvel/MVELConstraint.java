@@ -88,6 +88,7 @@ import static org.drools.core.util.MessageUtils.defaultToEmptyString;
 import static org.drools.util.StringUtils.codeAwareIndexOf;
 import static org.drools.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.util.StringUtils.extractFirstIdentifier;
+import static org.drools.util.StringUtils.lookAheadIgnoringSpaces;
 import static org.drools.util.StringUtils.skipBlanks;
 
 public class MVELConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
@@ -533,8 +534,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         if (!isAccessor) {
-            String lookAhead = lookAheadIgnoringSpaces(expression, cursor);
-            boolean isMethodInvocation = lookAhead != null && lookAhead.equals("(");
+            Character lookAhead = lookAheadIgnoringSpaces(expression, cursor);
+            boolean isMethodInvocation = lookAhead != null && lookAhead.equals('(');
             if (isMethodInvocation) {
                 return nextPropertyName(expression, names, cursor);
             }
@@ -544,17 +545,6 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
             names.add(propertyName);
         }
         return skipOperator(expression, cursor);
-    }
-
-    private String lookAheadIgnoringSpaces(String expression, int cursor) {
-        while (cursor < expression.length()) {
-            char c = expression.charAt(cursor);
-            if (!Character.isWhitespace(c)) {
-                return "" + c;
-            }
-            cursor++;
-        }
-        return null;
     }
 
     private int skipOperator(String expression, int cursor) {
