@@ -39,8 +39,6 @@ import org.drools.examples.sudoku.SudokuExample;
 import org.drools.examples.troubleticket.TroubleTicketExample;
 import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
 import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
-import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1;
-import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2;
 import org.drools.games.adventures.TextAdventure;
 import org.drools.games.pong.PongMain;
 import org.drools.games.wumpus.WumpusWorldMain;
@@ -161,16 +159,6 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("PricingRuleDTExample") {
             public void actionPerformed(ActionEvent e) {
                 PricingRuleDTExample.execute( kieContainer );
-            }
-        }));
-        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample1") {
-            public void actionPerformed(ActionEvent e) {
-                WorkItemConsequenceExample1.main(new String[0]);
-            }
-        }));
-        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample2") {
-            public void actionPerformed(ActionEvent e) {
-                WorkItemConsequenceExample2.main(new String[0]);
             }
         }));
         return contentPane;
