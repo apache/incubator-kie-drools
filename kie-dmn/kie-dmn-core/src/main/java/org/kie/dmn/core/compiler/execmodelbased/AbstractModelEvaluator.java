@@ -73,44 +73,41 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         List<FEELEvent> events = new ArrayList<>();
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult );
 
+        EvaluationContext evalCtx = createEvaluationContext( events, eventManager, dmnResult );
+        evalCtx.enterFrame();
+
+        DMNDTExpressionEvaluator.EventResults eventResults = null;
         RuleUnitExecutor executor = new RuleUnitExecutorSession( kieBase );
         try {
-            EvaluationContext evalCtx = createEvaluationContext( events, eventManager, dmnResult );
-            evalCtx.enterFrame();
+            DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( feel, dTableModel, evalCtx, events );
 
-            DMNDTExpressionEvaluator.EventResults eventResults = null;
-            try {
-                DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( feel, dTableModel, evalCtx, events );
-
-                EvaluatorResultImpl validationResult = validateColumns((DMNResultImpl) dmnResult, evalCtx, decisionTableEvaluator);
-                if (validationResult != null) {
-                    return validationResult;
-                }
-
-                DMNUnit unit = getDMNUnit()
-                        .setEvalCtx( evalCtx )
-                        .setEvents( events )
-                        .setDecisionTableEvaluator( decisionTableEvaluator )
-                        .setDecisionTable( dTableModel.asDecisionTable() );
-
-                Object result = unit.execute( node.getName(), executor ).getResult();
-
-                eventResults = processEvents(events, eventManager, ( DMNResultImpl ) dmnResult, node);
-
-                return new EvaluatorResultImpl(result,
-                                            eventResults.hasErrors?
-                                                    EvaluatorResult.ResultType.FAILURE :
-                                                    EvaluatorResult.ResultType.SUCCESS );
-            } catch (RuntimeException e) {
-                logger.error(e.toString(), e);
-                throw e;
-            } finally {
-                evalCtx.exitFrame();
-                DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
-                        (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
+            EvaluatorResultImpl validationResult = validateColumns((DMNResultImpl) dmnResult, evalCtx, decisionTableEvaluator);
+            if (validationResult != null) {
+                return validationResult;
             }
+
+            DMNUnit unit = getDMNUnit()
+                    .setEvalCtx( evalCtx )
+                    .setEvents( events )
+                    .setDecisionTableEvaluator( decisionTableEvaluator )
+                    .setDecisionTable( dTableModel.asDecisionTable() );
+
+            Object result = unit.execute( node.getName(), executor ).getResult();
+
+            eventResults = processEvents(events, eventManager, ( DMNResultImpl ) dmnResult, node);
+
+            return new EvaluatorResultImpl(result,
+                                        eventResults.hasErrors?
+                                                EvaluatorResult.ResultType.FAILURE :
+                                                EvaluatorResult.ResultType.SUCCESS );
+        } catch (RuntimeException e) {
+            logger.error(e.toString(), e);
+            throw e;
         } finally {
             executor.dispose();
+            evalCtx.exitFrame();
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
+                    (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
         }
     }
 
