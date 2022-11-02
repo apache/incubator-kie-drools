@@ -36,7 +36,7 @@ public class TraitFactHandleFactory extends ReteooFactHandleFactory {
     }
 
     @Override
-    protected DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
+    public DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
         return new TraitDefaultFactHandle(id, object, recency, entryPoint);
     }
 }

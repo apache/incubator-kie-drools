@@ -25,9 +25,9 @@ import org.drools.model.PrototypeFact;
 
 public class HashMapFactImpl implements Fact, PrototypeFact {
 
-    private final FactTemplate factTemplate;
+    protected final FactTemplate factTemplate;
 
-    private final Map<String, Object> valuesMap;
+    protected final Map<String, Object> valuesMap;
 
     public HashMapFactImpl( FactTemplate factTemplate ) {
         this( factTemplate, new HashMap<>() );
@@ -65,6 +65,6 @@ public class HashMapFactImpl implements Fact, PrototypeFact {
 
     @Override
     public String toString() {
-        return factTemplate + "; values = " + valuesMap;
+        return "Fact " + factTemplate.getName() + " with values = " + valuesMap;
     }
 }

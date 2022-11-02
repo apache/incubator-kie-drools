@@ -21,12 +21,18 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.ObjectType;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.facttemplates.Event;
+import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.base.ObjectType;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 public class FactTemplateTypeConf
     implements
@@ -118,7 +124,11 @@ public class FactTemplateTypeConf
     public boolean isDynamic() {
         return false;
     }
-    
+
+    public boolean isPrototype() {
+        return true;
+    }
+
     public boolean isTMSEnabled() {
         return this.tmsEnabled;
     }
@@ -136,4 +146,15 @@ public class FactTemplateTypeConf
     	return factTemplate.getName();
     }
 
+    @Override
+    public InternalFactHandle createFactHandle(FactHandleFactory factHandleFactory, long id, Object object, long recency,
+                                               ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint entryPoint) {
+        Fact fact = (Fact) object;
+        if (fact.isEvent()) {
+            Event event = (Event) fact;
+            long timestamp = event.getTimestamp() >= 0 ? event.getTimestamp() : reteEvaluator.getTimerService().getCurrentTime();
+            return factHandleFactory.createEventFactHandle(id, object, recency, entryPoint, timestamp, 0);
+        }
+        return factHandleFactory.createDefaultFactHandle(id, object, recency, entryPoint);
+    }
 }

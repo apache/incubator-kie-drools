@@ -32,12 +32,12 @@ public class RuleUnitFactHandleFactory extends ReteooFactHandleFactory {
     }
 
     @Override
-    protected DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
+    public DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
         return new RuleUnitDefaultFactHandle(id, object, recency, entryPoint);
     }
 
     @Override
-    protected EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
+    public EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
         return new RuleUnitEventFactHandle(id, object, recency, timestamp, duration, entryPoint);
     }
 

@@ -22,9 +22,11 @@ import java.util.function.Function;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
 
+import static java.util.UUID.randomUUID;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PrototypeExpression.prototypeArrayItem;
@@ -81,7 +83,10 @@ public class PrototypeDSL {
         PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName);
         PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right);
 
+        PrototypePatternDef expr(TemporalPredicate temporalPredicate, PrototypeVariable other);
+
         PrototypePatternDef and();
+
         PrototypePatternDef or();
     }
 
@@ -164,6 +169,12 @@ public class PrototypeDSL {
                     other, asPredicate2(left.asFunction(prototype), constraintType, right.asFunction(otherPrototype)),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
+            return this;
+        }
+
+        @Override
+        public PrototypePatternDef expr(TemporalPredicate temporalPredicate, PrototypeVariable other) {
+            expr( randomUUID().toString(), other, temporalPredicate );
             return this;
         }
 

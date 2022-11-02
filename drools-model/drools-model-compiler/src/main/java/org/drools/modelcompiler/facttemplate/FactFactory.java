@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.facttemplates.Event;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
@@ -46,6 +47,22 @@ public class FactFactory {
 
     public static Fact createMapBasedFact(Prototype prototype, Map<String, Object> valuesMap) {
         return createMapBasedFact( prototypeToFactTemplate( prototype ), valuesMap );
+    }
+
+    public static Event createMapBasedEvent(FactTemplate factTemplate) {
+        return new HashMapEventImpl( factTemplate );
+    }
+
+    public static Event createMapBasedEvent(FactTemplate factTemplate, Map<String, Object> valuesMap) {
+        return new HashMapEventImpl( factTemplate, valuesMap );
+    }
+
+    public static Event createMapBasedEvent(Prototype prototype) {
+        return createMapBasedEvent( prototypeToFactTemplate( prototype ) );
+    }
+
+    public static Event createMapBasedEvent(Prototype prototype, Map<String, Object> valuesMap) {
+        return createMapBasedEvent( prototypeToFactTemplate( prototype ), valuesMap );
     }
 
     public static FactTemplate prototypeToFactTemplate( Prototype prototype ) {
