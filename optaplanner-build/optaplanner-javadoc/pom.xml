@@ -65,10 +65,6 @@
       <artifactId>asm</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
     </dependency>

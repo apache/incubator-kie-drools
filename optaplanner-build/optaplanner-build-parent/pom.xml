@@ -102,7 +102,7 @@
         <scope>import</scope>
       </dependency>
       <!-- Normal dependencies versions-->
-      <!-- TODO: remove after upgrading to Quarkus 2.14.0.Final -->
+      <!-- TODO: Remove after dropping the support of Quarkus 2.13. -->
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>jandex</artifactId>
