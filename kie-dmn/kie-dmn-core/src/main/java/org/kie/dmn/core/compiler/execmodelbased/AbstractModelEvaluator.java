@@ -73,11 +73,11 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         List<FEELEvent> events = new ArrayList<>();
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult );
 
-        RuleUnitExecutor executor = new RuleUnitExecutorSession( kieBase );
         EvaluationContext evalCtx = createEvaluationContext( events, eventManager, dmnResult );
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
+        RuleUnitExecutor executor = new RuleUnitExecutorSession( kieBase );
         try {
             DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( feel, dTableModel, evalCtx, events );
 
@@ -97,13 +97,14 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
             eventResults = processEvents(events, eventManager, ( DMNResultImpl ) dmnResult, node);
 
             return new EvaluatorResultImpl(result,
-                                           eventResults.hasErrors?
-                                                   EvaluatorResult.ResultType.FAILURE :
-                                                   EvaluatorResult.ResultType.SUCCESS );
+                                        eventResults.hasErrors?
+                                                EvaluatorResult.ResultType.FAILURE :
+                                                EvaluatorResult.ResultType.SUCCESS );
         } catch (RuntimeException e) {
             logger.error(e.toString(), e);
             throw e;
         } finally {
+            executor.dispose();
             evalCtx.exitFrame();
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
                     (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
