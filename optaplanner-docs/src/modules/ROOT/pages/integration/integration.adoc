@@ -183,81 +183,12 @@ public class Room {
 Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side effects.
 
 
-[[integrationWithXStream]]
-=== XML or JSON: XStream
-
-Enrich domain POJOs (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
-
-Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
-
-
-[[xStreamMarshallingAScore]]
-==== XStream: marshalling a `Score`
-
-When a `Score` is marshalled to XML or JSON by the default XStream configuration, it's verbose and ugly.
-To fix that, configure the appropriate ``ScoreXStreamConverter``:
-
-[source,java,options="nowrap"]
-----
-@PlanningSolution
-@XStreamAlias("CloudBalance")
-public class CloudBalance {
-
-    @PlanningScore
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
-    private HardSoftScore score;
-
-    ...
-}
-----
-
-For example, this generates pretty XML:
-
-[source,xml,options="nowrap"]
-----
-<CloudBalance>
-   ...
-   <score>0hard/-200soft</score>
-</CloudBalance>
-----
-
-The same applies for a bendable score:
-
-[source,java,options="nowrap"]
-----
-@PlanningSolution
-@XStreamAlias("Schedule")
-public class Schedule {
-
-    @PlanningScore
-    @XStreamConverter(BendableScoreXStreamConverter.class)
-    private BendableScore score;
-
-    ...
-}
-----
-
-For example, this generates:
-
-[source,xml,options="nowrap"]
-----
-<Schedule>
-   ...
-   <score>[0/0]hard/[-100/-20/-3]soft</score>
-</Schedule>
-----
-
-When reading a bendable score from an XML element, the implied `hardLevelsSize` and `softLevelsSize`
-must always be in sync with those in the solver.
-
-
 [[integrationWithJaxb]]
 === XML or JSON: JAXB
 
 Enrich domain POJOs (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
-
 
 [[jaxbMarshallingAScore]]
 ==== JAXB: marshalling a `Score`

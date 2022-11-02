@@ -42,19 +42,22 @@ class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTurtleTes
         boolean capacityTooHigh = existingComputerList.size() > existingProcessList.size() / 2;
         if (random.nextBoolean()) {
             if (capacityTooLow || (!capacityTooHigh && random.nextBoolean())) {
-                CloudComputer computer = generator.generateComputerWithoutId();
-                existingComputerList.add(computer);
-                return new AddComputerProblemChange(computer);
+                return new AddComputerProblemChange(expectedId -> {
+                    CloudComputer computer = generator.generateComputer(expectedId);
+                    existingComputerList.add(computer);
+                    return computer;
+                });
             } else {
                 return new DeleteComputerProblemChange(
                         existingComputerList.remove(random.nextInt(existingComputerList.size())));
             }
         } else {
             if (capacityTooHigh || (!capacityTooLow && random.nextBoolean())) {
-                CloudProcess process = generator.generateProcessWithoutId();
-                existingProcessList.add(process);
-                return new AddProcessProblemChange(
-                        process);
+                return new AddProcessProblemChange(expectedId -> {
+                    CloudProcess process = generator.generateProcess(expectedId);
+                    existingProcessList.add(process);
+                    return process;
+                });
             } else {
                 return new DeleteProcessProblemChange(
                         existingProcessList.remove(random.nextInt(existingProcessList.size())));

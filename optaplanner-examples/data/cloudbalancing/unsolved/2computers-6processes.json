@@ -1,0 +1,54 @@
+{
+  "id" : 0,
+  "computerList" : [ {
+    "id" : 0,
+    "cpuPower" : 24,
+    "memory" : 96,
+    "networkBandwidth" : 16,
+    "cost" : 4800
+  }, {
+    "id" : 1,
+    "cpuPower" : 6,
+    "memory" : 4,
+    "networkBandwidth" : 6,
+    "cost" : 660
+  } ],
+  "processList" : [ {
+    "id" : 0,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 1,
+    "requiredCpuPower" : 3,
+    "requiredMemory" : 6,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 2,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 3,
+    "computer" : null
+  }, {
+    "id" : 3,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 2,
+    "requiredNetworkBandwidth" : 11,
+    "computer" : null
+  }, {
+    "id" : 4,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 1,
+    "computer" : null
+  }, {
+    "id" : 5,
+    "requiredCpuPower" : 1,
+    "requiredMemory" : 1,
+    "requiredNetworkBandwidth" : 5,
+    "computer" : null
+  } ],
+  "score" : null
+}

@@ -102,8 +102,8 @@ A benchmark configuration XML file looks like this:
     </solver>
     <problemBenchmarks>
       ...
-      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

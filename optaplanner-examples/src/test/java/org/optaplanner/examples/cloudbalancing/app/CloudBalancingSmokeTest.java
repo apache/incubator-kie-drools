@@ -9,7 +9,7 @@ import org.optaplanner.examples.common.app.SolverSmokeTest;
 
 class CloudBalancingSmokeTest extends SolverSmokeTest<CloudBalance, HardSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/cloudbalancing/unsolved/200computers-600processes.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/cloudbalancing/unsolved/200computers-600processes.json";
 
     @Override
     protected CloudBalancingApp createCommonApp() {

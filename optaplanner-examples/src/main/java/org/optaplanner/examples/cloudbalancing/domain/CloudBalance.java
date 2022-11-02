@@ -8,24 +8,18 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningSolution
-@XStreamAlias("CloudBalance")
-public class CloudBalance extends AbstractPersistable {
+public class CloudBalance extends AbstractPersistableJackson {
 
     private List<CloudComputer> computerList;
 
     private List<CloudProcess> processList;
 
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
-    public CloudBalance() {
+    CloudBalance() { // For Jackson.
     }
 
     public CloudBalance(long id, List<CloudComputer> computerList, List<CloudProcess> processList) {

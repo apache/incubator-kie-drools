@@ -1,7 +1,7 @@
 package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO;
+import org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -36,7 +36,7 @@ public class CloudBalancingApp extends CommonApp<CloudBalance> {
 
     @Override
     public SolutionFileIO<CloudBalance> createSolutionFileIO() {
-        return new CloudBalanceXmlSolutionFileIO();
+        return new CloudBalanceSolutionFileIO();
     }
 
 }

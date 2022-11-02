@@ -138,9 +138,13 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-common</artifactId>
     </dependency>
-    <dependency><!-- Most examples use the XStream integration -->
+    <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
@@ -193,6 +197,11 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+    <!-- JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>org.optaplanner</groupId>
@@ -236,5 +245,4 @@
       <artifactId>poi-ooxml</artifactId>
     </dependency>
   </dependencies>
-
 </project>

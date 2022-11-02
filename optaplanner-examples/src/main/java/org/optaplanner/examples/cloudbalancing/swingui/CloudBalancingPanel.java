@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.LongFunction;
 
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -118,24 +119,12 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         JPanel addPanel = new JPanel(new GridLayout());
         JButton addComputerButton = SwingUtils.makeSmallButton(new JButton(addCloudComputerIcon));
         addComputerButton.setToolTipText("Add computer");
-        addComputerButton.addActionListener(e -> {
-            CloudComputer computer = new CloudComputer();
-            computer.setCpuPower(12);
-            computer.setMemory(32);
-            computer.setNetworkBandwidth(12);
-            computer.setCost(400 + 400 + 600);
-            addComputer(computer);
-        });
+        addComputerButton
+                .addActionListener(e -> addComputer(expectedId -> new CloudComputer(expectedId, 12, 32, 12, 400 + 400 + 600)));
         addPanel.add(addComputerButton);
         JButton addProcessButton = SwingUtils.makeSmallButton(new JButton(addCloudProcessIcon));
         addProcessButton.setToolTipText("Add process");
-        addProcessButton.addActionListener(e -> {
-            CloudProcess process = new CloudProcess();
-            process.setRequiredCpuPower(3);
-            process.setRequiredMemory(8);
-            process.setRequiredNetworkBandwidth(3);
-            addProcess(process);
-        });
+        addProcessButton.addActionListener(e -> addProcess(expectedId -> new CloudProcess(expectedId, 3, 8, 3)));
         addPanel.add(addProcessButton);
         JPanel cornerPanel = new JPanel(new BorderLayout());
         cornerPanel.add(addPanel, BorderLayout.EAST);
@@ -217,9 +206,9 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         computersPanel.validate();
     }
 
-    public void addComputer(final CloudComputer computer) {
-        logger.info("Scheduling addition of computer ({}).", computer);
-        doProblemChange(new AddComputerProblemChange(computer));
+    public void addComputer(final LongFunction<CloudComputer> computerGenerator) {
+        logger.info("Scheduling addition of computer.");
+        doProblemChange(new AddComputerProblemChange(computerGenerator));
     }
 
     public void deleteComputer(final CloudComputer computer) {
@@ -227,9 +216,9 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         doProblemChange(new DeleteComputerProblemChange(computer));
     }
 
-    public void addProcess(final CloudProcess process) {
-        logger.info("Scheduling addition of process ({}).", process);
-        doProblemChange(new AddProcessProblemChange(process));
+    public void addProcess(final LongFunction<CloudProcess> processGenerator) {
+        logger.info("Scheduling addition of process.");
+        doProblemChange(new AddProcessProblemChange(processGenerator));
     }
 
     public void deleteProcess(final CloudProcess process) {

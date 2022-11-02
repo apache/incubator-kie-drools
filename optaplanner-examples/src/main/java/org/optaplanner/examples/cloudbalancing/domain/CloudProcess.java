@@ -4,13 +4,15 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
-@XStreamAlias("CloudProcess")
-public class CloudProcess extends AbstractPersistable {
+public class CloudProcess
+        extends AbstractPersistableJackson
+        implements Labeled {
 
     private int requiredCpuPower; // in gigahertz
     private int requiredMemory; // in gigabyte RAM
@@ -19,7 +21,7 @@ public class CloudProcess extends AbstractPersistable {
     // Planning variables: changes during planning, between score calculations.
     private CloudComputer computer;
 
-    public CloudProcess() {
+    CloudProcess() { // For Jackson.
     }
 
     public CloudProcess(long id, int requiredCpuPower, int requiredMemory, int requiredNetworkBandwidth) {
@@ -67,10 +69,12 @@ public class CloudProcess extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getRequiredMultiplicand() {
         return requiredCpuPower * requiredMemory * requiredNetworkBandwidth;
     }
 
+    @Override
     public String getLabel() {
         return "Process " + id;
     }

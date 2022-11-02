@@ -14,7 +14,6 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class CloudBalancingGenerator extends LoggingMain {
 
@@ -109,7 +108,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     protected Random random;
 
     public CloudBalancingGenerator() {
-        solutionFileIO = new XStreamSolutionFileIO<>(CloudBalance.class);
+        solutionFileIO = new CloudBalanceSolutionFileIO();
         outputDir = new File(CommonApp.determineDataDir(CloudBalancingApp.DATA_DIR_NAME), "unsolved");
         checkConfiguration();
     }
@@ -131,7 +130,7 @@ public class CloudBalancingGenerator extends LoggingMain {
 
     private void writeCloudBalance(int computerListSize, int processListSize) {
         String fileName = determineFileName(computerListSize, processListSize);
-        File outputFile = new File(outputDir, fileName + ".xml");
+        File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         CloudBalance cloudBalance = createCloudBalance(fileName, computerListSize, processListSize);
         solutionFileIO.write(cloudBalance, outputFile);
         logger.info("Saved: {}", outputFile);
@@ -148,10 +147,9 @@ public class CloudBalancingGenerator extends LoggingMain {
 
     public CloudBalance createCloudBalance(String inputId, int computerListSize, int processListSize) {
         random = new Random(47);
-        CloudBalance cloudBalance = new CloudBalance();
-        cloudBalance.setId(0L);
-        createComputerList(cloudBalance, computerListSize);
-        createProcessList(cloudBalance, processListSize);
+        List<CloudComputer> computerList = createComputerList(computerListSize);
+        List<CloudProcess> processList = createProcessList(processListSize);
+        CloudBalance cloudBalance = new CloudBalance(0, computerList, processList);
         assureComputerCapacityTotalAtLeastProcessRequiredTotal(cloudBalance);
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getComputerList().size()).pow(
                 cloudBalance.getProcessList().size());
@@ -161,28 +159,26 @@ public class CloudBalancingGenerator extends LoggingMain {
         return cloudBalance;
     }
 
-    private void createComputerList(CloudBalance cloudBalance, int computerListSize) {
+    private List<CloudComputer> createComputerList(int computerListSize) {
         List<CloudComputer> computerList = new ArrayList<>(computerListSize);
         for (int i = 0; i < computerListSize; i++) {
-            CloudComputer computer = generateComputerWithoutId();
-            computer.setId((long) i);
+            CloudComputer computer = generateComputer(i);
             computerList.add(computer);
         }
-        cloudBalance.setComputerList(computerList);
+        return computerList;
     }
 
-    public CloudComputer generateComputerWithoutId() {
-        CloudComputer computer = new CloudComputer();
+    public CloudComputer generateComputer(long id) {
         int cpuPowerPricesIndex = random.nextInt(CPU_POWER_PRICES.length);
-        computer.setCpuPower(CPU_POWER_PRICES[cpuPowerPricesIndex].getHardwareValue());
         int memoryPricesIndex = distortIndex(cpuPowerPricesIndex, MEMORY_PRICES.length);
-        computer.setMemory(MEMORY_PRICES[memoryPricesIndex].getHardwareValue());
         int networkBandwidthPricesIndex = distortIndex(cpuPowerPricesIndex, NETWORK_BANDWIDTH_PRICES.length);
-        computer.setNetworkBandwidth(NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getHardwareValue());
         int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                 + MEMORY_PRICES[memoryPricesIndex].getCost()
                 + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-        computer.setCost(cost);
+        CloudComputer computer = new CloudComputer(id, CPU_POWER_PRICES[cpuPowerPricesIndex].getHardwareValue(),
+                MEMORY_PRICES[memoryPricesIndex].getHardwareValue(),
+                NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getHardwareValue(),
+                cost);
         logger.trace("Created computer with cpuPowerPricesIndex ({}), memoryPricesIndex ({}),"
                 + " networkBandwidthPricesIndex ({}).",
                 cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
@@ -205,24 +201,20 @@ public class CloudBalancingGenerator extends LoggingMain {
         return index;
     }
 
-    private void createProcessList(CloudBalance cloudBalance, int processListSize) {
+    private List<CloudProcess> createProcessList(int processListSize) {
         List<CloudProcess> processList = new ArrayList<>(processListSize);
         for (int i = 0; i < processListSize; i++) {
-            CloudProcess process = generateProcessWithoutId();
-            process.setId((long) i);
+            CloudProcess process = generateProcess(i);
             processList.add(process);
         }
-        cloudBalance.setProcessList(processList);
+        return processList;
     }
 
-    public CloudProcess generateProcessWithoutId() {
-        CloudProcess process = new CloudProcess();
+    public CloudProcess generateProcess(long id) {
         int requiredCpuPower = generateRandom(MAXIMUM_REQUIRED_CPU_POWER);
-        process.setRequiredCpuPower(requiredCpuPower);
         int requiredMemory = generateRandom(MAXIMUM_REQUIRED_MEMORY);
-        process.setRequiredMemory(requiredMemory);
         int requiredNetworkBandwidth = generateRandom(MAXIMUM_REQUIRED_NETWORK_BANDWIDTH);
-        process.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
+        CloudProcess process = new CloudProcess(id, requiredCpuPower, requiredMemory, requiredNetworkBandwidth);
         logger.trace("Created CloudProcess with requiredCpuPower ({}), requiredMemory ({}),"
                 + " requiredNetworkBandwidth ({}).",
                 requiredCpuPower, requiredMemory, requiredNetworkBandwidth);

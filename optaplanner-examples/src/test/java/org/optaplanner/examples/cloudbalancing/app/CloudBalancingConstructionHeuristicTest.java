@@ -15,6 +15,6 @@ class CloudBalancingConstructionHeuristicTest extends AbstractConstructionHeuris
 
     @Override
     protected Stream<String> unsolvedFileNames() {
-        return Stream.of("2computers-6processes.xml", "3computers-9processes.xml");
+        return Stream.of("2computers-6processes.json", "3computers-9processes.json");
     }
 }

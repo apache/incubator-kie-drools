@@ -1,19 +1,23 @@
 package org.optaplanner.examples.cloudbalancing.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("CloudComputer")
-public class CloudComputer extends AbstractPersistable implements Labeled {
+@JsonIdentityInfo(scope = CloudComputer.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class CloudComputer
+        extends AbstractPersistableJackson
+        implements Labeled {
 
     private int cpuPower; // in gigahertz
     private int memory; // in gigabyte RAM
     private int networkBandwidth; // in gigabyte per hour
     private int cost; // in euro per month
 
-    public CloudComputer() {
+    CloudComputer() { // For Jackson.
     }
 
     public CloudComputer(long id, int cpuPower, int memory, int networkBandwidth, int cost) {
@@ -60,11 +64,13 @@ public class CloudComputer extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getMultiplicand() {
         return cpuPower * memory * networkBandwidth;
     }
 
     @Override
+    @JsonIgnore
     public String getLabel() {
         return "Computer " + id;
     }

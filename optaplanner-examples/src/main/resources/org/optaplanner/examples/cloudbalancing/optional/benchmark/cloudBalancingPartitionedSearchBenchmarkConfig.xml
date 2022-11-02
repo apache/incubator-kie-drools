@@ -17,8 +17,8 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

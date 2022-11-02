@@ -2,7 +2,6 @@ package org.optaplanner.core.impl.partitionedsearch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.optaplanner.core.api.solver.Solver;
@@ -148,41 +146,6 @@ class DefaultPartitionedSearchPhaseTest {
         executor.shutdown();
         assertThat(executor.awaitTermination(1, TimeUnit.SECONDS)).isTrue();
         assertThat(solutionFuture.get()).isNotNull();
-    }
-
-    @Disabled("PLANNER-2249")
-    @Test
-    @Timeout(5)
-    void shutdownMainThreadAbruptly() throws InterruptedException {
-        final int partSize = 5;
-        final int partCount = 3;
-
-        TestdataSolution solution = createSolution(partCount * partSize - 1, 10);
-        CountDownLatch sleepAnnouncement = new CountDownLatch(1);
-        solution.getEntityList().add(new TestdataSleepingEntity("XYZ", sleepAnnouncement));
-
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory(true, SolverConfig.MOVE_THREAD_COUNT_NONE,
-                partSize);
-        Solver<TestdataSolution> solver = solverFactory.buildSolver();
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<TestdataSolution> solutionFuture = executor.submit(() -> solver.solve(solution));
-
-        sleepAnnouncement.await();
-        // Now we know the sleeping entity is sleeping so we can attempt to shut down.
-        // This will initiate an abrupt shutdown that will interrupt the main solver thread.
-        executor.shutdownNow();
-
-        // This verifies that PartitionQueue doesn't clear interrupted flag when the main solver thread is interrupted.
-        assertThat(executor.awaitTermination(100, TimeUnit.MILLISECONDS))
-                .as("Executor must terminate successfully when it's shut down abruptly")
-                .isTrue();
-
-        // This verifies that interruption is propagated to caller (wrapped as an IllegalStateException)
-        assertThatThrownBy(solutionFuture::get)
-                .isInstanceOf(ExecutionException.class)
-                .hasCause(new IllegalStateException("Solver thread was interrupted in Partitioned Search."))
-                .hasRootCauseExactlyInstanceOf(InterruptedException.class);
     }
 
     @Test

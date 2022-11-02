@@ -17,31 +17,31 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceXmlSolutionFileIO</solutionFileIOClass>
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/5computers-15processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/6computers-18processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/7computers-21processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/8computers-24processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/9computers-27processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/10computers-30processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/11computers-33processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/12computers-36processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/13computers-39processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/14computers-42processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/15computers-45processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/16computers-48processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/17computers-51processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/18computers-54processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/19computers-57processes.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/20computers-60processes.xml</inputSolutionFile>-->
-      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/5computers-15processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/6computers-18processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/7computers-21processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/8computers-24processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/9computers-27processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/10computers-30processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/11computers-33processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/12computers-36processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/13computers-39processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/14computers-42processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/15computers-45processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/16computers-48processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/17computers-51processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/18computers-54processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/19computers-57processes.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/20computers-60processes..json</inputSolutionFile>-->
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.json</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.json</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
