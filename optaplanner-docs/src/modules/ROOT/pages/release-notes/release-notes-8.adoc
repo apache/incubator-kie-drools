@@ -1,6 +1,23 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.31.0.Final]]
+=== OptaPlanner 8.31.0.Final
+
+==== Several OptaPlanner examples removed from the distribution
+
+In an ongoing effort to clean up code and reduce technical debt, the following examples were removed the `optaplanner-examples` module:
+
+- Batch Scheduling,
+- Cheap Time,
+- Coach Shuttle Gathering,
+- Investment
+- and Rock Tour.
+
+We believe these examples were rarely used if ever, and they did not showcase any unique feature of OptaPlanner that would not be showcased already in any of the 16 remaining examples and many quickstarts.
+
+No OptaPlanner feature was removed or deprecated in the process.
+
 [[releaseNotes-8.30.0.Final]]
 === OptaPlanner 8.30.0.Final
 

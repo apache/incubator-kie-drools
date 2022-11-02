@@ -167,7 +167,7 @@ Overlap of two entities is determined by comparing their start and end time grai
 
 This pattern also works well with a coarser time granularity (such as days, half days, hours, ...).
 With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space]) can become too high, which reduces efficiency and scalability.
-However, such a solution is not impossible, as shown in xref:use-cases-and-examples/cheap-time/cheap-time.adoc#cheapTimeScheduling[cheap time scheduling].
+However, such a solution is not impossible.
 
 
 [[chainedThroughTimePattern]]
