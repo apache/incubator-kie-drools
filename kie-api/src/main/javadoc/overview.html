@@ -36,9 +36,27 @@
   KieServices kieServices = KieServices.Factory.get();
   KieContainer kieContainer = kieServices.getKieClasspathContainer();
   KieSession kieSession = kieContainer.newKieSession();
-  kieSession.insert(new Fibonacci(10));
-  kieSession.fireAllRules();
-  kieSession.dispose();
+  try {
+    kieSession.insert(new Fibonacci(10));
+    kieSession.fireAllRules();
+  } finally {
+    kieSession.dispose();
+  }
+</pre>
+</p>
+
+<p>
+  Drools 8 introduced Rule Unit API as a recommended style which provides an atomic module defining a set of rules and a set of strongly typed
+  data sources:
+<pre>
+  MeasurementUnit measurementUnit = new MeasurementUnit();
+  RuleUnitInstance&lt;MeasurementUnit&gt; instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
+  try {
+    measurementUnit.getMeasurements().add(new Measurement(&quot;color&quot;, &quot;red&quot;));
+    List&lt;Measurement&gt; queryResult = instance.executeQuery(&quot;FindColor&quot;).stream().map(tuple -&gt; (Measurement) tuple.get(&quot;$m&quot;)).collect(toList());
+  } finally {
+    instance.dispose();
+  }
 </pre>
 </p>
 

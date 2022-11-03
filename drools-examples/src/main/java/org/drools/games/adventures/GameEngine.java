@@ -111,7 +111,8 @@ public class GameEngine {
             ksession.fireAllRules();
         } catch ( Exception e ) {
             LOG.error("Exception", e);
-            session.getChannels().get( "output" ).send( "Unable to Execute Command: " + cmdList );
+            session.getChannels().get( "output" ).send( "Unable to Execute Command: " + cmdList + "\n" +
+                    "You need to consider a right combination of words.");
         }
 
     }

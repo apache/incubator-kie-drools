@@ -16,10 +16,16 @@
 
 package org.drools.examples;
 
-import java.awt.*;
+import java.awt.Container;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.drools.examples.decisiontable.PricingRuleDTExample;
 import org.drools.examples.fibonacci.FibonacciExample;
 import org.drools.examples.golfing.GolfingExample;
@@ -29,7 +35,11 @@ import org.drools.examples.petstore.PetStoreExample;
 import org.drools.examples.shopping.ShoppingExample;
 import org.drools.examples.state.StateExampleUsingAgendaGroup;
 import org.drools.examples.state.StateExampleUsingSalience;
+import org.drools.examples.sudoku.SudokuExample;
 import org.drools.examples.troubleticket.TroubleTicketExample;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
+import org.drools.games.adventures.TextAdventure;
 import org.drools.games.pong.PongMain;
 import org.drools.games.wumpus.WumpusWorldMain;
 import org.kie.api.KieServices;
@@ -68,23 +78,21 @@ public class DroolsExamplesApp extends JFrame {
     private Container createContentPane() {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
         contentPane.add(new JLabel("Which GUI example do you want to see?"));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("SudokuExample") {
-//            public void actionPerformed(ActionEvent e) {
-//                new SudokuExample().init(kieContainer, false);
-//            }
-//        }));
+        contentPane.add(new JButton(new AbstractAction("SudokuExample") {
+            public void actionPerformed(ActionEvent e) {
+                new SudokuExample().init(kieContainer, false);
+            }
+        }));
         contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
             public void actionPerformed(ActionEvent e) {
                 new PetStoreExample().init(kieContainer, false);
             }
         }));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("TextAdventure") {
-//            public void actionPerformed(ActionEvent e) {
-//                new TextAdventure().init(kieContainer, false);
-//            }
-//        }));
+        contentPane.add(new JButton(new AbstractAction("TextAdventure") {
+            public void actionPerformed(ActionEvent e) {
+                new TextAdventure().init(kieContainer, false);
+            }
+        }));
         contentPane.add(new JButton(new AbstractAction("Pong") {
             public void actionPerformed(ActionEvent e) {
                 new PongMain().init(kieContainer, false);
@@ -95,7 +103,7 @@ public class DroolsExamplesApp extends JFrame {
                 new WumpusWorldMain().init(kieContainer, false);
             }
         }));
-        
+
         contentPane.add(new JLabel("Which output example do you want to see?"));
 
         contentPane.add(new JButton(new AbstractAction("HelloWorldExample") {
@@ -123,28 +131,21 @@ public class DroolsExamplesApp extends JFrame {
                 GolfingExample.execute( kieContainer );
             }
         }));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("SimpleRuleTemplateExample") {
-//            public void actionPerformed(ActionEvent e) {
-//                SimpleRuleTemplateExample.execute( kieContainer );
-//            }
-//        }));
         contentPane.add(new JButton(new AbstractAction("TroubleTicketExample") {
             public void actionPerformed(ActionEvent e) {
                 TroubleTicketExample.execute( kieContainer );
             }
         }));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDT") {
-//            public void actionPerformed(ActionEvent e) {
-//                TroubleTicketExampleWithDT.execute( kieContainer );
-//            }
-//        }));
-//        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDSL") {
-//            public void actionPerformed(ActionEvent e) {
-//                TroubleTicketExampleWithDSL.execute( kieContainer );
-//            }
-//        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDT") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDT.execute(kieContainer );
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDSL") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDSL.execute(kieContainer );
+            }
+        }));
         contentPane.add(new JButton(new AbstractAction("StateExampleUsingSalience") {
             public void actionPerformed(ActionEvent e) {
                 StateExampleUsingSalience.execute( kieContainer );
@@ -155,33 +156,11 @@ public class DroolsExamplesApp extends JFrame {
                 StateExampleUsingAgendaGroup.execute( kieContainer );
             }
         }));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("PricingRuleTemplateExample") {
-//            public void actionPerformed(ActionEvent e) {
-//                PricingRuleTemplateExample.execute( kieContainer );
-//            }
-//        }));
         contentPane.add(new JButton(new AbstractAction("PricingRuleDTExample") {
             public void actionPerformed(ActionEvent e) {
                 PricingRuleDTExample.execute( kieContainer );
             }
         }));
-// DROOLS-7189
-//        contentPane.add(new JButton(new AbstractAction("DataDrivenTemplateExample") {
-//            public void actionPerformed(ActionEvent e) {
-//                DataDrivenTemplateExample.main(new String[0]);
-//            }
-//        }));
-//        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample1") {
-//            public void actionPerformed(ActionEvent e) {
-//                WorkItemConsequenceExample1.main(new String[0]);
-//            }
-//        }));
-//        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample2") {
-//            public void actionPerformed(ActionEvent e) {
-//                WorkItemConsequenceExample2.main(new String[0]);
-//            }
-//        }));
         return contentPane;
     }
 
