@@ -30,6 +30,7 @@
     duplicating the other content.
     -->
     <source.document.name>.index.adoc</source.document.name>
+    <docs.target.dir>${project.build.directory}/generated-docs</docs.target.dir>
   </properties>
 
   <build>
@@ -64,7 +65,7 @@
               <!-- Needs to be duplicated to avoid rendering each adoc separately -->
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>html5</backend>
-              <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
+              <outputDirectory>${docs.target.dir}/html_single</outputDirectory>
               <outputFile>index.html</outputFile>
               <attributes>
                 <imagesdir>.</imagesdir>
@@ -82,8 +83,8 @@
               <!-- Needs to be duplicated to avoid rendering each adoc separately -->
               <sourceDocumentName>${source.document.name}</sourceDocumentName>
               <backend>pdf</backend>
-              <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
-              <outputFile>index.pdf</outputFile>
+              <outputDirectory>${docs.target.dir}/pdf</outputDirectory>
+              <outputFile>optaplanner-docs.pdf</outputFile>
               <attributes>
                 <imagesdir>${basedir}/src/modules/ROOT/images</imagesdir>
                 <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
@@ -95,6 +96,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-generated-docs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiveBaseDirectory>${docs.target.dir}/</archiveBaseDirectory>
+              <descriptors>
+                <descriptor>src/main/assembly/generated-docs-zip.xml</descriptor>
+              </descriptors>
+              <archive>
+                <addMavenDescriptor>true</addMavenDescriptor>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -123,33 +144,5 @@
         </executions>
       </plugin>
     </plugins>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>package-generated-docs</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <finalName>${project.artifactId}-${project.version}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                  <descriptor>src/main/assembly/generated-docs-zip.xml</descriptor>
-                </descriptors>
-                <archive>
-                  <addMavenDescriptor>true</addMavenDescriptor>
-                </archive>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 </project>

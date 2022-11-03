@@ -69,7 +69,7 @@ mkdir -p "$local_optaplanner_docs/$version/optaplanner-docs"
 mkdir -p "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 # Upload the documentation and Javadoc.
-cp -r "$optaplanner_docs_build_dir/optaplanner-docs-$version"/* "$local_optaplanner_docs/$version/optaplanner-docs"
+unzip "$optaplanner_docs_build_dir/optaplanner-docs-$version.zip" -d "$local_optaplanner_docs/$version/optaplanner-docs"
 cp -r "$optaplanner_javadoc_build_dir/aggregated-javadocs/apidocs"/* "$local_optaplanner_docs/$version/optaplanner-javadoc"
 
 readonly remote_shell="ssh -p 2222 -i $optaplanner_ssh_key"

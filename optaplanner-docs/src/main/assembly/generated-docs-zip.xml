@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
 
   <id>zip-with-generated-docs</id>
   <formats>
-    <format>dir</format>
     <format>zip</format>
   </formats>
 
   <includeBaseDirectory>false</includeBaseDirectory>
+
   <fileSets>
     <fileSet>
-      <directory>${project.build.directory}/generated-docs/html_single/</directory>
-      <outputDirectory>html_single/</outputDirectory>
+      <directory>html_single/</directory>
+      <outputDirectory>html_single</outputDirectory>
+      <useDefaultExcludes>false</useDefaultExcludes>
+    </fileSet>
+    <fileSet>
+      <directory>pdf/</directory>
+      <outputDirectory>pdf</outputDirectory>
+      <includes>
+        <include>optaplanner-docs.pdf</include>
+      </includes>
+      <useDefaultExcludes>false</useDefaultExcludes>
     </fileSet>
   </fileSets>
-  <files>
-    <file>
-      <!-- Rename PDf file name -->
-      <source>${project.build.directory}/generated-docs/pdf/index.pdf</source>
-      <outputDirectory>pdf/</outputDirectory>
-      <destName>optaplanner-docs.pdf</destName>
-    </file>
-  </files>
-  
+
 </assembly>

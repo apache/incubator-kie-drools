@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
 
   <id>assembly-optaplanner</id>
   <formats>
-    <format>dir</format>
     <format>zip</format>
   </formats>
 
@@ -67,7 +67,6 @@
       </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-operator:jar</exclude>
-        <exclude>*:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>examples/binaries</outputDirectory>
