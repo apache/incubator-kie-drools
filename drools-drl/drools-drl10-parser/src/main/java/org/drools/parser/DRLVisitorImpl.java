@@ -214,7 +214,6 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         return ctx.getText();
     }
 
-
     @Override
     public Object visitDrlLiteral(DRLParser.DrlLiteralContext ctx) {
         ParseTree node = ctx;
@@ -274,6 +273,22 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             return super.visitLhsNot(ctx);
         } finally {
             currentConstructStack.pop();
+        }
+    }
+
+    @Override
+    public Object visitLhsOr(DRLParser.LhsOrContext ctx) {
+        if (!ctx.DRL_OR().isEmpty()) {
+            OrDescr orDescr = new OrDescr();
+            currentConstructStack.peek().addDescr(orDescr);
+            currentConstructStack.push(orDescr);
+            try {
+                return super.visitLhsOr(ctx);
+            } finally {
+                currentConstructStack.pop();
+            }
+        } else {
+            return super.visitLhsOr(ctx);
         }
     }
 
