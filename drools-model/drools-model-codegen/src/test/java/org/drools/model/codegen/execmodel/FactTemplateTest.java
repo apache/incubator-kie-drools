@@ -18,7 +18,10 @@ package org.drools.model.codegen.execmodel;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.drools.core.ClockType;
+import org.drools.core.facttemplates.Event;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
@@ -39,14 +42,20 @@ import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.after;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.execute;
 import static org.drools.model.DSL.not;
@@ -64,6 +73,7 @@ import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.model.PrototypeExpression.fixedValue;
 import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
+import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 
 public class FactTemplateTest {
@@ -266,7 +276,6 @@ public class FactTemplateTest {
         ksession.fireAllRules();
         assertThat(result.getValue()).isEqualTo("Edson is older than Mark");
     }
-
 
     @Test
     public void testExpressionBetaConstraint() {
@@ -750,5 +759,167 @@ public class FactTemplateTest {
         f3.set( "i", Arrays.asList(Map.of("c", 1), Map.of("a", 3), Map.of("b", 5)) );
         ksession.insert(f3);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testCep() {
+        // DROOLS-7223
+        Result result = new Result();
+
+        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+
+        PrototypeVariable tick1Var = variable( stockTickPrototype );
+        PrototypeVariable tick2Var = variable( stockTickPrototype );
+
+        Rule rule = rule( "after" )
+                .build(
+                        protoPattern(tick1Var),
+                        protoPattern(tick2Var)
+                                .expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" )
+                                .expr( "value", Index.ConstraintType.GREATER_THAN, tick1Var, "value" )
+                                .expr( after(5, TimeUnit.SECONDS, 10, TimeUnit.SECONDS), tick1Var ),
+                        on(tick1Var, tick2Var).execute((t1, t2) -> result.setValue( t1.get( "name" ) + " increased its value from " + t1.get( "value" ) + " to " + t2.get( "value" )))
+                );
+
+        Model model = new ModelImpl().addRule(rule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        tick1.set( "name", "RedHat" );
+        tick1.set( "value", 10 );
+        ksession.insert(tick1);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        clock.advanceTime( 3, TimeUnit.SECONDS );
+
+        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        tick2.set( "name", "RedHat" );
+        tick2.set( "value", 15 );
+        ksession.insert(tick2);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        clock.advanceTime( 3, TimeUnit.SECONDS );
+
+        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        tick3.set( "name", "test" );
+        tick3.set( "value", 12 );
+        ksession.insert(tick3);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        tick4.set( "name", "RedHat" );
+        tick4.set( "value", 9 );
+        ksession.insert(tick4);
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        clock.advanceTime( 3, TimeUnit.SECONDS );
+
+        Event tick5 = createMapBasedEvent( stockTickPrototype );
+        tick5.set( "name", "RedHat" );
+        tick5.set( "value", 14 );
+        ksession.insert(tick5);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        assertThat(result.getValue()).isEqualTo("RedHat increased its value from 10 to 14");
+
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+
+        Event tick6 = createMapBasedEvent( stockTickPrototype );
+        tick6.set( "name", "RedHat" );
+        tick6.set( "value", 13 );
+        ksession.insert(tick6);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        assertThat(result.getValue()).isEqualTo("RedHat increased its value from 9 to 13");
+    }
+
+    @Test
+    public void testUniqueEventInTimeWindow() {
+        Result result = new Result();
+
+        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeVariable tick1Var = variable( stockTickPrototype );
+
+        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeVariable controlVar = variable( controlPrototype );
+
+        Rule rule = rule( "stock" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
+                        not( protoPattern(controlVar).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
+                        on(tick1Var).execute((drools, t1) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            controlEvent.set( "name", t1.get( "name" ) );
+                            drools.insert(controlEvent);
+                            result.setValue( t1.get( "name" ) + " worth " + t1.get( "value" ));
+                        })
+                );
+
+        Rule cleanupRule = rule( "cleanup" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
+                        protoPattern(controlVar).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ),
+                        on(tick1Var).execute((drools, t1) -> drools.delete(t1))
+                );
+
+        Model model = new ModelImpl().addRule(rule).addRule(cleanupRule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        tick1.set( "name", "RedHat" );
+        tick1.set( "value", 10 );
+        ksession.insert(tick1);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        assertThat(result.getValue()).isEqualTo("RedHat worth 10");
+        result.setValue(null);
+
+        clock.advanceTime( 3, TimeUnit.SECONDS );
+
+        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        tick2.set( "name", "RedHat" );
+        tick2.set( "value", 12 );
+        ksession.insert(tick2);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Event tickTest = createMapBasedEvent( stockTickPrototype );
+        tickTest.set( "name", "test" );
+        tickTest.set( "value", 42 );
+        FactHandle fhTest = ksession.insert(tickTest);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        assertThat(result.getValue()).isEqualTo("test worth 42");
+        result.setValue(null);
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+
+        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        tick3.set( "name", "RedHat" );
+        tick3.set( "value", 14 );
+        ksession.insert(tick3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+
+        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        tick4.set( "name", "RedHat" );
+        tick4.set( "value", 15 );
+        ksession.insert(tick4);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        assertThat(result.getValue()).isEqualTo("RedHat worth 15");
     }
 }

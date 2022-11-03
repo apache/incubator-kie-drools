@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 
 import static java.util.stream.Collectors.toCollection;
@@ -79,30 +78,18 @@ public abstract class AbstractFactHandleFactory implements FactHandleFactory  {
                                                    final ReteEvaluator reteEvaluator,
                                                    final WorkingMemoryEntryPoint wmEntryPoint ) {
         WorkingMemoryEntryPoint entryPoint = getWmEntryPoint(reteEvaluator, wmEntryPoint);
-
-        if ( conf != null && conf.isEvent() ) {
-            TypeDeclaration type = conf.getTypeDeclaration();
-            long timestamp;
-            if ( type != null && type.getTimestampExtractor() != null ) {
-                timestamp = type.getTimestampExtractor().getLongValue( reteEvaluator, object );
-            } else {
-                timestamp = reteEvaluator.getTimerService().getCurrentTime();
-            }
-            long duration = 0;
-            if ( type != null && type.getDurationExtractor() != null ) {
-                duration = type.getDurationExtractor().getLongValue( reteEvaluator, object );
-            }
-            return createEventFactHandle(id, object, recency, entryPoint, timestamp, duration);
-        } else {
-            return createDefaultFactHandle(id, object, recency, entryPoint);
-        }
+        return conf == null ?
+            createDefaultFactHandle(id, object, recency, entryPoint) :
+            conf.createFactHandle(this, id, object, recency, reteEvaluator, entryPoint);
     }
 
-    protected DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
+    @Override
+    public DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint) {
         return new DefaultFactHandle(id, object, recency, entryPoint);
     }
 
-    protected EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
+    @Override
+    public EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration) {
         return new EventFactHandle(id, object, recency, timestamp, duration, entryPoint);
     }
 

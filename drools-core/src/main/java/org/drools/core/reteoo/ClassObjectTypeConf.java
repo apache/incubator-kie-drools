@@ -26,13 +26,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.ObjectType;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.Activation;
-import org.drools.core.base.ObjectType;
 import org.drools.core.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
@@ -123,6 +127,22 @@ public class ClassObjectTypeConf
         stream.writeLong(expirationOffset);
     }
 
+    public InternalFactHandle createFactHandle(FactHandleFactory factHandleFactory, long id, Object object, long recency,
+                                               ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint entryPoint) {
+        if ( isEvent() ) {
+            TypeDeclaration type = getTypeDeclaration();
+            long timestamp = type != null && type.getTimestampExtractor() != null ?
+                    type.getTimestampExtractor().getLongValue( reteEvaluator, object ) :
+                    reteEvaluator.getTimerService().getCurrentTime();
+            long duration = type != null && type.getDurationExtractor() != null ?
+                    type.getDurationExtractor().getLongValue( reteEvaluator, object ) :
+                    0;
+            return factHandleFactory.createEventFactHandle(id, object, recency, entryPoint, timestamp, duration);
+        }
+
+        return factHandleFactory.createDefaultFactHandle(id, object, recency, entryPoint);
+    }
+
     public boolean isAssignableFrom(Object object) {
         return this.cls.isAssignableFrom( (Class<?>) object );
     }
@@ -211,6 +231,10 @@ public class ClassObjectTypeConf
     
     public boolean isDynamic() {
         return typeDecl != null && typeDecl.isDynamic();
+    }
+
+    public boolean isPrototype() {
+        return false;
     }
 
     public boolean isTMSEnabled() {

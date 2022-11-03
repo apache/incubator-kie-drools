@@ -20,7 +20,9 @@ import java.util.concurrent.CountDownLatch;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.facttemplates.Event;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -34,7 +36,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
@@ -201,13 +202,13 @@ public interface PropagationEntry {
             this.context = context;
             this.objectTypeConf = objectTypeConf;
 
-            if ( objectTypeConf.isEvent() ) {
+            if ( handle.isEvent() ) {
                 scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
             }
         }
 
         public static void execute( InternalFactHandle handle, PropagationContext context, ReteEvaluator reteEvaluator, ObjectTypeConf objectTypeConf) {
-            if ( objectTypeConf.isEvent() ) {
+            if ( handle.isEvent() ) {
                 scheduleExpiration(reteEvaluator, handle, context, objectTypeConf, reteEvaluator.getTimerService().getCurrentTime());
             }
             propagate( handle, context, reteEvaluator, objectTypeConf );
@@ -233,10 +234,12 @@ public interface PropagationEntry {
 
         private static void scheduleExpiration(ReteEvaluator reteEvaluator, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, long insertionTime) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
-                scheduleExpiration( reteEvaluator, handle, context, otn, insertionTime, otn.getExpirationOffset() );
+                long expirationOffset = objectTypeConf.isPrototype() ? ((Event) handle.getObject()).getExpiration() : otn.getExpirationOffset();
+                scheduleExpiration( reteEvaluator, handle, context, otn, insertionTime, expirationOffset );
             }
             if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
-                scheduleExpiration( reteEvaluator, handle, context, null, insertionTime, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                long expirationOffset = objectTypeConf.isPrototype() ? ((Event) handle.getObject()).getExpiration() : ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset();
+                scheduleExpiration( reteEvaluator, handle, context, null, insertionTime, expirationOffset);
             }
         }
 

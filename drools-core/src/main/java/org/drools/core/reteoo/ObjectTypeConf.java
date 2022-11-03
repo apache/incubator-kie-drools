@@ -16,8 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.accessor.FactHandleFactory;
 
 public interface ObjectTypeConf {
 	String getTypeName();
@@ -35,7 +39,9 @@ public interface ObjectTypeConf {
     boolean isEvent();
 
     boolean isDynamic();
-   
+
+    boolean isPrototype();
+
     TypeDeclaration getTypeDeclaration();
     
     /** Whether or not, TMS is active for this object type. */
@@ -47,4 +53,7 @@ public interface ObjectTypeConf {
     void enableTMS();
     
     EntryPointId getEntryPoint();
+
+    InternalFactHandle createFactHandle(FactHandleFactory factHandleFactory, long id, Object object, long recency,
+                                        ReteEvaluator reteEvaluator, WorkingMemoryEntryPoint entryPoint);
 }

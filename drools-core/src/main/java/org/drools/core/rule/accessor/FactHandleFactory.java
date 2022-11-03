@@ -19,6 +19,8 @@ package org.drools.core.rule.accessor;
 import java.util.Collection;
 
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -77,4 +79,8 @@ public interface FactHandleFactory {
 
     void doRecycleIds( Collection<Long> usedIds );
     void stopRecycleIds();
+
+    DefaultFactHandle createDefaultFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint);
+
+    EventFactHandle createEventFactHandle(long id, Object object, long recency, WorkingMemoryEntryPoint entryPoint, long timestamp, long duration);
 }
