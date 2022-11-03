@@ -64,7 +64,7 @@ lhsPattern : xpathPrimary (OVER patternFilter)? |
              ( QUESTION? qualifiedIdentifier LPAREN positionalConstraints? constraints? RPAREN (OVER patternFilter)? (FROM patternSource)? ) ;
 */
 
-lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN (positionalConstraints? constraints? ) RPAREN (DRL_FROM patternSource)? ;
+lhsPattern : QUESTION? objectType=drlQualifiedName LPAREN positionalConstraints? constraints? RPAREN (DRL_FROM patternSource)? ;
 positionalConstraints : constraint (COMMA constraint)* SEMI ;
 constraints : constraint (COMMA constraint)* ;
 constraint : label? ( nestedConstraint | conditionalOrExpression ) ;
@@ -198,6 +198,7 @@ drlPrimary
     | typeTypeOrVoid DOT CLASS
     | nonWildcardTypeArguments (explicitGenericInvocationSuffix | THIS arguments)
     | inlineListExpression
+    | inlineMapExpression
     ;
 
 /* extending JavaParser literal */
@@ -217,6 +218,18 @@ inlineListExpression
 
 expressionList
     :   drlExpression (COMMA drlExpression)*
+    ;
+
+inlineMapExpression
+    :	LBRACK mapExpressionList RBRACK
+    ;
+
+mapExpressionList
+    :	mapEntry (COMMA mapEntry)*
+    ;
+
+mapEntry
+    :	drlExpression COLON drlExpression
     ;
 
 /*
