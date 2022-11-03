@@ -861,7 +861,14 @@ public class FactTemplateTest {
                         })
                 );
 
-        Model model = new ModelImpl().addRule(rule);
+        Rule cleanupRule = rule( "cleanup" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
+                        protoPattern(controlVar).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ),
+                        on(tick1Var).execute((drools, t1) -> drools.delete(t1))
+                );
+
+        Model model = new ModelImpl().addRule(rule).addRule(cleanupRule);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
 
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
@@ -873,9 +880,8 @@ public class FactTemplateTest {
         Event tick1 = createMapBasedEvent( stockTickPrototype );
         tick1.set( "name", "RedHat" );
         tick1.set( "value", 10 );
-        FactHandle fh1 = ksession.insert(tick1);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-        ksession.delete(fh1);
+        ksession.insert(tick1);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         assertThat(result.getValue()).isEqualTo("RedHat worth 10");
         result.setValue(null);
@@ -885,16 +891,14 @@ public class FactTemplateTest {
         Event tick2 = createMapBasedEvent( stockTickPrototype );
         tick2.set( "name", "RedHat" );
         tick2.set( "value", 12 );
-        FactHandle fh2 = ksession.insert(tick2);
-        assertThat(ksession.fireAllRules()).isEqualTo(0);
-        ksession.delete(fh2);
+        ksession.insert(tick2);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
 
         Event tickTest = createMapBasedEvent( stockTickPrototype );
         tickTest.set( "name", "test" );
         tickTest.set( "value", 42 );
         FactHandle fhTest = ksession.insert(tickTest);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-        ksession.delete(fhTest);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         assertThat(result.getValue()).isEqualTo("test worth 42");
         result.setValue(null);
@@ -904,19 +908,17 @@ public class FactTemplateTest {
         Event tick3 = createMapBasedEvent( stockTickPrototype );
         tick3.set( "name", "RedHat" );
         tick3.set( "value", 14 );
-        FactHandle fh3 = ksession.insert(tick3);
-        assertThat(ksession.fireAllRules()).isEqualTo(0);
+        ksession.insert(tick3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
         assertThat(result.getValue()).isNull();
-        ksession.delete(fh3);
 
         clock.advanceTime( 5, TimeUnit.SECONDS );
 
         Event tick4 = createMapBasedEvent( stockTickPrototype );
         tick4.set( "name", "RedHat" );
         tick4.set( "value", 15 );
-        FactHandle fh4 = ksession.insert(tick4);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-        ksession.delete(fh4);
+        ksession.insert(tick4);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         assertThat(result.getValue()).isEqualTo("RedHat worth 15");
     }
