@@ -20,6 +20,7 @@ import org.drools.drl.ast.descr.FunctionDescr;
 import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
+import org.drools.drl.ast.descr.MVELExprDescr;
 import org.drools.drl.ast.descr.NotDescr;
 import org.drools.drl.ast.descr.OrDescr;
 import org.drools.drl.ast.descr.PackageDescr;
@@ -680,5 +681,140 @@ public class MiscDRLParserTest extends TestCase {
         assertTrue( ((String) rule.getConsequence()).indexOf( "==" ) > 0 );
         assertTrue( ((String) rule.getConsequence()).indexOf( "i++" ) > 0 );
         // note, need to assert that "i++" is preserved as is, no extra spaces.
+    }
+
+    @Test
+    public void testRuleParseLhs() throws Exception {
+        final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
+        PackageDescr pkg = parser.parse(text);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        assertNotNull(rule);
+
+        AndDescr lhs = rule.getLhs();
+        assertEquals(1,
+                     lhs.getDescrs().size());
+        assertEquals(2,
+                     ((OrDescr) lhs.getDescrs().get(0)).getDescrs().size());
+    }
+
+    @Test
+    public void testRuleParseLhsWithStringQuotes() throws Exception {
+        final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
+        PackageDescr pkg = parser.parse(text);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        assertNotNull(rule);
+
+        AndDescr lhs = rule.getLhs();
+        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get(0)).getDescrs().get(0);
+
+        assertThat(constr.getText()).isEqualToIgnoringWhitespace("location==\"atlanta\\\"\"");
+    }
+
+    @Test
+    public void testRuleParseLhsWithStringQuotes2() throws Exception {
+        final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
+        PackageDescr pkg = parser.parse(text);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        assertNotNull(rule);
+
+        AndDescr lhs = rule.getLhs();
+        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get(0)).getDescrs().get(1);
+
+        assertThat(constr.getText()).isEqualToIgnoringWhitespace("type == \"s\\tti\\\"lto\\nn\"");
+    }
+
+    @Test
+    public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
+        String source = readResource("literal_bool_and_negative.drl");
+        PackageDescr pkg = parser.parse(source);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        assertNotNull(rule);
+
+        assertEquals("simple_rule",
+                     rule.getName());
+        assertNotNull(rule.getLhs());
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("cons();");
+
+        final AndDescr lhs = rule.getLhs();
+        assertEquals(3,
+                     lhs.getDescrs().size());
+
+        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get(0);
+        assertEquals(1,
+                     pattern.getConstraint().getDescrs().size());
+        AndDescr fieldAnd = (AndDescr) pattern.getConstraint();
+        ExprConstraintDescr fld = (ExprConstraintDescr) fieldAnd.getDescrs().get(0);
+        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("bar == false");
+
+        pattern = (PatternDescr) lhs.getDescrs().get(1);
+        assertEquals(1,
+                     pattern.getConstraint().getDescrs().size());
+
+        fieldAnd = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) fieldAnd.getDescrs().get(0);
+
+        assertThat(fld.getText()).isEqualToIgnoringWhitespace("boo > -42");
+
+        pattern = (PatternDescr) lhs.getDescrs().get(2);
+        assertEquals(1,
+                     pattern.getConstraint().getDescrs().size());
+
+        fieldAnd = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) fieldAnd.getDescrs().get(0);
+
+        assertThat(fld.getText()).isEqualToIgnoringWhitespace("boo > -42.42");
+    }
+
+    @Test
+    public void testEmptyPattern() throws Exception {
+        String source = readResource("test_EmptyPattern.drl");
+        PackageDescr pkg = parser.parse(source);
+
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        assertEquals(1,
+                     pkg.getRules().size());
+        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get(0);
+        assertEquals("simple rule",
+                     ruleDescr.getName());
+        assertNotNull(ruleDescr.getLhs());
+        assertEquals(1,
+                     ruleDescr.getLhs().getDescrs().size());
+        final PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
+        assertEquals(0,
+                     patternDescr.getConstraint().getDescrs().size()); // this
+        assertEquals("Cheese",
+                     patternDescr.getObjectType());
+    }
+
+    @Test
+    public void testSimpleMethodCallWithFrom() throws Exception {
+        String source = readResource("test_SimpleMethodCallWithFrom.drl");
+        PackageDescr pkg = parser.parse(source);
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr method = (MVELExprDescr) from.getDataSource();
+
+        assertThat(method.getExpression()).isEqualToIgnoringWhitespace("something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )");
     }
 }
