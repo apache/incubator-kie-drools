@@ -595,6 +595,30 @@
 
       <dependency>
         <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-integration-test</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-integration-test-hotreload</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-ruleunit-integration-test</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.drools</groupId>
         <artifactId>drools-alphanetwork-compiler</artifactId>
         <version>${project.version}</version>
       </dependency>
