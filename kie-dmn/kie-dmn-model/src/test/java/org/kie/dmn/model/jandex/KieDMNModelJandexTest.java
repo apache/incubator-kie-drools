@@ -113,7 +113,7 @@ public class KieDMNModelJandexTest {
 
         LOG.trace("scan: {}", source);
         try (FileInputStream input = new FileInputStream(source);) {
-            ClassInfo info = indexer.index(input);
+            indexer.index(input);
         }
     }
 }
