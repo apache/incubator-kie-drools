@@ -36,7 +36,7 @@ import org.kie.pmml.evaluator.core.utils.PMMLRequestDataBuilder;
 import org.kie.pmml.evaluator.utils.SPIUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.efesto.common.api.utils.FileUtils.getFile;
+import static org.drools.util.FileUtils.getFile;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;
 
 public class AbstractPMMLTest {

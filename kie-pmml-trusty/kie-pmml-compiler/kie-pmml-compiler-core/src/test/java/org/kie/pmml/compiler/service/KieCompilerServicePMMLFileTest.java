@@ -27,7 +27,7 @@ import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileFromFileName;
+import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName;
 
 class KieCompilerServicePMMLFileTest {
 

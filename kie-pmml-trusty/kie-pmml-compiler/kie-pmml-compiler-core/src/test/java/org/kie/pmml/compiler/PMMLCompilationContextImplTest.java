@@ -25,10 +25,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.utils.FileUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.util.FileUtils.getFileContent;
 
 class PMMLCompilationContextImplTest {
 
@@ -51,7 +51,7 @@ class PMMLCompilationContextImplTest {
         allSourcesMap = pmmlFiles.stream().collect(Collectors.toMap(file -> file.getName().replace(".java", ""),
                                                                     file -> {
                                                                         try {
-                                                                            return FileUtils.getFileContent(file.getName());
+                                                                            return getFileContent(file.getName());
                                                                         } catch (IOException e) {
                                                                             throw new RuntimeException(e);
                                                                         }

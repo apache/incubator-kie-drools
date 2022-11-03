@@ -15,6 +15,8 @@
  */
 package org.kie.efesto.common.utils;
 
+import java.io.InputStream;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -22,9 +24,7 @@ import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-
-import static org.kie.efesto.common.api.utils.FileUtils.getInputStreamFromFileName;
+import static org.drools.util.FileUtils.getInputStreamFromFileNameAndClassLoader;
 
 public class JavaParserUtils {
 
@@ -73,12 +73,15 @@ public class JavaParserUtils {
     }
 
     private static CompilationUnit getFromFileName(String fileName) {
+        InputStream resource = getInputStreamFromFileNameAndClassLoader(fileName,
+                                                                        JavaParserUtils.class.getClassLoader())
+                .orElseThrow(() -> new KieEfestoCommonException(String.format("Failed to find InputStream for %s",
+                                                                              fileName)));
         try {
-            final InputStream resource = getInputStreamFromFileName(fileName);
             return StaticJavaParser.parse(resource);
         } catch (Exception e) {
             throw new KieEfestoCommonException(String.format("Failed to parse %s due to %s", fileName,
-                    e.getMessage()), e);
+                                                             e.getMessage()), e);
         }
     }
 }

@@ -72,8 +72,8 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileContent;
-import static org.kie.efesto.common.api.utils.FileUtils.getFileInputStream;
+import static org.drools.util.FileUtils.getFileContent;
+import static org.drools.util.FileUtils.getFileInputStream;
 import static org.kie.pmml.commons.Constants.GET_MODEL;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.commons.Constants.PMML_SUFFIX;

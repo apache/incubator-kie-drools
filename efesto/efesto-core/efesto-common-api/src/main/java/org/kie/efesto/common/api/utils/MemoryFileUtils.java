@@ -17,7 +17,6 @@ package org.kie.efesto.common.api.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -25,91 +24,26 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.drools.util.ResourceHelper;
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.io.MemoryFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FileUtils {
+public class MemoryFileUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(MemoryFileUtils.class.getName());
 
     private static final String TO_RETURN_TEMPLATE = "toReturn {}";
     private static final String TO_RETURN_GETABSOLUTEPATH_TEMPLATE = "toReturn.getAbsolutePath() {}";
 
-    private FileUtils() {
+    private MemoryFileUtils() {
     }
 
-    /**
-     * Retrieve the <code>File</code> of the given <b>file</b>
-     *
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public static File getFile(String fileName) {
-        String extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-        File toReturn = ResourceHelper.getFileResourcesByExtension(extension)
-                .stream()
-                .filter(file -> file.getName().equals(fileName))
-                .findFirst()
-                .orElse(null);
-        if (toReturn == null) {
-            throw new KieEfestoCommonException(String.format("Failed to find %s due to", fileName));
-        }
-        return toReturn;
-    }
-
-    /**
-     * Retrieve the <code>FileInputStream</code> of the given <b>file</b>
-     *
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public static FileInputStream getFileInputStream(String fileName) throws IOException {
-        File sourceFile = getFile(fileName);
-        return new FileInputStream(sourceFile);
-    }
-
-    /**
-     * Retrieve the <b>content</b> of the given <b>file</b>
-     *
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
-    public static String getFileContent(String fileName) throws IOException {
-        File file = getFile(fileName);
-        Path path = file.toPath();
-        Stream<String> lines = Files.lines(path);
-        String toReturn = lines.collect(Collectors.joining("\n"));
-        lines.close();
-        return toReturn;
-    }
-
-    public static InputStream getInputStreamFromFileName(String fileName) {
-        try {
-            InputStream toReturn = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
-            if (toReturn == null) {
-                throw new KieEfestoCommonException(String.format("Failed to find %s", fileName));
-            } else {
-                return toReturn;
-            }
-        } catch (Exception e) {
-            throw new KieEfestoCommonException(String.format("Failed to find %s due to %s", fileName,
-                    e.getMessage()), e);
-        }
-    }
 
     public static Optional<File> getFileFromFileNameOrFilePath(String fileName, String filePath) {
         Optional<File> fromClassloader = getFileByFileNameFromClassloader(fileName, Thread.currentThread().getContextClassLoader());
