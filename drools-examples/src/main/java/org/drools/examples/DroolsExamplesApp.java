@@ -47,6 +47,8 @@ import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.examples.sudoku.SudokuExample.createSudokuKieContainer;
+
 public class DroolsExamplesApp extends JFrame {
 
     public static void main(String[] args) {
@@ -80,7 +82,7 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JLabel("Which GUI example do you want to see?"));
         contentPane.add(new JButton(new AbstractAction("SudokuExample") {
             public void actionPerformed(ActionEvent e) {
-                new SudokuExample().init(kieContainer, false);
+                new SudokuExample().init(createSudokuKieContainer(), false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
