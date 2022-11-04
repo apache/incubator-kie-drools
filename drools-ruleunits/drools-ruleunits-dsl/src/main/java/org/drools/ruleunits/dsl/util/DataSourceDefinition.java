@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.dsl;
+package org.drools.ruleunits.dsl.util;
 
-import java.util.Map;
-import java.util.Set;
+import org.drools.ruleunits.api.DataSource;
 
-import org.drools.ruleunits.api.RuleUnitData;
-import org.drools.ruleunits.dsl.util.RuleDefinition;
+public class DataSourceDefinition {
+    private final DataSource dataSource;
+    private final Class<?> dataClass;
 
-public class UnitGlobalsResolver {
-
-    private final Map<String, RuleDefinition.FieldDefinition> fieldByGlobal;
-
-    public UnitGlobalsResolver(Map<String, RuleDefinition.FieldDefinition> fieldByGlobal) {
-        this.fieldByGlobal = fieldByGlobal;
+    public DataSourceDefinition(DataSource dataSource, Class<?> dataClass) {
+        this.dataSource = dataSource;
+        this.dataClass = dataClass;
     }
 
-    public Set<String> getGlobalNames() {
-        return fieldByGlobal.keySet();
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
-    public Object resolveGlobalObject(RuleUnitData unit, String name) {
-        return fieldByGlobal.get(name).get(unit);
+    public Class<?> getDataClass() {
+        return dataClass;
     }
 }
