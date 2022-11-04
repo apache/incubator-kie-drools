@@ -107,9 +107,7 @@
     <!-- simple-jndi is a small library that helps us avoid JNDI error messages during testing -->
     <version.simple-jndi>0.11.4.1</version.simple-jndi>
     <version.xerces>2.12.0.SP04</version.xerces>
-    <version.xmlpull>1.2.0</version.xmlpull>
     <version.xmlunit>1.3</version.xmlunit>
-    <version.xpp3>${version.xmlpull}</version.xpp3>
 
     <!-- External dependency versions bom -->
     <!-- ################################################################################ -->
@@ -920,21 +918,9 @@
       </dependency>
 
       <dependency>
-        <groupId>xmlpull</groupId>
-        <artifactId>xmlpull</artifactId>
-        <version>${version.xmlpull}</version>
-      </dependency>
-
-      <dependency>
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
         <version>${version.xmlunit}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>xpp3</groupId>
-        <artifactId>xpp3_min</artifactId>
-        <version>${version.xpp3}</version>
       </dependency>
 
       <!-- END of jboss-ip-bom -->
