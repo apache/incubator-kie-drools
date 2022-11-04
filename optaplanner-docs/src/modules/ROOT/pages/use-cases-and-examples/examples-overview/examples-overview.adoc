@@ -98,11 +98,11 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[Vehicle routing]
 |* 1 entity class
-** 1 chained variable
+** 1 list variable
 * 1 shadow entity class
-** 1 automatic shadow variable
-|* Entity <= `2740`
-* Value <= `2795`
+** 3 automatic shadow variable
+|* Entity <= `55`
+* Value <= `2750`
 * Search space <= `10^8380`
 |* Unrealistic
 * https://neo.lcc.uma.es/vrp/[VRP web]
@@ -114,8 +114,8 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[Vehicle routing] with time windows
 |* All of Vehicle routing
 * 1 shadow variable
-|* Entity <= `2740`
-* Value <= `2795`
+|* Entity <= `55`
+* Value <= `2750`
 * Search space <= `10^8380`
 |* Unrealistic
 * https://neo.lcc.uma.es/vrp/[VRP web]
@@ -147,12 +147,12 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |xref:use-cases-and-examples/task-assigning/task-assigning.adoc#taskAssigning[Task assigning]
 |* 1 entity class
-** 1 chained variable
-** 1 shadow variable
+** 1 list variable
 * 1 shadow entity class
 ** 1 automatic shadow variable
-|* Entity <= `500`
-* Value <= `520`
+** 1 shadow variable
+|* Entity <= `20`
+* Value <= `500`
 * Search space <= `10^1168`
 |* No
 * Defined by us

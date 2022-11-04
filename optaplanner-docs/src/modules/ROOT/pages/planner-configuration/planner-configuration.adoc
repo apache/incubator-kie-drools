@@ -877,7 +877,7 @@ The planning list variable is a successor to the chained planning variable and p
 [WARNING]
 ====
 As a new feature, planning list variable does not yet support all the advanced planning features that work with the chained planning variable.
-Do not use it, if you need any of the following planning techniques:
+Use a <<chainedPlanningVariable,chained planning variable>> instead of a list planning variable, if you need any of the following planning techniques:
 
 - xref:repeated-planning/repeated-planning.adoc#overconstrainedPlanning[overconstrained planning],
 - xref:repeated-planning/repeated-planning.adoc#continuousPlanning[continuous planning] or xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[entity pinning],
@@ -922,8 +922,11 @@ No planning value may appear in multiple entities.
 [[chainedPlanningVariable]]
 ==== Chained planning variable (TSP, VRP, ...)
 
-Some use cases, such as TSP and vehicle routing, require __chaining__.
-This means the planning entities point to each other and form a chain.
+Chained planning variable is one way to implement the xref:design-patterns/design-patterns.adoc#chainedThroughTimePattern[Chained Through Time pattern].
+This pattern is used for some use cases, such as TSP and vehicle routing.
+Use the chained planning variable to implement this pattern if you plan to use some of the advanced planning features, that are not yet supported by the <<planningListVariable,planning list variable>>.
+
+Chained planning variable allows the planning entities to point to each other and form a chain.
 By modeling the problem as a set of chains (instead of a set of trees/loops), the search space is heavily reduced.
 
 A planning variable that is chained either:
@@ -989,7 +992,7 @@ public interface Standstill {
 
 That interface is the return type of the planning variable.
 Furthermore, the planning variable is chained.
-For example TSP's `Visit` (in vehicle routing it is ``Customer``):
+For example TSP's `Visit`:
 
 [source,java,options="nowrap"]
 ----

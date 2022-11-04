@@ -32,9 +32,7 @@ A shadow variable changes during planning, but its value can be calculated based
 Only one side of a bi-directional relationship can be a genuine planning variable. The other side will become an xref:shadow-variable/shadow-variable.adoc#bidirectionalVariable[inverse relation shadow variable] later on. Keep bi-directional relationships orange.
 ====
 
-. *Check for xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variables]*.
-In a chained variable design, the focus is on deciding the order of a set of planning entity instances instead of assigning them to a date and time. However,  a shadow variable can assign the date and time.
-A typical use case is xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[vehicle routing].
+. *If the goal is to find an optimal order of elements*, use the <<chainedThroughTimePattern,Chained Through Time pattern>>.
 
 . *If there is an orange many-to-many relationship, replace it
 with a one-to-many and a many-to-one relationship to a new intermediate class.*
@@ -72,7 +70,9 @@ image::design-patterns/entityVariableAndValueExamples.png[align="center"]
 
 [NOTE]
 ====
-Vehicle routing is different because it uses a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
+Course scheduling is different because it uses two xref:planner-configuration/planner-configuration.adoc#planningVariable[planning variables].
+Vehicle routing is different because it uses a xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
+Traveling salesman is different because it uses a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
 ====
 
 [[assigningTimeToPlanningEntities]]
@@ -175,18 +175,44 @@ However, such a solution is not impossible.
 
 If a person or a machine continuously works on **one task at a time in sequence**,
 which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
-For example, in the vehicle routing with time windows example, a vehicle drives from customer to customer (thus it handles one customer at a time).
+For example, in xref:use-cases-and-examples/use-cases-and-examples.adoc#vehicleRouting[vehicle routing] with time windows, a vehicle drives from customer to customer (thus it handles one customer at a time).
 
-In this pattern, the planning entities are xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained].
+The focus in this pattern is on deciding the order of a set of elements instead of assigning them to a specific date and time.
+However, the time coordinate of each element can be deduced from its position in the sequence.
+If the elements’ position on time axis affects the score, use a xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variable] to calculate the time.
+
+This pattern is implemented using either the xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable] or the xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
+The two modeling approaches are equivalent because they both allow OptaPlanner to order elements in sequences of variable lengths.
+The planning list variable is easier to use than the chained planning variable, but it does not yet support all the advanced planning techniques.
+
+[[chainedThroughTimePatternChainedVariable]]
+==== Chained through time pattern using chained planning variable
+
+Using the xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable], planning entities are arranged in a recursive data structure, forming a chain, that ends with an anchor.
+
 The anchor determines the starting time of its first planning entity.
 The second entity's starting time is calculated based on the starting time and duration of the first entity.
 For example, in task assignment, Beth (the anchor) starts working at 8:00, thus her first task starts at 8:00.
 It lasts 52 minutes, therefore her second task starts at 8:52.
-The starting time of an entity is usually xref:shadow-variable/shadow-variable.adoc#shadowVariable[a shadow variable].
+The starting time of an entity is usually a xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variable].
 
 An anchor has only one chain.
 Although it is possible to split up the anchor into two separate anchors, for example split up Beth into Beth's left hand and Beth's right hand (because she can do two tasks at the same time), this model makes pooling resources difficult.
 Consequently, using this model in the exam scheduling example to allow two or more exams to use the same room at the same time is problematic.
+
+[[chainedThroughTimePatternListVariable]]
+==== Chained through time pattern using planning list variable
+
+OptaPlanner distributes planning values into planning entities’ xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
+
+The planning entity determines the starting time of the first element in its planning list variable.
+The second element's starting time is calculated based on the starting time and duration of the first element.
+For example, in task assignment, Beth (the entity) starts working at 8:00, thus her first task starts at 8:00.
+It lasts 52 minutes, therefore her second task starts at 8:52.
+The starting time of an element is usually a xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variable].
+
+[[chainedThroughTimePatternGaps]]
+==== Chained through time pattern: creating gaps
 
 Between planning entities, there are three ways to create gaps:
 
