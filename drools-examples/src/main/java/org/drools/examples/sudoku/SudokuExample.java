@@ -15,16 +15,8 @@
  */
 package org.drools.examples.sudoku;
 
-import org.drools.util.IoUtils;
-import org.drools.examples.sudoku.swing.SudokuGridSamples;
-import org.drools.examples.sudoku.swing.SudokuGridView;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -32,6 +24,29 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import org.drools.examples.sudoku.swing.SudokuGridSamples;
+import org.drools.examples.sudoku.swing.SudokuGridView;
+import org.drools.util.IoUtils;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.conf.PropertySpecificOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.
@@ -74,9 +89,30 @@ public class SudokuExample implements ActionListener {
     private JFileChooser fileChooser;
 
     public static void main(String[] args) {
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        KieContainer kc = createSudokuKieContainer();
         new SudokuExample().init(kc, true);
     }
+
+    public static KieContainer createSudokuKieContainer() {
+        // Create a KieContainer separately from other examples because Sudoku rules were written without property reactivity
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/org/drools/examples/sudoku/sudoku.drl",
+                  ks.getResources().newInputStreamResource(SudokuExample.class.getResourceAsStream("/org/drools/examples/sudoku/sudoku.drl")));
+        kfs.write("src/main/resources/org/drools/examples/sudoku/validate.drl",
+                  ks.getResources().newInputStreamResource(SudokuExample.class.getResourceAsStream("/org/drools/examples/sudoku/validate.drl")));
+        ReleaseId releaseId = ks.newReleaseId("org.drools.examples.sudoku", "sudoku", "1.0.0");
+        kfs.generateAndWritePomXML(releaseId);
+        KieModuleModel kieModuleModel = ks.newKieModuleModel();
+        kieModuleModel.setConfigurationProperty(PropertySpecificOption.PROPERTY_NAME, PropertySpecificOption.ALLOWED.name());
+        kfs.writeKModuleXML(kieModuleModel.toXML());
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        if (kieBuilder.getResults().hasMessages(Level.ERROR)) {
+            LOG.error("Build error : {}", kieBuilder.getResults().getMessages());
+        }
+        return ks.newKieContainer(releaseId);
+    }
+
     public SudokuExample() {
     }
 

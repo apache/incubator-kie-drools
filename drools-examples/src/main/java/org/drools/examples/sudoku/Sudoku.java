@@ -278,7 +278,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
             steppingFactHandle = null;
         }
         
-        this.session = kc.newKieSession("SudokuKS");
+        this.session = kc.newKieSession();
         session.setGlobal("explain", explain);
         session.addEventListener(workingMemoryListener);
 

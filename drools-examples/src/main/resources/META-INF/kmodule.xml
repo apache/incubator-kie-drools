@@ -122,10 +122,6 @@
     <kbase name="PetStoreKB" packages="org.drools.examples.petstore">
         <ksession name="PetStoreKS"/>
     </kbase>
-    
-    <kbase name="SudokuKB" packages="org.drools.examples.sudoku">
-        <ksession name="SudokuKS"/>
-    </kbase>
 
     <kbase name="TroubleTicketKB" packages="org.drools.examples.troubleticket">
         <ksession name="TroubleTicketKS"/>
