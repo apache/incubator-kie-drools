@@ -94,8 +94,8 @@ Putting a good weight on a constraint is often a difficult analytical decision,
 because it is about making choices and trade-offs against other constraints.
 Different stakeholders have different priorities.
 *Don't waste time with constraint weight discussions at the start of an implementation,
-instead add a <<constraintConfiguration, constraint configuration>>
-and  allow users to change them through a UI.*
+instead add a <<constraintConfiguration,constraint configuration>>
+and allow users to change them through a UI.*
 A non-accurate weight is less damaging than mediocre algorithms:
 
 image::score-calculation/scoreTradeoffInPerspective.png[align="center"]
@@ -1041,7 +1041,7 @@ public class ConferenceSolution {
 The `@ConstraintConfigurationProvider` annotation automatically exposes the constraint configuration
 as a xref:planner-configuration/planner-configuration.adoc#problemFacts[problem fact], there is no need to add a `@ProblemFactProperty` annotation.
 
-The constraint configuration class holds the <<constraintWeight, constraint weights>>,
+The constraint configuration class holds the <<constraintWeight,constraint weights>>,
 but it can also hold constraint parameters.
 For example in conference scheduling, the minimum pause constraint has a constraint weight (like any other constraint),
 but it also has a constraint parameter that defines the length of the minimum pause between two talks of the same speaker.

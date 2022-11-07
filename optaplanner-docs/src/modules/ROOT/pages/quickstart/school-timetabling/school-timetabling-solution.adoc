@@ -84,7 +84,7 @@ Specifically, this class is the input of the problem:
 ** Of each `Lesson`:
 *** The values of the `timeslot` and `room` fields are typically still `null`, so unassigned.
 They are planning variables.
-***  The other fields, such as `subject`, `teacher` and `studentGroup`, are filled in.
+*** The other fields, such as `subject`, `teacher` and `studentGroup`, are filled in.
 These fields are problem properties.
 
 However, this class is also the output of the solution:

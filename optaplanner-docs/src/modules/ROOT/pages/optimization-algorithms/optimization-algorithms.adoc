@@ -129,7 +129,7 @@ Each of these algorithm families have multiple optimization algorithms:
 |    xref:evolutionary-algorithms/evolutionary-algorithms.adoc#geneticAlgorithms[Genetic Algorithms] |3/5 |3/5 |2/5 |5/5|Yes
 |===
 
-To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
+To learn more about metaheuristics, see http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
 
 
 [[whichOptimizationAlgorithmsShouldIUse]]

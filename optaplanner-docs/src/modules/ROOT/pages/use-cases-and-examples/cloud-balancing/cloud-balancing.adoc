@@ -148,7 +148,7 @@ public class CloudProcess ... {
 
     ... // getters
 
-    @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "computerRange" })
     public CloudComputer getComputer() {
         return computer;
     }
@@ -302,7 +302,7 @@ Or to avoid XML, build it through xref:planner-configuration/planner-configurati
         Solver<CloudBalance> solver = solverFactory.buildSolver();
 ----
 +
-The solver configuration is explained in <<cloudBalancingSolverConfiguration, the next section>>.
+The solver configuration is explained in <<cloudBalancingSolverConfiguration,the next section>>.
 
 . Load the problem.
 +
@@ -415,9 +415,9 @@ image::use-cases-and-examples/cloud-balancing/scoreComparisonCloudBalancing.png[
 Of course, OptaPlanner needs to be told about these domain-specific score constraints.
 There are several ways to implement such a score function:
 
-* <<cloudBalancingEasyJavaScoreConfiguration, Easy Java>>
-* <<cloudBalancingConstraintStreamsScoreConfiguration, Constraint Streams>>
-* <<cloudBalancingIncrementalJavaScoreConfiguration, Incremental Java>>
+* <<cloudBalancingEasyJavaScoreConfiguration,Easy Java>>
+* <<cloudBalancingConstraintStreamsScoreConfiguration,Constraint Streams>>
+* <<cloudBalancingIncrementalJavaScoreConfiguration,Incremental Java>>
 
 
 [[cloudBalancingEasyJavaScoreConfiguration]]

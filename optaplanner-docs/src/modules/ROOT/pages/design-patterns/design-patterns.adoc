@@ -11,7 +11,7 @@
 OptaPlanner design patterns are generic reusable solutions to common challenges in the model or architecture of projects that perform constraint solving. The design patterns in this section list and solve common design challenges.
 
 [[domainModelingGuide]]
-== Domain Modeling Guidelines
+== Domain modeling guidelines
 
 Follow the guidelines listed in this section to create a well thought-out model that can contribute significantly to the success of your planning.
 
@@ -22,7 +22,7 @@ Follow the guidelines listed in this section to create a well thought-out model 
 .. Create sample instances for each class. For example, in the employee rostering `Employee` class, create `Ann`, `Bert`, and `Carl`.
 
 . *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in employee rostering, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
-because Optaplanner cannot assign an extra skill to an employee.
+because OptaPlanner cannot assign an extra skill to an employee.
 
 . *If there are multiple relationships (or fields), check for xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variables]*.
 A shadow variable changes during planning, but its value can be calculated based on one or more genuine planning variables, without dispute. Color shadow relationships (or fields) purple.
@@ -39,7 +39,7 @@ with a one-to-many and a many-to-one relationship to a new intermediate class.*
 +
 [NOTE]
 ====
-Optaplanner does not currently support a `@PlanningVariable` annotation on a collection.
+OptaPlanner does not currently support a `@PlanningVariable` annotation on a collection.
 ====
 
 +
@@ -51,13 +51,13 @@ image::design-patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 . *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bi-directional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
 . *Make sure that the planning entity class has at least one problem property*. A planning entity class cannot consist of only planning variables or an ID and only planning variables.
-.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space size] and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
+.. Remove any surplus `@PlanningVariable` annotations so that they become problem properties. Doing this significantly decreases xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space size] and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
 .. Make sure that when all planning variables have a value of `null`, the planning entity instance is describable to the business people. Planning variables have a value of `null` when the planning solution is uninitialized.
 ** A surrogate ID does not suffice as the required minimum of one problem property.
 ** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
 ** In some cases, multiple planning entity instances have the same set of problem properties. In such cases, it can be useful to create an extra problem property to distinguish them. For example, in employee rostering, the `ShiftAssignment` class has the problem property `Shift` as well as the problem property `indexInShift` which is an `int` class.
 
-. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the employee rostering, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
+. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the employee rostering, it is impossible to know in advance how many shifts each employee will have before OptaPlanner solves the model and the results can differ for each solution found.
 On the other hand, the number of employees per shift is known in advance,
 so it is better to make the `Shift` relationship a problem property
 and the `Employee` relationship a planning variable as shown in the following examples.
@@ -98,7 +98,7 @@ There are also several designs for assigning a planning entity to a starting tim
 * If the starting time is fixed beforehand, it is not a planning variable (in that solver).
 ** For example, in the xref:use-cases-and-examples/bed-allocation/bed-allocation.adoc#bedAllocation[hospital bed planning] example,
 the arrival day of each patient is fixed beforehand.
-** This is common in xref:repeated-planning/repeated-planning.adoc#multiStagePlanning[multi stage planning],
+** This is common in xref:repeated-planning/repeated-planning.adoc#multiStagePlanning[multi-stage planning],
 when the starting time has been decided already in an earlier planning stage.
 
 * If the starting time is not fixed, it is a planning variable (genuine or shadow).
@@ -134,7 +134,7 @@ image::design-patterns/assigningTimeToPlanningEntities2.png[align="center"]
 
 
 [[timeslotPattern]]
-=== Timeslot pattern:  assign to a fixed-length timeslot
+=== Timeslot pattern: assign to a fixed-length timeslot
 
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.
@@ -227,7 +227,7 @@ Between planning entities, there are three ways to create gaps:
 ==== Chained through time: automatic collapse
 
 In some use case there is an overhead time for certain tasks,
-which can be shared by multiple tasks, of those are consecutively scheduled.
+which can be shared by multiple tasks, if those are consecutively scheduled.
 Basically, the solver receives a _discount_ if it combines those tasks.
 
 For example when delivering pizza to two different customers,

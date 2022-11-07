@@ -13,7 +13,7 @@ public enum PlanningVariableGraphType {
      * So either it points directly to the anchor (that problem fact)
      * or it points to another planning entity which recursively points to the anchor.
      * Chains always have exactly 1 anchor, thus they never loop and the tail is always open.
-     * Chains never split into a tree: a anchor or planning entity has at most 1 trailing planning entity.
+     * Chains never split into a tree: an anchor or planning entity has at most 1 trailing planning entity.
      * <p>
      * When a chained planning entity changes position, then chain correction must happen:
      * <ul>

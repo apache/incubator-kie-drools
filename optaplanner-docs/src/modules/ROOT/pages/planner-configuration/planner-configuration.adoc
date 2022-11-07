@@ -11,7 +11,7 @@
 Solving a planning problem with OptaPlanner consists of the following steps:
 
 . *Model your planning problem* as a class annotated with the ``@PlanningSolution`` annotation, for example the ``NQueens`` class.
-. **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
+. *Configure a ``Solver``*, for example a First Fit and Tabu Search solver for any `NQueens` instance.
 . *Load a problem data set* from your data layer, for example a Four Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(problem)` which returns the best solution found.
 
@@ -357,7 +357,7 @@ public class Lecture {
 
 The solver configuration needs to declare each planning entity class:
 
-[source,java,options="nowrap"]
+[source,xml,options="nowrap"]
 ----
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
@@ -394,8 +394,8 @@ For example: in bin packing bigger items are harder to fit, in course scheduling
 
 [NOTE]
 ====
-*Do not try to use planning entity difficulty to implement a business
-          constraint.* It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
+*Do not try to use planning entity difficulty to implement a business constraint.*
+It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
 
 To attain a schedule in which certain entities are scheduled earlier in the schedule, xref:score-calculation/score-calculation.adoc#formalizeTheBusinessConstraints[add a score constraint] to change the score function so it prefers such solutions.
 Only consider adding planning entity difficulty too if it can make the solver more efficient.
@@ -473,7 +473,7 @@ public class Queen {
 
     private Row row;
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     public Row getRow() {
         return row;
     }
@@ -502,7 +502,7 @@ It is ignored on parent classes or subclasses without that annotation.
 public class Queen {
     ...
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     private Row row;
 
 }
@@ -542,7 +542,7 @@ Using a nullable planning variable implies that your score calculation is respon
 
 [WARNING]
 ====
-Currently <<chainedPlanningVariable, chained>> planning variables are not compatible with `nullable`.
+Currently <<chainedPlanningVariable,chained>> planning variables are not compatible with `nullable`.
 ====
 
 xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[Repeated planning] (especially xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]) does not mix well with a nullable planning variable.
@@ -637,7 +637,7 @@ Any value from that `Collection` is a possible planning value for this planning 
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     public Row getRow() {
         return row;
     }
@@ -685,7 +685,7 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"departmentRoomRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "departmentRoomRange" })
     public Room getRoom() {
         return room;
     }
@@ -778,7 +778,7 @@ Value range providers can be combined, for example:
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"companyCarRange", "personalCarRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "companyCarRange", "personalCarRange" })
     public Car getCar() {
         return car;
     }
@@ -807,8 +807,8 @@ Usually, the efficiency gain of planning value strength is far less than that of
 
 [NOTE]
 ====
-*Do not try to use planning value strength to implement a business
-          constraint.* It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
+*Do not try to use planning value strength to implement a business constraint.*
+It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
 
 To affect the score function, xref:score-calculation/score-calculation.adoc#formalizeTheBusinessConstraints[add a score constraint].
 Only consider adding planning value strength too if it can make the solver more efficient.
@@ -870,7 +870,7 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 ==== Planning list variable (VRP, Task assigning, ...)
 
 Use the planning list variable to model problems where the goal is to distribute a number of workload elements among limited resources in a specific order.
-This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable, chained planning variable>>.
+This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable,chained planning variable>>.
 
 The planning list variable is a successor to the chained planning variable and provides a more intuitive way to express the problem domain with Java classes.
 
@@ -1003,7 +1003,7 @@ public class Visit ... implements Standstill {
     public City getCity() {...}
 
     @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED,
-        valueRangeProviderRefs = {"domicileRange", "visitRange"})
+        valueRangeProviderRefs = { "domicileRange", "visitRange" })
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -1111,7 +1111,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a planning entity might be a singleton: use `@PlanningEntityProperty` on its getter (or field) instead.
 
-Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+Both annotations can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[scoreOfASolution]]
@@ -1165,7 +1165,7 @@ public class CloudBalance {
 
 Some use cases use xref:score-calculation/score-calculation.adoc#scoreType[other score types].
 
-This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+This annotation can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[problemFacts]]
@@ -1219,7 +1219,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` on its method (or field) instead.
 
-Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+Both annotations can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[cachedProblemFact]]
@@ -1505,7 +1505,7 @@ It is built with a ``SolverFactory``, there is no need to implement it yourself.
 A `Solver` should only be accessed from a single thread, except for the methods that are specifically documented in javadoc as being thread-safe.
 The `solve()` method hogs the current thread.
 This can cause HTTP timeouts for REST services and it requires extra code to solve multiple datasets in parallel.
-To avoid such issues, use a <<solverManager, `SolverManager`>> instead.
+To avoid such issues, use a <<solverManager,`SolverManager`>> instead.
 
 
 [[solvingAProblem]]
@@ -1608,8 +1608,8 @@ It is recommended to write a test case that does a short run of your planning pr
 ==== `REPRODUCIBLE` (default)
 
 The reproducible mode is the default mode because it is recommended during development.
-In this mode, two runs in the same OptaPlanner version will execute the same code in the same order. **Those two
-        runs will have the same result at every step**, except if the note below applies.
+In this mode, two runs in the same OptaPlanner version will execute the same code in the same order.
+**Those two runs will have the same result at every step**, except if the note below applies.
 This enables you to reproduce bugs consistently.
 It also allows you to benchmark certain refactorings (such as a score constraint performance optimization) fairly across runs.
 
@@ -1759,7 +1759,7 @@ To separate their logging into distinct files, surround the `solve()` call with 
 
 [source,java,options="nowrap"]
 ----
-        MDC.put("tenant.name",tenantName);
+        MDC.put("tenant.name", tenantName);
         MySolution bestSolution = solver.solve(problem);
         MDC.remove("tenant.name");
 ----
@@ -1791,10 +1791,10 @@ OptaPlanner exposes metrics through https://micrometer.io/[Micrometer] which you
 
 .Prerequisites
 * You have a plain Java OptaPlanner project.
-* You have configured a Mircometer registry. For information about configuring Micrometer registries, see the https://micrometer.io[Micrometer] web site.
+* You have configured a Micrometer registry. For information about configuring Micrometer registries, see the https://micrometer.io[Micrometer] web site.
 
 .Procedure
-. Add configuration information for the Mircometer registry for your desired monitoring system to the global registry.
+. Add configuration information for the Micrometer registry for your desired monitoring system to the global registry.
 . Add the following line below the configuration information, where `<REGISTRY>` is the name of the registry that you configured:
 +
 [source,java,nowrap]
@@ -1839,7 +1839,7 @@ of the measuring.
 longest-running currently active solver.
 * `optaplanner.solver.solve.duration.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
 
-==== Additional Metrics
+==== Additional metrics
 
 For more detailed monitoring, OptaPlanner can be configured to monitor additional metrics at a performance cost.
 

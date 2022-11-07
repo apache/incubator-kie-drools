@@ -47,7 +47,7 @@ This is an example of the same code, using the Constraint Streams API:
 ----
 
 This constraint stream iterates over all instances of class `Shift` in the xref:planner-configuration/planner-configuration.adoc#problemFacts[problem facts] and
-xref:planner-configuration/planner-configuration.adoc#planningEntity[planning entities] in the <<planningProblemAndPlanningSolution,planning problem>>.
+xref:planner-configuration/planner-configuration.adoc#planningEntity[planning entities] in the xref:planner-configuration/planner-configuration.adoc#planningProblemAndPlanningSolution[planning problem].
 It finds every `Shift` which is assigned to employee `Ann` and for every such instance (also called a match), it adds a
 soft penalty of `1` to the overall xref:score-calculation/score-calculation.adoc#calculateTheScore[score].
 The following figure illustrates this process on a problem with 4 different shifts:
@@ -126,7 +126,7 @@ Therefore, it is called a `UniConstraintStream`:
     }
 ----
 
-Some constraint stream <<constraintStreamsBuildingBlocks, building blocks>> can increase stream cardinality, such as
+Some constraint stream <<constraintStreamsBuildingBlocks,building blocks>> can increase stream cardinality, such as
 <<constraintStreamsJoin,join>> or <<constraintStreamsGroupingAndCollectors,groupBy>>:
 
 [source,java,options="nowrap"]
@@ -242,7 +242,7 @@ and therefore this legacy method could still return entities with `null` variabl
 [[constraintStreamsPenaltiesRewards]]
 === Penalties and rewards
 
-The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a <<planningProblemAndPlanningSolution,solution>>.
+The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a xref:planner-configuration/planner-configuration.adoc#planningProblemAndPlanningSolution[solution].
 To do this, every constraint stream must contain a call to either a `penalize()` or a `reward()`
 building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
@@ -252,7 +252,7 @@ Each constraint stream is then terminated by calling `asConstraint()` method, wh
 - Constraint package is the Java package that contains the constraint.
 The default value is the package that contains the `ConstraintProvider` implementation or the value from
 xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration], if implemented.
-- Constraint name is the human readable descriptive name for the constraint, which
+- Constraint name is the human-readable descriptive name for the constraint, which
 (together with the constraint package) must be unique within the entire `ConstraintProvider` implementation.
 - Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
 Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`.
@@ -797,7 +797,7 @@ Here, only the computers without processes running are penalized.
 Also note the use of the `Joiner` class to limit the constraint matches.
 For a description of available joiners, see <<constraintStreamsJoin,joining>>.
 Conditional propagation operates much like joining, with the exception of not increasing the
-<<constraintStreamsCardinality, stream cardinality>>.
+<<constraintStreamsCardinality,stream cardinality>>.
 Matches from these building blocks are not available further down the stream.
 
 [NOTE]
@@ -1082,7 +1082,7 @@ Constraint streams come in two flavors:
 
 * *CS Drools* (default): fast implementation that uses Drools underneath.
 
-* *Bavet*: even faster, more recent in-house implementation. 
+* *Bavet*: even faster, more recent in-house implementation.
 To try it out set the `constraintStreamImplType` to `BAVET` in your solver config:
 +
 [source,xml,options="nowrap"]

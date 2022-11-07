@@ -28,7 +28,7 @@ Notice that it creates a search tree that explodes exponentially as the problem 
 [IMPORTANT]
 ====
 **Brute Force is mostly unusable for a real-world problem due to time limitations**,
-as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive  Search>>.
+as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive Search>>.
 ====
 
 

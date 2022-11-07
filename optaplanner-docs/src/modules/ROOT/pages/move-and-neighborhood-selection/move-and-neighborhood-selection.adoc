@@ -242,7 +242,7 @@ The `secondaryEntitySelector` is rarely needed: if it is not specified, entities
 If one or more `variableNameInclude` properties are specified, not all planning variables will be swapped, but only those specified.
 For example for course scheduling, specifying only `variableNameInclude` room will make it only swap room, not period.
 
-This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on any <<chainedPlanningVariable,chained>> variables.
+This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on any xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained] variables.
 
 [[pillarMoveSelectors]]
 === Pillar-based move selectors
@@ -919,7 +919,7 @@ Here's how it works: At the start of the phase (or step depending on the ``cache
 
 image::move-and-neighborhood-selection/cachedShuffledSelection.png[align="center"]
 
-Notice that **each ``**Move**`` will only be selected once**, even though they are selected in random order.
+Notice that **each ``Move`` will only be selected once**, even though they are selected in random order.
 
 Use cacheType PHASE if none of the (possibly nested) Selectors require ``STEP``.
 Otherwise, do something like this:

@@ -540,7 +540,7 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 
 
 [[greatDelugeAlgorithm]]
-=== Algorithm Description
+=== Algorithm description
 
 Great Deluge algorithm is similar to the  <<simulatedAnnealing,Simulated Annealing>> algorithm, it evaluates only a few moves per steps,
 so it steps quickly. The first accepted move is the winning step. A move is accepted only if it is not lower than

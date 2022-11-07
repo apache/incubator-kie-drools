@@ -427,7 +427,7 @@ class TimeTableConstraintProviderTest {
 
 This test verifies that the constraint `TimeTableConstraintProvider::roomConflict`,
 when given three lessons in the same room, where two lessons have the same timeslot,
-it penalizes with a  match weight of `1`.
+it penalizes with a match weight of `1`.
 So with a constraint weight of `10hard` it would reduce the score by `-10hard`.
 
 Notice how `ConstraintVerifier` ignores the constraint weight during testing - even

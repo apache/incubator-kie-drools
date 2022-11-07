@@ -202,7 +202,7 @@ Other noteworthy changes done during the migration to Quarkus:
 Client-server communication, that was previously done using WebSockets, now uses a combination of REST calls and Server-Sent Events.
 * OptaWeb Employee Rostering now uses Constraint Streams instead of DRL for score calculation.
 
-==== Faster Domain Accessors and Cloning with Gizmo
+==== Faster domain accessors and cloning with Gizmo
 
 We have added xref:planner-configuration/planner-configuration.adoc#domainAccess[Gizmo generated domain accessors and solution
 cloners], which offer better performance than the reflection based
