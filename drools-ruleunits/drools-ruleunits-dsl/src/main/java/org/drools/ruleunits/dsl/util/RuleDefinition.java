@@ -90,7 +90,7 @@ public class RuleDefinition implements RuleFactory {
 
     @Override
     public <A> Pattern1DefImpl<A> on(DataSource<A> dataSource) {
-        FieldDefinition dataSourceField = findUnitField(dataSource);
+        DataSourceFieldDefinition dataSourceField = (DataSourceFieldDefinition) findUnitField(dataSource);
         Pattern1DefImpl<A> pattern1 = new Pattern1DefImpl<>(this,
                 declarationOf(dataSourceField.getDataSourceClass(), entryPoint(asGlobal(() -> dataSourceField, dataSource).getName())));
         if (registerNewPattern) {
@@ -211,10 +211,13 @@ public class RuleDefinition implements RuleFactory {
 
     public interface FieldDefinition {
         Object get(RuleUnitData unit);
+    }
+
+    public interface DataSourceFieldDefinition extends FieldDefinition {
         <A> Class<A> getDataSourceClass();
     }
 
-    static class ReflectiveFieldDefinition implements FieldDefinition {
+    static class ReflectiveFieldDefinition implements DataSourceFieldDefinition {
         private final Field field;
 
         ReflectiveFieldDefinition(Field field) {
@@ -240,7 +243,7 @@ public class RuleDefinition implements RuleFactory {
         }
     }
 
-    static class SyntheticDataSourceFieldDefinition implements FieldDefinition {
+    static class SyntheticDataSourceFieldDefinition implements DataSourceFieldDefinition {
 
         private final String name;
         private final DataSourceDefinition dataSourceDefinition;
@@ -272,11 +275,6 @@ public class RuleDefinition implements RuleFactory {
         @Override
         public Object get(RuleUnitData unit) {
             return ((SyntheticRuleUnit) unit).getGlobals().get(name);
-        }
-
-        @Override
-        public <A> Class<A> getDataSourceClass() {
-            throw new UnsupportedOperationException();
         }
     }
 }
