@@ -55,7 +55,7 @@ cloud:
   image:
     registry_credentials: optaplanner-quay-token
     registry: quay.io
-    namespace: kiegroup
+    namespace: optaplanner
     latest_git_branch: main
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
