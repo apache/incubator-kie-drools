@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.drools.model.Condition;
@@ -175,7 +176,7 @@ public class RuleDefinition implements RuleFactory {
     }
 
     private FieldDefinition findUnitField(Object object) {
-        assert(object != null);
+        Objects.requireNonNull(object);
 
         if (unit instanceof SyntheticRuleUnit) {
             return findSyntheticUnitField(object, (SyntheticRuleUnit) unit);
