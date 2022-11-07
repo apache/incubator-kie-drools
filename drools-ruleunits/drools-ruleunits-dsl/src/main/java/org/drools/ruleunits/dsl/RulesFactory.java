@@ -15,7 +15,6 @@
  */
 package org.drools.ruleunits.dsl;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -76,7 +75,7 @@ public class RulesFactory {
     public static class UnitGlobals {
         private final Map<Object, Global> globals = new IdentityHashMap<>();
 
-        private final Map<String, Field> fieldByGlobal = new HashMap<>();
+        private final Map<String, RuleDefinition.FieldDefinition> fieldByGlobal = new HashMap<>();
 
         private final String unitName;
 
@@ -88,11 +87,11 @@ public class RulesFactory {
             return globals;
         }
 
-        public <T> Global asGlobal(Supplier<Field> globalField, T globalObject) {
+        public <T> Global asGlobal(Supplier<RuleDefinition.FieldDefinition> globalField, T globalObject) {
             return globals.computeIfAbsent(globalObject, o -> registerGlobal(globalField, o));
         }
 
-        private Global<?> registerGlobal(Supplier<Field> globalField, Object globalObject) {
+        private Global<?> registerGlobal(Supplier<RuleDefinition.FieldDefinition> globalField, Object globalObject) {
             String globalUUID = UUID.randomUUID().toString();
             fieldByGlobal.put(globalUUID, globalField.get());
             return globalOf(globalObject.getClass(), unitName, globalUUID);

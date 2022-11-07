@@ -20,6 +20,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.drools.model.Condition;
@@ -32,9 +34,11 @@ import org.drools.model.functions.Function1;
 import org.drools.model.impl.RuleBuilder;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.dsl.RuleFactory;
 import org.drools.ruleunits.dsl.RuleUnitDefinition;
 import org.drools.ruleunits.dsl.RulesFactory;
+import org.drools.ruleunits.dsl.SyntheticRuleUnit;
 import org.drools.ruleunits.dsl.accumulate.AccumulatePattern1;
 import org.drools.ruleunits.dsl.accumulate.Accumulator1;
 import org.drools.ruleunits.dsl.accumulate.GroupByPattern1;
@@ -86,9 +90,9 @@ public class RuleDefinition implements RuleFactory {
 
     @Override
     public <A> Pattern1DefImpl<A> on(DataSource<A> dataSource) {
-        Field dataSourceField = findUnitField(dataSource);
+        DataSourceFieldDefinition dataSourceField = (DataSourceFieldDefinition) findUnitField(dataSource);
         Pattern1DefImpl<A> pattern1 = new Pattern1DefImpl<>(this,
-                declarationOf(findDataSourceClass(dataSourceField), entryPoint(asGlobal(() -> dataSourceField, dataSource).getName())));
+                declarationOf(dataSourceField.getDataSourceClass(), entryPoint(asGlobal(() -> dataSourceField, dataSource).getName())));
         if (registerNewPattern) {
             addPattern(pattern1);
         }
@@ -151,7 +155,7 @@ public class RuleDefinition implements RuleFactory {
         return asGlobal(() -> findUnitField(globalObject), globalObject);
     }
 
-    public <T> Global asGlobal(Supplier<Field> globalField, T globalObject) {
+    public <T> Global asGlobal(Supplier<FieldDefinition> globalField, T globalObject) {
         return globals.asGlobal(globalField, globalObject);
     }
 
@@ -171,26 +175,106 @@ public class RuleDefinition implements RuleFactory {
         return ruleBuilder.build(items.toArray(new RuleItemBuilder[items.size()]));
     }
 
-    private <A> Class<A> findDataSourceClass(Field field) {
-        Type dsType = field.getGenericType();
-        if (dsType instanceof ParameterizedType) {
-            return (Class<A>) ((ParameterizedType) dsType).getActualTypeArguments()[0];
-        }
-        throw new IllegalArgumentException("Unknown DataSource type");
-    }
+    private FieldDefinition findUnitField(Object object) {
+        Objects.requireNonNull(object);
 
-    private Field findUnitField(Object object) {
-        assert(object != null);
+        if (unit instanceof SyntheticRuleUnit) {
+            return findSyntheticUnitField(object, (SyntheticRuleUnit) unit);
+        }
+
         for (Field field : unit.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
                 if (object == field.get(unit)) {
-                    return field;
+                    return new ReflectiveFieldDefinition(field);
                 }
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
         throw new IllegalArgumentException("Unknown unit field for object: " + object);
+    }
+
+    private FieldDefinition findSyntheticUnitField(Object object, SyntheticRuleUnit syntheticRuleUnit) {
+        for (Map.Entry<String, DataSourceDefinition> entry : syntheticRuleUnit.getDataSourceDefinitions().entrySet()) {
+            if (object == entry.getValue().getDataSource()) {
+                return new SyntheticDataSourceFieldDefinition(entry.getKey(), entry.getValue());
+            }
+        }
+        for (Map.Entry<String, Object> entry : syntheticRuleUnit.getGlobals().entrySet()) {
+            if (object == entry.getValue()) {
+                return new SyntheticGlobalFieldDefinition(entry.getKey());
+            }
+        }
+        throw new IllegalArgumentException("Unknown unit field for object: " + object);
+    }
+
+    public interface FieldDefinition {
+        Object get(RuleUnitData unit);
+    }
+
+    public interface DataSourceFieldDefinition extends FieldDefinition {
+        <A> Class<A> getDataSourceClass();
+    }
+
+    static class ReflectiveFieldDefinition implements DataSourceFieldDefinition {
+        private final Field field;
+
+        ReflectiveFieldDefinition(Field field) {
+            this.field = field;
+        }
+
+        @Override
+        public Object get(RuleUnitData unit) {
+            try {
+                return field.get(unit);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public <A> Class<A> getDataSourceClass() {
+            Type dsType = field.getGenericType();
+            if (dsType instanceof ParameterizedType) {
+                return (Class<A>) ((ParameterizedType) dsType).getActualTypeArguments()[0];
+            }
+            throw new IllegalArgumentException("Unknown DataSource type");
+        }
+    }
+
+    static class SyntheticDataSourceFieldDefinition implements DataSourceFieldDefinition {
+
+        private final String name;
+        private final DataSourceDefinition dataSourceDefinition;
+
+        SyntheticDataSourceFieldDefinition(String name, DataSourceDefinition dataSourceDefinition) {
+            this.name = name;
+            this.dataSourceDefinition = dataSourceDefinition;
+        }
+
+        @Override
+        public Object get(RuleUnitData unit) {
+            return ((SyntheticRuleUnit) unit).getDataSourceDefinitions().get(name).getDataSource();
+        }
+
+        @Override
+        public <A> Class<A> getDataSourceClass() {
+            return (Class<A>) dataSourceDefinition.getDataClass();
+        }
+    }
+
+    static class SyntheticGlobalFieldDefinition implements FieldDefinition {
+
+        private final String name;
+
+        SyntheticGlobalFieldDefinition(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public Object get(RuleUnitData unit) {
+            return ((SyntheticRuleUnit) unit).getGlobals().get(name);
+        }
     }
 }
