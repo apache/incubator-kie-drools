@@ -26,6 +26,5 @@ public class RuntimeDslRuleUnitTest {
         unitInstance.fire();
 
         assertThat( unitData.getBasePrice() ).hasValue( 800 );
-        System.out.println("Base price: " + unitData.getBasePrice().get());
     }
 }
