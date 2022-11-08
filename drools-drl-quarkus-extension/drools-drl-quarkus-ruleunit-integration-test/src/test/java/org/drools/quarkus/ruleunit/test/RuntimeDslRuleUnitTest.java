@@ -21,7 +21,6 @@ public class RuntimeDslRuleUnitTest {
         unitData.getAge().set( 19 );
         unitData.getIncidents().set( false );
 
-        // CDI version:
         RuleUnitInstance<SimpleDTUnit> unitInstance = ruleUnit.createInstance(unitData);
 
         unitInstance.fire();
