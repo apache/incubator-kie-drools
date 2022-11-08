@@ -23,8 +23,6 @@ public class RuntimeDslRuleUnitTest {
 
         // CDI version:
         RuleUnitInstance<SimpleDTUnit> unitInstance = ruleUnit.createInstance(unitData);
-        // Programmatic version:
-        // RuleUnitInstance<SimpleDTUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unitData);
 
         unitInstance.fire();
 
