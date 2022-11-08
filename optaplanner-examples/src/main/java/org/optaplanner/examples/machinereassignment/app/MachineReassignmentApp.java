@@ -9,7 +9,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentXmlSolutionFileIO;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionFileIO;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -40,7 +40,7 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     @Override
     public SolutionFileIO<MachineReassignment> createSolutionFileIO() {
-        return new MachineReassignmentXmlSolutionFileIO();
+        return new MachineReassignmentSolutionFileIO();
     }
 
     @Override

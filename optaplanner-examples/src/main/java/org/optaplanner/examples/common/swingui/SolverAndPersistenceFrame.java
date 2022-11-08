@@ -216,7 +216,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         private final File file;
 
         public QuickOpenAction(File file) {
-            super(file.getName().replaceAll("\\.xml$", ""));
+            super(file.getName().replaceAll("\\.json$|\\.xml$", ""));
             this.file = file;
         }
 

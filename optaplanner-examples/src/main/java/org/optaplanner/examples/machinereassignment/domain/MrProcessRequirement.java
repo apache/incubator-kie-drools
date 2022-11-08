@@ -1,18 +1,16 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("MrProcessRequirement")
-public class MrProcessRequirement extends AbstractPersistable {
+public class MrProcessRequirement extends AbstractPersistableJackson {
 
     private MrProcess process;
     private MrResource resource;
 
     private long usage;
 
-    public MrProcessRequirement() {
+    @SuppressWarnings("unused")
+    MrProcessRequirement() { // For Jackson.
     }
 
     public MrProcessRequirement(MrProcess process, MrResource resource, long usage) {
@@ -32,24 +30,12 @@ public class MrProcessRequirement extends AbstractPersistable {
         return process;
     }
 
-    public void setProcess(MrProcess process) {
-        this.process = process;
-    }
-
     public MrResource getResource() {
         return resource;
     }
 
-    public void setResource(MrResource resource) {
-        this.resource = resource;
-    }
-
     public long getUsage() {
         return usage;
-    }
-
-    public void setUsage(long usage) {
-        this.usage = usage;
     }
 
 }

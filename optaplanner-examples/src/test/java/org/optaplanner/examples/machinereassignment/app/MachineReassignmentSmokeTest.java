@@ -9,7 +9,7 @@ import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
 class MachineReassignmentSmokeTest extends SolverSmokeTest<MachineReassignment, HardSoftLongScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/machinereassignment/unsolved/model_a2_1.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/machinereassignment/unsolved/model_a2_1.json";
 
     @Override
     protected MachineReassignmentApp createCommonApp() {

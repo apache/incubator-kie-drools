@@ -10,16 +10,13 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningSolution
-@XStreamAlias("MachineReassignment")
-public class MachineReassignment extends AbstractPersistable {
+public class MachineReassignment extends AbstractPersistableJackson {
 
     private MrGlobalPenaltyInfo globalPenaltyInfo;
     private List<MrResource> resourceList;
@@ -33,7 +30,13 @@ public class MachineReassignment extends AbstractPersistable {
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
+    MachineReassignment() { // For Jackson.
+    }
+
+    public MachineReassignment(long id) {
+        super(id);
+    }
+
     private HardSoftLongScore score;
 
     @ProblemFactProperty
@@ -141,6 +144,8 @@ public class MachineReassignment extends AbstractPersistable {
     // ************************************************************************
 
     @ProblemFactCollectionProperty
+    @JsonIgnore
+    @SuppressWarnings("unused")
     private List<MrServiceDependency> getServiceDependencyList() {
         List<MrServiceDependency> serviceDependencyList = new ArrayList<>(serviceList.size() * 5);
         for (MrService service : serviceList) {

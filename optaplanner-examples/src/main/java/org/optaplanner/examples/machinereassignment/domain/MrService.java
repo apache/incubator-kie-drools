@@ -2,19 +2,21 @@ package org.optaplanner.examples.machinereassignment.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("MrService")
-public class MrService extends AbstractPersistable {
+@JsonIdentityInfo(scope = MrService.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class MrService extends AbstractPersistableJackson {
 
     private List<MrService> toDependencyServiceList;
     private List<MrService> fromDependencyServiceList;
 
     private int locationSpread;
 
-    public MrService() {
+    @SuppressWarnings("unused")
+    MrService() { // For Jackson.
     }
 
     public MrService(long id) {

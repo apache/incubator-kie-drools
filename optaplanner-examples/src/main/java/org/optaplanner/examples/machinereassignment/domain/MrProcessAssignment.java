@@ -4,35 +4,33 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrProcessAssignmentDifficultyComparator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = MrProcessAssignmentDifficultyComparator.class)
-@XStreamAlias("MrProcessAssignment")
-public class MrProcessAssignment extends AbstractPersistable {
+public class MrProcessAssignment extends AbstractPersistableJackson {
+
+    public static MrProcessAssignment withOriginalMachine(long id, MrProcess process, MrMachine originalMachine) {
+        return new MrProcessAssignment(id, process, originalMachine, null);
+    }
+
+    public static MrProcessAssignment withTargetMachine(long id, MrProcess process, MrMachine targetMachine) {
+        return new MrProcessAssignment(id, process, null, targetMachine);
+    }
 
     private MrProcess process;
     private MrMachine originalMachine;
     private MrMachine machine;
 
-    public MrProcessAssignment() {
-    }
-
-    public MrProcessAssignment(MrProcess process) {
-        this.process = process;
+    @SuppressWarnings("unused")
+    MrProcessAssignment() { // For Jackson.
     }
 
     public MrProcessAssignment(long id, MrProcess process) {
         super(id);
         this.process = process;
-    }
-
-    public MrProcessAssignment(long id, MrProcess process, MrMachine machine) {
-        super(id);
-        this.process = process;
-        this.machine = machine;
     }
 
     public MrProcessAssignment(long id, MrProcess process, MrMachine originalMachine, MrMachine machine) {
@@ -44,10 +42,6 @@ public class MrProcessAssignment extends AbstractPersistable {
 
     public MrProcess getProcess() {
         return process;
-    }
-
-    public void setProcess(MrProcess process) {
-        this.process = process;
     }
 
     public MrMachine getOriginalMachine() {
@@ -71,10 +65,12 @@ public class MrProcessAssignment extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public MrService getService() {
         return process.getService();
     }
 
+    @JsonIgnore
     public boolean isMoved() {
         if (machine == null) {
             return false;
@@ -82,26 +78,32 @@ public class MrProcessAssignment extends AbstractPersistable {
         return !Objects.equals(originalMachine, machine);
     }
 
+    @JsonIgnore
     public int getProcessMoveCost() {
         return process.getMoveCost();
     }
 
+    @JsonIgnore
     public int getMachineMoveCost() {
         return (machine == null || originalMachine == null) ? 0 : originalMachine.getMoveCostTo(machine);
     }
 
+    @JsonIgnore
     public MrNeighborhood getNeighborhood() {
         return machine == null ? null : machine.getNeighborhood();
     }
 
+    @JsonIgnore
     public MrLocation getLocation() {
         return machine == null ? null : machine.getLocation();
     }
 
+    @JsonIgnore
     public long getUsage(MrResource resource) {
         return process.getUsage(resource);
     }
 
+    @JsonIgnore
     public String getLabel() {
         return "Process " + getId();
     }

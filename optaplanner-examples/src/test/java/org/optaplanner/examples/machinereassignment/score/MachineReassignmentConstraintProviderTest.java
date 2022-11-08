@@ -1,7 +1,10 @@
 package org.optaplanner.examples.machinereassignment.score;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +25,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 class MachineReassignmentConstraintProviderTest
@@ -35,7 +38,7 @@ class MachineReassignmentConstraintProviderTest
     @ConstraintProviderTest
     void maximumCapacity(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource resource1 = new MrResource(0, false, 1);
-        MrMachine machine = new MrMachine();
+        MrMachine machine = new MrMachine(1L);
         MrProcess process = new MrProcess();
         MrProcessRequirement processRequirement = new MrProcessRequirement(process, resource1, 30L);
         process.setProcessRequirementList(Arrays.asList(processRequirement));
@@ -53,8 +56,8 @@ class MachineReassignmentConstraintProviderTest
         MrResource normalResource = new MrResource(0, false, 5);
         MrResource transientlyConsumerResource = new MrResource(1, true, 10);
 
-        MrMachine machine1 = new MrMachine();
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
+        MrMachine machine2 = new MrMachine(2L);
 
         MrMachineCapacity machineCapacityNormal = new MrMachineCapacity(machine2, normalResource, 20L, 10L);
         MrMachineCapacity machineCapacityTransientlyConsumed = new MrMachineCapacity(machine1,
@@ -77,10 +80,10 @@ class MachineReassignmentConstraintProviderTest
     @ConstraintProviderTest
     void serviceConflict(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         // 3 of 4 processes of the same service run on the same machine
-        MrService service = new MrService();
+        MrService service = new MrService(1L);
 
-        MrMachine machine1 = new MrMachine();
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
+        MrMachine machine2 = new MrMachine(2L);
 
         MrProcess process1 = new MrProcess(service);
         MrProcess process2 = new MrProcess(service);
@@ -88,10 +91,10 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process4 = new MrProcess(service);
         MrProcess process5 = new MrProcess(service);
 
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine1 = new MrProcessAssignment(2L, process2, machine1);
-        MrProcessAssignment process3AssignmentToMachine1 = new MrProcessAssignment(3L, process3, machine1);
-        MrProcessAssignment process4AssignmentToMachine2 = new MrProcessAssignment(4L, process4, machine2);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(2L, process2, machine1);
+        MrProcessAssignment process3AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(3L, process3, machine1);
+        MrProcessAssignment process4AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(4L, process4, machine2);
         MrProcessAssignment process5AssignmentToNoMachine = new MrProcessAssignment(5L, process5);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceConflict)
@@ -112,7 +115,7 @@ class MachineReassignmentConstraintProviderTest
         MrMachine machine3 = new MrMachine(2L, location2);
 
         // the service is expected to be spread across at least 5 locations
-        MrService service = new MrService();
+        MrService service = new MrService(1L);
         service.setLocationSpread(5);
 
         MrProcess process1 = new MrProcess(service);
@@ -120,9 +123,9 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process3 = new MrProcess(service);
 
         // the service is spread across 3 machines in 2 different locations
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine2 = new MrProcessAssignment(2L, process2, machine2);
-        MrProcessAssignment process3AssignmentToMachine3 = new MrProcessAssignment(3L, process3, machine3);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(2L, process2, machine2);
+        MrProcessAssignment process3AssignmentToMachine3 = MrProcessAssignment.withTargetMachine(3L, process3, machine3);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceLocationSpread)
                 .given(service, location1, location2, machine1, machine2, machine3, process1, process2, process3,
@@ -135,16 +138,16 @@ class MachineReassignmentConstraintProviderTest
         MrNeighborhood neighborhood1 = new MrNeighborhood(1L);
         MrNeighborhood neighborhood2 = new MrNeighborhood(2L);
 
-        MrMachine machine1 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
         machine1.setNeighborhood(neighborhood1);
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine2 = new MrMachine(2L);
         machine2.setNeighborhood(neighborhood1);
-        MrMachine machine3 = new MrMachine();
+        MrMachine machine3 = new MrMachine(3L);
         machine3.setNeighborhood(neighborhood2);
 
-        MrService service1 = new MrService();
-        MrService service2 = new MrService();
-        MrService service3 = new MrService();
+        MrService service1 = new MrService(1L);
+        MrService service2 = new MrService(2L);
+        MrService service3 = new MrService(3L);
 
         MrServiceDependency serviceDependency1 = new MrServiceDependency(service1, service2);
         MrServiceDependency serviceDependency2 = new MrServiceDependency(service1, service3);
@@ -153,9 +156,9 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process2 = new MrProcess(service2);
         MrProcess process3 = new MrProcess(service3);
 
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine2 = new MrProcessAssignment(2L, process2, machine2);
-        MrProcessAssignment process3AssignmentToMachine3 = new MrProcessAssignment(3L, process3, machine3);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(2L, process2, machine2);
+        MrProcessAssignment process3AssignmentToMachine3 = MrProcessAssignment.withTargetMachine(3L, process3, machine3);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceDependency)
                 .given(neighborhood1, neighborhood2, machine1, machine2, machine3, service1, service2, service3,
@@ -168,7 +171,7 @@ class MachineReassignmentConstraintProviderTest
     void loadCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource resource1 = new MrResource(0, false, 5);
         MrResource resource2 = new MrResource(1, false, 10);
-        MrMachine machine = new MrMachine();
+        MrMachine machine = new MrMachine(1L);
 
         MrMachineCapacity machineCapacity1 = new MrMachineCapacity(machine, resource1, 20L, 10L);
         MrMachineCapacity machineCapacity2 = new MrMachineCapacity(machine, resource2, 20L, 10L);
@@ -189,20 +192,15 @@ class MachineReassignmentConstraintProviderTest
 
     @ConstraintProviderTest
     void processMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
-        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
+        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo(1L);
         globalPenaltyInfo.setProcessMoveCostWeight(10);
 
-        MrMachine machine1 = new MrMachine();
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
+        MrMachine machine2 = new MrMachine(1L);
 
-        MrProcess process = new MrProcess();
-        process.setMoveCost(2);
+        MrProcess process = new MrProcess(2);
         MrProcessAssignment processAssignment = new MrProcessAssignment(0L, process, machine1, machine2);
-
-        MrProcessAssignment processAssignment2 = new MrProcessAssignment();
-        processAssignment2.setProcess(process);
-        processAssignment2.setOriginalMachine(machine1);
-
+        MrProcessAssignment processAssignment2 = MrProcessAssignment.withOriginalMachine(1L, process, machine1);
         MrProcessAssignment processAssignment3 = new MrProcessAssignment(1L, process, machine1, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::processMoveCost)
@@ -213,18 +211,18 @@ class MachineReassignmentConstraintProviderTest
 
     @ConstraintProviderTest
     void serviceMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
-        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
+        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo(1L);
         globalPenaltyInfo.setServiceMoveCostWeight(10);
 
-        MrMachine machine1 = new MrMachine();
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
+        MrMachine machine2 = new MrMachine(2L);
 
         MrService service1 = new MrService(1L);
         MrService service2 = new MrService(2L);
         // service2 has only one process moving, while service1 has two processes moving => wins
-        MrProcess process1 = new MrProcess(0L, service1);
-        MrProcess process2 = new MrProcess(1L, service1);
-        MrProcess process3 = new MrProcess(2L, service2);
+        MrProcess process1 = new MrProcess(service1);
+        MrProcess process2 = new MrProcess(service1);
+        MrProcess process3 = new MrProcess(service2);
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
@@ -238,11 +236,11 @@ class MachineReassignmentConstraintProviderTest
 
     @ConstraintProviderTest
     void machineMoveCost(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
-        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
+        MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo(1L);
         globalPenaltyInfo.setMachineMoveCostWeight(10);
 
-        MrMachine machine1 = new MrMachine();
-        MrMachine machine2 = new MrMachine();
+        MrMachine machine1 = new MrMachine(1L);
+        MrMachine machine2 = new MrMachine(2L);
 
         Map<MrMachine, Integer> costMapFromMachine1 = new HashMap<>();
         costMapFromMachine1.put(machine2, 20);
@@ -252,9 +250,9 @@ class MachineReassignmentConstraintProviderTest
         costMapFromMachine2.put(machine1, 0);
         machine2.setMachineMoveCostMap(costMapFromMachine2);
 
-        MrProcess process1 = new MrProcess(0L);
-        MrProcess process2 = new MrProcess(1L);
-        MrProcess process3 = new MrProcess(2L);
+        MrProcess process1 = new MrProcess();
+        MrProcess process2 = new MrProcess();
+        MrProcess process3 = new MrProcess();
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
@@ -290,21 +288,21 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machine2Capacity3 = new MrMachineCapacity(machine2, disk, 7000L, 1L);
         machine2.setMachineCapacityList(Arrays.asList(machine2Capacity1, machine2Capacity2, machine2Capacity3));
 
-        MrProcess process1 = new MrProcess(0L);
+        MrProcess process1 = new MrProcess();
         MrProcessRequirement process1Requirement1 = new MrProcessRequirement(process1, cpu, 10L);
         MrProcessRequirement process1Requirement2 = new MrProcessRequirement(process1, mem, 200L);
         MrProcessRequirement process1Requirement3 = new MrProcessRequirement(process1, disk, 3000L);
         process1.setProcessRequirementList(Arrays.asList(process1Requirement1, process1Requirement2, process1Requirement3));
 
-        MrProcessAssignment processAssignment1 = new MrProcessAssignment(1L, process1, machine1);
+        MrProcessAssignment processAssignment1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
 
-        MrProcess process2 = new MrProcess(1L);
+        MrProcess process2 = new MrProcess();
         MrProcessRequirement process2Requirement1 = new MrProcessRequirement(process2, cpu, 8L); // 20 - 18 = 2
         MrProcessRequirement process2Requirement2 = new MrProcessRequirement(process2, mem, 95L); // 300 - 295 = 5. Needs 6, lacks 1
         MrProcessRequirement process2Requirement3 = new MrProcessRequirement(process2, disk, 997L); // 4000 - 3997 = 3. Needs 10, lacks 7
         process2.setProcessRequirementList(Arrays.asList(process2Requirement1, process2Requirement2, process2Requirement3));
 
-        MrProcessAssignment processAssignment2 = new MrProcessAssignment(2L, process2, machine1);
+        MrProcessAssignment processAssignment2 = MrProcessAssignment.withTargetMachine(2L, process2, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, cpuMemBalance, cpuDiskBalance, machine1, machine2,
@@ -329,13 +327,13 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machineCapacityDisk = new MrMachineCapacity(2L, machine, disk, 200L, 100L);
         machine.setMachineCapacityList(Arrays.asList(machineCapacityCpu, machineCapacityMem, machineCapacityDisk));
 
-        MrProcess process = new MrProcess(0L);
+        MrProcess process = new MrProcess();
         MrProcessRequirement processRequirementCpu = new MrProcessRequirement(0L, process, cpu, 1L);
         MrProcessRequirement processRequirementMem = new MrProcessRequirement(1L, process, mem, 4L);
         MrProcessRequirement processRequirementDisk = new MrProcessRequirement(2L, process, disk, 100L);
         process.setProcessRequirementList(Arrays.asList(processRequirementCpu, processRequirementMem, processRequirementDisk));
 
-        MrProcessAssignment processAssignment = new MrProcessAssignment(1L, process, machine);
+        MrProcessAssignment processAssignment = MrProcessAssignment.withTargetMachine(1L, process, machine);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, balancePenaltyCpuMem, machine, machineCapacityCpu, machineCapacityMem,
@@ -348,14 +346,18 @@ class MachineReassignmentConstraintProviderTest
             ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier)
             throws IOException {
         constraintVerifier.verifyThat()
-                .givenSolution(readSolution("model-a1-1-0hard-44306501soft.xml"))
+                .givenSolution(readSolution("model-a1-1-0hard-44306501soft.json"))
                 .scores(HardSoftLongScore.of(-0, -44306501));
     }
 
     private static MachineReassignment readSolution(String resource) throws IOException {
-        XStreamSolutionFileIO<MachineReassignment> solutionFileIO = new XStreamSolutionFileIO<>(MachineReassignment.class);
-        try (InputStream inputStream = MachineReassignmentConstraintProviderTest.class.getResourceAsStream(resource)) {
-            return solutionFileIO.read(inputStream);
+        URL resourceUrl = MachineReassignmentConstraintProviderTest.class.getResource(resource);
+        try {
+            File file = Paths.get(resourceUrl.toURI()).toFile();
+            MachineReassignmentSolutionFileIO solutionFileIO = new MachineReassignmentSolutionFileIO();
+            return solutionFileIO.read(file);
+        } catch (URISyntaxException e) {
+            throw new IOException("Unable to read the test resource ( " + resource + " ).", e);
         }
     }
 
