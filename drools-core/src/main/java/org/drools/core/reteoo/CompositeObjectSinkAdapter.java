@@ -42,6 +42,8 @@ import org.drools.core.spi.ReadAccessor;
 import org.drools.core.util.index.AlphaRangeIndex;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 
+import static org.drools.core.util.index.IndexUtil.isBigDecimalEqualityConstraint;
+
 public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
@@ -207,6 +209,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
     private static boolean isHashable( IndexableConstraint indexableConstraint ) {
         return indexableConstraint.getConstraintType() == ConstraintType.EQUAL && indexableConstraint.getField() != null &&
                 indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                !isBigDecimalEqualityConstraint(indexableConstraint) &&
                 // our current implementation does not support hashing of deeply nested properties
                 indexableConstraint.getFieldExtractor().getIndex() >= 0;
     }
