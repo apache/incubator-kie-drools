@@ -29,6 +29,8 @@ repositories:
   branch: main
 - name: optaplanner-quickstarts
   branch: development
+- name: optaplanner-website
+  branch: main
 git:
   author:
     name: kiegroup
