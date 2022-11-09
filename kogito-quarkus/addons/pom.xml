@@ -26,6 +26,7 @@
     <module>knative</module>
     <module>kubernetes</module>
     <module>events</module>
+    <module>marshallers</module>
   </modules>
 
   <profiles>

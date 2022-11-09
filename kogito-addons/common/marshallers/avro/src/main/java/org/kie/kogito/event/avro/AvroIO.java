@@ -35,7 +35,6 @@ import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.util.Utf8;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JavaType;
@@ -98,9 +97,8 @@ public class AvroIO {
         builder.set(ATTRIBUTES, attrsMap);
 
         CloudEventData data = event.getData();
-
         if (data instanceof JsonCloudEventData) {
-            builder.set(DATA, ObjectMapperFactory.get().convertValue(((JsonCloudEventData) data).getNode(), Map.class));
+            builder.set(DATA, avroMapper.convertValue(((JsonCloudEventData) data).getNode(), Map.class));
         } else if (data != null) {
             builder.set(DATA, ByteBuffer.wrap(data.toBytes()));
         }
