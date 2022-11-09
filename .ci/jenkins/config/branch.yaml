@@ -34,9 +34,17 @@ git:
     name: kiegroup
     credentials_id: kie-ci
     token_credentials_id: kie-ci3-token
-  bot_author:
+  bot_author: # This is meant to disappear in the near future
     name: bsig-gh-bot
     credentials_id: bsig-gh-bot
+  fork_author: # Used on repository where a fork is needed
+    name: kie-ci
+    credentials_id: kie-ci
+  quarkus: # Used by quarkus platform jobs
+    author:
+      name: quarkusio
+      credentials_id: kie-ci
+    branch: main
   jenkins_config_path: .ci/jenkins
 maven:
   settings_file_id: kogito_release_settings

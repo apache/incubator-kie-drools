@@ -36,6 +36,7 @@ if (Utils.isMainBranch(this)) {
 }
 
 // Tools
+KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'optaplanner')
 KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 
         [ 'optaplanner', 'optaplanner-quickstarts' ],
         [ 'rsynek', 'triceo']
