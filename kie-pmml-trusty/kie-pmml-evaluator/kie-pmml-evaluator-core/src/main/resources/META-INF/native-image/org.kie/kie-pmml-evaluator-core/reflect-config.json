@@ -27,6 +27,15 @@
     "allPublicFields" : true
   },
   {
+    "name" : "org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLMapInput",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true
+  },
+  {
     "name" : "org.kie.pmml.evaluator.core.service.KieRuntimeServicePMMLRequestData",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
