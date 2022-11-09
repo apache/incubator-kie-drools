@@ -19,6 +19,10 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-api-incubation-decisions-services</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.cloudevents</groupId>
+            <artifactId>cloudevents-json-jackson</artifactId>
+        </dependency>
 
         <!-- quarkus -->
 

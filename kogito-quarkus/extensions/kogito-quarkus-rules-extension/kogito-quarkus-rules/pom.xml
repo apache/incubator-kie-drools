@@ -25,6 +25,11 @@
             <artifactId>kogito-api-incubation-rules-services</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.cloudevents</groupId>
+            <artifactId>cloudevents-json-jackson</artifactId>
+        </dependency>
+
         <!-- kogito -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

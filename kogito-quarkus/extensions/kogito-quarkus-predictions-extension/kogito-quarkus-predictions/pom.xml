@@ -28,6 +28,10 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-api-incubation-predictions-services</artifactId>
       </dependency>
+      <dependency>
+        <groupId>io.cloudevents</groupId>
+        <artifactId>cloudevents-json-jackson</artifactId>
+      </dependency>
     </dependencies>
 
     <build>
