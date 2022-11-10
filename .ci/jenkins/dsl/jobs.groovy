@@ -54,11 +54,11 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
                 ],
             ], [
-                id: 'kogito-springboot-examples',
+                id: 'serverless-workflow-examples',
                 repository: 'kogito-examples',
                 dependsOn: 'kogito-apps',
                 env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],
             ]
         ]
