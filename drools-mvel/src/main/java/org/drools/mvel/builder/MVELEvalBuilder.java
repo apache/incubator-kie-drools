@@ -20,8 +20,6 @@ import java.util.Map;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.drl.ast.descr.BaseDescr;
-import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
@@ -31,12 +29,12 @@ import org.drools.core.rule.EvalConditionFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.accessor.DeclarationScopeResolver;
-import org.drools.core.rule.accessor.EvalExpression.SafeEvalExpression;
 import org.drools.core.rule.consequence.KnowledgeHelper;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.EvalDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELEvalExpression;
-import org.kie.internal.security.KiePolicyHelper;
 
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 
@@ -100,7 +98,7 @@ public class MVELEvalBuilder
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );
-            eval.setEvalExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeEvalExpression(expr) : expr );
+            eval.setEvalExpression( expr );
 
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( eval,

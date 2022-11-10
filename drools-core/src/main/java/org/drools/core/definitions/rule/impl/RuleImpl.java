@@ -20,10 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,14 +49,12 @@ import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.Enabled;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.rule.accessor.Wireable;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.time.impl.Timer;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;
-import org.kie.internal.security.KiePolicyHelper;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -600,16 +595,16 @@ public class RuleImpl implements Externalizable,
 
     public void wire(Object object) {
         if ( object instanceof Consequence ) {
-            Consequence c = KiePolicyHelper.isPolicyEnabled() ? new Consequence.SafeConsequence((Consequence) object) : (Consequence) object;
+            Consequence c = (Consequence) object;
             if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
                 addNamedConsequence(c.getName(), c);
             }
         } else if ( object instanceof Salience ) {
-            setSalience( KiePolicyHelper.isPolicyEnabled() ? new SafeSalience((Salience) object) : (Salience) object );
+            setSalience( (Salience) object );
         } else if ( object instanceof Enabled ) {
-            setEnabled( KiePolicyHelper.isPolicyEnabled() ? new SafeEnabled((Enabled) object) : (Enabled) object );
+            setEnabled( (Enabled) object );
         }
     }
 
@@ -868,49 +863,5 @@ public class RuleImpl implements Externalizable,
 
     public Declaration[] findSalienceDeclarations(Map<String, Declaration> decls) {
         return this.salience.findDeclarations(decls);
-    }
-
-    public static class SafeSalience implements Salience, Serializable {
-        private static final long serialVersionUID = 1L;
-        private final Salience delegate;
-        public SafeSalience( Salience delegate ) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public int getValue(final Activation activation,
-                            final org.kie.api.definition.rule.Rule rule,
-                            final ReteEvaluator reteEvaluator) {
-            return AccessController.doPrivileged((PrivilegedAction<Integer>) () -> delegate.getValue(activation, rule, reteEvaluator), KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public int getValue() {
-            // no need to secure calls to static values
-            return delegate.getValue();
-        }
-
-        @Override
-        public boolean isDynamic() {
-            // no need to secure calls to static values
-            return delegate.isDynamic();
-        }
-    }
-
-    public static class SafeEnabled implements Enabled, Serializable {
-        private static final long serialVersionUID = -8361753962814039574L;
-        private final Enabled delegate;
-        public SafeEnabled( Enabled delegate ) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public boolean getValue(final Tuple tuple,
-                                final Declaration[] declarations,
-                                final RuleImpl rule,
-                                final ReteEvaluator reteEvaluator) {
-            return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> delegate.getValue(tuple, declarations, rule, reteEvaluator), KiePolicyHelper.getAccessContext());
-        }
-
     }
 }

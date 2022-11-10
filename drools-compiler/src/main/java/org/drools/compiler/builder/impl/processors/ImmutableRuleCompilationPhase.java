@@ -15,6 +15,17 @@
 
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -30,19 +41,6 @@ import org.drools.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChange;
-
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 import static org.drools.compiler.rule.builder.RuleBuildContext.descrToRule;
 import static org.drools.util.StringUtils.isEmpty;
@@ -333,9 +331,7 @@ public class ImmutableRuleCompilationPhase extends AbstractPackageCompilationPha
         }
     }
     private List<? extends KnowledgeBuilderResult> addRule(RuleBuildContext context) {
-        return System.getSecurityManager() == null ?
-                internalAddRule(context) :
-                AccessController.<List<? extends KnowledgeBuilderResult>>doPrivileged((PrivilegedAction) () -> internalAddRule(context));
+        return internalAddRule(context);
     }
 
 

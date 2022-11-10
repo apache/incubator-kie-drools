@@ -33,7 +33,6 @@ public interface CompiledInvoker
     String getMethodBytecode();
 
     static boolean isCompiledInvoker(Invoker invoker) {
-        return (invoker instanceof CompiledInvoker)
-                || (invoker instanceof EvalExpression.SafeEvalExpression && invoker.wrapsCompiledInvoker());
+        return invoker instanceof CompiledInvoker;
     }
 }

@@ -16,15 +16,9 @@
 
 package org.drools.core.rule.accessor;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.kie.internal.security.KiePolicyHelper;
 
 public interface EvalExpression
     extends
@@ -45,43 +39,5 @@ public interface EvalExpression
 
     default EvalExpression clonePreservingDeclarations(EvalExpression original) {
         return original;
-    }
-
-    class SafeEvalExpression implements EvalExpression, Serializable {
-        private static final long serialVersionUID = -5682290553015978731L;
-        private EvalExpression delegate;
-        public SafeEvalExpression(EvalExpression delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public Object createContext() {
-            return AccessController.doPrivileged(
-                    (PrivilegedAction<Object>) () -> delegate.createContext(), KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public boolean evaluate(final Tuple tuple,
-                final Declaration[] requiredDeclarations,
-                final ReteEvaluator reteEvaluator,
-                final Object context) throws Exception {
-            return AccessController.doPrivileged(
-                    (PrivilegedExceptionAction<Boolean>) () -> delegate.evaluate(tuple, requiredDeclarations, reteEvaluator, context), KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
-            delegate.replaceDeclaration(declaration, resolved);
-        }
-
-        @Override
-        public SafeEvalExpression clone() {
-            return new SafeEvalExpression( this.delegate.clone() );
-        }
-
-        @Override
-        public boolean wrapsCompiledInvoker() {
-            return delegate instanceof CompiledInvoker;
-        }
     }
 }

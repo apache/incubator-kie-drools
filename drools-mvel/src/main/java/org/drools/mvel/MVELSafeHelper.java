@@ -15,15 +15,12 @@
 package org.drools.mvel;
 
 import org.drools.mvel.util.MVELEvaluator;
-import org.kie.internal.security.KiePolicyHelper;
 
 public class MVELSafeHelper {
 
     private static class MVELEvaluatorHolder {
 
-        private static final MVELEvaluator evaluator = KiePolicyHelper.isPolicyEnabled() ?
-                new SafeMVELEvaluator() :
-                new UnsafeMVELEvaluator();
+        private static final MVELEvaluator evaluator = new UnsafeMVELEvaluator();
     }
 
     private MVELSafeHelper() {

@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.EvalExpression;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
 
 public class EvalCondition extends ConditionalElement
     implements
@@ -91,7 +90,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     public void wire(Object object) {
-        EvalExpression expression = KiePolicyHelper.isPolicyEnabled() ? new EvalExpression.SafeEvalExpression((EvalExpression) object) : (EvalExpression) object;
+        EvalExpression expression = (EvalExpression) object;
         setEvalExpression( expression );
         for ( EvalCondition clone : this.cloned ) {
             clone.wireClone( expression );

@@ -16,17 +16,10 @@
 
 package org.drools.core.rule.accessor;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * Accumulator
@@ -128,128 +121,6 @@ public interface Accumulator
                      Tuple leftTuple,
                      Declaration[] declarations,
                      ReteEvaluator reteEvaluator);
-
-    /**
-     * This class is used as a wrapper delegate when a security 
-     * policy is in place.
-     */
-    class SafeAccumulator implements Accumulator, Serializable {
-        private static final long serialVersionUID = -2845820209337318924L;
-        private Accumulator delegate;
-
-        public SafeAccumulator(Accumulator delegate) {
-            super();
-            this.delegate = delegate;
-        }
-
-        public Object createWorkingMemoryContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createWorkingMemoryContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public Object createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public Object init(final Object workingMemoryContext,
-                           final Object context,
-                           final Tuple leftTuple,
-                           final Declaration[] declarations,
-                           final ReteEvaluator reteEvaluator) {
-            try {
-                return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    @Override
-                    public Object run() throws Exception {
-                        return delegate.init(workingMemoryContext, context, leftTuple, declarations, reteEvaluator);
-                    }
-                }, KiePolicyHelper.getAccessContext());
-            } catch (PrivilegedActionException e) {
-                throw new RuntimeException( e );
-            }
-        }
-
-        public Object accumulate(final Object workingMemoryContext,
-                final Object context, 
-                final Tuple leftTuple, 
-                final InternalFactHandle handle, 
-                final Declaration[] declarations, 
-                final Declaration[] innerDeclarations, 
-                final ReteEvaluator reteEvaluator) {
-            try {
-                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    @Override
-                    public Object run() throws Exception {
-                        return delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, reteEvaluator);
-                    }
-                }, KiePolicyHelper.getAccessContext());
-            } catch (PrivilegedActionException e) {
-                throw new RuntimeException( e );
-            }
-            throw new IllegalStateException("Should not reach here, as it should return from the prior 'run'");
-        }
-
-        public boolean supportsReverse() {
-            // we have to secure even this call because it might run untrusted code 
-            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return delegate.supportsReverse();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public boolean tryReverse(final Object workingMemoryContext,
-                final Object context, 
-                final Tuple leftTuple, 
-                final InternalFactHandle handle,
-                final Object value,
-                final Declaration[] declarations, 
-                final Declaration[] innerDeclarations, 
-                final ReteEvaluator reteEvaluator) {
-            try {
-                return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
-                    @Override
-                    public Boolean run() throws Exception {
-                        return delegate.tryReverse(workingMemoryContext, context, leftTuple, handle, value,
-                                         declarations, innerDeclarations, reteEvaluator);
-                    }
-                }, KiePolicyHelper.getAccessContext());
-            } catch (PrivilegedActionException e) {
-                throw new RuntimeException( e );
-            }
-        }
-
-        public Object getResult(final Object workingMemoryContext, 
-                final Object context, 
-                final Tuple leftTuple, 
-                final Declaration[] declarations, 
-                final ReteEvaluator reteEvaluator) {
-            try {
-                return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    @Override
-                    public Object run() throws Exception {
-                        return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, reteEvaluator);
-                    }
-                }, KiePolicyHelper.getAccessContext());
-            } catch (PrivilegedActionException e) {
-                throw new RuntimeException( e );
-            }
-        }
-
-        @Override
-        public boolean wrapsCompiledInvoker() {
-            return delegate instanceof CompiledInvoker;
-        }
-    }
 
     default void replaceDeclaration(Declaration declaration, Declaration resolved) { }
 
