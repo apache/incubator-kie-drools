@@ -103,7 +103,7 @@ pipeline {
                         echo '[INFO] Sending RHBOP UMB message to QE.'
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
-                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
+                        def optaplannerArchiveUrl = "https://${env.LOCAL_NEXUS_IP}:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
                         def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-sources.zip"
                         def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-quickstarts-sources.zip"
 
