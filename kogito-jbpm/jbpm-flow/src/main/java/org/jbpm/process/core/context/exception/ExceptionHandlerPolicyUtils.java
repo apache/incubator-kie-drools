@@ -15,19 +15,20 @@
  */
 package org.jbpm.process.core.context.exception;
 
-public class RootCauseExceptionPolicy extends AbstractHierarchyExceptionPolicy {
-    @Override
-    protected boolean verify(String errorCode, Throwable exception) {
-        Class<?> exceptionClass = exception.getClass();
-        boolean found = isException(errorCode, exceptionClass);
-        while (!found && !exceptionClass.equals(Object.class)) {
-            exceptionClass = exceptionClass.getSuperclass();
-            found = isException(errorCode, exceptionClass);
-        }
-        return found;
+import java.util.regex.Pattern;
+
+class ExceptionHandlerPolicyUtils {
+
+    static boolean isException(String errorCode, Class<?> exceptionClass) {
+        return exceptionClass.getName().equals(errorCode);
     }
 
-    private boolean isException(String errorCode, Class<?> exceptionClass) {
-        return errorCode.equals(exceptionClass.getName());
+    private static final Pattern classNamePattern = Pattern.compile("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+
+    static boolean isExceptionErrorCode(String errorCode) {
+        return classNamePattern.matcher(errorCode).matches();
+    }
+
+    private ExceptionHandlerPolicyUtils() {
     }
 }

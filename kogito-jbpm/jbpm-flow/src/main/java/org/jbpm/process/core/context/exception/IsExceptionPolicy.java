@@ -15,17 +15,11 @@
  */
 package org.jbpm.process.core.context.exception;
 
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import static org.jbpm.process.core.context.exception.ExceptionHandlerPolicyUtils.isException;
 
-public class ErrorCodeExceptionPolicy extends AbstractRootCauseExceptionPolicy {
-
+public class IsExceptionPolicy implements ExceptionHandlerPolicy {
     @Override
-    public boolean verify(String errorCode, Throwable exception) {
-        return exception instanceof WorkItemExecutionException && getErrorCode(errorCode).equals(((WorkItemExecutionException) exception).getErrorCode());
-    }
-
-    private String getErrorCode(String errorCode) {
-        String[] error = errorCode.split(":");
-        return error[error.length - 1];
+    public boolean test(String errorCode, Throwable exception) {
+        return isException(errorCode, exception.getClass());
     }
 }

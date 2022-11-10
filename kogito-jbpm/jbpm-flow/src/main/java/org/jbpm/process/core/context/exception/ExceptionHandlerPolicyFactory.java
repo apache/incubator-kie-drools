@@ -26,9 +26,12 @@ public class ExceptionHandlerPolicyFactory {
     private static Collection<ExceptionHandlerPolicy> policies = new ArrayList<>();
 
     static {
-        policies.add(new MessageContentRegexExceptionPolicy());
         policies.add(new ErrorCodeExceptionPolicy());
-        policies.add(new RootCauseExceptionPolicy());
+        policies.add(new IsExceptionPolicy());
+        policies.add(new MessageContentEqualsExceptionPolicy());
+        policies.add(new IsWrappedExceptionPolicy());
+        policies.add(new MessageContentRegexExceptionPolicy());
+        policies.add(new IsChildExceptionPolicy());
     }
 
     public static Collection<ExceptionHandlerPolicy> getHandlerPolicies() {

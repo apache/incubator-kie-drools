@@ -15,17 +15,18 @@
  */
 package org.jbpm.process.core.context.exception;
 
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import static org.jbpm.process.core.context.exception.ExceptionHandlerPolicyUtils.isException;
 
-public class ErrorCodeExceptionPolicy extends AbstractRootCauseExceptionPolicy {
+public class IsChildExceptionPolicy extends AbstractRootCauseExceptionPolicy {
 
     @Override
     public boolean verify(String errorCode, Throwable exception) {
-        return exception instanceof WorkItemExecutionException && getErrorCode(errorCode).equals(((WorkItemExecutionException) exception).getErrorCode());
-    }
-
-    private String getErrorCode(String errorCode) {
-        String[] error = errorCode.split(":");
-        return error[error.length - 1];
+        Class<?> exceptionClass = exception.getClass().getSuperclass();
+        boolean found = false;
+        while (!found && !exceptionClass.equals(Object.class)) {
+            found = isException(errorCode, exceptionClass);
+            exceptionClass = exceptionClass.getSuperclass();
+        }
+        return found;
     }
 }

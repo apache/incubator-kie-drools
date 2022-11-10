@@ -15,26 +15,18 @@
  */
 package org.jbpm.process.core.context.exception;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.jbpm.process.core.context.exception.ExceptionHandlerPolicyUtils.isExceptionErrorCode;
-
-public class MessageContentRegexExceptionPolicy implements ExceptionHandlerPolicy {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageContentRegexExceptionPolicy.class);
-
+public abstract class AbstractRootCauseExceptionPolicy implements ExceptionHandlerPolicy {
     @Override
     public boolean test(String errorCode, Throwable exception) {
-        String msg = exception.getMessage();
-        try {
-            return msg != null && !isExceptionErrorCode(errorCode) && Pattern.compile(errorCode).matcher(msg).find();
-        } catch (PatternSyntaxException ex) {
-            LOGGER.debug("Failure parsing regular expression: {}", errorCode, ex);
+        boolean found = verify(errorCode, exception);
+        Throwable rootCause = exception.getCause();
+        while (!found && rootCause != null) {
+            found = verify(errorCode, rootCause);
+            rootCause = rootCause.getCause();
         }
-        return false;
+        return found;
     }
+
+    protected abstract boolean verify(String errorCode, Throwable exception);
+
 }
