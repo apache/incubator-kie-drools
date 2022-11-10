@@ -15,7 +15,7 @@ on:
 jobs:
   kogito_examples-build:
     concurrency:
-      group: kogito_examples_pr-${{ github.head_ref }}
+      group: ${{ matrix.examples-subfolder }}-pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 180
     strategy:
@@ -23,9 +23,13 @@ jobs:
         os: [ubuntu-latest]
         java-version: [11]
         maven-version: ['3.8.6']
+        examples-subfolder:
+          - kogito-quarkus-examples
+          - kogito-springboot-examples
+          - serverless-workflow-examples
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - ${{ matrix.examples-subfolder }}
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -41,6 +45,8 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
+        env:
+          KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.examples-subfolder }}/
         with:
           definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
