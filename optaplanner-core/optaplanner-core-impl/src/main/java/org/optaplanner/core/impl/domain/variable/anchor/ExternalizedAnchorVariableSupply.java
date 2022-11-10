@@ -36,8 +36,7 @@ public class ExternalizedAnchorVariableSupply<Solution_> implements
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         anchorMap = new IdentityHashMap<>();
-        previousVariableDescriptor.getEntityDescriptor().getSolutionDescriptor()
-                .visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
+        previousVariableDescriptor.getEntityDescriptor().visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override

@@ -67,6 +67,20 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public QueuedEntityPlacerConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.entitySelectorConfig = entitySelectorConfig;
+        return this;
+    }
+
+    public QueuedEntityPlacerConfig withMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+        return this;
+    }
+
     @Override
     public QueuedEntityPlacerConfig inherit(QueuedEntityPlacerConfig inheritedConfig) {
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

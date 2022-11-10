@@ -18,6 +18,10 @@ We believe these examples were rarely used if ever, and they did not showcase an
 
 No OptaPlanner feature was removed or deprecated in the process.
 
+==== Multiple entity classes with chained planning variables
+
+Fixed a xref:https://issues.redhat.com/browse/PLANNER-2798[bug] that prevented using two or more chained planning variables, each defined on a different planning entity class.
+
 [[releaseNotes-8.30.0.Final]]
 === OptaPlanner 8.30.0.Final
 
@@ -25,7 +29,7 @@ No OptaPlanner feature was removed or deprecated in the process.
 
 While the OptaPlanner operator remains experimental, it has now become a part of the https://download.jboss.org/optaplanner/release/latestFinal[OptaPlanner distribution].
 
-If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo]
+If you want to learn more about the operator, follow the https://github.com/kiegroup/optaplanner-quickstarts/tree/development/technology/kubernetes[Kubernetes demo].
 
 [[releaseNotes-8.29.0.Final]]
 === OptaPlanner 8.29.0.Final

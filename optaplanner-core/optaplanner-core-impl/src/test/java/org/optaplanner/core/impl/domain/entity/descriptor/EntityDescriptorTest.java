@@ -3,11 +3,16 @@ package org.optaplanner.core.impl.domain.entity.descriptor;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.entity.TestdataExtendedEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.domain.pinned.extended.TestdataExtendedPinnedEntity;
@@ -90,4 +95,32 @@ class EntityDescriptorTest {
                 new TestdataExtendedPinnedEntity("e8", null, true, true, null, true, true))).isFalse();
     }
 
+    @Test
+    void extractExtendedEntities() {
+        TestdataExtendedEntitySolution solution = new TestdataExtendedEntitySolution();
+
+        TestdataEntity entity = new TestdataEntity("entity-singleton");
+        solution.setEntity(entity);
+
+        TestdataUnannotatedExtendedEntity subEntity = new TestdataUnannotatedExtendedEntity("subEntity-singleton");
+        solution.setSubEntity(subEntity);
+
+        TestdataEntity e1 = new TestdataEntity("entity1");
+        TestdataEntity e2 = new TestdataEntity("entity2");
+        solution.setEntityList(List.of(e1, e2));
+
+        TestdataUnannotatedExtendedEntity s1 = new TestdataUnannotatedExtendedEntity("subEntity1");
+        TestdataUnannotatedExtendedEntity s2 = new TestdataUnannotatedExtendedEntity("subEntity2");
+        TestdataUnannotatedExtendedEntity s3 = new TestdataUnannotatedExtendedEntity("subEntity3");
+        solution.setSubEntityList(List.of(s1, s2, s3));
+
+        TestdataUnannotatedExtendedEntity r1 = new TestdataUnannotatedExtendedEntity("subEntity1-R");
+        TestdataUnannotatedExtendedEntity r2 = new TestdataUnannotatedExtendedEntity("subEntity2-R");
+        solution.setRawEntityList(List.of(r1, r2));
+
+        EntityDescriptor<TestdataExtendedEntitySolution> entityDescriptor =
+                TestdataExtendedEntitySolution.buildEntityDescriptor();
+        assertThat(entityDescriptor.extractEntities(solution))
+                .containsExactlyInAnyOrder(entity, subEntity, e1, e2, s1, s2, s3, r1, r2);
+    }
 }

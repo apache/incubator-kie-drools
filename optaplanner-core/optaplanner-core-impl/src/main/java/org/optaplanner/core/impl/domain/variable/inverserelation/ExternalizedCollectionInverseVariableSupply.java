@@ -35,8 +35,7 @@ public class ExternalizedCollectionInverseVariableSupply<Solution_> implements
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
         inverseEntitySetMap = new IdentityHashMap<>();
-        sourceVariableDescriptor.getEntityDescriptor().getSolutionDescriptor()
-                .visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
+        sourceVariableDescriptor.getEntityDescriptor().visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
     @Override

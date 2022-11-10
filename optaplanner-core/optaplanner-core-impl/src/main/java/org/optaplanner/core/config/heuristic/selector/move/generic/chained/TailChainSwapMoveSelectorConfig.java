@@ -47,6 +47,20 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public TailChainSwapMoveSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.entitySelectorConfig = entitySelectorConfig;
+        return this;
+    }
+
+    public TailChainSwapMoveSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.valueSelectorConfig = valueSelectorConfig;
+        return this;
+    }
+
     @Override
     public TailChainSwapMoveSelectorConfig inherit(TailChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

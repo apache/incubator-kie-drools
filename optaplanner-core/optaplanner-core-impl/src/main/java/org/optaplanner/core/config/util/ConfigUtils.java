@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -378,36 +379,34 @@ public class ConfigUtils {
         return extractCollectionGenericTypeParameter(
                 parentClassConcept, parentClass,
                 type, genericType,
-                annotationClass, memberName,
-                true);
+                annotationClass, memberName).orElseThrow(
+                        () -> new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                                + (annotationClass == null ? "auto discovered"
+                                        : "@" + annotationClass.getSimpleName() + " annotated")
+                                + " member (" + memberName
+                                + ") with a member type (" + type
+                                + ") which has no generic parameters.\n"
+                                + "Maybe the member (" + memberName + ") should return a parameterized "
+                                + type.getSimpleName()
+                                + "."));
     }
 
-    public static Class<?> extractCollectionGenericTypeParameterLeniently(
+    public static Optional<Class<?>> extractCollectionGenericTypeParameterLeniently(
             String parentClassConcept, Class<?> parentClass,
             Class<?> type, Type genericType,
             Class<? extends Annotation> annotationClass, String memberName) {
         return extractCollectionGenericTypeParameter(
                 parentClassConcept, parentClass,
                 type, genericType,
-                annotationClass, memberName,
-                false);
+                annotationClass, memberName);
     }
 
-    private static Class<?> extractCollectionGenericTypeParameter(
+    private static Optional<Class<?>> extractCollectionGenericTypeParameter(
             String parentClassConcept, Class<?> parentClass,
             Class<?> type, Type genericType,
-            Class<? extends Annotation> annotationClass, String memberName, boolean strict) {
+            Class<? extends Annotation> annotationClass, String memberName) {
         if (!(genericType instanceof ParameterizedType)) {
-            if (strict) {
-                throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
-                        + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")
-                        + " member (" + memberName
-                        + ") with a member type (" + type
-                        + ") which has no generic parameters.\n"
-                        + "Maybe the member (" + memberName + ") should return a parameterized " + type.getSimpleName() + ".");
-            } else {
-                return Object.class;
-            }
+            return Optional.empty();
         }
         ParameterizedType parameterizedType = (ParameterizedType) genericType;
         Type[] typeArguments = parameterizedType.getActualTypeArguments();
@@ -444,10 +443,10 @@ public class ConfigUtils {
             }
         }
         if (typeArgument instanceof Class) {
-            return ((Class<?>) typeArgument);
+            return Optional.of((Class<?>) typeArgument);
         } else if (typeArgument instanceof ParameterizedType) {
             // Turns SomeGenericType<T> into SomeGenericType.
-            return (Class<?>) ((ParameterizedType) typeArgument).getRawType();
+            return Optional.of((Class<?>) ((ParameterizedType) typeArgument).getRawType());
         } else {
             throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
                     + (annotationClass == null ? "auto discovered" : "@" + annotationClass.getSimpleName() + " annotated")

@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -338,7 +339,7 @@ public class SolutionDescriptor<Solution_> {
                         elementType = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
                                 "solutionClass", solutionClass,
                                 type, genericType,
-                                null, member.getName());
+                                null, member.getName()).orElse(Object.class);
                     } else {
                         elementType = type.getComponentType();
                     }
@@ -571,7 +572,7 @@ public class SolutionDescriptor<Solution_> {
                 .map(accessor -> ConfigUtils.extractCollectionGenericTypeParameterLeniently(
                         "solutionClass", getSolutionClass(),
                         accessor.getType(), accessor.getGenericType(), ProblemFactCollectionProperty.class,
-                        accessor.getName()));
+                        accessor.getName()).orElse(Object.class));
         problemFactOrEntityClassStream = concat(problemFactOrEntityClassStream, factCollectionClassStream);
         // Add constraint configuration, if configured.
         if (constraintConfigurationDescriptor != null) {
@@ -927,27 +928,43 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
-        List<Object> entityList = new ArrayList<>();
+    public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
         for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
+            if (entityClass.isAssignableFrom(entityMemberAccessor.getType())) {
                 Object entity = extractMemberObject(entityMemberAccessor, solution);
-                if (entity != null && entityClass.isInstance(entity)) {
-                    entityList.add(entity);
+                if (entity != null) {
+                    visitor.accept(entity);
                 }
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
-                    false);
-            for (Object entity : entityCollection) {
-                if (entityClass.isInstance(entity)) {
-                    entityList.add(entity);
+            Optional<Class<?>> optionalTypeParameter = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
+                    "solutionClass", entityCollectionMemberAccessor.getDeclaringClass(),
+                    entityCollectionMemberAccessor.getType(),
+                    entityCollectionMemberAccessor.getGenericType(),
+                    null,
+                    entityCollectionMemberAccessor.getName());
+            if (optionalTypeParameter.isPresent()) {
+                // In a typical case, typeParameter is specified, so we can skip the collection if typeParam
+                // is not assignable to entityClass.
+                Class<?> typeParameter = optionalTypeParameter.get();
+                if (entityClass.isAssignableFrom(typeParameter)) {
+                    Collection<Object> entityCollection =
+                            extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+                    entityCollection.forEach(visitor);
+                }
+            } else {
+                // If the collection is raw, we have to visit its elements and check if each element
+                // is an instance of entityClass.
+                Collection<Object> entityCollection =
+                        extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
+                for (Object entity : entityCollection) {
+                    if (entityClass.isInstance(entity)) {
+                        visitor.accept(entity);
+                    }
                 }
             }
         }
-        return entityList;
     }
 
     /**

@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.extended.entity.TestdataExtendedEntitySolution;
 
 class MutationCounterTest {
 
@@ -112,4 +113,42 @@ class MutationCounterTest {
         assertThat(mutationCounter.countMutations(a, b)).isEqualTo(4);
     }
 
+    @Test
+    void countMutationsOnExtendedEntities() {
+        SolutionDescriptor<TestdataExtendedEntitySolution> solutionDescriptor =
+                TestdataExtendedEntitySolution.buildExtendedEntitySolutionDescriptor();
+        MutationCounter<TestdataExtendedEntitySolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        List<TestdataValue> valueList = Arrays.asList(val1, val2);
+
+        int entityListSize = 3;
+        int subEntityListSize = 7;
+        int rawEntityListSize = 17;
+
+        TestdataExtendedEntitySolution a =
+                TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize, rawEntityListSize);
+        a.setValueList(valueList);
+        a.getEntity().setValue(val1);
+        a.getSubEntity().setValue(val1);
+        a.getEntityList().forEach(e -> e.setValue(val1));
+        a.getSubEntityList().forEach(e -> e.setValue(val1));
+        for (Object o : a.getRawEntityList()) {
+            ((TestdataEntity) o).setValue(val1);
+        }
+
+        TestdataExtendedEntitySolution b =
+                TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize, rawEntityListSize);
+        b.setValueList(valueList);
+        b.getEntity().setValue(val2);
+        b.getSubEntity().setValue(val2);
+        b.getEntityList().forEach(e -> e.setValue(val2));
+        b.getSubEntityList().forEach(e -> e.setValue(val2));
+        for (Object o : b.getRawEntityList()) {
+            ((TestdataEntity) o).setValue(val2);
+        }
+
+        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(entityListSize + subEntityListSize + rawEntityListSize + 2);
+    }
 }

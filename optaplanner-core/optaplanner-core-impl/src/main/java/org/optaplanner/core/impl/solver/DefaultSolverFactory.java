@@ -220,10 +220,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                             DefaultConstructionHeuristicPhaseFactory.buildListVariableQueuedValuePlacerConfig(configPolicy,
                                     listVariableDescriptorList.get(0));
                 } else {
-                    QueuedEntityPlacerConfig queuedEntityPlacerConfig = new QueuedEntityPlacerConfig();
-                    queuedEntityPlacerConfig.setEntitySelectorConfig(AbstractFromConfigFactory
+                    entityPlacerConfig = new QueuedEntityPlacerConfig().withEntitySelectorConfig(AbstractFromConfigFactory
                             .getDefaultEntitySelectorConfigForEntity(configPolicy, genuineEntityDescriptor));
-                    entityPlacerConfig = queuedEntityPlacerConfig;
                 }
 
                 constructionHeuristicPhaseConfig.setEntityPlacerConfig(entityPlacerConfig);

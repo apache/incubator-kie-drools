@@ -63,7 +63,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
             sourceClass = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
                     "entityClass", entityDescriptor.getEntityClass(),
                     variablePropertyType, genericType,
-                    InverseRelationShadowVariable.class, variableMemberAccessor.getName());
+                    InverseRelationShadowVariable.class, variableMemberAccessor.getName()).orElse(Object.class);
             singleton = false;
         } else {
             sourceClass = variablePropertyType;
