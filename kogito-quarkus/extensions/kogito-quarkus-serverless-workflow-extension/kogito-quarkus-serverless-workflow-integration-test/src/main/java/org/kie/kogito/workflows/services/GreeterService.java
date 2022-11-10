@@ -16,13 +16,13 @@
 package org.kie.kogito.workflows.services;
 
 import org.kie.kogito.examples.sw.greeting.Greeter;
-import org.kie.kogito.examples.sw.greeting.Greeting.HelloArrayReply;
-import org.kie.kogito.examples.sw.greeting.Greeting.HelloArrayReply.Builder;
-import org.kie.kogito.examples.sw.greeting.Greeting.HelloArrayRequest;
-import org.kie.kogito.examples.sw.greeting.Greeting.HelloReply;
-import org.kie.kogito.examples.sw.greeting.Greeting.HelloRequest;
-import org.kie.kogito.examples.sw.greeting.Greeting.InnerMessage;
-import org.kie.kogito.examples.sw.greeting.Greeting.State;
+import org.kie.kogito.examples.sw.greeting.HelloArrayReply;
+import org.kie.kogito.examples.sw.greeting.HelloArrayReply.Builder;
+import org.kie.kogito.examples.sw.greeting.HelloArrayRequest;
+import org.kie.kogito.examples.sw.greeting.HelloReply;
+import org.kie.kogito.examples.sw.greeting.HelloRequest;
+import org.kie.kogito.examples.sw.greeting.InnerMessage;
+import org.kie.kogito.examples.sw.greeting.State;
 
 import com.google.protobuf.Empty;
 

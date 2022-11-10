@@ -96,7 +96,7 @@ public class ProtocUtils {
 
                 Files.createDirectories(outDir.getParent());
                 command.addAll(Arrays.asList("--plugin=protoc-gen-grpc=" + executables.grpc,
-                        "--descriptor_set_out=" + outDir));
+                        "--descriptor_set_out=" + outDir, "--include_imports"));
                 command.addAll(protoFiles);
 
                 ProcessBuilder processBuilder = new ProcessBuilder(command);

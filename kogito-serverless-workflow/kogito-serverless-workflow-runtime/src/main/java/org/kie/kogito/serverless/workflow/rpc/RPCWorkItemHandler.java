@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -35,6 +36,7 @@ import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.google.protobuf.DescriptorProtos.FileDescriptorProto;
 import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.DescriptorProtos.MethodDescriptorProto;
 import com.google.protobuf.Descriptors.DescriptorValidationException;
@@ -70,6 +72,8 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
     private final Collection<RPCDecorator> decorators = new ArrayList<>();
     private final int streamTimeout;
 
+    private Map<String, FileDescriptor> fileDescriptors = new ConcurrentHashMap<>();
+
     public RPCWorkItemHandler() {
         this(GRPC_ENUM_DEFAULT_VALUE, GRPC_STREAM_TIMEOUT_VALUE);
     }
@@ -94,38 +98,45 @@ public abstract class RPCWorkItemHandler extends WorkflowWorkItemHandler {
     protected abstract Channel getChannel(String file, String service);
 
     private JsonNode doCall(FileDescriptorSet fdSet, Map<String, Object> parameters, Channel channel, String fileName, String serviceName, String methodName) {
-        try {
-            FileDescriptor descriptor = FileDescriptor.buildFrom(fdSet.getFileList().stream().filter(f -> f.getName().equals(fileName))
-                    .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find file name " + fileName)), new FileDescriptor[0], true);
-            ServiceDescriptor serviceDesc = Objects.requireNonNull(descriptor.findServiceByName(serviceName), "Cannot find service name " + serviceName);
-            MethodDescriptor methodDesc = Objects.requireNonNull(serviceDesc.findMethodByName(methodName), "Cannot find method name " + methodName);
-            MethodType methodType = getMethodType(methodDesc);
-            ClientCall<Message, Message> call = channel.newCall(io.grpc.MethodDescriptor.<Message, Message> newBuilder()
-                    .setType(methodType)
-                    .setFullMethodName(io.grpc.MethodDescriptor.generateFullMethodName(
-                            serviceDesc.getFullName(), methodDesc.getName()))
-                    .setRequestMarshaller(ProtoUtils.marshaller(
-                            DynamicMessage.newBuilder(methodDesc.getInputType()).buildPartial()))
-                    .setResponseMarshaller(ProtoUtils.marshaller(
-                            DynamicMessage.newBuilder(methodDesc.getOutputType()).buildPartial()))
-                    .build(), CallOptions.DEFAULT.withWaitForReady());
+        FileDescriptor descriptor = buildFileDescriptor(fdSet, fileName);
+        ServiceDescriptor serviceDesc = Objects.requireNonNull(descriptor.findServiceByName(serviceName), "Cannot find service name " + serviceName);
+        MethodDescriptor methodDesc = Objects.requireNonNull(serviceDesc.findMethodByName(methodName), "Cannot find method name " + methodName);
+        MethodType methodType = getMethodType(methodDesc);
+        ClientCall<Message, Message> call = channel.newCall(io.grpc.MethodDescriptor.<Message, Message> newBuilder()
+                .setType(methodType)
+                .setFullMethodName(io.grpc.MethodDescriptor.generateFullMethodName(
+                        serviceDesc.getFullName(), methodDesc.getName()))
+                .setRequestMarshaller(ProtoUtils.marshaller(
+                        DynamicMessage.newBuilder(methodDesc.getInputType()).buildPartial()))
+                .setResponseMarshaller(ProtoUtils.marshaller(
+                        DynamicMessage.newBuilder(methodDesc.getOutputType()).buildPartial()))
+                .build(), CallOptions.DEFAULT.withWaitForReady());
 
-            if (methodType == MethodType.CLIENT_STREAMING) {
-                return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncClientStreamingCall(call, responseObserver),
-                        nodes -> nodes.isEmpty() ? NullNode.instance : nodes.get(0));
-            } else if (methodType == MethodType.BIDI_STREAMING) {
-                return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncBidiStreamingCall(call, responseObserver), JsonObjectUtils::fromValue);
-            } else if (methodType == MethodType.SERVER_STREAMING) {
-                List<JsonNode> nodes = new ArrayList<>();
-                ClientCalls.blockingServerStreamingCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build())
-                        .forEachRemaining(m -> nodes.add(convert(m, methodDesc)));
-                return JsonObjectUtils.fromValue(nodes);
-            } else {
-                return convert(ClientCalls.blockingUnaryCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build()), methodDesc);
-            }
-        } catch (DescriptorValidationException e) {
-            throw new IllegalStateException(e);
+        if (methodType == MethodType.CLIENT_STREAMING) {
+            return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncClientStreamingCall(call, responseObserver),
+                    nodes -> nodes.isEmpty() ? NullNode.instance : nodes.get(0));
+        } else if (methodType == MethodType.BIDI_STREAMING) {
+            return asyncStreamingCall(parameters, methodDesc, responseObserver -> ClientCalls.asyncBidiStreamingCall(call, responseObserver), JsonObjectUtils::fromValue);
+        } else if (methodType == MethodType.SERVER_STREAMING) {
+            List<JsonNode> nodes = new ArrayList<>();
+            ClientCalls.blockingServerStreamingCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build())
+                    .forEachRemaining(m -> nodes.add(convert(m, methodDesc)));
+            return JsonObjectUtils.fromValue(nodes);
+        } else {
+            return convert(ClientCalls.blockingUnaryCall(call, RPCConverterFactory.get().buildMessage(parameters, DynamicMessage.newBuilder(methodDesc.getInputType())).build()), methodDesc);
         }
+    }
+
+    private FileDescriptor buildFileDescriptor(FileDescriptorSet fdSet, String fileName) {
+        return fileDescriptors.computeIfAbsent(fileName, name -> {
+            FileDescriptorProto fdProto =
+                    fdSet.getFileList().stream().filter(f -> f.getName().equals(name)).findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find file name " + fileName));
+            try {
+                return FileDescriptor.buildFrom(fdProto, fdProto.getDependencyList().stream().map(fdName -> buildFileDescriptor(fdSet, fdName)).toArray(FileDescriptor[]::new));
+            } catch (DescriptorValidationException e) {
+                throw new IllegalStateException(e);
+            }
+        });
     }
 
     private JsonNode convert(Message m, MethodDescriptor descriptor) {
