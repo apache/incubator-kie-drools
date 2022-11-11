@@ -48,8 +48,7 @@ The `KieMarshallers` are still present and working as expected on the release of
 === OSGi support is retired
 {PRODUCT} 8 no longer provides out of the box OSGi support in its modules.
 
-=== Security Manager support is removed
-Following the JDK Security Manager deprecation for removal in Java 17, since version 8.31.0.Final {PRODUCT} no longer allows to define a Security Manager for constraints evaluation and consequences execution.
+include::_release-notes-8.31.adoc[leveloffset=0]
 
 == Previous release notes
 
