@@ -7,19 +7,20 @@
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
     <version>8.31.0-SNAPSHOT</version>
-    <relativePath>../../build/optaplanner-build-parent/pom.xml</relativePath>
+    <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>optaplanner-rewrite</artifactId>
+  <artifactId>optaplanner-migration</artifactId>
 
-  <name>OptaPlanner Rewrite</name>
+  <name>OptaPlanner Migration</name>
   <description>
-    Upgrade your OptaPlanner using code to replace calls to deleted and deprecated methods with a single command.
+    Upgrade your code with a single command.
+    This migration replace all your calls to deleted/deprecated methods of OptaPlanner with their proper alternatives.
   </description>
   <url>https://www.optaplanner.org</url>
 
   <properties>
-    <java.module.name>org.optaplanner.rewrite</java.module.name>
+    <java.module.name>org.optaplanner.migration</java.module.name>
   </properties>
 
   <dependencies>

@@ -1,4 +1,4 @@
-package org.optaplanner.rewrite.v8;
+package org.optaplanner.migration.v8;
 
 import static org.openrewrite.java.Assertions.java;
 
