@@ -24,14 +24,12 @@ import java.io.Serializable;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.Accumulator;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.ReturnValueExpression;
-import org.drools.core.rule.accessor.ReturnValueExpression.SafeReturnValueExpression;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A Java accumulator function executor implementation
@@ -147,7 +145,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     public void wire(Object object) {
-        setExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeReturnValueExpression((ReturnValueExpression) object ) : (ReturnValueExpression) object );
+        setExpression( (ReturnValueExpression) object );
     }
 
     public void setExpression(ReturnValueExpression expression) {

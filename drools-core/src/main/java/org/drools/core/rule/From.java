@@ -20,22 +20,14 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.facttemplates.Fact;
 import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
 
 public class From extends ConditionalElement
         implements
@@ -92,7 +84,7 @@ public class From extends ConditionalElement
     }
 
     public void wire( Object object ) {
-        this.dataProvider = KiePolicyHelper.isPolicyEnabled() ? new SafeDataProvider(( DataProvider ) object) : ( DataProvider ) object;
+        this.dataProvider = ( DataProvider ) object;
     }
 
     public DataProvider getDataProvider() {
@@ -142,67 +134,6 @@ public class From extends ConditionalElement
 
     public void setResultClass(Class<?> resultClass) {
         this.resultClass = resultClass;
-    }
-
-    private static class SafeDataProvider implements DataProvider, Serializable {
-        private static final long serialVersionUID = -1539933583656828737L;
-        private DataProvider delegate;
-        public SafeDataProvider(DataProvider delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public Declaration[] getRequiredDeclarations() {
-            return delegate.getRequiredDeclarations();
-        }
-
-        @Override
-        public Object createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public Iterator getResults(final Tuple tuple,
-                                   final ReteEvaluator reteEvaluator,
-                                   final PropagationContext ctx,
-                                   final Object providerContext) {
-            return AccessController.doPrivileged(new PrivilegedAction<Iterator>() {
-                @Override
-                public Iterator run() {
-                    return delegate.getResults(tuple, reteEvaluator, ctx, providerContext);
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
-            delegate.replaceDeclaration(declaration, resolved);
-        }
-
-        @Override
-        public SafeDataProvider clone() {
-            return new SafeDataProvider( delegate.clone() );
-        }
-
-        @Override
-        public boolean equals( Object obj ) {
-            return delegate.equals( obj );
-        }
-
-        @Override
-        public int hashCode() {
-            return delegate.hashCode();
-        }
-
-        @Override
-        public boolean isReactive() {
-            return delegate.isReactive();
-        }
     }
 
     @Override

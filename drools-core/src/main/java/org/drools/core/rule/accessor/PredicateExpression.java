@@ -16,16 +16,10 @@
 
 package org.drools.core.rule.accessor;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.kie.internal.security.KiePolicyHelper;
 
 public interface PredicateExpression
     extends
@@ -39,32 +33,4 @@ public interface PredicateExpression
                             Declaration[] localDeclarations,
                             ReteEvaluator reteEvaluator,
                             Object context ) throws Exception;
-
-    class SafePredicateExpression implements PredicateExpression, Serializable {
-        private static final long serialVersionUID = -4570820770000524010L;
-        private PredicateExpression delegate;
-
-        public SafePredicateExpression(PredicateExpression delegate) {
-            this.delegate = delegate;
-        }
-
-        public Object createContext() {
-            return AccessController.doPrivileged((PrivilegedAction<Object>) () -> delegate.createContext(), KiePolicyHelper.getAccessContext());
-        }
-
-        public boolean evaluate(final InternalFactHandle handle,
-                final Tuple tuple,
-                final Declaration[] previousDeclarations,
-                final Declaration[] localDeclarations,
-                final ReteEvaluator reteEvaluator,
-                final Object context) throws Exception {
-            return AccessController.doPrivileged(
-                    (PrivilegedExceptionAction<Boolean>) () -> delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, reteEvaluator, context), KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public boolean wrapsCompiledInvoker() {
-            return this.delegate instanceof CompiledInvoker;
-        }
-    }
 }

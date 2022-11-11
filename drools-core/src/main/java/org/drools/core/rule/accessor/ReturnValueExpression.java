@@ -16,16 +16,10 @@
 
 package org.drools.core.rule.accessor;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
-import org.kie.internal.security.KiePolicyHelper;
 
 public interface ReturnValueExpression
     extends
@@ -43,43 +37,4 @@ public interface ReturnValueExpression
     void replaceDeclaration(Declaration declaration,
                                    Declaration resolved);
 
-    class SafeReturnValueExpression implements ReturnValueExpression, Serializable {
-        private static final long serialVersionUID = -5616989474935380093L;
-        private ReturnValueExpression delegate;
-        public SafeReturnValueExpression(ReturnValueExpression delegate) {
-            this.delegate = delegate;
-        }
-
-        public Object createContext() {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return delegate.createContext();
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public FieldValue evaluate(final InternalFactHandle handle,
-                final Tuple tuple, 
-                final Declaration[] previousDeclarations, 
-                final Declaration[] localDeclarations, 
-                final ReteEvaluator reteEvaluator,
-                final Object context) throws Exception {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<FieldValue>() {
-                @Override
-                public FieldValue run() throws Exception {
-                    return delegate.evaluate(handle, tuple, previousDeclarations, localDeclarations, reteEvaluator, context);
-                }
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
-            delegate.replaceDeclaration(declaration, resolved);
-        }
-
-        @Override
-        public boolean wrapsCompiledInvoker() {
-            return delegate instanceof CompiledInvoker;
-        }
-    }
 }

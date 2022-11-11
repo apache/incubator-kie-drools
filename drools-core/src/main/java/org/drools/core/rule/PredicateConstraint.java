@@ -28,13 +28,12 @@ import java.util.List;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.Evaluator;
 import org.drools.core.rule.accessor.PredicateExpression;
 import org.drools.core.rule.accessor.ReadAccessor;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A predicate can be written as a top level constraint or be nested
@@ -156,7 +155,7 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public void wire(Object object) {
-        setPredicateExpression( KiePolicyHelper.isPolicyEnabled() ? new PredicateExpression.SafePredicateExpression((PredicateExpression) object ):(PredicateExpression) object );
+        setPredicateExpression( (PredicateExpression) object );
         for ( PredicateConstraint clone : this.cloned ) {
             clone.wire( object );
         }

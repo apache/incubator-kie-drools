@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.javaparser.ParseProblemException;
@@ -274,12 +273,11 @@ public class Consequence {
     public static boolean containsWord(String word, String body) {
         // $ is quite a common character for a drools binding but it's not considered a word for the regexp engine
         // By converting to a character is easier to write the regexp
-        final String wordWithDollarReplaced = word.replace("$", "犬");
-        final String bodyWithDollarReplaced = body.replace("$", "犬");
+        final String wordWithDollarReplaced = word.replaceAll("\\$", "_DOLLAR_");
+        final String bodyWithDollarReplaced = body.replaceAll("\\$", "_DOLLAR_");
 
         Pattern p = Pattern.compile("\\b" + wordWithDollarReplaced + "\\b");
-        Matcher m = p.matcher(bodyWithDollarReplaced);
-        return m.find();
+        return p.matcher(bodyWithDollarReplaced).find();
     }
 
     private MethodCallExpr executeCall(BlockStmt ruleVariablesBlock, BlockStmt ruleConsequence, Collection<String> verifiedDeclUsedInRHS, MethodCallExpr onCall, Set<String> modifyProperties) {

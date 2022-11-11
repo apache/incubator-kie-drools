@@ -16,14 +16,8 @@
 
 package org.drools.core.rule.consequence;
 
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
-
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.accessor.Invoker;
-import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * Consequence to be fired upon successful match of a <code>Rule</code>.
@@ -47,29 +41,4 @@ public interface Consequence
     void evaluate(KnowledgeHelper knowledgeHelper,
                   ReteEvaluator reteEvaluator) throws Exception;
 
-    class SafeConsequence implements Consequence, Serializable {
-        private static final long serialVersionUID = -8109957972163261899L;
-        private final Consequence delegate;
-        public SafeConsequence( Consequence delegate ) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public String getName() {
-            return this.delegate.getName();
-        }
-
-        @Override
-        public void evaluate(final KnowledgeHelper knowledgeHelper, final ReteEvaluator reteEvaluator) throws Exception {
-            AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                delegate.evaluate(knowledgeHelper, reteEvaluator);
-                return null;
-            }, KiePolicyHelper.getAccessContext());
-        }
-
-        @Override
-        public boolean wrapsCompiledInvoker() {
-            return this.delegate instanceof CompiledInvoker;
-        }
-    }
 }
