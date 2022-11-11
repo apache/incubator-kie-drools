@@ -15,12 +15,9 @@
  */
 package org.jbpm.util;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 
 import org.drools.util.StringUtils;
-import org.kie.internal.security.KiePolicyHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -45,18 +42,7 @@ public class WidMVELEvaluator {
         ExpressionCompiler compiler = new ExpressionCompiler(getRevisedExpression(expression),
                 WID_PARSER_CONTEXT);
 
-        if (KiePolicyHelper.isPolicyEnabled()) {
-            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                @Override
-                public Object run() {
-                    return MVEL.executeExpression(compiler.compile(),
-                            new HashMap());
-                }
-            }, KiePolicyHelper.getAccessContext());
-        } else {
-            return MVEL.executeExpression(compiler.compile(),
-                    new HashMap());
-        }
+        return MVEL.executeExpression(compiler.compile(), new HashMap());
     }
 
     private static String getRevisedExpression(String expression) {
