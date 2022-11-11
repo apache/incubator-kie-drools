@@ -22,11 +22,6 @@
     <java.module.name>org.optaplanner.rewrite</java.module.name>
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.openrewrite</groupId>
@@ -79,9 +74,26 @@
 
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
+      <artifactId>optaplanner-core-impl</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <!-- TODO Remove if https://github.com/openrewrite/rewrite/pull/2407 is merged and released -->
+      <groupId>io.github.classgraph</groupId>
+      <artifactId>classgraph</artifactId>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <!-- TODO Remove if https://github.com/openrewrite/rewrite/pull/2407 is merged and released -->
+        <groupId>io.github.classgraph</groupId>
+        <artifactId>classgraph</artifactId>
+        <version>4.8.149</version>
+        <scope>compile</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

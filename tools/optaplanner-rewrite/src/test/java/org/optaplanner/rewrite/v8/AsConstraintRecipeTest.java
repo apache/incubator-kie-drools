@@ -3,17 +3,15 @@ package org.optaplanner.rewrite.v8;
 import static org.openrewrite.java.Assertions.java;
 
 import org.junit.jupiter.api.Test;
-import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-class AsConstraintBuilderTest implements RewriteTest {
+class AsConstraintRecipeTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new AsConstraintBuilder())
-                .parser(JavaParser.fromJavaVersion()
-                        .classpath("optaplanner-core"));
+        spec.recipe(new AsConstraintRecipe())
+                .parser(AsConstraintRecipe.buildJavaParser());
     }
 
     // ************************************************************************
