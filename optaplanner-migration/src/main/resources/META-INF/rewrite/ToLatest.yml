@@ -1,0 +1,14 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: org.optaplanner.migration.ToLatest
+displayName: Upgrade to the latest OptaPlanner
+description: 'Replace all your calls to deleted/deprecated methods of OptaPlanner with their proper alternatives.'
+recipeList:
+  - org.openrewrite.properties.ChangePropertyKey:
+      oldPropertyKey: optaplanner.solver.solve-length
+      newPropertyKey: optaplanner.solver.solve.duration
+      fileMatcher: '**/application.properties'
+  - org.openrewrite.properties.ChangePropertyKey:
+      oldPropertyKey: quarkus.optaplanner.solver.solve-length
+      newPropertyKey: quarkus.optaplanner.solver.solve.duration
+      fileMatcher: '**/application.properties'
+  - org.optaplanner.migration.v8.AsConstraintRecipe

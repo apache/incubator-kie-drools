@@ -37,14 +37,11 @@
       <artifactId>rewrite-java-11</artifactId>
       <scope>runtime</scope>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.openrewrite</groupId>-->
-<!--      <artifactId>rewrite-maven</artifactId>-->
-<!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <groupId>org.openrewrite</groupId>-->
-<!--      <artifactId>rewrite-xml</artifactId>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>org.openrewrite</groupId>
+      <artifactId>rewrite-properties</artifactId>
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
