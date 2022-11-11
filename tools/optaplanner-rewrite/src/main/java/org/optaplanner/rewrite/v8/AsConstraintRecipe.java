@@ -105,59 +105,74 @@ public class AsConstraintRecipe extends Recipe {
             @Override
             public Expression visitExpression(Expression expression, ExecutionContext executionContext) {
                 Expression e = super.visitExpression(expression, executionContext);
-                if (PENALIZE_NAME_MATCHER.matches(e) ||
-                        PENALIZE_ID_MATCHER.matches(e) ||
-                        PENALIZE_CONFIGURABLE_NAME_MATCHER.matches(e) ||
-                        PENALIZE_CONFIGURABLE_ID_MATCHER.matches(e)) {
-                    J.MethodInvocation mi = (J.MethodInvocation) e;
-                    Expression select = mi.getSelect();
-                    List<Expression> arguments = mi.getArguments();
 
-                    String templateCode;
-                    if (select.getType().isAssignableFrom(uniConstraintStreamPattern)) {
-                        templateCode = "#{any(org.optaplanner.core.api.score.stream.uni.UniConstraintStream)}\n";
-                    } else if (select.getType().isAssignableFrom(biConstraintStreamPattern)) {
-                        templateCode = "#{any(org.optaplanner.core.api.score.stream.bi.BiConstraintStream)}\n";
-                    } else if (select.getType().isAssignableFrom(triConstraintStreamPattern)) {
-                        templateCode = "#{any(org.optaplanner.core.api.score.stream.tri.TriConstraintStream)}\n";
-                    } else if (select.getType().isAssignableFrom(quadConstraintStreamPattern)) {
-                        templateCode = "#{any(org.optaplanner.core.api.score.stream.quad.QuadConstraintStream)}\n";
-                    } else {
-                        LOGGER.warn("Cannot refactor to asConstraint() method" +
-                                " for deprecated method called in expression (" + e + ").");
-                        return e;
-                    }
-                    if (PENALIZE_NAME_MATCHER.matches(e) ||
-                            PENALIZE_ID_MATCHER.matches(e)) {
-                        templateCode += ".penalize(#{any(org.optaplanner.core.api.score.Score)})\n";
-                    } else if (PENALIZE_CONFIGURABLE_NAME_MATCHER.matches(e) ||
-                            PENALIZE_CONFIGURABLE_ID_MATCHER.matches(e)) {
-                        templateCode += ".penalizeConfigurable()\n";
-                    } else {
-                        throw new IllegalStateException("Impossible state");
-                    }
-                    if (PENALIZE_NAME_MATCHER.matches(e) ||
-                            PENALIZE_CONFIGURABLE_NAME_MATCHER.matches(e)) {
-                        templateCode += ".asConstraint(#{any(String)})";
+                boolean nameOnly;
+                boolean configurable;
+                if (PENALIZE_NAME_MATCHER.matches(e)) {
+                    nameOnly = true;
+                    configurable = false;
+                } else if (PENALIZE_ID_MATCHER.matches(e)) {
+                    nameOnly = false;
+                    configurable = false;
+                } else if (PENALIZE_CONFIGURABLE_NAME_MATCHER.matches(e)) {
+                    nameOnly = true;
+                    configurable = true;
+                } else if (PENALIZE_CONFIGURABLE_ID_MATCHER.matches(e)) {
+                    nameOnly = false;
+                    configurable = true;
+                } else {
+                    return e;
+                }
+                J.MethodInvocation mi = (J.MethodInvocation) e;
+                Expression select = mi.getSelect();
+                List<Expression> arguments = mi.getArguments();
 
-                        JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), templateCode)
-                                .javaParser(() -> buildJavaParser().build())
-                                .build();
+                String templateCode;
+                if (select.getType().isAssignableFrom(uniConstraintStreamPattern)) {
+                    templateCode = "#{any(org.optaplanner.core.api.score.stream.uni.UniConstraintStream)}\n";
+                } else if (select.getType().isAssignableFrom(biConstraintStreamPattern)) {
+                    templateCode = "#{any(org.optaplanner.core.api.score.stream.bi.BiConstraintStream)}\n";
+                } else if (select.getType().isAssignableFrom(triConstraintStreamPattern)) {
+                    templateCode = "#{any(org.optaplanner.core.api.score.stream.tri.TriConstraintStream)}\n";
+                } else if (select.getType().isAssignableFrom(quadConstraintStreamPattern)) {
+                    templateCode = "#{any(org.optaplanner.core.api.score.stream.quad.QuadConstraintStream)}\n";
+                } else {
+                    LOGGER.warn("Cannot refactor to asConstraint() method" +
+                            " for deprecated method called in expression (" + e + ").");
+                    return e;
+                }
+                if (!configurable) {
+                    templateCode += ".penalize(#{any(org.optaplanner.core.api.score.Score)})\n";
+                } else {
+                    templateCode += ".penalizeConfigurable()\n";
+                }
+                if (nameOnly) {
+                    templateCode += ".asConstraint(#{any(String)})";
+                } else {
+                    templateCode += ".asConstraint(#{any(String)}, #{any(String)})";
+                }
+                JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), templateCode)
+                        .javaParser(() -> buildJavaParser().build())
+                        .build();
+                if (nameOnly) {
+                    if (!configurable) {
                         e = e.withTemplate(template,
                                 e.getCoordinates().replace(), select,
                                 arguments.get(1), arguments.get(0));
-                    } else if (PENALIZE_ID_MATCHER.matches(e) ||
-                            PENALIZE_CONFIGURABLE_ID_MATCHER.matches(e)) {
-                        templateCode += ".asConstraint(#{any(String)}, #{any(String)})";
-
-                        JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), templateCode)
-                                .javaParser(() -> buildJavaParser().build())
-                                .build();
+                    } else {
+                        e = e.withTemplate(template,
+                                e.getCoordinates().replace(), select,
+                                arguments.get(0));
+                    }
+                } else {
+                    if (!configurable) {
                         e = e.withTemplate(template,
                                 e.getCoordinates().replace(), select,
                                 arguments.get(2), arguments.get(0), arguments.get(1));
                     } else {
-                        throw new IllegalStateException("Impossible state");
+                        e = e.withTemplate(template,
+                                e.getCoordinates().replace(), select,
+                                arguments.get(0), arguments.get(1));
                     }
                 }
                 return e;
