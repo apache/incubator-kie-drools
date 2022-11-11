@@ -22,9 +22,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class DefaultPathParamResolverTest {
 
@@ -39,9 +38,7 @@ public class DefaultPathParamResolverTest {
     public void testReplaceTemplateTrivial() {
         Map<String, Object> parameters = Collections.emptyMap();
         String endPoint = "http://pepe:password@www.google.com/results/id/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/id/?user=pepe#at_point",
-                pathParamResolver.apply(endPoint, parameters));
+        assertThat(pathParamResolver.apply(endPoint, parameters)).isEqualTo("http://pepe:password@www.google.com/results/id/?user=pepe#at_point");
     }
 
     @Test
@@ -50,9 +47,7 @@ public class DefaultPathParamResolverTest {
         // no use singletonMap here since the map must be mutable
         parameters.put("id", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{id}/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/pepe/?user=pepe#at_point",
-                pathParamResolver.apply(endPoint, parameters));
+        assertThat(pathParamResolver.apply(endPoint, parameters)).isEqualTo("http://pepe:password@www.google.com/results/pepe/?user=pepe#at_point");
     }
 
     @Test
@@ -61,9 +56,7 @@ public class DefaultPathParamResolverTest {
         parameters.put("veryVeryLongId", 26);
         parameters.put("name", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{veryVeryLongId}/names/{name}/?user=pepe#at_point";
-        assertEquals(
-                "http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point",
-                pathParamResolver.apply(endPoint, parameters));
+        assertThat(pathParamResolver.apply(endPoint, parameters)).isEqualTo("http://pepe:password@www.google.com/results/26/names/pepe/?user=pepe#at_point");
     }
 
     @Test
@@ -71,12 +64,7 @@ public class DefaultPathParamResolverTest {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", 26);
         String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name}/?user=pepe#at_point";
-        assertTrue(
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> pathParamResolver.apply(endPoint, parameters))
-                                .getMessage()
-                                .contains("name"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> pathParamResolver.apply(endPoint, parameters)).withMessageContaining("name");
     }
 
     @Test
@@ -85,12 +73,7 @@ public class DefaultPathParamResolverTest {
         parameters.put("id", 26);
         parameters.put("name", "pepe");
         String endPoint = "http://pepe:password@www.google.com/results/{id}/names/{name/?user=pepe#at_point";
-        assertTrue(
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> pathParamResolver.apply(endPoint, parameters))
-                                .getMessage()
-                                .contains("}"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> pathParamResolver.apply(endPoint, parameters)).withMessageContaining("}");
     }
 
 }

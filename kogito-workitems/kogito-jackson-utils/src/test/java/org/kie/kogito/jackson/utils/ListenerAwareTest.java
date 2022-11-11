@@ -25,9 +25,7 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -89,20 +87,20 @@ public class ListenerAwareTest {
     @Test
     void testObjectClone() {
         ObjectNode node = ObjectMapperFactory.listenerAware().createObjectNode().put("name", "Javierito");
-        assertTrue(node instanceof ObjectNodeListenerAware);
+        assertThat(node).isInstanceOf(ObjectNodeListenerAware.class);
         ObjectNode cloned = node.deepCopy();
-        assertTrue(cloned instanceof ObjectNodeListenerAware);
-        assertNotSame(node, cloned);
-        assertEquals(node, cloned);
+        assertThat(cloned).isInstanceOf(ObjectNodeListenerAware.class)
+                .isNotSameAs(node)
+                .isEqualTo(node);
     }
 
     @Test
     void testArrayClone() {
         ArrayNode node = ObjectMapperFactory.listenerAware().getNodeFactory().arrayNode(2).add("Javierito");
-        assertTrue(node instanceof ArrayNodeListenerAware);
+        assertThat(node).isInstanceOf(ArrayNodeListenerAware.class);
         ArrayNode cloned = node.deepCopy();
-        assertTrue(cloned instanceof ArrayNodeListenerAware);
-        assertNotSame(node, cloned);
-        assertEquals(node, cloned);
+        assertThat(cloned).isInstanceOf(ArrayNodeListenerAware.class)
+                .isNotSameAs(node)
+                .isEqualTo(node);
     }
 }

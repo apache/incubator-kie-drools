@@ -26,57 +26,57 @@ import com.fasterxml.jackson.databind.node.FloatNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonObjectUtilsTest {
 
     @Test
     void testPojo() {
-        assertEquals(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"), JsonObjectUtils.fromValue(new Person("javierito")));
+        assertThat(JsonObjectUtils.fromValue(new Person("javierito"))).isEqualTo(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"));
     }
 
     @Test
     void testArrayOfPojo() {
-        assertEquals(ObjectMapperFactory.get().createArrayNode().add(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"))
-                .add(ObjectMapperFactory.get().createObjectNode().put("name", "fulanito")), JsonObjectUtils.fromValue(Arrays.asList(new Person("javierito"), new Person("fulanito"))));
+        assertThat(JsonObjectUtils.fromValue(Arrays.asList(new Person("javierito"), new Person("fulanito"))))
+                .isEqualTo(ObjectMapperFactory.get().createArrayNode().add(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"))
+                        .add(ObjectMapperFactory.get().createObjectNode().put("name", "fulanito")));
     }
 
     @Test
     void testJavaArray() {
-        assertEquals(Arrays.asList(Collections.singletonMap("name", "javierito"), Collections.singletonMap("name", "fulanito")), JsonObjectUtils.toJavaValue(ObjectMapperFactory.get().createArrayNode()
-                .add(ObjectMapperFactory.get().createObjectNode().put("name", "javierito")).add(ObjectMapperFactory.get().createObjectNode().put("name", "fulanito"))));
+        assertThat(JsonObjectUtils.toJavaValue(ObjectMapperFactory.get().createArrayNode()
+                .add(ObjectMapperFactory.get().createObjectNode().put("name", "javierito")).add(ObjectMapperFactory.get().createObjectNode().put("name", "fulanito"))))
+                        .isEqualTo(Arrays.asList(Collections.singletonMap("name", "javierito"), Collections.singletonMap("name", "fulanito")));
     }
 
     @Test
     void testJavaObject() {
-        assertEquals(Collections.singletonMap("name", "javierito"), JsonObjectUtils.toJavaValue(ObjectMapperFactory.get().createObjectNode().put("name", "javierito")));
+        assertThat(JsonObjectUtils.toJavaValue(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"))).isEqualTo(Collections.singletonMap("name", "javierito"));
     }
 
     @Test
     void testNullObject() {
-        assertNull(JsonObjectUtils.toJavaValue(NullNode.getInstance()));
+        assertThat(JsonObjectUtils.toJavaValue(NullNode.getInstance())).isNull();
     }
 
     @Test
     void testJavaInt() {
-        assertEquals(5, JsonObjectUtils.toJavaValue(new IntNode(5)));
+        assertThat(JsonObjectUtils.toJavaValue(new IntNode(5))).isEqualTo(5);
     }
 
     @Test
     void testJavaDouble() {
-        assertEquals(5.0, JsonObjectUtils.toJavaValue(new DoubleNode(5.0f)));
+        assertThat(JsonObjectUtils.toJavaValue(new DoubleNode(5.0f))).isEqualTo(5.0);
     }
 
     @Test
     void testJavaFloat() {
-        assertEquals(5.0f, JsonObjectUtils.toJavaValue(new FloatNode(5.0f)));
+        assertThat(JsonObjectUtils.toJavaValue(new FloatNode(5.0f))).isEqualTo(5.0f);
     }
 
     @Test
     void testJavaByteArray() {
         byte[] bytes = { 1, 2, 3, 4 };
-        assertArrayEquals(bytes, (byte[]) JsonObjectUtils.toJavaValue(BinaryNode.valueOf(bytes)));
+        assertThat((byte[]) JsonObjectUtils.toJavaValue(BinaryNode.valueOf(bytes))).isEqualTo(bytes);
     }
 }

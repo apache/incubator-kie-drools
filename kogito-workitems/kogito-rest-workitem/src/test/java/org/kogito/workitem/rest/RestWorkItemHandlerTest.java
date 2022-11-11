@@ -54,9 +54,6 @@ import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kogito.workitem.rest.RestWorkItemHandler.BODY_BUILDER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -159,7 +156,7 @@ public class RestWorkItemHandlerTest {
         RestWorkItemHandlerResult resultHandler = new DefaultRestWorkItemHandlerResult();
         HttpResponse<Buffer> response = mock(HttpResponse.class);
         when(response.bodyAsJson(ObjectNode.class)).thenReturn(objectNode);
-        assertSame(objectNode, resultHandler.apply(response, ObjectNode.class));
+        assertThat(resultHandler.apply(response, ObjectNode.class)).isSameAs(objectNode);
     }
 
     @Test
@@ -187,7 +184,7 @@ public class RestWorkItemHandlerTest {
 
         verify(manager).completeWorkItem(anyString(), argCaptor.capture());
         Map<String, Object> results = argCaptor.getValue();
-        assertEquals(1, results.size());
+        assertThat(results).hasSize(1);
     }
 
     @Test
@@ -201,8 +198,8 @@ public class RestWorkItemHandlerTest {
 
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
         Map<String, Object> bodyMap = bodyCaptor.getValue();
-        assertEquals(26, bodyMap.get("id"));
-        assertEquals("pepe", bodyMap.get("name"));
+        assertThat(bodyMap).containsEntry("id", 26)
+                .containsEntry("name", "pepe");
 
         assertResult(manager, argCaptor);
     }
@@ -218,8 +215,8 @@ public class RestWorkItemHandlerTest {
         ArgumentCaptor<ObjectNode> bodyCaptor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
         ObjectNode bodyMap = bodyCaptor.getValue();
-        assertEquals(26, bodyMap.get("id").asInt());
-        assertEquals("pepe", bodyMap.get("name").asText());
+        assertThat(bodyMap.get("id").asInt()).isEqualTo(26);
+        assertThat(bodyMap.get("name").asText()).isEqualTo("pepe");
 
         assertResult(manager, argCaptor);
     }
@@ -252,10 +249,10 @@ public class RestWorkItemHandlerTest {
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
 
         Map<String, Object> bodyMap = bodyCaptor.getValue();
-        assertThat(bodyMap.get("id")).isEqualTo(123);
-        assertThat(bodyMap.get("name")).isEqualTo("tiago");
-        //assert the evaluated expression with a process variable
-        assertThat(bodyMap.get(customParameter)).isEqualTo(workflowData);
+        assertThat(bodyMap).containsEntry("id", 123)
+                .containsEntry("name", "tiago")
+                //assert the evaluated expression with a process variable
+                .containsEntry(customParameter, workflowData);
 
         assertResult(manager, argCaptor);
     }
@@ -270,8 +267,8 @@ public class RestWorkItemHandlerTest {
         ArgumentCaptor<ObjectNode> bodyCaptor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
         ObjectNode bodyMap = bodyCaptor.getValue();
-        assertEquals(26, bodyMap.get("id").asInt());
-        assertEquals("pepe", bodyMap.get("name").asText());
+        assertThat(bodyMap.get("id").asInt()).isEqualTo(26);
+        assertThat(bodyMap.get("name").asText()).isEqualTo("pepe");
 
         assertResult(manager, argCaptor);
     }
@@ -279,10 +276,10 @@ public class RestWorkItemHandlerTest {
     public void assertResult(KogitoWorkItemManager manager, ArgumentCaptor<Map<String, Object>> argCaptor) {
         verify(manager).completeWorkItem(anyString(), argCaptor.capture());
         Map<String, Object> results = argCaptor.getValue();
-        assertEquals(1, results.size());
-        assertTrue(results.containsKey(RestWorkItemHandler.RESULT));
+        assertThat(results).hasSize(1)
+                .containsKey(RestWorkItemHandler.RESULT);
         Object result = results.get(RestWorkItemHandler.RESULT);
-        assertTrue(result instanceof ObjectNode);
-        assertEquals(1, ((ObjectNode) result).get("num").asInt());
+        assertThat(result).isInstanceOf(ObjectNode.class);
+        assertThat(((ObjectNode) result).get("num").asInt()).isOne();
     }
 }

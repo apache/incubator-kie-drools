@@ -17,11 +17,11 @@ package org.kie.kogito.jackson.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonNodeConverterTest {
     @Test
     void testJsonStringConverter() {
-        assertEquals(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"), new JsonNodeConverter().apply("{\"name\":\"javierito\"}"));
+        assertThat(new JsonNodeConverter().apply("{\"name\":\"javierito\"}")).isEqualTo(ObjectMapperFactory.get().createObjectNode().put("name", "javierito"));
     }
 }
