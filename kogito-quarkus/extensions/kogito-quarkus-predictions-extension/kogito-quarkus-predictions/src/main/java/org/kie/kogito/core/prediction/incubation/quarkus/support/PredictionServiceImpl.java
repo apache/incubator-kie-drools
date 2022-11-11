@@ -44,7 +44,6 @@ public class PredictionServiceImpl implements PredictionService {
         if (predictionId instanceof LocalPredictionId) {
             localPredictionId = (LocalPredictionId) predictionId;
         } else {
-            // LocalDecisionId.parse(predictionId);
             throw new IllegalArgumentException(
                     "Not a valid prediction id " + predictionId.toLocalId());
         }

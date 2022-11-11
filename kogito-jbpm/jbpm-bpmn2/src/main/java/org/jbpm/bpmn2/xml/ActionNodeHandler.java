@@ -141,7 +141,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 
                 String activityRef = "";
                 int begin = 12; // : Compensation
-                int end = s.length() - 3; // ");
+                int end = s.length() - 3;
                 String compensationEvent = s.substring(begin,
                         end);
                 if (!compensationEvent.startsWith(CompensationScope.IMPLICIT_COMPENSATION_PREFIX)) {

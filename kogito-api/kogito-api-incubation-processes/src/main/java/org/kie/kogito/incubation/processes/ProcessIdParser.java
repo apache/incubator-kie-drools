@@ -134,7 +134,7 @@ public final class ProcessIdParser {
     }
 
     public static <T extends LocalId> T select(LocalId id, Class<T> expected) {
-        // the proper way to do this is by "visiting" the structured value;
+        // the proper way to do this is by "visiting" the structured value
         // we are taking this as a shortcut for now
         return parse(id.asLocalUri().path(), expected);
     }

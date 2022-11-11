@@ -34,11 +34,8 @@ public class GlobalHandler extends BaseAbstractHandler
         if ((this.validParents == null) && (this.validPeers == null)) {
             this.validParents = new HashSet();
             this.validParents.add(Process.class);
-
             this.validPeers = new HashSet();
             this.validPeers.add(null);
-            //this.validPeers.add( ImportDescr.class );            
-
             this.allowNesting = false;
         }
     }

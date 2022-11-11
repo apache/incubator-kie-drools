@@ -51,7 +51,6 @@ class DecisionServiceImpl implements DecisionService {
             decisionServiceId = (LocalDecisionServiceId) decisionId;
             localDecisionId = (LocalDecisionId) decisionServiceId.decisionId();
         } else {
-            // LocalDecisionId.parse(decisionId);
             throw new IllegalArgumentException(
                     "Not a valid decision id " + decisionId.toLocalId().asLocalUri());
         }

@@ -48,7 +48,6 @@ class RuleUnitServiceImpl implements RuleUnitService {
             queryId = (QueryId) id;
             ruleUnitId = queryId.ruleUnitId();
         } else {
-            // LocalDecisionId.parse(decisionId);
             throw new IllegalArgumentException(
                     "Not a valid query id " + id.toLocalId());
         }

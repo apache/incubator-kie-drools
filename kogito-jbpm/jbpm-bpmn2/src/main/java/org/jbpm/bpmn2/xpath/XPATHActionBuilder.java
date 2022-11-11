@@ -39,27 +39,6 @@ public class XPATHActionBuilder
                         return "kcontext.getKieRuntime().insert";
                     }
                 });
-
-        //        macros.put( "insertLogical",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "kcontext.getKnowledgeRuntime()..insertLogical";
-        //                        }
-        //                    } );
-
-        //        macros.put( "update",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "kcontext.getKnowledgeRuntime().update";
-        //                        }
-        //                    } );
-
-        //        macros.put( "retract",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "kcontext.getKnowledgeRuntime().retract";
-        //                        }
-        //                    } );;
     }
 
     public XPATHActionBuilder() {
@@ -72,55 +51,6 @@ public class XPATHActionBuilder
             final ContextResolver contextResolver) {
 
         try {
-            //            XPATHDialect dialect = (XPATHDialect) context.getDialect( "XPath" );
-            //
-            //            Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
-            //            variables.put("kcontext", ProcessContext.class);
-            //            variables.put("context", ProcessContext.class);
-            //            Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-            //                                                                    actionDescr,
-            //                                                                    dialect.getInterceptors(),
-            //                                                                    text,
-            //                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
-            //                                                                    null );                       
-            //
-            //
-            //            List<String> variableNames = analysis.getNotBoundedIdentifiers();
-            //            if (contextResolver != null) {
-            //	            for (String variableName: variableNames) {
-            //	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
-            //	            	if (variableScope == null) {
-            //	            		context.getErrors().add(
-            //	        				new DescrBuildError(
-            //	    						context.getParentDescr(),
-            //	                            actionDescr,
-            //	                            null,
-            //	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
-            //	            	} else {
-            //	            		variables.put(variableName,
-            //            				context.getDialect().getTypeResolver().resolveType(
-            //        						variableScope.findVariable(variableName).getType().getStringType()));
-            //	            	}
-            //	            }
-            //            }
-            //
-            //            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
-            //                                                                       analysis,
-            //                                                                       null,
-            //                                                                       null,
-            //                                                                       variables,
-            //                                                                       context );              
-            //            MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
-            //            expr.setVariableNames(variableNames);
-            //            
-            //            
-            //            action.setMetaData("Action",  expr );
-            //            
-            //            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( dialect.getId() );            
-            //            data.addCompileable( action,
-            //                                  expr );  
-            //            
-            //            expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch (final Exception e) {
             context.getErrors().add(new DescrBuildError(context.getParentDescr(),
                     actionDescr,

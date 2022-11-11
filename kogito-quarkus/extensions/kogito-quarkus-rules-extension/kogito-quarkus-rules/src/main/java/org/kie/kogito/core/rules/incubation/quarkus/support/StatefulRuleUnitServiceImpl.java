@@ -111,7 +111,6 @@ class StatefulRuleUnitServiceImpl implements StatefulRuleUnitService {
             queryId = (InstanceQueryId) localId;
             ruleUnitInstanceId = queryId.ruleUnitInstanceId();
         } else {
-            // LocalDecisionId.parse(decisionId);
             throw new IllegalArgumentException(
                     "Not a valid instance query id " + localId);
         }

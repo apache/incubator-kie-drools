@@ -128,7 +128,7 @@ public class ExpressionUtils {
             objectClass = objectClass.getSuperclass();
         }
         if (objectClass != null) {
-            // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"));
+            // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"))
             return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
                     NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
                     NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));

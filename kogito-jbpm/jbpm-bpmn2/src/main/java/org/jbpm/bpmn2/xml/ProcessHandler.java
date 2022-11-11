@@ -936,7 +936,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 }
                             }
                         }
-                    } // for( Node subNode : nodes) 
+                    }
                 }
                 postProcessNodes(process, (NodeContainer) node);
             } else if (node instanceof EndNode) {

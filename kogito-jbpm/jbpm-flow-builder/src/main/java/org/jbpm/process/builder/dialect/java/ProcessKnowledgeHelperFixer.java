@@ -38,27 +38,6 @@ public class ProcessKnowledgeHelperFixer {
                         return "kcontext.getKieRuntime().insert";
                     }
                 });
-
-        //        macros.put( "insertLogical",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "drools.insertLogical";
-        //                        }
-        //                    } );         
-
-        //        macros.put( "update",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "drools.update";
-        //                        }
-        //                    } );
-
-        //        macros.put( "retract",
-        //                    new Macro() {
-        //                        public String doMacro() {
-        //                            return "drools.retract";
-        //                        }
-        //                    } );          
     }
 
     public static String fix(final String raw) {

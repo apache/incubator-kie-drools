@@ -71,7 +71,7 @@ public class KogitoQuarkusResourceUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoQuarkusResourceUtils.class);
 
     // since quarkus-maven-plugin is later phase of maven-resources-plugin,
-    // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath );
+    // need to manually late-provide the resource in the expected location for quarkus:dev phase --so not: writeGeneratedFile( f, resourcePath )
     private static final GeneratedFileWriter.Builder generatedFileWriterBuilder =
             new GeneratedFileWriter.Builder(
                     "target/classes",

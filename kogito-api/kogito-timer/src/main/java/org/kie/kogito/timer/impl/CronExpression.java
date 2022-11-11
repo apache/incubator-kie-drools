@@ -1127,7 +1127,6 @@ public class CronExpression implements Serializable, Cloneable {
         // loop until we've computed the next time, or we've past the endTime
         while (!gotOne) {
 
-            //if (endTime != null && cl.getTime().after(endTime)) return null;
             if (cl.get(Calendar.YEAR) > 2999) { // prevent endless loop...
                 return null;
             }
@@ -1498,7 +1497,7 @@ public class CronExpression implements Serializable, Cloneable {
             cl.set(Calendar.YEAR, year);
 
             gotOne = true;
-        } // while( !done )
+        }
 
         return cl.getTime();
     }

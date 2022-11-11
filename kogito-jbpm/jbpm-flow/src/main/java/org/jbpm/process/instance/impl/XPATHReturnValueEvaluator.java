@@ -57,12 +57,10 @@ public class XPATHReturnValueEvaluator
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        //        id = in.readUTF();
         expression = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        //        out.writeUTF( id );
         out.writeObject(expression);
     }
 

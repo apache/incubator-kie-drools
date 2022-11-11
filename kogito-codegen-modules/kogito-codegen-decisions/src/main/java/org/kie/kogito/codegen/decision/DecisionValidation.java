@@ -110,7 +110,7 @@ public class DecisionValidation {
         }
         Optional<String> applicationProperty = context.getApplicationProperty(DecisionCodegen.VALIDATION_CONFIGURATION_KEY);
         if (!applicationProperty.isPresent()) {
-            return ValidationOption.ENABLED; // the default;
+            return ValidationOption.ENABLED; // the default
         }
         Optional<ValidationOption> configOption = Arrays.stream(ValidationOption.values())
                 .filter(e -> e.name().equalsIgnoreCase(applicationProperty.get()))

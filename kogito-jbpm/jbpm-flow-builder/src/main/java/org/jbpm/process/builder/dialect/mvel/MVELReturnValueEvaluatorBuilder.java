@@ -116,11 +116,9 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
                 org.kie.api.runtime.process.ProcessContext.class,
                 false,
                 MVELCompilationUnit.Scope.EXPRESSION);
-        // MVELReturnValueExpression expr = new MVELReturnValueExpression( unit, context.getDialect().getId() );
 
         MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator(unit,
                 dialect.getId());
-        // expr.setVariableNames(variableNames);
 
         constraintNode.setEvaluator(expr);
 

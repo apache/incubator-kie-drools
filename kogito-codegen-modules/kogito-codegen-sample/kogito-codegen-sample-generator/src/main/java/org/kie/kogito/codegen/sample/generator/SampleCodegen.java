@@ -136,7 +136,6 @@ public class SampleCodegen implements Generator {
     }
 
     private static void initializeSampleRuntimeField(FieldDeclaration fd) {
-        // new SampleRuntime(new Application());
         fd.getVariable(0).setInitializer(new ObjectCreationExpr().setType(SampleContainerGenerator.SAMPLE_RUNTIME_CLASSNAME)
                 .addArgument(new ObjectCreationExpr().setType("Application")));
     }

@@ -95,12 +95,6 @@ public class MVELAction
                 internalWorkingMemory,
                 (GlobalResolver) context.getKieRuntime().getGlobals());
 
-        //        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
-        //        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
-        //            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
-        //            factory.setNextFactory( data.getFunctionFactory() );
-        //        }
-        //        
         MVELProcessHelper.evaluator().executeExpression(this.expr,
                 null,
                 factory);
