@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.kie.kogito.codegen.api.SourceFileCodegenBindEvent;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.rest.RestOperationHandlerFactory;
@@ -35,7 +34,6 @@ public class OpenAPITypeHandler extends WorkItemTypeHandler {
             WorkItemNodeFactory<T> node,
             FunctionDefinition functionDef) {
         WorkflowOperationId operationId = context.operationIdFactory().from(workflow, functionDef, Optional.of(context));
-        context.getContext().getSourceFileCodegenBindNotifier().ifPresent(notifier -> notifier.notify(new SourceFileCodegenBindEvent(workflow.getId(), operationId.getUri().toString())));
         return RestOperationHandlerFactory.get(context, operationId).fillWorkItemHandler(node, workflow, functionDef);
     }
 

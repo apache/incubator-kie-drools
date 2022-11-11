@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SourceFilesProviderImplTest {
 
@@ -36,7 +35,7 @@ class SourceFilesProviderImplTest {
         return Files.readString(path);
     }
 
-    private String getTestFileContentByFilename(String fileName) throws Exception {
+    private String getTestFileContentByFilename(String fileName) throws URISyntaxException, IOException {
         return readFileContent("META-INF/resources/sources/" + fileName);
     }
 
@@ -47,29 +46,29 @@ class SourceFilesProviderImplTest {
 
     @Test
     void addSourceFile() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
+        sourceFilesProvider.addSourceFile("a_process", createEmptySourceFile("myworkflow.sw.json"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("a_process"))
-                .contains(new SourceFile("myworkflow.sw.json"));
+                .contains(createEmptySourceFile("myworkflow.sw.json"));
     }
 
     @Test
     void getSourceFilesByProcessId() {
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("a_process", new SourceFile("myworkflow.sw.yaml"));
+        sourceFilesProvider.addSourceFile("a_process", createEmptySourceFile("myworkflow.sw.json"));
+        sourceFilesProvider.addSourceFile("a_process", createEmptySourceFile("myworkflow.sw.yaml"));
 
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.json"));
-        sourceFilesProvider.addSourceFile("another_process", new SourceFile("myanotherworkflow.sw.yaml"));
+        sourceFilesProvider.addSourceFile("another_process", createEmptySourceFile("myanotherworkflow.sw.json"));
+        sourceFilesProvider.addSourceFile("another_process", createEmptySourceFile("myanotherworkflow.sw.yaml"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("a_process"))
                 .containsExactlyInAnyOrder(
-                        new SourceFile("myworkflow.sw.json"),
-                        new SourceFile("myworkflow.sw.yaml"));
+                        createEmptySourceFile("myworkflow.sw.json"),
+                        createEmptySourceFile("myworkflow.sw.yaml"));
 
         assertThat(sourceFilesProvider.getProcessSourceFiles("another_process"))
                 .containsExactlyInAnyOrder(
-                        new SourceFile("myanotherworkflow.sw.json"),
-                        new SourceFile("myanotherworkflow.sw.yaml"));
+                        createEmptySourceFile("myanotherworkflow.sw.json"),
+                        createEmptySourceFile("myanotherworkflow.sw.yaml"));
     }
 
     @Test
@@ -80,10 +79,10 @@ class SourceFilesProviderImplTest {
 
     @Test
     void getValidSourceFileDefinitionByProcessIdTest() throws Exception {
-        sourceFilesProvider.addSourceFile("petstore_json_process", new SourceFile("petstore.json"));
-        sourceFilesProvider.addSourceFile("petstore_sw_json_process", new SourceFile("petstore.sw.json"));
-        sourceFilesProvider.addSourceFile("ymlgreet.sw_process", new SourceFile("ymlgreet.sw.yml"));
-        sourceFilesProvider.addSourceFile("bpmn_process", new SourceFile("hiring.bpmn"));
+        sourceFilesProvider.addSourceFile("petstore_json_process", readSourceFile("petstore.json"));
+        sourceFilesProvider.addSourceFile("petstore_sw_json_process", readSourceFile("petstore.sw.json"));
+        sourceFilesProvider.addSourceFile("ymlgreet.sw_process", readSourceFile("ymlgreet.sw.yml"));
+        sourceFilesProvider.addSourceFile("bpmn_process", readSourceFile("hiring.bpmn"));
 
         assertThat(sourceFilesProvider.getProcessSourceFile("petstore_sw_json_process")).contains(getTestFileContentByFilename("petstore.sw.json"));
         assertThat(sourceFilesProvider.getProcessSourceFile("ymlgreet.sw_process")).contains(getTestFileContentByFilename("ymlgreet.sw.yml"));
@@ -91,17 +90,20 @@ class SourceFilesProviderImplTest {
     }
 
     @Test
-    void getInvalidSourceFileDefinitionByProcessIdTest() {
-        sourceFilesProvider.addSourceFile("petstore_json_process", new SourceFile("petstore.json"));
+    void getInvalidSourceFileDefinitionByProcessIdTest() throws URISyntaxException, IOException {
+        sourceFilesProvider.addSourceFile("petstore_json_process", readSourceFile("petstore.json"));
 
         //invalid extension
         assertThat(sourceFilesProvider.getProcessSourceFile("petstore_json_process")).isEmpty();
         //invalid process
         assertThat(sourceFilesProvider.getProcessSourceFile("invalidProcess")).isEmpty();
-        // Unable to find referenced file with valid extension
-        sourceFilesProvider.addSourceFile("unexistingFile_sw_json_process", new SourceFile("unexistingFile.sw.json"));
-        assertThatThrownBy(() -> sourceFilesProvider.getProcessSourceFile("unexistingFile_sw_json_process"))
-                .isInstanceOf(SourceFilesException.class)
-                .hasMessage("Exception trying to read definition source file with relative URI:/sources/unexistingFile.sw.json");
+    }
+
+    private SourceFile createEmptySourceFile(String uri) {
+        return new SourceFile(uri, "");
+    }
+
+    private SourceFile readSourceFile(String uri) throws URISyntaxException, IOException {
+        return new SourceFile(uri, getTestFileContentByFilename(uri));
     }
 }

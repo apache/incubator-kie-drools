@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.addon.source.files.SourceFile;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -59,7 +58,7 @@ class SourceFilesAddOnIT {
                 .then()
                 .statusCode(200)
                 .body("size()", is(1))
-                .body("", hasItems(hasEntry("uri", SourceFile.SOURCES_HTTP_PATH + "org/kie/kogito/examples/ymlgreet.sw.yml")));
+                .body("", hasItems(hasEntry("uri", "org/kie/kogito/examples/ymlgreet.sw.yml")));
     }
 
     @Test
@@ -97,10 +96,10 @@ class SourceFilesAddOnIT {
         given()
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .when()
-                .get("/sources/petstore.json")
+                .get("/management/processes/sources?uri=petstore_root.sw.json")
                 .then()
                 .statusCode(200)
-                .header("Content-Length", "5189");
+                .header("Content-Length", "556");
     }
 
     @Test
@@ -108,7 +107,7 @@ class SourceFilesAddOnIT {
         given()
                 .header("Authorization", "Basic c2NvdHQ6amIwc3M=")
                 .when()
-                .get("/sources/org/kie/kogito/examples/ymlgreet.sw.yml")
+                .get("/management/processes/sources?uri=org/kie/kogito/examples/ymlgreet.sw.yml")
                 .then()
                 .statusCode(200)
                 .header("Content-Length", "1012");
@@ -118,7 +117,7 @@ class SourceFilesAddOnIT {
     void testGetSourceFileNonAuthenticated() {
         given()
                 .when()
-                .get("/sources/petstore.json")
+                .get("/management/processes/sources?uri=petstore.json")
                 .then()
                 .statusCode(401);
     }

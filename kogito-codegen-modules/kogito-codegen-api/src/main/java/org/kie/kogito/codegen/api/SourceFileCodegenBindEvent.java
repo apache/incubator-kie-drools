@@ -21,9 +21,12 @@ public final class SourceFileCodegenBindEvent {
 
     private final String sourceFile;
 
-    public SourceFileCodegenBindEvent(String processId, String sourceFile) {
+    private final String fileContents;
+
+    public SourceFileCodegenBindEvent(String processId, String sourceFile, String fileContents) {
         this.processId = processId;
         this.sourceFile = sourceFile;
+        this.fileContents = fileContents;
     }
 
     public String getSourceFileId() {
@@ -34,10 +37,16 @@ public final class SourceFileCodegenBindEvent {
         return sourceFile;
     }
 
+    public String getFileContents() {
+        return fileContents;
+    }
+
+    @Override
     public String toString() {
-        return "SourceFileProcessBindEvent{" +
+        return "SourceFileCodegenBindEvent{" +
                 "processId='" + processId + '\'' +
                 ", sourceFile='" + sourceFile + '\'' +
+                ", fileContents='" + fileContents + '\'' +
                 '}';
     }
 }

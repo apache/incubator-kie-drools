@@ -15,16 +15,14 @@
  */
 package org.kie.kogito.addon.source.files;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.kie.kogito.codegen.process.ProcessCodegen;
 
 public final class SourceFilesProviderImpl implements SourceFilesProvider {
@@ -36,27 +34,30 @@ public final class SourceFilesProviderImpl implements SourceFilesProvider {
     }
 
     @Override
+    public Optional<SourceFile> getSourceFilesByUri(String uri) {
+        return sourceFiles.values().stream()
+                .flatMap(Collection::stream)
+                .filter(file -> Objects.equals(file.getUri(), uri))
+                .findFirst();
+    }
+
+    @Override
     public Collection<SourceFile> getProcessSourceFiles(String processId) {
         return sourceFiles.getOrDefault(processId, Set.of());
     }
 
     @Override
     public Optional<String> getProcessSourceFile(String processId) throws SourceFilesException {
-        return getProcessSourceFiles(processId).stream().map(SourceFile::getUri).filter(this::isValidDefinitionSource).findFirst().flatMap(this::readFileContentFromClassPath);
+        return getProcessSourceFiles(processId).stream()
+                .filter(this::isValidDefinitionSource)
+                .findFirst()
+                .map(SourceFile::getContents);
     }
 
-    private boolean isValidDefinitionSource(String uri) {
-        if (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().noneMatch(uri::endsWith)) {
-            return ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(uri::endsWith);
+    private boolean isValidDefinitionSource(SourceFile sourceFile) {
+        if (ProcessCodegen.SUPPORTED_BPMN_EXTENSIONS.stream().noneMatch(sourceFile.getUri()::endsWith)) {
+            return ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(sourceFile.getUri()::endsWith);
         }
         return true;
-    }
-
-    private Optional<String> readFileContentFromClassPath(String relativeFileURI) {
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/resources" + relativeFileURI)) {
-            return Optional.of(IOUtils.toString(is, StandardCharsets.UTF_8.name()));
-        } catch (Exception ex) {
-            throw new SourceFilesException("Exception trying to read definition source file with relative URI:" + relativeFileURI, ex);
-        }
     }
 }

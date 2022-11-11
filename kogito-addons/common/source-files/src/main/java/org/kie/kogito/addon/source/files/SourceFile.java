@@ -19,23 +19,26 @@ import java.util.Objects;
 
 public final class SourceFile {
 
-    public static final String SOURCES_HTTP_PATH = "/sources/";
-
     // Serialization requires it not read-only
     private String uri;
+
+    // Serialization requires it not read-only
+    private String contents;
 
     public SourceFile() {
         // Needed for serialization
     }
 
     /**
-     * Creates a new SourceFile with the given URI under the {@link SourceFile#SOURCES_HTTP_PATH}.
-     * Ex.: {@code new SourceFile("path/to/file.txt")} will create a SourceFile with URI {@code SourceFilesProvider.SOURCES_HTTP_PATH + path/to/file.txt}.
+     * Creates a new SourceFile with the given URI.
+     * Ex.: {@code new SourceFile("path/to/file.txt")} will create a SourceFile with URI {@code path/to/file.txt}.
      *
-     * @param uri the URI of the source file under the {@link SourceFile#SOURCES_HTTP_PATH}
+     * @param uri the URI of the source file
+     * @param contents the contents of the source file
      */
-    public SourceFile(String uri) {
-        this.uri = SOURCES_HTTP_PATH + Objects.requireNonNull(uri);
+    public SourceFile(String uri, String contents) {
+        this.uri = Objects.requireNonNull(uri);
+        this.contents = Objects.requireNonNull(contents);
     }
 
     // Needed for serialization
@@ -43,8 +46,17 @@ public final class SourceFile {
         this.uri = uri;
     }
 
+    // Needed for serialization
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
     public String getUri() {
         return uri;
+    }
+
+    public String getContents() {
+        return contents;
     }
 
     @Override
@@ -56,18 +68,19 @@ public final class SourceFile {
             return false;
         }
         SourceFile that = (SourceFile) o;
-        return uri.equals(that.uri);
+        return uri.equals(that.uri) && contents.equals(that.contents);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uri);
+        return Objects.hash(uri, contents);
     }
 
     @Override
     public String toString() {
         return "SourceFile{" +
                 "uri='" + uri + '\'' +
+                ", contents='" + contents + '\'' +
                 '}';
     }
 }

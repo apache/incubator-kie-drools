@@ -21,6 +21,14 @@ import java.util.Optional;
 public interface SourceFilesProvider {
 
     /**
+     * Returns the source file that has the specified URI.
+     * 
+     * @param uri the URI
+     * @return the source file
+     */
+    Optional<SourceFile> getSourceFilesByUri(String uri);
+
+    /**
      * Returns the source files for the given processId.
      * 
      * @param processId the process identifier
