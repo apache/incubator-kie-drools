@@ -29,8 +29,7 @@ import org.kie.kogito.tracing.event.message.MessageLevel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DecisionMessageTest {
 
@@ -38,15 +37,14 @@ public class DecisionMessageTest {
     public void testDeserialization() throws JsonProcessingException {
         String toRead = TracingTestUtils.readResourceAsString("/decisionmessage.json");
         Message retrieved = new ObjectMapper().readValue(toRead, Message.class);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof DecisionMessage);
+        assertThat(retrieved).isInstanceOf(DecisionMessage.class);
     }
 
     @Test
     public void testSerialization() throws JsonProcessingException {
         Message message = getDecisionMessage(new Random().nextInt(5));
         String retrieved = new ObjectMapper().writeValueAsString(message);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         System.out.println(retrieved);
     }
 

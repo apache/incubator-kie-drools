@@ -26,7 +26,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.LocalDat
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LocalDateHandlerTest extends AbstractQuantilesTest<LocalDateHandler> {
 
@@ -51,7 +51,7 @@ public class LocalDateHandlerTest extends AbstractQuantilesTest<LocalDateHandler
         handler.record("decision", ENDPOINT_NAME, now);
 
         // Assert
-        assertTrue(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
-        assertTrue(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().mean() >= 2);
+        assertThat(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
+        assertThat(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().mean()).isGreaterThanOrEqualTo(2);
     }
 }

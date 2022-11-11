@@ -37,9 +37,8 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.Decision
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 public class DMNResultMetricsBuilderTest {
 
@@ -91,60 +90,61 @@ public class DMNResultMetricsBuilderTest {
         // Assert
         // String type
         String stringDmnType = SupportedDecisionTypes.fromInternalToStandard(String.class);
-        assertEquals(expectedAlphabetDecisionA, registry.find(stringDmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(stringDmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "AlphabetDecision")
                 .tag("identifier", "A")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedAlphabetDecisionA);
 
-        assertEquals(expectedDictionaryDecisionHello, registry.find(stringDmnType
+        assertThat(registry.find(stringDmnType
                 + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "DictionaryDecision")
                 .tag("identifier", "Hello")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedDictionaryDecisionHello);
 
-        assertEquals(expectedDictionaryDecisionWorld, registry.find(stringDmnType
+        assertThat(registry.find(stringDmnType
                 + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "DictionaryDecision")
                 .tag("identifier", "World")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedDictionaryDecisionWorld);
 
         // Boolean type
         String booleanDmnType = SupportedDecisionTypes.fromInternalToStandard(Boolean.class);
-        assertEquals(expectedTrueBooleanDecision, registry.find(booleanDmnType
+        assertThat(registry.find(booleanDmnType
                 + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("decision", "BooleanDecision")
                 .tag("identifier", "true")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedTrueBooleanDecision);
 
         // LocalDateTime Time
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalDateTime.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalDateTime.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max())
+                .isGreaterThanOrEqualTo(5);
         // Duration type
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(Duration.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(Duration.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
         // BigDecimal type
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(BigDecimal.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 1);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(BigDecimal.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isPositive();
         // Years And Months Duration type
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(Period.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(Period.class).replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
         // LocalDate type
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalDate.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalDate.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
         // LocalTime type
-        assertTrue(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalTime.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
+        assertThat(registry.find(SupportedDecisionTypes.fromInternalToStandard(LocalTime.class) + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
     }
 
     // Keep aligned the mapping of types between kogito-codegen and prometheus-addon.
     @Test
     public void alighmentWithKogitoCodegenIsOk() {
         List addonSupportedTypes = dmnResultMetricsBuilder.getHandlers().values().stream().map(x -> x.getDmnType()).collect(Collectors.toList());
-        assertTrue(addonSupportedTypes.containsAll(SupportedDecisionTypes.getSupportedDMNTypes()));
-        assertTrue(SupportedDecisionTypes.getSupportedDMNTypes().containsAll(addonSupportedTypes));
+        assertThat(addonSupportedTypes).containsAll(SupportedDecisionTypes.getSupportedDMNTypes());
+        assertThat(SupportedDecisionTypes.getSupportedDMNTypes()).containsAll(addonSupportedTypes);
     }
 
     @Test
     public void givenANullDMNResultWhenMetricsAreRegisteredThenTheSampleIsDiscarded() {
         // Assert
-        assertDoesNotThrow(() -> dmnResultMetricsBuilder.generateMetrics(null, ENDPOINT_NAME));
+        assertThatNoException().isThrownBy(() -> dmnResultMetricsBuilder.generateMetrics(null, ENDPOINT_NAME));
     }
 }

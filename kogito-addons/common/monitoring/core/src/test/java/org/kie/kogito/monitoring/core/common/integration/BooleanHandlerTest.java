@@ -26,7 +26,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.Decision
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BooleanHandlerTest {
 
@@ -58,14 +58,14 @@ public class BooleanHandlerTest {
         IntStream.rangeClosed(1, 3).forEach(x -> handler.record("decision", ENDPOINT_NAME, true));
         IntStream.rangeClosed(1, 2).forEach(x -> handler.record("decision", ENDPOINT_NAME, false));
 
-        assertEquals(expectedTrue, registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("identifier", "true")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedTrue);
 
-        assertEquals(expectedFalse, registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("identifier", "false")
                 .counter()
-                .count());
+                .count()).isEqualTo(expectedFalse);
     }
 }

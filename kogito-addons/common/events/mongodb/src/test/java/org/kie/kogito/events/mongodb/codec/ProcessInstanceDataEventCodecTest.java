@@ -40,9 +40,7 @@ import org.kie.kogito.event.process.ProcessInstanceEventBody;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -115,22 +113,22 @@ class ProcessInstanceDataEventCodecTest {
 
     @Test
     void generateIdIfAbsentFromDocument() {
-        assertEquals(event, codec.generateIdIfAbsentFromDocument(event));
+        assertThat(codec.generateIdIfAbsentFromDocument(event)).isEqualTo(event);
     }
 
     @Test
     void documentHasId() {
-        assertTrue(codec.documentHasId(event));
+        assertThat(codec.documentHasId(event)).isTrue();
     }
 
     @Test
     void getDocumentId() {
-        assertEquals(new BsonString(event.getId()), codec.getDocumentId(event));
+        assertThat(codec.getDocumentId(event)).isEqualTo(new BsonString(event.getId()));
     }
 
     @Test
     void decode() {
-        assertNull(codec.decode(mock(BsonReader.class), DecoderContext.builder().build()));
+        assertThat(codec.decode(mock(BsonReader.class), DecoderContext.builder().build())).isNull();
     }
 
     @Test
@@ -148,42 +146,42 @@ class ProcessInstanceDataEventCodecTest {
             verify(mockCodec, times(1)).encode(eq(writer), captor.capture(), eq(context));
             Document doc = captor.getValue();
 
-            assertEquals(event.getId(), doc.get(ID));
-            assertEquals(event.getSpecVersion().toString(), doc.get("specversion"));
-            assertEquals(event.getSource().toString(), doc.get("source"));
-            assertEquals(event.getType(), doc.get("type"));
-            assertEquals(event.getTime(), doc.get("time"));
-            assertEquals(event.getSubject(), doc.get("subject"));
-            assertEquals(event.getDataContentType(), doc.get("dataContentType"));
-            assertEquals(event.getDataSchema(), doc.get("dataSchema"));
-            assertEquals(event.getKogitoProcessInstanceId(), doc.get("kogitoProcessinstanceId"));
-            assertEquals(event.getKogitoProcessInstanceVersion(), doc.get("kogitoProcessInstanceVersion"));
-            assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
-            assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
-            assertEquals(event.getKogitoProcessType(), doc.get("kogitoProcessType"));
-            assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
-            assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));
-            assertEquals(event.getKogitoParentProcessInstanceId(), doc.get("kogitoParentProcessinstanceId"));
-            assertEquals(event.getKogitoProcessInstanceState(), doc.get("kogitoProcessinstanceState"));
-            assertEquals(event.getKogitoReferenceId(), doc.get("kogitoReferenceId"));
-            assertEquals(event.getKogitoStartFromNode(), doc.get("kogitoStartFromNode"));
+            assertThat(doc).containsEntry(ID, event.getId())
+                    .containsEntry("specversion", event.getSpecVersion().toString())
+                    .containsEntry("source", event.getSource().toString())
+                    .containsEntry("type", event.getType())
+                    .containsEntry("time", event.getTime())
+                    .containsEntry("subject", event.getSubject())
+                    .containsEntry("dataContentType", event.getDataContentType())
+                    .containsEntry("dataSchema", event.getDataSchema())
+                    .containsEntry("kogitoProcessinstanceId", event.getKogitoProcessInstanceId())
+                    .containsEntry("kogitoProcessInstanceVersion", event.getKogitoProcessInstanceVersion())
+                    .containsEntry("kogitoRootProcessinstanceId", event.getKogitoRootProcessInstanceId())
+                    .containsEntry("kogitoProcessId", event.getKogitoProcessId())
+                    .containsEntry("kogitoProcessType", event.getKogitoProcessType())
+                    .containsEntry("kogitoRootProcessId", event.getKogitoRootProcessId())
+                    .containsEntry("kogitoAddons", event.getKogitoAddons())
+                    .containsEntry("kogitoParentProcessinstanceId", event.getKogitoParentProcessInstanceId())
+                    .containsEntry("kogitoProcessinstanceState", event.getKogitoProcessInstanceState())
+                    .containsEntry("kogitoReferenceId", event.getKogitoReferenceId())
+                    .containsEntry("kogitoStartFromNode", event.getKogitoStartFromNode());
 
-            assertEquals(event.getData().getId(), ((Document) doc.get("data")).get("id"));
-            assertEquals(event.getData().getVersion(), ((Document) doc.get("data")).get("version"));
-            assertEquals(event.getData().getParentInstanceId(), ((Document) doc.get("data")).get("parentInstanceId"));
-            assertEquals(event.getData().getRootInstanceId(), ((Document) doc.get("data")).get("rootInstanceId"));
-            assertEquals(event.getData().getProcessId(), ((Document) doc.get("data")).get("processId"));
-            assertEquals(event.getData().getRootProcessId(), ((Document) doc.get("data")).get("rootProcessId"));
-            assertEquals(event.getData().getProcessName(), ((Document) doc.get("data")).get("processName"));
-            assertEquals(event.getData().getStartDate(), ((Document) doc.get("data")).get("startDate"));
-            assertEquals(event.getData().getEndDate(), ((Document) doc.get("data")).get("endDate"));
-            assertEquals(event.getData().getState(), ((Document) doc.get("data")).get("state"));
-            assertEquals(event.getData().getBusinessKey(), ((Document) doc.get("data")).get("businessKey"));
-            assertEquals(event.getData().getRoles(), ((Document) doc.get("data")).get("roles"));
-            assertEquals(new Document(event.getData().getVariables()), ((Document) doc.get("data")).get("variables"));
+            assertThat(((Document) doc.get("data"))).containsEntry("id", event.getData().getId())
+                    .containsEntry("version", event.getData().getVersion())
+                    .containsEntry("parentInstanceId", event.getData().getParentInstanceId())
+                    .containsEntry("rootInstanceId", event.getData().getRootInstanceId())
+                    .containsEntry("processId", event.getData().getProcessId())
+                    .containsEntry("rootProcessId", event.getData().getRootProcessId())
+                    .containsEntry("processName", event.getData().getProcessName())
+                    .containsEntry("startDate", event.getData().getStartDate())
+                    .containsEntry("endDate", event.getData().getEndDate())
+                    .containsEntry("state", event.getData().getState())
+                    .containsEntry("businessKey", event.getData().getBusinessKey())
+                    .containsEntry("roles", event.getData().getRoles())
+                    .containsEntry("variables", new Document(event.getData().getVariables()));
             Document error = new Document().append("errorMessage", event.getData().getError().getErrorMessage())
                     .append("nodeDefinitionId", event.getData().getError().getNodeDefinitionId());
-            assertEquals(error, ((Document) doc.get("data")).get("error"));
+            assertThat(((Document) doc.get("data"))).containsEntry("error", error);
             NodeInstanceEventBody ni = event.getData().getNodeInstances().iterator().next();
             Document nodeInstance = new Document().append("id", ni.getId()).append("nodeId", ni.getNodeId())
                     .append("nodeDefinitionId", ni.getNodeDefinitionId()).append("nodeName", ni.getNodeName())
@@ -191,17 +189,17 @@ class ProcessInstanceDataEventCodecTest {
                     .append("leaveTime", ni.getLeaveTime());
             Set<Document> nodeInstances = new HashSet<>();
             nodeInstances.add(nodeInstance);
-            assertEquals(nodeInstances, ((Document) doc.get("data")).get("nodeInstances"));
+            assertThat(((Document) doc.get("data"))).containsEntry("nodeInstances", nodeInstances);
             MilestoneEventBody mi = event.getData().getMilestones().iterator().next();
             Document milestone = new Document().append("id", mi.getId()).append("name", mi.getName()).append("status", mi.getStatus());
             Set<Document> milestones = new HashSet<>();
             milestones.add(milestone);
-            assertEquals(milestones, ((Document) doc.get("data")).get("milestones"));
+            assertThat(((Document) doc.get("data"))).containsEntry("milestones", milestones);
         }
     }
 
     @Test
     void getEncoderClass() {
-        assertEquals(ProcessInstanceDataEvent.class, codec.getEncoderClass());
+        assertThat(codec.getEncoderClass()).isEqualTo(ProcessInstanceDataEvent.class);
     }
 }

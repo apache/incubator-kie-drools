@@ -20,7 +20,7 @@ import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.ModelDomain;
 import org.kie.kogito.event.ModelMetadata;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModelEventTest {
 
@@ -33,9 +33,9 @@ public class ModelEventTest {
 
         };
 
-        assertEquals(gav.getGroupId(), e.getGav().getGroupId());
-        assertEquals(gav.getArtifactId(), e.getGav().getArtifactId());
-        assertEquals(gav.getVersion(), e.getGav().getVersion());
-        assertEquals("name", e.getName());
+        assertThat(e.getGav().getGroupId()).isEqualTo(gav.getGroupId());
+        assertThat(e.getGav().getArtifactId()).isEqualTo(gav.getArtifactId());
+        assertThat(e.getGav().getVersion()).isEqualTo(gav.getVersion());
+        assertThat(e.getName()).isEqualTo("name");
     }
 }

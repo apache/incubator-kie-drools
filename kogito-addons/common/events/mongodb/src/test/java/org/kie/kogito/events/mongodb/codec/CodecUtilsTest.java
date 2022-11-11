@@ -26,7 +26,7 @@ import org.kie.kogito.event.process.ProcessInstanceEventBody;
 import org.kie.kogito.event.process.VariableInstanceDataEvent;
 import org.kie.kogito.event.process.VariableInstanceEventBody;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.events.mongodb.codec.CodecUtils.ID;
 import static org.mockito.Mockito.mock;
 
@@ -54,23 +54,23 @@ class CodecUtilsTest {
 
         CodecUtils.encodeDataEvent(doc, event);
 
-        assertEquals(event.getId(), doc.get(ID));
-        assertEquals(event.getSpecVersion().toString(), doc.get("specversion"));
-        assertEquals(event.getSource().toString(), doc.get("source"));
-        assertEquals(event.getType(), doc.get("type"));
-        assertEquals(event.getTime(), doc.get("time"));
-        assertEquals(event.getSubject(), doc.get("subject"));
-        assertEquals(event.getDataContentType(), doc.get("dataContentType"));
-        assertEquals(event.getDataSchema(), doc.get("dataSchema"));
-        assertEquals(event.getKogitoProcessInstanceId(), doc.get("kogitoProcessinstanceId"));
-        assertEquals(event.getKogitoRootProcessInstanceId(), doc.get("kogitoRootProcessinstanceId"));
-        assertEquals(event.getKogitoProcessId(), doc.get("kogitoProcessId"));
-        assertEquals(event.getKogitoRootProcessId(), doc.get("kogitoRootProcessId"));
-        assertEquals(event.getKogitoAddons(), doc.get("kogitoAddons"));
+        assertThat(doc).containsEntry(ID, event.getId())
+                .containsEntry("specversion", event.getSpecVersion().toString())
+                .containsEntry("source", event.getSource().toString())
+                .containsEntry("type", event.getType())
+                .containsEntry("time", event.getTime())
+                .containsEntry("subject", event.getSubject())
+                .containsEntry("dataContentType", event.getDataContentType())
+                .containsEntry("dataSchema", event.getDataSchema())
+                .containsEntry("kogitoProcessinstanceId", event.getKogitoProcessInstanceId())
+                .containsEntry("kogitoRootProcessinstanceId", event.getKogitoRootProcessInstanceId())
+                .containsEntry("kogitoProcessId", event.getKogitoProcessId())
+                .containsEntry("kogitoRootProcessId", event.getKogitoRootProcessId())
+                .containsEntry("kogitoAddons", event.getKogitoAddons());
     }
 
     @Test
     void codec() {
-        assertEquals(DocumentCodec.class, CodecUtils.codec().getClass());
+        assertThat(CodecUtils.codec().getClass()).isEqualTo(DocumentCodec.class);
     }
 }

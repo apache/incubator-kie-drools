@@ -31,14 +31,13 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.svg.processor.SVGProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SvgTransformationTest {
 
@@ -114,9 +113,9 @@ public class SvgTransformationTest {
                 "#888887", "#888886");
 
         Document svgDocument = readSVG(svg);
-        assertEquals("", ((Element) svgDocument.getFirstChild()).getAttribute("width"));
-        assertEquals("", ((Element) svgDocument.getFirstChild()).getAttribute("height"));
-        assertEquals("0 0 1748 632", svgDocument.getFirstChild().getAttributes().getNamedItem("viewBox").getNodeValue());
+        assertThat(((Element) svgDocument.getFirstChild()).getAttribute("width")).isEmpty();
+        assertThat(((Element) svgDocument.getFirstChild()).getAttribute("height")).isEmpty();
+        assertThat(svgDocument.getFirstChild().getAttributes().getNamedItem("viewBox").getNodeValue()).isEqualTo("0 0 1748 632");
     }
 
     private void validateNodesMarkedAsActive(Document svgDocument, List<String> activeNodes, String activeNodeBorderColor) throws XPathExpressionException {
@@ -126,18 +125,18 @@ public class SvgTransformationTest {
             Element element = (Element) expr.evaluate(svgDocument, XPathConstants.NODE);
 
             if (element == null) {
-                fail("Active element " + activeNode + " not found in the document");
+                Assertions.fail("", "Active element " + activeNode + " not found in the document");
             }
             String svgId = element.getAttribute("id");
 
             Element border = svgDocument.getElementById(svgId + "?shapeType=BORDER&renderType=STROKE");
 
             String marker = border.getAttribute("stroke");
-            assertNotNull(marker);
-            assertEquals(activeNodeBorderColor, marker);
+            assertThat(marker).isNotNull()
+                    .isEqualTo(activeNodeBorderColor);
             String markerWidth = border.getAttribute("stroke-width");
-            assertNotNull(markerWidth);
-            assertEquals("2", markerWidth);
+            assertThat(markerWidth).isNotNull()
+                    .isEqualTo("2");
         }
     }
 
@@ -148,14 +147,14 @@ public class SvgTransformationTest {
             Element element = (Element) expr.evaluate(svgDocument, XPathConstants.NODE);
 
             if (element == null) {
-                fail("Completed element " + completedNode + " not found in the document");
+                Assertions.fail("", "Completed element " + completedNode + " not found in the document");
             }
             String svgId = element.getAttribute("id");
             Element background = svgDocument.getElementById(svgId + "?shapeType=BACKGROUND");
 
             String marker = background.getAttribute("fill");
-            assertNotNull(marker);
-            assertEquals(completedNodeColor, marker);
+            assertThat(marker).isNotNull()
+                    .isEqualTo(completedNodeColor);
         }
     }
 

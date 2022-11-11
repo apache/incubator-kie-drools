@@ -28,12 +28,9 @@ import com.fasterxml.jackson.databind.node.DoubleNode;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.within;
 
 class TypedValueTest {
 
@@ -51,56 +48,56 @@ class TypedValueTest {
         List<TypedValue> serializedVariables = mapper.readValue(serializedJson, new TypeReference<List<TypedValue>>() {
         });
 
-        assertNotNull(serializedVariables);
-        assertSame(3, serializedVariables.size());
+        assertThat(serializedVariables).isNotNull();
+        assertThat(serializedVariables.size()).isSameAs(3);
 
         // test unit
         TypedValue serializedVariable1 = serializedVariables.get(0);
-        assertSame(TypedValue.Kind.UNIT, serializedVariable1.getKind());
-        assertTrue(serializedVariable1 instanceof UnitValue);
-        assertTrue(serializedVariable1.isUnit());
-        assertFalse(serializedVariable1.isCollection());
-        assertFalse(serializedVariable1.isStructure());
-        assertThrows(IllegalStateException.class, serializedVariable1::toCollection);
+        assertThat(serializedVariable1.getKind()).isSameAs(TypedValue.Kind.UNIT);
+        assertThat(serializedVariable1).isInstanceOf(UnitValue.class);
+        assertThat(serializedVariable1.isUnit()).isTrue();
+        assertThat(serializedVariable1.isCollection()).isFalse();
+        assertThat(serializedVariable1.isStructure()).isFalse();
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(serializedVariable1::toCollection);
 
         UnitValue unitValue = serializedVariable1.toUnit();
-        assertNotNull(unitValue);
-        assertEquals("baseType", unitValue.getBaseType());
-        assertTrue(unitValue.getValue() instanceof DoubleNode);
-        assertEquals(1d, unitValue.getValue().doubleValue(), 0.1);
+        assertThat(unitValue).isNotNull();
+        assertThat(unitValue.getBaseType()).isEqualTo("baseType");
+        assertThat(unitValue.getValue()).isInstanceOf(DoubleNode.class);
+        assertThat(unitValue.getValue().doubleValue()).isCloseTo(1d, within(0.1));
 
         // test collection
         TypedValue serializableVariable2 = serializedVariables.get(1);
-        assertSame(TypedValue.Kind.COLLECTION, serializableVariable2.getKind());
-        assertTrue(serializableVariable2 instanceof CollectionValue);
-        assertFalse(serializableVariable2.isUnit());
-        assertTrue(serializableVariable2.isCollection());
-        assertFalse(serializableVariable2.isStructure());
-        assertNotNull(serializableVariable2.toCollection());
-        assertThrows(IllegalStateException.class, serializableVariable2::toStructure);
+        assertThat(serializableVariable2.getKind()).isSameAs(TypedValue.Kind.COLLECTION);
+        assertThat(serializableVariable2).isInstanceOf(CollectionValue.class);
+        assertThat(serializableVariable2.isUnit()).isFalse();
+        assertThat(serializableVariable2.isCollection()).isTrue();
+        assertThat(serializableVariable2.isStructure()).isFalse();
+        assertThat(serializableVariable2.toCollection()).isNotNull();
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(serializableVariable2::toStructure);
 
         CollectionValue collectionValue = serializableVariable2.toCollection();
-        assertNotNull(collectionValue);
-        assertEquals(1, collectionValue.getValue().size());
+        assertThat(collectionValue).isNotNull();
+        assertThat(collectionValue.getValue()).hasSize(1);
         TypedValue value = collectionValue.getValue().iterator().next();
-        assertTrue(value.isUnit());
-        assertEquals("string", value.toUnit().getType());
+        assertThat(value.isUnit()).isTrue();
+        assertThat(value.toUnit().getType()).isEqualTo("string");
 
         // test structure
         TypedValue serializableVariable3 = serializedVariables.get(2);
-        assertSame(TypedValue.Kind.STRUCTURE, serializableVariable3.getKind());
-        assertTrue(serializableVariable3 instanceof StructureValue);
-        assertFalse(serializableVariable3.isUnit());
-        assertFalse(serializableVariable3.isCollection());
-        assertTrue(serializableVariable3.isStructure());
-        assertNotNull(serializableVariable3.toStructure());
-        assertThrows(IllegalStateException.class, serializableVariable3::toUnit);
+        assertThat(serializableVariable3.getKind()).isSameAs(TypedValue.Kind.STRUCTURE);
+        assertThat(serializableVariable3).isInstanceOf(StructureValue.class);
+        assertThat(serializableVariable3.isUnit()).isFalse();
+        assertThat(serializableVariable3.isCollection()).isFalse();
+        assertThat(serializableVariable3.isStructure()).isTrue();
+        assertThat(serializableVariable3.toStructure()).isNotNull();
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(serializableVariable3::toUnit);
 
         StructureValue structureValue = serializableVariable3.toStructure();
-        assertNotNull(structureValue);
-        assertEquals(1, structureValue.getValue().size());
+        assertThat(structureValue).isNotNull();
+        assertThat(structureValue.getValue()).hasSize(1);
         Map<String, TypedValue> valueMap = structureValue.getValue();
-        assertTrue(valueMap.containsKey("key"));
-        assertEquals("value", valueMap.get("key").getType());
+        assertThat(valueMap).containsKey("key");
+        assertThat(valueMap.get("key").getType()).isEqualTo("value");
     }
 }

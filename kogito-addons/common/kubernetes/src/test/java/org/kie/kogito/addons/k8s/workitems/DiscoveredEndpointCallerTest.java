@@ -23,8 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(TargetEndpointsMockServerExtension.class)
 public class DiscoveredEndpointCallerTest {
@@ -40,8 +39,8 @@ public class DiscoveredEndpointCallerTest {
         final KogitoWorkItemImpl workItem = new KogitoWorkItemImpl();
         workItem.setParameter("discovery", "app");
         final Map<String, Object> response = this.endpointCaller.discoverAndCall(workItem, MockDiscoveredEndpointCaller.NAMESPACE, "discovery", HttpMethod.GET);
-        assertNotNull(response);
-        assertEquals("OK", response.get("response"));
+        assertThat(response).isNotNull()
+                .containsEntry("response", "OK");
     }
 
 }

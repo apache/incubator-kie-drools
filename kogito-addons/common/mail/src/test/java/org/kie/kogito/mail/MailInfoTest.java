@@ -22,8 +22,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.UserTaskDeadlineEventBody;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MailInfoTest {
 
@@ -37,10 +36,10 @@ public class MailInfoTest {
         notification.put(MailInfo.REPLY_TO_PROPERTY, "javierito@doesnotexist.com");
         MailInfo mailInfo = MailInfo.of(UserTaskDeadlineEventBody.create("1", notification).inputs(Collections
                 .singletonMap("name", "Javierito")).processInstanceId("1").build());
-        assertEquals("Javierito", mailInfo.subject());
-        assertEquals("My name for process 1 is Javierito", mailInfo.body());
-        assertEquals("javierito", mailInfo.from());
-        assertEquals("javierito@doesnotexist.com", mailInfo.replyTo());
-        assertArrayEquals(new String[] { "javierito@doesnotexist.com", "fulanito@doesnotexist.com" }, mailInfo.to());
+        assertThat(mailInfo.subject()).isEqualTo("Javierito");
+        assertThat(mailInfo.body()).isEqualTo("My name for process 1 is Javierito");
+        assertThat(mailInfo.from()).isEqualTo("javierito");
+        assertThat(mailInfo.replyTo()).isEqualTo("javierito@doesnotexist.com");
+        assertThat(mailInfo.to()).containsExactly("javierito@doesnotexist.com", "fulanito@doesnotexist.com");
     }
 }

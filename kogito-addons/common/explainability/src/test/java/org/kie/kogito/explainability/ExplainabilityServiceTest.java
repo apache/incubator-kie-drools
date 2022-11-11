@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.StaticApplication;
@@ -31,6 +30,7 @@ import org.kie.kogito.explainability.model.PredictInput;
 import org.kie.kogito.explainability.model.PredictOutput;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.explainability.model.ModelIdentifier.RESOURCE_ID_SEPARATOR;
 
 public class ExplainabilityServiceTest {
@@ -63,19 +63,18 @@ public class ExplainabilityServiceTest {
         ExplainabilityService explainabilityService = ExplainabilityService.INSTANCE;
         List<PredictOutput> predictOutputs = explainabilityService.processRequest(application, singletonList(predictInput));
 
-        Assertions.assertEquals(1, predictOutputs.size());
+        assertThat(predictOutputs).hasSize(1);
         PredictOutput predictOutput = predictOutputs.get(0);
 
-        Assertions.assertNotNull(predictOutput);
-        Assertions.assertNotNull(predictOutput.getResult());
+        assertThat(predictOutput).isNotNull();
+        assertThat(predictOutput.getResult()).isNotNull();
 
         Map<String, Object> perturbedResult = predictOutput.getResult();
-        Assertions.assertTrue(perturbedResult.containsKey("Should the driver be suspended?"));
-        Assertions.assertEquals("No", perturbedResult.get("Should the driver be suspended?"));
-        Assertions.assertTrue(perturbedResult.containsKey("Fine"));
-        Assertions.assertNull(perturbedResult.get("Fine"));
+        assertThat(perturbedResult).containsKey("Should the driver be suspended?")
+                .containsEntry("Should the driver be suspended?", "No")
+                .containsKey("Fine");
 
-        Assertions.assertTrue(decisionModel.getEvaluationSkipMonitoringHistory().stream().allMatch(x -> x.equals(true)));
+        assertThat(decisionModel.getEvaluationSkipMonitoringHistory().stream().allMatch(x -> x.equals(true))).isTrue();
     }
 
     private Map<String, Object> createRequest() {

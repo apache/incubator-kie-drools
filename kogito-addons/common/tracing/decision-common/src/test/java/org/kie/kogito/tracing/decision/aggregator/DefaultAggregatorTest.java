@@ -35,11 +35,8 @@ import org.kie.kogito.tracing.event.trace.TraceEventType;
 
 import io.cloudevents.CloudEvent;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.kogito.dmn.DecisionTestUtils.DECISION_SERVICE_DECISION_ID;
 import static org.kie.kogito.dmn.DecisionTestUtils.EVALUATE_ALL_EXECUTION_ID;
 import static org.kie.kogito.dmn.DecisionTestUtils.EVALUATE_DECISION_SERVICE_EXECUTION_ID;
@@ -201,13 +198,13 @@ class DefaultAggregatorTest {
     }
 
     private static TraceEvent assertValidCloudEventAndGetData(CloudEvent cloudEvent, String executionId) {
-        assertEquals(executionId, cloudEvent.getId());
-        assertEquals(TraceEvent.class.getName(), cloudEvent.getType());
+        assertThat(cloudEvent.getId()).isEqualTo(executionId);
+        assertThat(cloudEvent.getType()).isEqualTo(TraceEvent.class.getName());
 
         try {
             return DecisionTestUtils.MAPPER.readValue(cloudEvent.getData().toBytes(), TraceEvent.class);
         } catch (IOException e) {
-            fail(e);
+            fail("", e);
             return null;
         }
     }
@@ -220,20 +217,20 @@ class DefaultAggregatorTest {
     private static void assertTraceEventWithNotEnoughData(TraceEvent traceEvent) {
         assertTraceEvent(traceEvent, 0, 0, 0);
         assertTraceEventInternalMessage(traceEvent, InternalMessageType.NOT_ENOUGH_DATA);
-        assertNull(traceEvent.getHeader().getStartTimestamp());
-        assertNull(traceEvent.getHeader().getEndTimestamp());
-        assertNull(traceEvent.getHeader().getDuration());
+        assertThat(traceEvent.getHeader().getStartTimestamp()).isNull();
+        assertThat(traceEvent.getHeader().getEndTimestamp()).isNull();
+        assertThat(traceEvent.getHeader().getDuration()).isNull();
     }
 
     private static void assertTraceEvent(TraceEvent traceEvent, int inputsSize, int outputsSize, int executionStepsSize) {
-        assertSame(TraceEventType.DMN, traceEvent.getHeader().getType());
-        assertSame(inputsSize, traceEvent.getInputs().size());
-        assertSame(outputsSize, traceEvent.getOutputs().size());
-        assertSame(executionStepsSize, traceEvent.getExecutionSteps().size());
+        assertThat(traceEvent.getHeader().getType()).isSameAs(TraceEventType.DMN);
+        assertThat(traceEvent.getInputs().size()).isSameAs(inputsSize);
+        assertThat(traceEvent.getOutputs().size()).isSameAs(outputsSize);
+        assertThat(traceEvent.getExecutionSteps().size()).isSameAs(executionStepsSize);
     }
 
     private static void assertTraceEventInternalMessage(TraceEvent traceEvent, InternalMessageType type) {
-        assertTrue(traceEvent.getHeader().getMessages().stream().anyMatch(
-                m -> m.getLevel() == type.getLevel() && m.getCategory() == MessageCategory.INTERNAL && type.name().equals(m.getType())));
+        assertThat(traceEvent.getHeader().getMessages().stream().anyMatch(
+                m -> m.getLevel() == type.getLevel() && m.getCategory() == MessageCategory.INTERNAL && type.name().equals(m.getType()))).isTrue();
     }
 }

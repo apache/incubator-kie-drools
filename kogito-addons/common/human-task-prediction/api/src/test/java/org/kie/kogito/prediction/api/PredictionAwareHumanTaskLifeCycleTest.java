@@ -41,8 +41,7 @@ import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 
@@ -100,14 +99,13 @@ public class PredictionAwareHumanTaskLifeCycleTest {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
-        assertEquals(STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         Model result = (Model) processInstance.variables();
-        assertEquals(2, result.toMap().size());
-        assertEquals("predicted value", result.toMap().get("s"));
+        assertThat(result.toMap()).hasSize(2)
+                .containsEntry("s", "predicted value");
 
-        assertEquals(0, trainedTasks.size());
-
+        assertThat(trainedTasks).isEmpty();
     }
 
     @Test
@@ -119,19 +117,18 @@ public class PredictionAwareHumanTaskLifeCycleTest {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
-        assertEquals(STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
 
         WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameters().get("ActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameters()).containsEntry("ActorId", "john");
         processInstance.completeWorkItem(workItem.getId(), Collections.singletonMap("output", "given value"), securityPolicy);
-        assertEquals(STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         Model result = (Model) processInstance.variables();
-        assertEquals(2, result.toMap().size());
-        assertEquals("given value", result.toMap().get("s"));
+        assertThat(result.toMap()).hasSize(2)
+                .containsEntry("s", "given value");
 
-        assertEquals(1, trainedTasks.size());
-
+        assertThat(trainedTasks).hasSize(1);
     }
 }

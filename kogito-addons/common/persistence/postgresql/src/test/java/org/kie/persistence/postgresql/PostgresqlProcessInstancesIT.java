@@ -41,8 +41,7 @@ import io.vertx.pgclient.PgPool;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.mockito.ArgumentMatchers.any;
@@ -175,8 +174,8 @@ class PostgresqlProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 1L : 0, instanceOne.version());
-        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 1L : 0);
+        assertThat(instanceTwo.version()).isEqualTo(lock() ? 1L : 0);
         instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
@@ -189,7 +188,7 @@ class PostgresqlProcessInstancesIT {
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 2L : 0, instanceOne.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 2L : 0);
 
         processInstances.remove(processInstance.id());
         assertThat(processInstances.size()).isZero();
@@ -209,8 +208,8 @@ class PostgresqlProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 1L : 0, instanceOne.version());
-        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 1L : 0);
+        assertThat(instanceTwo.version()).isEqualTo(lock() ? 1L : 0);
 
         processInstances.remove(instanceOne.id());
         processInstances.remove(instanceTwo.id());

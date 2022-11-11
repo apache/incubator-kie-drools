@@ -26,7 +26,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.Decision
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DaysAndTimeDurationHandlerTest extends AbstractQuantilesTest<DaysAndTimeDurationHandler> {
 
@@ -51,7 +51,7 @@ public class DaysAndTimeDurationHandlerTest extends AbstractQuantilesTest<DaysAn
         handler.record("decision", ENDPOINT_NAME, duration);
 
         // Assert
-        assertTrue(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max() >= 5);
-        assertTrue(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().mean() >= 2);
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().max()).isGreaterThanOrEqualTo(5);
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX).summary().mean()).isGreaterThanOrEqualTo(2);
     }
 }

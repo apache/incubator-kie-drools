@@ -26,8 +26,7 @@ import org.kie.kogito.tracing.event.model.ModelEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DecisionModelEventTest {
 
@@ -35,15 +34,14 @@ class DecisionModelEventTest {
     public void testDeserialization() throws JsonProcessingException {
         String toRead = TracingTestUtils.readResourceAsString("/decisionmodelevent.json");
         ModelEvent retrieved = new ObjectMapper().readValue(toRead, ModelEvent.class);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof DecisionModelEvent);
+        assertThat(retrieved).isInstanceOf(DecisionModelEvent.class);
     }
 
     @Test
     public void testSerialization() throws JsonProcessingException {
         ModelEvent modelEvent = getDecisionModelEvent(new Random().nextInt(5));
         String retrieved = new ObjectMapper().writeValueAsString(modelEvent);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     private ModelEvent getDecisionModelEvent(int id) {

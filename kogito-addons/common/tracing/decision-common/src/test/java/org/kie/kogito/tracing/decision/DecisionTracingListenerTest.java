@@ -38,9 +38,7 @@ import org.kie.kogito.tracing.decision.mock.MockAfterEvaluateAllEvent;
 import org.kie.kogito.tracing.decision.mock.MockBeforeEvaluateAllEvent;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.dmn.DecisionTestUtils.DECISION_SERVICE_NODE_ID;
 import static org.kie.kogito.dmn.DecisionTestUtils.DECISION_SERVICE_NODE_NAME;
 import static org.kie.kogito.dmn.DecisionTestUtils.MODEL_NAME;
@@ -144,39 +142,39 @@ class DecisionTracingListenerTest {
     }
 
     private static void assertEvaluateAllEvents(List<EvaluateEvent> evaluateEvents, String modelNamespace, String modelName, String executionId) {
-        assertTrue(evaluateEvents.size() >= 2);
+        assertThat(evaluateEvents).hasSizeGreaterThanOrEqualTo(2);
 
         evaluateEvents.forEach(e -> assertEventMatches(modelNamespace, modelName, executionId, e));
 
         EvaluateEvent beforeEvent = evaluateEvents.get(0);
-        assertSame(EvaluateEventType.BEFORE_EVALUATE_ALL, beforeEvent.getType());
+        assertThat(beforeEvent.getType()).isSameAs(EvaluateEventType.BEFORE_EVALUATE_ALL);
 
         EvaluateEvent afterEvent = evaluateEvents.get(evaluateEvents.size() - 1);
-        assertSame(EvaluateEventType.AFTER_EVALUATE_ALL, afterEvent.getType());
+        assertThat(afterEvent.getType()).isSameAs(EvaluateEventType.AFTER_EVALUATE_ALL);
     }
 
     private static void assertEvaluateDecisionServiceEvents(List<EvaluateEvent> evaluateEvents, String modelNamespace, String modelName, String executionId) {
-        assertTrue(evaluateEvents.size() >= 2);
+        assertThat(evaluateEvents).hasSizeGreaterThanOrEqualTo(2);
 
         evaluateEvents.forEach(e -> assertEventMatches(modelNamespace, modelName, executionId, e));
 
         EvaluateEvent beforeEvent = evaluateEvents.get(0);
-        assertSame(EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE, beforeEvent.getType());
-        assertEquals(DECISION_SERVICE_NODE_ID, beforeEvent.getNodeId());
-        assertEquals(DECISION_SERVICE_NODE_NAME, beforeEvent.getNodeName());
+        assertThat(beforeEvent.getType()).isSameAs(EvaluateEventType.BEFORE_EVALUATE_DECISION_SERVICE);
+        assertThat(beforeEvent.getNodeId()).isEqualTo(DECISION_SERVICE_NODE_ID);
+        assertThat(beforeEvent.getNodeName()).isEqualTo(DECISION_SERVICE_NODE_NAME);
 
         EvaluateEvent afterEvent = evaluateEvents.get(evaluateEvents.size() - 1);
-        assertSame(EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE, afterEvent.getType());
-        assertEquals(DECISION_SERVICE_NODE_ID, afterEvent.getNodeId());
-        assertEquals(DECISION_SERVICE_NODE_NAME, afterEvent.getNodeName());
+        assertThat(afterEvent.getType()).isSameAs(EvaluateEventType.AFTER_EVALUATE_DECISION_SERVICE);
+        assertThat(afterEvent.getNodeId()).isEqualTo(DECISION_SERVICE_NODE_ID);
+        assertThat(afterEvent.getNodeName()).isEqualTo(DECISION_SERVICE_NODE_NAME);
     }
 
     private static void assertEventMatches(String modelNamespace, String modelName, String executionId, EvaluateEvent event) {
-        assertTrue(event.getModelNamespace() == null && event.getModelName() == null || event.getModelNamespace() != null && event.getModelName() != null);
+        assertThat(event.getModelNamespace() == null && event.getModelName() == null || event.getModelNamespace() != null && event.getModelName() != null).isTrue();
         if (event.getModelNamespace() != null) {
-            assertEquals(modelNamespace, event.getModelNamespace());
-            assertEquals(modelName, event.getModelName());
+            assertThat(event.getModelNamespace()).isEqualTo(modelNamespace);
+            assertThat(event.getModelName()).isEqualTo(modelName);
         }
-        assertEquals(executionId, event.getExecutionId());
+        assertThat(event.getExecutionId()).isEqualTo(executionId);
     }
 }

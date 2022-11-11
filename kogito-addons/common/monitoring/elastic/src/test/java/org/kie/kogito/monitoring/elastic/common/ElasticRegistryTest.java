@@ -20,10 +20,11 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.micrometer.elastic.ElasticConfig;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ElasticRegistryTest {
 
@@ -57,7 +58,7 @@ public class ElasticRegistryTest {
         elasticRegistry.start(elasticConfig);
 
         for (CountDownLatch value : countDownLatchMap.values()) {
-            Assertions.assertTrue(value.await(20, TimeUnit.SECONDS));
+            assertThat(value.await(20, TimeUnit.SECONDS)).isTrue();
         }
     }
 }

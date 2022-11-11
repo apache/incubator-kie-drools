@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.mongodb.transaction.AbstractTransactionManager;
 import org.kie.kogito.process.Process;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -32,11 +32,11 @@ class KogitoProcessInstancesFactoryIT extends TestHelper {
 
         AbstractProcessInstancesFactory factory = new AbstractProcessInstancesFactory(getMongoClient(), DB_NAME, false, transactionManager) {
         };
-        assertNotNull(factory);
+        assertThat(factory).isNotNull();
         Process<?> process = mock(Process.class);
         lenient().when(process.id()).thenReturn(PROCESS_NAME);
         lenient().when(process.name()).thenReturn(PROCESS_NAME);
         MongoDBProcessInstances<?> instance = factory.createProcessInstances(process);
-        assertNotNull(instance);
+        assertThat(instance).isNotNull();
     }
 }

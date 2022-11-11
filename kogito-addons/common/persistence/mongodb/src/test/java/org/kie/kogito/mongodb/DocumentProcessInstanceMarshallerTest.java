@@ -32,7 +32,6 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DocumentProcessInstanceMarshallerTest {
 
@@ -52,25 +51,24 @@ class DocumentProcessInstanceMarshallerTest {
 
     @Test
     void testMarshalProcessInstance() {
-        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "testValue")));
+        ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "testValue")));
         processInstance.start();
         doc = Document.parse(new String(marshaller.marshallProcessInstance(processInstance)));
-        assertNotNull(doc, "Marshalled value should not be null");
-        assertThat(doc.get("id")).isEqualTo(processInstance.id());
-        assertThat(doc.get("description")).isEqualTo(processInstance.description());
+        assertThat(doc).as("Marshalled value should not be null").isNotNull()
+                .containsEntry("id", processInstance.id())
+                .containsEntry("description", processInstance.description());
         assertThat(doc.get("context", Document.class).getList("variable", Document.class)).hasSize(1);
-        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("name")).isEqualTo("test");
-        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("value", Document.class).get("value")).isEqualTo("testValue");
-
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0)).containsEntry("name", "test");
+        assertThat(doc.get("context", Document.class).getList("variable", Document.class).get(0).get("value", Document.class)).containsEntry("value", "testValue");
     }
 
     @Test
     void testUnmarshalProcessInstance() {
         ProcessInstance<BpmnVariables> processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(doc.toJson().getBytes(), process);
-        assertNotNull(processInstance, "Unmarshalled value should not be null");
+        assertThat(processInstance).as("Unmarshalled value should not be null").isNotNull();
         assertThat(processInstance.id()).isEqualTo(doc.get("id"));
-        assertThat(processInstance.description()).isEqualTo(doc.get("description"));
-        assertThat(processInstance.description()).isEqualTo("User Task");
+        assertThat(processInstance.description()).isEqualTo(doc.get("description"))
+                .isEqualTo("User Task");
         Collection<? extends ProcessInstance<BpmnVariables>> values = process.instances().values();
         assertThat(values).isNotEmpty();
         BpmnVariables variables = processInstance.variables();
@@ -84,9 +82,9 @@ class DocumentProcessInstanceMarshallerTest {
         processInstance.start();
         doc = Document.parse(new String(marshaller.marshallProcessInstance(processInstance)));
         ProcessInstance<BpmnVariables> processInstanceReadOnly = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(doc.toJson().getBytes(), process);
-        assertNotNull(processInstanceReadOnly, "Unmarshalled value should not be null");
+        assertThat(processInstanceReadOnly).as("Unmarshalled value should not be null").isNotNull();
         ProcessInstance<BpmnVariables> pi = (ProcessInstance<BpmnVariables>) marshaller.unmarshallReadOnlyProcessInstance(doc.toJson().getBytes(), process);
-        assertNotNull(pi, "Unmarshalled value should not be null");
+        assertThat(pi).as("Unmarshalled value should not be null").isNotNull();
     }
 
 }

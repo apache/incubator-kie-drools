@@ -34,8 +34,7 @@ import org.kie.kogito.uow.events.UnitOfWorkStartEvent;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -117,9 +116,9 @@ class AbstractTransactionManagerTest {
 
     @Test
     void getClientSession() {
-        assertNull(manager.getClientSession());
+        assertThat(manager.getClientSession()).isNull();
 
         manager.onBeforeStartEvent(new UnitOfWorkStartEvent(null));
-        assertEquals(clientSession, manager.getClientSession());
+        assertThat(manager.getClientSession()).isEqualTo(clientSession);
     }
 }

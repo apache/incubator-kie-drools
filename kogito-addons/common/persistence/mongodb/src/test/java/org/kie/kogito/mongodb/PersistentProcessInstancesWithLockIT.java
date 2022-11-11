@@ -26,8 +26,7 @@ import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 class PersistentProcessInstancesWithLockIT extends TestHelper {
 
@@ -51,8 +50,8 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(1L, instanceOne.version());
-        assertEquals(1L, instanceTwo.version());
+        assertThat(instanceOne.version()).isOne();
+        assertThat(instanceTwo.version()).isOne();
         instanceOne.updateVariables(BpmnVariables.create(Collections.singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(Collections.singletonMap("ss", "test"));
@@ -63,7 +62,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
-        assertEquals(2L, instanceOne.version());
+        assertThat(instanceOne.version()).isEqualTo(2L);
 
         processInstances.remove(processInstance.id());
         assertThat(processInstances.size()).isZero();
@@ -86,8 +85,8 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(1L, instanceOne.version());
-        assertEquals(1L, instanceTwo.version());
+        assertThat(instanceOne.version()).isOne();
+        assertThat(instanceTwo.version()).isOne();
 
         processInstances.remove(instanceOne.id());
         try {

@@ -45,8 +45,7 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 public class AbstractTransactionManagerIT {
@@ -106,13 +105,13 @@ public class AbstractTransactionManagerIT {
                 mongoCollection1.insertOne(transactionManager.getClientSession(), new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1));
 
                 Document result1 = mongoCollection1.find(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id1)).first();
-                assertEquals(new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1), result1);
+                assertThat(result1).isEqualTo(new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1));
 
                 int size1 = (int) mongoCollection1.countDocuments(transactionManager.getClientSession());
-                assertEquals(2, size1);
+                assertThat(size1).isEqualTo(2);
             } finally {
                 latch1.countDown();
-                assertTrue(latch2.await(10, TimeUnit.SECONDS));
+                assertThat(latch2.await(10, TimeUnit.SECONDS)).isTrue();
             }
             transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
             return null;
@@ -126,13 +125,13 @@ public class AbstractTransactionManagerIT {
                 mongoCollection2.insertOne(transactionManager.getClientSession(), new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value2));
 
                 Document result2 = mongoCollection2.find(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id2)).first();
-                assertEquals(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value2), result2);
+                assertThat(result2).isEqualTo(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value2));
 
                 int size2 = (int) mongoCollection2.countDocuments(transactionManager.getClientSession());
-                assertEquals(2, size2);
+                assertThat(size2).isEqualTo(2);
             } finally {
                 latch2.countDown();
-                assertTrue(latch1.await(10, TimeUnit.SECONDS));
+                assertThat(latch1.await(10, TimeUnit.SECONDS)).isTrue();
             }
             transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
             return null;
@@ -140,7 +139,7 @@ public class AbstractTransactionManagerIT {
 
         execution1.get(10, TimeUnit.SECONDS);
         execution2.get(10, TimeUnit.SECONDS);
-        assertEquals(3, mongoCollection.countDocuments());
+        assertThat(mongoCollection.countDocuments()).isEqualTo(3);
     }
 
     @Test
@@ -177,15 +176,15 @@ public class AbstractTransactionManagerIT {
                         values1.add(cursor.next());
                     }
 
-                    assertEquals(1, values1.size());
-                    assertTrue(values1.stream().allMatch(v -> id2.equals(v.get(DOCUMENT_ID).toString())));
+                    assertThat(values1).hasSize(1);
+                    assertThat(values1.stream().allMatch(v -> id2.equals(v.get(DOCUMENT_ID).toString()))).isTrue();
                 }
 
                 Document value = mongoCollection1.find(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id2)).first();
-                assertEquals(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value2), value);
+                assertThat(value).isEqualTo(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value2));
             } finally {
                 latch1.countDown();
-                assertTrue(latch2.await(10, TimeUnit.SECONDS));
+                assertThat(latch2.await(10, TimeUnit.SECONDS)).isTrue();
             }
             transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
             return null;
@@ -198,13 +197,13 @@ public class AbstractTransactionManagerIT {
                 MongoCollection<Document> mongoCollection2 = mongoDatabase.getCollection(testName);
                 mongoCollection2.replaceOne(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id2), new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value1));
                 Document values2 = mongoCollection2.find(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id2)).first();
-                assertEquals(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value1), values2);
+                assertThat(values2).isEqualTo(new Document().append(DOCUMENT_ID, id2).append(TEST_KEY, value1));
 
                 int size2 = (int) mongoCollection2.countDocuments(transactionManager.getClientSession());
-                assertEquals(2, size2);
+                assertThat(size2).isEqualTo(2);
             } finally {
                 latch2.countDown();
-                assertTrue(latch1.await(10, TimeUnit.SECONDS));
+                assertThat(latch1.await(10, TimeUnit.SECONDS)).isTrue();
             }
             transactionManager.onAfterEndEvent(new UnitOfWorkEndEvent(null));
             return null;
@@ -212,8 +211,8 @@ public class AbstractTransactionManagerIT {
 
         execution1.get(10, TimeUnit.SECONDS);
         execution2.get(10, TimeUnit.SECONDS);
-        assertEquals(1, mongoCollection.countDocuments());
-        assertEquals(value1, Objects.requireNonNull(mongoCollection.find(Filters.eq(DOCUMENT_ID, id2)).first()).getString(TEST_KEY));
+        assertThat(mongoCollection.countDocuments()).isOne();
+        assertThat(Objects.requireNonNull(mongoCollection.find(Filters.eq(DOCUMENT_ID, id2)).first()).getString(TEST_KEY)).isEqualTo(value1);
     }
 
     @Test
@@ -234,17 +233,17 @@ public class AbstractTransactionManagerIT {
         mongoCollection.insertOne(transactionManager.getClientSession(), new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1));
 
         Document result = mongoCollection.find(transactionManager.getClientSession(), Filters.eq(DOCUMENT_ID, id1)).first();
-        assertEquals(new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1), result);
+        assertThat(result).isEqualTo(new Document().append(DOCUMENT_ID, id1).append(TEST_KEY, value1));
 
         int size1 = (int) mongoCollection.countDocuments(transactionManager.getClientSession());
-        assertEquals(2, size1);
+        assertThat(size1).isEqualTo(2);
 
         int size2 = (int) mongoCollection.countDocuments();
-        assertEquals(1, size2);
+        assertThat(size2).isOne();
 
         transactionManager.onAfterAbortEvent(new UnitOfWorkAbortEvent(null));
 
         int size3 = (int) mongoCollection.countDocuments();
-        assertEquals(1, size3);
+        assertThat(size3).isOne();
     }
 }

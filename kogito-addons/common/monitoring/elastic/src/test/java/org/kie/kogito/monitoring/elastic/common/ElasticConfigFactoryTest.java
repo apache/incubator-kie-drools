@@ -17,10 +17,11 @@ package org.kie.kogito.monitoring.elastic.common;
 
 import java.time.Duration;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.micrometer.elastic.ElasticConfig;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ElasticConfigFactoryTest {
 
@@ -34,9 +35,9 @@ public class ElasticConfigFactoryTest {
 
         ElasticConfig elasticConfig = elasticConfigFactory.getElasticConfig();
 
-        Assertions.assertEquals("http://mylocalhost", elasticConfig.host());
-        Assertions.assertEquals("pippo", elasticConfig.userName());
-        Assertions.assertEquals("pluto", elasticConfig.password());
-        Assertions.assertEquals(Duration.ofSeconds(1), elasticConfig.step());
+        assertThat(elasticConfig.host()).isEqualTo("http://mylocalhost");
+        assertThat(elasticConfig.userName()).isEqualTo("pippo");
+        assertThat(elasticConfig.password()).isEqualTo("pluto");
+        assertThat(elasticConfig.step()).isEqualTo(Duration.ofSeconds(1));
     }
 }

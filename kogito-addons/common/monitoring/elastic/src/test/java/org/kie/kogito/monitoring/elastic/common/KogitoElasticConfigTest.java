@@ -15,8 +15,9 @@
  */
 package org.kie.kogito.monitoring.elastic.common;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KogitoElasticConfigTest {
 
@@ -24,6 +25,6 @@ public class KogitoElasticConfigTest {
     public void testConfigMapPrefix() {
         KogitoElasticConfig kogitoElasticConfig = new KogitoElasticConfig();
         kogitoElasticConfig.withProperty("key", "value");
-        Assertions.assertEquals("value", kogitoElasticConfig.getConfigMap().get("elastic.key"));
+        assertThat(kogitoElasticConfig.getConfigMap()).containsEntry("elastic.key", "value");
     }
 }

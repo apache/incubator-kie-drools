@@ -20,7 +20,7 @@ import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.Process;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +33,6 @@ class AbstractProcessInstancesFactoryTest {
         AbstractProcessInstancesFactory factory = new AbstractProcessInstancesFactory(cacheManager, false, null) {
         };
 
-        assertNotNull(factory.createProcessInstances(mock(Process.class)));
+        assertThat(factory.createProcessInstances(mock(Process.class))).isNotNull();
     }
 }

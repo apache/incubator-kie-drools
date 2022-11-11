@@ -32,10 +32,7 @@ import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.mockito.ArgumentMatchers.any;
@@ -185,8 +182,8 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 1L : 0, instanceOne.version());
-        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 1L : 0);
+        assertThat(instanceTwo.version()).isEqualTo(lock() ? 1L : 0);
         instanceOne.updateVariables(BpmnVariables.create(singletonMap("s", "test")));
         try {
             BpmnVariables testvar = BpmnVariables.create(singletonMap("ss", "test"));
@@ -199,7 +196,7 @@ abstract class AbstractProcessInstancesIT {
         }
         foundOne = processInstances.findById(processInstance.id());
         instanceOne = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 2L : 0, instanceOne.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 2L : 0);
 
         processInstances.remove(processInstance.id());
         assertThat(processInstances.size()).isZero();
@@ -219,8 +216,8 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceTwo = (BpmnProcessInstance) foundOne.get();
-        assertEquals(lock() ? 1L : 0, instanceOne.version());
-        assertEquals(lock() ? 1L : 0, instanceTwo.version());
+        assertThat(instanceOne.version()).isEqualTo(lock() ? 1L : 0);
+        assertThat(instanceTwo.version()).isEqualTo(lock() ? 1L : 0);
 
         processInstances.remove(instanceOne.id());
         processInstances.remove(instanceTwo.id());

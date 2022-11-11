@@ -38,8 +38,7 @@ import org.mockito.ArgumentCaptor;
 
 import io.cloudevents.CloudEvent;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.dmn.DecisionTestUtils.EVALUATE_ALL_EXECUTION_ID;
 import static org.kie.kogito.dmn.DecisionTestUtils.EVALUATE_DECISION_SERVICE_EXECUTION_ID;
 import static org.kie.kogito.dmn.DecisionTestUtils.createDMNModel;
@@ -95,11 +94,11 @@ class DecisionTracingCollectorTest {
         }
 
         Map<String, Pair<List<EvaluateEvent>, CloudEvent>> aggregatorCalls = aggregator.getCalls();
-        assertEquals(2, aggregatorCalls.size());
-        assertTrue(aggregatorCalls.containsKey(EVALUATE_ALL_EXECUTION_ID));
-        assertEquals(evaluateAllEvents.size(), aggregatorCalls.get(EVALUATE_ALL_EXECUTION_ID).getLeft().size());
-        assertTrue(aggregatorCalls.containsKey(EVALUATE_DECISION_SERVICE_EXECUTION_ID));
-        assertEquals(evaluateDecisionServiceEvents.size(), aggregatorCalls.get(EVALUATE_DECISION_SERVICE_EXECUTION_ID).getLeft().size());
+        assertThat(aggregatorCalls).hasSize(2)
+                .containsKey(EVALUATE_ALL_EXECUTION_ID);
+        assertThat(aggregatorCalls.get(EVALUATE_ALL_EXECUTION_ID).getLeft()).hasSameSizeAs(evaluateAllEvents);
+        assertThat(aggregatorCalls).containsKey(EVALUATE_DECISION_SERVICE_EXECUTION_ID);
+        assertThat(aggregatorCalls.get(EVALUATE_DECISION_SERVICE_EXECUTION_ID).getLeft()).hasSameSizeAs(evaluateDecisionServiceEvents);
 
         ArgumentCaptor<String> payloadCaptor = ArgumentCaptor.forClass(String.class);
         verify(payloadConsumer, times(2)).accept(payloadCaptor.capture());
@@ -110,10 +109,10 @@ class DecisionTracingCollectorTest {
         List<String> payloads = payloadCaptor.getAllValues();
 
         String expectedEvaluateAll = encodeFromCall(aggregatorCalls, EVALUATE_ALL_EXECUTION_ID);
-        assertEquals(expectedEvaluateAll, payloads.get(evaluateAllIndex));
+        assertThat(payloads.get(evaluateAllIndex)).isEqualTo(expectedEvaluateAll);
 
         String expectedEvaluateDecisionService = encodeFromCall(aggregatorCalls, EVALUATE_DECISION_SERVICE_EXECUTION_ID);
-        assertEquals(expectedEvaluateDecisionService, payloads.get(evaluateDecisionServiceIndex));
+        assertThat(payloads.get(evaluateDecisionServiceIndex)).isEqualTo(expectedEvaluateDecisionService);
     }
 
     private static String encodeFromCall(Map<String, Pair<List<EvaluateEvent>, CloudEvent>> aggregatorCalls, String key) {

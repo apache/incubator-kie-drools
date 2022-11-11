@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.tracing.event.trace.TraceEventType.DMN;
 
 class TraceEventTest {
@@ -43,14 +43,14 @@ class TraceEventTest {
     public void testDeserialization() throws JsonProcessingException {
         String toRead = TracingTestUtils.readResourceAsString("/traceevent.json");
         TraceEvent retrieved = new ObjectMapper().readValue(toRead, TraceEvent.class);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     @Test
     public void testSerialization() throws JsonProcessingException {
         TraceEvent traceEvent = getTraceEvent();
         String retrieved = new ObjectMapper().writeValueAsString(traceEvent);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     private TraceEvent getTraceEvent() {

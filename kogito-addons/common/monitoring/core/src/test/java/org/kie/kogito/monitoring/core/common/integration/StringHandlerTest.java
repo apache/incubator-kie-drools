@@ -26,7 +26,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.StringHa
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StringHandlerTest {
 
@@ -61,16 +61,16 @@ public class StringHandlerTest {
         IntStream.rangeClosed(1, 5).forEach(x -> handler.record(DECISION_NAME, ENDPOINT_NAME, "C"));
 
         // Assert
-        assertEquals(expectedCountStringA, registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("identifier", "A")
-                .counter().count());
+                .counter().count()).isEqualTo(expectedCountStringA);
 
-        assertEquals(expectedCountStringB, registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("identifier", "B")
-                .counter().count());
+                .counter().count()).isEqualTo(expectedCountStringB);
 
-        assertEquals(expectedCountStringC, registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
+        assertThat(registry.find(dmnType + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .tag("identifier", "C")
-                .counter().count());
+                .counter().count()).isEqualTo(expectedCountStringC);
     }
 }

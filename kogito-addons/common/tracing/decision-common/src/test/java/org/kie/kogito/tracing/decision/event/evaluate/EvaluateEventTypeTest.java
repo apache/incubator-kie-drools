@@ -39,8 +39,8 @@ import org.kie.dmn.api.core.event.DMNEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.feel.util.Pair;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The purpose of this test is ensure that the structure of {@link DMNRuntimeEventListener} remains
@@ -81,16 +81,14 @@ class EvaluateEventTypeTest {
             Optional<Map.Entry<EvaluateEventType, Pair<String, Class<?>>>> optEntry = CHECK_MAP.entrySet().stream()
                     .filter(e -> e.getValue().getLeft().equals(listenerMethod.getName()))
                     .findAny();
-            assertTrue(
-                    optEntry.isPresent(),
-                    () -> String.format("No EvaluateEventType for listener method \"%s\"", listenerMethod.getName()));
+            assertThat(optEntry).withFailMessage(() -> String.format("No EvaluateEventType for listener method \"%s\"", listenerMethod.getName())).isPresent();
         }
     }
 
     @Test
     void testNotManagedTypes() {
         for (EvaluateEventType t : EvaluateEventType.values()) {
-            assertTrue(CHECK_MAP.containsKey(t), () -> String.format("No test entry for EvaluateEventType.%s", t));
+            assertThat(CHECK_MAP).withFailMessage(() -> String.format("No test entry for EvaluateEventType.%s", t)).containsKey(t);
         }
     }
 }

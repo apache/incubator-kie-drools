@@ -36,7 +36,7 @@ import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 
 public class SmileRandomForestPredictionTest {
@@ -81,11 +81,10 @@ public class SmileRandomForestPredictionTest {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
-        assertEquals(STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
 
         Model result = (Model) processInstance.variables();
-        assertEquals(2, result.toMap().size());
-        assertEquals("predicted value", result.toMap().get("s"));
-
+        assertThat(result.toMap()).hasSize(2)
+                .containsEntry("s", "predicted value");
     }
 }

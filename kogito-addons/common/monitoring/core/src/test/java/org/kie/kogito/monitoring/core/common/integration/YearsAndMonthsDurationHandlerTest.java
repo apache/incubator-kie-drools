@@ -26,7 +26,7 @@ import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.YearsAnd
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class YearsAndMonthsDurationHandlerTest extends AbstractQuantilesTest<YearsAndMonthsDurationHandler> {
 
@@ -51,7 +51,7 @@ public class YearsAndMonthsDurationHandlerTest extends AbstractQuantilesTest<Yea
         handler.record("decision", ENDPOINT_NAME, period);
 
         // Assert
-        assertTrue(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX)
-                .summary().mean() >= 5);
+        assertThat(registry.find(ENDPOINT_NAME + DecisionConstants.DECISIONS_NAME_SUFFIX)
+                .summary().mean()).isGreaterThanOrEqualTo(5);
     }
 }

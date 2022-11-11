@@ -35,9 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.v1.CloudEventBuilder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KnativeEventingMessagePayloadDecoratorTest {
 
@@ -60,12 +58,12 @@ class KnativeEventingMessagePayloadDecoratorTest {
                 .withData("{\"mykey\": \"myvalue\"}".getBytes(StandardCharsets.UTF_8))
                 .build();
         final String ceMarshalled = decoratorSpy.decorate(mapper.writeValueAsString(ce));
-        assertNotNull(ceMarshalled);
+        assertThat(ceMarshalled).isNotNull();
         final CloudEvent ceOverride = mapper.readValue(ceMarshalled, CloudEvent.class);
-        assertNotNull(ceOverride);
-        assertEquals("knative-eventing", ceOverride.getExtension(CloudEventExtensionConstants.ADDONS));
-        assertEquals("12345", ceOverride.getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID));
-        assertEquals(2, ceOverride.getExtensionNames().size());
+        assertThat(ceOverride).isNotNull();
+        assertThat(ceOverride.getExtension(CloudEventExtensionConstants.ADDONS)).isEqualTo("knative-eventing");
+        assertThat(ceOverride.getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID)).isEqualTo("12345");
+        assertThat(ceOverride.getExtensionNames()).hasSize(2);
     }
 
     @Test
@@ -87,11 +85,11 @@ class KnativeEventingMessagePayloadDecoratorTest {
                 .withData("{\"mykey\": \"myvalue\"}".getBytes(StandardCharsets.UTF_8))
                 .build();
         final String ceMarshalled = decoratorSpy.decorate(mapper.writeValueAsString(ce));
-        assertNotNull(ceMarshalled);
+        assertThat(ceMarshalled).isNotNull();
         final CloudEvent ceOverride = mapper.readValue(ceMarshalled, CloudEvent.class);
-        assertNotNull(ceOverride);
-        assertEquals("54321", ceOverride.getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID));
-        assertEquals(1, ceOverride.getExtensionNames().size());
+        assertThat(ceOverride).isNotNull();
+        assertThat(ceOverride.getExtension(CloudEventExtensionConstants.PROCESS_ROOT_PROCESS_ID)).isEqualTo("54321");
+        assertThat(ceOverride.getExtensionNames()).hasSize(1);
     }
 
     @Test
@@ -104,7 +102,7 @@ class KnativeEventingMessagePayloadDecoratorTest {
                 break;
             }
         }
-        assertTrue(found);
+        assertThat(found).isTrue();
     }
 
     @Test
@@ -126,10 +124,10 @@ class KnativeEventingMessagePayloadDecoratorTest {
                 .withData("{\"mykey\": \"myvalue\"}".getBytes(StandardCharsets.UTF_8))
                 .build();
         final String ceMarshalled = decoratorSpy.decorate(mapper.writeValueAsString(ce));
-        assertNotNull(ceMarshalled);
+        assertThat(ceMarshalled).isNotNull();
         final CloudEvent ceOverride = mapper.readValue(ceMarshalled, CloudEvent.class);
-        assertNotNull(ceOverride);
-        assertEquals(1, ceOverride.getExtensionNames().size());
+        assertThat(ceOverride).isNotNull();
+        assertThat(ceOverride.getExtensionNames()).hasSize(1);
     }
 
     @Test
@@ -151,9 +149,9 @@ class KnativeEventingMessagePayloadDecoratorTest {
                 .withData("{\"mykey\": \"myvalue\"}".getBytes(StandardCharsets.UTF_8))
                 .build();
         final String ceMarshalled = decoratorSpy.decorate(mapper.writeValueAsString(ce));
-        assertNotNull(ceMarshalled);
+        assertThat(ceMarshalled).isNotNull();
         final CloudEvent ceOverride = mapper.readValue(ceMarshalled, CloudEvent.class);
-        assertNotNull(ceOverride);
-        assertEquals(1, ceOverride.getExtensionNames().size());
+        assertThat(ceOverride).isNotNull();
+        assertThat(ceOverride.getExtensionNames()).hasSize(1);
     }
 }

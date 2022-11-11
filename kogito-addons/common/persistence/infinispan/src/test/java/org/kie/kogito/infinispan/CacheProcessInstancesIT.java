@@ -44,7 +44,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ERROR;
@@ -145,7 +144,7 @@ class CacheProcessInstancesIT {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
-        assertEquals(STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
 
         assertThat(process.instances().size()).isOne();
 
@@ -156,9 +155,9 @@ class CacheProcessInstancesIT {
         List<WorkItem> workItems = processInstance.workItems(asJohn);
         assertThat(workItems).hasSize(1);
         WorkItem workItem = workItems.get(0);
-        assertEquals("john", workItem.getParameters().get("ActorId"));
+        assertThat(workItem.getParameters()).containsEntry("ActorId", "john");
         processInstance.completeWorkItem(workItem.getId(), null, asJohn);
-        assertEquals(STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_COMPLETED);
         assertThat(process.instances().size()).isZero();
     }
 

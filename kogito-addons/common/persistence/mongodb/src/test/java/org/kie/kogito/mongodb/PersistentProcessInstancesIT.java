@@ -42,8 +42,6 @@ import com.mongodb.client.model.Filters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
 import static org.mockito.Mockito.any;
@@ -67,16 +65,16 @@ class PersistentProcessInstancesIT extends TestHelper {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
 
         processInstance.start();
-        assertEquals(STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
 
         MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), false);
 
-        assertThat(mongodbInstance.size()).isOne();
-        assertThat(mongodbInstance.size()).isEqualTo(process.instances().size());
+        assertThat(mongodbInstance.size()).isOne()
+                .isEqualTo(process.instances().size());
 
         Optional<?> findById = mongodbInstance.findById(processInstance.id());
         BpmnProcessInstance found = (BpmnProcessInstance) findById.get();
-        assertNotNull(found, "ProcessInstanceDocument cannot be null");
+        assertThat(found).as("ProcessInstanceDocument cannot be null").isNotNull();
         assertThat(found.id()).isEqualTo(processInstance.id());
         assertThat(found.description()).isEqualTo("User Task");
         assertThat(found.variables().toMap()).containsExactly(entry("test", "test"));
@@ -84,7 +82,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         assertThat(mongodbInstance.values().size()).isOne();
 
         ProcessInstance<?> readOnlyPI = mongodbInstance.findById(processInstance.id(), ProcessInstanceReadMode.READ_ONLY).get();
-        assertNotNull(readOnlyPI, "ProcessInstanceDocument cannot be null");
+        assertThat(readOnlyPI).as("ProcessInstanceDocument cannot be null").isNotNull();
         assertThat(mongodbInstance.values(ProcessInstanceReadMode.READ_ONLY).size()).isOne();
 
         mongodbInstance.remove(processInstance.id());

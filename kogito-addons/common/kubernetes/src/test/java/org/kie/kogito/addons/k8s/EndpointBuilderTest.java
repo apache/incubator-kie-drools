@@ -26,8 +26,7 @@ import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.ServicePortBuilder;
 import io.fabric8.kubernetes.api.model.ServiceSpecBuilder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class EndpointBuilderTest {
 
@@ -100,7 +99,7 @@ class EndpointBuilderTest {
 
         testCases.forEach((s, e) -> {
             final Endpoint endpoint = builder.buildFrom(s);
-            assertEquals(e, endpoint.getUrl(), "Failed to assert test case for service " + s.getMetadata().getName());
+            assertThat(endpoint.getUrl()).as("Failed to assert test case for service " + s.getMetadata().getName()).isEqualTo(e);
         });
     }
 
@@ -117,11 +116,10 @@ class EndpointBuilderTest {
                         .build())
                 .build();
         final Endpoint endpoint = new EndpointBuilder().buildFrom(multiplePorts);
-        assertEquals("http://127.0.0.1:8080", endpoint.getUrl());
-        assertFalse(endpoint.getSecondaryURLs().isEmpty());
-        assertEquals(1, endpoint.getSecondaryURLs().size());
-        assertEquals("http://127.0.0.1:8775", endpoint.getSecondaryUrl("randomport"));
-        assertFalse(endpoint.getLabels().isEmpty());
+        assertThat(endpoint.getUrl()).isEqualTo("http://127.0.0.1:8080");
+        assertThat(endpoint.getSecondaryURLs()).hasSize(1);
+        assertThat(endpoint.getSecondaryUrl("randomport")).isEqualTo("http://127.0.0.1:8775");
+        assertThat(endpoint.getLabels()).isNotEmpty();
     }
 
     @Test
@@ -138,12 +136,11 @@ class EndpointBuilderTest {
                         .build())
                 .build();
         final Endpoint endpoint = new EndpointBuilder().buildFrom(multiplePorts);
-        assertEquals("https://127.0.0.1:8443", endpoint.getUrl());
-        assertFalse(endpoint.getSecondaryURLs().isEmpty());
-        assertEquals(2, endpoint.getSecondaryURLs().size());
-        assertEquals("http://127.0.0.1:8080", endpoint.getSecondaryUrl("http"));
-        assertEquals("http://127.0.0.1:8778", endpoint.getSecondaryUrl("randomport"));
-        assertFalse(endpoint.getLabels().isEmpty());
+        assertThat(endpoint.getUrl()).isEqualTo("https://127.0.0.1:8443");
+        assertThat(endpoint.getSecondaryURLs()).hasSize(2);
+        assertThat(endpoint.getSecondaryUrl("http")).isEqualTo("http://127.0.0.1:8080");
+        assertThat(endpoint.getSecondaryUrl("randomport")).isEqualTo("http://127.0.0.1:8778");
+        assertThat(endpoint.getLabels()).isNotEmpty();
     }
 
     @Test
@@ -160,11 +157,10 @@ class EndpointBuilderTest {
                         .build())
                 .build();
         final Endpoint endpoint = new EndpointBuilder().buildFrom(multiplePorts);
-        assertEquals("http://127.0.0.1:8181", endpoint.getUrl());
-        assertFalse(endpoint.getSecondaryURLs().isEmpty());
-        assertEquals(2, endpoint.getSecondaryURLs().size());
-        assertEquals("http://127.0.0.1:8080", endpoint.getSecondaryUrl("http"));
-        assertEquals("https://127.0.0.1:8443", endpoint.getSecondaryUrl("https"));
-        assertFalse(endpoint.getLabels().isEmpty());
+        assertThat(endpoint.getUrl()).isEqualTo("http://127.0.0.1:8181");
+        assertThat(endpoint.getSecondaryURLs()).hasSize(2);
+        assertThat(endpoint.getSecondaryUrl("http")).isEqualTo("http://127.0.0.1:8080");
+        assertThat(endpoint.getSecondaryUrl("https")).isEqualTo("https://127.0.0.1:8443");
+        assertThat(endpoint.getLabels()).isNotEmpty();
     }
 }

@@ -17,7 +17,6 @@ package org.kie.kogito.explainability;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,6 +29,7 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.model.ModelIdentifier;
 import org.kie.kogito.explainability.model.PredictInput;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.explainability.model.ModelIdentifier.RESOURCE_ID_SEPARATOR;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -57,9 +57,9 @@ public class DecisionExplainabilityResourceExecutorTest {
 
         ModelIdentifier modelIdentifier = new ModelIdentifier("dmn", String.format("%s%s%s", namespace, RESOURCE_ID_SEPARATOR, name));
         DecisionModel decisionModelResponse = executor.getDecisionModel(decisionModels, modelIdentifier);
-        Assertions.assertNotNull(decisionModelResponse);
-        Assertions.assertEquals(namespace, decisionModelResponse.getDMNModel().getNamespace());
-        Assertions.assertEquals(name, decisionModelResponse.getDMNModel().getName());
+        assertThat(decisionModelResponse).isNotNull();
+        assertThat(decisionModelResponse.getDMNModel().getNamespace()).isEqualTo(namespace);
+        assertThat(decisionModelResponse.getDMNModel().getName()).isEqualTo(name);
     }
 
     @Test
@@ -70,8 +70,8 @@ public class DecisionExplainabilityResourceExecutorTest {
 
         PredictInput notADMNModelPredictInput = new PredictInput(notADMNModelIdentifier, null);
         PredictInput DMNModelPredictInput = new PredictInput(DMNModelIdentifier, null);
-        Assertions.assertFalse(executor.acceptRequest(notADMNModelPredictInput));
-        Assertions.assertTrue(executor.acceptRequest(DMNModelPredictInput));
+        assertThat(executor.acceptRequest(notADMNModelPredictInput)).isFalse();
+        assertThat(executor.acceptRequest(DMNModelPredictInput)).isTrue();
     }
 
     private DMNRuntime generateDMNRuntime(String namespace, String name) {

@@ -25,7 +25,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -53,8 +53,8 @@ public class MetricsProcessEventListenerTest {
         eventListener.afterProcessStarted(processStartedEvent);
 
         // Assert
-        assertEquals(2, registry.find("kogito_process_instance_running_total")
+        assertThat(registry.find("kogito_process_instance_running_total")
                 .gauge()
-                .value());
+                .value()).isEqualTo(2);
     }
 }

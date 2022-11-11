@@ -25,8 +25,7 @@ import org.kie.kogito.tracing.event.TracingTestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class DecisionModelMetadataTest {
 
@@ -34,15 +33,14 @@ class DecisionModelMetadataTest {
     public void testDeserialization() throws JsonProcessingException {
         String toRead = TracingTestUtils.readResourceAsString("/decisionmodelmetadata.json");
         ModelMetadata retrieved = new ObjectMapper().readValue(toRead, ModelMetadata.class);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof DecisionModelMetadata);
+        assertThat(retrieved).isInstanceOf(DecisionModelMetadata.class);
     }
 
     @Test
     public void testSerialization() throws JsonProcessingException {
         ModelMetadata modelMetadata = getDecisionModelMetadata(new Random().nextInt(5));
         String retrieved = new ObjectMapper().writeValueAsString(modelMetadata);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
     }
 
     private ModelMetadata getDecisionModelMetadata(int id) {
