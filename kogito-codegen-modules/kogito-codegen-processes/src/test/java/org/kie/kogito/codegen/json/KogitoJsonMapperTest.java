@@ -30,8 +30,7 @@ import org.kie.kogito.codegen.data.Person;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KogitoJsonMapperTest {
 
@@ -66,8 +65,8 @@ public class KogitoJsonMapperTest {
             }
         });
 
-        assertEquals(input.size(), output.size());
-        assertTrue(input.containsAll(output));
+        assertThat(output).hasSameSizeAs(input);
+        assertThat(input).containsAll(output);
     }
 
     public static class MyUnit {
@@ -119,7 +118,7 @@ public class KogitoJsonMapperTest {
             }
         });
 
-        assertEquals(input, output.get(0));
+        assertThat(output.get(0)).isEqualTo(input);
     }
 
     public static class AnotherUnit {

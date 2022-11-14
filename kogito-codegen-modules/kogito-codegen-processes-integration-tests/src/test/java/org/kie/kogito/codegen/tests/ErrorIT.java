@@ -34,7 +34,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.process.impl.ProcessTestUtils.assertState;
 
 public class ErrorIT extends AbstractCodegenIT {
@@ -112,7 +111,7 @@ public class ErrorIT extends AbstractCodegenIT {
 
         assertState(processInstance, ProcessInstance.STATE_ABORTED);
 
-        assertTrue(completedNodesNames.contains("task"));
+        assertThat(completedNodesNames).contains("task");
     }
 
     @Test
@@ -152,7 +151,7 @@ public class ErrorIT extends AbstractCodegenIT {
 
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
-        assertTrue(completedNames.containsAll(Arrays.asList("task", "subprocess-task")));
+        assertThat(completedNames).containsAll(Arrays.asList("task", "subprocess-task"));
     }
 
     public void addProcessEventListener(Application app, KogitoProcessEventListener listener) {

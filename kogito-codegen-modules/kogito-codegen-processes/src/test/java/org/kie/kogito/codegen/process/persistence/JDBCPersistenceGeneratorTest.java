@@ -29,7 +29,6 @@ import org.kie.kogito.codegen.process.persistence.marshaller.ReflectionMarshalle
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.JDBC_PERSISTENCE_TYPE;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.KOGITO_PERSISTENCE_TYPE;
 import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.hasDataIndexProto;
@@ -47,7 +46,7 @@ class JDBCPersistenceGeneratorTest extends AbstractPersistenceGeneratorTest {
                 context,
                 protoGenerator,
                 new ReflectionMarshallerGenerator(context));
-        assertEquals(persistenceType(), persistenceGenerator.persistenceType());
+        assertThat(persistenceGenerator.persistenceType()).isEqualTo(persistenceType());
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
         if (context.hasDI()) {

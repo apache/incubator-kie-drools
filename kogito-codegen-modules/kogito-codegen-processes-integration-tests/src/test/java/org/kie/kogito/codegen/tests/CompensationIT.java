@@ -24,8 +24,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.kie.kogito.process.impl.ProcessTestUtils.assertState;
 
 class CompensationIT extends AbstractCodegenIT {
@@ -41,8 +39,8 @@ class CompensationIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
         Model model = (Model) processInstance.variables();
-        assertEquals(2, model.toMap().get("counter"));
-        assertEquals(1, model.toMap().get("counter2"));
+        assertThat(model.toMap()).containsEntry("counter", 2)
+                .containsEntry("counter2", 1);
     }
 
     @Test
@@ -56,8 +54,8 @@ class CompensationIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
         Model model = (Model) processInstance.variables();
-        assertEquals(1, model.toMap().get("counter"));
-        assertEquals(2, model.toMap().get("counter2"));
+        assertThat(model.toMap()).containsEntry("counter", 1)
+                .containsEntry("counter2", 2);
     }
 
     @Test
@@ -71,8 +69,8 @@ class CompensationIT extends AbstractCodegenIT {
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
 
         Model model = (Model) processInstance.variables();
-        assertEquals(2, model.toMap().get("counter"));
-        assertEquals(2, model.toMap().get("counter2"));
+        assertThat(model.toMap()).containsEntry("counter", 2)
+                .containsEntry("counter2", 2);
     }
 
     @Test
@@ -86,7 +84,7 @@ class CompensationIT extends AbstractCodegenIT {
 
         Model model = (Model) processInstance.variables();
         assertState(processInstance, ProcessInstance.STATE_COMPLETED);
-        assertNull(model.toMap().get("x"));
+        assertThat(model.toMap().get("x")).isNull();
     }
 
 }

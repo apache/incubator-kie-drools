@@ -35,7 +35,7 @@ import org.kie.kogito.process.impl.Sig;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -96,8 +96,8 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(1).containsKeys("customerId");
-        assertThat(result.toMap().get("customerId")).isNotNull().isEqualTo("CUS-00998877");
+        assertThat(result.toMap()).hasSize(1).containsKeys("customerId")
+                .containsEntry("customerId", "CUS-00998877");
     }
 
     @Test
@@ -121,13 +121,13 @@ public class MessageIntermediateEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(1).containsKeys("customerId");
-        assertThat(result.toMap().get("customerId")).isNotNull().isEqualTo("CUS-00998877");
+        assertThat(result.toMap()).hasSize(1).containsKeys("customerId")
+                .containsEntry("customerId", "CUS-00998877");
     }
 
     @Test
     public void malformedShouldThrowException() {
-        assertThrows(ProcessCodegenException.class, () -> {
+        assertThatExceptionOfType(ProcessCodegenException.class).isThrownBy(() -> {
             generateCodeProcessesOnly("messageevent/EventNodeMalformed.bpmn2");
         });
     }

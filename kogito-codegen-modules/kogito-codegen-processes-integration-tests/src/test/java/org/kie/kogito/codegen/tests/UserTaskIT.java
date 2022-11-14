@@ -51,10 +51,7 @@ import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class UserTaskIT extends AbstractCodegenIT {
 
@@ -88,18 +85,18 @@ public class UserTaskIT extends AbstractCodegenIT {
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
 
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
-        assertEquals("FirstTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
-        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
-        assertEquals("SecondTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("SecondTask");
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -125,22 +122,22 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         String workItemId = workItems.get(0).getId();
         processInstance.transitionWorkItem(workItemId, new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -164,36 +161,36 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Claim.ID, wi.getPhase());
-        assertEquals(Claim.STATUS, wi.getPhaseStatus());
-        assertEquals(2, wi.getResults().size());
-        assertEquals("value", wi.getResults().get("test"));
-        assertEquals("john", wi.getResults().get("ActorId"));
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Claim.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Claim.STATUS);
+        assertThat(wi.getResults()).hasSize(2)
+                .containsEntry("test", "value")
+                .containsEntry("ActorId", "john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
@@ -217,37 +214,37 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         final String wiId = wi.getId();
 
-        assertThrows(InvalidTransitionException.class, () -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID, null, securityPolicy)));
+        assertThatExceptionOfType(InvalidTransitionException.class).isThrownBy(() -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Release.ID, null, securityPolicy)));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
@@ -284,36 +281,36 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Claim.ID, wi.getPhase());
-        assertEquals(Claim.STATUS, wi.getPhaseStatus());
-        assertEquals(2, wi.getResults().size());
-        assertEquals("value", wi.getResults().get("test"));
-        assertEquals("john", wi.getResults().get("ActorId"));
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Claim.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Claim.STATUS);
+        assertThat(wi.getResults()).hasSize(2)
+                .containsEntry("test", "value")
+                .containsEntry("ActorId", "john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
@@ -339,34 +336,34 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         final String wiId = wi.getId();
         IdentityProvider identity = new StaticIdentityProvider("kelly");
 
         // if user that is not authorized to work on work item both listing and getting by id should apply it
         List<WorkItem> securedWorkItems = processInstance.workItems(SecurityPolicy.of(identity));
-        assertEquals(0, securedWorkItems.size());
-        assertThrows(WorkItemNotFoundException.class, () -> processInstance.workItem(wiId, SecurityPolicy.of(identity)));
+        assertThat(securedWorkItems).isEmpty();
+        assertThatExceptionOfType(WorkItemNotFoundException.class).isThrownBy(() -> processInstance.workItem(wiId, SecurityPolicy.of(identity)));
 
-        assertThrows(NotAuthorizedException.class, () -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Claim.ID, null, identity)));
+        assertThatExceptionOfType(NotAuthorizedException.class).isThrownBy(() -> processInstance.transitionWorkItem(wiId, new HumanTaskTransition(Claim.ID, null, identity)));
 
-        assertThrows(NotAuthorizedException.class, () -> processInstance.completeWorkItem(wiId, null, SecurityPolicy.of(identity)));
+        assertThatExceptionOfType(NotAuthorizedException.class).isThrownBy(() -> processInstance.completeWorkItem(wiId, null, SecurityPolicy.of(identity)));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         IdentityProvider identityCorrect = new StaticIdentityProvider("john");
 
@@ -374,12 +371,12 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
@@ -399,7 +396,7 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         StaticIdentityProvider identity = new StaticIdentityProvider("admin", Collections.singletonList("managers"));
         SecurityPolicy policy = SecurityPolicy.of(identity);
@@ -407,23 +404,23 @@ public class UserTaskIT extends AbstractCodegenIT {
         processInstance.workItems(policy);
 
         List<WorkItem> workItems = processInstance.workItems(policy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         HumanTaskTransition transition = new HumanTaskTransition(Complete.ID, null, identity);
         processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
         // actual owner of the first task is excluded owner on the second task so won't find it
         workItems = processInstance.workItems(policy);
-        assertEquals(0, workItems.size());
+        assertThat(workItems).isEmpty();
 
         identity = new StaticIdentityProvider("john", Collections.singletonList("managers"));
         policy = SecurityPolicy.of(identity);
 
         workItems = processInstance.workItems(policy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
 
         transition = new HumanTaskTransition(Complete.ID, null, identity);
         processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -440,7 +437,7 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         StaticIdentityProvider identity = new StaticIdentityProvider("admin", Collections.singletonList("managers"));
         SecurityPolicy policy = SecurityPolicy.of(identity);
@@ -448,22 +445,22 @@ public class UserTaskIT extends AbstractCodegenIT {
         processInstance.workItems(policy);
 
         List<WorkItem> workItems = processInstance.workItems(policy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, policy);
         // actual owner of the first task is excluded owner on the second task so won't find it
         workItems = processInstance.workItems(policy);
-        assertEquals(0, workItems.size());
+        assertThat(workItems).isEmpty();
 
         identity = new StaticIdentityProvider("john", Collections.singletonList("managers"));
         policy = SecurityPolicy.of(identity);
 
         workItems = processInstance.workItems(policy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, policy);
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -484,21 +481,21 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         String firstSecondTaskNodeInstanceId = wi.getNodeInstanceId();
 
@@ -507,13 +504,13 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         processInstance.triggerNode("UserTask_2");
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
         // since it was triggered again it must have different node instance id
-        assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
+        assertThat(wi.getNodeInstanceId()).isNotEqualTo(firstSecondTaskNodeInstanceId);
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -537,21 +534,21 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         String firstSecondTaskNodeInstanceId = wi.getNodeInstanceId();
 
@@ -559,13 +556,13 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
         // since it was retriggered it must have different node instance id
-        assertNotEquals(firstSecondTaskNodeInstanceId, wi.getNodeInstanceId());
+        assertThat(wi.getNodeInstanceId()).isNotEqualTo(firstSecondTaskNodeInstanceId);
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
@@ -589,61 +586,61 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Claim.ID, wi.getPhase());
-        assertEquals(Claim.STATUS, wi.getPhaseStatus());
-        assertEquals(2, wi.getResults().size());
-        assertEquals("value", wi.getResults().get("test"));
-        assertEquals("john", wi.getResults().get("ActorId"));
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Claim.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Claim.STATUS);
+        assertThat(wi.getResults()).hasSize(2)
+                .containsEntry("test", "value")
+                .containsEntry("ActorId", "john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Release.ID, null, securityPolicy));
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Release.ID, wi.getPhase());
-        assertEquals(Release.STATUS, wi.getPhaseStatus());
-        assertEquals(2, wi.getResults().size());
-        assertEquals("value", wi.getResults().get("test"));
-        assertEquals("john", wi.getResults().get("ActorId"));
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Release.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Release.STATUS);
+        assertThat(wi.getResults()).hasSize(2)
+                .containsEntry("test", "value")
+                .containsEntry("ActorId", "john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Claim.ID, Collections.singletonMap("test", "value"), securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("FirstTask", wi.getName());
-        assertEquals(Claim.ID, wi.getPhase());
-        assertEquals(Claim.STATUS, wi.getPhaseStatus());
-        assertEquals(2, wi.getResults().size());
-        assertEquals("value", wi.getResults().get("test"));
-        assertEquals("john", wi.getResults().get("ActorId"));
+        assertThat(wi.getName()).isEqualTo("FirstTask");
+        assertThat(wi.getPhase()).isEqualTo(Claim.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Claim.STATUS);
+        assertThat(wi.getResults()).hasSize(2)
+                .containsEntry("test", "value")
+                .containsEntry("ActorId", "john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         wi = workItems.get(0);
-        assertEquals("SecondTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
-        assertEquals(0, wi.getResults().size());
+        assertThat(wi.getName()).isEqualTo("SecondTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getResults()).isEmpty();
 
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
@@ -657,7 +654,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         Class<?> resourceClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
-        assertNotNull(resourceClazz);
+        assertThat(resourceClazz).isNotNull();
 
         Field approverField = resourceClazz.getDeclaredField("approver");
         assertThat(approverField).isNotNull();
@@ -672,18 +669,18 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         ProcessInstance processInstance = p.createInstance(m);
         processInstance.start();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         final Model updates = p.createModel();
         parameters = new HashMap<>();
         parameters.put("approver", "mary");
         updates.fromMap(parameters);
         // updating readonly variable should fail
-        assertThrows(VariableViolationException.class, () -> processInstance.updateVariables(updates));
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> processInstance.updateVariables(updates));
 
         processInstance.abort();
 
-        assertEquals(KogitoProcessInstance.STATE_ABORTED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Test
@@ -693,9 +690,9 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         Class<?> resourceClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
-        assertNotNull(resourceClazz);
+        assertThat(resourceClazz).isNotNull();
         // internal variables are not exposed on the model
-        assertThrows(NoSuchFieldException.class, () -> resourceClazz.getDeclaredField("approver"));
+        assertThatExceptionOfType(NoSuchFieldException.class).isThrownBy(() -> resourceClazz.getDeclaredField("approver"));
 
         Process<? extends Model> p = app.get(Processes.class).processById("approvals");
 
@@ -705,11 +702,11 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         processInstance.abort();
 
-        assertEquals(KogitoProcessInstance.STATE_ABORTED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Test
@@ -724,7 +721,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         Map<String, Object> parameters = new HashMap<>();
         m.fromMap(parameters);
 
-        assertThrows(VariableViolationException.class, () -> {
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> {
             ProcessInstance<?> processInstance = p.createInstance(m);
             processInstance.start();
         });
@@ -737,21 +734,21 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(app).isNotNull();
 
         Class<?> modelClazz = Class.forName("org.acme.travels.ApprovalsModel", true, testClassLoader());
-        assertNotNull(modelClazz);
-        assertNotNull(modelClazz.getDeclaredField("decision"));
-        assertNotNull(modelClazz.getDeclaredField("approver"));
+        assertThat(modelClazz).isNotNull();
+        assertThat(modelClazz.getDeclaredField("decision")).isNotNull();
+        assertThat(modelClazz.getDeclaredField("approver")).isNotNull();
 
         Class<?> inputModelClazz = Class.forName("org.acme.travels.ApprovalsModelInput", true, testClassLoader());
-        assertNotNull(inputModelClazz);
-        assertNotNull(inputModelClazz.getDeclaredField("approver"));
-        assertThrows(NoSuchFieldException.class, () -> inputModelClazz.getDeclaredField("decision"));
-        assertThrows(NoSuchFieldException.class, () -> inputModelClazz.getDeclaredField("id"));
+        assertThat(inputModelClazz).isNotNull();
+        assertThat(inputModelClazz.getDeclaredField("approver")).isNotNull();
+        assertThatExceptionOfType(NoSuchFieldException.class).isThrownBy(() -> inputModelClazz.getDeclaredField("decision"));
+        assertThatExceptionOfType(NoSuchFieldException.class).isThrownBy(() -> inputModelClazz.getDeclaredField("id"));
 
         Class<?> outputModelClazz = Class.forName("org.acme.travels.ApprovalsModelOutput", true, testClassLoader());
-        assertNotNull(outputModelClazz);
-        assertNotNull(outputModelClazz.getDeclaredField("decision"));
-        assertNotNull(outputModelClazz.getDeclaredField("id"));
-        assertThrows(NoSuchFieldException.class, () -> outputModelClazz.getDeclaredField("approver"));
+        assertThat(outputModelClazz).isNotNull();
+        assertThat(outputModelClazz.getDeclaredField("decision")).isNotNull();
+        assertThat(outputModelClazz.getDeclaredField("id")).isNotNull();
+        assertThatExceptionOfType(NoSuchFieldException.class).isThrownBy(() -> outputModelClazz.getDeclaredField("approver"));
 
         Process<? extends Model> p = app.get(Processes.class).processById("approvals");
 
@@ -762,11 +759,11 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         processInstance.abort();
 
-        assertEquals(KogitoProcessInstance.STATE_ABORTED, processInstance.status());
+        assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Test
@@ -788,16 +785,16 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
-        assertEquals("Hello", workItems.get(0).getName());
-        assertEquals("john", workItems.get(0).getParameters().get("personName"));
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("Hello");
+        assertThat(workItems.get(0).getParameters()).containsEntry("personName", "john");
 
         processInstance.completeWorkItem(workItems.get(0).getId(), Collections.singletonMap("personAge", 50), securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
         Model output = (Model) processInstance.variables();
         Person person = (Person) output.toMap().get("person");
-        assertEquals(50, person.getAge());
+        assertThat(person.getAge()).isEqualTo(50);
     }
 
     @Test
@@ -823,19 +820,19 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         // find the process instance by ID and verify business key
         Optional<? extends ProcessInstance<? extends Model>> processInstanceByBussinesKey = p.instances().findById(processInstance.id());
-        assertThat(processInstanceByBussinesKey.isPresent()).isTrue();
+        assertThat(processInstanceByBussinesKey).isPresent();
         assertThat(processInstanceByBussinesKey.get().businessKey()).isEqualTo(businessKey);
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
-        assertEquals("FirstTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
-        assertEquals("SecondTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("SecondTask");
 
         processInstance.completeWorkItem(workItems.get(0).getId(), null, securityPolicy);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);

@@ -24,7 +24,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.process.impl.ProcessTestUtils.assertState;
 
 class BusinessKeyIT extends AbstractCodegenIT {
@@ -38,6 +37,6 @@ class BusinessKeyIT extends AbstractCodegenIT {
         Process<? extends Model> p = app.get(Processes.class).processById("TestCase.ActivationAdHoc");
         ProcessInstance<?> processInstance = p.createInstance(businessKey, p.createModel());
         assertState(processInstance, ProcessInstance.STATE_PENDING);
-        assertEquals(businessKey, processInstance.businessKey());
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
     }
 }

@@ -30,9 +30,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.codegen.core.CustomDashboardGeneratedUtils.domainFunction;
 import static org.kie.kogito.codegen.core.CustomDashboardGeneratedUtils.operationalFunction;
 import static org.kie.kogito.codegen.core.DashboardGeneratedFileUtils.DOMAIN_DASHBOARD_PREFIX;
@@ -47,8 +45,7 @@ class CustomDashboardGeneratedUtilsTest {
                 .withAppPaths(AppPaths.fromTestDir(new File(".").toPath()))
                 .build();
         Collection<GeneratedFile> retrieved = CustomDashboardGeneratedUtils.loadCustomGrafanaDashboardsList(context);
-        assertNotNull(retrieved);
-        assertEquals(2, retrieved.size()); // 2 = valid *.json files inside src/test/META-INF/dashboards
+        assertThat(retrieved).hasSize(2); // 2 = valid *.json files inside src/test/META-INF/dashboards
     }
 
     @ParameterizedTest
@@ -65,7 +62,7 @@ class CustomDashboardGeneratedUtilsTest {
         CustomDashboardGeneratedUtils.addToGeneratedFiles(dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX),
                 toPopulate, operationalFunction,
                 OPERATIONAL_DASHBOARD_PREFIX);
-        assertEquals(dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX).size(), toPopulate.size());
+        assertThat(toPopulate).hasSameSizeAs(dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX));
         String sourcePath = dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX).get(0).getSourcePath();
         String originalFileName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
         validateGeneratedFile(toPopulate.iterator().next(),
@@ -75,7 +72,7 @@ class CustomDashboardGeneratedUtilsTest {
         CustomDashboardGeneratedUtils.addToGeneratedFiles(dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX), toPopulate,
                 domainFunction,
                 DOMAIN_DASHBOARD_PREFIX);
-        assertEquals(dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX).size(), toPopulate.size());
+        assertThat(toPopulate).hasSameSizeAs(dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX));
         sourcePath = dashboardJsonsMap.get(DOMAIN_DASHBOARD_PREFIX).get(0).getSourcePath();
         originalFileName = sourcePath.substring(sourcePath.lastIndexOf(File.separator) + 1);
         validateGeneratedFile(toPopulate.iterator().next(),
@@ -93,17 +90,17 @@ class CustomDashboardGeneratedUtilsTest {
                 CollectedResourceProducer.fromPaths(context.getAppPaths().getPaths());
         Map<String, List<Resource>> retrieved =
                 CustomDashboardGeneratedUtils.getMappedJsons(collectedResources);
-        assertEquals(2, retrieved.size()); // 2 = valid *.json files inside src/test/META-INF/dashboards
-        assertEquals(1, retrieved.get(OPERATIONAL_DASHBOARD_PREFIX).size());
-        assertEquals(1, retrieved.get(DOMAIN_DASHBOARD_PREFIX).size());
+        assertThat(retrieved).hasSize(2); // 2 = valid *.json files inside src/test/META-INF/dashboards
+        assertThat(retrieved.get(OPERATIONAL_DASHBOARD_PREFIX)).hasSize(1);
+        assertThat(retrieved.get(DOMAIN_DASHBOARD_PREFIX)).hasSize(1);
     }
 
     private void validateGeneratedFile(GeneratedFile toValidate, String dashboardType, String originalFileName) {
-        assertEquals("DASHBOARD", toValidate.type().name());
-        assertEquals("STATIC_HTTP_RESOURCE", toValidate.category().name());
+        assertThat(toValidate.type().name()).isEqualTo("DASHBOARD");
+        assertThat(toValidate.category().name()).isEqualTo("STATIC_HTTP_RESOURCE");
         String fileName =
                 toValidate.relativePath().substring(toValidate.relativePath().lastIndexOf(File.separator) + 1);
-        assertTrue(fileName.startsWith(dashboardType));
-        assertEquals(originalFileName, fileName);
+        assertThat(fileName).startsWith(dashboardType)
+                .isEqualTo(originalFileName);
     }
 }

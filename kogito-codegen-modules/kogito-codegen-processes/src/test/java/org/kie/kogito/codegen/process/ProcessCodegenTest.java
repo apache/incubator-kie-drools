@@ -31,7 +31,6 @@ import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_OPERATIONAL_DASHBOARDS;
 
 class ProcessCodegenTest {
@@ -105,7 +104,7 @@ class ProcessCodegenTest {
                 .filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))
                 .collect(Collectors.toList());
 
-        assertEquals(expectedDashboards, dashboards.size());
+        assertThat(dashboards).hasSize(expectedDashboards);
 
         return dashboards;
     }

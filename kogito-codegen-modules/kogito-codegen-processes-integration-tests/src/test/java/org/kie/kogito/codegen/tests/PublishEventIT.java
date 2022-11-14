@@ -49,8 +49,6 @@ import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PublishEventIT extends AbstractCodegenIT {
 
@@ -76,7 +74,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).hasSize(1);
 
         DataEvent<?> event = events.get(0);
         assertThat(event).isInstanceOf(ProcessInstanceDataEvent.class);
@@ -123,7 +121,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         List<DataEvent<?>> events = publisher.extract();
 
         Optional<DataEvent<?>> event = events.stream().filter(ProcessInstanceDataEvent.class::isInstance).findFirst();
-        assertTrue(event.isPresent(), "There is no process instance event being published");
+        assertThat(event).as("There is no process instance event being published").isPresent();
         ProcessInstanceDataEvent processDataEvent = (ProcessInstanceDataEvent) event.orElseThrow();
         assertThat(processDataEvent.getKogitoProcessInstanceId()).isNotNull();
         assertThat(processDataEvent.getKogitoProcessInstanceVersion()).isEqualTo("1.0");
@@ -169,7 +167,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
@@ -178,8 +176,8 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
         List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
-        assertEquals(1, workItems.size());
-        assertEquals("FirstTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
@@ -187,7 +185,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(3);
+        assertThat(events).hasSize(3);
         body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("HumanTaskNode", "HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
@@ -197,8 +195,8 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertUserTaskInstanceEvent(events.get(2), "FirstTask", null, "1", "Completed", "UserTasksProcess", "First Task");
 
         workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
-        assertEquals(1, workItems.size());
-        assertEquals("SecondTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("SecondTask");
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
@@ -206,7 +204,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
         body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 2);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("HumanTaskNode", "EndNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
@@ -238,7 +236,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
@@ -247,8 +245,8 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
         List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
-        assertEquals(1, workItems.size());
-        assertEquals("FirstTask", workItems.get(0).getName());
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
@@ -256,7 +254,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
         events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
         body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", ProcessInstance.STATE_ABORTED);
         assertThat(body.getNodeInstances()).hasSize(1).extractingResultOf("getNodeType").contains("HumanTaskNode");
         assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
@@ -288,7 +286,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         List<DataEvent<?>> events = publisher.extract();
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
         assertThat(body.getRoles()).hasSize(2).contains("employees", "managers");
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
@@ -326,12 +324,12 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
-        assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
-        assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y")
+                .isNotNull().containsEntry("y", "new value")
+                .isNotNull().containsEntry("x", "a");
 
         List<DataEvent<?>> events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
-        assertThat(events).isNotNull().hasSize(2);
+        assertThat(events).hasSize(2);
 
         DataEvent<?> parent = null;
         DataEvent<?> child = null;
@@ -439,7 +437,7 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ERROR);
         List<DataEvent<?>> events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).hasSize(1);
 
         ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
         assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "WorkItemNode");
@@ -458,7 +456,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
 
         events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).hasSize(1);
         body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 5);
         assertThat(body.getError()).isNotNull();
         assertThat(body.getError().getErrorMessage()).contains("java.lang.NullPointerException");
@@ -472,15 +470,15 @@ public class PublishEventIT extends AbstractCodegenIT {
         uow.end();
 
         events = publisher.extract().stream().filter(ProcessInstanceDataEvent.class::isInstance).collect(Collectors.toList());
-        assertThat(events).isNotNull().hasSize(1);
+        assertThat(events).hasSize(1);
 
         body = assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 2);
         assertThat(body.getError()).isNull();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(1).containsKeys("s");
-        assertThat(result.toMap().get("s")).isNotNull().isEqualTo("Goodbye Hello john!!");
+        assertThat(result.toMap()).hasSize(1).containsKeys("s")
+                .isNotNull().containsEntry("s", "Goodbye Hello john!!");
     }
 
     /*

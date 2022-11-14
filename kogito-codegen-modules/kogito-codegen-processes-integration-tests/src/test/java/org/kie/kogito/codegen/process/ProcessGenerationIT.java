@@ -73,16 +73,13 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.AbstractProcess;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_ENTER;
 import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * ProcessGenerationTest iterates over all the process files in the project except the
@@ -136,21 +133,21 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
         RuleFlowProcess current = (RuleFlowProcess) process.get();
 
-        assertNotNull(current);
-        assertEquals(expected.getId(), current.getId(), "Id");
-        assertEquals(expected.getName(), current.getName(), "Name");
-        assertEquals(expected.getPackageName(), current.getPackageName(), "PackageName");
-        assertEquals(expected.getVisibility(), current.getVisibility(), "Visibility");
-        assertEquals(expected.getType(), current.getType(), "Type");
-        assertEquals(expected.isAutoComplete(), current.isAutoComplete(), "AutoComplete");
-        assertEquals(expected.isDynamic(), current.isDynamic(), "Dynamic");
+        assertThat(current).isNotNull();
+        assertThat(current.getId()).as("Id").isEqualTo(expected.getId());
+        assertThat(current.getName()).as("Name").isEqualTo(expected.getName());
+        assertThat(current.getPackageName()).as("PackageName").isEqualTo(expected.getPackageName());
+        assertThat(current.getVisibility()).as("Visibility").isEqualTo(expected.getVisibility());
+        assertThat(current.getType()).as("Type").isEqualTo(expected.getType());
+        assertThat(current.isAutoComplete()).as("AutoComplete").isEqualTo(expected.isAutoComplete());
+        assertThat(current.isDynamic()).as("Dynamic").isEqualTo(expected.isDynamic());
         if (expected.getVersion() != null) {
-            assertEquals(expected.getVersion(), current.getVersion());
+            assertThat(current.getVersion()).isEqualTo(expected.getVersion());
         } else {
-            assertEquals("1.0", current.getVersion());
+            assertThat(current.getVersion()).isEqualTo("1.0");
         }
-        assertEquals(expected.getImports(), current.getImports(), "Imports");
-        assertEquals(expected.getFunctionImports(), current.getFunctionImports(), "FunctionImports");
+        assertThat(current.getImports()).as("Imports").isEqualTo(expected.getImports());
+        assertThat(current.getFunctionImports()).as("FunctionImports").isEqualTo(expected.getFunctionImports());
         assertMetadata(expected.getMetaData(), current.getMetaData(), IGNORED_PROCESS_META);
 
         assertNodes(expected.getNodes(), current.getNodes());
@@ -163,7 +160,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             testProcessGeneration("messageevent/EventNodeMalformed.bpmn2");
             fail("Expected ProcessCodegenException");
         } catch (ProcessCodegenException e) {
-            assertNotNull(e);
+            assertThat(e).isNotNull();
         }
     }
 
@@ -192,20 +189,20 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
     }
 
     private static void assertNodes(Node[] expected, Node[] current) {
-        assertEquals(expected.length, current.length);
+        assertThat(current).hasSameSizeAs(expected);
         Stream.of(expected).forEach(eNode -> {
             Optional<Node> cNode = Stream.of(current).filter(c -> c.getId() == eNode.getId()).findFirst();
-            assertTrue(cNode.isPresent(), "Missing node " + eNode.getName());
+            assertThat(cNode).as("Missing node " + eNode.getName()).isPresent();
             assertNode(eNode, cNode.get());
         });
     }
 
     private static final BiConsumer<Node, Node> nodeAsserter = (expected, current) -> {
-        assertEquals(expected.getId(), current.getId());
+        assertThat(current.getId()).isEqualTo(expected.getId());
         if (expected.getName() != null) {
-            assertEquals(expected.getName(), current.getName());
+            assertThat(current.getName()).isEqualTo(expected.getName());
         } else {
-            assertNotNull(current.getName(), current.getClass().getName());
+            assertThat(current.getName()).as(current.getClass().getName()).isNotNull();
         }
         assertConnections(expected.getIncomingConnections(), current.getIncomingConnections());
         assertConnections(expected.getOutgoingConnections(), current.getOutgoingConnections());
@@ -213,8 +210,8 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
     };
 
     private static final BiConsumer<Node, Node> extendedNodeAsserter = (eNode, cNode) -> {
-        assertTrue(ExtendedNodeImpl.class.isAssignableFrom(eNode.getClass()));
-        assertTrue(ExtendedNodeImpl.class.isAssignableFrom(cNode.getClass()));
+        assertThat(ExtendedNodeImpl.class.isAssignableFrom(eNode.getClass())).isTrue();
+        assertThat(ExtendedNodeImpl.class.isAssignableFrom(cNode.getClass())).isTrue();
         ExtendedNodeImpl expected = (ExtendedNodeImpl) eNode;
         ExtendedNodeImpl current = (ExtendedNodeImpl) cNode;
         assertActions(eNode, expected, current);
@@ -233,9 +230,9 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             }
             try {
                 if (expected.getActions(actionType) == null) {
-                    assertNull(current.getActions(actionType));
+                    assertThat(current.getActions(actionType)).isNull();
                 } else if (!EVENT_NODE_ENTER.equals(actionType) && !EVENT_NODE_EXIT.equals(actionType)) {
-                    assertNotNull(current.getActions(actionType));
+                    assertThat(current.getActions(actionType)).isNotNull();
                     // onEntry and onExit actions are not yet supported
                     //                    assertEquals(expected.getActions(actionType).size(), current.getActions(actionType).size());
                     //                    assertActions(expected.getActions(actionType), current.getActions(actionType));
@@ -247,115 +244,115 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
     }
 
     private static final BiConsumer<Node, Node> startNodeAsserter = (eNode, cNode) -> {
-        assertEquals(StartNode.class, eNode.getClass());
-        assertEquals(StartNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(StartNode.class);
+        assertThat(cNode.getClass()).isEqualTo(StartNode.class);
         StartNode expected = (StartNode) eNode;
         StartNode current = (StartNode) cNode;
-        assertEquals(expected.isInterrupting(), current.isInterrupting(), "Interrupting");
+        assertThat(current.isInterrupting()).as("Interrupting").isEqualTo(expected.isInterrupting());
         assertTriggers(expected.getTriggers(), current.getTriggers());
     };
 
     private static final BiConsumer<Node, Node> endNodeAsserter = (eNode, cNode) -> {
-        assertEquals(EndNode.class, eNode.getClass());
-        assertEquals(EndNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(EndNode.class);
+        assertThat(cNode.getClass()).isEqualTo(EndNode.class);
         EndNode expected = (EndNode) eNode;
         EndNode current = (EndNode) cNode;
-        assertEquals(expected.isTerminate(), current.isTerminate(), "Terminate");
+        assertThat(current.isTerminate()).as("Terminate").isEqualTo(expected.isTerminate());
     };
 
     private static final BiConsumer<Node, Node> stateBasedNodeAsserter = (eNode, cNode) -> {
-        assertTrue(StateBasedNode.class.isAssignableFrom(eNode.getClass()));
-        assertTrue(StateBasedNode.class.isAssignableFrom(cNode.getClass()));
+        assertThat(StateBasedNode.class.isAssignableFrom(eNode.getClass())).isTrue();
+        assertThat(StateBasedNode.class.isAssignableFrom(cNode.getClass())).isTrue();
         StateBasedNode expected = (StateBasedNode) eNode;
         StateBasedNode current = (StateBasedNode) cNode;
-        assertEquals(expected.getBoundaryEvents(), current.getBoundaryEvents(), "BoundaryEvents");
+        assertThat(current.getBoundaryEvents()).as("BoundaryEvents").isEqualTo(expected.getBoundaryEvents());
         assertTimers(expected.getTimers(), current.getTimers());
     };
 
     private static final BiConsumer<Node, Node> workItemNodeAsserter = (eNode, cNode) -> {
-        assertTrue(WorkItemNode.class.isAssignableFrom(eNode.getClass()));
-        assertTrue(WorkItemNode.class.isAssignableFrom(cNode.getClass()));
+        assertThat(WorkItemNode.class.isAssignableFrom(eNode.getClass())).isTrue();
+        assertThat(WorkItemNode.class.isAssignableFrom(cNode.getClass())).isTrue();
         WorkItemNode expected = (WorkItemNode) eNode;
         WorkItemNode current = (WorkItemNode) cNode;
-        assertEquals(expected.isWaitForCompletion(), current.isWaitForCompletion(), "WaitForCompletion");
-        assertEquals(expected.getInMappings().size(), current.getInMappings().size(), "inMappings");
+        assertThat(current.isWaitForCompletion()).as("WaitForCompletion").isEqualTo(expected.isWaitForCompletion());
+        assertThat(current.getInMappings()).as("inMappings").hasSameSizeAs(expected.getInMappings());
         expected.getInMappings().forEach((k, v) -> assertEquals(v, current.getInMapping(k), "inMapping " + k));
-        assertEquals(expected.getOutMappings().size(), current.getOutMappings().size(), "outMappings");
+        assertThat(current.getOutMappings()).as("outMappings").hasSameSizeAs(expected.getOutMappings());
         expected.getOutMappings().forEach((k, v) -> assertEquals(v, current.getOutMapping(k), "outMapping " + k));
 
     };
 
     private static final BiConsumer<Node, Node> humanTaskNodeAsserter = (eNode, cNode) -> {
-        assertEquals(HumanTaskNode.class, eNode.getClass());
-        assertEquals(HumanTaskNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(HumanTaskNode.class);
+        assertThat(cNode.getClass()).isEqualTo(HumanTaskNode.class);
         HumanTaskNode expected = (HumanTaskNode) eNode;
         HumanTaskNode current = (HumanTaskNode) cNode;
-        assertEquals(expected.getSwimlane(), current.getSwimlane(), "Swimlane");
+        assertThat(current.getSwimlane()).as("Swimlane").isEqualTo(expected.getSwimlane());
     };
 
     private static final BiConsumer<Node, Node> eventNodeAsserter = (eNode, cNode) -> {
-        assertTrue(EventNode.class.isAssignableFrom(eNode.getClass()));
-        assertTrue(EventNode.class.isAssignableFrom(cNode.getClass()));
+        assertThat(EventNode.class.isAssignableFrom(eNode.getClass())).isTrue();
+        assertThat(EventNode.class.isAssignableFrom(cNode.getClass())).isTrue();
         EventNode expected = (EventNode) eNode;
         EventNode current = (EventNode) cNode;
-        assertEquals(expected.getScope(), current.getScope(), "Scope");
-        assertEquals(expected.getType(), current.getType(), "Type");
-        assertEquals(expected.getVariableName(), current.getVariableName(), "VariableName");
-        assertEquals(expected.getEventFilters().size(), current.getEventFilters().size(), "EventFilters");
+        assertThat(current.getScope()).as("Scope").isEqualTo(expected.getScope());
+        assertThat(current.getType()).as("Type").isEqualTo(expected.getType());
+        assertThat(current.getVariableName()).as("VariableName").isEqualTo(expected.getVariableName());
+        assertThat(current.getEventFilters()).as("EventFilters").hasSameSizeAs(expected.getEventFilters());
     };
 
     private static final BiConsumer<Node, Node> boundaryEventNodeAsserter = (eNode, cNode) -> {
-        assertEquals(BoundaryEventNode.class, eNode.getClass());
-        assertEquals(BoundaryEventNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(BoundaryEventNode.class);
+        assertThat(cNode.getClass()).isEqualTo(BoundaryEventNode.class);
         BoundaryEventNode expected = (BoundaryEventNode) eNode;
         BoundaryEventNode current = (BoundaryEventNode) cNode;
-        assertEquals(expected.getAttachedToNodeId(), current.getAttachedToNodeId(), "AttachedToNodeId");
+        assertThat(current.getAttachedToNodeId()).as("AttachedToNodeId").isEqualTo(expected.getAttachedToNodeId());
     };
 
     private static final BiConsumer<Node, Node> splitNodeAsserter = (eNode, cNode) -> {
-        assertEquals(Split.class, eNode.getClass());
-        assertEquals(Split.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(Split.class);
+        assertThat(cNode.getClass()).isEqualTo(Split.class);
         Split expected = (Split) eNode;
         Split current = (Split) cNode;
-        assertEquals(expected.getType(), current.getType(), "Type");
+        assertThat(current.getType()).as("Type").isEqualTo(expected.getType());
     };
 
     private static final BiConsumer<Node, Node> joinNodeAsserter = (eNode, cNode) -> {
-        assertEquals(Join.class, eNode.getClass());
-        assertEquals(Join.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(Join.class);
+        assertThat(cNode.getClass()).isEqualTo(Join.class);
         Join expected = (Join) eNode;
         Join current = (Join) cNode;
-        assertEquals(expected.getType(), current.getType(), "Type");
-        assertEquals(expected.getN(), current.getN(), "N");
+        assertThat(current.getType()).as("Type").isEqualTo(expected.getType());
+        assertThat(current.getN()).as("N").isEqualTo(expected.getN());
     };
 
     private static final BiConsumer<Node, Node> actionNodeAsserter = (eNode, cNode) -> {
-        assertEquals(ActionNode.class, eNode.getClass());
-        assertEquals(ActionNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(ActionNode.class);
+        assertThat(cNode.getClass()).isEqualTo(ActionNode.class);
         ActionNode expected = (ActionNode) eNode;
         ActionNode current = (ActionNode) cNode;
         if (expected.getAction() != null) {
-            assertNotNull(current.getAction());
-            assertEquals(expected.getAction().getName(), current.getAction().getName(), ACTION);
+            assertThat(current.getAction()).isNotNull();
+            assertThat(current.getAction().getName()).as(ACTION).isEqualTo(expected.getAction().getName());
         }
     };
 
     private static final BiConsumer<Node, Node> milestoneNodeAsserter = (eNode, cNode) -> {
-        assertEquals(MilestoneNode.class, eNode.getClass());
-        assertEquals(MilestoneNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(MilestoneNode.class);
+        assertThat(cNode.getClass()).isEqualTo(MilestoneNode.class);
     };
 
     private static final BiConsumer<Node, Node> compositeNodeAsserter = (eNode, cNode) -> {
-        assertTrue(CompositeNode.class.isAssignableFrom(eNode.getClass()));
-        assertTrue(CompositeNode.class.isAssignableFrom(cNode.getClass()));
+        assertThat(CompositeNode.class.isAssignableFrom(eNode.getClass())).isTrue();
+        assertThat(CompositeNode.class.isAssignableFrom(cNode.getClass())).isTrue();
         CompositeNode expected = (CompositeNode) eNode;
         CompositeNode current = (CompositeNode) cNode;
         assertNodes(expected.getNodes(), current.getNodes());
     };
 
     private static final BiConsumer<Node, Node> ruleSetNodeAsserter = (eNode, cNode) -> {
-        assertEquals(RuleSetNode.class, eNode.getClass());
-        assertEquals(RuleSetNode.class, cNode.getClass());
+        assertThat(eNode.getClass()).isEqualTo(RuleSetNode.class);
+        assertThat(cNode.getClass()).isEqualTo(RuleSetNode.class);
         RuleSetNode expected = (RuleSetNode) eNode;
         RuleSetNode current = (RuleSetNode) cNode;
         expected.getInMappings()
@@ -401,36 +398,35 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
     private static void assertMetadata(Map<String, Object> expected, Map<String, Object> current, Collection<String> ignoredKeys) {
         if (expected == null) {
-            assertNull(current);
+            assertThat(current).isNull();
             return;
         }
         expected.remove("CorrelationSubscriptions");
-        assertNotNull(current);
-        assertEquals(expected.keySet()
+        assertThat(current).hasSize((int) expected.keySet()
                 .stream()
                 .filter(k -> ignoredKeys == null || !ignoredKeys.contains(k))
-                .count(), current.size());
+                .count());
         expected.keySet()
                 .stream()
                 .filter(k -> ignoredKeys == null || !ignoredKeys.contains(k))
-                .forEach(k -> assertEquals(expected.get(k), current.get(k), "Metadata " + k));
+                .forEach(k -> assertThat(current).as("Metadata " + k).containsEntry(k, expected.get(k)));
     }
 
     private static void assertConnections(Map<String, List<Connection>> expectedConnections, Map<String, List<Connection>> currentConnections) {
-        assertEquals(expectedConnections.size(), currentConnections.size());
+        assertThat(currentConnections).hasSameSizeAs(expectedConnections);
         expectedConnections.forEach((type, expectedByType) -> {
-            assertTrue(currentConnections.containsKey(type), "Node does not have connections of type: " + type);
+            assertThat(currentConnections).as("Node does not have connections of type: " + type).containsKey(type);
             List<Connection> currentByType = currentConnections.get(type);
             expectedByType.forEach(expected -> {
                 Optional<Connection> current = currentByType
                         .stream()
                         .filter(c -> equalConnectionId(expected, c))
                         .findFirst();
-                assertTrue(current.isPresent(), "Connection is present for " + expected.getMetaData().get("UniqueId"));
-                assertEquals(expected.getFromType(), current.get().getFromType(), "FromType");
-                assertEquals(expected.getFrom().getId(), current.get().getFrom().getId(), "From.Id");
-                assertEquals(expected.getToType(), current.get().getToType(), "ToType");
-                assertEquals(expected.getTo().getId(), current.get().getTo().getId(), "To.Id");
+                assertThat(current).as("Connection is present for " + expected.getMetaData().get("UniqueId")).isPresent();
+                assertThat(current.get().getFromType()).as("FromType").isEqualTo(expected.getFromType());
+                assertThat(current.get().getFrom().getId()).as("From.Id").isEqualTo(expected.getFrom().getId());
+                assertThat(current.get().getToType()).as("ToType").isEqualTo(expected.getToType());
+                assertThat(current.get().getTo().getId()).as("To.Id").isEqualTo(expected.getTo().getId());
             });
         });
     }
@@ -449,15 +445,14 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
     private static void assertTriggers(List<Trigger> expected, List<Trigger> current) {
         try {
             if (expected == null) {
-                assertNull(current);
+                assertThat(current).isNull();
                 return;
             }
-            assertNotNull(current);
-            assertEquals(expected.size(), current.size());
+            assertThat(current).hasSameSizeAs(expected);
             for (int i = 0; i < expected.size(); i++) {
                 Trigger e = expected.get(i);
                 Trigger c = current.get(i);
-                e.getInMappings().forEach((k, v) -> assertEquals(v, c.getInMapping(k), "InMapping for " + k));
+                e.getInMappings().forEach((k, v) -> assertThat(c.getInMapping(k)).as("InMapping for " + k).isEqualTo(v));
                 assertDataAssociations(e.getInAssociations(), c.getInAssociations());
             }
         } catch (Throwable e) {
@@ -467,17 +462,17 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
     private static void assertDataAssociations(List<DataAssociation> expected, List<DataAssociation> current) {
         if (expected == null) {
-            assertNull(current);
+            assertThat(current).isNull();
             return;
         }
         if (expected.isEmpty()) {
-            assertEquals(0, current.size());
+            assertThat(current).isEmpty();
         } else {
-            assertEquals(expected.size(), current.size());
+            assertThat(current).hasSameSizeAs(expected);
             for (int i = 0; i < expected.size(); i++) {
-                assertEquals(expected.get(i).getSources(), current.get(i).getSources(), "Sources");
-                assertEquals(expected.get(i).getTarget(), current.get(i).getTarget(), "Target");
-                assertEquals(expected.get(i).getTransformation(), current.get(i).getTransformation(), "Transformation");
+                assertThat(current.get(i).getSources()).as("Sources").isEqualTo(expected.get(i).getSources());
+                assertThat(current.get(i).getTarget()).as("Target").isEqualTo(expected.get(i).getTarget());
+                assertThat(current.get(i).getTransformation()).as("Transformation").isEqualTo(expected.get(i).getTransformation());
                 assertAssignments(expected.get(i).getAssignments(), current.get(i).getAssignments());
             }
         }
@@ -485,42 +480,41 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
 
     private static void assertAssignments(List<Assignment> expected, List<Assignment> current) {
         if (expected == null) {
-            assertNull(current);
+            assertThat(current).isNull();
             return;
         }
-        assertEquals(expected.size(), current.size());
+        assertThat(current).hasSameSizeAs(expected);
         for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i).getFrom(), current.get(i).getFrom(), "From");
-            assertEquals(expected.get(i).getDialect(), current.get(i).getDialect(), "Dialect");
-            assertEquals(expected.get(i).getTo(), current.get(i).getTo(), "To");
+            assertThat(current.get(i).getFrom()).as("From").isEqualTo(expected.get(i).getFrom());
+            assertThat(current.get(i).getDialect()).as("Dialect").isEqualTo(expected.get(i).getDialect());
+            assertThat(current.get(i).getTo()).as("To").isEqualTo(expected.get(i).getTo());
         }
     }
 
     private static void assertTimers(Map<Timer, DroolsAction> expected, Map<Timer, DroolsAction> current) {
         if (expected == null) {
-            assertNull(current);
+            assertThat(current).isNull();
             return;
         }
-        assertNotNull(current);
-        assertEquals(expected.size(), current.size(), "Size");
+        assertThat(current).as("Size").hasSameSizeAs(expected);
         expected.forEach((expectedTimer, expectedAction) -> {
             Optional<Timer> currentTimer = current.keySet().stream().filter(c -> c.getId() == expectedTimer.getId()).findFirst();
-            assertTrue(currentTimer.isPresent());
-            assertEquals(expectedTimer.getPeriod(), currentTimer.get().getPeriod(), "Period");
-            assertEquals(expectedTimer.getDate(), currentTimer.get().getDate(), "Date");
-            assertEquals(expectedTimer.getDelay(), currentTimer.get().getDelay(), "Delay");
-            assertEquals(expectedTimer.getTimeType(), currentTimer.get().getTimeType(), "TimeType");
+            assertThat(currentTimer).isPresent();
+            assertThat(currentTimer.get().getPeriod()).as("Period").isEqualTo(expectedTimer.getPeriod());
+            assertThat(currentTimer.get().getDate()).as("Date").isEqualTo(expectedTimer.getDate());
+            assertThat(currentTimer.get().getDelay()).as("Delay").isEqualTo(expectedTimer.getDelay());
+            assertThat(currentTimer.get().getTimeType()).as("TimeType").isEqualTo(expectedTimer.getTimeType());
             DroolsAction currentAction = current.get(currentTimer.get());
             if (expectedAction == null) {
-                assertNull(currentAction);
+                assertThat(currentAction).isNull();
                 return;
             }
-            assertNotNull(currentAction);
-            assertEquals(expectedAction.getName(), currentAction.getName(), "DroolsAction name");
+            assertThat(currentAction).isNotNull();
+            assertThat(currentAction.getName()).as("DroolsAction name").isEqualTo(expectedAction.getName());
             if (expectedAction.getMetaData(ACTION) == null) {
-                assertNull(currentAction.getMetaData(ACTION));
+                assertThat(currentAction.getMetaData(ACTION)).isNull();
             } else {
-                assertNotNull(currentAction.getMetaData(ACTION));
+                assertThat(currentAction.getMetaData(ACTION)).isNotNull();
             }
         });
     }
@@ -530,31 +524,31 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             return;
         }
         if (eNode.getConstraints() == null) {
-            assertNull(cNode.getConstraints());
+            assertThat(cNode.getConstraints()).isNull();
             return;
         }
         Map<ConnectionRef, Constraint> expected = eNode.getConstraints();
         Map<ConnectionRef, Constraint> current = cNode.getConstraints();
-        assertEquals(expected.size(), current.size());
+        assertThat(current).hasSameSizeAs(expected);
         expected.forEach((conn, constraint) -> {
             Optional<Map.Entry<ConnectionRef, Constraint>> currentEntry = current.entrySet()
                     .stream()
                     .filter(e -> e.getKey().getConnectionId() == null && conn.getConnectionId() == null ||
                             e.getKey().getConnectionId().equals(conn.getConnectionId()))
                     .findFirst();
-            assertTrue(currentEntry.isPresent());
+            assertThat(currentEntry).isPresent();
             ConnectionRef currentConn = currentEntry.get().getKey();
-            assertEquals(conn.getNodeId(), currentConn.getNodeId());
-            assertEquals(conn.getToType(), currentConn.getToType());
+            assertThat(currentConn.getNodeId()).isEqualTo(conn.getNodeId());
+            assertThat(currentConn.getToType()).isEqualTo(conn.getToType());
             Constraint currentConstraint = currentEntry.get().getValue();
             if (constraint == null) {
-                assertNull(currentConstraint);
+                assertThat(currentConstraint).isNull();
             } else {
-                assertNotNull(currentConstraint);
-                assertEquals(constraint.getPriority(), currentConstraint.getPriority());
-                assertEquals(constraint.getDialect(), currentConstraint.getDialect());
-                assertEquals(conn.getConnectionId(), currentConstraint.getName());
-                assertEquals(CONNECTION_DEFAULT_TYPE, currentConstraint.getType());
+                assertThat(currentConstraint).isNotNull();
+                assertThat(currentConstraint.getPriority()).isEqualTo(constraint.getPriority());
+                assertThat(currentConstraint.getDialect()).isEqualTo(constraint.getDialect());
+                assertThat(currentConstraint.getName()).isEqualTo(conn.getConnectionId());
+                assertThat(currentConstraint.getType()).isEqualTo(CONNECTION_DEFAULT_TYPE);
             }
         });
     }

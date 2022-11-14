@@ -39,7 +39,6 @@ import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CallActivityTaskIT extends AbstractCodegenIT {
 
@@ -64,9 +63,9 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
-        assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
-        assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y")
+                .containsEntry("y", "new value")
+                .containsEntry("x", "a");
     }
 
     @Test
@@ -88,9 +87,9 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
-        assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
-        assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y")
+                .containsEntry("y", "new value")
+                .containsEntry("x", "a");
     }
 
     @Test
@@ -118,7 +117,7 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(4).containsKeys("x", "y", "list", "listOut");
-        assertThat((List<?>) result.toMap().get("listOut")).isNotNull().hasSize(2);
+        assertThat((List<?>) result.toMap().get("listOut")).hasSize(2);
 
     }
 
@@ -143,14 +142,14 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKeys("person");
 
         Person person = (Person) result.toMap().get("person");
-        assertEquals("new value", person.getName());
+        assertThat(person.getName()).isEqualTo("new value");
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("MyTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("MyTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
 
@@ -180,16 +179,16 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKeys("person");
 
         PersonWithAddress person = (PersonWithAddress) result.toMap().get("person");
-        assertEquals("john", person.getName());
-        assertEquals("test", person.getAddress().getStreet());
-        assertEquals("new value", person.getAddress().getCity());
+        assertThat(person.getName()).isEqualTo("john");
+        assertThat(person.getAddress().getStreet()).isEqualTo("test");
+        assertThat(person.getAddress().getCity()).isEqualTo("new value");
 
         List<WorkItem> workItems = processInstance.workItems(securityPolicy);
-        assertEquals(1, workItems.size());
+        assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
-        assertEquals("MyTask", wi.getName());
-        assertEquals(Active.ID, wi.getPhase());
-        assertEquals(Active.STATUS, wi.getPhaseStatus());
+        assertThat(wi.getName()).isEqualTo("MyTask");
+        assertThat(wi.getPhase()).isEqualTo(Active.ID);
+        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
 
@@ -215,8 +214,8 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
-        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y");
-        assertThat(result.toMap().get("y")).isNotNull().isEqualTo("new value");
-        assertThat(result.toMap().get("x")).isNotNull().isEqualTo("a");
+        assertThat(result.toMap()).hasSize(2).containsKeys("x", "y")
+                .containsEntry("y", "new value")
+                .containsEntry("x", "a");
     }
 }
