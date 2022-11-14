@@ -144,7 +144,7 @@ public class NamedConsequenceVisitor {
         }
         BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
         createVariables(ruleVariablesBlock, packageModel, context);
-        return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
+        return new Consequence(context).createCall(namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }
 
     static class InvalidNamedConsequenceException extends RuntimeException {

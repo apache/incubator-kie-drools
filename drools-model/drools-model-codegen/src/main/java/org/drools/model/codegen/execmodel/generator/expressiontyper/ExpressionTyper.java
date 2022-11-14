@@ -453,10 +453,10 @@ public class ExpressionTyper {
             context.addUsedDeclarations(name);
             return of(new TypedExpression(new NameExpr(name)));
 
-        } else if(packageModel.getGlobals().containsKey(name)){
+        } else if (ruleContext.getGlobals().containsKey(name)){
             Expression plusThis = new NameExpr(name);
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
+            return of(new TypedExpression(plusThis, ruleContext.getGlobals().get(name)));
 
         } else if (isPositional || ruleContext.isQuery()) {
             String unificationVariable = ruleContext.getOrCreateUnificationId(name);
@@ -1133,9 +1133,9 @@ public class ExpressionTyper {
             return of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
         }
 
-        if (packageModel.getGlobals().containsKey(firstName)) {
+        if (ruleContext.getGlobals().containsKey(firstName)) {
             context.addUsedDeclarations(firstName);
-            return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
+            return of(new TypedExpressionCursor(new NameExpr(firstName), ruleContext.getGlobals().get(firstName)));
         }
 
         final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);

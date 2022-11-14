@@ -166,11 +166,7 @@ public class RuleContext {
             String unitVarName = unitVar.getName();
             Class<?> resolvedType = unitVar.isDataSource() ? unitVar.getDataSourceParameterType() : rawType( unitVar.getType() );
             addRuleUnitVar( unitVarName, resolvedType );
-
-            packageModel.addGlobal( unitVarName, unitVar.getType() );
-            if ( unitVar.isDataSource() ) {
-                packageModel.addEntryPoint( unitVarName );
-            }
+            packageModel.addRuleUnitVariable( ruleUnitDescr.getSimpleName(), unitVar );
         }
         return ruleUnitDescr;
     }
@@ -277,7 +273,7 @@ public class RuleContext {
     }
 
     public void addGlobalDeclarations() {
-        Map<String, java.lang.reflect.Type> globals = packageModel.getGlobals();
+        Map<String, java.lang.reflect.Type> globals = getGlobals();
 
         // also takes globals defined in different packages imported with a wildcard
         packageModel.getImports().stream()
@@ -292,6 +288,25 @@ public class RuleContext {
             definedVars.put(ks.getKey(), ks.getKey());
             addDeclaration(new DeclarationSpec(ks.getKey(), ks.getValue(), true));
         }
+    }
+
+    public Map<String, java.lang.reflect.Type> getGlobals() {
+        Map<String, java.lang.reflect.Type> pkgGlobals = packageModel.getGlobals();
+        if (ruleUnitDescr == null) {
+            return pkgGlobals;
+        }
+        Map<String, java.lang.reflect.Type> ruleUnitGlobals = packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName());
+        if (pkgGlobals.isEmpty()) {
+            return ruleUnitGlobals;
+        }
+        Map<String, java.lang.reflect.Type> globals = new HashMap<>();
+        globals.putAll(pkgGlobals);
+        globals.putAll(ruleUnitGlobals);
+        return globals;
+    }
+
+    public boolean hasEntryPoint(String name) {
+        return packageModel.hasEntryPoint(name) || (ruleUnitDescr != null && packageModel.hasEntryPointForUnit(name, ruleUnitDescr.getSimpleName()));
     }
 
     public Optional<DeclarationSpec> getOOPathDeclarationById(String id) {

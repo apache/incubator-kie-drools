@@ -263,7 +263,7 @@ public class ModelGenerator {
         createVariables(ruleVariablesBlock, packageModel, context);
         ruleMethod.setBody(ruleVariablesBlock);
 
-        MethodCallExpr executeCall = new Consequence(context).createCall(ruleDescr, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
+        MethodCallExpr executeCall = new Consequence(context).createCall(ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
         buildCall.addArgument( executeCall );
 
         ruleVariablesBlock.addStatement(new AssignExpr(ruleVar, buildCall, AssignExpr.Operator.ASSIGN));
@@ -467,7 +467,7 @@ public class ModelGenerator {
     public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
             boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
-            if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.getQueryParameterByName(decl.getBindingId()).isPresent()) {
+            if (!context.getGlobals().containsKey(decl.getBindingId()) && !context.getQueryParameterByName(decl.getBindingId()).isPresent()) {
                 addVariable(block, decl, context, domainClass);
             }
         }

@@ -174,7 +174,7 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( packageModel.hasEntryPoint( bindingId ) ) {
+        if ( context.hasEntryPoint( bindingId ) ) {
             return of( createEntryPointCall(bindingId) );
         }
         if ( contextHasDeclaration( bindingId ) ) {

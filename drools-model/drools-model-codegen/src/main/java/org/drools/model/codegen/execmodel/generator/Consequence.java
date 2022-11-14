@@ -51,7 +51,6 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.compiler.MissingDependencyError;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -137,7 +136,7 @@ public class Consequence {
         this.packageModel = context.getPackageModel();
     }
 
-    public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
+    public MethodCallExpr createCall(String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {
         BlockStmt ruleConsequence = null;
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.JAVA) {
@@ -255,7 +254,7 @@ public class Consequence {
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
         Set<String> existingDecls = new HashSet<>();
         existingDecls.addAll(context.getAvailableBindings());
-        existingDecls.addAll(packageModel.getGlobals().keySet());
+        existingDecls.addAll(context.getGlobals().keySet());
         if (context.getRuleUnitDescr() != null) {
             existingDecls.addAll(context.getRuleUnitDescr().getUnitVars());
         }
