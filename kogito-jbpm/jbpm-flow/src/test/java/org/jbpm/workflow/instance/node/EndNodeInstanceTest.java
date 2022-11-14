@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class EndNodeInstanceTest extends AbstractBaseTest {
 
@@ -62,6 +62,6 @@ public class EndNodeInstanceTest extends AbstractBaseTest {
 
         MockNodeInstance mockNodeInstance = (MockNodeInstance) processInstance.getNodeInstance(mockNode);
         mockNodeInstance.triggerCompleted();
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }

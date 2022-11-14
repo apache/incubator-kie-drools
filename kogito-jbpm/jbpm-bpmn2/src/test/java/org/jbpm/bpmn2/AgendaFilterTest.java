@@ -18,8 +18,7 @@ package org.jbpm.bpmn2;
 import org.jbpm.bpmn2.objects.Order;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AgendaFilterTest extends JbpmBpmn2TestCase {
 
@@ -33,7 +32,7 @@ public class AgendaFilterTest extends JbpmBpmn2TestCase {
 
         kruntime.startProcess("Ruleflow");
 
-        assertTrue(order.isValid());
+        assertThat(order.isValid()).isTrue();
     }
 
     @Test
@@ -46,6 +45,6 @@ public class AgendaFilterTest extends JbpmBpmn2TestCase {
 
         kruntime.startProcess("Ruleflow", match -> false);
 
-        assertFalse(order.isValid());
+        assertThat(order.isValid()).isFalse();
     }
 }

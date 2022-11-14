@@ -18,7 +18,7 @@ package org.jbpm.bpmn2;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceTest extends JbpmBpmn2TestCase {
 
@@ -32,9 +32,9 @@ public class ResourceTest extends JbpmBpmn2TestCase {
     public void testMultipleProcessInOneFile() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultipleProcessInOneFile.bpmn2");
         KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
         KogitoProcessInstance processInstance2 = kruntime.startProcess("Simple");
-        assertNotNull(processInstance2);
+        assertThat(processInstance2).isNotNull();
     }
 
 }

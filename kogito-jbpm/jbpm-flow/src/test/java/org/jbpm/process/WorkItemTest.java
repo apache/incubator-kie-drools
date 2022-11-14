@@ -47,9 +47,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.workitems.KogitoWorkItemHandlerNotFoundException;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class WorkItemTest extends AbstractBaseTest {
 
@@ -80,8 +79,7 @@ public class WorkItemTest extends AbstractBaseTest {
         } catch (Throwable e) {
 
         }
-        assertEquals(KogitoProcessInstance.STATE_ERROR,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
     }
 
     @Test
@@ -104,8 +102,7 @@ public class WorkItemTest extends AbstractBaseTest {
 
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.actions", parameters);
         String processInstanceId = processInstance.getStringId();
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler(workName,
                 null);
 
@@ -116,8 +113,7 @@ public class WorkItemTest extends AbstractBaseTest {
 
         }
 
-        assertEquals(KogitoProcessInstance.STATE_ABORTED,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Test
@@ -143,11 +139,9 @@ public class WorkItemTest extends AbstractBaseTest {
                 parameters);
 
         Object numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
-        assertNotNull(numberVariable);
-        assertEquals("test", numberVariable);
+        assertThat(numberVariable).isNotNull().isEqualTo("test");
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -181,11 +175,9 @@ public class WorkItemTest extends AbstractBaseTest {
                 parameters);
 
         Object numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
-        assertNotNull(numberVariable);
-        assertEquals("one", numberVariable);
+        assertThat(numberVariable).isNotNull().isEqualTo("one");
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
         parameters = new HashMap<String, Object>();
         parameters.put("UserName",
                 "John Doe");
@@ -196,11 +188,9 @@ public class WorkItemTest extends AbstractBaseTest {
                 parameters);
 
         numberVariable = ((WorkflowProcessInstance) processInstance).getVariable("MyObject");
-        assertNotNull(numberVariable);
-        assertEquals("two", numberVariable);
+        assertThat(numberVariable).isNotNull().isEqualTo("two");
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     private RuleFlowProcess getWorkItemProcess(String processId,

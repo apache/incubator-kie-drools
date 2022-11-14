@@ -40,9 +40,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class RuleSetTest extends AbstractBaseTest {
 
@@ -67,11 +66,11 @@ public class RuleSetTest extends AbstractBaseTest {
         parameters.put("isAdult", false);
 
         KogitoProcessInstance pi = kruntime.startProcess("org.drools.core.process.process", parameters);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
 
         boolean result = (boolean) pi.getVariables().get("isAdult");
 
-        assertTrue(result);
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -80,9 +79,7 @@ public class RuleSetTest extends AbstractBaseTest {
         String modelName = "wrong-name";
         String decisionName = "isAdult";
 
-        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class, () -> createProcess(namespace, modelName, decisionName));
-        assertTrue(illegalStateException.getMessage().contains(namespace));
-        assertTrue(illegalStateException.getMessage().contains(modelName));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> createProcess(namespace, modelName, decisionName)).withMessageContainingAll(namespace, modelName);
     }
 
     private RuleFlowProcess createProcess(String namespace, String modelName, String decisionName) {

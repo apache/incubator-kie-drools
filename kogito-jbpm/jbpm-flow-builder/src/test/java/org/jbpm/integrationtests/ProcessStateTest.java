@@ -34,8 +34,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessStateTest extends AbstractBaseTest {
 
@@ -79,42 +78,42 @@ public class ProcessStateTest extends AbstractBaseTest {
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.state");
         // should be in state A
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         StateNodeInstance stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("StateA", stateInstance.getNodeName());
+        assertThat(stateInstance.getNodeName()).isEqualTo("StateA");
         // signal "toB" so we move to state B
         processInstance.signalEvent("signal", "toB");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("StateB", stateInstance.getNodeName());
+        assertThat(stateInstance.getNodeName()).isEqualTo("StateB");
         // if no constraint specified for a connection,
         // we default to the name of the target node
         // signal "StateA", so we move back to state A
         processInstance.signalEvent("signal", "StateA");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("StateA", stateInstance.getNodeName());
+        assertThat(stateInstance.getNodeName()).isEqualTo("StateA");
         // signal "toC" so we move to state C
         processInstance.signalEvent("signal", "toC");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("StateC", stateInstance.getNodeName());
+        assertThat(stateInstance.getNodeName()).isEqualTo("StateC");
         // signal something completely wrong, this should simply be ignored
         processInstance.signalEvent("signal", "Invalid");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("StateC", stateInstance.getNodeName());
+        assertThat(stateInstance.getNodeName()).isEqualTo("StateC");
         // signal "End", so we move to the end
         processInstance.signalEvent("signal", "End");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(0, nodeInstances.size());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(nodeInstances).isEmpty();
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -168,9 +167,9 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("1", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("1");
     }
 
     @Test
@@ -224,9 +223,9 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("1", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("1");
     }
 
     @Test
@@ -280,9 +279,9 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("2", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("2");
     }
 
     @Test
@@ -339,14 +338,14 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertTrue(list.isEmpty());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(list).isEmpty();
         Person person = new Person("John Doe", 30);
         kruntime.getKieSession().insert(person);
         kruntime.getKieSession().fireAllRules();
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("1", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("1");
     }
 
     @Test
@@ -403,14 +402,14 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertTrue(list.isEmpty());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(list).isEmpty();
         Person person = new Person("John Doe", 20);
         kruntime.getKieSession().insert(person);
         kruntime.getKieSession().fireAllRules();
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("2", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("2");
     }
 
     @Test
@@ -468,13 +467,13 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertTrue(list.isEmpty());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(list).isEmpty();
         Person person = new Person("John Doe", 30);
         kruntime.getKieSession().insert(person);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("1", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("1");
     }
 
     @Test
@@ -532,13 +531,13 @@ public class ProcessStateTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.state");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertTrue(list.isEmpty());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(list).isEmpty();
         Person person = new Person("John Doe", 30);
         kruntime.getKieSession().insert(person);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(1, list.size());
-        assertEquals("2", list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("2");
     }
 
     @Test
@@ -590,21 +589,18 @@ public class ProcessStateTest extends AbstractBaseTest {
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.state");
         // should be in state A
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         StateNodeInstance stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("State", stateInstance.getNodeName());
-        assertEquals(2, list.size());
-        assertTrue(list.contains("Action1a"));
-        assertTrue(list.contains("Action2a"));
+        assertThat(stateInstance.getNodeName()).isEqualTo("State");
+        assertThat(list).hasSize(2).contains("Action1a", "Action2a");
+
         processInstance.signalEvent("signal", "End");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(0, nodeInstances.size());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(4, list.size());
-        assertTrue(list.contains("Action3a"));
-        assertTrue(list.contains("Action4a"));
+        assertThat(nodeInstances).isEmpty();
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(4).contains("Action3a", "Action4a");
     }
 
     @Test
@@ -658,29 +654,28 @@ public class ProcessStateTest extends AbstractBaseTest {
         // start process
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) kruntime.startProcess("org.drools.state");
         // should be in state A
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         Collection<NodeInstance> nodeInstances = processInstance.getNodeInstances();
-        assertEquals(1, nodeInstances.size());
+        assertThat(nodeInstances).hasSize(1);
         StateNodeInstance stateInstance = (StateNodeInstance) nodeInstances.iterator().next();
-        assertEquals("State", stateInstance.getNodeName());
-        assertEquals(0, list.size());
+        assertThat(stateInstance.getNodeName()).isEqualTo("State");
+        assertThat(list).isEmpty();
         try {
             TimeUnit.SECONDS.sleep(4);
         } catch (InterruptedException e) {
         }
-        assertEquals(4, list.size());
-        assertTrue(list.contains("Timer1a"));
-        assertTrue(list.contains("Timer2a"));
+        assertThat(list).hasSize(4).contains("Timer1a", "Timer2a");
+
         processInstance.signalEvent("signal", "End");
         nodeInstances = processInstance.getNodeInstances();
-        assertEquals(0, nodeInstances.size());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(4, list.size());
+        assertThat(nodeInstances).isEmpty();
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(4);
         try {
             TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
         }
-        assertEquals(4, list.size());
+        assertThat(list).hasSize(4);
         kruntime.getKieSession().halt();
     }
 

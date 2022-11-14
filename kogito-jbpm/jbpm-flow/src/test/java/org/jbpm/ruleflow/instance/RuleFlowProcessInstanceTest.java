@@ -25,7 +25,6 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RuleFlowProcessInstanceTest extends AbstractBaseTest {
 
@@ -60,7 +59,7 @@ public class RuleFlowProcessInstanceTest extends AbstractBaseTest {
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime(process);
         KogitoProcessInstance instance = kruntime.startProcess(PROCESS_ID);
-        assertNotNull(instance);
+        assertThat(instance).isNotNull();
     }
 
 }

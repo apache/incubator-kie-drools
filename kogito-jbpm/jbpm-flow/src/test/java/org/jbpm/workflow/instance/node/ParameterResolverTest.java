@@ -16,7 +16,6 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -25,7 +24,7 @@ import org.jbpm.util.PatternConstants;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParameterResolverTest extends AbstractBaseTest {
 
@@ -48,8 +47,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(1, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(1).containsExactly(expected);
     }
 
     @Test
@@ -67,8 +65,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(1, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(1).containsExactly(expected);
     }
 
     @Test
@@ -86,8 +83,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
     @Test
@@ -105,8 +101,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
     @Test
@@ -124,8 +119,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
     @Test
@@ -143,8 +137,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
     @Test
@@ -162,8 +155,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(1, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(1).containsExactly(expected);
     }
 
     @Test
@@ -180,8 +172,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(1, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(1).containsExactly(expected);
     }
 
     @Test
@@ -199,8 +190,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
     @Test
@@ -218,8 +208,7 @@ public class ParameterResolverTest extends AbstractBaseTest {
             foundVariables.add(paramName);
         }
 
-        assertEquals(2, foundVariables.size());
-        assertEquals(Arrays.asList(expected), foundVariables);
+        assertThat(foundVariables).hasSize(2).containsExactly(expected);
     }
 
 }

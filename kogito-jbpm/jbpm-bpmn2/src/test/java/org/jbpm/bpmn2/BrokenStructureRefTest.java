@@ -22,8 +22,7 @@ import org.jbpm.process.core.impl.XmlProcessDumper;
 import org.jbpm.process.core.impl.XmlProcessDumperFactory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BrokenStructureRefTest {
 
@@ -31,11 +30,11 @@ public class BrokenStructureRefTest {
     public void testProcessWithBrokenItemDefinitionUri() throws Exception {
         String inputBpmn = getClass().getResource("/BPMN2-BrokenStructureRef.bpmn2").getPath();
         XmlProcessDumper dumper = XmlProcessDumperFactory.getXmlProcessDumperFactoryService().newXmlProcessDumper();
-        assertNotNull(dumper);
+        assertThat(dumper).isNotNull();
         String processXml = new String(Files.readAllBytes(Paths.get(inputBpmn)));
-        assertNotNull(processXml);
+        assertThat(processXml).isNotNull();
         org.kie.api.definition.process.Process proc = dumper.readProcess(processXml);
-        assertNotNull(proc);
-        assertEquals("BrokenStructureRef", proc.getId());
+        assertThat(proc).isNotNull();
+        assertThat(proc.getId()).isEqualTo("BrokenStructureRef");
     }
 }

@@ -23,8 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ExceptionHandlerPolicyTest {
 
@@ -39,35 +38,35 @@ class ExceptionHandlerPolicyTest {
     @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "(?i)Status code 400", "(.*)code 4[0-9]{2}", "code 4[0-9]{2}" })
     void testExceptionHandlerPolicyFactory(String errorString) {
         Throwable exception = new IllegalStateException("Unknown error, status code 400");
-        assertTrue(test(errorString, exception));
+        assertThat(test(errorString, exception)).isTrue();
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "java.lang.RuntimeException", "Unknown error", "(?i)Status code 400", "(.*)code 4[0-9]{2}", "code 4[0-9]{2}" })
     void testExceptionChainPolicyFactory(String errorString) {
         Throwable exception = new IOException(new RuntimeException("Unknown error, status code 400"));
-        assertTrue(test(errorString, exception));
+        assertThat(test(errorString, exception)).isTrue();
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "[" })
     void testInvalidRegexExceptionHandlerPolicyFactory(String errorString) {
         Throwable exception = new IllegalStateException("Unknown error, status code 400");
-        assertFalse(test(errorString, exception));
+        assertThat(test(errorString, exception)).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "HTTP:500", "500" })
     void testWebExceptionHandlerPolicyFactory(String errorString) {
         Throwable exception = new WorkItemExecutionException("500", "Unknown error");
-        assertTrue(test(errorString, exception));
+        assertThat(test(errorString, exception)).isTrue();
     }
 
     @ParameterizedTest
     @ValueSource(strings = { "HTTP:xyz", "xyz" })
     void testWebExceptionHandlerPolicyFactoryIncorrectFormat(String errorString) {
         Throwable exception = new WorkItemExecutionException("500", "Unknown error");
-        assertFalse(test(errorString, exception));
+        assertThat(test(errorString, exception)).isFalse();
     }
 
     private boolean test(String className, Throwable exception) {

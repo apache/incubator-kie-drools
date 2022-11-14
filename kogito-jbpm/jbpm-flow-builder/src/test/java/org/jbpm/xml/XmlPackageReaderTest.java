@@ -41,9 +41,6 @@ import org.jbpm.compiler.xml.compiler.XmlPackageReader;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlPackageReaderTest {
 
@@ -59,11 +56,10 @@ public class XmlPackageReaderTest {
         FromDescr from = (FromDescr) patterndescr.getSource();
 
         MVELExprDescr accessordescriptor = (MVELExprDescr) from.getDataSource();
-        assertEquals("cheesery.getCheeses(i+4)",
-                accessordescriptor.getExpression());
+        assertThat(accessordescriptor.getExpression()).isEqualTo("cheesery.getCheeses(i+4)");
 
-        assertEquals("Cheese", patterndescr.getObjectType());
-        assertEquals("cheese", patterndescr.getIdentifier());
+        assertThat(patterndescr.getObjectType()).isEqualTo("Cheese");
+        assertThat(patterndescr.getIdentifier()).isEqualTo("cheese");
 
     }
 
@@ -76,37 +72,33 @@ public class XmlPackageReaderTest {
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get(0);
 
         Object patternobj = obj.getLhs().getDescrs().get(0);
-        assertTrue(patternobj instanceof PatternDescr);
+        assertThat(patternobj).isInstanceOf(PatternDescr.class);
         final PatternDescr patterncheese = (PatternDescr) patternobj;
-        assertEquals("cheese", patterncheese.getIdentifier());
-        assertEquals("Cheese", patterncheese.getObjectType());
+        assertThat(patterncheese.getIdentifier()).isEqualTo("cheese");
+        assertThat(patterncheese.getObjectType()).isEqualTo("Cheese");
 
         AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
-        assertEquals("total += $cheese.getPrice();",
-                accumulatedescr.getActionCode());
-        assertEquals("int total = 0;",
-                accumulatedescr.getInitCode());
-        assertEquals("new Integer( total ) );",
-                accumulatedescr.getResultCode());
+        assertThat(accumulatedescr.getActionCode()).isEqualTo("total += $cheese.getPrice();");
+        assertThat(accumulatedescr.getInitCode()).isEqualTo("int total = 0;");
+        assertThat(accumulatedescr.getResultCode()).isEqualTo("new Integer( total ) );");
 
         patternobj = obj.getLhs().getDescrs().get(1);
-        assertTrue(patternobj instanceof PatternDescr);
+        assertThat(patternobj).isInstanceOf(PatternDescr.class);
 
         final PatternDescr patternmax = (PatternDescr) patternobj;
-        assertEquals("max", patternmax.getIdentifier());
-        assertEquals("Number", patternmax.getObjectType());
+        assertThat(patternmax.getIdentifier()).isEqualTo("max");
+        assertThat(patternmax.getObjectType()).isEqualTo("Number");
 
         accumulatedescr = (AccumulateDescr) patternmax.getSource();
 
-        assertTrue(accumulatedescr.isExternalFunction());
+        assertThat(accumulatedescr.isExternalFunction()).isTrue();
 
-        assertEquals("max",
-                accumulatedescr.getFunctions().get(0).getFunction());
+        assertThat(accumulatedescr.getFunctions().get(0).getFunction()).isEqualTo("max");
 
-        assertNull(accumulatedescr.getInitCode());
-        assertNull(accumulatedescr.getActionCode());
-        assertNull(accumulatedescr.getResultCode());
-        assertNull(accumulatedescr.getReverseCode());
+        assertThat(accumulatedescr.getInitCode()).isNull();
+        assertThat(accumulatedescr.getActionCode()).isNull();
+        assertThat(accumulatedescr.getResultCode()).isNull();
+        assertThat(accumulatedescr.getReverseCode()).isNull();
 
     }
 
@@ -119,18 +111,15 @@ public class XmlPackageReaderTest {
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get(1);
 
         Object patternobj = obj.getLhs().getDescrs().get(0);
-        assertTrue(patternobj instanceof PatternDescr);
+        assertThat(patternobj).isInstanceOf(PatternDescr.class);
         final PatternDescr patterncheese = (PatternDescr) patternobj;
-        assertEquals("cheese", patterncheese.getIdentifier());
-        assertEquals("Cheese", patterncheese.getObjectType());
+        assertThat(patterncheese.getIdentifier()).isEqualTo("cheese");
+        assertThat(patterncheese.getObjectType()).isEqualTo("Cheese");
 
         AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
-        assertEquals("total += $cheese.getPrice();",
-                accumulatedescr.getActionCode());
-        assertEquals("int total = 0;",
-                accumulatedescr.getInitCode());
-        assertEquals("new Integer( total ) );",
-                accumulatedescr.getResultCode());
+        assertThat(accumulatedescr.getActionCode()).isEqualTo("total += $cheese.getPrice();");
+        assertThat(accumulatedescr.getInitCode()).isEqualTo("int total = 0;");
+        assertThat(accumulatedescr.getResultCode()).isEqualTo("new Integer( total ) );");
 
         AndDescr anddescr = (AndDescr) accumulatedescr.getInput();
 
@@ -138,8 +127,8 @@ public class XmlPackageReaderTest {
 
         PatternDescr[] listpattern = (PatternDescr[]) descrlist.toArray(new PatternDescr[descrlist.size()]);
 
-        assertEquals("Milk", listpattern[0].getObjectType());
-        assertEquals("Cup", listpattern[1].getObjectType());
+        assertThat(listpattern[0].getObjectType()).isEqualTo("Milk");
+        assertThat(listpattern[1].getObjectType()).isEqualTo("Cup");
     }
 
     @Test
@@ -157,9 +146,9 @@ public class XmlPackageReaderTest {
         PatternDescr personState = (PatternDescr) forallPaterns.get(1);
         PatternDescr cheeseState = (PatternDescr) forallPaterns.get(2);
 
-        assertEquals("State", pattarnState.getObjectType());
-        assertEquals("Person", personState.getObjectType());
-        assertEquals("Cheese", cheeseState.getObjectType());
+        assertThat(pattarnState.getObjectType()).isEqualTo("State");
+        assertThat(personState.getObjectType()).isEqualTo("Person");
+        assertThat(cheeseState.getObjectType()).isEqualTo("Cheese");
     }
 
     @Test
@@ -171,20 +160,19 @@ public class XmlPackageReaderTest {
 
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get(0);
         Object existdescr = obj.getLhs().getDescrs().get(0);
-        assertTrue(existdescr instanceof ExistsDescr);
+        assertThat(existdescr).isInstanceOf(ExistsDescr.class);
 
         Object patternDescriptor = ((ExistsDescr) existdescr).getDescrs().get(0);
-        assertTrue(patternDescriptor instanceof PatternDescr);
-        assertEquals("Person", ((PatternDescr) patternDescriptor).getObjectType());
+        assertThat(patternDescriptor).isInstanceOf(PatternDescr.class);
+        assertThat(((PatternDescr) patternDescriptor).getObjectType()).isEqualTo("Person");
 
         Object notDescr = obj.getLhs().getDescrs().get(1);
 
-        assertEquals(notDescr.getClass().getName(),
-                NotDescr.class.getName());
+        assertThat(NotDescr.class.getName()).isEqualTo(notDescr.getClass().getName());
         existdescr = ((NotDescr) notDescr).getDescrs().get(0);
         patternDescriptor = ((ExistsDescr) existdescr).getDescrs().get(0);
-        assertTrue(patternDescriptor instanceof PatternDescr);
-        assertEquals("Cheese", ((PatternDescr) patternDescriptor).getObjectType());
+        assertThat(patternDescriptor).isInstanceOf(PatternDescr.class);
+        assertThat(((PatternDescr) patternDescriptor).getObjectType()).isEqualTo("Cheese");
     }
 
     @Test
@@ -206,8 +194,7 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParsePackageName.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
     }
 
     @Test
@@ -216,21 +203,16 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParseImport.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.HashMap",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.*",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.HashMap");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.*");
 
         final List functionImport = packageDescr.getFunctionImports();
 
-        assertEquals("org.drools.function",
-                ((FunctionImportDescr) functionImport.get(0)).getTarget());
+        assertThat(((FunctionImportDescr) functionImport.get(0)).getTarget()).isEqualTo("org.drools.function");
     }
 
     @Test
@@ -239,30 +221,21 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParseGlobal.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.HashMap",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.*",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.HashMap");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.*");
 
         final List globals = packageDescr.getGlobals();
-        assertEquals(2,
-                globals.size());
+        assertThat(globals).hasSize(2);
         final GlobalDescr x = (GlobalDescr) globals.get(0);
         final GlobalDescr yada = (GlobalDescr) globals.get(1);
-        assertEquals("com.sample.X",
-                x.getType());
-        assertEquals("x",
-                x.getIdentifier());
-        assertEquals("com.sample.Yada",
-                yada.getType());
-        assertEquals("yada",
-                yada.getIdentifier());
+        assertThat(x.getType()).isEqualTo("com.sample.X");
+        assertThat(x.getIdentifier()).isEqualTo("x");
+        assertThat(yada.getType()).isEqualTo("com.sample.Yada");
+        assertThat(yada.getIdentifier()).isEqualTo("yada");
     }
 
     @Test
@@ -271,46 +244,32 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParseFunction.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.HashMap",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.*",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.HashMap");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.*");
 
         final List globals = packageDescr.getGlobals();
-        assertEquals(2,
-                globals.size());
+        assertThat(globals).hasSize(2);
         final GlobalDescr x = (GlobalDescr) globals.get(0);
         final GlobalDescr yada = (GlobalDescr) globals.get(1);
-        assertEquals("com.sample.X",
-                x.getType());
-        assertEquals("x",
-                x.getIdentifier());
-        assertEquals("com.sample.Yada",
-                yada.getType());
-        assertEquals("yada",
-                yada.getIdentifier());
+        assertThat(x.getType()).isEqualTo("com.sample.X");
+        assertThat(x.getIdentifier()).isEqualTo("x");
+        assertThat(yada.getType()).isEqualTo("com.sample.Yada");
+        assertThat(yada.getIdentifier()).isEqualTo("yada");
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get(0);
         final List names = functionDescr.getParameterNames();
-        assertEquals("foo",
-                names.get(0));
-        assertEquals("bada",
-                names.get(1));
+        assertThat(names.get(0)).isEqualTo("foo");
+        assertThat(names.get(1)).isEqualTo("bada");
 
         final List types = functionDescr.getParameterTypes();
-        assertEquals("Bar",
-                types.get(0));
-        assertEquals("Bing",
-                types.get(1));
+        assertThat(types.get(0)).isEqualTo("Bar");
+        assertThat(types.get(1)).isEqualTo("Bing");
 
-        assertEquals("System.out.println(\"hello world\");",
-                functionDescr.getText().trim());
+        assertThat(functionDescr.getText().trim()).isEqualTo("System.out.println(\"hello world\");");
     }
 
     @Test
@@ -334,76 +293,60 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_SimpleRule1.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.List",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.Person",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.List");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.Person");
 
         RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get(0);
-        assertEquals("simple_rule1",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule1");
         AndDescr lhs = ruleDescr.getLhs();
         PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get(0);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         ExprConstraintDescr expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("name == \"darth\"", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("name == \"darth\"");
 
         ruleDescr = (RuleDescr) packageDescr.getRules().get(1);
-        assertEquals("simple_rule2",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule2");
         lhs = ruleDescr.getLhs();
         patternDescr = (PatternDescr) lhs.getDescrs().get(0);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("age == 35 || == -3.5", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("age == 35 || == -3.5");
 
         ruleDescr = (RuleDescr) packageDescr.getRules().get(2);
-        assertEquals("simple_rule3",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule3");
         lhs = ruleDescr.getLhs();
         patternDescr = (PatternDescr) lhs.getDescrs().get(0);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("age == 35 || (!= 7.0 && != -70)", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("age == 35 || (!= 7.0 && != -70)");
 
         ruleDescr = (RuleDescr) packageDescr.getRules().get(3);
-        assertEquals("simple_rule3",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule3");
         lhs = ruleDescr.getLhs();
         patternDescr = (PatternDescr) lhs.getDescrs().get(1);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("name == $s", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("name == $s");
 
         ruleDescr = (RuleDescr) packageDescr.getRules().get(4);
-        assertEquals("simple_rule4",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule4");
         lhs = ruleDescr.getLhs();
         patternDescr = (PatternDescr) lhs.getDescrs().get(1);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("(name == $s) || (age == 35 || (!= 7.0 && != -70))", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("(name == $s) || (age == 35 || (!= 7.0 && != -70))");
 
         ruleDescr = (RuleDescr) packageDescr.getRules().get(5);
-        assertEquals("simple_rule5",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("simple_rule5");
         lhs = ruleDescr.getLhs();
         patternDescr = (PatternDescr) lhs.getDescrs().get(1);
-        assertEquals("Person",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Person");
         expr = (ExprConstraintDescr) ((AndDescr) patternDescr.getConstraint()).getDescrs().get(0);
-        assertEquals("(name == $s) || ((age != 34) && (age != 37) && (name != \"yoda\"))", expr.getExpression());
+        assertThat(expr.getExpression()).isEqualTo("(name == $s) || ((age != 34) && (age != 37) && (name != \"yoda\"))");
 
     }
 
@@ -426,55 +369,39 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParseRhs.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.HashMap",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.*",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.HashMap");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.*");
 
         final List globals = packageDescr.getGlobals();
-        assertEquals(2,
-                globals.size());
+        assertThat(globals).hasSize(2);
         final GlobalDescr x = (GlobalDescr) globals.get(0);
         final GlobalDescr yada = (GlobalDescr) globals.get(1);
-        assertEquals("com.sample.X",
-                x.getType());
-        assertEquals("x",
-                x.getIdentifier());
-        assertEquals("com.sample.Yada",
-                yada.getType());
-        assertEquals("yada",
-                yada.getIdentifier());
+        assertThat(x.getType()).isEqualTo("com.sample.X");
+        assertThat(x.getIdentifier()).isEqualTo("x");
+        assertThat(yada.getType()).isEqualTo("com.sample.Yada");
+        assertThat(yada.getIdentifier()).isEqualTo("yada");
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get(0);
         final List names = functionDescr.getParameterNames();
-        assertEquals("foo",
-                names.get(0));
-        assertEquals("bada",
-                names.get(1));
+        assertThat(names.get(0)).isEqualTo("foo");
+        assertThat(names.get(1)).isEqualTo("bada");
 
         final List types = functionDescr.getParameterTypes();
-        assertEquals("Bar",
-                types.get(0));
-        assertEquals("Bing",
-                types.get(1));
+        assertThat(types.get(0)).isEqualTo("Bar");
+        assertThat(types.get(1)).isEqualTo("Bing");
 
-        assertEquals("System.out.println(\"hello world\");",
-                functionDescr.getText().trim());
+        assertThat(functionDescr.getText().trim()).isEqualTo("System.out.println(\"hello world\");");
 
         final RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get(0);
-        assertEquals("my rule",
-                ruleDescr.getName());
+        assertThat(ruleDescr.getName()).isEqualTo("my rule");
 
         final String consequence = (String) ruleDescr.getConsequence();
         assertThat(consequence).isNotNull();
-        assertEquals("System.out.println( \"hello\" );",
-                consequence.trim());
+        assertThat(consequence.trim()).isEqualTo("System.out.println( \"hello\" );");
     }
 
     @Test
@@ -483,57 +410,40 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read(new InputStreamReader(getClass().getResourceAsStream("test_ParseQuery.xml")));
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertThat(packageDescr).isNotNull();
-        assertEquals("com.sample",
-                packageDescr.getName());
+        assertThat(packageDescr.getName()).isEqualTo("com.sample");
 
         final List imports = packageDescr.getImports();
-        assertEquals(2,
-                imports.size());
-        assertEquals("java.util.HashMap",
-                ((ImportDescr) imports.get(0)).getTarget());
-        assertEquals("org.drools.mvel.compiler.*",
-                ((ImportDescr) imports.get(1)).getTarget());
+        assertThat(imports).hasSize(2);
+        assertThat(((ImportDescr) imports.get(0)).getTarget()).isEqualTo("java.util.HashMap");
+        assertThat(((ImportDescr) imports.get(1)).getTarget()).isEqualTo("org.drools.mvel.compiler.*");
 
         final List globals = packageDescr.getGlobals();
-        assertEquals(2,
-                globals.size());
+        assertThat(globals).hasSize(2);
         final GlobalDescr x = (GlobalDescr) globals.get(0);
         final GlobalDescr yada = (GlobalDescr) globals.get(1);
-        assertEquals("com.sample.X",
-                x.getType());
-        assertEquals("x",
-                x.getIdentifier());
-        assertEquals("com.sample.Yada",
-                yada.getType());
-        assertEquals("yada",
-                yada.getIdentifier());
+        assertThat(x.getType()).isEqualTo("com.sample.X");
+        assertThat(x.getIdentifier()).isEqualTo("x");
+        assertThat(yada.getType()).isEqualTo("com.sample.Yada");
+        assertThat(yada.getIdentifier()).isEqualTo("yada");
 
         final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get(0);
         final List names = functionDescr.getParameterNames();
-        assertEquals("foo",
-                names.get(0));
-        assertEquals("bada",
-                names.get(1));
+        assertThat(names.get(0)).isEqualTo("foo");
+        assertThat(names.get(1)).isEqualTo("bada");
 
         final List types = functionDescr.getParameterTypes();
-        assertEquals("Bar",
-                types.get(0));
-        assertEquals("Bing",
-                types.get(1));
+        assertThat(types.get(0)).isEqualTo("Bar");
+        assertThat(types.get(1)).isEqualTo("Bing");
 
-        assertEquals("System.out.println(\"hello world\");",
-                functionDescr.getText().trim());
+        assertThat(functionDescr.getText().trim()).isEqualTo("System.out.println(\"hello world\");");
 
         final QueryDescr queryDescr = (QueryDescr) packageDescr.getRules().get(0);
-        assertEquals("my query",
-                queryDescr.getName());
+        assertThat(queryDescr.getName()).isEqualTo("my query");
 
         final AndDescr lhs = queryDescr.getLhs();
-        assertEquals(1,
-                lhs.getDescrs().size());
+        assertThat(lhs.getDescrs()).hasSize(1);
         final PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get(0);
-        assertEquals("Foo",
-                patternDescr.getObjectType());
+        assertThat(patternDescr.getObjectType()).isEqualTo("Foo");
 
     }
 

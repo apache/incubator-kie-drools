@@ -35,11 +35,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AgendaFilterTest extends AbstractBaseTest {
 
@@ -126,7 +123,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
         message.setStatus(Message.HELLO);
         kruntime.getKieSession().insert(message);
         kruntime.startProcess("process-test");
-        assertEquals("Goodbye cruel world", message.getMessage());
+        assertThat(message.getMessage()).isEqualTo("Goodbye cruel world");
     }
 
     public static class Message {
@@ -293,11 +290,11 @@ public class AgendaFilterTest extends AbstractBaseTest {
         }
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
-        assertNotNull(kruntime);
+        assertThat(kruntime).isNotNull();
 
-        assertFalse(kruntime.getKieSession().getAgendaEventListeners().isEmpty());
-        assertTrue(kruntime.getProcessEventManager().getProcessEventListeners().isEmpty());
-        assertTrue(kruntime.getKieSession().getRuleRuntimeEventListeners().isEmpty());
+        assertThat(kruntime.getKieSession().getAgendaEventListeners()).isNotEmpty();
+        assertThat(kruntime.getProcessEventManager().getProcessEventListeners()).isEmpty();
+        assertThat(kruntime.getKieSession().getRuleRuntimeEventListeners()).isEmpty();
 
         kruntime.getKieSession().dispose();
     }

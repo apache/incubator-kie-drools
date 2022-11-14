@@ -34,8 +34,7 @@ import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TimerTest extends AbstractBaseTest {
 
@@ -81,29 +80,29 @@ public class TimerTest extends AbstractBaseTest {
         } catch (InterruptedException e) {
             // do nothing
         }
-        assertEquals(1, counter);
+        assertThat(counter).isEqualTo(1);
 
         counter = 0;
         desc = ProcessInstanceJobDescription.of(DurationExpirationTime.after(500), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
-        assertEquals(0, counter);
+        assertThat(counter).isZero();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             // do nothing
         }
-        assertEquals(1, counter);
+        assertThat(counter).isEqualTo(1);
 
         counter = 0;
         desc = ProcessInstanceJobDescription.of(DurationExpirationTime.repeat(500, 300L), processInstance.getStringId(), "test");
         jobId = jobService.scheduleProcessInstanceJob(desc);
-        assertEquals(0, counter);
+        assertThat(counter).isZero();
         try {
             Thread.sleep(700);
         } catch (InterruptedException e) {
             // do nothing
         }
-        assertEquals(1, counter);
+        assertThat(counter).isEqualTo(1);
 
         try {
             Thread.sleep(1000);
@@ -111,7 +110,7 @@ public class TimerTest extends AbstractBaseTest {
             // do nothing
         }
         // we can't know exactly how many times this will fire as timers are not precise, but should be at least 4
-        assertTrue(counter >= 4);
+        assertThat(counter >= 4).isTrue();
 
         jobService.cancelJob(jobId);
         int lastCount = counter;
@@ -120,7 +119,7 @@ public class TimerTest extends AbstractBaseTest {
         } catch (InterruptedException e) {
             // do nothing
         }
-        assertEquals(lastCount, counter);
+        assertThat(counter).isEqualTo(lastCount);
     }
 
 }

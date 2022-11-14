@@ -53,9 +53,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.process.test.NodeCreator.connect;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CompensationTest extends AbstractBaseTest {
 
@@ -116,7 +115,7 @@ public class CompensationTest extends AbstractBaseTest {
                 nodes.addAll(Arrays.asList(((NodeContainer) node).getNodes()));
             }
         }
-        assertNotNull(found, "Could not find node (" + nodeName + ").");
+        assertThat(found).as("Could not find node (" + nodeName + ").").isNotNull();
 
         return found;
     }
@@ -152,20 +151,20 @@ public class CompensationTest extends AbstractBaseTest {
         // call compensation on the uncompleted work 1 (which should not fire)
 
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+        assertThat(eventList).as("Compensation should not have fired yet.").isEmpty();
 
         // complete work 1
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         // call compensation on work 1, which should now fire
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(1, eventList.size(), "Compensation should have fired.");
+        assertThat(eventList).as("Compensation should have fired.").hasSize(1);
 
         // complete work 2 & 3
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -192,21 +191,21 @@ public class CompensationTest extends AbstractBaseTest {
 
         // general compensation should not cause anything to happen
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+        assertThat(eventList).as("Compensation should not have fired yet.").isEmpty();
 
         // complete work 1 & 2
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(eventList).as("Compensation should not have fired yet.").isEmpty();
 
         // general compensation should now cause the compensation handlers to fire in reverse order
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(2, eventList.size(), "Compensation should have fired.");
+        assertThat(eventList).as("Compensation should have fired.").hasSize(2);
 
         // complete work 3 and finish
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     private RuleFlowProcess createCompensationBoundaryEventProcess(String processId, String[] workItemNames,
@@ -282,23 +281,23 @@ public class CompensationTest extends AbstractBaseTest {
 
         // call compensation on the uncompleted work 1 (which should not fire)
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+        assertThat(eventList).as("Compensation should not have fired yet.").isEmpty();
 
         // pre work item
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         // sub-process is active, but not complete
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(0, eventList.size(), "Compensation should not have fired yet.");
+        assertThat(eventList).as("Compensation should not have fired yet.").isEmpty();
 
         // sub process work item
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
         // sub-process has completed 
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(1, eventList.size(), "Compensation should have fired once.");
+        assertThat(eventList).as("Compensation should have fired once.").hasSize(1);
 
         // post work item
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -330,11 +329,11 @@ public class CompensationTest extends AbstractBaseTest {
         // Call general compensation 
 
         kruntime.signalEvent("Compensation", compensationEvent, processInstance.getStringId());
-        assertEquals(1, eventList.size(), "Compensation should have fired once.");
+        assertThat(eventList).as("Compensation should have fired once.").hasSize(1);
 
         // post work item
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItems().removeLast().getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     private RuleFlowProcess createCompensationEventSubProcessProcess(String processId, String[] workItemNames,

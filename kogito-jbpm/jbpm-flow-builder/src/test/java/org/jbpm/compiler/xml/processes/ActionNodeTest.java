@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActionNodeTest extends AbstractBaseTest {
 
@@ -38,7 +38,7 @@ public class ActionNodeTest extends AbstractBaseTest {
 
         kruntime.startProcess("process name");
 
-        assertEquals(1, list.size());
-        assertEquals("action node was here", list.get(0));
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("action node was here");
     }
 }

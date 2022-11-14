@@ -26,7 +26,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
 
@@ -77,9 +77,9 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
         kruntime.getKieSession().insert(person);
         // start process
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ruleset");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         kruntime.getKieSession().fireAllRules();
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
 }

@@ -34,8 +34,7 @@ import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompilationTest extends JbpmBpmn2TestCase {
 
@@ -47,16 +46,14 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         String filename = "BPMN2-GatewaySplit-SequenceConditions.bpmn2";
         kruntime = createKogitoProcessRuntime(filename);
 
-        assertFalse(javaProcessDialect.getActionDescrs().isEmpty(),
-                "No " + ActionDescr.class.getSimpleName() + " instances caught for testing!");
+        assertThat(javaProcessDialect.getActionDescrs()).as("No " + ActionDescr.class.getSimpleName() + " instances caught for testing!").isNotEmpty();
         for (BaseDescr descr : javaProcessDialect.getActionDescrs()) {
-            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + " has a null resource field");
+            assertThat(descr.getResource()).as(descr.getClass().getSimpleName() + " has a null resource field").isNotNull();
         }
 
-        assertFalse(javaProcessDialect.getReturnValueDescrs().isEmpty(),
-                "No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!");
+        assertThat(javaProcessDialect.getReturnValueDescrs()).as("No " + ReturnValueDescr.class.getSimpleName() + " instances caught for testing!").isNotEmpty();
         for (BaseDescr descr : javaProcessDialect.getReturnValueDescrs()) {
-            assertNotNull(descr.getResource(), descr.getClass().getSimpleName() + " has a null resource field");
+            assertThat(descr.getResource()).as(descr.getClass().getSimpleName() + " has a null resource field").isNotNull();
         }
     }
 

@@ -41,8 +41,6 @@ import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -76,10 +74,8 @@ public class RuleFlowProcessValidatorTest {
                 node,
                 errors,
                 "any message");
-        assertEquals(1,
-                errors.size());
-        assertEquals("Node 'nodeName' [" + Long.MAX_VALUE + "] any message",
-                errors.get(0).getMessage());
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getMessage()).isEqualTo("Node 'nodeName' [" + Long.MAX_VALUE + "] any message");
     }
 
     @Test
@@ -92,23 +88,15 @@ public class RuleFlowProcessValidatorTest {
         process.addNode(dynamicNode);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
         // in non-dynamic processes all check should be triggered
         // they should also include process level checks (start node, end node etc)
-        assertEquals(6,
-                errors.length);
-        assertEquals("Process has no start node.",
-                errors[0].getMessage());
-        assertEquals("Process has no end node.",
-                errors[1].getMessage());
-        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no incoming connection",
-                errors[2].getMessage());
-        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no outgoing connection",
-                errors[3].getMessage());
-        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no completion condition set",
-                errors[4].getMessage());
-        assertEquals("Node 'MyDynamicNode' [1] Has no connection to the start node.",
-                errors[5].getMessage());
+        assertThat(errors).isNotNull().hasSize(6);
+        assertThat(errors[0].getMessage()).isEqualTo("Process has no start node.");
+        assertThat(errors[1].getMessage()).isEqualTo("Process has no end node.");
+        assertThat(errors[2].getMessage()).isEqualTo("Node 'MyDynamicNode' [1] Dynamic has no incoming connection");
+        assertThat(errors[3].getMessage()).isEqualTo("Node 'MyDynamicNode' [1] Dynamic has no outgoing connection");
+        assertThat(errors[4].getMessage()).isEqualTo("Node 'MyDynamicNode' [1] Dynamic has no completion condition set");
+        assertThat(errors[5].getMessage()).isEqualTo("Node 'MyDynamicNode' [1] Has no connection to the start node.");
     }
 
     @Test
@@ -123,10 +111,8 @@ public class RuleFlowProcessValidatorTest {
         process.addNode(dynamicNode);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
         // if dynamic process no longer triggering incoming / outgoing connection errors for dynamic nodes
-        assertEquals(0,
-                errors.length);
+        assertThat(errors).isNotNull().isEmpty();
 
         // empty completion expression to trigger validation error
         process.removeNode(dynamicNode);
@@ -137,12 +123,9 @@ public class RuleFlowProcessValidatorTest {
         process.addNode(dynamicNode2);
 
         ProcessValidationError[] errors2 = validator.validateProcess(process);
-        assertNotNull(errors2);
         // autocomplete set to false and empty completion condition triggers error
-        assertEquals(1,
-                errors2.length);
-        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no completion condition set",
-                errors2[0].getMessage());
+        assertThat(errors2).isNotNull().hasSize(1);
+        assertThat(errors2[0].getMessage()).isEqualTo("Node 'MyDynamicNode' [1] Dynamic has no completion condition set");
     }
 
     @Test
@@ -150,9 +133,7 @@ public class RuleFlowProcessValidatorTest {
         process.setDynamic(true);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(0,
-                errors.length);
+        assertThat(errors).isNotNull().isEmpty();
     }
 
     @Test
@@ -160,9 +141,7 @@ public class RuleFlowProcessValidatorTest {
         process.setDynamic(true);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(0,
-                errors.length);
+        assertThat(errors).isNotNull().isEmpty();
     }
 
     @Test
@@ -187,11 +166,8 @@ public class RuleFlowProcessValidatorTest {
         process.getVariableScope().addVariable(idVariable);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(1,
-                errors.length);
-        assertEquals("Variable 'id' is used by Kogito, please rename it.",
-                errors[0].getMessage());
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors[0].getMessage()).isEqualTo("Variable 'id' is used by Kogito, please rename it.");
     }
 
     @Test
@@ -220,11 +196,8 @@ public class RuleFlowProcessValidatorTest {
                 Node.CONNECTION_DEFAULT_TYPE);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(1,
-                errors.length);
-        assertEquals("Node 'CompositeNode' [3] Composite has no start node defined.",
-                errors[0].getMessage());
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors[0].getMessage()).isEqualTo("Node 'CompositeNode' [3] Composite has no start node defined.");
     }
 
     //TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
@@ -290,10 +263,7 @@ public class RuleFlowProcessValidatorTest {
                 Node.CONNECTION_DEFAULT_TYPE);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
-        assertNotNull(errors);
-        assertEquals(1,
-                errors.length);
-        assertEquals("Node 'ActionNode1' [3] mvel script language is not supported in Kogito.",
-                errors[0].getMessage());
+        assertThat(errors).isNotNull().hasSize(1);
+        assertThat(errors[0].getMessage()).isEqualTo("Node 'ActionNode1' [3] mvel script language is not supported in Kogito.");
     }
 }

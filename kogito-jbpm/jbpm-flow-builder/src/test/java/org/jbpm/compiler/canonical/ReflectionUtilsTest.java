@@ -23,7 +23,7 @@ import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReflectionUtilsTest {
 
@@ -57,14 +57,14 @@ public class ReflectionUtilsTest {
                         ServiceExample.class,
                         "primitiveType",
                         Arrays.asList("String", "Integer"));
-        assertEquals(Integer.valueOf(2), m.invoke(instance, "pepe", 2));
+        assertThat(m.invoke(instance, "pepe", 2)).isEqualTo(Integer.valueOf(2));
         m = ReflectionUtils
                 .getMethod(
                         Thread.currentThread().getContextClassLoader(),
                         ServiceExample.class,
                         "primitiveType",
                         Arrays.asList("String", "Float"));
-        assertEquals(Float.valueOf(2.0f), m.invoke(instance, "pepe", 2.0f));
+        assertThat(m.invoke(instance, "pepe", 2.0f)).isEqualTo(Float.valueOf(2.0f));
 
         KogitoProcessContext context = new KogitoProcessContextImpl(null) {
             @Override
@@ -74,11 +74,11 @@ public class ReflectionUtilsTest {
         };
         m = ReflectionUtils.getMethod(Thread.currentThread().getContextClassLoader(),
                 ServiceExample.class, "getStringWithContext", Arrays.asList("String"));
-        assertEquals("dummy-boy", m.invoke(instance, "dummy", context));
+        assertThat(m.invoke(instance, "dummy", context)).isEqualTo("dummy-boy");
 
         m = ReflectionUtils.getMethod(Thread.currentThread().getContextClassLoader(),
                 ServiceExample.class, "getStringWithContext", Collections.emptyList());
-        assertEquals("boy", m.invoke(instance, context));
+        assertThat(m.invoke(instance, context)).isEqualTo("boy");
     }
 
 }

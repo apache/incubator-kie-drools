@@ -58,7 +58,6 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -156,7 +155,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 handler.getWorkItem().getStringId(), null);
 
         assertProcessInstanceFinished(processInstance, kruntime);
-        assertThat(eventAfterNodeLeftTriggered.get()).isTrue();
+        assertThat(eventAfterNodeLeftTriggered).isTrue();
     }
 
     @Test
@@ -997,7 +996,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         String nodeInstanceId = ((InternalKogitoWorkItem) workItem).getNodeInstanceStringId();
         long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
 
-        assertThat(nodeId > 0).isTrue();
+        assertThat(nodeId).isPositive();
         assertThat(nodeInstanceId).isNotNull();
     }
 
@@ -1018,7 +1017,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         long nodeId = ((InternalKogitoWorkItem) workItem).getNodeId();
         String deploymentId = ((InternalKogitoWorkItem) workItem).getDeploymentId();
 
-        assertThat(nodeId > 0).isTrue();
+        assertThat(nodeId).isPositive();
         assertThat(nodeInstanceId).isNotNull();
         assertThat(deploymentId).isNull();
     }
@@ -2407,7 +2406,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
 
         for (String id : instances) {
-            assertNull(kruntime.getProcessInstance(id), "Child process instance has not been finished.");
+            assertThat(kruntime.getProcessInstance(id)).as("Child process instance has not been finished.").isNull();
         }
     }
 
@@ -2454,7 +2453,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
 
         for (String id : instances) {
-            assertNull(kruntime.getProcessInstance(id), "Child process instance has not been finished.");
+            assertThat(kruntime.getProcessInstance(id)).as("Child process instance has not been finished.").isNull();
         }
 
         KogitoProcessInstance updatedChild = kruntime.getProcessInstance(changeProcessInstanceId);
@@ -2508,7 +2507,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, kruntime);
 
         for (String id : instances) {
-            assertNull(kruntime.getProcessInstance(id), "Child process instance has not been finished.");
+            assertThat(kruntime.getProcessInstance(id)).as("Child process instance has not been finished.").isNull();
         }
 
         KogitoProcessInstance updatedChild = kruntime.getProcessInstance(changeProcessInstanceId);

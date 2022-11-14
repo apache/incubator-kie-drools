@@ -32,10 +32,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessHumanTaskTest extends AbstractBaseTest {
 
@@ -86,11 +83,11 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = handler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -164,20 +161,20 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = handler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("Do something", workItem.getParameter("TaskName"));
-        assertEquals("John Doe", workItem.getParameter("ActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("TaskName")).isEqualTo("Do something");
+        assertThat(workItem.getParameter("ActorId")).isEqualTo("John Doe");
         Map<String, Object> results = new HashMap<String, Object>();
         ((HumanTaskWorkItemImpl) workItem).setActualOwner("Jane Doe");
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), results);
         workItem = handler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("Do something else", workItem.getParameter("TaskName"));
-        assertEquals("Jane Doe", workItem.getParameter("SwimlaneActorId"));
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("TaskName")).isEqualTo("Do something else");
+        assertThat(workItem.getParameter("SwimlaneActorId")).isEqualTo("Jane Doe");
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -228,11 +225,11 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         ProcessInstance processInstance = (ProcessInstance) kruntime.startProcess("org.drools.humantask");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = handler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         processInstance.setState(KogitoProcessInstance.STATE_ABORTED);
-        assertTrue(handler.isAborted());
+        assertThat(handler.isAborted()).isTrue();
     }
 
     @Test
@@ -287,11 +284,11 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.humantask");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = handler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertFalse(handler.isAborted());
+        assertThat(handler.isAborted()).isFalse();
     }
 
 }

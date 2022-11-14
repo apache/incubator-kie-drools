@@ -22,8 +22,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessNodeInstanceFactoryTest extends AbstractBaseTest {
 
@@ -34,12 +33,12 @@ public class ProcessNodeInstanceFactoryTest extends AbstractBaseTest {
     @Test
     public void testDefaultEntries() throws Exception {
         Node node = new ActionNode();
-        assertNotNull(NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory(node).getClass());
+        assertThat(NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory(node).getClass()).isNotNull();
     }
 
     @Test
     public void testDiscoveredEntry() {
         NodeInstanceFactoryRegistry.getInstance(null).register(MockNode.class, new MockNodeInstanceFactory(new MockNodeInstance(new MockNode())));
-        assertEquals(MockNodeInstanceFactory.class, NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory(new MockNode()).getClass());
+        assertThat(NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory(new MockNode()).getClass()).isEqualTo(MockNodeInstanceFactory.class);
     }
 }

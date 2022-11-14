@@ -35,9 +35,7 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.process.workitem.Policy;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -93,11 +91,12 @@ public class JsonSchemaUtilTest {
         InputStream in = new ByteArrayInputStream(example.getBytes());
         Map<String, Object> schemaMap = JsonSchemaUtil.load(in);
         in.close();
-        assertEquals("object", schemaMap.get("type"));
+        assertThat(schemaMap).containsEntry("type", "object");
+
         Map<String, Object> properties = (Map<String, Object>) schemaMap.get("properties");
-        assertEquals(2, properties.size());
-        assertTrue((Boolean) ((Map) properties.get("approved")).get("output"));
-        assertTrue((Boolean) ((Map) properties.get("traveller")).get("input"));
+        assertThat(properties).hasSize(2);
+        assertThat((Boolean) ((Map) properties.get("approved")).get("output")).isTrue();
+        assertThat((Boolean) ((Map) properties.get("traveller")).get("input")).isTrue();
     }
 
     @Test
@@ -122,6 +121,6 @@ public class JsonSchemaUtilTest {
         KogitoWorkItemHandler workItemHandler = new HumanTaskWorkItemHandler();
         when(workItemHandlerConfig.forName("Human Task")).thenReturn(workItemHandler);
         schemaMap = JsonSchemaUtil.addPhases(process, workItemHandler, "pepe", "task", policies, schemaMap);
-        assertFalse(((Collection) schemaMap.get("phases")).isEmpty());
+        assertThat(((Collection) schemaMap.get("phases"))).isNotEmpty();
     }
 }

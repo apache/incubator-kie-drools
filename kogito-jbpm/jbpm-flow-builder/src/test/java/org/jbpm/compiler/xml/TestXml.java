@@ -27,8 +27,7 @@ import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestXml extends AbstractBaseTest {
 
@@ -41,10 +40,10 @@ public class TestXml extends AbstractBaseTest {
         XmlProcessReader reader = new XmlProcessReader(modules, getClass().getClassLoader());
         reader.read(new InputStreamReader(TestXml.class.getResourceAsStream("XmlTest.xml")));
         List<Process> processes = reader.getProcess();
-        assertNotNull(processes);
-        assertEquals(1, processes.size());
+        assertThat(processes).isNotNull().hasSize(1);
+
         RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
-        assertNotNull(process);
+        assertThat(process).isNotNull();
 
         String output = XmlRuleFlowProcessDumper.INSTANCE.dump(process);
         logger.info(output);

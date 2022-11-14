@@ -21,7 +21,7 @@ import java.util.Date;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TypeConverterTest {
 
@@ -31,7 +31,7 @@ public class TypeConverterTest {
         ObjectDataType data = new ObjectDataType("java.lang.String");
         // no converted is used
         String readValue = (String) data.readValue("hello");
-        assertEquals("hello", readValue);
+        assertThat(readValue).isEqualTo("hello");
     }
 
     @Test
@@ -43,6 +43,6 @@ public class TypeConverterTest {
         ObjectDataType data = new ObjectDataType("java.util.Date");
         // date converted is used
         Date readValue = (Date) data.readValue(sdf.format(now));
-        assertEquals(now.toString(), readValue.toString());
+        assertThat(readValue).hasToString(now.toString());
     }
 }

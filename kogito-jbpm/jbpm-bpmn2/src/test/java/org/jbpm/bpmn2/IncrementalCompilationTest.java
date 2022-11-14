@@ -28,7 +28,7 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IncrementalCompilationTest {
 
@@ -46,8 +46,7 @@ public class IncrementalCompilationTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         Results results = kieBuilder.getResults();
-        assertEquals(3,
-                results.getMessages(org.kie.api.builder.Message.Level.ERROR).size());
+        assertThat(results.getMessages(org.kie.api.builder.Message.Level.ERROR)).hasSize(3);
 
         //This process file has the errors fixed
         kfs.write("src/main/resources/p1.bpmn2",
@@ -55,10 +54,8 @@ public class IncrementalCompilationTest {
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/p1.bpmn2").build();
 
         //I'd expect the 4 previous errors to be cleared
-        assertEquals(0,
-                addResults.getAddedMessages().size());
-        assertEquals(3,
-                addResults.getRemovedMessages().size());
+        assertThat(addResults.getAddedMessages()).isEmpty();
+        assertThat(addResults.getRemovedMessages()).hasSize(3);
     }
 
     private String getResource(String name) throws IOException {

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 @Disabled("This test causes problems to surefire (see same issue with org.drools.core.util.MVELSafeHelperTest) It works when executed by itself.")
 public class WidMVELEvaluatorSafeTest extends WidMVELEvaluatorTest {

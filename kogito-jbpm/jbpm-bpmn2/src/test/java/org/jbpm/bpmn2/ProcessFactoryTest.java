@@ -52,9 +52,6 @@ import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -125,16 +122,14 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .connection(2, 3);
         RuleFlowProcess process = factory.validate().getProcess();
 
-        assertEquals("SubProcess",
-                process.getNode(2).getName());
+        assertThat(process.getNode(2).getName()).isEqualTo("SubProcess");
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
         kruntime = createKogitoProcessRuntime(res);
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
 
     }
 
@@ -276,8 +271,8 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .version("1")
                 .packageName("org.jbpm");
         RuleFlowProcess process = factory.validate().getProcess();
-        assertNotNull(process);
-        assertTrue(process.isDynamic());
+        assertThat(process).isNotNull();
+        assertThat(process.isDynamic()).isTrue();
     }
 
     @Test
@@ -311,7 +306,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .connection(3, 4);
         RuleFlowProcess process = factory.validate().getProcess();
 
-        assertNotNull(process);
+        assertThat(process).isNotNull();
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
@@ -319,16 +314,14 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
 
-        assertNotNull(pi);
+        assertThat(pi).isNotNull();
 
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE,
-                pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         pi.signalEvent("testEvent",
                 null);
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
 
     }
 
@@ -355,7 +348,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
                 .connection(2, 3);
         RuleFlowProcess process = factory.validate().getProcess();
 
-        assertNotNull(process);
+        assertThat(process).isNotNull();
 
         Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
         res.setSourcePath("/tmp/processFactory.bpmn2");
@@ -363,10 +356,9 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
         KogitoProcessInstance pi = kruntime.startProcess("org.jbpm.process");
 
-        assertNotNull(pi);
+        assertThat(pi).isNotNull();
 
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
 
     }
 

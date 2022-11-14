@@ -36,9 +36,7 @@ import org.jbpm.workflow.instance.node.SplitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
 
@@ -80,7 +78,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
         ProcessDialectRegistry.getDialect(JavaDialect.ID).addProcess(context);
         javaDialect.compileAll();
-        assertEquals(0, javaDialect.getResults().size());
+        assertThat(javaDialect.getResults()).isEmpty();
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
@@ -92,16 +90,16 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance(processInstance);
 
-        assertTrue(node.evaluate(splitInstance,
+        assertThat(node.evaluate(splitInstance,
                 null,
-                null));
+                null)).isTrue();
 
         kruntime.getKieSession().setGlobal("value",
                 false);
 
-        assertFalse(node.evaluate(splitInstance,
+        assertThat(node.evaluate(splitInstance,
                 null,
-                null));
+                null)).isFalse();
     }
 
 }

@@ -27,8 +27,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KnowledgeBuilderTest extends AbstractBaseTest {
 
@@ -57,20 +56,19 @@ public class KnowledgeBuilderTest extends AbstractBaseTest {
         builder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRF);
 
         Collection<KiePackage> pkgs = builder.getKnowledgePackages();
-        assertNotNull(pkgs);
-        assertEquals(2, pkgs.size());
+        assertThat(pkgs).isNotNull().hasSize(2);
 
         KiePackage test1 = getKnowledgePackage(pkgs, "org.test1");
         Collection<Process> processes = test1.getProcesses();
-        assertEquals(1, processes.size());
+        assertThat(processes).hasSize(1);
         Process process = getProcess(processes, "flow1");
-        assertEquals("flow1", process.getName());
+        assertThat(process.getName()).isEqualTo("flow1");
 
         KiePackage test2 = getKnowledgePackage(pkgs, "org.test2");
         processes = test2.getProcesses();
-        assertEquals(1, processes.size());
+        assertThat(processes).hasSize(1);
         process = getProcess(processes, "flow2");
-        assertEquals("flow2", process.getName());
+        assertThat(process.getName()).isEqualTo("flow2");
 
     }
 

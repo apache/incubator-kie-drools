@@ -32,8 +32,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ProcessStartTest extends AbstractBaseTest {
 
@@ -109,15 +109,15 @@ public class ProcessStartTest extends AbstractBaseTest {
         List<Message> myList = new ArrayList<>();
         ksession.setGlobal("myList", myList);
 
-        assertEquals(0, myList.size());
+        assertThat(myList).isEmpty();
 
         Person jack = new Person();
         jack.setName("Jack");
         ksession.insert(jack);
         ksession.fireAllRules();
-        assertEquals(2, myList.size());
-        assertEquals("Jack", String.valueOf(myList.get(0)));
-        assertEquals("SomeString", String.valueOf(myList.get(1)));
+        assertThat(myList).hasSize(2);
+        assertThat(String.valueOf(myList.get(0))).isEqualTo("Jack");
+        assertThat(String.valueOf(myList.get(1))).isEqualTo("SomeString");
     }
 
     @Test
@@ -181,13 +181,13 @@ public class ProcessStartTest extends AbstractBaseTest {
         List<Message> myList = new ArrayList<Message>();
         kruntime.getKieSession().setGlobal("myList", myList);
 
-        assertEquals(0, myList.size());
+        assertThat(myList).isEmpty();
 
         kruntime.signalEvent("myEvent", "Jack");
         kruntime.getKieSession().fireAllRules();
-        assertEquals(2, myList.size());
-        assertEquals("Jack", String.valueOf(myList.get(0)));
-        assertEquals("SomeString", String.valueOf(myList.get(1)));
+        assertThat(myList).hasSize(2);
+        assertThat(String.valueOf(myList.get(0))).isEqualTo("Jack");
+        assertThat(String.valueOf(myList.get(1))).isEqualTo("SomeString");
     }
 
 }

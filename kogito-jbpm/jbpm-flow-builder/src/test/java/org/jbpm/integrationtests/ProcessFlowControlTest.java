@@ -34,8 +34,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessFlowControlTest extends AbstractBaseTest {
 
@@ -48,8 +47,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         logger.error(builder.getErrors().toString());
 
-        assertEquals(0,
-                builder.getErrors().getErrors().length);
+        assertThat(builder.getErrors().getErrors()).isEmpty();
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<Integer> inList = new ArrayList<>();
@@ -66,52 +64,38 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         FactHandle handle = kruntime.getKieSession().insert(inList);
         kruntime.startProcess("ConstraintDialects");
-        assertEquals(4,
-                outList.size());
-        assertEquals("MVELCodeConstraint was here",
-                outList.get(0));
-        assertEquals("JavaCodeConstraint was here",
-                outList.get(1));
-        assertEquals("MVELRuleConstraint was here",
-                outList.get(2));
-        assertEquals("JavaRuleConstraint was here",
-                outList.get(3));
+        assertThat(outList).hasSize(4);
+        assertThat(outList.get(0)).isEqualTo("MVELCodeConstraint was here");
+        assertThat(outList.get(1)).isEqualTo("JavaCodeConstraint was here");
+        assertThat(outList.get(2)).isEqualTo("MVELRuleConstraint was here");
+        assertThat(outList.get(3)).isEqualTo("JavaRuleConstraint was here");
 
         outList.clear();
         inList.remove(Integer.valueOf(1));
         kruntime.getKieSession().update(handle,
                 inList);
         kruntime.startProcess("ConstraintDialects");
-        assertEquals(3,
-                outList.size());
-        assertEquals("JavaCodeConstraint was here",
-                outList.get(0));
-        assertEquals("MVELRuleConstraint was here",
-                outList.get(1));
-        assertEquals("JavaRuleConstraint was here",
-                outList.get(2));
+        assertThat(outList).hasSize(3);
+        assertThat(outList.get(0)).isEqualTo("JavaCodeConstraint was here");
+        assertThat(outList.get(1)).isEqualTo("MVELRuleConstraint was here");
+        assertThat(outList.get(2)).isEqualTo("JavaRuleConstraint was here");
 
         outList.clear();
         inList.remove(Integer.valueOf(6));
         kruntime.getKieSession().update(handle,
                 inList);
         kruntime.startProcess("ConstraintDialects");
-        assertEquals(2,
-                outList.size());
-        assertEquals("JavaCodeConstraint was here",
-                outList.get(0));
-        assertEquals("JavaRuleConstraint was here",
-                outList.get(1));
+        assertThat(outList).hasSize(2);
+        assertThat(outList.get(0)).isEqualTo("JavaCodeConstraint was here");
+        assertThat(outList.get(1)).isEqualTo("JavaRuleConstraint was here");
 
         outList.clear();
         inList.remove(Integer.valueOf(3));
         kruntime.getKieSession().update(handle,
                 inList);
         kruntime.startProcess("ConstraintDialects");
-        assertEquals(1,
-                outList.size());
-        assertEquals("JavaRuleConstraint was here",
-                outList.get(0));
+        assertThat(outList).hasSize(1);
+        assertThat(outList.get(0)).isEqualTo("JavaRuleConstraint was here");
 
         outList.clear();
         inList.remove(Integer.valueOf(25));
@@ -119,8 +103,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                 inList);
         KogitoProcessInstance processInstance = kruntime.startProcess("ConstraintDialects");
 
-        assertEquals(KogitoProcessInstance.STATE_ERROR,
-                processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
     }
 
     @Test
@@ -134,20 +117,15 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                 list);
 
         kruntime.getKieSession().fireAllRules();
-        assertEquals(0,
-                list.size());
+        assertThat(list).isEmpty();
 
         final KogitoProcessInstance processInstance = kruntime.startProcess("0");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
-        assertEquals(4,
-                list.size());
-        assertEquals("Rule1",
-                list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(4);
+        assertThat(list.get(0)).isEqualTo("Rule1");
         list.subList(1, 2).contains("Rule2");
         list.subList(1, 2).contains("Rule3");
-        assertEquals("Rule4",
-                list.get(3));
+        assertThat(list.get(3)).isEqualTo("Rule4");
     }
 
     @Test
@@ -177,28 +155,22 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         agenda.evaluateEagerList();
 
         // Now we have 4 in the RuleFlow, but not yet in the agenda
-        assertEquals(4,
-                agenda.sizeOfRuleFlowGroup("flowgroup-1"));
+        assertThat(agenda.sizeOfRuleFlowGroup("flowgroup-1")).isEqualTo(4);
 
         // Check they aren't in the Agenda
-        assertEquals(0,
-                ((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size());
+        assertThat(((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size()).isZero();
 
         // Check we have 0 activation cancellation events
-        assertEquals(0,
-                activations.size());
+        assertThat(activations).isEmpty();
 
         ((InternalAgenda) kruntime.getKieSession().getAgenda()).clearAndCancelRuleFlowGroup("flowgroup-1");
 
         // Check the AgendaGroup and RuleFlowGroup  are now empty
-        assertEquals(0,
-                ((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size());
-        assertEquals(0,
-                agenda.sizeOfRuleFlowGroup("flowgroup-1"));
+        assertThat(((InternalAgendaGroup) agenda.getAgendaGroup("MAIN")).size()).isZero();
+        assertThat(agenda.sizeOfRuleFlowGroup("flowgroup-1")).isZero();
 
         // Check we have four activation cancellation events
-        assertEquals(4,
-                activations.size());
+        assertThat(activations).hasSize(4);
     }
 
     @Test
@@ -212,20 +184,15 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                 list);
 
         kruntime.getKieSession().fireAllRules();
-        assertEquals(0,
-                list.size());
+        assertThat(list).isEmpty();
 
         final KogitoProcessInstance processInstance = kruntime.startProcess("0");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED,
-                processInstance.getState());
-        assertEquals(4,
-                list.size());
-        assertEquals("Rule1",
-                list.get(0));
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(4);
+        assertThat(list.get(0)).isEqualTo("Rule1");
         list.subList(1, 2).contains("Rule2");
         list.subList(1, 2).contains("Rule3");
-        assertEquals("Rule4",
-                list.get(3));
+        assertThat(list.get(3)).isEqualTo("Rule4");
 
     }
 
@@ -234,21 +201,21 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         // adding ruleflow before adding package
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-        assertTrue(builder.getPackages().length > 0);
+        assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage2() throws Exception {
         // only adding ruleflow
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
-        assertTrue(builder.getPackages().length > 0);
+        assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage3() throws Exception {
         // only adding ruleflow without any generated rules
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
-        assertTrue(builder.getPackages().length > 0);
+        assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
@@ -263,20 +230,16 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
         kruntime.startProcess("ActionDialects");
 
-        assertEquals(2,
-                list.size());
-        assertEquals("mvel was here",
-                list.get(0));
-        assertEquals("java was here",
-                list.get(1));
+        assertThat(list).hasSize(2);
+        assertThat(list.get(0)).isEqualTo("mvel was here");
+        assertThat(list.get(1)).isEqualTo("java was here");
     }
 
     @Test
     public void testLoadingRuleFlowNoPackageName() {
         // loading a ruleflow with errors (null package name cause 3 errors)
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("error_ruleflow.rfm")));
-        assertEquals(3,
-                builder.getErrors().getErrors().length);
+        assertThat(builder.getErrors().getErrors()).hasSize(3);
     }
 
 }

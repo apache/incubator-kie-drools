@@ -41,9 +41,7 @@ import org.kie.kogito.logger.KogitoRuntimeLoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessDynamicNodeTest extends AbstractBaseTest {
 
@@ -110,8 +108,8 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(4, list.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(4);
     }
 
     @Test
@@ -177,13 +175,13 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Work", testHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.dynamic");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, list.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(list).hasSize(1);
         KogitoWorkItem workItem = testHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(3, list.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(list).hasSize(3);
     }
 
     @Test
@@ -230,11 +228,11 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
         DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((KogitoWorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("TaskName", "Dynamic Task");
-        assertNull(handler.getWorkItem());
-        assertEquals(0, dynamicContext.getNodeInstances().size());
+        assertThat(handler.getWorkItem()).isNull();
+        assertThat(dynamicContext.getNodeInstances()).isEmpty();
         DynamicUtils.addDynamicWorkItem(dynamicContext, kruntime.getKieRuntime(), "Human Task", parameters);
-        assertNotNull(handler.getWorkItem());
-        assertEquals(1, dynamicContext.getNodeInstances().size());
+        assertThat(handler.getWorkItem()).isNotNull();
+        assertThat(dynamicContext.getNodeInstances()).hasSize(1);
         logger.close();
     }
 
@@ -316,11 +314,11 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
         DynamicNodeInstance dynamicContext = (DynamicNodeInstance) ((KogitoWorkflowProcessInstance) processInstance).getNodeInstances().iterator().next();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "NewValue");
-        assertNull(handler.getWorkItem());
-        assertEquals(0, dynamicContext.getNodeInstances().size());
+        assertThat(handler.getWorkItem()).isNull();
+        assertThat(dynamicContext.getNodeInstances()).isEmpty();
         DynamicUtils.addDynamicSubProcess(dynamicContext, kruntime.getKieRuntime(), "org.drools.subflow", parameters);
-        assertNotNull(handler.getWorkItem());
-        assertEquals(1, dynamicContext.getNodeInstances().size());
+        assertThat(handler.getWorkItem()).isNotNull();
+        assertThat(dynamicContext.getNodeInstances()).hasSize(1);
         logger.close();
     }
 

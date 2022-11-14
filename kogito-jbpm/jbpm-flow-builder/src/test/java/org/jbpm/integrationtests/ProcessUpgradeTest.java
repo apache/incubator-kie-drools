@@ -39,7 +39,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessUpgradeTest extends AbstractBaseTest {
 
@@ -96,7 +96,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
-        assertEquals(1, kruntime.getKieSession().getProcessInstances().size());
+        assertThat(kruntime.getKieSession().getProcessInstances()).hasSize(1);
 
         String process2 =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -132,12 +132,12 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         kbase.addPackages(builder.getKnowledgePackages());
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
                 kruntime, processInstance.getStringId(), "org.test.ruleflow2", new HashMap<>());
-        assertEquals("org.test.ruleflow2", processInstance.getProcessId());
+        assertThat(processInstance.getProcessId()).isEqualTo("org.test.ruleflow2");
 
         kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
-        assertEquals(1, list.size());
+        assertThat(list).hasSize(1);
     }
 
     @Test
@@ -193,7 +193,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
-        assertEquals(1, kruntime.getKogitoProcessInstances().size());
+        assertThat(kruntime.getKogitoProcessInstances()).hasSize(1);
 
         String process2 =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -232,11 +232,11 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
                 kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
-        assertEquals("org.test.ruleflow2", processInstance.getProcessId());
+        assertThat(processInstance.getProcessId()).isEqualTo("org.test.ruleflow2");
 
         kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertEquals(1, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(list).hasSize(1);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -304,7 +304,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         kruntime.getKieSession().insert(p);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.test.ruleflow");
 
-        assertEquals(1, kruntime.getKieSession().getProcessInstances().size());
+        assertThat(kruntime.getKieSession().getProcessInstances()).hasSize(1);
 
         String process2 =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -354,11 +354,11 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
                 kruntime, processInstance.getStringId(), "org.test.ruleflow2", mapping);
-        assertEquals("org.test.ruleflow2", processInstance.getProcessId());
+        assertThat(processInstance.getProcessId()).isEqualTo("org.test.ruleflow2");
 
         kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertEquals(1, list.size());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(list).hasSize(1);
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
 }

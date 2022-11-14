@@ -27,9 +27,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ProcessMultiThreadTest extends AbstractBaseTest {
 
@@ -69,9 +68,9 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
             if (!success) {
                 fail("Multithread test failed. Look at the stack traces for details. ");
             }
-            assertEquals(2, list.size());
-            assertNotEquals(list.get(1), list.get(0));
-            assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+            assertThat(list).hasSize(2);
+            assertThat(list.get(0)).isNotEqualTo(list.get(1));
+            assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
         } catch (Exception e) {
             e.printStackTrace();
             fail("Should not raise any exception: " + e.getMessage());

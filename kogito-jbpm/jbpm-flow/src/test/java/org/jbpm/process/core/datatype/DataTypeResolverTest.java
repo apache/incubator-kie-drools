@@ -26,7 +26,7 @@ import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataTypeResolverTest {
 
@@ -40,19 +40,19 @@ public class DataTypeResolverTest {
     @Test
     public void testDataType() {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        assertTrue(DataTypeResolver.fromObject("pepe") instanceof StringDataType);
-        assertTrue(DataTypeResolver.fromObject(true) instanceof BooleanDataType);
-        assertTrue(DataTypeResolver.fromObject(4) instanceof IntegerDataType);
-        assertTrue(DataTypeResolver.fromObject(23.2f) instanceof FloatDataType);
-        assertTrue(DataTypeResolver.fromObject(Arrays.asList("1", "2", "3")) instanceof ListDataType);
-        assertTrue(DataTypeResolver.fromObject(new byte[0]) instanceof ObjectDataType);
-        assertTrue(DataTypeResolver.fromObject(Champions.BETIS) instanceof EnumDataType);
-        assertTrue(DataTypeResolver.fromType("String", cl) instanceof StringDataType);
-        assertTrue(DataTypeResolver.fromType("Boolean", cl) instanceof BooleanDataType);
-        assertTrue(DataTypeResolver.fromType("Integer", cl) instanceof IntegerDataType);
-        assertTrue(DataTypeResolver.fromType("Float", cl) instanceof FloatDataType);
-        assertTrue(DataTypeResolver.fromType("java.util.List", cl) instanceof ListDataType);
-        assertTrue(DataTypeResolver.fromType("Object", cl) instanceof ObjectDataType);
+        assertThat(DataTypeResolver.fromObject("pepe")).isInstanceOf(StringDataType.class);
+        assertThat(DataTypeResolver.fromObject(true)).isInstanceOf(BooleanDataType.class);
+        assertThat(DataTypeResolver.fromObject(4)).isInstanceOf(IntegerDataType.class);
+        assertThat(DataTypeResolver.fromObject(23.2f)).isInstanceOf(FloatDataType.class);
+        assertThat(DataTypeResolver.fromObject(Arrays.asList("1", "2", "3"))).isInstanceOf(ListDataType.class);
+        assertThat(DataTypeResolver.fromObject(new byte[0])).isInstanceOf(ObjectDataType.class);
+        assertThat(DataTypeResolver.fromObject(Champions.BETIS)).isInstanceOf(EnumDataType.class);
+        assertThat(DataTypeResolver.fromType("String", cl)).isInstanceOf(StringDataType.class);
+        assertThat(DataTypeResolver.fromType("Boolean", cl)).isInstanceOf(BooleanDataType.class);
+        assertThat(DataTypeResolver.fromType("Integer", cl)).isInstanceOf(IntegerDataType.class);
+        assertThat(DataTypeResolver.fromType("Float", cl)).isInstanceOf(FloatDataType.class);
+        assertThat(DataTypeResolver.fromType("java.util.List", cl)).isInstanceOf(ListDataType.class);
+        assertThat(DataTypeResolver.fromType("Object", cl)).isInstanceOf(ObjectDataType.class);
 
     }
 }

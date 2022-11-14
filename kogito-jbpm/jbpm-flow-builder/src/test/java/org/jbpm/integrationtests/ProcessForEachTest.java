@@ -32,7 +32,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessForEachTest extends AbstractBaseTest {
 
@@ -92,8 +92,8 @@ public class ProcessForEachTest extends AbstractBaseTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(3, myList.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(myList).hasSize(3);
     }
 
     @Test
@@ -162,8 +162,8 @@ public class ProcessForEachTest extends AbstractBaseTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(10000, myList.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(myList).hasSize(10000);
     }
 
     @Test
@@ -218,7 +218,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
         List<String> myList = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("myList", myList);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -341,10 +341,10 @@ public class ProcessForEachTest extends AbstractBaseTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("collection", collection);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.ForEach", params);
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         processInstance.signalEvent("MyEvent", null);
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals(3, myList.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(myList).hasSize(3);
     }
 
 }

@@ -32,9 +32,7 @@ import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
@@ -45,7 +43,7 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         kruntime = createKogitoProcessRuntime("variable-tags/approval-with-required-variable-tags.bpmn2");
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        assertThrows(VariableViolationException.class, () -> kruntime.startProcess("approvals"));
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> kruntime.startProcess("approvals"));
     }
 
     @Test
@@ -58,12 +56,12 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         parameters.put("approver", "john");
 
         KogitoProcessInstance processInstance = kruntime.startProcess("approvals", parameters);
-        assertEquals(STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(STATE_ACTIVE);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
         assertProcessInstanceFinished(processInstance, kruntime);
     }
@@ -78,11 +76,12 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         parameters.put("approver", "john");
 
         KogitoProcessInstance processInstance = kruntime.startProcess("approvals", parameters);
-        assertEquals(STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(STATE_ACTIVE);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertThat(workItem).isNotNull();
 
-        assertThrows(VariableViolationException.class, () -> kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("ActorId", "john")));
+        assertThatExceptionOfType(VariableViolationException.class)
+                .isThrownBy(() -> kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("ActorId", "john")));
 
         kruntime.abortProcessInstance(processInstance.getStringId());
 
@@ -108,7 +107,7 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("approver", "john");
 
-        assertThrows(VariableViolationException.class, () -> kruntime.startProcess("approvals", parameters));
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> kruntime.startProcess("approvals", parameters));
     }
 
     @Test
@@ -121,7 +120,7 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<BpmnVariables> instance = process.createInstance(BpmnVariables.create(params));
         instance.start();
 
-        assertEquals(STATE_ACTIVE, instance.status());
+        assertThat(instance.status()).isEqualTo(STATE_ACTIVE);
 
         assertThat(instance.variables().toMap()).hasSize(1);
         assertThat(instance.variables().toMap(BpmnVariables.OUTPUTS_ONLY)).isEmpty();
@@ -131,6 +130,6 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
 
         instance.abort();
 
-        assertEquals(STATE_ABORTED, instance.status());
+        assertThat(instance.status()).isEqualTo(STATE_ABORTED);
     }
 }

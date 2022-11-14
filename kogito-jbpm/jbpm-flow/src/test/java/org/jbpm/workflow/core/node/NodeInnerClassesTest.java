@@ -29,7 +29,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodeInnerClassesTest extends AbstractBaseTest {
 
@@ -75,7 +75,7 @@ public class NodeInnerClassesTest extends AbstractBaseTest {
         kruntime.getProcessEventManager().addEventListener(procEventListener);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.core.process.event");
-        assertNotNull(processInstance);
+        assertThat(processInstance).isNotNull();
     }
 
 }

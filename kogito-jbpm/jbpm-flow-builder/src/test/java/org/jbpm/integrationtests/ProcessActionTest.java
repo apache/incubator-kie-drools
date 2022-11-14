@@ -35,10 +35,8 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ProcessActionTest extends AbstractBaseTest {
 
@@ -101,14 +99,14 @@ public class ProcessActionTest extends AbstractBaseTest {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
-        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, KogitoProcessInstance.getState());
+        KogitoProcessInstance kogitoProcessInstance = kruntime.startProcess("org.drools.actions");
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = handler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals(1, list.size());
+        assertThat(workItem).isNotNull();
+        assertThat(list).hasSize(1);
         kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertEquals(3, list.size());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(list).hasSize(3);
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -159,13 +157,13 @@ public class ProcessActionTest extends AbstractBaseTest {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
-        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
-        assertEquals(2, list.size());
-        assertEquals("SomeText", list.get(0));
-        assertEquals("MyActionNode", list.get(1));
+        KogitoProcessInstance kogitoProcessInstance = kruntime.startProcess("org.drools.actions");
+        assertThat(list).hasSize(2);
+        assertThat(list.get(0)).isEqualTo("SomeText");
+        assertThat(list.get(1)).isEqualTo("MyActionNode");
         Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
-        assertFalse(factHandles.isEmpty());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(factHandles).isNotEmpty();
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -221,13 +219,13 @@ public class ProcessActionTest extends AbstractBaseTest {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
-        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
-        assertEquals(2, list.size());
-        assertEquals("SomeText", list.get(0));
-        assertEquals("MyActionNode", list.get(1));
+        KogitoProcessInstance kogitoProcessInstance = kruntime.startProcess("org.drools.actions");
+        assertThat(list).hasSize(2);
+        assertThat(list.get(0)).isEqualTo("SomeText");
+        assertThat(list.get(1)).isEqualTo("MyActionNode");
         Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
-        assertFalse(factHandles.isEmpty());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(factHandles).isNotEmpty();
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -276,11 +274,11 @@ public class ProcessActionTest extends AbstractBaseTest {
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
-        KogitoProcessInstance KogitoProcessInstance =
+        KogitoProcessInstance kogitoProcessInstance =
                 kruntime.startProcess("org.drools.actions", params);
-        assertEquals(1, list.size());
-        assertEquals("John Doe", list.get(0));
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("John Doe");
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -330,11 +328,11 @@ public class ProcessActionTest extends AbstractBaseTest {
         TestVariable person = new TestVariable("John Doe");
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
-        KogitoProcessInstance KogitoProcessInstance =
+        KogitoProcessInstance kogitoProcessInstance =
                 kruntime.startProcess("org.drools.actions", params);
-        assertEquals(1, list.size());
-        assertEquals("John Doe", list.get(0));
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("John Doe");
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -398,15 +396,15 @@ public class ProcessActionTest extends AbstractBaseTest {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
-        KogitoProcessInstance KogitoProcessInstance =
+        KogitoProcessInstance kogitoProcessInstance =
                 kruntime.startProcess("org.drools.actions1");
-        assertEquals(1, list.size());
-        assertEquals("Action1", list.get(0));
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("Action1");
         list.clear();
-        KogitoProcessInstance = kruntime.startProcess("org.drools.actions2");
-        assertEquals(1, list.size());
-        assertEquals("Action2", list.get(0));
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        kogitoProcessInstance = kruntime.startProcess("org.drools.actions2");
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isEqualTo("Action2");
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -457,13 +455,13 @@ public class ProcessActionTest extends AbstractBaseTest {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
         kruntime.getKieSession().setGlobal("list", list);
-        KogitoProcessInstance KogitoProcessInstance = kruntime.startProcess("org.drools.actions");
-        assertEquals(2, list.size());
-        assertEquals("SomeText", list.get(0));
-        assertEquals("MyActionNode", list.get(1));
+        KogitoProcessInstance kogitoProcessInstance = kruntime.startProcess("org.drools.actions");
+        assertThat(list).hasSize(2);
+        assertThat(list.get(0)).isEqualTo("SomeText");
+        assertThat(list.get(1)).isEqualTo("MyActionNode");
         Collection<FactHandle> factHandles = kruntime.getKieSession().getFactHandles(object -> object instanceof Message);
-        assertFalse(factHandles.isEmpty());
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, KogitoProcessInstance.getState());
+        assertThat(factHandles).isNotEmpty();
+        assertThat(kogitoProcessInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
 }

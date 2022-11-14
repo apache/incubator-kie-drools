@@ -17,15 +17,13 @@ package org.kie.kogito.process.impl;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class AbstractProcessConfigTest {
@@ -41,7 +39,7 @@ public class AbstractProcessConfigTest {
     void testOneWorkItemHandlerConfig() {
         CachedWorkItemHandlerConfig workItemConfig = new CachedWorkItemHandlerConfig();
         ProcessConfig config = new MockProcessConfig(List.of(workItemConfig));
-        assertSame(workItemConfig, config.workItemHandlers());
+        assertThat(config.workItemHandlers()).isSameAs(workItemConfig);
     }
 
     @Test
@@ -55,14 +53,14 @@ public class AbstractProcessConfigTest {
         workItemConfig1.register(name1, workItem1);
         workItemConfig2.register(name2, workItem2);
         ProcessConfig config = new MockProcessConfig(List.of(workItemConfig1, workItemConfig2));
-        assertEquals(Set.of(name1, name2), config.workItemHandlers().names());
-        assertSame(workItem1, config.workItemHandlers().forName(name1));
-        assertSame(workItem2, config.workItemHandlers().forName(name2));
+        assertThat(config.workItemHandlers().names()).containsExactlyInAnyOrder(name1, name2);
+        assertThat(config.workItemHandlers().forName(name1)).isSameAs(workItem1);
+        assertThat(config.workItemHandlers().forName(name2)).isSameAs(workItem2);
         final String name3 = "Javierito3";
         final KogitoWorkItemHandler workItem3 = mock(KogitoWorkItemHandler.class);
         workItemConfig2.register(name3, workItem3);
-        assertEquals(Set.of(name1, name2, name3), config.workItemHandlers().names());
-        assertSame(workItem3, config.workItemHandlers().forName(name3));
+        assertThat(config.workItemHandlers().names()).containsExactlyInAnyOrder(name1, name2, name3);
+        assertThat(config.workItemHandlers().forName(name3)).isSameAs(workItem3);
     }
 
 }

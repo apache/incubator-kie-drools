@@ -38,7 +38,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Disabled("This test costs time and resources, please only run locally for the time being.")
 public class MultipleProcessesPerThreadTest {
@@ -63,8 +63,8 @@ public class MultipleProcessesPerThreadTest {
             t.printStackTrace();
         }
 
-        assertSame(hello.status, Status.SUCCESS, "Hello World process thread did not complete successfully");
-        assertSame(user.status, Status.SUCCESS, "User Task process thread did not complete successfully");
+        assertThat(hello.status).as("Hello World process thread did not complete successfully").isSameAs(Status.SUCCESS);
+        assertThat(user.status).as("User Task process thread did not complete successfully").isSameAs(Status.SUCCESS);
     }
 
     private static class HelloWorldProcessThread implements Runnable {

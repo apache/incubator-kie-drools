@@ -31,9 +31,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StartNodeInstanceTest extends AbstractBaseTest {
 
@@ -67,15 +65,14 @@ public class StartNodeInstanceTest extends AbstractBaseTest {
         processInstance.setProcess(process);
         processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) kruntime.getKieSession());
 
-        assertEquals(ProcessInstance.STATE_PENDING, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_PENDING);
         processInstance.start();
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         MockNodeInstance mockNodeInstance = mockNodeFactory.getMockNodeInstance();
         List<NodeInstance> triggeredBy =
                 mockNodeInstance.getTriggers().get(Node.CONNECTION_DEFAULT_TYPE);
-        assertNotNull(triggeredBy);
-        assertEquals(1, triggeredBy.size());
-        assertSame(startNode.getId(), triggeredBy.get(0).getNodeId());
+        assertThat(triggeredBy).isNotNull().hasSize(1);
+        assertThat(triggeredBy.get(0).getNodeId()).isSameAs(startNode.getId());
     }
 }

@@ -44,7 +44,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessEventSupportTest extends AbstractBaseTest {
 
@@ -132,23 +132,23 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         // execute the process
         kruntime.startProcess("org.drools.core.process.event");
-        assertEquals(16, processEventList.size());
-        assertEquals("org.drools.core.process.event", processEventList.get(0).getProcessInstance().getProcessId());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(7).getProcessInstance().getProcessId());
-        assertEquals("org.drools.core.process.event", processEventList.get(8).getProcessInstance().getProcessId());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(15).getProcessInstance().getProcessId());
+        assertThat(processEventList).hasSize(16);
+        assertThat(processEventList.get(0).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(processEventList.get(7).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(processEventList.get(8).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(processEventList.get(15).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
     }
 
     @Test
@@ -219,9 +219,9 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         // execute the process
         kruntime.startProcess("org.drools.core.process.event");
-        assertEquals(2, processEventStatusList.size());
-        assertEquals(Integer.valueOf(KogitoProcessInstance.STATE_ACTIVE), processEventStatusList.get(0));
-        assertEquals(Integer.valueOf(KogitoProcessInstance.STATE_COMPLETED), processEventStatusList.get(1));
+        assertThat(processEventStatusList).hasSize(2);
+        assertThat(processEventStatusList.get(0)).isEqualTo(Integer.valueOf(KogitoProcessInstance.STATE_ACTIVE));
+        assertThat(processEventStatusList.get(1)).isEqualTo(Integer.valueOf(KogitoProcessInstance.STATE_COMPLETED));
     }
 
     @Test
@@ -318,28 +318,28 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         // execute the process
         KogitoProcessInstance pi = kruntime.startProcess("org.drools.core.process.event");
         pi.signalEvent("signal", null);
-        assertEquals(20, processEventList.size());
-        assertEquals("org.drools.core.process.event", processEventList.get(0).getProcessInstance().getProcessId());
+        assertThat(processEventList).hasSize(20);
+        assertThat(processEventList.get(0).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
 
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
-        assertEquals("Event", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
-        assertEquals("Event", ((ProcessNodeTriggeredEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(7)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(8)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(11).getProcessInstance().getProcessId());
-        assertEquals("Event", ((ProcessNodeLeftEvent) processEventList.get(12)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(13)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(15).getProcessInstance().getProcessId());
-        assertEquals("org.drools.core.process.event", processEventList.get(16).getProcessInstance().getProcessId());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(17)).getNodeInstance().getNodeName());
-        assertEquals("Event", ((ProcessNodeLeftEvent) processEventList.get(19)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(18)).getNodeInstance().getNodeName());
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName()).isEqualTo("Event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(6)).getNodeInstance().getNodeName()).isEqualTo("Event");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(7)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(8)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(processEventList.get(11).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(12)).getNodeInstance().getNodeName()).isEqualTo("Event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(13)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(14)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(processEventList.get(15).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(processEventList.get(16).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(17)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(19)).getNodeInstance().getNodeName()).isEqualTo("Event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(18)).getNodeInstance().getNodeName()).isEqualTo("End");
     }
 
     @Test
@@ -422,21 +422,21 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
 
         // execute the process
         kruntime.startProcess("org.drools.core.process.event");
-        assertEquals(14, processEventList.size());
-        assertEquals("org.drools.core.process.event", processEventList.get(0).getProcessInstance().getProcessId());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(7)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(8)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(13).getProcessInstance().getProcessId());
+        assertThat(processEventList).hasSize(14);
+        assertThat(processEventList.get(0).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(7)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(8)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(processEventList.get(13).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
     }
 
     @Test
@@ -522,23 +522,23 @@ public class ProcessEventSupportTest extends AbstractBaseTest {
         kruntime.getProcessEventManager().addEventListener(processEventListener);
 
         kruntime.signalEvent("signal", null);
-        assertEquals(16, processEventList.size());
-        assertEquals("org.drools.core.process.event", processEventList.get(0).getProcessInstance().getProcessId());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(7).getProcessInstance().getProcessId());
-        assertEquals("org.drools.core.process.event", processEventList.get(8).getProcessInstance().getProcessId());
-        assertEquals("End", ((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName());
-        assertEquals("End", ((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName());
-        assertEquals("Print", ((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName());
-        assertEquals("Start", ((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName());
-        assertEquals("org.drools.core.process.event", processEventList.get(15).getProcessInstance().getProcessId());
+        assertThat(processEventList).hasSize(16);
+        assertThat(processEventList.get(0).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(1)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(2)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(3)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(4)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(5)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(6)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(processEventList.get(7).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(processEventList.get(8).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(9)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(10)).getNodeInstance().getNodeName()).isEqualTo("End");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(11)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(12)).getNodeInstance().getNodeName()).isEqualTo("Print");
+        assertThat(((ProcessNodeLeftEvent) processEventList.get(13)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(((ProcessNodeTriggeredEvent) processEventList.get(14)).getNodeInstance().getNodeName()).isEqualTo("Start");
+        assertThat(processEventList.get(15).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.process.event");
     }
 
 }

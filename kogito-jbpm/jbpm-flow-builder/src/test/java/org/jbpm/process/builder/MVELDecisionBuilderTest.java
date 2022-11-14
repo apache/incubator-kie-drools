@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELDecisionBuilderTest extends AbstractBaseTest {
 
@@ -82,7 +82,7 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
         ((MVELAction) actionNode.getAction().getMetaData("Action")).compile(data);
         ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
 
-        assertEquals("hello world", list.get(0));
+        assertThat(list.get(0)).isEqualTo("hello world");
     }
 
 }

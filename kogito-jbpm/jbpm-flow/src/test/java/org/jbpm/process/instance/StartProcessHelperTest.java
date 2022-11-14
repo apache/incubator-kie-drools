@@ -26,9 +26,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StartProcessHelperTest extends AbstractBaseTest {
 
@@ -41,7 +39,7 @@ public class StartProcessHelperTest extends AbstractBaseTest {
 
         String foundProcessId = StartProcessHelper.findLatestProcessByName((KieBase) null, "Hello");
 
-        assertNull(foundProcessId);
+        assertThat(foundProcessId).isNull();
     }
 
     @Test
@@ -49,7 +47,7 @@ public class StartProcessHelperTest extends AbstractBaseTest {
         List<Process> processes = buildProcessCollection("Hello", 5);
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "NoSuchProcess");
 
-        assertNull(foundProcessId);
+        assertThat(foundProcessId).isNull();
     }
 
     @Test
@@ -58,8 +56,7 @@ public class StartProcessHelperTest extends AbstractBaseTest {
 
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "Hello");
 
-        assertNotNull(foundProcessId);
-        assertEquals("5", foundProcessId);
+        assertThat(foundProcessId).isNotNull().isEqualTo("5");
     }
 
     @Test
@@ -81,13 +78,11 @@ public class StartProcessHelperTest extends AbstractBaseTest {
 
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "Hello");
 
-        assertNotNull(foundProcessId);
-        assertEquals("5", foundProcessId);
+        assertThat(foundProcessId).isNotNull().isEqualTo("5");
 
         foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "DifferentProcess");
 
-        assertNotNull(foundProcessId);
-        assertEquals("10", foundProcessId);
+        assertThat(foundProcessId).isNotNull().isEqualTo("10");
     }
 
     @Test
@@ -107,8 +102,7 @@ public class StartProcessHelperTest extends AbstractBaseTest {
 
         String foundProcessId = StartProcessHelper.findLatestProcessByName(processes, "Hello");
 
-        assertNotNull(foundProcessId);
-        assertEquals("2", foundProcessId);
+        assertThat(foundProcessId).isNotNull().isEqualTo("2");
     }
 
     private List<Process> buildProcessCollection(String processName, int limit) {

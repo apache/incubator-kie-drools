@@ -25,9 +25,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.mvel2.CompileException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WidMVELEvaluatorTest extends AbstractBaseTest {
 
@@ -65,7 +63,7 @@ public class WidMVELEvaluatorTest extends AbstractBaseTest {
         try {
             assertCorrectWids(WidMVELEvaluator.eval(getResourceContent("/wids/test-customdatatypenoimport.wid")));
         } catch (Throwable t) {
-            assertTrue(t instanceof CompileException);
+            assertThat(t).isInstanceOf(CompileException.class);
         }
     }
 
@@ -78,41 +76,26 @@ public class WidMVELEvaluatorTest extends AbstractBaseTest {
     }
 
     private void assertCorrectWids(Object wids) {
-        assertNotNull(wids);
+        assertThat(wids).isNotNull();
         List<Map<String, Object>> widsMap = (List<Map<String, Object>>) wids;
-        assertEquals(2,
-                widsMap.size());
+        assertThat(widsMap).hasSize(2);
 
         Map<String, Object> firstWid = widsMap.get(0);
-        assertNotNull(firstWid);
-
-        assertEquals("MyFirstWorkItem",
-                firstWid.get("name"));
+        assertThat(firstWid).isNotNull().containsEntry("name", "MyFirstWorkItem");
 
         Map<String, DataType> firstWidParams = (Map<String, DataType>) firstWid.get("parameters");
-        assertNotNull(firstWidParams);
-        assertEquals(6,
-                firstWidParams.size());
+        assertThat(firstWidParams).isNotNull().hasSize(6);
 
         Map<String, Object> firstWidParamValues = (Map<String, Object>) firstWid.get("parameterValues");
-        assertNotNull(firstWidParamValues);
-        assertEquals(1,
-                firstWidParamValues.size());
+        assertThat(firstWidParamValues).isNotNull().hasSize(1);
 
         Map<String, Object> secondWid = widsMap.get(1);
-        assertNotNull(secondWid);
-
-        assertEquals("MySecondWorkItem",
-                secondWid.get("name"));
+        assertThat(secondWid).isNotNull().containsEntry("name", "MySecondWorkItem");
 
         Map<String, DataType> secondWidParams = (Map<String, DataType>) secondWid.get("parameters");
-        assertNotNull(secondWidParams);
-        assertEquals(6,
-                secondWidParams.size());
+        assertThat(secondWidParams).isNotNull().hasSize(6);
 
         Map<String, Object> secondWidParamValues = (Map<String, Object>) secondWid.get("parameterValues");
-        assertNotNull(secondWidParamValues);
-        assertEquals(1,
-                secondWidParamValues.size());
+        assertThat(secondWidParamValues).isNotNull().hasSize(1);
     }
 }

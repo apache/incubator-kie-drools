@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ProcessTimerTest extends AbstractBaseTest {
 
@@ -65,7 +65,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
                         "\n" +
                         "</process>");
         builder.add(new ReaderResource(source), ResourceType.DRF);
-        assertEquals(2, builder.getErrors().size());
+        assertThat(builder.getErrors()).hasSize(2);
         for (KnowledgeBuilderError error : builder.getErrors()) {
             logger.error(error.toString());
         }
@@ -115,12 +115,13 @@ public class ProcessTimerTest extends AbstractBaseTest {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
 
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.timer");
-        assertEquals(0, myList.size());
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(myList).isEmpty();
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         await("dead").atMost(5, SECONDS)
                 .with().pollInterval(500, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> assertEquals(1, myList.size()));
+                .untilAsserted(() -> assertThat(myList).hasSize(1));
+
         kruntime.getKieSession().dispose();
     }
 }

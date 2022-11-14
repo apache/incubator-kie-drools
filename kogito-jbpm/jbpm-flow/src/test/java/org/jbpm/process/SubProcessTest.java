@@ -27,7 +27,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubProcessTest extends AbstractBaseTest {
 
@@ -62,7 +62,7 @@ public class SubProcessTest extends AbstractBaseTest {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime(process);
 
         KogitoProcessInstance pi = kruntime.startProcess("org.drools.core.process.process");
-        assertEquals(KogitoProcessInstance.STATE_ERROR, pi.getState());
+        assertThat(pi.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
     }
 
     private void connect(Node sourceNode, Node targetNode) {

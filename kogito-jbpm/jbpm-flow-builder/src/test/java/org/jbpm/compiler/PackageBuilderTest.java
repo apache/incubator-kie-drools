@@ -31,46 +31,35 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
         InputStream in = this.getClass().getResourceAsStream("/org/jbpm/integrationtests/ruleflow.rfm");
-        assertNotNull(in);
+        assertThat(in).isNotNull();
 
         builder.addPackage(new PackageDescr("com.sample"));
 
         builder.addRuleFlow(new InputStreamReader(in));
         InternalKnowledgePackage pkg = builder.getPackage("com.sample");
-        assertNotNull(pkg);
+        assertThat(pkg).isNotNull();
 
         Map<String, Process> flows = pkg.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1,
-                flows.size());
-
-        assertTrue(flows.containsKey("0"));
+        assertThat(flows).isNotNull().hasSize(1).containsKey("0");
 
         Process p = (Process) flows.get("0");
-        assertTrue(p instanceof WorkflowProcessImpl);
+        assertThat(p).isInstanceOf(WorkflowProcessImpl.class);
 
         //now serialization
         InternalKnowledgePackage pkg2 = (InternalKnowledgePackage) DroolsStreamUtils.streamIn(DroolsStreamUtils.streamOut(pkg));
-        assertNotNull(pkg2);
+        assertThat(pkg2).isNotNull();
 
         flows = pkg2.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1,
-                flows.size());
-        assertTrue(flows.containsKey("0"));
+        assertThat(flows).isNotNull().hasSize(1).containsKey("0");
         p = (Process) flows.get("0");
-        assertTrue(p instanceof WorkflowProcessImpl);
+        assertThat(p).isInstanceOf(WorkflowProcessImpl.class);
     }
 
     @Test
@@ -78,24 +67,20 @@ public class PackageBuilderTest extends AbstractBaseTest {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("boo");
         Process rf = new MockRuleFlow("1");
         pkg.addProcess(rf);
-        assertTrue(pkg.getRuleFlows().containsKey("1"));
-        assertSame(rf,
-                pkg.getRuleFlows().get("1"));
+        assertThat(pkg.getRuleFlows()).containsKey("1");
+        assertThat(pkg.getRuleFlows().get("1")).isSameAs(rf);
 
         Process rf2 = new MockRuleFlow("2");
         pkg.addProcess(rf2);
-        assertTrue(pkg.getRuleFlows().containsKey("1"));
-        assertSame(rf,
-                pkg.getRuleFlows().get("1"));
-        assertTrue(pkg.getRuleFlows().containsKey("2"));
-        assertSame(rf2,
-                pkg.getRuleFlows().get("2"));
+        assertThat(pkg.getRuleFlows()).containsKey("1");
+        assertThat(pkg.getRuleFlows().get("1")).isSameAs(rf);
+        assertThat(pkg.getRuleFlows()).containsKey("1");
+        assertThat(pkg.getRuleFlows().get("2")).isSameAs(rf2);
 
         pkg.removeRuleFlow("1");
-        assertTrue(pkg.getRuleFlows().containsKey("2"));
-        assertSame(rf2,
-                pkg.getRuleFlows().get("2"));
-        assertFalse(pkg.getRuleFlows().containsKey("1"));
+        assertThat(pkg.getRuleFlows()).containsKey("2");
+        assertThat(pkg.getRuleFlows().get("2")).isSameAs(rf2);
+        assertThat(pkg.getRuleFlows()).doesNotContainKey("1");
 
     }
 

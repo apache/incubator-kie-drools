@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaActionBuilderTest extends AbstractBaseTest {
 
@@ -77,7 +77,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         dialect.getActionBuilder().build(context, action, actionDescr, actionNode);
         dialect.addProcess(context);
         javaDialect.compileAll();
-        assertEquals(0, javaDialect.getResults().size());
+        assertThat(javaDialect.getResults()).isEmpty();
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
@@ -87,7 +87,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         KogitoProcessContext processContext = new KogitoProcessContextImpl(kruntime.getKieRuntime());
         ((Action) actionNode.getAction().getMetaData("Action")).execute(processContext);
 
-        assertEquals("hello world", list.get(0));
+        assertThat(list.get(0)).isEqualTo("hello world");
     }
 
 }

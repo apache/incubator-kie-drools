@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.process.Processes;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +62,7 @@ class LightProcessRuntimeTest {
 
         rt.startProcess(myProcess.process.getId());
 
-        assertEquals("Hello!", myProcess.result);
+        assertThat(myProcess.result).isEqualTo("Hello!");
 
     }
 

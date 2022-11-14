@@ -30,9 +30,9 @@ import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 
 public class StructureRefTest extends JbpmBpmn2TestCase {
 
@@ -44,7 +44,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "test value");
@@ -62,7 +62,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "true");
@@ -80,7 +80,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "25");
@@ -98,7 +98,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "5.5");
@@ -125,7 +125,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", personAsXml);
@@ -146,7 +146,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", value);
@@ -166,7 +166,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> params = new HashMap<>();
         params.put("not existing", "invalid boolean");
-        assertThrows(IllegalArgumentException.class, () -> kruntime.startProcess("StructureRef", params));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> kruntime.startProcess("StructureRef", params));
 
     }
 
@@ -180,7 +180,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> params = new HashMap<>();
         params.put("test", "invalid boolean");
-        assertThrows(IllegalArgumentException.class, () -> kruntime.startProcess("StructureRef", params));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> kruntime.startProcess("StructureRef", params));
     }
 
     @Test
@@ -192,18 +192,18 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
                 workItemHandler);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", true);
 
         try {
             kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
-            fail();
+            fail("");
         } catch (IllegalArgumentException iae) {
             logger.info("Expected IllegalArgumentException caught: " + iae);
         } catch (Exception e) {
-            fail();
+            fail("");
         }
 
     }
@@ -220,7 +220,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
             params.put("test", "invalid boolean");
             kruntime.startProcess("StructureRef", params);
         } catch (IllegalArgumentException e) {
-            assertEquals("Variable 'test' has incorrect data type expected:java.lang.Boolean actual:java.lang.String", e.getMessage());
+            assertThat(e.getMessage()).isEqualTo("Variable 'test' has incorrect data type expected:java.lang.Boolean actual:java.lang.String");
         }
 
     }
@@ -251,7 +251,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
                 workItemHandler);
 
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
         String wrongDataOutput = "not existing";
 
@@ -260,12 +260,12 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         try {
             kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), res);
-            fail();
+            fail("");
         } catch (IllegalArgumentException iae) {
             System.out.println("Expected IllegalArgumentException catched: " + iae);
-            assertEquals("Data output '" + wrongDataOutput + "' is not defined in process 'StructureRef' for task 'User Task'", iae.getMessage());
+            assertThat(iae.getMessage()).isEqualTo("Data output '" + wrongDataOutput + "' is not defined in process 'StructureRef' for task 'User Task'");
         } catch (Exception e) {
-            fail();
+            fail("");
         }
 
     }

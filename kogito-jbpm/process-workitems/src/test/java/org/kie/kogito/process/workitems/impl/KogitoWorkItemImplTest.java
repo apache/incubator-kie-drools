@@ -21,7 +21,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KogitoWorkItemImplTest {
 
@@ -66,11 +66,12 @@ public class KogitoWorkItemImplTest {
     }
 
     private void assertEqualsWI(KogitoWorkItem workItem, Object expected, String parameter) {
-        assertEquals(expected, workItem.getParameter(parameter));
+        assertThat(workItem.getParameter(parameter)).isEqualTo(expected);
         Map<String, Object> map = new HashMap<>(workItem.getParameters());
-        assertEquals(expected, map.get(parameter));
-        assertEquals(expected, map.entrySet().stream().filter(p -> p.getKey().equals(parameter))
-                .findFirst().orElseThrow(IllegalStateException::new).getValue());
+
+        assertThat(map).containsEntry(parameter, expected);
+        assertThat(map.entrySet().stream().filter(p -> p.getKey().equals(parameter))
+                .findFirst().orElseThrow(IllegalStateException::new).getValue()).isEqualTo(expected);
     }
 
 }

@@ -33,9 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProcessToExecModelGeneratorTest {
 
@@ -74,17 +73,17 @@ public class ProcessToExecModelGeneratorTest {
         WorkflowProcess process = factory.validate().getProcess();
 
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
-        assertNotNull(processMetadata, "Dumper should return non null class for process");
+        assertThat(processMetadata).as("Dumper should return non null class for process").isNotNull();
 
         logger.debug(processMetadata.getGeneratedClassModel().toString());
 
-        assertEquals("orders", processMetadata.getExtractedProcessId());
-        assertEquals("demo.orders", processMetadata.getProcessId());
-        assertEquals("orders", processMetadata.getProcessName());
-        assertEquals("1.0", processMetadata.getProcessVersion());
-        assertEquals("com.myspace.demo.OrdersProcess", processMetadata.getProcessClassName());
-        assertNotNull(processMetadata.getGeneratedClassModel());
-        assertEquals(1, processMetadata.getWorkItems().size());
+        assertThat(processMetadata.getExtractedProcessId()).isEqualTo("orders");
+        assertThat(processMetadata.getProcessId()).isEqualTo("demo.orders");
+        assertThat(processMetadata.getProcessName()).isEqualTo("orders");
+        assertThat(processMetadata.getProcessVersion()).isEqualTo("1.0");
+        assertThat(processMetadata.getProcessClassName()).isEqualTo("com.myspace.demo.OrdersProcess");
+        assertThat(processMetadata.getGeneratedClassModel()).isNotNull();
+        assertThat(processMetadata.getWorkItems()).hasSize(1);
     }
 
     public static Stream<Arguments> invalidVariables() {
@@ -174,8 +173,8 @@ public class ProcessToExecModelGeneratorTest {
         Process process = factory.validate().getProcess();
 
         ModelMetaData modelMetadata = ProcessToExecModelGenerator.INSTANCE.generateModel((WorkflowProcess) process);
-        assertNotNull(modelMetadata, "Dumper should return non null class for process");
-        assertEquals("com.myspace.demo.OrdersModel", modelMetadata.getModelClassName());
+        assertThat(modelMetadata).as("Dumper should return non null class for process").isNotNull();
+        assertThat(modelMetadata.getModelClassName()).isEqualTo("com.myspace.demo.OrdersModel");
     }
 
     @Test
@@ -210,10 +209,10 @@ public class ProcessToExecModelGeneratorTest {
         WorkflowProcess process = factory.validate().getProcess();
 
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
-        assertNotNull(processMetadata, "Dumper should return non null class for process");
+        assertThat(processMetadata).as("Dumper should return non null class for process").isNotNull();
 
         logger.debug(processMetadata.getGeneratedClassModel().toString());
-        assertNotNull(processMetadata.getGeneratedClassModel());
+        assertThat(processMetadata.getGeneratedClassModel()).isNotNull();
     }
 
     @Test
@@ -324,6 +323,6 @@ public class ProcessToExecModelGeneratorTest {
         WorkflowProcess process = factory.validate().getProcess();
 
         ProcessMetaData processMetadata = ProcessToExecModelGenerator.INSTANCE.generate(process);
-        assertNotNull(processMetadata, "Dumper should return non null class for process");
+        assertThat(processMetadata).as("Dumper should return non null class for process").isNotNull();
     }
 }

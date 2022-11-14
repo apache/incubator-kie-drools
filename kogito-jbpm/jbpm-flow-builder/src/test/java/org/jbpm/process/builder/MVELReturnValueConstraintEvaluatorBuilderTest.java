@@ -36,8 +36,7 @@ import org.jbpm.workflow.instance.node.SplitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
 
@@ -84,15 +83,15 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
 
         ((MVELReturnValueEvaluator) node.getReturnValueEvaluator()).compile(data);
 
-        assertTrue(node.evaluate(splitInstance,
+        assertThat(node.evaluate(splitInstance,
                 null,
-                null));
+                null)).isTrue();
 
         kruntime.getKieSession().setGlobal("value", false);
 
-        assertFalse(node.evaluate(splitInstance,
+        assertThat(node.evaluate(splitInstance,
                 null,
-                null));
+                null)).isFalse();
     }
 
 }

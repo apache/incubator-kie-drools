@@ -24,7 +24,7 @@ import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
 
@@ -43,7 +43,7 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
         kruntime.startProcess("ServiceProcess", params);
 
         int size = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().size();
-        assertEquals(2, size, "WorkItemExceptionInfoList is too large: " + size);
+        assertThat(size).as("WorkItemExceptionInfoList is too large: " + size).isEqualTo(2);
     }
 
     @Test

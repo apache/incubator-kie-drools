@@ -54,7 +54,7 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProcessEventListenerTest extends AbstractBaseTest {
 
@@ -73,14 +73,14 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
 
         kruntime.getProcessEventManager().addEventListener(listener);
         KogitoProcessInstance processInstance = kruntime.startProcess("org.drools.core.event");
-        assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance) ((org.jbpm.process.instance.ProcessInstance) processInstance)
-                .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals(26, processEventList.size());
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(((VariableScopeInstance) ((org.jbpm.process.instance.ProcessInstance) processInstance)
+                .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar")).isEqualTo("MyValue");
+        assertThat(processEventList).hasSize(26);
         for (ProcessEvent e : processEventList) {
             logger.debug(e.toString());
         }
-        assertEquals("org.drools.core.event", processEventList.get(2).getProcessInstance().getProcessId());
+        assertThat(processEventList.get(2).getProcessInstance().getProcessId()).isEqualTo("org.drools.core.event");
 
     }
 

@@ -36,8 +36,8 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Disabled("This test takes time and resources, please only run it locally")
 public class OneProcessPerThreadTest {
@@ -70,7 +70,7 @@ public class OneProcessPerThreadTest {
             });
 
             startThreads(kruntime);
-            assertEquals(THREAD_COUNT, workItems.size());
+            assertThat(workItems).hasSize(THREAD_COUNT);
         } catch (Throwable t) {
             t.printStackTrace();
             fail("Should not raise any exception: " + t.getMessage());
