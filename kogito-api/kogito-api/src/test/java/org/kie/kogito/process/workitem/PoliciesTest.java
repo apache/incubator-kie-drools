@@ -20,16 +20,16 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.auth.IdentityProvider;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PoliciesTest {
 
     @Test
     void testPolicies() {
-        assertEquals(0, Policies.of(null).length);
+        assertThat(Policies.of(null)).isEmpty();
         Policy<IdentityProvider>[] policies = Policies.of("pepe", Arrays.asList("chief", "of", "the", "universe"));
-        assertEquals(1, policies.length);
-        assertEquals("pepe", policies[0].value().getName());
-        assertEquals(4, policies[0].value().getRoles().size());
+        assertThat(policies).hasSize(1);
+        assertThat(policies[0].value().getName()).isEqualTo("pepe");
+        assertThat(policies[0].value().getRoles()).hasSize(4);
     }
 }

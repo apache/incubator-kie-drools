@@ -39,10 +39,7 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.provider.ExtensionProvider;
 import io.cloudevents.jackson.JsonCloudEventData;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -97,105 +94,104 @@ class CloudEventUtilsTest {
 
     @Test
     void testBuildDecisionSource() {
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource(null));
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource(""));
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource(null, null));
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource("", ""));
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource(null, null, null));
-        assertEquals(TEST_DECISION_URI_UNKNOWN, CloudEventUtils.buildDecisionSource("", "", ""));
+        assertThat(CloudEventUtils.buildDecisionSource(null)).isEqualTo(TEST_DECISION_URI_UNKNOWN);
+        assertThat(CloudEventUtils.buildDecisionSource("")).isEqualTo(TEST_DECISION_URI_UNKNOWN);
+        assertThat(CloudEventUtils.buildDecisionSource(null, null)).isEqualTo(TEST_DECISION_URI_UNKNOWN);
+        assertThat(CloudEventUtils.buildDecisionSource("", "")).isEqualTo(TEST_DECISION_URI_UNKNOWN);
+        assertThat(CloudEventUtils.buildDecisionSource(null, null, null)).isEqualTo(TEST_DECISION_URI_UNKNOWN);
+        assertThat(CloudEventUtils.buildDecisionSource("", "", "")).isEqualTo(TEST_DECISION_URI_UNKNOWN);
 
-        assertEquals(TEST_DECISION_URI_ONLY_SERVICE, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL));
-        assertEquals(TEST_DECISION_URI_ONLY_SERVICE, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, null));
-        assertEquals(TEST_DECISION_URI_ONLY_SERVICE, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, ""));
-        assertEquals(TEST_DECISION_URI_ONLY_SERVICE, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, null, null));
-        assertEquals(TEST_DECISION_URI_ONLY_SERVICE, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, "", ""));
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL)).isEqualTo(TEST_DECISION_URI_ONLY_SERVICE);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, null)).isEqualTo(TEST_DECISION_URI_ONLY_SERVICE);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, "")).isEqualTo(TEST_DECISION_URI_ONLY_SERVICE);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, null, null)).isEqualTo(TEST_DECISION_URI_ONLY_SERVICE);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, "", "")).isEqualTo(TEST_DECISION_URI_ONLY_SERVICE);
 
-        assertEquals(TEST_DECISION_URI_SERVICE_AND_MODEL, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME));
-        assertEquals(TEST_DECISION_URI_SERVICE_AND_MODEL, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, null));
-        assertEquals(TEST_DECISION_URI_SERVICE_AND_MODEL, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, ""));
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME)).isEqualTo(TEST_DECISION_URI_SERVICE_AND_MODEL);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, null)).isEqualTo(TEST_DECISION_URI_SERVICE_AND_MODEL);
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, "")).isEqualTo(TEST_DECISION_URI_SERVICE_AND_MODEL);
 
-        assertEquals(TEST_DECISION_URI_FULL, CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, TEST_DECISION_SERVICE_NAME));
+        assertThat(CloudEventUtils.buildDecisionSource(TEST_SERVICE_URL, TEST_DECISION_MODEL_NAME, TEST_DECISION_SERVICE_NAME)).isEqualTo(TEST_DECISION_URI_FULL);
     }
 
     @Test
     void testBuildSuccess() {
-        assertTrue(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS).isPresent());
+        assertThat(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS)).isPresent();
     }
 
     @Test
     void testBuildFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS).isPresent()));
+        runWithMockedCloudEventUtilsMapper(() -> assertThat(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA, TEST_DATA_CLASS)).isNotPresent());
     }
 
     @Test
     void testBuildWithExtensionSuccess() {
         Optional<CloudEvent> optCE = CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA_CLASS.getSimpleName(), TEST_SUBJECT, TEST_DATA, TEST_EXTENSION);
-        assertTrue(optCE.isPresent());
-        assertEquals(TEST_EXTENSION, ExtensionProvider.getInstance().parseExtension(KogitoExtension.class, optCE.get()));
+        assertThat(optCE).isPresent();
+        assertThat(ExtensionProvider.getInstance().parseExtension(KogitoExtension.class, optCE.get())).isEqualTo(TEST_EXTENSION);
     }
 
     @Test
     void testBuildWithExtensionFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA_CLASS.getSimpleName(), TEST_SUBJECT, TEST_DATA, TEST_EXTENSION).isPresent()));
+        runWithMockedCloudEventUtilsMapper(() -> assertThat(CloudEventUtils.build(TEST_ID, TEST_URI, TEST_DATA_CLASS.getSimpleName(), TEST_SUBJECT, TEST_DATA, TEST_EXTENSION)).isNotPresent());
     }
 
     @Test
     void testDecodeDataSuccess() {
         Optional<String> optData = CloudEventUtils.decodeData(TEST_CLOUDEVENT, String.class);
-        assertTrue(optData.isPresent());
-        assertEquals(TEST_DATA, optData.get());
+        assertThat(optData).contains(TEST_DATA);
     }
 
     @Test
     void testDecodeDataFailure() {
         Optional<Integer> optData = CloudEventUtils.decodeData(TEST_CLOUDEVENT, Integer.class);
-        assertFalse(optData.isPresent());
+        assertThat(optData).isNotPresent();
     }
 
     @Test
     void testEncodeSuccess() {
-        assertTrue(CloudEventUtils.encode(TEST_CLOUDEVENT).isPresent());
+        assertThat(CloudEventUtils.encode(TEST_CLOUDEVENT)).isPresent();
         System.out.println(CloudEventUtils.encode(TEST_CLOUDEVENT).get());
     }
 
     @Test
     void testEncodeFailure() throws Exception {
-        runWithMockedCloudEventUtilsMapper(() -> assertFalse(CloudEventUtils.encode(TEST_CLOUDEVENT).isPresent()));
+        runWithMockedCloudEventUtilsMapper(() -> assertThat(CloudEventUtils.encode(TEST_CLOUDEVENT)).isNotPresent());
     }
 
     @Test
     void testDecodeSuccess() {
-        assertTrue(CloudEventUtils.decode(TEST_CORRECT_JSON).isPresent());
+        assertThat(CloudEventUtils.decode(TEST_CORRECT_JSON)).isPresent();
     }
 
     @Test
     void testDecodeFailure() {
-        assertFalse(CloudEventUtils.decode(TEST_MALFORMED_JSON).isPresent());
+        assertThat(CloudEventUtils.decode(TEST_MALFORMED_JSON)).isNotPresent();
     }
 
     @Test
     void testUrlEncodedStringFromSuccess() {
-        assertTrue(CloudEventUtils.urlEncodedStringFrom(TEST_URI_STRING).isPresent());
+        assertThat(CloudEventUtils.urlEncodedStringFrom(TEST_URI_STRING)).isPresent();
     }
 
     @Test
     void testUrlEncodedStringFromFailure() throws Exception {
         try (MockedStatic<URLEncoder> mockedStaticURLEncoder = mockStatic(URLEncoder.class)) {
             mockedStaticURLEncoder.when(() -> URLEncoder.encode(any(String.class), any(String.class))).thenThrow(new UnsupportedEncodingException());
-            assertFalse(CloudEventUtils.urlEncodedStringFrom(TEST_URI_STRING).isPresent());
+            assertThat(CloudEventUtils.urlEncodedStringFrom(TEST_URI_STRING)).isNotPresent();
         }
     }
 
     @Test
     void testUrlEncodedURIFromSuccess() {
-        assertTrue(CloudEventUtils.urlEncodedURIFrom(TEST_URI_STRING).isPresent());
+        assertThat(CloudEventUtils.urlEncodedURIFrom(TEST_URI_STRING)).isPresent();
     }
 
     @Test
     void testUrlEncodedURIFromFailure() {
         try (MockedStatic<URI> mockedStaticURLEncoder = mockStatic(URI.class)) {
             mockedStaticURLEncoder.when(() -> URI.create(any(String.class))).thenThrow(new IllegalArgumentException());
-            assertFalse(CloudEventUtils.urlEncodedURIFrom(TEST_URI_STRING).isPresent());
+            assertThat(CloudEventUtils.urlEncodedURIFrom(TEST_URI_STRING)).isNotPresent();
         }
     }
 
@@ -204,7 +200,7 @@ class CloudEventUtilsTest {
         LocalDate localDate = LocalDate.of(2021, 12, 21);
         String marshalled = CloudEventUtils.Mapper.mapper().writeValueAsString(localDate);
         LocalDate unmarshalled = CloudEventUtils.Mapper.mapper().readValue(marshalled, LocalDate.class);
-        assertEquals(localDate, unmarshalled);
+        assertThat(unmarshalled).isEqualTo(localDate);
     }
 
     private static ObjectMapper getFailingMockedObjectMapper() throws Exception {
@@ -234,9 +230,9 @@ class CloudEventUtilsTest {
         JsonNode deserialized = CloudEventUtils.fromValue(dataEvent);
         System.out.println(deserialized);
         JsonNode data = deserialized.get("data");
-        assertNotNull(data);
-        assertEquals("Javierito", data.get("name").asText());
-        assertEquals("type", deserialized.get("type").asText());
-        assertEquals("pepa", deserialized.get("pepe").asText());
+        assertThat(data).isNotNull();
+        assertThat(data.get("name").asText()).isEqualTo("Javierito");
+        assertThat(deserialized.get("type").asText()).isEqualTo("type");
+        assertThat(deserialized.get("pepe").asText()).isEqualTo("pepa");
     }
 }

@@ -41,8 +41,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -100,9 +98,9 @@ class ProcessEventDispatcherTest {
 
         verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(Object.class), signal.capture());
 
-        assertEquals("Message-" + DUMMY_TOPIC, signal.getValue());
-        assertEquals("1", processInstanceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo("Message-" + DUMMY_TOPIC);
+        assertThat(processInstanceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
     }
 
     @Test
@@ -117,9 +115,9 @@ class ProcessEventDispatcherTest {
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
         verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
 
-        assertEquals(DUMMY_TOPIC, signal.getValue());
-        assertEquals("1", referenceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
+        assertThat(referenceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
     }
 
     @Test
@@ -134,9 +132,9 @@ class ProcessEventDispatcherTest {
         verify(processService, never()).signalProcessInstance(eq(process), any(), any(), signal.capture());
         verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), isNull());
 
-        assertEquals(DUMMY_TOPIC, signal.getValue());
-        assertEquals("1", referenceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
+        assertThat(referenceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
     }
 
     @Test
@@ -146,8 +144,8 @@ class ProcessEventDispatcherTest {
 
         ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
         verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), isNull(), isNull());
-        assertEquals(DUMMY_TOPIC, signal.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
+        assertThat(processInstance).isEqualTo(instance);
     }
 
     @Test
@@ -155,7 +153,7 @@ class ProcessEventDispatcherTest {
         EventDispatcher<DummyModel, Object> dispatcher = new ProcessEventDispatcher<>(process, Optional.empty(), processService, executor, null, o -> o.getData());
         final String payload = "{ a = b }";
         ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, DataEventFactory.from(payload)).toCompletableFuture().get();
-        assertNull(result);
+        assertThat(result).isNull();
     }
 
     @Test
@@ -169,10 +167,10 @@ class ProcessEventDispatcherTest {
 
         verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), signalObject.capture(), signal.capture());
 
-        assertEquals("Message-" + DUMMY_TOPIC, signal.getValue());
-        assertEquals("pepe", signalObject.getValue());
-        assertEquals("1", processInstanceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo("Message-" + DUMMY_TOPIC);
+        assertThat(signalObject.getValue()).isEqualTo("pepe");
+        assertThat(processInstanceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
     }
 
     @Test
@@ -180,7 +178,7 @@ class ProcessEventDispatcherTest {
         EventDispatcher<DummyModel, TestEvent> dispatcher = new ProcessEventDispatcher<>(process, modelConverter(), processService, executor, null, o -> o.getData());
         final TestCloudEvent<TestEvent> payload = new TestCloudEvent<>(new TestEvent("test"), "differentTopic", "differentSource");
         ProcessInstance<DummyModel> result = dispatcher.dispatch(DUMMY_TOPIC, payload).toCompletableFuture().get();
-        assertNull(result);
+        assertThat(result).isNull();
     }
 
     @Test
@@ -204,9 +202,9 @@ class ProcessEventDispatcherTest {
 
         verify(processService, times(1)).createProcessInstance(eq(process), any(), any(DummyModel.class), any(), signal.capture(), referenceId.capture(), correlationCaptor.capture());
 
-        assertEquals(DUMMY_TOPIC, signal.getValue());
-        assertEquals("1", referenceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo(DUMMY_TOPIC);
+        assertThat(referenceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
 
         CompositeCorrelation correlation = correlationCaptor.getValue();
         Set<? extends Correlation<?>> correlations = correlation.getValue();
@@ -242,8 +240,8 @@ class ProcessEventDispatcherTest {
         verify(correlationService).find(compositeCorrelation);
         verify(processService).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(Object.class), signal.capture());
 
-        assertEquals("Message-" + DUMMY_TOPIC, signal.getValue());
-        assertEquals("1", processInstanceId.getValue());
-        assertEquals(instance, processInstance);
+        assertThat(signal.getValue()).isEqualTo("Message-" + DUMMY_TOPIC);
+        assertThat(processInstanceId.getValue()).isEqualTo("1");
+        assertThat(processInstance).isEqualTo(instance);
     }
 }

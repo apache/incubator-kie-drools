@@ -18,8 +18,7 @@ package org.kie.kogito.incubation.common;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathLocalIdTest {
 
@@ -28,19 +27,19 @@ public class PathLocalIdTest {
     @Test
     public void testId() {
         ExampleLocalId exampleLocalId = exampleRoot.get("some-id");
-        assertEquals("/example/some-id", exampleLocalId.asLocalUri().path());
+        assertThat(exampleLocalId.asLocalUri().path()).isEqualTo("/example/some-id");
     }
 
     @Test
     public void testIdNested() {
         ExampleInstanceLocalId exampleLocalId = exampleRoot.get("some-id").instances().get("some-instance-id");
-        assertEquals("/example/some-id/instances/some-instance-id", exampleLocalId.asLocalUri().path());
+        assertThat(exampleLocalId.asLocalUri().path()).isEqualTo("/example/some-id/instances/some-instance-id");
     }
 
     @Test
     public void testStartsWith() {
         ExampleInstanceLocalId exampleLocalId = exampleRoot.get("some-id").instances().get("some-instance-id");
-        assertTrue(exampleLocalId.asLocalUri().startsWith("example"));
+        assertThat(exampleLocalId.asLocalUri().startsWith("example")).isTrue();
     }
 
     static class ExampleRoot implements ComponentRoot {

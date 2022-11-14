@@ -24,7 +24,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.kogito.ExecutionIdSupplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DecisionExecutionIdUtilsTest {
 
@@ -34,7 +34,7 @@ public class DecisionExecutionIdUtilsTest {
         final ExecutionIdSupplier supplier = () -> dummyId;
         final DMNContext ctx = new TestDMNContext();
 
-        assertEquals(dummyId, DecisionExecutionIdUtils.get(DecisionExecutionIdUtils.inject(ctx, supplier)));
+        assertThat(DecisionExecutionIdUtils.get(DecisionExecutionIdUtils.inject(ctx, supplier))).isEqualTo(dummyId);
     }
 
     private static class TestDMNContext implements DMNContext {

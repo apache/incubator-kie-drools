@@ -28,20 +28,20 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataEventTestUtils {
 
     public static <T> void assertDataEventEquals(DataEvent<T> event, DataEvent<T> targetEvent) {
-        assertEquals(event.getAttributeNames(), targetEvent.getAttributeNames());
+        assertThat(targetEvent.getAttributeNames()).isEqualTo(event.getAttributeNames());
         for (String attrName : event.getAttributeNames()) {
-            assertEquals(event.getAttribute(attrName), targetEvent.getAttribute(attrName));
+            assertThat(targetEvent.getAttribute(attrName)).isEqualTo(event.getAttribute(attrName));
         }
-        assertEquals(event.getExtensionNames(), targetEvent.getExtensionNames());
+        assertThat(targetEvent.getExtensionNames()).isEqualTo(event.getExtensionNames());
         for (String extensionName : event.getExtensionNames()) {
-            assertEquals(event.getExtension(extensionName), targetEvent.getExtension(extensionName));
+            assertThat(targetEvent.getExtension(extensionName)).isEqualTo(event.getExtension(extensionName));
         }
-        assertEquals(event.getData(), targetEvent.getData());
+        assertThat(targetEvent.getData()).isEqualTo(event.getData());
     }
 
     public static <T, V> void testCloudEventMarshalling(DataEvent<V> event, Class<V> clazz, CloudEventMarshaller<T> marshaller, CloudEventUnmarshallerFactory<T> unmarshallerFactory)
@@ -53,7 +53,7 @@ public class DataEventTestUtils {
     }
 
     public static <T> void testEventMarshalling(Object event, EventMarshaller<T> marshaller, EventUnmarshaller<T> unmarshaller) throws IOException {
-        assertEquals(event, unmarshaller.unmarshall(marshaller.marshall(event), event.getClass()));
+        assertThat(unmarshaller.unmarshall(marshaller.marshall(event), event.getClass())).isEqualTo(event);
     }
 
     public static DataEvent<JsonNode> getJsonNodeCloudEvent() {

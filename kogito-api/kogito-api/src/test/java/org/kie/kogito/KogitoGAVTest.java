@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KogitoGAVTest {
 
@@ -33,10 +32,10 @@ class KogitoGAVTest {
 
         KogitoGAV processedGav = MAPPER.readValue(MAPPER.writeValueAsString(originalGav), KogitoGAV.class);
 
-        assertNotNull(processedGav);
-        assertEquals(originalGav.getGroupId(), processedGav.getGroupId());
-        assertEquals(originalGav.getArtifactId(), processedGav.getArtifactId());
-        assertEquals(originalGav.getVersion(), processedGav.getVersion());
-        assertEquals(originalGav, processedGav);
+        assertThat(processedGav).isNotNull();
+        assertThat(processedGav.getGroupId()).isEqualTo(originalGav.getGroupId());
+        assertThat(processedGav.getArtifactId()).isEqualTo(originalGav.getArtifactId());
+        assertThat(processedGav.getVersion()).isEqualTo(originalGav.getVersion());
+        assertThat(processedGav).isEqualTo(originalGav);
     }
 }

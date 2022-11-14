@@ -29,8 +29,7 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -69,7 +68,7 @@ class TriggerJobCommandTest {
         doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();
         doReturn(instances).when(process).instances();
         doReturn(Optional.empty()).when(instances).findById(PROCESS_INSTANCE_ID);
-        assertFalse(command.execute());
+        assertThat(command.execute()).isFalse();
     }
 
     @Test
@@ -77,7 +76,7 @@ class TriggerJobCommandTest {
         doReturn(unitOfWork).when(unitOfWorkManager).newUnitOfWork();
         doReturn(instances).when(process).instances();
         doReturn(Optional.of(processInstance)).when(instances).findById(PROCESS_INSTANCE_ID);
-        assertTrue(command.execute());
+        assertThat(command.execute()).isTrue();
         verify(processInstance).send(any());
     }
 }

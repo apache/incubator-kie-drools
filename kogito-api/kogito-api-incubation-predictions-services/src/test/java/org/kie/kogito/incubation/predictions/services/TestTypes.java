@@ -22,7 +22,7 @@ import org.kie.kogito.incubation.common.*;
 import org.kie.kogito.incubation.predictions.LocalPredictionId;
 import org.kie.kogito.incubation.predictions.PredictionIds;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestTypes {
     public static class MyDataContext implements DataContext, DefaultCastable {
@@ -53,10 +53,8 @@ public class TestTypes {
         // LocalPredictionId decisionId = new LocalPredictionId(modelName);
         LocalPredictionId decisionId = appRoot.get(PredictionIds.class).get(fileNameNoSuffix, modelName);
 
-        assertEquals(
-                "/predictions" +
-                        "/%2Fmypath%2Fto%2FsomePrediction.pmml",
-                decisionId.toLocalId().asLocalUri().path());
+        assertThat(decisionId.toLocalId().asLocalUri().path()).isEqualTo("/predictions" +
+                "/%2Fmypath%2Fto%2FsomePrediction.pmml");
 
         // set a context using a Map-like interface
         ctx.set("someParam", 1);
@@ -67,7 +65,7 @@ public class TestTypes {
 
         // bind the data in the result to a typed bean
         MyDataContext mdc = result.as(MyDataContext.class);
-        assertEquals(1, mdc.someParam);
+        assertThat(mdc.someParam).isOne();
 
     }
 }

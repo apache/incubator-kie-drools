@@ -17,9 +17,7 @@ package org.kie.kogito.internal.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.internal.utils.ConversionUtils.concatPaths;
 import static org.kie.kogito.internal.utils.ConversionUtils.convert;
 import static org.kie.kogito.internal.utils.ConversionUtils.toCamelCase;
@@ -28,24 +26,24 @@ class ConversionUtilsTest {
 
     @Test
     void testConvert() {
-        assertEquals(5, convert("5", Integer.class));
-        assertFalse(convert("5", Boolean.class));
+        assertThat(convert("5", Integer.class)).isEqualTo(5);
+        assertThat(convert("5", Boolean.class)).isFalse();
     }
 
     @Test
     void testCamelCase() {
-        assertEquals("myappCreate", toCamelCase("myapp.create"));
-        assertEquals("getByName1", toCamelCase("getByName_1"));
-        assertNotEquals("myappcreate", toCamelCase("myapp.create"));
+        assertThat(toCamelCase("myapp.create")).isEqualTo("myappCreate");
+        assertThat(toCamelCase("getByName_1")).isEqualTo("getByName1");
+        assertThat(toCamelCase("myapp.create")).isNotEqualTo("myappcreate");
     }
 
     @Test
     public void testConcatPaths() {
         final String expected = "http:localhost:8080/pepe/pepa/pepi";
-        assertEquals(expected, concatPaths("http:localhost:8080/pepe/", "/pepa/pepi"));
-        assertEquals(expected, concatPaths("http:localhost:8080/pepe", "pepa/pepi"));
-        assertEquals(expected, concatPaths("http:localhost:8080/pepe/", "pepa/pepi"));
-        assertEquals(expected, concatPaths("http:localhost:8080/pepe", "/pepa/pepi"));
+        assertThat(concatPaths("http:localhost:8080/pepe/", "/pepa/pepi")).isEqualTo(expected);
+        assertThat(concatPaths("http:localhost:8080/pepe", "pepa/pepi")).isEqualTo(expected);
+        assertThat(concatPaths("http:localhost:8080/pepe/", "pepa/pepi")).isEqualTo(expected);
+        assertThat(concatPaths("http:localhost:8080/pepe", "/pepa/pepi")).isEqualTo(expected);
 
     }
 }

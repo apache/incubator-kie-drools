@@ -29,7 +29,7 @@ import org.kie.kogito.incubation.rules.QueryId;
 import org.kie.kogito.incubation.rules.RuleUnitIds;
 import org.kie.kogito.incubation.rules.RuleUnitInstanceId;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleUnitServiceInterfaceTest {
     public static class MyRuleUnitDefinition {
@@ -67,10 +67,9 @@ public class RuleUnitServiceInterfaceTest {
         // bind the data in the result to a typed bean
         Stream<MyDataContext> mdcs = result.map(r -> r.as(MyDataContext.class));
 
-        assertEquals("/rule-units" +
+        assertThat(someQuery.toLocalId().asLocalUri().path()).isEqualTo("/rule-units" +
                 "/" + MyRuleUnitDefinition.class.getCanonicalName() +
-                "/queries/someQuery",
-                someQuery.toLocalId().asLocalUri().path());
+                "/queries/someQuery");
 
     }
 
@@ -78,13 +77,13 @@ public class RuleUnitServiceInterfaceTest {
     public void ruleUnitInstances() {
         ReflectiveAppRoot appRoot = new ReflectiveAppRoot();
         RuleUnitInstanceId instance = appRoot.get(RuleUnitIds.class).get("my-rule-unit").instances().get("my-instance-id");
-        assertEquals("/rule-units/my-rule-unit/instances/my-instance-id", instance.asLocalUri().path());
+        assertThat(instance.asLocalUri().path()).isEqualTo("/rule-units/my-rule-unit/instances/my-instance-id");
     }
 
     @Test
     public void ruleUnitInstanceQuery() {
         ReflectiveAppRoot appRoot = new ReflectiveAppRoot();
         InstanceQueryId query = appRoot.get(RuleUnitIds.class).get("my-rule-unit").instances().get("my-instance-id").queries().get("my-query");
-        assertEquals("/rule-units/my-rule-unit/instances/my-instance-id/queries/my-query", query.asLocalUri().path());
+        assertThat(query.asLocalUri().path()).isEqualTo("/rule-units/my-rule-unit/instances/my-instance-id/queries/my-query");
     }
 }

@@ -25,9 +25,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DataContextTest {
     @Test
@@ -37,8 +34,8 @@ public class DataContextTest {
         ctx.set("lastName", "McCartney");
 
         User u = ctx.as(User.class);
-        assertEquals("Paul", u.firstName);
-        assertEquals("McCartney", u.lastName);
+        assertThat(u.firstName).isEqualTo("Paul");
+        assertThat(u.lastName).isEqualTo("McCartney");
     }
 
     @Test
@@ -48,12 +45,12 @@ public class DataContextTest {
         u.lastName = "McCartney";
 
         MapLikeDataContext ctx = u.as(MapLikeDataContext.class);
-        assertEquals("Paul", ctx.get("firstName"));
-        assertEquals("McCartney", ctx.get("lastName"));
+        assertThat(ctx.get("firstName")).isEqualTo("Paul");
+        assertThat(ctx.get("lastName")).isEqualTo("McCartney");
 
         MapLikeDataContext ctx2 = u.as(MapDataContext.class);
-        assertEquals("Paul", ctx2.get("firstName"));
-        assertEquals("McCartney", ctx2.get("lastName"));
+        assertThat(ctx2.get("firstName")).isEqualTo("Paul");
+        assertThat(ctx2.get("lastName")).isEqualTo("McCartney");
     }
 
     @Test
@@ -65,9 +62,9 @@ public class DataContextTest {
         u.addr.street = "Abbey Rd.";
 
         MapDataContext ctx = u.as(MapDataContext.class);
-        assertNotEquals(Address.class, ctx.get("addr").getClass());
+        assertThat(ctx.get("addr").getClass()).isNotEqualTo(Address.class);
         Address addr = InternalObjectMapper.objectMapper().convertValue(ctx.get("addr"), Address.class);
-        assertEquals("Abbey Rd.", addr.street);
+        assertThat(addr.street).isEqualTo("Abbey Rd.");
     }
 
     @Test
@@ -81,8 +78,8 @@ public class DataContextTest {
         MapDataContext mdc = MapDataContext.of(Map.of("Paul", u));
         User paul = (User) mdc.get("Paul");
         User user = mdc.get("Paul", User.class);
-        assertNotNull(user);
-        assertEquals(paul, user);
+        assertThat(user).isNotNull()
+                .isEqualTo(paul);
     }
 
     @Test
@@ -96,6 +93,6 @@ public class DataContextTest {
     @Test
     public void shouldAllowEmptyMetaDataContext() throws JsonProcessingException {
         MetaDataContext mdc = EmptyMetaDataContext.Instance;
-        assertEquals("{}", new ObjectMapper().writeValueAsString(mdc));
+        assertThat(new ObjectMapper().writeValueAsString(mdc)).isEqualTo("{}");
     }
 }
