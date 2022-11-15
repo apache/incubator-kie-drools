@@ -906,10 +906,6 @@ public class PackageModel {
         this.accumulateFunctions = accumulateFunctions;
     }
 
-    public boolean hasDeclaration(String id) {
-        return globals.get(id) != null;
-    }
-
     public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
             synchronized (domainClasses) {

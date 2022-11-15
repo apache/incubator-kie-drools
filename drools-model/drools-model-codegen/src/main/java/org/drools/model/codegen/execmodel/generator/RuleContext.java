@@ -253,7 +253,8 @@ public class RuleContext {
     }
 
     public boolean hasDeclaration(String id) {
-        return getDeclaration( id ) != null;
+        return getDeclaration( id ) != null || packageModel.getGlobals().get(id) != null ||
+                (ruleUnitDescr != null && packageModel.getGlobalsForUnit(ruleUnitDescr.getSimpleName()).get(id)  != null);
     }
 
     private DeclarationSpec getDeclaration(String id) {
