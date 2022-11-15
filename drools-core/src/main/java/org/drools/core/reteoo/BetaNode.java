@@ -538,10 +538,6 @@ public abstract class BetaNode extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }
-
     public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         return constraints.createBetaMemory(config, getType());
     }

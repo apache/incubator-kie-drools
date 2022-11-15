@@ -181,13 +181,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
     }
 
     public static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
-        TerminalNode terminal = buildTerminalNodeForConsequence(context, subrule, context.getSubRuleIndex(),
-                                                                null, rule.getTimer(), utils);
-
-        // assigns partition IDs to the new nodes
-        //assignPartitionId(context);
-
-        return terminal;
+        return buildTerminalNodeForConsequence(context, subrule, context.getSubRuleIndex(), null, rule.getTimer(), utils);
     }
 
     public static TerminalNode buildTerminalNodeForConsequence(BuildContext context, GroupElement subrule, int subRuleIndex,

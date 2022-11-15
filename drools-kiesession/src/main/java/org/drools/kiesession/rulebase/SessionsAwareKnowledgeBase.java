@@ -812,9 +812,4 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
         delegate.registerSegmentPrototype(tupleSource, smem);
     }
-
-    @Override
-    public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentMemory smem) {
-        delegate.registerSegmentPrototype(tupleSource, smem);
-    }
 }

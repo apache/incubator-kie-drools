@@ -16,9 +16,6 @@
 package org.drools.core.reteoo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
@@ -209,18 +206,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void setSegmentMemory(int index, SegmentMemory sm) {
         this.segmentMemories[index] = sm;
-    }
-
-    public void addSegmentMemory(int index, SegmentMemory sm) {
-        List<SegmentMemory> list = Arrays.asList(segmentMemories);
-        list.add(index, sm);
-        this.segmentMemories = list.toArray( new SegmentMemory[list.size()]);
-    }
-
-    public void removeSegmentMemory(int index) {
-        List<SegmentMemory> list = Arrays.asList(segmentMemories);
-        list.remove(index);
-        this.segmentMemories = list.toArray( new SegmentMemory[list.size()]);
     }
 
     public void setSegmentMemories(SegmentMemory[] segmentMemories) {

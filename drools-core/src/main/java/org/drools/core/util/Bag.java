@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class Bag<T> implements Collection<T>, Serializable {
 
@@ -29,17 +28,9 @@ public class Bag<T> implements Collection<T>, Serializable {
 
     private int size = 0;
 
-    public Set<T> keySet() {
-        return map.keySet();
-    }
-
     @Override
     public int size() {
         return size;
-    }
-
-    public int getKeySize() {
-        return map.size();
     }
 
     public int sizeFor(T t) {

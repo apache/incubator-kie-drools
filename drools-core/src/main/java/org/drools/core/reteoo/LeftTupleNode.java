@@ -25,11 +25,7 @@ public interface LeftTupleNode extends NetworkNode {
 
     LeftTupleSinkPropagator getSinkPropagator();
 
-    int getSinkPropagatorSize(TerminalNode removingTn);
-
     int getObjectCount();
 
     void setObjectCount(int count);
-
-    LeftTupleSinkNode getFirstLeftTupleSinkIgnoreRemoving(TerminalNode removingTn);
 }

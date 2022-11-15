@@ -172,22 +172,6 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
         }
     }
 
-    public int getSinkPropagatorSize(TerminalNode removingTn) {
-        if (removingTn == null) {
-            return this.sink.size();
-        }
-
-        int i = 0;
-        for ( LeftTupleSink sink : this.sink.getSinks()) {
-            if (!BuildtimeSegmentUtilities.sinkNotExclusivelyAssociatedWithTerminal(removingTn, sink)) {
-                // skip this node as it's being removed;
-                continue;
-            }
-            i++;
-        }
-        return i;
-    }
-
     public LeftTupleSinkNode getFirstLeftTupleSinkIgnoreRemoving(TerminalNode removingTn) {
         if (removingTn == null) {
             return this.sink.getFirstLeftTupleSink();

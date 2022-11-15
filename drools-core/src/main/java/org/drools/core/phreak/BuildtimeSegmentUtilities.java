@@ -15,6 +15,9 @@
 
 package org.drools.core.phreak;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AsyncReceiveNode;
@@ -45,17 +48,13 @@ import org.drools.core.reteoo.SegmentMemory.FromMemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.LiaMemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.QueryMemoryPrototype;
+import org.drools.core.reteoo.SegmentMemory.ReactiveFromMemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.RightInputAdapterPrototype;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
-import org.drools.core.reteoo.SegmentMemory.ReactiveFromMemoryPrototype;
 import org.drools.core.reteoo.SegmentMemory.TerminalPrototype;
 import org.drools.core.reteoo.SegmentMemory.TimerMemoryPrototype;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class BuildtimeSegmentUtilities {
 
@@ -96,13 +95,9 @@ public class BuildtimeSegmentUtilities {
                 segmentRoot = segmentRoot.getLeftTupleSource();
             }
 
-            // Store all nodes for the main path. If this is a subnetwork, only store nodes inside of it.
-            if (inside) {
-                SegmentPrototype smem = createSegmentMemory(segmentRoot, segmentTip, removingTn, rbase);
-                smems.add(smem);
-            } else {
-                smems.add(null);
-            }
+            // Store all nodes for the main path in reverse order (we're starting from the terminal node).
+            // If this is a subnetwork, only store nodes inside of it.
+            smems.add( 0, inside ? createSegmentMemory(segmentRoot, segmentTip, removingTn, rbase) : null );
 
             if ( inside && segmentRoot.getLeftTupleSource() == stopNode) {
                 inside = false;
@@ -112,9 +107,6 @@ public class BuildtimeSegmentUtilities {
             segmentRoot = segmentRoot.getLeftTupleSource();
             segmentTip = segmentRoot;
         } while (segmentRoot != null); // it's after lian
-
-        // node 0 needs to go first.
-        Collections.reverse(smems);
 
         // reset to find the next segments and set their position and their bit mask
         int ruleSegmentPosMask = 1;
@@ -192,11 +184,11 @@ public class BuildtimeSegmentUtilities {
 
             nodePosMask = nextNodePosMask(nodePosMask);
 
-            if (node == segmentTip ) {
+            if (node == segmentTip || !(node instanceof LeftTupleSource)) {
                 break;
             }
 
-            node = node.getFirstLeftTupleSinkIgnoreRemoving(removingTn);
+            node = ((LeftTupleSource)node).getFirstLeftTupleSinkIgnoreRemoving(removingTn);
         }
         smem.setAllLinkedMaskTest(allLinkedTestMask);
 

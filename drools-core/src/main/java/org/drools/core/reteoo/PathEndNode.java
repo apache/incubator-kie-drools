@@ -26,9 +26,9 @@ import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 public interface PathEndNode extends LeftTupleSinkNode {
     LeftTupleNode[] getPathNodes();
 
-    public LeftTupleSource getStartTupleSource();
+    LeftTupleSource getStartTupleSource();
 
-    public void nullPathMemSpec();
+    void nullPathMemSpec();
 
     boolean hasPathNode(LeftTupleNode node);
 
@@ -63,10 +63,6 @@ public interface PathEndNode extends LeftTupleSinkNode {
         public int smemCount() {
             return smemCount;
         }
-    }
-
-    default PathMemSpec calculatePathMemSpec(LeftTupleSource startTupleSource) {
-        return calculatePathMemSpec( startTupleSource, null );
     }
 
     default PathMemSpec calculatePathMemSpec(LeftTupleSource startTupleSource, TerminalNode removingTN) {

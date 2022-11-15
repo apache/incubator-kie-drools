@@ -893,11 +893,6 @@ public class KnowledgeBaseImpl implements RuleBase {
         return this.reteooBuilder.getMemoryIdsGenerator().getLastId() + 1;
     }
 
-    public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentMemory smem) {
-        throw new RuntimeException("unsupported, it's all moving compile time baby!!!");
-        //segmentProtos.put(tupleSource.getId(), smem.asPrototype());
-    }
-
     public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
         segmentProtos.put(tupleSource.getId(), smem);
     }
@@ -1024,14 +1019,6 @@ public class KnowledgeBaseImpl implements RuleBase {
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
             this.reteooBuilder.addRule(rule, endNodes, workingMemories);
         }
-
-//        for (Rule r : rules) {
-//            RuleImpl rule = (RuleImpl) r;
-//            TerminalNode[] tns = reteooBuilder.getTerminalNodes(rule.getFullyQualifiedName());
-//            Arrays.stream(tns).forEach(tn -> SegmentUtilities2.createPathProtoMemories(tn, this));
-//        }
-
-        //this.reteooBuilder.resetPathMemSpecs(endNodes);
     }
 
     public void removeQuery( final String packageName, final String ruleName ) {

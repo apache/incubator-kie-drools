@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
@@ -32,7 +32,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
-import org.drools.core.base.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
@@ -143,15 +142,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
-    }
-
-
-    public int getSinkPropagatorSize(TerminalNode removingTn) {
-        return 0;
-    }
-
-    public LeftTupleSinkNode getFirstLeftTupleSinkIgnoreRemoving(TerminalNode removingTn) {
-        return null;
     }
 
     public LeftTupleSource getStartTupleSource() {
@@ -319,10 +309,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public boolean isLeftTupleMemoryEnabled() {
         return false;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        // do nothing, this can only ever be false
     }
 
     public static LeftTupleNode[] getPathNodes(PathEndNode endNode) {

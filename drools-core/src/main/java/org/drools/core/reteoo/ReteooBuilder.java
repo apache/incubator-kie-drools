@@ -148,8 +148,7 @@ public class ReteooBuilder
     }
 
     public synchronized QueryTerminalNode[] getTerminalNodesForQuery(final String ruleName) {
-        QueryTerminalNode[] nodes = this.queries.get( ruleName );
-        return nodes;
+        return this.queries.get( ruleName );
     }
 
     public synchronized Map<String, TerminalNode[]> getTerminalNodes() {
@@ -314,11 +313,11 @@ public class ReteooBuilder
                 ObjectSource source = (AlphaNode) node;
                 while ( true ) {
                     source.resetInferredMask();
-                    BaseNode parent = source.getParentObjectSource();
+                    ObjectSource parent = source.getParentObjectSource();
                     if (parent.getType() != NodeTypeEnums.AlphaNode) {
                         break;
                     }
-                    source = (ObjectSource)parent;
+                    source = parent;
                 }
                 updateLeafSet(source, leafSet );
             } else if( NodeTypeEnums.isBetaNode( node ) ) {
@@ -366,14 +365,6 @@ public class ReteooBuilder
             }
         } else if ( NodeTypeEnums.isBetaNode( baseNode ) && ( baseNode.isInUse() )) {
             leafSet.add( baseNode );
-        }
-    }
-
-    public void addTerminalNodes(RuleImpl rule, List<TerminalNode> nodes) {
-        TerminalNode[] terminals = nodes.toArray( new TerminalNode[nodes.size()] );
-        rules.put( rule.getFullyQualifiedName(), terminals );
-        if (rule.isQuery()) {
-            this.queries.put( rule.getName(), nodes.toArray( new QueryTerminalNode[nodes.size()]));
         }
     }
 

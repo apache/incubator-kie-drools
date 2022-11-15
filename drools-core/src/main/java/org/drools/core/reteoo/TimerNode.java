@@ -172,10 +172,6 @@ public class TimerNode extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }
-
     /**
      * Returns the next node
      *

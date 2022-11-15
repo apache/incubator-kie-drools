@@ -145,14 +145,6 @@ public class RightInputAdapterNode extends ObjectSource
         this.eagerSegmentPrototypes = eagerSegmentPrototypes;
     }
 
-    public int getSinkPropagatorSize(TerminalNode removingTn) {
-        return 0;
-    }
-
-    public LeftTupleSinkNode getFirstLeftTupleSinkIgnoreRemoving(TerminalNode removingTn) {
-        return null;
-    }
-
     @Override
     public void setPathEndNodes(PathEndNode[] pathEndNodes) {
         this.pathEndNodes = pathEndNodes;
@@ -213,10 +205,6 @@ public class RightInputAdapterNode extends ObjectSource
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     /**
