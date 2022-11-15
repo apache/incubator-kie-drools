@@ -31,7 +31,7 @@ public interface KieService extends Comparable<KieService> {
     }
 
     static <T extends KieService> T load(Class<T> serviceClass) {
-        ServiceLoader<T> loader = ServiceLoader.load(serviceClass);
+        ServiceLoader<T> loader = ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
         T service = null;
         for (T impl : loader) {
             if (service == null || impl.compareTo(service) > 0) {
