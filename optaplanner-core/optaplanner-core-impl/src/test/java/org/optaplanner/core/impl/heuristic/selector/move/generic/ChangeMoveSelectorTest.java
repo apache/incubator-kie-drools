@@ -1,82 +1,76 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.doInsideStep;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockValueSelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
 class ChangeMoveSelectorTest {
 
     @Test
     void original() {
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-                new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
-                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
+        TestdataEntity a = new TestdataEntity("a");
+        TestdataEntity b = new TestdataEntity("b");
+        TestdataEntity c = new TestdataEntity("c");
+        TestdataEntity d = new TestdataEntity("d");
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
 
-        ChangeMoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, false);
+        EntitySelector<TestdataSolution> entitySelector = mockEntitySelector(TestdataEntity.class, a, b, c, d);
+        ValueSelector<TestdataSolution> valueSelector = mockValueSelector(TestdataEntity.class, "value", v1, v2, v3);
 
-        SolverScope solverScope = mock(SolverScope.class);
-        moveSelector.solvingStarted(solverScope);
+        ChangeMoveSelector<TestdataSolution> moveSelector = new ChangeMoveSelector<>(entitySelector, valueSelector, false);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeA);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfMoveSelector(moveSelector,
-                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3");
-        moveSelector.stepEnded(stepScopeA1);
+        doInsideStep(moveSelector, phaseScopeA, selector -> assertAllCodesOfMoveSelector(selector,
+                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3"));
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfMoveSelector(moveSelector,
-                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3");
-        moveSelector.stepEnded(stepScopeA2);
+        // Step A(1): initialize two entities: a->1, b->3.
+        when(valueSelector.getVariableDescriptor().getValue(a)).thenReturn(v1);
+        when(valueSelector.getVariableDescriptor().getValue(b)).thenReturn(v3);
+
+        doInsideStep(moveSelector, phaseScopeA, selector -> assertAllCodesOfMoveSelector(selector,
+                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3"));
+
+        // Step A(2): initialize two entities: c->2, d->1.
+        when(valueSelector.getVariableDescriptor().getValue(c)).thenReturn(v2);
+        when(valueSelector.getVariableDescriptor().getValue(d)).thenReturn(v1);
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeB);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfMoveSelector(moveSelector,
-                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3");
-        moveSelector.stepEnded(stepScopeB1);
+        // All entities were initialized in the previous phase. As a result, some moves are now not doable.
+        // Nevertheless, the move selector must produce all possible moves, including those that are not doable at this point
+        // because if the selector is cached, it might only be called once per phase (for example). Moves that are not doable
+        // at the time they are created might become doable later, so they must be included in the cache.
 
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfMoveSelector(moveSelector,
-                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3");
-        moveSelector.stepEnded(stepScopeB2);
-
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfMoveSelector(moveSelector,
-                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3");
-        moveSelector.stepEnded(stepScopeB3);
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertAllCodesOfMoveSelector(selector,
+                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3"));
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertAllCodesOfMoveSelector(selector,
+                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3"));
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertAllCodesOfMoveSelector(selector,
+                "a->1", "a->2", "a->3", "b->1", "b->2", "b->3", "c->1", "c->2", "c->3", "d->1", "d->2", "d->3"));
 
         moveSelector.phaseEnded(phaseScopeB);
-
         moveSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 5);
@@ -85,57 +79,27 @@ class ChangeMoveSelectorTest {
 
     @Test
     void emptyEntitySelectorOriginal() {
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
+        EntitySelector<TestdataSolution> entitySelector = mockEntitySelector(TestdataEntity.class);
+        ValueSelector<TestdataSolution> valueSelector = mockValueSelector(TestdataEntity.class, "value",
                 new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
 
-        ChangeMoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, false);
+        ChangeMoveSelector<TestdataSolution> moveSelector = new ChangeMoveSelector<>(entitySelector, valueSelector, false);
 
-        SolverScope solverScope = mock(SolverScope.class);
-        moveSelector.solvingStarted(solverScope);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector, null, null);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(moveSelector, solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeA);
-
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeA1);
-
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeA2);
+        doInsideStep(moveSelector, phaseScopeA, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeA, PlannerAssert::assertAllCodesOfMoveSelector);
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeB);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB1);
-
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB2);
-
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB3);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
 
         moveSelector.phaseEnded(phaseScopeB);
-
         moveSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 5);
@@ -144,57 +108,27 @@ class ChangeMoveSelectorTest {
 
     @Test
     void emptyValueSelectorOriginal() {
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+        EntitySelector<TestdataSolution> entitySelector = mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value");
+        ValueSelector<TestdataSolution> valueSelector = mockValueSelector(TestdataEntity.class, "value");
 
-        ChangeMoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, false);
+        ChangeMoveSelector<TestdataSolution> moveSelector = new ChangeMoveSelector<>(entitySelector, valueSelector, false);
 
-        SolverScope solverScope = mock(SolverScope.class);
-        moveSelector.solvingStarted(solverScope);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(moveSelector, solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeA);
-
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeA1);
-
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeA2);
+        doInsideStep(moveSelector, phaseScopeA, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeA, PlannerAssert::assertAllCodesOfMoveSelector);
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeB);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB1);
-
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB2);
-
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfMoveSelector(moveSelector);
-        moveSelector.stepEnded(stepScopeB3);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
+        doInsideStep(moveSelector, phaseScopeB, PlannerAssert::assertAllCodesOfMoveSelector);
 
         moveSelector.phaseEnded(phaseScopeB);
-
         moveSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 5);
@@ -203,63 +137,53 @@ class ChangeMoveSelectorTest {
 
     @Test
     void randomSelection() {
-        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-                new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"), new TestdataEntity("d"));
-        ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
-                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
+        TestdataEntity a = new TestdataEntity("a");
+        TestdataEntity b = new TestdataEntity("b");
+        TestdataEntity c = new TestdataEntity("c");
+        TestdataEntity d = new TestdataEntity("d");
+        TestdataValue v1 = new TestdataValue("1");
+        TestdataValue v2 = new TestdataValue("2");
+        TestdataValue v3 = new TestdataValue("3");
 
-        ChangeMoveSelector moveSelector = new ChangeMoveSelector(entitySelector, valueSelector, true);
+        EntitySelector<TestdataSolution> entitySelector = mockEntitySelector(TestdataEntity.class, a, b, c, d);
+        ValueSelector<TestdataSolution> valueSelector = mockValueSelector(TestdataEntity.class, "value", v1, v2, v3);
 
-        SolverScope solverScope = mock(SolverScope.class);
-        moveSelector.solvingStarted(solverScope);
+        ChangeMoveSelector<TestdataSolution> moveSelector = new ChangeMoveSelector<>(entitySelector, valueSelector, true);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeA);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA1);
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1");
-        moveSelector.stepEnded(stepScopeA1);
+        doInsideStep(moveSelector, phaseScopeA, selector -> assertCodesOfNeverEndingMoveSelector(selector,
+                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1"));
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        moveSelector.stepStarted(stepScopeA2);
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1");
-        moveSelector.stepEnded(stepScopeA2);
+        // Step A(1): initialize two entities: a->1, b->3.
+        when(valueSelector.getVariableDescriptor().getValue(a)).thenReturn(v1);
+        when(valueSelector.getVariableDescriptor().getValue(b)).thenReturn(v3);
+
+        doInsideStep(moveSelector, phaseScopeA, selector -> assertCodesOfNeverEndingMoveSelector(selector,
+                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1"));
+
+        // Step A(2): initialize two entities: c->2, d->1.
+        when(valueSelector.getVariableDescriptor().getValue(c)).thenReturn(v2);
+        when(valueSelector.getVariableDescriptor().getValue(d)).thenReturn(v1);
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        moveSelector.phaseStarted(phaseScopeB);
+        // All entities were initialized in the previous phase. As a result, some moves are now not doable.
+        // Nevertheless, the move selector must produce all possible moves, including those that are not doable at this point
+        // because if the selector is cached, it might only be called once per phase (for example). Moves that are not doable
+        // at the time they are created might become doable later, so they must be included in the cache.
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB1);
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1");
-        moveSelector.stepEnded(stepScopeB1);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = phaseStarted(moveSelector, solverScope);
 
-        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
-        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB2);
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1");
-        moveSelector.stepEnded(stepScopeB2);
-
-        AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
-        when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
-        moveSelector.stepStarted(stepScopeB3);
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
-                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1");
-        moveSelector.stepEnded(stepScopeB3);
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertCodesOfNeverEndingMoveSelector(selector,
+                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1"));
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertCodesOfNeverEndingMoveSelector(selector,
+                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1"));
+        doInsideStep(moveSelector, phaseScopeB, selector -> assertCodesOfNeverEndingMoveSelector(selector,
+                "a->1", "b->1", "c->1", "d->1", "a->1", "b->1", "c->1", "d->1"));
 
         moveSelector.phaseEnded(phaseScopeB);
-
         moveSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 5);

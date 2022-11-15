@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -190,6 +191,12 @@ public class SelectorTestUtils {
     // Lifecycle
     // ************************************************************************
 
+    public static <Solution_> SolverScope<Solution_> solvingStarted(PhaseLifecycleListener<Solution_> listener) {
+        SolverScope<Solution_> solverScope = mock(SolverScope.class);
+        listener.solvingStarted(solverScope);
+        return solverScope;
+    }
+
     public static <Solution_, Score_ extends Score<Score_>> SolverScope<Solution_> solvingStarted(
             PhaseLifecycleListener<Solution_> listener, InnerScoreDirector<Solution_, Score_> scoreDirector, Random random) {
         SolverScope<Solution_> solverScope = mock(SolverScope.class);
@@ -213,6 +220,13 @@ public class SelectorTestUtils {
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
         listener.stepStarted(stepScope);
         return stepScope;
+    }
+
+    public static <Solution_, T extends PhaseLifecycleListener<Solution_>> void doInsideStep(T selector,
+            AbstractPhaseScope<Solution_> phaseScope, Consumer<T> selectorAction) {
+        AbstractStepScope<Solution_> stepScope = stepStarted(selector, phaseScope);
+        selectorAction.accept(selector);
+        selector.stepEnded(stepScope);
     }
 
     private SelectorTestUtils() {
