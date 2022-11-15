@@ -38,9 +38,26 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() || jobFolder.isMandrelLTS() ? '360' : '210',
                 ]
             ], [
-                id: 'kogito-examples',
-                dependsOn: 'kogito-runtimes',
-                repository: 'kogito-examples'
+                id: 'kogito-quarkus-examples',
+                repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
+                env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
+                ],
+            ], [
+                id: 'kogito-springboot-examples',
+                repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
+                env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+                ],
+            ], [
+                id: 'serverless-workflow-examples',
+                repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
+                env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+                ],
             ]
         ],
     ]
