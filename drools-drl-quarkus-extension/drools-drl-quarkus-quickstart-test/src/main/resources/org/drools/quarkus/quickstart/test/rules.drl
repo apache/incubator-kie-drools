@@ -12,7 +12,7 @@ then
     alerts.add(new Alert("You might have forgot one light powered on: " + $l.getName()));
 end
 
-query "AllAlerts"
+query "All Alerts"
 	$a: /alerts;
 end
 

@@ -115,7 +115,11 @@ public class RuleDescr extends AnnotatedBaseDescr {
     }
 
     public String getName() {
-        return this.name;
+        return name;
+    }
+
+    public String getUnitQualifiedName() {
+        return unit == null ? name : unit.getTarget() + "." + name;
     }
 
     public void setName( String name ) {

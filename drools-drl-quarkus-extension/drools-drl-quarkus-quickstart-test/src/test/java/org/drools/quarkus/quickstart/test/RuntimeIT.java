@@ -43,7 +43,7 @@ public class RuntimeIT {
         homeUnitData.getLights().add(new Light("bathroom", false));
 
         try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
-            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            QueryResults queryResults = unitInstance.executeQuery("All Alerts");
             assertThat(queryResults).isNotEmpty()
                     .anyMatch(kv -> kv.get("$a").equals(new Alert("You might have forgot one light powered on: living room")));
         }
@@ -60,7 +60,7 @@ public class RuntimeIT {
         homeUnitData.getSmartphones().add(new Smartphone("John Doe's phone"));
 
         try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
-            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            QueryResults queryResults = unitInstance.executeQuery("All Alerts");
             assertThat(queryResults).isNotEmpty()
                     .anyMatch(kv -> kv.get("$a").equals(new Alert("One CCTV is still operating: security camera 2")));
         }
@@ -76,7 +76,7 @@ public class RuntimeIT {
         homeUnitData.getCctvs().add(new CCTV("security camera 2", true));
 
         try ( RuleUnitInstance<HomeRuleUnitData> unitInstance = ruleUnit.createInstance(homeUnitData) ) {
-            QueryResults queryResults = unitInstance.executeQuery("AllAlerts");
+            QueryResults queryResults = unitInstance.executeQuery("All Alerts");
             assertThat(queryResults).isEmpty();
         }
     }

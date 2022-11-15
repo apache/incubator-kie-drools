@@ -86,6 +86,7 @@ import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.WindowReferenceGenerator;
 import org.drools.model.codegen.execmodel.util.lambdareplace.CreatedClass;
 import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.util.StringUtil;
 import org.drools.util.StringUtils;
 import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
@@ -625,6 +626,7 @@ public class PackageModel {
                 Set<QueryModel> queries = queriesByRuleUnit.get( unitName );
                 Collection<String> queryNames = queries == null ? Collections.emptyList() : queries.stream()
                         .map( QueryModel::getName )
+                        .map( StringUtil::toId )
                         .map( name -> QUERY_METHOD_PREFIX + name )
                         .collect( toList() );
                 Collection<MethodDeclaration> queryImpls = queryNames.stream().map( queryMethods::get ).collect( toList() );

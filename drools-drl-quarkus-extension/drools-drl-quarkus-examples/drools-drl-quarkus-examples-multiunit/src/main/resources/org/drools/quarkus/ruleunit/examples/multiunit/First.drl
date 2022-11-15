@@ -6,7 +6,7 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.RuleUnitData;
 
-rule "Test1"
+rule "MyRule"
 when
     /input [ text == "Hello" ];
 then
