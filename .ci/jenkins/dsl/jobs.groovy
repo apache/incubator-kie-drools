@@ -30,12 +30,29 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
-                id: 'kogito-examples',
-                dependsOn: 'kogito-apps',
+                id: 'kogito-quarkus-examples',
                 repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
                 env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
                     BUILD_MVN_OPTS_CURRENT: jobFolder.isQuarkusLTS() ? '' : jobFolder.isNative() || jobFolder.isMandrel() ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'
-                ]
+                ],
+            ], [
+                id: 'kogito-springboot-examples',
+                repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
+                env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isQuarkusLTS() ? '' : jobFolder.isNative() || jobFolder.isMandrel() ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'
+                ],
+            ], [
+                id: 'serverless-workflow-examples',
+                repository: 'kogito-examples',
+                dependsOn: 'kogito-apps',
+                env : [
+                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isQuarkusLTS() ? '' : jobFolder.isNative() || jobFolder.isMandrel() ? '-Pkogito-apps-downstream-native' : '-Pkogito-apps-downstream'
+                ],
             ]
         ]
     ]
