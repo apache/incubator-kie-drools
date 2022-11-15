@@ -15,7 +15,7 @@ on:
 jobs:
   drools-build:
     concurrency:
-      group: drools_pr-${{ github.head_ref }}
+      group: drools-${{ matrix.os }}_pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
