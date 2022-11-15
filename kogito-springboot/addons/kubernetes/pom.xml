@@ -14,7 +14,7 @@
 
   <properties>
     <!-- Fabric8 aligned with Spring Cloud. See: https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-kubernetes-fabric8-autoconfig/2.1.1 -->
-    <version.io.fabric8>5.9.0</version.io.fabric8>
+    <version.io.fabric8>5.10.2</version.io.fabric8>
   </properties>
 
   <dependencyManagement>
