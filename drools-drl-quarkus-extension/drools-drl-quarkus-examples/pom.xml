@@ -15,5 +15,6 @@
 
     <modules>
       <module>drools-drl-quarkus-examples-reactive</module>
+      <module>drools-drl-quarkus-examples-multiunit</module>
     </modules>
 </project>

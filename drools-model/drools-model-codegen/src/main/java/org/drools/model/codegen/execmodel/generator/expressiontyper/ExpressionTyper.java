@@ -61,9 +61,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
-import org.drools.util.TypeResolver;
-import org.drools.util.MethodUtils;
-import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.ParseExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
@@ -93,14 +90,14 @@ import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
+import org.drools.util.MethodUtils;
+import org.drools.util.TypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.drools.util.ClassUtils.extractGenericType;
-import static org.drools.util.ClassUtils.getter2property;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findRootNodeViaParent;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getClassFromContext;
@@ -122,15 +119,16 @@ import static org.drools.modelcompiler.util.ClassUtil.getTypeArgument;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.MvelParser.parseType;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
+import static org.drools.util.ClassUtils.extractGenericType;
+import static org.drools.util.ClassUtils.getter2property;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class ExpressionTyper {
 
     private final RuleContext ruleContext;
-    private final PackageModel packageModel;
-    private Class<?> patternType;
-    private String bindingId;
-    private boolean isPositional;
+    private final Class<?> patternType;
+    private final String bindingId;
+    private final boolean isPositional;
     private final ExpressionTyperContext context;
 
     private static final Logger logger          = LoggerFactory.getLogger(ExpressionTyper.class);
@@ -146,7 +144,6 @@ public class ExpressionTyper {
 
     public ExpressionTyper(RuleContext ruleContext, Class<?> patternType, String bindingId, boolean isPositional, ExpressionTyperContext context) {
         this.ruleContext = ruleContext;
-        packageModel = ruleContext.getPackageModel();
         this.patternType = patternType;
         this.bindingId = bindingId;
         this.isPositional = isPositional;
@@ -213,7 +210,7 @@ public class ExpressionTyper {
             Optional<TypedExpression> optLeft = toTypedExpressionRec(binaryExpr.getLeft());
             Optional<TypedExpression> optRight = toTypedExpressionRec(binaryExpr.getRight());
 
-            if (!optLeft.isPresent() || !optRight.isPresent()) {
+            if (optLeft.isEmpty() || optRight.isEmpty()) {
                 return empty();
             }
 
@@ -410,7 +407,7 @@ public class ExpressionTyper {
     }
 
     private boolean isEval(String nameAsString, Optional<Expression> scope, NodeList<Expression> arguments) {
-        return nameAsString.equals("eval") && !scope.isPresent() && arguments.size() == 1;
+        return nameAsString.equals("eval") && scope.isEmpty() && arguments.size() == 1;
     }
 
     private Optional<TypedExpression> createArrayAccessExpression(Expression index, Expression scope) {
@@ -453,10 +450,10 @@ public class ExpressionTyper {
             context.addUsedDeclarations(name);
             return of(new TypedExpression(new NameExpr(name)));
 
-        } else if(packageModel.getGlobals().containsKey(name)){
+        } else if (ruleContext.getGlobals().containsKey(name)){
             Expression plusThis = new NameExpr(name);
             context.addUsedDeclarations(name);
-            return of(new TypedExpression(plusThis, packageModel.getGlobals().get(name)));
+            return of(new TypedExpression(plusThis, ruleContext.getGlobals().get(name)));
 
         } else if (isPositional || ruleContext.isQuery()) {
             String unificationVariable = ruleContext.getOrCreateUnificationId(name);
@@ -540,7 +537,7 @@ public class ExpressionTyper {
             addReactOnProperty(me.getNameAsString(), me.getArguments());
         }
 
-        if(!teCursor.isPresent()) {
+        if(teCursor.isEmpty()) {
             return new TypedExpressionResult(empty(), context);
         }
 
@@ -643,11 +640,10 @@ public class ExpressionTyper {
         } catch(RuntimeException e) {
             return empty();
         }
-        String field = name;
 
         final Object staticValue;
         try {
-            staticValue = clazz.getDeclaredField(field).get(null);
+            staticValue = clazz.getDeclaredField(name).get(null);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             return empty();
         }
@@ -718,7 +714,7 @@ public class ExpressionTyper {
             result = processFirstNode( drlxExpr, childNodes, (( EnclosedExpr ) firstNode).getInner(), isInLineCast, originalTypeCursor);
 
         } else if (firstNode instanceof CastExpr) {
-            result = castExpr( ( CastExpr ) firstNode, drlxExpr, childNodes, isInLineCast, originalTypeCursor );
+            result = castExpr( ( CastExpr ) firstNode, isInLineCast );
 
         } else if (firstNode instanceof ArrayCreationExpr) {
             result = of(arrayCreationExpr( (( ArrayCreationExpr ) firstNode) ));
@@ -801,7 +797,7 @@ public class ExpressionTyper {
         return leftType;
     }
 
-    private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, Expression drlxExpr, List<Node> childNodes, boolean isInLineCast, java.lang.reflect.Type originalTypeCursor ) {
+    private Optional<TypedExpressionCursor> castExpr( CastExpr firstNode, boolean isInLineCast ) {
         try {
             Type type = firstNode.getType();
             Class<?> typeClass = ruleContext.getTypeResolver().resolveType( type.toString() );
@@ -921,7 +917,7 @@ public class ExpressionTyper {
         int genericPos = 0;
         for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
             if (typeVar.equals( genericReturnType )) {
-                return (( ParameterizedType ) originalTypeCursor).getActualTypeArguments()[genericPos];
+                return originalTypeCursor.getActualTypeArguments()[genericPos];
             }
             genericPos++;
         }
@@ -1051,9 +1047,8 @@ public class ExpressionTyper {
 
     private TypedExpressionCursor fieldAccessExpr(java.lang.reflect.Type originalTypeCursor, SimpleName firstNodeName) {
         TypedExpressionCursor teCursor;
-        final java.lang.reflect.Type tc4 = originalTypeCursor;
         String firstName = firstNodeName.getIdentifier();
-        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName, ruleContext);
+        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(originalTypeCursor), firstName, ruleContext);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
             teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr(THIS_PLACEHOLDER), firstAccessor.getName()), firstAccessor.getGenericReturnType());
@@ -1133,9 +1128,9 @@ public class ExpressionTyper {
             return of(new TypedExpressionCursor(new NameExpr(firstName), typeCursor));
         }
 
-        if (packageModel.getGlobals().containsKey(firstName)) {
+        if (ruleContext.getGlobals().containsKey(firstName)) {
             context.addUsedDeclarations(firstName);
-            return of(new TypedExpressionCursor(new NameExpr(firstName), packageModel.getGlobals().get(firstName)));
+            return of(new TypedExpressionCursor(new NameExpr(firstName), ruleContext.getGlobals().get(firstName)));
         }
 
         final Optional<Node> rootNode = findRootNodeViaParent(drlxExpr);

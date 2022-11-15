@@ -61,7 +61,7 @@ public class RhsParser {
 
     public void parse( RuleDescr ruleDescr, RuleContext context, Rule rule ) {
         BlockStmt ruleVariablesBlock = new BlockStmt();
-        MethodCallExpr consequenceExpr = new Consequence(context).createCall( ruleDescr, ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
+        MethodCallExpr consequenceExpr = new Consequence(context).createCall( ruleDescr.getConsequence().toString(), ruleVariablesBlock, false );
 
         consequenceExpr.findAll(MethodCallExpr.class).stream()
                 .filter( m -> m.getScope().map( s -> s.toString().equals( "drools" ) ).orElse( false ) )

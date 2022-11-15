@@ -91,12 +91,12 @@ import org.drools.util.TypeResolver;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
+import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.drools.kiesession.session.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
@@ -133,7 +133,7 @@ public class PackageModel {
 
     private final Map<String, java.lang.reflect.Type> globals = new HashMap<>();
 
-    private final Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
+    private final Map<String, RuleUnitMembers> ruleUnitMembers = new ConcurrentHashMap<>();
 
     private final Set<String> queryNames = new HashSet<>();
     private final Map<String, MethodDeclaration> queryMethods = new ConcurrentHashMap<>();
@@ -287,12 +287,13 @@ public class PackageModel {
         entryPoints.stream().map( EntryPointDeclarationDescr::getEntryPointId ).forEach( this.entryPoints::add );
     }
 
-    public void addEntryPoint(String name) {
-        entryPoints.add( name );
-    }
-
     public boolean hasEntryPoint(String name) {
         return entryPoints.contains( name );
+    }
+
+    public boolean hasEntryPointForUnit(String name, String unitName) {
+        RuleUnitMembers unitMembers = ruleUnitMembers.get(unitName);
+        return unitMembers != null && unitMembers.entryPoints.contains( name );
     }
 
     public Collection<String> getStaticImports() {
@@ -345,16 +346,26 @@ public class PackageModel {
         return staticMethods;
     }
 
+    public void addRuleUnitVariable(String unitName, RuleUnitVariable unitVar) {
+        RuleUnitMembers unitMembers = ruleUnitMembers.computeIfAbsent(unitName, k -> new RuleUnitMembers());
+        String unitVarName = unitVar.getName();
+        unitMembers.globals.put( unitVarName, unitVar.getType() );
+        if ( unitVar.isDataSource() ) {
+            unitMembers.entryPoints.add( unitVarName );
+        }
+    }
+
     public void addGlobals(InternalKnowledgePackage pkg) {
         globals.putAll( pkg.getGlobals() );
     }
 
-    public void addGlobal(String name, java.lang.reflect.Type type) {
-        globals.put( name, type );
-    }
-
     public Map<String, java.lang.reflect.Type> getGlobals() {
         return globals;
+    }
+
+    public Map<String, java.lang.reflect.Type> getGlobalsForUnit(String unitName) {
+        RuleUnitMembers unitMembers = ruleUnitMembers.get(unitName);
+        return unitMembers == null ? Collections.emptyMap() : unitMembers.globals;
     }
 
     public void addTypeMetaDataExpressions(Expression typeMetaDataExpression) {
@@ -362,11 +373,11 @@ public class PackageModel {
     }
 
     public void putRuleMethod(String unitName, MethodDeclaration ruleMethod, int ruleIndex) {
-        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() )).put( ruleIndex, ruleMethod );
+        ruleUnitMembers.computeIfAbsent(unitName, k -> new RuleUnitMembers()).ruleMethods.put( ruleIndex, ruleMethod );
     }
 
     public void putRuleUnit(String unitName) {
-        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() ));
+        ruleUnitMembers.computeIfAbsent(unitName, k -> new RuleUnitMembers());
         executableRulesClasses.remove(executableRulesClass);
         String toAdd = executableRulesClass + "_"  + unitName;
         executableRulesClasses.add(toAdd);
@@ -519,9 +530,6 @@ public class PackageModel {
 
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(rulesFileName);
         rulesClass.addImplementedType(Model.class.getCanonicalName());
-        if (hasRuleUnit) {
-            rulesClass.addModifier( Modifier.Keyword.ABSTRACT );
-        }
 
         BodyDeclaration<?> dateFormatter = parseBodyDeclaration(
                 "public final static java.time.format.DateTimeFormatter " + DATE_TIME_FORMATTER_FIELD +
@@ -535,18 +543,6 @@ public class PackageModel {
                 "    }\n"
                 );
         rulesClass.addMember(getNameMethod);
-
-        String entryPointsBuilder = entryPoints.isEmpty() ?
-                "java.util.Collections.emptyList()" :
-                "java.util.Arrays.asList(D.entryPoint(\"" + entryPoints.stream().collect( joining("\"), D.entryPoint(\"") ) + "\"))";
-
-        BodyDeclaration<?> getEntryPointsMethod = parseBodyDeclaration(
-                "    @Override\n" +
-                "    public java.util.List<org.drools.model.EntryPoint> getEntryPoints() {\n" +
-                "        return " + entryPointsBuilder + ";\n" +
-                "    }\n"
-                );
-        rulesClass.addMember(getEntryPointsMethod);
 
         BodyDeclaration<?> getGlobalsMethod = parseBodyDeclaration(
                 "    @Override\n" +
@@ -574,10 +570,6 @@ public class PackageModel {
             f.getVariables().get(0).setInitializer(windowReference.getValue());
         }
 
-        for ( Map.Entry<String, java.lang.reflect.Type> g : getGlobals().entrySet() ) {
-            addGlobalField(rulesClass, getName(), g.getKey(), g.getValue());
-        }
-
         for(Map.Entry<String, QueryGenerator.QueryDefWithType> queryDef: queryDefWithType.entrySet()) {
             FieldDeclaration field = rulesClass.addField(queryDef.getValue().getQueryType(), queryDef.getKey(), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
             field.getVariables().get(0).setInitializer(queryDef.getValue().getMethodCallExpr());
@@ -589,7 +581,11 @@ public class PackageModel {
         BlockStmt rulesListInitializerBody = new BlockStmt();
         rulesListInitializer.setBody(rulesListInitializerBody);
 
-        buildArtifactsDeclaration( getGlobals().keySet(), rulesClass, rulesListInitializerBody, "org.drools.model.Global", "globals", true );
+        for ( Map.Entry<String, java.lang.reflect.Type> g : globals.entrySet() ) {
+            addGlobalField(rulesClass, rulesListInitializerBody, getName(), g.getKey(), g.getValue());
+        }
+
+        rulesClass.addMember( generateListField("org.drools.model.Global", "globals", globals.isEmpty() && !hasRuleUnit) );
 
         if ( !typeMetaDataExpressions.isEmpty() ) {
             BodyDeclaration<?> typeMetaDatasList = parseBodyDeclaration("java.util.List<org.drools.model.TypeMetaData> typeMetaDatas = new java.util.ArrayList<>();");
@@ -607,16 +603,24 @@ public class PackageModel {
         RuleSourceResult results = new RuleSourceResult(cu);
 
         if (hasRuleUnit) {
-            ruleMethods.keySet().forEach( unitName -> {
+            rulesClass.addModifier( Modifier.Keyword.ABSTRACT );
+
+            ruleUnitMembers.forEach( (unitName, unitMembers) -> {
                 String className = rulesFileName + "_" + unitName;
-                ClassOrInterfaceDeclaration unitClass = createClass( className, results);
+                ClassOrInterfaceDeclaration unitClass = createCompilationUnit(results).addClass(className);
                 unitClass.addExtendedType( rulesFileName );
 
                 InitializerDeclaration unitInitializer = new InitializerDeclaration();
                 BlockStmt unitInitializerBody = new BlockStmt();
                 unitInitializer.setBody(unitInitializerBody);
 
-                generateRulesInUnit( unitName, unitInitializerBody, results, unitClass );
+                generateRulesInUnit( unitName, unitMembers, unitInitializerBody, results, unitClass );
+
+                unitClass.addMember(generateGetEntryPointsMethod(unitMembers.entryPoints));
+
+                for ( Map.Entry<String, java.lang.reflect.Type> g : unitMembers.globals.entrySet() ) {
+                    addGlobalField(unitClass, unitInitializerBody, getName(), g.getKey(), g.getValue());
+                }
 
                 Set<QueryModel> queries = queriesByRuleUnit.get( unitName );
                 Collection<String> queryNames = queries == null ? Collections.emptyList() : queries.stream()
@@ -632,8 +636,9 @@ public class PackageModel {
            } );
 
         } else {
-            generateRulesInUnit( DEFAULT_RULE_UNIT, rulesListInitializerBody, results, rulesClass );
+            generateRulesInUnit( DEFAULT_RULE_UNIT, ruleUnitMembers.get(DEFAULT_RULE_UNIT), rulesListInitializerBody, results, rulesClass );
             generateQueriesInUnit( rulesClass, rulesListInitializerBody, queryMethods.keySet(), queryMethods.values() );
+            rulesClass.addMember(generateGetEntryPointsMethod(entryPoints));
         }
 
         if (!rulesListInitializerBody.getStatements().isEmpty()) {
@@ -641,6 +646,20 @@ public class PackageModel {
         }
 
         return results;
+    }
+
+    private BodyDeclaration<?> generateGetEntryPointsMethod(Set<String> entryPoints) {
+        String entryPointsBuilder = entryPoints.isEmpty() ?
+                "java.util.Collections.emptyList()" :
+                "java.util.Arrays.asList(D.entryPoint(\"" + entryPoints.stream().collect( joining("\"), D.entryPoint(\"") ) + "\"))";
+
+        BodyDeclaration<?> getEntryPointsMethod = parseBodyDeclaration(
+                "    @Override\n" +
+                "    public java.util.List<org.drools.model.EntryPoint> getEntryPoints() {\n" +
+                "        return " + entryPointsBuilder + ";\n" +
+                "    }\n"
+                );
+        return getEntryPointsMethod;
     }
 
     private void generateQueriesInUnit( ClassOrInterfaceDeclaration rulesClass, BlockStmt initializerBody, Collection<String> queryNames, Collection<MethodDeclaration> queryImpls ) {
@@ -670,12 +689,13 @@ public class PackageModel {
         buildArtifactsDeclaration( queryNames, rulesClass, initializerBody, "org.drools.model.Query", "queries", false );
     }
 
-    private void generateRulesInUnit( String ruleUnitName, BlockStmt rulesListInitializerBody, RuleSourceResult results,
+    private void generateRulesInUnit( String ruleUnitName, RuleUnitMembers ruleUnitMembers,
+                                      BlockStmt rulesListInitializerBody, RuleSourceResult results,
                                       ClassOrInterfaceDeclaration rulesClass ) {
 
         results.withModel( name + "." + ruleUnitName, name + "." + rulesClass.getNameAsString() );
 
-        Collection<MethodDeclaration> ruleMethodsInUnit = ofNullable(ruleMethods.get(ruleUnitName)).map(Map::values).orElse(null);
+        Collection<MethodDeclaration> ruleMethodsInUnit = ruleUnitMembers != null ? ruleUnitMembers.ruleMethods.values() : null;
         if (ruleMethodsInUnit == null || ruleMethodsInUnit.isEmpty()) {
             BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                     "    @Override\n" +
@@ -738,7 +758,9 @@ public class PackageModel {
             String methodName = ruleMethod.getNameAsString();
             ClassOrInterfaceDeclaration rulesMethodClass = splitted.computeIfAbsent(++count / rulesPerClass, i -> {
                 String className = rulesClass.getNameAsString() + (oneClassPerRule ? "_" + methodName : "RuleMethods" + i);
-                return createClass( className, results );
+                CompilationUnit cu = createCompilationUnit(results);
+                cu.getImports().add(new ImportDeclaration(new Name(name + "." + rulesClass.getNameAsString()), true, true));
+                return cu.addClass(className);
             });
             rulesMethodClass.addMember(ruleMethod);
 
@@ -784,30 +806,30 @@ public class PackageModel {
         getRulesMethod.setComment(exprIdComment);
     }
 
-    private ClassOrInterfaceDeclaration createClass( String className, RuleSourceResult results ) {
+    private CompilationUnit createCompilationUnit(RuleSourceResult results ) {
         CompilationUnit cuRulesMethod = new CompilationUnit();
         results.withClass(cuRulesMethod);
         cuRulesMethod.setPackageDeclaration(name);
         manageImportForCompilationUnit(cuRulesMethod);
         cuRulesMethod.getImports().add(new ImportDeclaration(new Name(name + "." + rulesFileName), true, true));
-        return cuRulesMethod.addClass(className);
+        return cuRulesMethod;
     }
 
     private void buildArtifactsDeclaration( Collection<String> artifacts, ClassOrInterfaceDeclaration rulesClass,
                                             BlockStmt rulesListInitializerBody, String type, String fieldName, boolean needsToVar ) {
-        if (!artifacts.isEmpty()) {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = new java.util.ArrayList<>();");
-            rulesClass.addMember(queriesList);
-            for (String name : artifacts) {
-                addInitStatement( rulesListInitializerBody, new NameExpr( needsToVar ? toVar(name) : name ), fieldName );
-            }
-        } else {
-            BodyDeclaration<?> queriesList = parseBodyDeclaration("java.util.List<" + type + "> " + fieldName + " = java.util.Collections.emptyList();");
-            rulesClass.addMember(queriesList);
+        rulesClass.addMember( generateListField(type, fieldName, artifacts.isEmpty()) );
+        for (String name : artifacts) {
+            addInitStatement( rulesListInitializerBody, new NameExpr( needsToVar ? toVar(name) : name ), fieldName );
         }
     }
 
-    private void addInitStatement( BlockStmt rulesListInitializerBody, Expression expr, String fieldName ) {
+    private BodyDeclaration<?> generateListField(String type, String fieldName, boolean empty) {
+        return empty ?
+                parseBodyDeclaration("protected java.util.List<" + type + "> " + fieldName + " = java.util.Collections.emptyList();") :
+                parseBodyDeclaration("protected java.util.List<" + type + "> " + fieldName + " = new java.util.ArrayList<>();");
+    }
+
+    private static void addInitStatement( BlockStmt rulesListInitializerBody, Expression expr, String fieldName ) {
         NameExpr rulesFieldName = new NameExpr( fieldName );
         MethodCallExpr add = new MethodCallExpr( rulesFieldName, "add" );
         add.addArgument( expr );
@@ -853,7 +875,7 @@ public class PackageModel {
         }
     }
 
-    private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, String packageName, String globalName, java.lang.reflect.Type globalType) {
+    private static void addGlobalField(ClassOrInterfaceDeclaration classDeclaration, BlockStmt rulesListInitializerBody, String packageName, String globalName, java.lang.reflect.Type globalType) {
         ClassOrInterfaceType varType = toClassOrInterfaceType(Global.class);
         MethodCallExpr declarationOfCall = createDslTopLevelMethod(GLOBAL_OF_CALL);
 
@@ -876,14 +898,12 @@ public class PackageModel {
         FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
 
         field.getVariables().get(0).setInitializer(declarationOfCall);
+
+        addInitStatement( rulesListInitializerBody, new NameExpr( toVar(globalName) ), "globals" );
     }
 
     public void setAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
         this.accumulateFunctions = accumulateFunctions;
-    }
-
-    public boolean hasDeclaration(String id) {
-        return globals.get(id) != null;
     }
 
     public boolean registerDomainClass(Class<?> domainClass) {
@@ -978,5 +998,11 @@ public class PackageModel {
 
     public DroolsModelBuildContext getContext() {
         return context;
+    }
+
+    private static class RuleUnitMembers {
+        final Map<Integer, MethodDeclaration> ruleMethods = Collections.synchronizedMap( new TreeMap<>() );
+        final Map<String, java.lang.reflect.Type> globals = new HashMap<>();
+        final Set<String> entryPoints = new HashSet<>();
     }
 }

@@ -35,7 +35,6 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.PatternSourceDescr;
-import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.generator.DeclarationSpec;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
@@ -52,7 +51,6 @@ import org.drools.mvel.parser.printer.PrintUtil;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
-import static org.drools.util.StringUtils.splitArgumentsList;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findViaScopeWithPredicate;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
@@ -60,16 +58,15 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toVar;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.FROM_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.createDslTopLevelMethod;
+import static org.drools.util.StringUtils.splitArgumentsList;
 
 public class FromVisitor {
 
     private final RuleContext context;
-    private final PackageModel packageModel;
     private final Class<?> patternType;
 
-    public FromVisitor(RuleContext context, PackageModel packageModel, Class<?> patternType) {
+    public FromVisitor(RuleContext context, Class<?> patternType) {
         this.context = context;
-        this.packageModel = packageModel;
         this.patternType = patternType;
     }
 
@@ -146,7 +143,7 @@ public class FromVisitor {
 
         for (Expression argument : parsedExpression.getArguments()) {
             final String argumentName = PrintUtil.printNode(argument);
-            if (contextHasDeclaration(argumentName)) {
+            if (context.hasDeclaration(argumentName)) {
                 bindingIds.add(argumentName);
                 fromCall.addArgument( context.getVarExpr(argumentName));
             }
@@ -174,10 +171,10 @@ public class FromVisitor {
         if (staticField.isPresent()) {
             return of( createSupplier(parsedExpression) );
         }
-        if ( packageModel.hasEntryPoint( bindingId ) ) {
+        if ( context.hasEntryPoint( bindingId ) ) {
             return of( createEntryPointCall(bindingId) );
         }
-        if ( contextHasDeclaration( bindingId ) ) {
+        if ( context.hasDeclaration( bindingId ) ) {
             return of( createFromCall(expression, bindingId, optContainsBinding.isPresent(), null) );
         }
         return of(createUnitDataCall(bindingId));
@@ -229,16 +226,12 @@ public class FromVisitor {
         final Expression sanitizedMethodCallExpr = DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
         return findViaScopeWithPredicate(sanitizedMethodCallExpr, e -> {
             if (e instanceof NameExpr) {
-                return contextHasDeclaration(((NameExpr) e).getName().toString());
+                return context.hasDeclaration(((NameExpr) e).getName().toString());
             }
             return false;
         })
         .filter( Expression::isNameExpr )
         .map( e -> createFromCall(expression, e.asNameExpr().toString(), true, expr) );
-    }
-
-    private boolean contextHasDeclaration(String name) {
-        return context.hasDeclaration(name) || packageModel.hasDeclaration(name);
     }
 
     private Expression createEntryPointCall( String bindingId ) {
@@ -278,7 +271,7 @@ public class FromVisitor {
             DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = ConstraintParser.withoutVariableValidationConstraintParser(context, packageModel)
+            DrlxParseResult drlxParseResult = ConstraintParser.withoutVariableValidationConstraintParser(context, context.getPackageModel())
                     .drlxParse(clazz, bindingId, expression);
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
