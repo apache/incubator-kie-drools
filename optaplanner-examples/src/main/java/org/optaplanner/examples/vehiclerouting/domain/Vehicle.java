@@ -5,14 +5,16 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @PlanningEntity
-@XStreamAlias("VrpVehicle")
-public class Vehicle extends AbstractPersistable {
+@JsonIdentityInfo(scope = Vehicle.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Vehicle extends AbstractPersistableJackson {
 
     protected int capacity;
     protected Depot depot;
@@ -57,6 +59,7 @@ public class Vehicle extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public Location getLocation() {
         return depot.getLocation();
     }

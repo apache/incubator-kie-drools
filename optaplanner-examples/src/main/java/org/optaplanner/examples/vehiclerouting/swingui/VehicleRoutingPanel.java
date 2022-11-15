@@ -95,26 +95,18 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     }
 
     protected Customer createCustomer(VehicleRoutingSolution solution, Location newLocation) {
-        Customer newCustomer;
+        int demand = demandRandom.nextInt(10) + 1; // Demand must not be 0.
         if (solution instanceof TimeWindowedVehicleRoutingSolution) {
-            TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
             TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) solution.getDepotList().get(0);
             long windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4L;
             long readyTime = demandRandom.longs(0, windowTime * 3L)
                     .findAny()
                     .orElseThrow();
-            newTimeWindowedCustomer.setReadyTime(readyTime);
-            newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
-            newTimeWindowedCustomer.setServiceDuration(Math.min(10000L, windowTime / 2L));
-            newCustomer = newTimeWindowedCustomer;
+            return new TimeWindowedCustomer(newLocation.getId(), newLocation, demand,
+                    readyTime, readyTime + windowTime, Math.min(10000L, windowTime / 2L));
         } else {
-            newCustomer = new Customer();
+            return new Customer(newLocation.getId(), newLocation, demand);
         }
-        newCustomer.setId(newLocation.getId());
-        newCustomer.setLocation(newLocation);
-        // Demand must not be 0
-        newCustomer.setDemand(demandRandom.nextInt(10) + 1);
-        return newCustomer;
     }
 
 }

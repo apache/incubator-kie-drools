@@ -4,20 +4,26 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
 import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleCustomerDifficultyWeightFactory.class)
-@XStreamAlias("VrpCustomer")
-@XStreamInclude({
-        TimeWindowedCustomer.class
+@JsonIdentityInfo(scope = Customer.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = TimeWindowedCustomer.class, name = "timeWindowed"),
 })
-public class Customer extends AbstractPersistable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Customer extends AbstractPersistableJackson {
 
     protected Location location;
     protected int demand;
@@ -83,6 +89,7 @@ public class Customer extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public long getDistanceFromPreviousStandstill() {
         if (vehicle == null) {
             throw new IllegalStateException(
@@ -94,6 +101,7 @@ public class Customer extends AbstractPersistable {
         return previousCustomer.getLocation().getDistanceTo(location);
     }
 
+    @JsonIgnore
     public long getDistanceToDepot() {
         return location.getDistanceTo(vehicle.getLocation());
     }

@@ -1,0 +1,697 @@
+{
+  "id" : 0,
+  "name" : "A-n33-k6",
+  "distanceType" : "AIR_DISTANCE",
+  "distanceUnitOfMeasurement" : "distance",
+  "locationList" : [ {
+    "@type" : "air",
+    "id" : 1,
+    "name" : null,
+    "latitude" : 34.0,
+    "longitude" : 31.0
+  }, {
+    "@type" : "air",
+    "id" : 2,
+    "name" : null,
+    "latitude" : 45.0,
+    "longitude" : 55.0
+  }, {
+    "@type" : "air",
+    "id" : 3,
+    "name" : null,
+    "latitude" : 70.0,
+    "longitude" : 80.0
+  }, {
+    "@type" : "air",
+    "id" : 4,
+    "name" : null,
+    "latitude" : 81.0,
+    "longitude" : 70.0
+  }, {
+    "@type" : "air",
+    "id" : 5,
+    "name" : null,
+    "latitude" : 85.0,
+    "longitude" : 61.0
+  }, {
+    "@type" : "air",
+    "id" : 6,
+    "name" : null,
+    "latitude" : 59.0,
+    "longitude" : 55.0
+  }, {
+    "@type" : "air",
+    "id" : 7,
+    "name" : null,
+    "latitude" : 45.0,
+    "longitude" : 60.0
+  }, {
+    "@type" : "air",
+    "id" : 8,
+    "name" : null,
+    "latitude" : 50.0,
+    "longitude" : 64.0
+  }, {
+    "@type" : "air",
+    "id" : 9,
+    "name" : null,
+    "latitude" : 80.0,
+    "longitude" : 64.0
+  }, {
+    "@type" : "air",
+    "id" : 10,
+    "name" : null,
+    "latitude" : 75.0,
+    "longitude" : 90.0
+  }, {
+    "@type" : "air",
+    "id" : 11,
+    "name" : null,
+    "latitude" : 25.0,
+    "longitude" : 40.0
+  }, {
+    "@type" : "air",
+    "id" : 12,
+    "name" : null,
+    "latitude" : 9.0,
+    "longitude" : 66.0
+  }, {
+    "@type" : "air",
+    "id" : 13,
+    "name" : null,
+    "latitude" : 1.0,
+    "longitude" : 44.0
+  }, {
+    "@type" : "air",
+    "id" : 14,
+    "name" : null,
+    "latitude" : 50.0,
+    "longitude" : 54.0
+  }, {
+    "@type" : "air",
+    "id" : 15,
+    "name" : null,
+    "latitude" : 35.0,
+    "longitude" : 45.0
+  }, {
+    "@type" : "air",
+    "id" : 16,
+    "name" : null,
+    "latitude" : 71.0,
+    "longitude" : 84.0
+  }, {
+    "@type" : "air",
+    "id" : 17,
+    "name" : null,
+    "latitude" : 1.0,
+    "longitude" : 9.0
+  }, {
+    "@type" : "air",
+    "id" : 18,
+    "name" : null,
+    "latitude" : 25.0,
+    "longitude" : 54.0
+  }, {
+    "@type" : "air",
+    "id" : 19,
+    "name" : null,
+    "latitude" : 45.0,
+    "longitude" : 59.0
+  }, {
+    "@type" : "air",
+    "id" : 20,
+    "name" : null,
+    "latitude" : 45.0,
+    "longitude" : 71.0
+  }, {
+    "@type" : "air",
+    "id" : 21,
+    "name" : null,
+    "latitude" : 66.0,
+    "longitude" : 84.0
+  }, {
+    "@type" : "air",
+    "id" : 22,
+    "name" : null,
+    "latitude" : 11.0,
+    "longitude" : 35.0
+  }, {
+    "@type" : "air",
+    "id" : 23,
+    "name" : null,
+    "latitude" : 81.0,
+    "longitude" : 46.0
+  }, {
+    "@type" : "air",
+    "id" : 24,
+    "name" : null,
+    "latitude" : 85.0,
+    "longitude" : 10.0
+  }, {
+    "@type" : "air",
+    "id" : 25,
+    "name" : null,
+    "latitude" : 75.0,
+    "longitude" : 20.0
+  }, {
+    "@type" : "air",
+    "id" : 26,
+    "name" : null,
+    "latitude" : 15.0,
+    "longitude" : 21.0
+  }, {
+    "@type" : "air",
+    "id" : 27,
+    "name" : null,
+    "latitude" : 90.0,
+    "longitude" : 45.0
+  }, {
+    "@type" : "air",
+    "id" : 28,
+    "name" : null,
+    "latitude" : 15.0,
+    "longitude" : 0.0
+  }, {
+    "@type" : "air",
+    "id" : 29,
+    "name" : null,
+    "latitude" : 31.0,
+    "longitude" : 26.0
+  }, {
+    "@type" : "air",
+    "id" : 30,
+    "name" : null,
+    "latitude" : 10.0,
+    "longitude" : 95.0
+  }, {
+    "@type" : "air",
+    "id" : 31,
+    "name" : null,
+    "latitude" : 6.0,
+    "longitude" : 6.0
+  }, {
+    "@type" : "air",
+    "id" : 32,
+    "name" : null,
+    "latitude" : 51.0,
+    "longitude" : 5.0
+  }, {
+    "@type" : "air",
+    "id" : 33,
+    "name" : null,
+    "latitude" : 26.0,
+    "longitude" : 36.0
+  } ],
+  "depotList" : [ {
+    "@type" : "Depot",
+    "id" : 1,
+    "location" : {
+      "@type" : "air",
+      "id" : 1,
+      "name" : null,
+      "latitude" : 34.0,
+      "longitude" : 31.0
+    }
+  } ],
+  "vehicleList" : [ {
+    "id" : 0,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  }, {
+    "id" : 1,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  }, {
+    "id" : 2,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  }, {
+    "id" : 3,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  }, {
+    "id" : 4,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  }, {
+    "id" : 5,
+    "capacity" : 100,
+    "depot" : 1,
+    "customers" : [ ]
+  } ],
+  "customerList" : [ {
+    "@type" : "Customer",
+    "id" : 2,
+    "location" : {
+      "@type" : "air",
+      "id" : 2,
+      "name" : null,
+      "latitude" : 45.0,
+      "longitude" : 55.0
+    },
+    "demand" : 26,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 3,
+    "location" : {
+      "@type" : "air",
+      "id" : 3,
+      "name" : null,
+      "latitude" : 70.0,
+      "longitude" : 80.0
+    },
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 4,
+    "location" : {
+      "@type" : "air",
+      "id" : 4,
+      "name" : null,
+      "latitude" : 81.0,
+      "longitude" : 70.0
+    },
+    "demand" : 6,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 5,
+    "location" : {
+      "@type" : "air",
+      "id" : 5,
+      "name" : null,
+      "latitude" : 85.0,
+      "longitude" : 61.0
+    },
+    "demand" : 15,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 6,
+    "location" : {
+      "@type" : "air",
+      "id" : 6,
+      "name" : null,
+      "latitude" : 59.0,
+      "longitude" : 55.0
+    },
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 7,
+    "location" : {
+      "@type" : "air",
+      "id" : 7,
+      "name" : null,
+      "latitude" : 45.0,
+      "longitude" : 60.0
+    },
+    "demand" : 5,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 8,
+    "location" : {
+      "@type" : "air",
+      "id" : 8,
+      "name" : null,
+      "latitude" : 50.0,
+      "longitude" : 64.0
+    },
+    "demand" : 15,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 9,
+    "location" : {
+      "@type" : "air",
+      "id" : 9,
+      "name" : null,
+      "latitude" : 80.0,
+      "longitude" : 64.0
+    },
+    "demand" : 16,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 10,
+    "location" : {
+      "@type" : "air",
+      "id" : 10,
+      "name" : null,
+      "latitude" : 75.0,
+      "longitude" : 90.0
+    },
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 11,
+    "location" : {
+      "@type" : "air",
+      "id" : 11,
+      "name" : null,
+      "latitude" : 25.0,
+      "longitude" : 40.0
+    },
+    "demand" : 1,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 12,
+    "location" : {
+      "@type" : "air",
+      "id" : 12,
+      "name" : null,
+      "latitude" : 9.0,
+      "longitude" : 66.0
+    },
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 13,
+    "location" : {
+      "@type" : "air",
+      "id" : 13,
+      "name" : null,
+      "latitude" : 1.0,
+      "longitude" : 44.0
+    },
+    "demand" : 66,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 14,
+    "location" : {
+      "@type" : "air",
+      "id" : 14,
+      "name" : null,
+      "latitude" : 50.0,
+      "longitude" : 54.0
+    },
+    "demand" : 25,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 15,
+    "location" : {
+      "@type" : "air",
+      "id" : 15,
+      "name" : null,
+      "latitude" : 35.0,
+      "longitude" : 45.0
+    },
+    "demand" : 16,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 16,
+    "location" : {
+      "@type" : "air",
+      "id" : 16,
+      "name" : null,
+      "latitude" : 71.0,
+      "longitude" : 84.0
+    },
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 17,
+    "location" : {
+      "@type" : "air",
+      "id" : 17,
+      "name" : null,
+      "latitude" : 1.0,
+      "longitude" : 9.0
+    },
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 18,
+    "location" : {
+      "@type" : "air",
+      "id" : 18,
+      "name" : null,
+      "latitude" : 25.0,
+      "longitude" : 54.0
+    },
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 19,
+    "location" : {
+      "@type" : "air",
+      "id" : 19,
+      "name" : null,
+      "latitude" : 45.0,
+      "longitude" : 59.0
+    },
+    "demand" : 17,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 20,
+    "location" : {
+      "@type" : "air",
+      "id" : 20,
+      "name" : null,
+      "latitude" : 45.0,
+      "longitude" : 71.0
+    },
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 21,
+    "location" : {
+      "@type" : "air",
+      "id" : 21,
+      "name" : null,
+      "latitude" : 66.0,
+      "longitude" : 84.0
+    },
+    "demand" : 10,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 22,
+    "location" : {
+      "@type" : "air",
+      "id" : 22,
+      "name" : null,
+      "latitude" : 11.0,
+      "longitude" : 35.0
+    },
+    "demand" : 25,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 23,
+    "location" : {
+      "@type" : "air",
+      "id" : 23,
+      "name" : null,
+      "latitude" : 81.0,
+      "longitude" : 46.0
+    },
+    "demand" : 16,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 24,
+    "location" : {
+      "@type" : "air",
+      "id" : 24,
+      "name" : null,
+      "latitude" : 85.0,
+      "longitude" : 10.0
+    },
+    "demand" : 7,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 25,
+    "location" : {
+      "@type" : "air",
+      "id" : 25,
+      "name" : null,
+      "latitude" : 75.0,
+      "longitude" : 20.0
+    },
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 26,
+    "location" : {
+      "@type" : "air",
+      "id" : 26,
+      "name" : null,
+      "latitude" : 15.0,
+      "longitude" : 21.0
+    },
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 27,
+    "location" : {
+      "@type" : "air",
+      "id" : 27,
+      "name" : null,
+      "latitude" : 90.0,
+      "longitude" : 45.0
+    },
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 28,
+    "location" : {
+      "@type" : "air",
+      "id" : 28,
+      "name" : null,
+      "latitude" : 15.0,
+      "longitude" : 0.0
+    },
+    "demand" : 11,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 29,
+    "location" : {
+      "@type" : "air",
+      "id" : 29,
+      "name" : null,
+      "latitude" : 31.0,
+      "longitude" : 26.0
+    },
+    "demand" : 21,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 30,
+    "location" : {
+      "@type" : "air",
+      "id" : 30,
+      "name" : null,
+      "latitude" : 10.0,
+      "longitude" : 95.0
+    },
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 31,
+    "location" : {
+      "@type" : "air",
+      "id" : 31,
+      "name" : null,
+      "latitude" : 6.0,
+      "longitude" : 6.0
+    },
+    "demand" : 25,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 32,
+    "location" : {
+      "@type" : "air",
+      "id" : 32,
+      "name" : null,
+      "latitude" : 51.0,
+      "longitude" : 5.0
+    },
+    "demand" : 2,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  }, {
+    "@type" : "Customer",
+    "id" : 33,
+    "location" : {
+      "@type" : "air",
+      "id" : 33,
+      "name" : null,
+      "latitude" : 26.0,
+      "longitude" : 36.0
+    },
+    "demand" : 22,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  } ],
+  "score" : null
+}

@@ -1,0 +1,87 @@
+{
+  "id" : 1,
+  "name" : null,
+  "distanceType" : "SEGMENTED_ROAD_DISTANCE",
+  "distanceUnitOfMeasurement" : null,
+  "locationList" : [ {
+    "@type" : "hubSegment",
+    "id" : 2,
+    "name" : null,
+    "latitude" : 1.0,
+    "longitude" : 1.0,
+    "nearbyTravelDistanceMap" : {
+      "3" : 2.0
+    },
+    "hubTravelDistanceMap" : {
+      "1" : 1.0
+    }
+  }, {
+    "@type" : "hubSegment",
+    "id" : 1,
+    "name" : null,
+    "latitude" : 0.0,
+    "longitude" : 0.0,
+    "nearbyTravelDistanceMap" : {
+      "3" : 2.0
+    },
+    "hubTravelDistanceMap" : {
+      "2" : 1.0
+    }
+  }, {
+    "@type" : "roadSegment",
+    "id" : 3,
+    "name" : null,
+    "latitude" : 2.0,
+    "longitude" : 2.0,
+    "nearbyTravelDistanceMap" : null,
+    "hubTravelDistanceMap" : {
+      "1" : 2.0,
+      "2" : 1.0
+    }
+  } ],
+  "depotList" : [ {
+    "@type" : "Depot",
+    "id" : 1,
+    "location" : {
+      "@type" : "hubSegment",
+      "id" : 2,
+      "name" : null,
+      "latitude" : 1.0,
+      "longitude" : 1.0,
+      "nearbyTravelDistanceMap" : {
+        "3" : 2.0
+      },
+      "hubTravelDistanceMap" : {
+        "1" : 1.0
+      }
+    }
+  } ],
+  "vehicleList" : [ {
+    "id" : 1,
+    "capacity" : 10,
+    "depot" : 1,
+    "customers" : [ ]
+  } ],
+  "customerList" : [ {
+    "@type" : "Customer",
+    "id" : 1,
+    "location" : {
+      "@type" : "hubSegment",
+      "id" : 1,
+      "name" : null,
+      "latitude" : 0.0,
+      "longitude" : 0.0,
+      "nearbyTravelDistanceMap" : {
+        "3" : 2.0
+      },
+      "hubTravelDistanceMap" : {
+        "2" : 1.0
+      }
+    },
+    "demand" : 5,
+    "vehicle" : null,
+    "previousCustomer" : null,
+    "nextCustomer" : null
+  } ],
+  "score" : null
+}

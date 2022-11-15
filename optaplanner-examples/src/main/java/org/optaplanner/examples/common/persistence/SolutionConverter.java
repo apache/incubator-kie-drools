@@ -18,7 +18,13 @@ public class SolutionConverter<Solution_> extends LoggingMain {
 
     public static <Solution_> SolutionConverter<Solution_> createImportConverter(String dataDirName,
             AbstractSolutionImporter<Solution_> importer, Class<Solution_> solutionClass) {
-        SolutionFileIO<Solution_> inputSolutionFileIO = new SolutionFileIO<Solution_>() {
+        XStreamSolutionFileIO<Solution_> outputSolutionFileIO = new XStreamSolutionFileIO<>(solutionClass);
+        return createImportConverter(dataDirName, importer, outputSolutionFileIO);
+    }
+
+    public static <Solution_> SolutionConverter<Solution_> createImportConverter(String dataDirName,
+            AbstractSolutionImporter<Solution_> importer, SolutionFileIO<Solution_> outputSolutionFileIO) {
+        SolutionFileIO<Solution_> inputSolutionFileIO = new SolutionFileIO<>() {
             @Override
             public String getInputFileExtension() {
                 return importer.getInputFileSuffix();
@@ -34,7 +40,6 @@ public class SolutionConverter<Solution_> extends LoggingMain {
                 throw new UnsupportedOperationException();
             }
         };
-        XStreamSolutionFileIO<Solution_> outputSolutionFileIO = new XStreamSolutionFileIO<>(solutionClass);
         return new SolutionConverter<>(dataDirName,
                 inputSolutionFileIO, "import", importer.isInputFileDirectory(),
                 outputSolutionFileIO, "unsolved");
@@ -43,7 +48,12 @@ public class SolutionConverter<Solution_> extends LoggingMain {
     public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
             Class<Solution_> solutionClass, AbstractSolutionExporter<Solution_> exporter) {
         XStreamSolutionFileIO<Solution_> inputSolutionFileIO = new XStreamSolutionFileIO<>(solutionClass);
-        SolutionFileIO<Solution_> outputSolutionFileIO = new SolutionFileIO<Solution_>() {
+        return createExportConverter(dataDirName, inputSolutionFileIO, exporter);
+    }
+
+    public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
+            SolutionFileIO<Solution_> inputSolutionFileIO, AbstractSolutionExporter<Solution_> exporter) {
+        SolutionFileIO<Solution_> outputSolutionFileIO = new SolutionFileIO<>() {
             @Override
             public String getInputFileExtension() {
                 throw new UnsupportedOperationException();

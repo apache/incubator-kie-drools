@@ -10,13 +10,13 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionFileIO;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
@@ -24,9 +24,9 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
     public static void main(String[] args) {
         new VehicleRoutingDistanceTypeComparison().compare(
-                "solved/tmp-p-belgium-n50-k10.xml",
-                "solved/tmp-p-belgium-road-km-n50-k10.xml",
-                "solved/tmp-p-belgium-road-time-n50-k10.xml");
+                "solved/tmp-p-belgium-n50-k10.json",
+                "solved/tmp-p-belgium-road-km-n50-k10.json",
+                "solved/tmp-p-belgium-road-time-n50-k10.json");
     }
 
     protected final File dataDir;
@@ -34,7 +34,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
     public VehicleRoutingDistanceTypeComparison() {
         dataDir = CommonApp.determineDataDir(VehicleRoutingApp.DATA_DIR_NAME);
-        solutionFileIO = new XStreamSolutionFileIO<>(VehicleRoutingSolution.class);
+        solutionFileIO = new VehicleRoutingSolutionFileIO();
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory
                 .createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
         scoreManager = ScoreManager.create(solverFactory);
@@ -87,7 +87,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         scoreManager.updateScore(inputSolution);
     }
 
-    private <T extends AbstractPersistable> T findInputObjectById(Map<Long, T> inputMap, T varObject) {
+    private <T extends AbstractPersistableJackson> T findInputObjectById(Map<Long, T> inputMap, T varObject) {
         return varObject == null ? null : inputMap.get(varObject.getId());
     }
 

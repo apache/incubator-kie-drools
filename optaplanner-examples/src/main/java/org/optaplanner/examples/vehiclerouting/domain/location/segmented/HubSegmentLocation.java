@@ -5,13 +5,13 @@ import java.util.Map;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Assistant for {@link RoadSegmentLocation}.
  * Used with {@link DistanceType#SEGMENTED_ROAD_DISTANCE}.
  */
-@XStreamAlias("VrpHubSegmentLocation")
 public class HubSegmentLocation extends Location {
 
     // Prefer Map over array or List because customers might be added and removed in real-time planning.
@@ -21,10 +21,16 @@ public class HubSegmentLocation extends Location {
     public HubSegmentLocation() {
     }
 
+    public HubSegmentLocation(long id) {
+        super(id);
+    }
+
     public HubSegmentLocation(long id, double latitude, double longitude) {
         super(id, latitude, longitude);
     }
 
+    @JsonSerialize(keyUsing = RoadSegmentLocationKeySerializer.class)
+    @JsonDeserialize(keyUsing = RoadSegmentLocationKeyDeserializer.class)
     public Map<RoadSegmentLocation, Double> getNearbyTravelDistanceMap() {
         return nearbyTravelDistanceMap;
     }
@@ -33,6 +39,8 @@ public class HubSegmentLocation extends Location {
         this.nearbyTravelDistanceMap = nearbyTravelDistanceMap;
     }
 
+    @JsonSerialize(keyUsing = HubSegmentLocationKeySerializer.class)
+    @JsonDeserialize(keyUsing = HubSegmentLocationKeyDeserializer.class)
     public Map<HubSegmentLocation, Double> getHubTravelDistanceMap() {
         return hubTravelDistanceMap;
     }

@@ -3,9 +3,6 @@ package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("VrpTimeWindowedDepot")
 public class TimeWindowedDepot extends Depot {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors

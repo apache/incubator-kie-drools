@@ -2,26 +2,32 @@ package org.optaplanner.examples.vehiclerouting.domain.location;
 
 import java.util.Map;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * The cost between 2 locations was precalculated on a real road network route.
  * The cost itself might be the distance in km, the travel time, the fuel usage or a weighted function of any of those.
  * Used with {@link DistanceType#ROAD_DISTANCE}.
  */
-@XStreamAlias("VrpRoadLocation")
 public class RoadLocation extends Location {
 
     // Prefer Map over array or List because customers might be added and removed in real-time planning.
     protected Map<RoadLocation, Double> travelDistanceMap;
 
-    public RoadLocation() {
+    public RoadLocation() { // For Jackson.
+    }
+
+    public RoadLocation(long id) {
+        super(id);
     }
 
     public RoadLocation(long id, double latitude, double longitude) {
         super(id, latitude, longitude);
     }
 
+    @JsonSerialize(keyUsing = RoadLocationKeySerializer.class)
+    @JsonDeserialize(keyUsing = RoadLocationKeyDeserializer.class)
     public Map<RoadLocation, Double> getTravelDistanceMap() {
         return travelDistanceMap;
     }

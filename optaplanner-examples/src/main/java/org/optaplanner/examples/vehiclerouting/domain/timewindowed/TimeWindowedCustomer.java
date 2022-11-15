@@ -6,10 +6,7 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 @PlanningEntity
-@XStreamAlias("VrpTimeWindowedCustomer")
 public class TimeWindowedCustomer extends Customer {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
