@@ -64,7 +64,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
                     String value = (String) MVELProcessHelper.evaluator()
                             .eval(paramName, new ProcessInstanceResolverFactory(((WorkflowProcessInstance) p)));
                     replacements.put(paramName, value);
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     logger.error("Could not resolve, parameter {} while evaluating expression {}", paramName, expression, t);
                 }
             }

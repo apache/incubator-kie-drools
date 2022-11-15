@@ -137,7 +137,7 @@ public class KogitoDevServicesProcessor {
                 closeable = trustyService.getCloseable();
             }
             compressor.close();
-        } catch (Throwable t) {
+        } catch (Exception t) {
             compressor.closeAndDumpCaptured();
             throw new RuntimeException("Failed to start Kogito TrustyService DevServices", t);
         }
@@ -205,7 +205,7 @@ public class KogitoDevServicesProcessor {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 LOGGER.error("Failed to stop Kogito Data Index", e);
             } finally {
                 closeable = null;

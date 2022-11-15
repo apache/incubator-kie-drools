@@ -137,7 +137,7 @@ public class KogitoWorkingMemoryFileLogger extends WorkingMemoryLogger implement
             writer.write(XMLSupport.get().toXml(log) + "\n");
         } catch (final FileNotFoundException exc) {
             throw new RuntimeException("Could not create the log file.  Please make sure that directory that the log file should be placed in does exist.");
-        } catch (final Throwable t) {
+        } catch (final Exception t) {
             logger.error("error", t);
         }
         if (terminate) {
@@ -157,7 +157,7 @@ public class KogitoWorkingMemoryFileLogger extends WorkingMemoryLogger implement
             initialized = true;
         } catch (final FileNotFoundException exc) {
             throw new RuntimeException("Could not create the log file.  Please make sure that directory that the log file should be placed in does exist.");
-        } catch (final Throwable t) {
+        } catch (final Exception t) {
             logger.error("error", t);
         }
     }
@@ -168,7 +168,7 @@ public class KogitoWorkingMemoryFileLogger extends WorkingMemoryLogger implement
             writer.append("</object-stream>\n");
         } catch (final FileNotFoundException exc) {
             throw new RuntimeException("Could not close the log file.  Please make sure that directory that the log file should be placed in does exist.");
-        } catch (final Throwable t) {
+        } catch (final Exception t) {
             logger.error("error", t);
         }
     }

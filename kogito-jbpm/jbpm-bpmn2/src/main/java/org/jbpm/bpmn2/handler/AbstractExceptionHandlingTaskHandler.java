@@ -42,7 +42,7 @@ public abstract class AbstractExceptionHandlingTaskHandler implements KogitoWork
     public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
         try {
             originalTaskHandler.executeWorkItem(workItem, manager);
-        } catch (Throwable cause) {
+        } catch (Exception cause) {
             handleExecuteException(cause, workItem, manager);
         }
     }

@@ -156,7 +156,7 @@ public class KogitoDevServicesProcessor {
                 systemProperties.produce(new SystemPropertyBuildItem(KOGITO_DATA_INDEX, dataIndex.getUrl()));
             }
             compressor.close();
-        } catch (Throwable t) {
+        } catch (Exception t) {
             compressor.closeAndDumpCaptured();
             throw new RuntimeException("Failed to start Kogito Data Index Dev Services", t);
         }
@@ -189,7 +189,7 @@ public class KogitoDevServicesProcessor {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 LOGGER.error("Failed to stop Kogito Data Index", e);
             } finally {
                 closeable = null;

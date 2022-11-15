@@ -129,7 +129,7 @@ public class WorkItemRepository {
             for (String s : getDirectories(directory)) {
                 try {
                     workDefinitions.addAll(getAllWorkDefinitionsMap(directory + "/" + s, null));
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     logger.error("Error retrieving work definitions: " + t.getMessage());
                 }
                 workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
@@ -180,7 +180,7 @@ public class WorkItemRepository {
                 wid.put("widType", "mvel");
             }
             return result;
-        } catch (Throwable t) {
+        } catch (Exception t) {
             throw new RuntimeException("Could not parse work definition as mvel.", t);
         }
     }

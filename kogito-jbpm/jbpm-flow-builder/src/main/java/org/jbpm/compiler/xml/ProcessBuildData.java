@@ -127,7 +127,7 @@ public class ProcessBuildData {
             for (ProcessDataEventListenerProvider provider : availableProviders) {
                 collected.add(provider);
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.debug("Unable to collect process data event listeners due to {}", e.getMessage());
         }
         return collected;

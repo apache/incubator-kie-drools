@@ -723,7 +723,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         variableValue = mvelEvaluator.eval(paramName, factory);
                         String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
-                    } catch (Throwable t) {
+                    } catch (Exception t) {
                         logger.error("Could not find variable scope for variable {}", paramName);
                     }
                 }

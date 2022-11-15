@@ -100,7 +100,7 @@ public class NodeIoHelper {
                 });
 
             }
-        } catch (Throwable th) {
+        } catch (Exception th) {
             logger.debug("there was an error during data association processing", th);
             throw th;
         }

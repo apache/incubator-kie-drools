@@ -109,7 +109,7 @@ public class DynamicUtils {
                         try {
                             variableValue = MVELProcessHelper.evaluator().eval(paramName,
                                     new ProcessInstanceResolverFactory(processInstance));
-                        } catch (Throwable t) {
+                        } catch (Exception t) {
                             logger.error("Could not find variable scope for variable {}",
                                     paramName);
                             logger.error("when trying to replace variable in string for Dynamic Work Item {}",

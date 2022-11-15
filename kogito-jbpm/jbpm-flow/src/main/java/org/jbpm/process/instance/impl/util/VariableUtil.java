@@ -53,7 +53,7 @@ public class VariableUtil {
                         Object variableValue = MVELProcessHelper.evaluator().eval(paramName, new NodeInstanceResolverFactory((org.jbpm.workflow.instance.NodeInstance) nodeInstance));
                         String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
-                    } catch (Throwable t) {
+                    } catch (Exception t) {
 
                     }
                 }

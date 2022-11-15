@@ -192,7 +192,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 try {
                     collection = MVELProcessHelper.evaluator().eval(collectionExpression, new NodeInstanceResolverFactory(
                             this));
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     throw new IllegalArgumentException(
                             "Could not find collection " + collectionExpression);
                 }
@@ -332,7 +332,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                                 result + " for expression " + expression);
                     }
                     return ((Boolean) result).booleanValue();
-                } catch (Throwable t) {
+                } catch (Exception t) {
                     throw new IllegalArgumentException("Could not evaluate completion condition  " + expression, t);
                 }
             }

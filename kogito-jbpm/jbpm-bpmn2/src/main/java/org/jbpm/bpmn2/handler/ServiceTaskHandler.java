@@ -78,7 +78,7 @@ public class ServiceTaskHandler implements KogitoWorkItemHandler {
             Map<String, Object> results = new HashMap<>();
             results.put(resultVarName, result);
             manager.completeWorkItem(workItem.getStringId(), results);
-        } catch (Throwable cnfe) {
+        } catch (Exception cnfe) {
             handleException(cnfe, service, interfaceImplementationRef, operation, parameterType, parameter);
         }
     }
