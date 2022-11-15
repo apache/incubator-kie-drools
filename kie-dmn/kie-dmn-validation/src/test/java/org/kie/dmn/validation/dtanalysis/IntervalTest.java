@@ -90,6 +90,59 @@ public class IntervalTest {
         assertInterval(result.get(1), RangeBoundary.CLOSED, "o", "u", RangeBoundary.CLOSED, 9, 8);
     }
 
+    @Test
+    public void testInvertOverDomainList1() {
+        Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "a", RangeBoundary.CLOSED, 9, 8);
+        Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
+        Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
+        assertThat(result, hasSize(3));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(2), RangeBoundary.OPEN, "e", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
+    }
+
+    @Test
+    public void testInvertOverDomainList2() {
+        Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "e", RangeBoundary.OPEN, 9, 8);
+        Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "i", RangeBoundary.CLOSED, 9, 8);
+        Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
+        assertThat(result, hasSize(2));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(1), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
+    }
+
+    @Test
+    public void testInvertOverDomainList3() {
+        Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "e", RangeBoundary.OPEN, 9, 8);
+        Interval i1 = new Interval(RangeBoundary.OPEN, "e", "i", RangeBoundary.CLOSED, 9, 8);
+        Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1), domain);
+        assertThat(result, hasSize(3));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(1), RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
+        assertInterval(result.get(2), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
+    }
+
+    @Test
+    public void testInvertOverDomainList4() {
+        Interval i0 = new Interval(RangeBoundary.CLOSED, "a", "a", RangeBoundary.CLOSED, 9, 8);
+        Interval i1 = new Interval(RangeBoundary.CLOSED, "e", "e", RangeBoundary.CLOSED, 9, 8);
+        Interval i2 = new Interval(RangeBoundary.CLOSED, "i", "i", RangeBoundary.CLOSED, 9, 8);
+        Interval domain = new Interval(RangeBoundary.CLOSED, Interval.NEG_INF, Interval.POS_INF, RangeBoundary.CLOSED, 0, 0);
+
+        List<Interval> result = Interval.invertOverDomain(Arrays.asList(i0, i1, i2), domain);
+        assertThat(result, hasSize(4));
+        assertInterval(result.get(0), RangeBoundary.CLOSED, Interval.NEG_INF, "a", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(1), RangeBoundary.OPEN, "a", "e", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(2), RangeBoundary.OPEN, "e", "i", RangeBoundary.OPEN, 9, 8);
+        assertInterval(result.get(3), RangeBoundary.OPEN, "i", Interval.POS_INF, RangeBoundary.CLOSED, 9, 8);
+    }
+
     private static void assertInterval(Interval interval, RangeBoundary lowType, Comparable<?> lowValue, Comparable<?> hiValue, RangeBoundary hiType, int rule, int col) {
         assertThat(interval.getLowerBound(), is(new Bound(lowValue, lowType, interval)));
         assertThat(interval.getUpperBound(), is(new Bound(hiValue, hiType, interval)));
@@ -139,14 +192,14 @@ public class IntervalTest {
         DummyDomain domain = new DummyDomain(domainInterval, Collections.emptyList());
 
         assertThat(new Interval(RangeBoundary.CLOSED, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">="));
-        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">"));
-        assertThat(new Interval(RangeBoundary.OPEN  , 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), not(startsWith(">=")));
-        
+        assertThat(new Interval(RangeBoundary.OPEN, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith(">"));
+        assertThat(new Interval(RangeBoundary.OPEN, 1, 100, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), not(startsWith(">=")));
+
         assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.CLOSED, 0, 0).asHumanFriendly(domain), startsWith("<="));
-        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), startsWith("<"));
-        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN  , 0, 0).asHumanFriendly(domain), not(startsWith("<=")));
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN, 0, 0).asHumanFriendly(domain), startsWith("<"));
+        assertThat(new Interval(RangeBoundary.CLOSED, 0, 99, RangeBoundary.OPEN, 0, 0).asHumanFriendly(domain), not(startsWith("<=")));
     }
-    
+
     @Test
     public void testFlatten4() {
         Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
@@ -155,7 +208,7 @@ public class IntervalTest {
         List<Interval> result = Interval.flatten(Arrays.asList(b, a));
         Assertions.assertThat(result).containsExactly(new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-04-30"), RangeBoundary.CLOSED, 0, 0));
     }
-    
+
     @Test
     public void testNoFlatten() {
         Interval a = new Interval(RangeBoundary.CLOSED, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-31"), RangeBoundary.CLOSED, 0, 0);
