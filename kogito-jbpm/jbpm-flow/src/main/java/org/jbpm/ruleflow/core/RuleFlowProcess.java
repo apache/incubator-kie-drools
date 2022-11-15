@@ -170,11 +170,9 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
             return Collections.emptyList();
         }
 
-        List<Node> nodes = Arrays.stream(getNodes())
+        return Arrays.stream(getNodes())
                 .filter(n -> n.getIncomingConnections().isEmpty() && "true".equalsIgnoreCase((String) n.getMetaData().get("customAutoStart")))
                 .collect(Collectors.toList());
-
-        return nodes;
     }
 
     private class WorkflowProcessNodeContainer extends NodeContainerImpl {

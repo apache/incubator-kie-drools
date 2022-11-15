@@ -144,7 +144,7 @@ public class WorkDefinitionImpl extends org.jbpm.process.core.impl.WorkDefinitio
     }
 
     public String[] getParameterValueNames() {
-        return (String[]) this.parameterValues.keySet().toArray(new String[this.parameterValues.size()]);
+        return this.parameterValues.keySet().toArray(new String[this.parameterValues.size()]);
     }
 
 }

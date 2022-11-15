@@ -106,7 +106,7 @@ public class AnnotatedClassPostProcessor {
             String rules = typeDeclaration.getMethods().stream()
                     .filter(m -> m.getParameters().stream().flatMap(p -> p.getAnnotations().stream()).anyMatch(a -> a.getNameAsString().endsWith("When")))
                     .map(this::generateRule).collect(joining());
-            String drl = String.format(
+            return String.format(
 
                     "package %s;\n" +
                             "unit %s;\n" +
@@ -117,7 +117,6 @@ public class AnnotatedClassPostProcessor {
                     typeDeclaration.getName(),
                     imports,
                     rules);
-            return drl;
         }
 
         String generateRule(MethodDeclaration method) {

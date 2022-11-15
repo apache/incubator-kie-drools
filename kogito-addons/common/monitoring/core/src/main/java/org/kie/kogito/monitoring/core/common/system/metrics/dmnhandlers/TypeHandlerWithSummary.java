@@ -29,7 +29,7 @@ public abstract class TypeHandlerWithSummary<T> implements TypeHandler<T> {
     private KogitoGAV gav;
 
     protected DistributionSummary getDefaultSummary(String dmnType, String decision, String endpoint) {
-        DistributionSummary summary = DistributionSummary
+        return DistributionSummary
                 .builder(dmnType.replace(" ", "_") + DecisionConstants.DECISIONS_NAME_SUFFIX)
                 .description(DecisionConstants.DECISIONS_HELP)
                 .publishPercentiles(DecisionConstants.SUMMARY_PERCENTILES)
@@ -37,7 +37,6 @@ public abstract class TypeHandlerWithSummary<T> implements TypeHandler<T> {
                 .tags(Arrays.asList(Tag.of("decision", decision), Tag.of("endpoint", endpoint),
                         Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(meterRegistry);
-        return summary;
     }
 
     protected void setRegistry(MeterRegistry meterRegistry) {

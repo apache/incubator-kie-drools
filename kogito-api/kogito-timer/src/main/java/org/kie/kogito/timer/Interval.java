@@ -94,9 +94,8 @@ public class Interval implements Cloneable {
      * @inheritDoc
      */
     public String toString() {
-        String result = "[ " + ((this.lowerBound == MIN) ? "-NA" : this.lowerBound) + ", " +
+        return "[ " + ((this.lowerBound == MIN) ? "-NA" : this.lowerBound) + ", " +
                 ((this.upperBound == MAX) ? " NA" : this.upperBound) + " ]";
-        return result;
     }
 
     @Override

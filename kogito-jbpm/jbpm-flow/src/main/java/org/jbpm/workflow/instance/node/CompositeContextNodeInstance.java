@@ -25,7 +25,6 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ContextableInstance;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -99,7 +98,7 @@ public class CompositeContextNodeInstance extends CompositeNodeInstance implemen
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        ContextInstance contextInstance = conf.getContextInstance(context, this, getProcessInstance());
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }

@@ -103,8 +103,7 @@ public class ProcessServiceImpl implements ProcessService {
         Optional<ProcessInstance<T>> instance = process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY);
         Optional<T> mappable = instance.map(ProcessInstance::variables);
-        Optional<R> data = mappable.map(MappableToModel::toModel);
-        return data;
+        return mappable.map(MappableToModel::toModel);
     }
 
     @Override

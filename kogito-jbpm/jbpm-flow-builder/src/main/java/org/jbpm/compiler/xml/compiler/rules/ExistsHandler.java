@@ -42,9 +42,7 @@ public class ExistsHandler extends BaseAbstractHandler
             final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
-        final ExistsDescr existsDescr = new ExistsDescr();
-
-        return existsDescr;
+        return new ExistsDescr();
     }
 
     public Object end(final String uri,

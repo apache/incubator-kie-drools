@@ -46,12 +46,12 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
                 if (contextInstanceContainer instanceof NodeInstance) {
                     processContext.setNodeInstance((NodeInstance) contextInstanceContainer);
                 } else {
-                    processContext.setNodeInstance(((KogitoProcessContext) params).getNodeInstance());
+                    processContext.setNodeInstance((params).getNodeInstance());
                 }
                 processContext.setProcessInstance(processInstance);
                 String faultVariable = exceptionHandler.getFaultVariable();
                 if (faultVariable != null) {
-                    processContext.setVariable(faultVariable, ((KogitoProcessContext) params).getContextData().get("Exception"));
+                    processContext.setVariable(faultVariable, (params).getContextData().get("Exception"));
                 }
 
                 action.execute(processContext);

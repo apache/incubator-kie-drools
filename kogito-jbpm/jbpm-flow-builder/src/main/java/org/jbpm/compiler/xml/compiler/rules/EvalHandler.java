@@ -42,9 +42,7 @@ public class EvalHandler extends BaseAbstractHandler
         parser.startElementBuilder(localName,
                 attrs);
 
-        final EvalDescr evalDescr = new EvalDescr();
-
-        return evalDescr;
+        return new EvalDescr();
     }
 
     public Object end(final String uri,

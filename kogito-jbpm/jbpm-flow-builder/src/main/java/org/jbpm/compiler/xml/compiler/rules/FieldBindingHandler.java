@@ -48,9 +48,8 @@ public class FieldBindingHandler extends BaseAbstractHandler
                 fieldName,
                 parser);
 
-        final BindingDescr fieldBindingDescr = new BindingDescr(identifier,
+        return new BindingDescr(identifier,
                 fieldName);
-        return fieldBindingDescr;
     }
 
     public Object end(final String uri,

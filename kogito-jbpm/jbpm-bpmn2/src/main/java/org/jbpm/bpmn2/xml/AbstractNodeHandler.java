@@ -283,8 +283,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 Element subXmlNode = (Element) subNodeList.item(j);
                 if ("script".equals(subXmlNode.getNodeName())) {
                     String consequence = subXmlNode.getTextContent();
-                    DroolsConsequenceAction action = new DroolsConsequenceAction(dialect, consequence);
-                    return action;
+                    return new DroolsConsequenceAction(dialect, consequence);
                 }
             }
         }
@@ -660,7 +659,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     protected NodeImpl decorateMultiInstanceSpecificationSubProcess(CompositeContextNode nodeTarget, MultiInstanceSpecification multiInstanceSpecification) {
         ForEachNode forEachNode = decorateMultiInstanceSpecification(nodeTarget, multiInstanceSpecification);
-        forEachNode.setMetaData("UniqueId", (String) nodeTarget.getMetaData().get("UniqueId"));
+        forEachNode.setMetaData("UniqueId", nodeTarget.getMetaData().get("UniqueId"));
         forEachNode.setMetaData(ProcessHandler.CONNECTIONS, nodeTarget.getMetaData(ProcessHandler.CONNECTIONS));
         forEachNode.setAutoComplete(nodeTarget.isAutoComplete());
         // nodeTarget/subprocess is invalidated by this. we get all the content and added to the for each nodes 

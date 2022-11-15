@@ -43,9 +43,7 @@ public class AndHandler extends BaseAbstractHandler
             final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
-        final AndDescr andDescr = new AndDescr();
-
-        return andDescr;
+        return new AndDescr();
     }
 
     public Object end(final String uri,

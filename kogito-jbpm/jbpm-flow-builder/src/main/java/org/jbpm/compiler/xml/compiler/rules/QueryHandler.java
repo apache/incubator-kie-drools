@@ -46,9 +46,7 @@ public class QueryHandler extends BaseAbstractHandler
         final String queryName = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", queryName, parser);
 
-        final QueryDescr queryDescr = new QueryDescr(queryName.trim());
-
-        return queryDescr;
+        return new QueryDescr(queryName.trim());
     }
 
     public Object end(final String uri,

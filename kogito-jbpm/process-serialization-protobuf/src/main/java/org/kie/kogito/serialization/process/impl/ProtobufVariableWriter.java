@@ -49,7 +49,7 @@ public class ProtobufVariableWriter {
             if (entry.getValue() != null) {
                 Object value = entry.getValue();
                 ObjectMarshallerStrategy strategy = context.findObjectMarshallerStrategyFor(value);
-                variableBuilder.setDataType(entry.getValue().getClass().getName()).setValue((Any) strategy.marshall(value));
+                variableBuilder.setDataType(entry.getValue().getClass().getName()).setValue(strategy.marshall(value));
             } else {
                 variableBuilder.setValue(Any.pack(BytesValue.of(ByteString.EMPTY)));
             }

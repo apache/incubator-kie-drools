@@ -114,14 +114,12 @@ class StatefulProcessServiceImpl implements StatefulProcessService {
     }
 
     private Process<MappableToModel<Model>> parseProcess(LocalProcessId processId) {
-        Process<MappableToModel<Model>> process = (Process<MappableToModel<Model>>) processes.processById(processId.processId());
-        return process;
+        return (Process<MappableToModel<Model>>) processes.processById(processId.processId());
     }
 
     private Model toModel(DataContext inputContext, Process<? extends Model> process) {
         MapDataContext mdc = inputContext.as(MapDataContext.class);
         Class<? extends Model> modelType = process.createModel().getClass();
-        Model model = InternalObjectMapper.objectMapper().convertValue(mdc, modelType);
-        return model;
+        return InternalObjectMapper.objectMapper().convertValue(mdc, modelType);
     }
 }

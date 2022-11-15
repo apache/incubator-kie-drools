@@ -31,7 +31,6 @@ import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
 import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
@@ -121,15 +120,15 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
 
     protected void addTimerListener() {
 
-        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
-        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("timer", new VariableExternalEventListener("timer"), true);
-        ((WorkflowProcessInstance) getProcessInstance()).addEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
+        getProcessInstance().addEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        getProcessInstance().addEventListener("timer", new VariableExternalEventListener("timer"), true);
+        getProcessInstance().addEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
 
     public void removeTimerListeners() {
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timer", new VariableExternalEventListener("timer"), true);
-        ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
+        getProcessInstance().removeEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        getProcessInstance().removeEventListener("timer", new VariableExternalEventListener("timer"), true);
+        getProcessInstance().removeEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
 
     public EventNode getEventNode() {

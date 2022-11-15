@@ -113,7 +113,7 @@ public class CompensationScopeInstance extends ExceptionScopeInstance {
                     List<String> completedIds = processInstance.getCompletedNodeIds();
                     if (completedIds.contains(((NodeImpl) ((Node) handlerNode).getParentContainer()).getMetaData("UniqueId"))) {
                         NodeInstance subProcessNodeInstance =
-                                ((NodeInstanceContainer) nodeInstanceContainer).getNodeInstance((org.kie.api.definition.process.Node) ((Node) handlerNode).getParentContainer());
+                                (nodeInstanceContainer).getNodeInstance((org.kie.api.definition.process.Node) ((Node) handlerNode).getParentContainer());
                         compensationInstances.add(subProcessNodeInstance);
                         NodeInstance compensationHandlerNodeInstance = ((NodeInstanceContainer) subProcessNodeInstance).getNodeInstance(handlerNode);
                         compensationInstances.add(compensationHandlerNodeInstance);

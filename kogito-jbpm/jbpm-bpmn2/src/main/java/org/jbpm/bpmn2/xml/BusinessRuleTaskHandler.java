@@ -66,9 +66,9 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
                 }
             }
 
-            String namespace = (String) parameters.get(NAMESPACE_PROP);
-            String model = (String) parameters.get(MODEL_PROP);
-            String decision = (String) parameters.get(DECISION_PROP);
+            String namespace = parameters.get(NAMESPACE_PROP);
+            String model = parameters.get(MODEL_PROP);
+            String decision = parameters.get(DECISION_PROP);
             ruleSetNode.setRuleType(RuleSetNode.RuleType.decision(
                     namespace,
                     model,

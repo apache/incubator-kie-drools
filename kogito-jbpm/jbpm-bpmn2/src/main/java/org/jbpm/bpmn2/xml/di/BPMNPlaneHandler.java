@@ -60,8 +60,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         parser.startElementBuilder(localName, attrs);
 
         final String processRef = attrs.getValue("bpmnElement");
-        ProcessInfo info = new ProcessInfo(processRef);
-        return info;
+        return new ProcessInfo(processRef);
     }
 
     public Object end(final String uri, final String localName,

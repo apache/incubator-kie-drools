@@ -669,17 +669,17 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                 height = 48;
             }
             if (node instanceof StartNode || node instanceof EndNode || node instanceof EventNode || node instanceof FaultNode) {
-                int offsetX = (int) ((width - 48) / 2);
+                int offsetX = ((width - 48) / 2);
                 width = 48;
                 x = x + offsetX;
-                int offsetY = (int) ((height - 48) / 2);
+                int offsetY = ((height - 48) / 2);
                 y = y + offsetY;
                 height = 48;
             } else if (node instanceof Join || node instanceof Split) {
-                int offsetX = (int) ((width - 48) / 2);
+                int offsetX = ((width - 48) / 2);
                 width = 48;
                 x = x + offsetX;
-                int offsetY = (int) ((height - 48) / 2);
+                int offsetY = ((height - 48) / 2);
                 y = y + offsetY;
                 height = 48;
             }
@@ -727,8 +727,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     }
 
     private boolean isConnectionRepresentingLinkEvent(Connection connection) {
-        boolean bValue = connection.getMetaData().get("linkNodeHidden") != null;
-        return bValue;
+        return connection.getMetaData().get("linkNodeHidden") != null;
     }
 
     public void visitConnection(Connection connection, StringBuilder xmlDump, int metaDataType) {

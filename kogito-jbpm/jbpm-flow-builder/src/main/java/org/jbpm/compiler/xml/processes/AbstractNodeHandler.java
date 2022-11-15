@@ -157,8 +157,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         String actionType = xmlNode.getAttribute("type");
         if ("expression".equals(actionType)) {
             String consequence = xmlNode.getTextContent();
-            DroolsConsequenceAction action = new DroolsConsequenceAction(xmlNode.getAttribute("dialect"), consequence);
-            return action;
+            return new DroolsConsequenceAction(xmlNode.getAttribute("dialect"), consequence);
         } else {
             throw new IllegalArgumentException(
                     "Unknown action type " + actionType);

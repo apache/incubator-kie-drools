@@ -79,7 +79,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 int priority = Integer.MAX_VALUE;
                 Connection selected = null;
                 for (final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext();) {
-                    final Connection connection = (Connection) iterator.next();
+                    final Connection connection = iterator.next();
                     ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
                     if (constraint != null && constraint.getPriority() < priority && !constraint.isDefault()) {
                         try {
@@ -101,7 +101,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (selected == null) {
                     for (final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext();) {
-                        final Connection connection = (Connection) iterator.next();
+                        final Connection connection = iterator.next();
                         if (split.isDefault(connection)) {
                             selected = connection;
                             break;
@@ -129,7 +129,7 @@ public class SplitInstance extends NodeInstanceImpl {
                     Connection selectedConnection = null;
                     ConstraintEvaluator selectedConstraint = null;
                     for (final Iterator<Connection> iterator = outgoingCopy.iterator(); iterator.hasNext();) {
-                        final Connection connection = (Connection) iterator.next();
+                        final Connection connection = iterator.next();
                         ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
 
                         if (constraint != null
@@ -161,7 +161,7 @@ public class SplitInstance extends NodeInstanceImpl {
                 }
                 if (!found) {
                     for (final Iterator<Connection> iterator = outgoing.iterator(); iterator.hasNext();) {
-                        final Connection connection = (Connection) iterator.next();
+                        final Connection connection = iterator.next();
                         ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint(connection);
                         if (constraint != null && constraint.isDefault() || split.isDefault(connection)) {
                             triggerConnection(connection);
@@ -214,7 +214,7 @@ public class SplitInstance extends NodeInstanceImpl {
                             ((InternalProcessRuntime) kruntime.getProcessRuntime())
                                     .getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
                         }
-                        ((org.jbpm.workflow.instance.NodeInstance) entry.getKey()).trigger(this, entry.getValue());
+                        (entry.getKey()).trigger(this, entry.getValue());
                         if (!hidden) {
                             ((InternalProcessRuntime) kruntime.getProcessRuntime())
                                     .getProcessEventSupport().fireAfterNodeLeft(this, kruntime);

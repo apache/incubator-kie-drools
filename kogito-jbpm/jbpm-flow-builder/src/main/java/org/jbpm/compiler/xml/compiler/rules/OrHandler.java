@@ -38,9 +38,7 @@ public class OrHandler extends BaseAbstractHandler
             final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
-        final OrDescr orDescr = new OrDescr();
-
-        return orDescr;
+        return new OrDescr();
     }
 
     public Object end(final String uri,

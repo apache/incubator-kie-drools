@@ -53,8 +53,7 @@ public class EventSubProcessNode extends CompositeContextNode {
     public StartNode findStartNode() {
         for (Node node : getNodes()) {
             if (node instanceof StartNode) {
-                StartNode startNode = (StartNode) node;
-                return startNode;
+                return (StartNode) node;
             }
         }
         return null;

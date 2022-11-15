@@ -72,9 +72,9 @@ public class JavaProcessDialect implements ProcessDialect {
             if (invoker != null && invoker instanceof Wireable) {
                 data.putInvoker(className, (Wireable) invoker);
             }
-            final String text = (String) context.getInvokers().get(className);
+            final String text = context.getInvokers().get(className);
 
-            final BaseDescr descr = (BaseDescr) context.getDescrLookup(className);
+            final BaseDescr descr = context.getDescrLookup(className);
             javaDialect.addClassCompileTask(className, descr, text, null,
                     new ProcessInvokerErrorHandler(processDescr, process,
                             "Unable to generate action invoker."));

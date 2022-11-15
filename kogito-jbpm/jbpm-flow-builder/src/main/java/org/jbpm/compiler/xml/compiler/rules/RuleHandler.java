@@ -47,9 +47,7 @@ public class RuleHandler extends BaseAbstractHandler
                 ruleName,
                 parser);
 
-        final RuleDescr ruleDescr = new RuleDescr(ruleName.trim());
-
-        return ruleDescr;
+        return new RuleDescr(ruleName.trim());
     }
 
     public Object end(final String uri,

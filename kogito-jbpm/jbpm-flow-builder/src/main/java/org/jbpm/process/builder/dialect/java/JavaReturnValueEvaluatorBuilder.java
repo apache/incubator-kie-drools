@@ -71,11 +71,10 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
 
         Map<String, Class<?>> variables = new HashMap<>();
         BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context);
-        AnalysisResult analysis = dialect.analyzeBlock(context,
+        return dialect.analyzeBlock(context,
                 descr,
                 descr.getText(),
                 boundIdentifiers);
-        return analysis;
     }
 
     protected void buildReturnValueEvaluator(final PackageBuildContext context,
@@ -90,7 +89,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
         final Map map = createVariableContext(className,
                 descr.getText(),
                 (ProcessBuildContext) context,
-                (String[]) identifiers.toArray(new String[identifiers.size()]),
+                identifiers.toArray(new String[identifiers.size()]),
                 analysis.getNotBoundedIdentifiers(),
                 contextResolver);
 

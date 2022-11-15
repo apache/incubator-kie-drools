@@ -38,8 +38,7 @@ public class AccumulateHandler extends BaseAbstractHandler
             final Parser parser) throws SAXException {
 
         parser.startElementBuilder(localName, attrs);
-        final AccumulateDescr accumulateDesrc = new AccumulateDescr();
-        return accumulateDesrc;
+        return new AccumulateDescr();
     }
 
     public Object end(final String uri,

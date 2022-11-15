@@ -65,12 +65,10 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
 
         Map<String, Class<?>> variables = new HashMap<>();
         BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context);
-        AnalysisResult analysis = dialect.analyzeBlock(context,
+        return dialect.analyzeBlock(context,
                 actionDescr,
                 actionDescr.getText(),
                 boundIdentifiers);
-
-        return analysis;
     }
 
     protected void buildAction(final PackageBuildContext context,
@@ -84,7 +82,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
         final Map map = createVariableContext(className,
                 actionDescr.getText(),
                 (ProcessBuildContext) context,
-                (String[]) identifiers.toArray(new String[identifiers.size()]),
+                identifiers.toArray(new String[identifiers.size()]),
                 analysis.getNotBoundedIdentifiers(),
                 contextResolver);
         map.put("text",

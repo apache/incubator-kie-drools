@@ -63,10 +63,9 @@ public class ProcessContextMetaModel {
         MethodCallExpr getter = new MethodCallExpr().setScope(new NameExpr(kcontext))
                 .setName("getVariable")
                 .addArgument(new StringLiteralExpr(interpolatedVar));
-        CastExpr castExpr = new CastExpr()
+        return new CastExpr()
                 .setExpression(new EnclosedExpr(getter))
                 .setType(v.getType().getStringType());
-        return castExpr;
     }
 
     public AssignExpr assignVariable(String procVar) {
@@ -85,10 +84,9 @@ public class ProcessContextMetaModel {
         if (v == null) {
             throw new IllegalArgumentException("No such variable " + procVar);
         }
-        MethodCallExpr setter = new MethodCallExpr().setScope(new NameExpr(kcontext))
+        return new MethodCallExpr().setScope(new NameExpr(kcontext))
                 .setName("setVariable")
                 .addArgument(new StringLiteralExpr(procVar));
-        return setter;
     }
 
     public boolean isCollectionType(String procVar) {

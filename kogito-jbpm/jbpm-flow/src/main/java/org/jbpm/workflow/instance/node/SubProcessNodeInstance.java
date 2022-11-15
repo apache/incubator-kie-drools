@@ -288,7 +288,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         if (conf == null) {
             throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
         }
-        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        ContextInstance contextInstance = conf.getContextInstance(context, this, getProcessInstance());
         if (contextInstance == null) {
             throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
         }

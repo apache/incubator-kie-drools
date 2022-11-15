@@ -42,9 +42,7 @@ public class NotHandler extends BaseAbstractHandler
             final Parser parser) throws SAXException {
         parser.startElementBuilder(localName,
                 attrs);
-        final NotDescr notDescr = new NotDescr();
-
-        return notDescr;
+        return new NotDescr();
     }
 
     public Object end(final String uri,
