@@ -920,9 +920,11 @@ Example: `activation-group "GroupName"`
 Example: `duration 10000`
 
 |`timer`
-|A string identifying either `int` (interval) or `cron` timer definitions for scheduling the rule.
+|A string identifying either `int` (initialDelay interval) or `cron` timer definitions for scheduling the rule.
 
-Example: `timer ( cron:* 0/15 * * * ? )`  (every 15 minutes)
+Example: `timer ( int: 30s 5m )`  (every 5 minutes after a 30-second delay)
+
+         `timer ( cron:* 0/15 * * * ? )`  (every 15 minutes)
 
 |`calendar`
 |A http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling the rule.
@@ -945,8 +947,6 @@ Example: `lock-on-active true`
 Example: `dialect "JAVA"`
 |===
 
-////
-//@comment: Undecided for Kogito at this time. (Stetson 6 Apr 2020)
 [id="con-drl-timers-calendars_{context}"]
 === Timer and calendar rule attributes in DRL
 
@@ -995,8 +995,6 @@ rule "Send SMS message every 15 minutes"
     channels[ "sms" ].insert( new Sms( $a.mobileNumber, "The alarm is still on." );
 end
 ----
-
-*<@Edoardo, see these paragraphs about active vs. passive modes (fireAllRules vs fireUntilHalt) and then configuring KIE session. Several other places in the DRL/engine content discusses active vs passive, fireAllRules, etc., so need some direction.>*
 
 Generally, a rule that is controlled by a timer becomes active when the rule is triggered and the rule consequence is executed repeatedly, according to the timer settings. The execution stops when the rule condition no longer matches incoming facts. However, the way the {RULE_ENGINE} handles rules with timers depends on whether the {RULE_ENGINE} is in _active mode_ or in _passive mode_.
 
@@ -1123,7 +1121,6 @@ rule "Weekends are low priority"
     send( "priority low - we have an alarm" );
 end
 ----
-////
 
 [id="con-drl-rules-conditions_{context}"]
 == Rule conditions in DRL
