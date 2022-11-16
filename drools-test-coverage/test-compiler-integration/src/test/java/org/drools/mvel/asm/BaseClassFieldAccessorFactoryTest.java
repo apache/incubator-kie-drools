@@ -61,7 +61,7 @@ public class BaseClassFieldAccessorFactoryTest {
     public void testInterface() throws Exception {
         final ReadAccessor ex = store.getReader( TestInterface.class,
                                                          "something" );
-        assertThat(ex.getIndex()).isEqualTo(1);
+        assertThat(ex.getIndex()).isEqualTo(2);
         assertThat(ex.getValue(null,
                 new TestInterfaceImpl())).isEqualTo("foo");
     }
@@ -70,7 +70,7 @@ public class BaseClassFieldAccessorFactoryTest {
     public void testAbstract() throws Exception {
         final ReadAccessor ex = store.getReader( TestAbstract.class,
                                                          "something" );
-        assertThat(ex.getIndex()).isEqualTo(2);
+        assertThat(ex.getIndex()).isEqualTo(3);
         assertThat(ex.getValue(null,
                 new TestAbstractImpl())).isEqualTo("foo");
     }

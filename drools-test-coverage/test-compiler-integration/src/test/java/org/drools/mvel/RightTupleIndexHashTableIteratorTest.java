@@ -114,10 +114,10 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
             assertTableIndex(tableIndexList, 4, 61, 2);
         } else {
             assertTableIndex(tableIndexList, 0, 0, 3);
-            assertTableIndex(tableIndexList, 1, 102, 2);
-            assertTableIndex(tableIndexList, 2, 103, 2);
-            assertTableIndex(tableIndexList, 3, 115, 3);
-            assertTableIndex(tableIndexList, 4, 117, 3);
+            assertTableIndex(tableIndexList, 1, 68, 2);
+            assertTableIndex(tableIndexList, 2, 84, 3);
+            assertTableIndex(tableIndexList, 3, 86, 3);
+            assertTableIndex(tableIndexList, 4, 90, 2);
         }
 
         List resultList = new ArrayList<LeftTupleImpl>();

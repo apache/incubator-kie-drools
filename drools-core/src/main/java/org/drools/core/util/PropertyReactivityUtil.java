@@ -60,6 +60,7 @@ public class PropertyReactivityUtil {
         }
 
         List<String> accessibleProperties = new ArrayList<>();
+        accessibleProperties.add("this");
         for ( PropertyInClass propInClass : props ) {
             accessibleProperties.add(propInClass.prop);
         }
