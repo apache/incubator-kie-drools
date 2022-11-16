@@ -23,6 +23,7 @@ import org.kie.kogito.event.impl.TestEvent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import static org.kie.kogito.event.impl.DataEventTestUtils.getJsonNode;
 import static org.kie.kogito.event.impl.DataEventTestUtils.getJsonNodeCloudEvent;
 import static org.kie.kogito.event.impl.DataEventTestUtils.getPojoCloudEvent;
 import static org.kie.kogito.event.impl.DataEventTestUtils.getRawEvent;
@@ -49,8 +50,12 @@ class AvroMarshallUnmarshallTest {
     }
 
     @Test
+    void testJsonNodeMarshaller() throws IOException {
+        testEventMarshalling(getJsonNode(), new AvroEventMarshaller(avroUtils), new AvroEventUnmarshaller(avroUtils));
+    }
+
+    @Test
     void testJsonNodeCloudEventMarshaller() throws IOException {
         testCloudEventMarshalling(getJsonNodeCloudEvent(), JsonNode.class, new AvroCloudEventMarshaller(avroUtils), new AvroCloudEventUnmarshallerFactory(avroUtils));
     }
-
 }

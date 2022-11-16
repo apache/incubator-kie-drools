@@ -59,11 +59,16 @@ public class AvroIO {
     private static final String ATTRIBUTES = "attribute";
     private static final Utf8 SPEC_VERSION_UTF = new Utf8("specversion");
 
+    public static final String CLOUD_EVENT_SCHEMA_NAME = "spec.avsc";
+    public static final String JSON_NODE_SCHEMA_NAME = "jsonNode.avsc";
+
     private final Schema ceSchema;
+    private final Schema jsonSchema;
     private final AvroMapper avroMapper;
 
     public AvroIO() throws IOException {
-        this.ceSchema = getCloudEventSchema();
+        this.ceSchema = loadSchema(CLOUD_EVENT_SCHEMA_NAME);
+        this.jsonSchema = loadSchema(JSON_NODE_SCHEMA_NAME);
         this.avroMapper = getAvroMapper();
     }
 
@@ -145,11 +150,11 @@ public class AvroIO {
     }
 
     private Schema getSchema(Class<?> clazz) {
-        return ReflectData.get().getSchema(clazz);
+        return JsonNode.class.isAssignableFrom(clazz) ? jsonSchema : ReflectData.get().getSchema(clazz);
     }
 
-    private static Schema getCloudEventSchema() throws IOException {
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("spec.avsc")) {
+    private static Schema loadSchema(String schemaName) throws IOException {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaName)) {
             if (is == null) {
                 throw new IOException("cannot load cloud event schema");
             }
