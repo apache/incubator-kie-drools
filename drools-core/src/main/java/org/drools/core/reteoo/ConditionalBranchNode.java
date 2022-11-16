@@ -117,10 +117,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return tupleMemoryEnabled;
     }
 
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }
-
     /**
      * Returns the next node
      * @return

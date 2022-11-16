@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
@@ -40,23 +41,8 @@ import org.drools.core.common.PropagationContext;
 public class RuleTerminalNode extends AbstractTerminalNode {
     private static final long             serialVersionUID = 510l;
 
-    /** The rule to invoke upon match. */
-    protected RuleImpl                      rule;
-    
-    /**
-     * the subrule reference is needed to resolve declarations
-     * because declarations may have different offsets in each subrule
-     */
-    protected GroupElement                  subrule;
-    protected int                           subruleIndex;
-    protected Declaration[]                 allDeclarations;
-    protected Declaration[]                 requiredDeclarations;
-
     protected Declaration[]                 salienceDeclarations;
     protected Declaration[]                 enabledDeclarations;
-
-    protected LeftTupleSinkNode             previousTupleSinkNode;
-    protected LeftTupleSinkNode             nextTupleSinkNode;
 
     protected boolean                       fireDirect;
 
@@ -68,7 +54,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     // Constructors
     // ------------------------------------------------------------
     public RuleTerminalNode() {
-
     }
 
     public RuleTerminalNode(final int id,
@@ -81,54 +66,29 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                source,
-               context );
-
-        this.rule = rule;
-        this.subrule = subrule;
-        this.consequenceName = context.getConsequenceName();
-        initDeclarations();
-
-        this.subruleIndex = subruleIndex;
+               context,
+               rule, subrule, subruleIndex);
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
         if ( isFireDirect() ) {
             rule.setSalience( new SalienceInteger(Integer.MAX_VALUE) );
         }
 
-        setDeclarations( this.subrule.getOuterDeclarations() );
+        setDeclarations( getSubRule().getOuterDeclarations() );
 
-        initDeclaredMask(context);        
         initInferredMask();
 
         hashcode = calculateHashCode();
     }
     
     public void setDeclarations(Map<String, Declaration> decls) {
-        setEnabledDeclarations( rule.findEnabledDeclarations( decls ) );
-        setSalienceDeclarations( rule.findSalienceDeclarations( decls ) );
+        setEnabledDeclarations( getRule().findEnabledDeclarations( decls ) );
+        setSalienceDeclarations( getRule().findSalienceDeclarations( decls ) );
     }
-    
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
-
-    /**
-     * Retrieve the <code>Action</code> associated with this node.
-     *
-     * @return The <code>Action</code> associated with this node.
-     */
-    public RuleImpl getRule() {
-        return this.rule;
-    }
-
-    public GroupElement getSubRule() {
-        return this.subrule;
-    }
-
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[RuleTerminalNode(").append(this.getId()).append("): rule=").append(this.rule.getName());
+        sb.append("[RuleTerminalNode(").append(getId()).append("): rule=").append(getRule().getName());
         if (consequenceName != null) {
             sb.append(", consequence=").append(consequenceName);
         }
@@ -142,19 +102,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         addAssociation( context, context.getRule() );
     }
 
-    public Declaration[] getAllDeclarations() {
-        return this.allDeclarations;
-    }
+    void initDeclarations(Map<String, Declaration> decls, final BuildContext context) {
+        this.consequenceName = context.getConsequenceName();
 
-    public Declaration[] getRequiredDeclarations() {
-        return this.requiredDeclarations;
-    }
-
-    private void initDeclarations() {
-        Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
-        this.allDeclarations = decls.values().toArray( new Declaration[decls.size()] );
-
-        String[] requiredDeclarationNames = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
+        String[] requiredDeclarationNames = getRule().getRequiredDeclarationsForConsequence(getConsequenceName());
         this.requiredDeclarations = new Declaration[requiredDeclarationNames.length];
         int i = 0;
         for ( String str : requiredDeclarationNames ) {
@@ -197,7 +148,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
     }
 
-
     public static class SortDeclarations
             implements
             Comparator<Declaration> {
@@ -209,57 +159,14 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
     }
 
-    /**
-     * Returns the next node
-     * @return
-     *      The next TupleSinkNode
-     */
-    public LeftTupleSinkNode getNextLeftTupleSinkNode() {
-        return this.nextTupleSinkNode;
-    }
-
-    /**
-     * Sets the next node
-     * @param next
-     *      The next TupleSinkNode
-     */
-    public void setNextLeftTupleSinkNode(final LeftTupleSinkNode next) {
-        this.nextTupleSinkNode = next;
-    }
-
-    /**
-     * Returns the previous node
-     * @return
-     *      The previous TupleSinkNode
-     */
-    public LeftTupleSinkNode getPreviousLeftTupleSinkNode() {
-        return this.previousTupleSinkNode;
-    }
-
-    /**
-     * Sets the previous node
-     * @param previous
-     *      The previous TupleSinkNode
-     */
-    public void setPreviousLeftTupleSinkNode(final LeftTupleSinkNode previous) {
-        this.previousTupleSinkNode = previous;
-    }
-
-    private int calculateHashCode() {
-        return 31 * this.rule.hashCode() + (consequenceName == null ? 0 : 37 * consequenceName.hashCode());
+    protected int calculateHashCode() {
+        return (31 * super.calculateHashCode()) + (consequenceName == null ? 0 : consequenceName.hashCode());
     }
 
     @Override
     public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode() ) {
-            return false;
-        }
-        final RuleTerminalNode other = (RuleTerminalNode) object;
-        return rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
+        return super.equals(object) &&
+               Objects.equals(consequenceName, ((RuleTerminalNode)object).consequenceName);
     }
 
     public short getType() {

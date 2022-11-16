@@ -30,22 +30,12 @@ public class DelegateMethodsHandler extends AbstractCompilerHandler {
     private final StringBuilder builder;
 
     private static final String FIXED_PART = "" +
-            "\n" +
-            "    public int getAssociationsSize() {\n" +
-            "        return objectTypeNode.getAssociationsSize();\n" +
-            "    }\n" +
+
             "\n" +
             "    public short getType() {\n" +
             "        return objectTypeNode.getType();\n" +
             "    }\n" +
             "\n" +
-            "    public int getAssociatedRuleSize() {\n" +
-            "        return objectTypeNode.getAssociatedRuleSize();\n" +
-            "    }\n" +
-            "\n" +
-            "    public int getAssociationsSize( org.kie.api.definition.rule.Rule rule ) {\n" +
-            "        return objectTypeNode.getAssociationsSize(rule);\n" +
-            "    }\n" +
             "\n" +
             "    public boolean isAssociatedWith( org.kie.api.definition.rule.Rule rule ) {\n" +
             "        return objectTypeNode.isAssociatedWith(rule);\n" +

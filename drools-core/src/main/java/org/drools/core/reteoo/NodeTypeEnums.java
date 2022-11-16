@@ -34,11 +34,11 @@ public class NodeTypeEnums {
     public static final short ReteNode                = 20;
     public static final short ObjectTypeNode          = 30;
     public static final short AlphaNode               = 40;
-    public static final short PropagationQueuingNode  = 50;
+
     public static final short WindowNode              = 60;
 
     // ObjectSource, LeftTupleSink
-    public static final short RightInputAdaterNode    = 71; // also ObjectSource %2 != 0
+    public static final short RightInputAdapterNode   = 71; // also ObjectSource %2 != 0
 
     public static final short ObjectSource            = 80;
 
@@ -98,7 +98,7 @@ public class NodeTypeEnums {
     }
 
     public static boolean isEndNode(NetworkNode node) {
-        return NodeTypeEnums.isTerminalNode(node) || NodeTypeEnums.RightInputAdaterNode == node.getType();
+        return NodeTypeEnums.isTerminalNode(node) || NodeTypeEnums.RightInputAdapterNode == node.getType();
     }
 
     public static boolean isLeftTupleNode(NetworkNode node) {

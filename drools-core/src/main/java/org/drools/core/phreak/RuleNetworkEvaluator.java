@@ -55,8 +55,8 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
-import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SubnetworkTuple;
@@ -72,7 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
-import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
+import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.reteoo.BetaNode.getBetaMemory;
 
 public class RuleNetworkEvaluator {
@@ -108,6 +108,7 @@ public class RuleNetworkEvaluator {
 
     public void evaluateNetwork(PathMemory pmem, RuleExecutor executor, ActivationsManager activationsManager) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
+
         SegmentMemory smem = smems[0];
         if (smem == null) {
             // if there's no first smem it's a pure alpha firing and then doesn't require any furthe evaluation
@@ -126,11 +127,11 @@ public class RuleNetworkEvaluator {
             // nothing is staged in the liaNode, so skip to next segment
             smem = smems[1];
             node = smem.getRootNode();
-            nodeMem = smem.getNodeMemories().getFirst();
+            nodeMem = smem.getNodeMemories().get(0);
         } else {
             // lia is in shared segment, so point to next node
             node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-            nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
+            nodeMem = smem.getNodeMemories().get(1); // skip the liaNode memory
         }
 
         TupleSets<LeftTuple> srcTuples = smem.getStagedLeftTuples();
@@ -155,7 +156,7 @@ public class RuleNetworkEvaluator {
         if (NodeTypeEnums.isTerminalNode(node)) {
             lt = ((TerminalNode) node).getLeftTupleSource();
             offset++;
-        } else if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
+        } else if (node.getType() == NodeTypeEnums.RightInputAdapterNode) {
             lt = ((RightInputAdapterNode) node).getLeftTupleSource();
         } else {
             lt = (LeftTupleSource) node;
@@ -232,7 +233,7 @@ public class RuleNetworkEvaluator {
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples().takeAll();
                 node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories().getFirst();
+                nodeMem = smem.getNodeMemories().get(0);
                 bit = 1; // update bit to start of new segment
             }
         }
@@ -280,7 +281,7 @@ public class RuleNetworkEvaluator {
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
                         if ( smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode()) ) {
-                            SegmentUtilities.createChildSegments( activationsManager.getReteEvaluator(), smem, smem.getTipNode().getSinkPropagator() );
+                            RuntimeSegmentUtilities.createChildSegments(activationsManager.getReteEvaluator(), smem, smem.getTipNode().getSinkPropagator());
                         }
                         
                         smem = smems[i];
@@ -288,7 +289,7 @@ public class RuleNetworkEvaluator {
                         srcTuples = smem.getStagedLeftTuples().takeAll();
                         emptySrcTuples = srcTuples.isEmpty();
                         node = smem.getRootNode();
-                        nodeMem = smem.getNodeMemories().getFirst();
+                        nodeMem = smem.getNodeMemories().get(0);
                         if ( !emptySrcTuples ||
                              smem.getDirtyNodeMask() != 0 ||
                              (NodeTypeEnums.isBetaNode(node) && ((BetaNode)node).isRightInputIsRiaNode() )) {
@@ -330,7 +331,7 @@ public class RuleNetworkEvaluator {
                 case NodeTypeEnums.QueryTerminalNode:
                     pQtNode.doNode((QueryTerminalNode) node, activationsManager, srcTuples, stack);
                     break;
-                case NodeTypeEnums.RightInputAdaterNode:
+                case NodeTypeEnums.RightInputAdapterNode:
                     doRiaNode2(activationsManager.getReteEvaluator(), srcTuples, (RightInputAdapterNode) node);
                     break;
                 default:
@@ -367,7 +368,7 @@ public class RuleNetworkEvaluator {
                     log.trace("{} Segment {}", indent(offset), smemIndex);
                 }
                 node = smem.getRootNode();
-                nodeMem = smem.getNodeMemories().getFirst();
+                nodeMem = smem.getNodeMemories().get(0);
             }
             processRian = true; //  make sure it's reset, so ria nodes are processed
         }
@@ -440,7 +441,7 @@ public class RuleNetworkEvaluator {
         if (node == smem.getTipNode()) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
             if ( smem.isEmpty() ) {
-                SegmentUtilities.createChildSegments(reteEvaluator, smem, ((LeftTupleSource) node).getSinkPropagator() );
+                RuntimeSegmentUtilities.createChildSegments(reteEvaluator, smem, ((LeftTupleSource) node).getSinkPropagator());
             }
             return smem.getFirst().getStagedLeftTuples().takeAll();
         } else {
@@ -508,12 +509,12 @@ public class RuleNetworkEvaluator {
                     // nothing is staged in the liaNode, so skip to next segment
                     smem = smems[++smemIndex]; // 1
                     node = smem.getRootNode();
-                    nodeMem = smem.getNodeMemories().getFirst();
+                    nodeMem = smem.getNodeMemories().get(0);
                     bit = 1;
                 } else {
                     // lia is in shared segment, so point to next node
                     node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-                    nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
+                    nodeMem = smem.getNodeMemories().get(0).getNext(); // skip the liaNode memory
                     bit = 2;
                 }
 
@@ -629,7 +630,7 @@ public class RuleNetworkEvaluator {
         TupleSets<LeftTuple> subLts = subSmem.getStagedLeftTuples().takeAll();
         // node is first in the segment, so bit is 1
         innerEval( pathMem, subSmem.getRootNode(), 1,
-                   subSmem.getNodeMemories().getFirst(),
+                   subSmem.getNodeMemories().get(0),
                    subnetworkSmems, subSmem.getPos(),
                    subLts, activationsManager, stack, true, executor );
     }

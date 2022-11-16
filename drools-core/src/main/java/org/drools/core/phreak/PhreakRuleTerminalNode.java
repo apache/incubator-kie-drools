@@ -24,11 +24,13 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.reteoo.Tuple;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 /**
@@ -78,6 +80,15 @@ public class PhreakRuleTerminalNode {
         }
     }
 
+    private static boolean sameRules(TerminalNode rtn1, TerminalNode rtn2) {
+        if (rtn2 == null) {
+            return false;
+        }
+        Rule rule1 = rtn1.getRule();
+        Rule rule2 = rtn2.getRule();
+        return rule1.getName().equals(rule2.getName()) && rule1.getPackageName().equals(rule2.getPackageName()) &&
+               ((RuleTerminalNode)rtn1).getConsequenceName().equals(((RuleTerminalNode)rtn2).getConsequenceName());
+    }
     public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
                                          ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
                                          LeftTuple leftTuple) {
@@ -89,7 +100,7 @@ public class PhreakRuleTerminalNode {
 
         PropagationContext pctx = leftTuple.findMostRecentPropagationContext();
 
-        if ( rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin()) ) {
+        if ( rtnNode.getRule().isNoLoop() && sameRules(rtnNode, pctx.getTerminalNodeOrigin()) ) {
             return;
         }
 

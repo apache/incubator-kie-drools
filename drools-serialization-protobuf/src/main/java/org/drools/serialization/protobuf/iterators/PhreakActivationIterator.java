@@ -67,7 +67,6 @@ public class PhreakActivationIterator
         agendaItemIter =  agendaItems.iterator();
     }
 
-
     public static PhreakActivationIterator iterator(ReteEvaluator reteEvaluator) {
         return new PhreakActivationIterator( reteEvaluator, reteEvaluator.getKnowledgeBase() );
     }
@@ -79,7 +78,6 @@ public class PhreakActivationIterator
             return null;
         }
     }
-
 
     public static List<RuleTerminalNode> populateRuleTerminalNodes(RuleBase kbase, Set<RuleTerminalNode>  nodeSet) {
         Collection<TerminalNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
@@ -118,8 +116,8 @@ public class PhreakActivationIterator
         int maxShareCount = node1.getAssociationsSize();
 
         while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
-            Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) node);
-            if (memory.getSegmentMemory() == null) {
+            Memory memory = reteEvaluator.getNodeMemories().peekNodeMemory(node);
+            if (memory == null || memory.getSegmentMemory() == null) {
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
             }
@@ -137,34 +135,41 @@ public class PhreakActivationIterator
                             collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, reteEvaluator);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
-                        bm = (BetaMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
-                        FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                        RightTuple rt = (RightTuple) BetaNode.getFirstTuple( bm.getRightTupleMemory(), it );
-                        for (; rt != null; rt = (RightTuple) it.next(rt)) {
-                            for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
-                                if ( lt.getFirstChild() != null ) {
-                                    collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                        bm = (BetaMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
+                        if (bm != null) {
+                            bm = (BetaMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
+                            FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
+                            RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
+                            for (; rt != null; rt = (RightTuple) it.next(rt)) {
+                                for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
+                                    if (lt.getFirstChild() != null) {
+                                        collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                                    }
                                 }
                             }
                         }
                     } else {
-                        bm = (BetaMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
-                        FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                        Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
-                        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                            if ( lt.getFirstChild() != null ) {
-                                collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                        bm = (BetaMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
+                        if (bm != null) {
+                            FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
+                            Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
+                            for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                                if (lt.getFirstChild() != null) {
+                                    collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                                }
                             }
                         }
                     }
                     return;
                 } else if (NodeTypeEnums.FromNode == node.getType()) {
-                    FromMemory fm = (FromMemory) reteEvaluator.getNodeMemory((MemoryFactory) node);
-                    TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
-                    FastIterator it = ltm.fullFastIterator();
-                    for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                        if ( lt.getFirstChild() != null ) {
-                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                    FromMemory fm = (FromMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
+                    if (fm != null) {
+                        TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                        FastIterator it = ltm.fullFastIterator();
+                        for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                            if (lt.getFirstChild() != null) {
+                                collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, reteEvaluator);
+                            }
                         }
                     }
                     return;
@@ -177,8 +182,8 @@ public class PhreakActivationIterator
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
         LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
         if ( !lian.isTerminal() ) {
-            Memory memory = reteEvaluator.getNodeMemory( ( MemoryFactory ) node );
-            if ( memory.getSegmentMemory() == null ) {
+            Memory memory = reteEvaluator.getNodeMemories().peekNodeMemory(node);
+            if (memory == null || memory.getSegmentMemory() == null) {
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
             }
@@ -189,7 +194,7 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = reteEvaluator.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) reteEvaluator.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();

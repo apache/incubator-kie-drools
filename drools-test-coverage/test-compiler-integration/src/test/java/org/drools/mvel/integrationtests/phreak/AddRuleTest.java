@@ -402,14 +402,13 @@ public class AddRuleTest {
 
 
         wm.fireAllRules();
-        System.out.println(list);
         assertThat(list.size()).isEqualTo(5);
 
         assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
         assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
-        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r3"); // only one A3
+        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r2");
         assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
-        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r2");
+        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r3"); // only one A3
     }
 
     @Test
@@ -425,7 +424,7 @@ public class AddRuleTest {
 
         wm.insert(new E(1));
         wm.insert(new E(2));
-        wm.flushPropagations();
+        wm.fireAllRules();
 
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
@@ -457,11 +456,9 @@ public class AddRuleTest {
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(8);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
-        smems = pm5.getSegmentMemories();
-        assertThat(smems.length).isEqualTo(2);
-        assertThat(smems[0]).isNull();
-        assertThat(smems[1]).isNull();
+        PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
+        assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
+        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
     }
 
 
@@ -530,11 +527,9 @@ public class AddRuleTest {
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
-        smems = pm5.getSegmentMemories();
-        assertThat(smems.length).isEqualTo(2);
-        assertThat(smems[0]).isNull();
-        assertThat(smems[1]).isNull();
+        PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
+        assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
+        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
     }
 
     @Test

@@ -54,10 +54,12 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
@@ -122,7 +124,7 @@ public class KnowledgeBaseImpl implements RuleBase {
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
-    private final transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<>();
+    private final transient Map<Integer, SegmentPrototype> segmentProtos = new HashMap<>();
 
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
@@ -891,12 +893,8 @@ public class KnowledgeBaseImpl implements RuleBase {
         return this.reteooBuilder.getMemoryIdsGenerator().getLastId() + 1;
     }
 
-    public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {
-        segmentProtos.put(tupleSource.getId(), smem.asPrototype());
-    }
-
-    public boolean hasSegmentPrototypes() {
-        return !segmentProtos.isEmpty();
+    public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
+        segmentProtos.put(tupleSource.getId(), smem);
     }
 
     public void invalidateSegmentPrototype(LeftTupleNode rootNode) {
@@ -904,15 +902,21 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     @Override
+    public SegmentPrototype getSegmentPrototype(LeftTupleNode node) {
+        return segmentProtos.get(node.getId());
+    }
+
+    @Override
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
-        SegmentMemory.Prototype proto = segmentProtos.get(tupleSource.getId());
-        if (proto == null) {
-            return null;
-        }
+        SegmentPrototype proto = segmentProtos.get(tupleSource.getId());
+        return createSegmentFromPrototype(reteEvaluator, proto);
+    }
+
+    public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, SegmentPrototype proto) {
         return proto.newSegmentMemory(reteEvaluator);
     }
 
-    public SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment) {
+    public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {
         return segmentProtos.get(segment.getRootNode().getId());
     }
 
@@ -1008,11 +1012,12 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories ) {
+        List<PathEndNode> endNodes = new ArrayList<>();
         for (Rule r : rules) {
             RuleImpl rule = (RuleImpl) r;
             checkMultithreadedEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
-            this.reteooBuilder.addRule(rule, workingMemories);
+            this.reteooBuilder.addRule(rule, endNodes, workingMemories);
         }
     }
 

@@ -206,7 +206,7 @@ public class MemoryLeakTest {
                 System.out.println( memory );
                 LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 if ( segmentMemory.getRootNode() instanceof JoinNode ) {
-                    BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories().getFirst();
+                    BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories().get(0);
                     assertThat(bm.getLeftTupleMemory().size()).isEqualTo(0);
                 }
                 System.out.println( deleteFirst );

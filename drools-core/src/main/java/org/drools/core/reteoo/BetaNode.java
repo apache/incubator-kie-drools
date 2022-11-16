@@ -121,7 +121,7 @@ public abstract class BetaNode extends LeftTupleSource
         setLeftTupleSource(leftInput);
         this.rightInput = rightInput;
 
-        rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
+        rightInputIsRiaNode = NodeTypeEnums.RightInputAdapterNode == rightInput.getType();
 
         setConstraints(constraints);
 
@@ -215,7 +215,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public ObjectSource unwrapRightInput() {
-        return rightInput.getType() == NodeTypeEnums.PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
+        return rightInput;
     }
 
     private void setUnificationJoin() {
@@ -360,7 +360,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void setRightInput( ObjectSource rightInput ) {
         this.rightInput = rightInput;
-        rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
+        rightInputIsRiaNode = NodeTypeEnums.RightInputAdapterNode == rightInput.getType();
     }
 
     public FastIterator getRightIterator( TupleMemory memory ) {
@@ -536,10 +536,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     public Memory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {

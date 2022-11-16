@@ -15,7 +15,7 @@
 
 package org.drools.core.common;
 
-import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.util.LinkedListNode;
@@ -32,7 +32,7 @@ public interface Memory extends LinkedListNode<Memory> {
     default SegmentMemory getOrCreateSegmentMemory( LeftTupleSource tupleSource, ReteEvaluator reteEvaluator ) {
         SegmentMemory smem = getSegmentMemory();
         if (smem == null) {
-            smem = SegmentUtilities.getOrCreateSegmentMemory( tupleSource, reteEvaluator );
+            smem = RuntimeSegmentUtilities.getOrCreateSegmentMemory(tupleSource, reteEvaluator);
         }
         return smem;
     }

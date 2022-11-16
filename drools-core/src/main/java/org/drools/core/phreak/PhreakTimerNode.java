@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
-import static org.drools.core.phreak.SegmentUtilities.nextNodePosMask;
+import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
@@ -407,7 +407,7 @@ public class PhreakTimerNode {
             needEvaluation &= filter != null;
 
             for (final PathMemory pmem : timerJobCtx.getPathMemories()) {
-                if (pmem.getPathEndNode().getAssociatedRuleSize() == 0) {
+                if (pmem.getPathEndNode().getAssociatedTerminals().size() == 0) {
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }

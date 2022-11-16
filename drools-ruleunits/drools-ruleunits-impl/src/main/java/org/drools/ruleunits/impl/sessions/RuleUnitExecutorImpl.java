@@ -165,6 +165,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
+    public NodeMemories getNodeMemories() {
+        return nodeMemories;
+    }
+
+    @Override
     public GlobalResolver getGlobalResolver() {
         return globalResolver;
     }

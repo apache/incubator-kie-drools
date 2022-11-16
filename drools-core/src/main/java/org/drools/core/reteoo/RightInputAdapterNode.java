@@ -17,19 +17,25 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.base.ObjectType;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
@@ -42,7 +48,7 @@ public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
     PathEndNode,
-    MemoryFactory<RightInputAdapterNode.RiaNodeMemory> {
+    MemoryFactory<RiaPathMemory> {
 
     private static final long serialVersionUID = 510l;
 
@@ -60,6 +66,10 @@ public class RightInputAdapterNode extends ObjectSource
     private PathEndNode[] pathEndNodes;
 
     private PathMemSpec pathMemSpec;
+
+    private SegmentPrototype[] segmentPrototypes;
+
+    private SegmentPrototype[] eagerSegmentPrototypes;
 
     private int objectCount;
 
@@ -92,15 +102,47 @@ public class RightInputAdapterNode extends ObjectSource
 
     @Override
     public PathMemSpec getPathMemSpec() {
+        return getPathMemSpec(null);
+    }
+
+
+    /**
+     * used during network build time, potentially during rule removal time.
+     * @param removingTN
+     * @return
+     */
+    @Override
+    public PathMemSpec getPathMemSpec(TerminalNode removingTN) {
         if (pathMemSpec == null) {
-            pathMemSpec = calculatePathMemSpec( startTupleSource );
+            pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
         }
         return pathMemSpec;
     }
 
+
     @Override
-    public void resetPathMemSpec(TerminalNode removingTN) {
-        pathMemSpec = removingTN == null ? null : calculatePathMemSpec( null, removingTN );
+    public void nullPathMemSpec() {
+        pathMemSpec = null;
+    }
+
+    @Override
+    public void setSegmentPrototypes(SegmentPrototype[] smems) {
+        this.segmentPrototypes = smems;
+    }
+
+    @Override
+    public SegmentPrototype[] getSegmentPrototypes() {
+        return segmentPrototypes;
+    }
+
+    @Override
+    public SegmentPrototype[] getEagerSegmentPrototypes() {
+        return eagerSegmentPrototypes;
+    }
+
+    @Override
+    public void setEagerSegmentPrototypes(SegmentPrototype[] eagerSegmentPrototypes) {
+        this.eagerSegmentPrototypes = eagerSegmentPrototypes;
     }
 
     @Override
@@ -132,16 +174,8 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */    
-    public RiaNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        RiaNodeMemory rianMem = new RiaNodeMemory();
-
-        RiaPathMemory pmem = new RiaPathMemory(this, reteEvaluator);
-        PathMemSpec pathMemSpec = getPathMemSpec();
-        pmem.setAllLinkedMaskTest( pathMemSpec.allLinkedTestMask );
-        pmem.setSegmentMemories( new SegmentMemory[pathMemSpec.smemCount] );
-        rianMem.setRiaPathMemory(pmem);
-        
-        return rianMem;
+    public RiaPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+        return (RiaPathMemory) AbstractTerminalNode.initPathMemory( this, new RiaPathMemory(this, reteEvaluator) );
     }
     
     public SubnetworkTuple createPeer(LeftTuple original) {
@@ -171,10 +205,6 @@ public class RightInputAdapterNode extends ObjectSource
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     /**
@@ -214,7 +244,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     public short getType() {
-        return NodeTypeEnums.RightInputAdaterNode;
+        return NodeTypeEnums.RightInputAdapterNode;
     }
 
     private int calculateHashCode() {
@@ -292,34 +322,90 @@ public class RightInputAdapterNode extends ObjectSource
         throw new UnsupportedOperationException();
     }
 
-    public static class RiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
-        private RiaPathMemory pathMemory;
+    public static class RiaPathMemory extends PathMemory implements Memory {
+        private List<RuleImpl> rules;
 
-        public RiaNodeMemory() {
+        public RiaPathMemory(PathEndNode pathEndNode, ReteEvaluator reteEvaluator) {
+            super(pathEndNode, reteEvaluator);
         }
 
-        public RiaPathMemory getRiaPathMemory() {
-            return pathMemory;
+        @Override
+        protected boolean initDataDriven( ReteEvaluator reteEvaluator ) {
+            for (PathEndNode pnode : getPathEndNode().getPathEndNodes()) {
+                if (pnode instanceof TerminalNode) {
+                    RuleImpl rule = ( (TerminalNode) pnode ).getRule();
+                    if ( isRuleDataDriven( reteEvaluator, rule ) ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
-        public void setRiaPathMemory(RiaPathMemory pathMemory) {
-            this.pathMemory = pathMemory;
+        public RightInputAdapterNode getRightInputAdapterNode() {
+            return (RightInputAdapterNode) getPathEndNode();
         }
 
-        public SegmentMemory getSegmentMemory() {
-            return pathMemory.getSegmentMemory();
+        @Override
+        public void doLinkRule(ReteEvaluator reteEvaluator) {
+            getRightInputAdapterNode().getObjectSinkPropagator().doLinkRiaNode( reteEvaluator );
         }
 
-        public void setSegmentMemory(SegmentMemory segmentMemory) {
-            pathMemory.setSegmentMemory(segmentMemory);
+        @Override
+        public void doLinkRule(ActivationsManager activationsManager) {
+            doLinkRule(activationsManager.getReteEvaluator());
         }
 
+        @Override
+        public void doUnlinkRule(ReteEvaluator reteEvaluator) {
+            getRightInputAdapterNode().getObjectSinkPropagator().doUnlinkRiaNode( reteEvaluator );
+        }
+
+        private void updateRuleTerminalNodes() {
+            rules = new ArrayList<>();
+            for ( ObjectSink osink : getRightInputAdapterNode().getObjectSinkPropagator().getSinks() ) {
+                for ( LeftTupleSink ltsink : ((BetaNode)osink).getSinkPropagator().getSinks() )  {
+                    findAndAddTN(ltsink, rules );
+                }
+            }
+        }
+
+        private void findAndAddTN( LeftTupleSink ltsink, List<RuleImpl> terminalNodes) {
+            if ( NodeTypeEnums.isTerminalNode(ltsink)) {
+                terminalNodes.add( ((TerminalNode)ltsink).getRule() );
+            } else if ( ltsink.getType() == NodeTypeEnums.RightInputAdapterNode) {
+                for ( NetworkNode childSink : ( ltsink).getSinks() )  {
+                    findAndAddTN((LeftTupleSink)childSink, terminalNodes);
+                }
+            } else {
+                for ( LeftTupleSink childLtSink : (ltsink).getSinkPropagator().getSinks() )  {
+                    findAndAddTN(childLtSink, terminalNodes);
+                }
+            }
+        }
+
+        public List<RuleImpl> getAssociatedRules() {
+            if ( rules == null ) {
+                updateRuleTerminalNodes();
+            }
+            return rules;
+        }
+
+        public String getRuleNames() {
+            Set<String> ruleNames = new HashSet<>();
+            for (RuleImpl rule : getAssociatedRules()) {
+                ruleNames.add(rule.getName());
+            }
+            return ruleNames.toString();
+        }
+
+        @Override
         public short getNodeType() {
-            return NodeTypeEnums.RightInputAdaterNode;
+            return NodeTypeEnums.RightInputAdapterNode;
         }
 
-        public void reset() {
-            pathMemory.reset();
+        public String toString() {
+            return "RiaMem(" + getRightInputAdapterNode().getId() + ") [" +getRuleNames() + "]";
         }
     }
 
@@ -359,7 +445,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     @Override
-    public boolean removeAssociation( Rule rule ) {
+    public boolean removeAssociation( Rule rule, RuleRemovalContext context ) {
         boolean result = super.associations.remove(rule);
         if (getAssociationsSize() == 0) {
             // avoid to recalculate the pathEndNodes if this node is going to be removed
@@ -368,7 +454,7 @@ public class RightInputAdapterNode extends ObjectSource
 
         List<PathEndNode> remainingPathNodes = new ArrayList<>();
         for (PathEndNode pathEndNode : pathEndNodes) {
-            if (pathEndNode.getAssociationsSize() > 0) {
+            if (pathEndNode.getAssociatedTerminals().size() > 0) {
                 remainingPathNodes.add(pathEndNode);
             }
         }

@@ -26,10 +26,14 @@ import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentMemory.BetaMemoryPrototype;
+import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -59,16 +63,23 @@ public class PhreakNotNodeTest {
 
         notNode.addTupleSink( sinkNode );
 
+        SegmentPrototype proto1 = new SegmentPrototype(notNode, notNode);
+        proto1.setNodesInSegment(new LeftTupleNode[]{notNode});
+        proto1.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+        SegmentPrototype proto2 = new SegmentPrototype(sinkNode, sinkNode);
+        proto2.setNodesInSegment(new LeftTupleNode[]{sinkNode});
+        proto2.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
         
         bm =(BetaMemory)  wm.getNodeMemory( notNode );
         
         BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode );
         
-        SegmentMemory smem = new SegmentMemory( notNode ) ;
+        SegmentMemory smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );
         
-        SegmentMemory childSmem = new SegmentMemory( sinkNode ) ;
+        SegmentMemory childSmem = proto2.newSegmentMemory(wm);
         bm1.setSegmentMemory( childSmem );       
         smem.add( childSmem );     
 

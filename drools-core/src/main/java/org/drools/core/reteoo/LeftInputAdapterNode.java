@@ -16,9 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -26,11 +28,12 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
@@ -166,11 +169,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       boolean useLeftMemory) {
         SegmentMemory sm = lm.getOrCreateSegmentMemory( liaNode, reteEvaluator );
         if ( sm.getTipNode() == liaNode) {
-            // liaNode in it's own segment and child segments not yet created
+            // liaNode in its own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                SegmentUtilities.createChildSegments( reteEvaluator,
-                                                      sm,
-                                                      liaNode.getSinkPropagator() );
+                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
+                                                            sm,
+                                                            liaNode.getSinkPropagator());
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -180,7 +183,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         boolean notifySegment = linkOrNotify && counter != 0;
 
         if ( counter == 0) {
-            // if there is no left mempry, then there is no linking or notification
+            // if there is no left memory, then there is no linking or notification
             if ( linkOrNotify ) {
                 // link and notify
                 lm.linkNode( reteEvaluator );
@@ -260,9 +263,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode ) {
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                SegmentUtilities.createChildSegments( reteEvaluator,
-                                                      sm,
-                                                      liaNode.getSinkPropagator() );
+                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
+                                                            sm,
+                                                            liaNode.getSinkPropagator());
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -320,9 +323,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode) {
             // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                SegmentUtilities.createChildSegments( reteEvaluator,
-                                                      sm,
-                                                      liaNode.getSinkPropagator() );
+                RuntimeSegmentUtilities.createChildSegments(reteEvaluator,
+                                                            sm,
+                                                            liaNode.getSinkPropagator());
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -633,20 +636,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             throw new UnsupportedOperationException();
         }
 
+        @Override
+        public int getPosInSegment() {
+            throw new UnsupportedOperationException("This method should not be called");
+        }
+
         public short getType() {
             return NodeTypeEnums.LeftInputAdapterNode;
-        }
-
-        public int getAssociationsSize() {
-            return sink.getAssociationsSize();
-        }
-
-        public int getAssociatedRuleSize() {
-            return sink.getAssociatedRuleSize();
-        }
-
-        public int getAssociationsSize(Rule rule) {
-            return sink.getAssociationsSize(rule);
         }
 
         @Override public Rule[] getAssociatedRules() {
@@ -655,6 +651,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         public boolean isAssociatedWith(Rule rule) {
             return sink.isAssociatedWith( rule );
+        }
+
+        @Override
+        public NetworkNode[] getSinks() {
+            return new NetworkNode[0];
+        }
+
+        @Override
+        public Map<Integer, TerminalNode> getAssociatedTerminals() {
+            return sink.getAssociatedTerminals();
         }
     }
 

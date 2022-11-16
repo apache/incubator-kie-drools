@@ -30,7 +30,7 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -173,11 +173,6 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                                                             varIndexes,
                                                             this,
                                                             tupleMemoryEnabled );
-    }
-
-    @Override
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     /**
@@ -540,16 +535,16 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             return resultLeftTuples;
         }
 
-        public void correctMemoryOnSinksChanged(TerminalNode removingTN) {
+        public void correctMemoryOnSinksChanged(TerminalNode removingTn) {
             if (resultLeftTuples instanceof QueryTupleSets ) {
-                if (!SegmentUtilities.isTipNode( node, removingTN )) {
+                if (!BuildtimeSegmentUtilities.isTipNode(node, removingTn)) {
                     // a sink has been removed and now there is no longer a split
                     TupleSetsImpl<LeftTuple> newTupleSets = new TupleSetsImpl<>();
                     this.resultLeftTuples.addTo( newTupleSets );
                     this.resultLeftTuples = newTupleSets;
                 }
             } else {
-                if (SegmentUtilities.isTipNode( node, removingTN )) {
+                if (BuildtimeSegmentUtilities.isTipNode(node, removingTn)) {
                     // a sink has been added and now there is a split
                     TupleSetsImpl<LeftTuple> newTupleSets = new QueryTupleSets();
                     this.resultLeftTuples.addTo( newTupleSets );

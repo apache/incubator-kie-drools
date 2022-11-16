@@ -22,13 +22,14 @@ import java.util.List;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.reteoo.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -309,7 +310,7 @@ public class AgendaItemImpl implements AgendaItem {
 
     @Override
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getTupleSink()).getAllDeclarations();
+        Declaration[] declArray = ((AbstractTerminalNode) this.tuple.getTupleSink()).getAllDeclarations();
         List<String> declarations = new ArrayList<>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());

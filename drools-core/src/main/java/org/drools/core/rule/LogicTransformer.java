@@ -70,9 +70,6 @@ public class LogicTransformer {
     }
 
     public GroupElement[] transform( final GroupElement cloned, Map<String, Type> globals ) throws InvalidPatternException {
-        //moved cloned to up
-        //final GroupElement cloned = (GroupElement) and.clone();
-
         boolean hasNamedConsequenceAndIsStream = processTree( cloned );
         cloned.pack();
 
@@ -289,8 +286,7 @@ public class LogicTransformer {
             Declaration resolved = resolver.getDeclaration( aDecl.getIdentifier() );
 
             if ( resolved != null && resolved != aDecl ) {
-                accumulate.replaceDeclaration( aDecl,
-                                               resolved );
+                accumulate.replaceDeclaration( aDecl, resolved );
             } else if ( resolved == null ) {
                 // it is probably an implicit declaration, so find the corresponding pattern
                 Pattern old = aDecl.getPattern();
@@ -340,7 +336,7 @@ public class LogicTransformer {
     protected boolean processTree(final GroupElement ce) throws InvalidPatternException {
         boolean[] hasNamedConsequenceAndIsStream = new boolean[2];
         processTree(ce, hasNamedConsequenceAndIsStream);
-        return hasNamedConsequenceAndIsStream[0] && hasNamedConsequenceAndIsStream[1];
+        return hasNamedConsequenceAndIsStream[0];
     }
 
     /**

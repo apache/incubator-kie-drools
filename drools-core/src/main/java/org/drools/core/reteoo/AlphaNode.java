@@ -16,10 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -248,6 +251,11 @@ public class AlphaNode extends ObjectSource
             return 0;
         }
 
+        @Override
+        public int getPosInSegment() {
+            throw new UnsupportedOperationException("This method should NEVER EVER be called");
+        }
+
         public RuleBasePartitionId getPartitionId() {
             return this.sink.getPartitionId();
         }
@@ -269,24 +277,22 @@ public class AlphaNode extends ObjectSource
             return NodeTypeEnums.AlphaNode;
         }
 
-        public int getAssociationsSize() {
-            return sink.getAssociationsSize();
-        }
-
-        public int getAssociatedRuleSize() {
-            return sink.getAssociatedRuleSize();
-        }
-
-        public int getAssociationsSize(Rule rule) {
-            return sink.getAssociationsSize(rule);
-        }
-
         @Override public Rule[] getAssociatedRules() {
             return sink.getAssociatedRules();
         }
 
         public boolean isAssociatedWith(Rule rule) {
             return sink.isAssociatedWith(rule);
+        }
+
+        @Override
+        public Map<Integer, TerminalNode> getAssociatedTerminals() {
+            return sink.getAssociatedTerminals();
+        }
+
+        @Override
+        public NetworkNode[] getSinks() {
+            return new NetworkNode[0];
         }
     }
 

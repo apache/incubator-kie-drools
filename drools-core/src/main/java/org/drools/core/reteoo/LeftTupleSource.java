@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.base.ObjectType;
@@ -169,6 +170,22 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
                 this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
             }
         }
+    }
+
+    public LeftTupleSinkNode getFirstLeftTupleSinkIgnoreRemoving(TerminalNode removingTn) {
+        if (removingTn == null) {
+            return this.sink.getFirstLeftTupleSink();
+        }
+
+        for ( LeftTupleSink sink : this.sink.getSinks()) {
+            if ( !BuildtimeSegmentUtilities.sinkNotExclusivelyAssociatedWithTerminal(removingTn, sink)) {
+                // skip this node as it's being removed;
+                continue;
+            }
+            return (LeftTupleSinkNode) sink;
+        }
+
+        throw new RuntimeException("This should always return a sink");
     }
 
     public LeftTupleSinkPropagator getSinkPropagator() {

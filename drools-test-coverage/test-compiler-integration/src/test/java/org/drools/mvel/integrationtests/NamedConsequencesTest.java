@@ -822,7 +822,7 @@ public class NamedConsequencesTest {
         assertThat(list.containsAll(asList("t1:YYY", "t0:ZZZ"))).isTrue();
     }
 
-    @Test(timeout = 10000L)
+    @Test //(timeout = 10000L)
     public void testNoLoop() {
         // DROOLS-644
         String drl =

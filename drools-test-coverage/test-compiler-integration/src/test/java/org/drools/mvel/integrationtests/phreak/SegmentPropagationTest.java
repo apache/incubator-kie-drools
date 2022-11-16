@@ -26,9 +26,13 @@ import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentMemory.BetaMemoryPrototype;
+import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -74,6 +78,20 @@ public class SegmentPropagationTest {
         sinkNode2 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode2 );
 
+        SegmentPrototype proto1 = new SegmentPrototype(joinNode, joinNode);
+        proto1.setNodesInSegment(new LeftTupleNode[]{joinNode});
+        proto1.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+        SegmentPrototype proto2 = new SegmentPrototype(sinkNode0, sinkNode0);
+        proto2.setNodesInSegment(new LeftTupleNode[]{sinkNode0});
+        proto2.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+
+        SegmentPrototype proto3 = new SegmentPrototype(sinkNode1, sinkNode1);
+        proto3.setNodesInSegment(new LeftTupleNode[]{sinkNode1});
+        proto3.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+        SegmentPrototype proto4 = new SegmentPrototype(sinkNode2, sinkNode2);
+        proto4.setNodesInSegment(new LeftTupleNode[]{sinkNode2});
+        proto4.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
+
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();;
         
         bm =(BetaMemory)  wm.getNodeMemory( joinNode );
@@ -82,18 +100,18 @@ public class SegmentPropagationTest {
         bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode1 );
         bm2 =(BetaMemory)  wm.getNodeMemory( sinkNode2 );
         
-        smem = new SegmentMemory( joinNode ) ;
+        smem = proto1.newSegmentMemory(wm);
         bm.setSegmentMemory( smem );
         
-        smem0 = new SegmentMemory( sinkNode0 ) ;
+        smem0 = proto2.newSegmentMemory(wm);
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 
-        smem1 = new SegmentMemory( sinkNode1 ) ;
+        smem1 = proto3.newSegmentMemory(wm);
         bm1.setSegmentMemory( smem1 );       
         smem.add( smem1 );    
         
-        smem2 = new SegmentMemory( sinkNode2 ) ;
+        smem2 = proto4.newSegmentMemory(wm);
         bm2.setSegmentMemory( smem2 );       
         smem.add( smem2 );          
     }
@@ -113,18 +131,6 @@ public class SegmentPropagationTest {
     @Test
     public void test1() {
         setupJoinNode();
-        
-        JoinNode parentNode = joinNode;
-        JoinNode child1Node = new JoinNode();
-        JoinNode child2Node = new JoinNode();
-        JoinNode child3Node = new JoinNode();
-        
-        parentNode.addTupleSink( child1Node );
-        parentNode.addTupleSink( child2Node );
-        parentNode.addTupleSink( child3Node );
-        
-        SegmentMemory smem = new SegmentMemory( parentNode );
-        smem.setTipNode( parentNode );
         
         // @formatter:off
         test().left().insert( a0, a1 )

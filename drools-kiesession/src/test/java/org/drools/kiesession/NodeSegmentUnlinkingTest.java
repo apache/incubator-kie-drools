@@ -25,9 +25,12 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakNotNode;
-import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -99,7 +102,7 @@ public class NodeSegmentUnlinkingTest {
         return betaNode;
     }
 
-    public void setUp(int type) {
+    public void  setUp(int type) {
         setUp(new int[] { type, type, type, type, type, type, type, type } );
     }
     
@@ -168,6 +171,7 @@ public class NodeSegmentUnlinkingTest {
 
         n3.addAssociation( rule2 );
         n3.addAssociation( rule3 );
+
         n4.addAssociation( rule2 );
         n4.addAssociation( rule3 );
         n5.addAssociation( rule2 );
@@ -177,6 +181,13 @@ public class NodeSegmentUnlinkingTest {
 
         n7.addAssociation( rule3 );
         n8.addAssociation( rule3 );
+
+        // assumes no subnetworks
+        for (TerminalNode tn : new TerminalNode[] {rtn1, rtn2, rtn3}) {
+            tn.setPathEndNodes( new PathEndNode[] {tn});
+            tn.resetPathMemSpec(null);
+            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
+        }
     }
 
     @Test
@@ -225,6 +236,9 @@ public class NodeSegmentUnlinkingTest {
         n5.attach(buildContext);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
+        BuildtimeSegmentUtilities.createPathProtoMemories(n3, null, null, kBase);
+        BuildtimeSegmentUtilities.createPathProtoMemories(n4, null, null, kBase);
+        BuildtimeSegmentUtilities.createPathProtoMemories(n5, null, null, kBase);
         createSegmentMemory( n2, ksession );
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );
@@ -246,10 +260,9 @@ public class NodeSegmentUnlinkingTest {
         setUp( JOIN_NODE );
         // Initialise from lian
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        SegmentUtilities.getOrCreateSegmentMemory( liaNode, ksession );
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, ksession);
         liaNode.assertObject((InternalFactHandle) ksession.insert("str"), context, ksession);
         
 
@@ -261,8 +274,7 @@ public class NodeSegmentUnlinkingTest {
         assertThat(bm1.getNodePosMaskBit()).isEqualTo(2);
         assertThat(bm1.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3);         
         
-        // Initialise from n1     
-        kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        // Initialise from n1
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         n1.assertObject( (InternalFactHandle) ksession.insert( "str" ), context, ksession );
@@ -281,10 +293,9 @@ public class NodeSegmentUnlinkingTest {
     public void testLiaNodeLinking() {
         setUp( JOIN_NODE );
         // Initialise from lian
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
-        SegmentUtilities.getOrCreateSegmentMemory( liaNode, ksession );
+        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, ksession);
         
         InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( "str1" );
         n1.assertObject( fh1, context, ksession );
@@ -328,7 +339,6 @@ public class NodeSegmentUnlinkingTest {
     public void tesMultiNodeSegmentDifferentInitialisationPoints() {
         setUp( JOIN_NODE );
         // Initialise from n3
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory(n3, ksession);
@@ -352,8 +362,7 @@ public class NodeSegmentUnlinkingTest {
         assertThat(bm.getNodePosMaskBit()).isEqualTo(8);
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
-        // Initialise from n4       
-        kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        // Initialise from n4
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         bm = createSegmentMemory( n4, ksession );
@@ -378,7 +387,6 @@ public class NodeSegmentUnlinkingTest {
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         // Initialise from n5
-        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory( n5, ksession );
@@ -403,7 +411,6 @@ public class NodeSegmentUnlinkingTest {
         assertThat(bm.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(15);
 
         // Initialise from n6
-        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         createSegmentMemory( n6, ksession );
@@ -434,7 +441,6 @@ public class NodeSegmentUnlinkingTest {
 
         assertThat(n3.getClass()).isEqualTo(JoinNode.class); // make sure it created JoinNodes
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
@@ -459,7 +465,6 @@ public class NodeSegmentUnlinkingTest {
 
         assertThat(n3.getClass()).isEqualTo(ExistsNode.class); // make sure it created ExistsNodes
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         DefaultFactHandle f1 = (DefaultFactHandle) ksession.insert( "test1" );
@@ -482,7 +487,7 @@ public class NodeSegmentUnlinkingTest {
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
         if ( betaMemory.getSegmentMemory() == null ) {
-            SegmentUtilities.getOrCreateSegmentMemory( node, wm );
+            RuntimeSegmentUtilities.getOrCreateSegmentMemory(node, wm);
         }
         return betaMemory;
 
@@ -494,7 +499,6 @@ public class NodeSegmentUnlinkingTest {
 
         assertThat(n3.getClass()).isEqualTo(NotNode.class); // make sure it created NotNodes
 
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n3 );

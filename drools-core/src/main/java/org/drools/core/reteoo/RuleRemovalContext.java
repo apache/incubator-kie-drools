@@ -35,6 +35,8 @@ public class RuleRemovalContext implements Externalizable {
 
     private RuleBase ruleBase;
 
+    private int subRuleIndex;
+
     // This should be used just for deserialization purposes.
     public RuleRemovalContext() { }
 
@@ -69,5 +71,13 @@ public class RuleRemovalContext implements Externalizable {
 
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
+    }
+
+    public int getSubRuleIndex() {
+        return subRuleIndex;
+    }
+
+    public void setSubRuleIndex(int subRuleIndex) {
+        this.subRuleIndex = subRuleIndex;
     }
 }

@@ -274,8 +274,8 @@ public class Consequence {
         // By converting to a character is easier to write the regexp
         final String wordWithDollarReplaced = word.replaceAll("\\$", "_DOLLAR_");
         final String bodyWithDollarReplaced = body.replaceAll("\\$", "_DOLLAR_");
-
-        Pattern p = Pattern.compile("\\b" + wordWithDollarReplaced + "\\b");
+        
+        Pattern p = Pattern.compile("\\b" + wordWithDollarReplaced + "\\b", Pattern.UNICODE_CHARACTER_CLASS);
         return p.matcher(bodyWithDollarReplaced).find();
     }
 
@@ -283,8 +283,7 @@ public class Consequence {
 
         for (String modifiedProperty : modifyProperties) {
             NodeList<Expression> arguments = nodeList(new NameExpr(modifiedProperty));
-            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update",
-                                                       arguments);
+            MethodCallExpr update = new MethodCallExpr(new NameExpr("drools"), "update", arguments);
             ruleConsequence.getStatements().add(new ExpressionStmt(update));
         }
 

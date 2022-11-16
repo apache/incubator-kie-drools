@@ -182,7 +182,7 @@ public class BuildUtils {
     }
 
     private boolean areNodesCompatibleForSharing(BuildContext context, BaseNode node) {
-        if ( node.getType() == NodeTypeEnums.RightInputAdaterNode ) {
+        if ( node.getType() == NodeTypeEnums.RightInputAdapterNode) {
             // avoid subnetworks sharing when they belong to 2 different agenda-groups
             String agendaGroup = context.getRule().getAgendaGroup();
             for (Rule associatedRule : node.getAssociatedRules()) {
