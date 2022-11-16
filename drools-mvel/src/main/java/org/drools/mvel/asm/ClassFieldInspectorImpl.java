@@ -123,8 +123,10 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
                 final String name = getResourcePath( anInterface );
                 final InputStream parentStream = clazz.getResourceAsStream( name );
                 if ( parentStream != null ) {
-                    try (parentStream) {
-                        processClassWithByteCode(anInterface, parentStream, includeFinalMethods);
+                    try {
+                        processClassWithByteCode( anInterface, parentStream, includeFinalMethods );
+                    } finally {
+                        parentStream.close();
                     }
                 } else {
                     processClassWithoutByteCode( anInterface, includeFinalMethods );
