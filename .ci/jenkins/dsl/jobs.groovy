@@ -77,14 +77,14 @@ createSetupBranchJob()
 
 // Nightly jobs
 setupDeployJob(Folder.NIGHTLY)
-setupSpecificNightlyJob(Folder.NIGHTLY_NATIVE)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_NATIVE)
 
-setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN)
-setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_BRANCH)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_BRANCH)
 
-setupSpecificNightlyJob(Folder.NIGHTLY_MANDREL)
-setupSpecificNightlyJob(Folder.NIGHTLY_MANDREL_LTS)
-setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_LTS)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_MANDREL)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_MANDREL_LTS)
+setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_LTS)
 
 // Jobs with integration branch
 setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN, true)
@@ -122,6 +122,11 @@ void setupSpecificNightlyJob(Folder specificNightlyFolder, boolean useIntegratio
             stringParam('GIT_AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}", 'Set the Git author creds id')
         }
     }
+}
+
+void setupSpecificBuildChainNightlyJob(Folder specificNightlyFolder) {
+    String envName = specificNightlyFolder.environment.toName()
+    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, specificNightlyFolder, true, envName)
 }
 
 void createSetupBranchJob() {
