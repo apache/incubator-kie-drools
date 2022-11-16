@@ -86,23 +86,18 @@ public class ServiceTaskHandler implements KogitoWorkItemHandler {
     private void handleException(Throwable cause, String service, String interfaceImplementationRef, String operation, String paramType, Object param) {
         logger.debug("Handling exception {} inside service {} or {} and operation {} with param type {} and value {}",
                 cause.getMessage(), service, interfaceImplementationRef, operation, paramType, param);
-        WorkItemHandlerRuntimeException wihRe;
-        if (cause instanceof InvocationTargetException) {
-            Throwable realCause = cause.getCause();
-            wihRe = new WorkItemHandlerRuntimeException(realCause);
-            wihRe.setStackTrace(realCause.getStackTrace());
-        } else {
-            wihRe = new WorkItemHandlerRuntimeException(cause);
-            wihRe.setStackTrace(cause.getStackTrace());
-        }
-        wihRe.setInformation("Interface", service);
-        wihRe.setInformation("InterfaceImplementationRef", interfaceImplementationRef);
-        wihRe.setInformation("Operation", operation);
-        wihRe.setInformation("ParameterType", paramType);
-        wihRe.setInformation("Parameter", param);
-        wihRe.setInformation(WorkItemHandlerRuntimeException.WORKITEMHANDLERTYPE, this.getClass().getSimpleName());
+        Throwable realCause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+        // Map.of does not accept null values, therefore we need to use the legacy way to build the map 
+        Map<String, Object> info = new HashMap<>();
+        info.put("Interface", service);
+        info.put("InterfaceImplementationRef", interfaceImplementationRef);
+        info.put("Operation", operation);
+        info.put("ParameterType", paramType);
+        info.put("Parameter", param);
+        info.put(WorkItemHandlerRuntimeException.WORKITEMHANDLERTYPE, this.getClass().getSimpleName());
+        WorkItemHandlerRuntimeException wihRe = new WorkItemHandlerRuntimeException(realCause, info);
+        wihRe.setStackTrace(realCause.getStackTrace());
         throw wihRe;
-
     }
 
     public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {

@@ -19,7 +19,7 @@ import org.kie.dmn.api.core.DMNResult;
 
 public class DMNEvaluationErrorException extends RuntimeException {
 
-    private DMNResult result;
+    private final DMNResult result;
 
     public DMNEvaluationErrorException(org.kie.dmn.api.core.DMNResult result) {
         super();

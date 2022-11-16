@@ -24,9 +24,9 @@ public class ProcessInstanceExecutionException extends RuntimeException {
 
     private static final long serialVersionUID = 8031225233775014572L;
 
-    private String processInstanceId;
-    private String failedNodeId;
-    private String errorMessage;
+    private final String processInstanceId;
+    private final String failedNodeId;
+    private final String errorMessage;
 
     public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage) {
         this(processInstanceId, failedNodeId, errorMessage, null);

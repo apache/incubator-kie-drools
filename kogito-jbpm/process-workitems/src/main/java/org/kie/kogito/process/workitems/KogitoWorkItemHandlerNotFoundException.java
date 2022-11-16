@@ -17,7 +17,7 @@ package org.kie.kogito.process.workitems;
 
 public class KogitoWorkItemHandlerNotFoundException extends RuntimeException {
 
-    private String workItemName;
+    private final String workItemName;
 
     public KogitoWorkItemHandlerNotFoundException(String workItemName) {
         super("Could not find work item handler for " + workItemName);
@@ -26,10 +26,6 @@ public class KogitoWorkItemHandlerNotFoundException extends RuntimeException {
 
     public String getWorkItemName() {
         return workItemName;
-    }
-
-    public void setWorkName(String workName) {
-        this.workItemName = workName;
     }
 
 }

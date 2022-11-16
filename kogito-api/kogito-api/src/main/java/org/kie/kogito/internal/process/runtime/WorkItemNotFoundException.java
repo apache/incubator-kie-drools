@@ -18,7 +18,7 @@ package org.kie.kogito.internal.process.runtime;
 public class WorkItemNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 4684154420113683086L;
-    private String workItemId;
+    private final String workItemId;
 
     public WorkItemNotFoundException(String workItemId) {
         this("Cannot find work item " + workItemId, workItemId);
@@ -32,10 +32,6 @@ public class WorkItemNotFoundException extends RuntimeException {
 
     public String getWorkItemId() {
         return workItemId;
-    }
-
-    public void setWorkItemId(String workItemId) {
-        this.workItemId = workItemId;
     }
 
 }
