@@ -1,5 +1,8 @@
 package org.drools.compiler.builder.impl.processors;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -9,9 +12,6 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.parser.ParserError;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class RuleValidator extends AbstractPackageCompilationPhase {
 
@@ -31,7 +31,7 @@ public class RuleValidator extends AbstractPackageCompilationPhase {
         for (final RuleDescr rule : packageDescr.getRules()) {
             validateRule(packageDescr, rule);
 
-            final String name = rule.getName();
+            final String name = rule.getUnitQualifiedName();
             if (names.contains(name)) {
                 this.results.add(new ParserError(rule.getResource(),
                         "Duplicate rule name: " + name,
