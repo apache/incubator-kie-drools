@@ -85,8 +85,10 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
         final InputStream stream = classUnderInspection.getResourceAsStream( name );
 
         if ( stream != null ) {
-            try (stream) {
-                processClassWithByteCode(classUnderInspection, stream, includeFinalMethods);
+            try {
+                processClassWithByteCode( classUnderInspection, stream, includeFinalMethods );
+            } finally {
+                stream.close();
             }
         } else {
             processClassWithoutByteCode( classUnderInspection, includeFinalMethods );
