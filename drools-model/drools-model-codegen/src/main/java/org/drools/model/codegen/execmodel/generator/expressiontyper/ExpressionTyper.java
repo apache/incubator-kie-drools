@@ -246,7 +246,7 @@ public class ExpressionTyper {
         }
 
         if (drlxExpr instanceof ThisExpr || (drlxExpr instanceof NameExpr && THIS_PLACEHOLDER.equals(printNode(drlxExpr)))) {
-            return of(new TypedExpression(new NameExpr(THIS_PLACEHOLDER), patternType));
+            return of(new TypedExpression(new NameExpr(THIS_PLACEHOLDER), patternType, "this"));
 
         }
 

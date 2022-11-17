@@ -33,7 +33,7 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader im
     }
 
     public SelfReferenceClassFieldReader(final Class<?> clazz) {
-        super( -1, // index
+        super( 0, // index
                clazz, // fieldType
                ValueType.determineValueType( clazz ) ); // value type
     }

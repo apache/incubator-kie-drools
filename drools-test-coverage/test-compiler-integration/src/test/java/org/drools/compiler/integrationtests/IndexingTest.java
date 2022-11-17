@@ -1016,4 +1016,88 @@ public class IndexingTest {
             ksession.dispose();
         }
     }
+
+    @Test
+    public void testAlphaIndexOnField() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        Person( age == 10 )\n" +
+                "    then\n" +
+                "        list.add(\"R1\");\n" +
+                "end\n" +
+                "rule R2\n" +
+                "    when\n" +
+                "        Person( age == 20 )\n" +
+                "    then\n" +
+                "        list.add(\"R2\");\n" +
+                "end\n" +
+                "rule R3\n" +
+                "    when\n" +
+                "        Person( age == 30 )\n" +
+                "    then\n" +
+                "        list.add(\"R3\");\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            assertAlphaIndex(kbase, Person.class, 3);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            Person john = new Person("John", 10);
+            ksession.insert(john);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testAlphaIndexOnThis() {
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                "global java.util.List list\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        Integer( this == 10 )\n" +
+                "    then\n" +
+                "        list.add(\"R1\");\n" +
+                "end\n" +
+                "rule R2\n" +
+                "    when\n" +
+                "        Integer( this == 20 )\n" +
+                "    then\n" +
+                "        list.add(\"R2\");\n" +
+                "end\n" +
+                "rule R3\n" +
+                "    when\n" +
+                "        Integer( this == 30 )\n" +
+                "    then\n" +
+                "        list.add(\"R3\");\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            assertAlphaIndex(kbase, Integer.class, 3);
+
+            List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
+            ksession.insert(10);
+            ksession.fireAllRules();
+
+            assertThat(list).containsExactly("R1");
+        } finally {
+            ksession.dispose();
+        }
+    }
 }

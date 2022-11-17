@@ -34,14 +34,14 @@ public class ClassFieldInspectorTest {
     @Test
     public void testIt() throws Exception {
         final ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( Person.class );
-        assertThat(ext.getFieldNames().size()).isEqualTo(7);
+        assertThat(ext.getFieldNames().size()).isEqualTo(8);
         assertThat(ext.getGetterMethods().get("age").getName()).isEqualTo("getAge");
         assertThat(ext.getGetterMethods().get("happy").getName()).isEqualTo("isHappy");
         assertThat(ext.getGetterMethods().get("name").getName()).isEqualTo("getName");
 
         final Map<String, Integer> names = ext.getFieldNames();
         assertThat(names).isNotNull();
-        assertThat(names.size()).isEqualTo(7);
+        assertThat(names.size()).isEqualTo(8);
         assertThat(names.get("nAme")).isNull();
 
     }
@@ -49,38 +49,38 @@ public class ClassFieldInspectorTest {
     @Test
     public void testInterface() throws Exception {
         final ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( TestInterface.class );
-        assertThat(ext.getFieldNames().size()).isEqualTo(2);
+        assertThat(ext.getFieldNames().size()).isEqualTo(3);
         assertThat(ext.getGetterMethods().get("something").getName()).isEqualTo("getSomething");
         assertThat(ext.getGetterMethods().get("another").getName()).isEqualTo("getAnother");
 
         final Map<String, Integer> names = ext.getFieldNames();
         assertThat(names).isNotNull();
-        assertThat(names.size()).isEqualTo(2);
+        assertThat(names.size()).isEqualTo(3);
 
     }
 
     @Test
     public void testAbstract() throws Exception {
         final ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( TestAbstract.class );
-        assertThat(ext.getFieldNames().size()).isEqualTo(5);
+        assertThat(ext.getFieldNames().size()).isEqualTo(6);
         assertThat(ext.getGetterMethods().get("something").getName()).isEqualTo("getSomething");
         assertThat(ext.getGetterMethods().get("another").getName()).isEqualTo("getAnother");
 
         final Map<String, Integer> names = ext.getFieldNames();
         assertThat(names).isNotNull();
-        assertThat(names.size()).isEqualTo(5);
+        assertThat(names.size()).isEqualTo(6);
 
     }
 
     @Test
     public void testInheritedFields() throws Exception {
         ClassFieldInspectorImpl ext = new ClassFieldInspectorImpl( BeanInherit.class );
-        assertThat(ext.getFieldNames().size()).isEqualTo(5);
+        assertThat(ext.getFieldNames().size()).isEqualTo(6);
         assertThat( ext.getFieldTypesField().get( "text" ) ).isNotNull();
         assertThat( ext.getFieldTypesField().get( "number" ) ).isNotNull();
 
         ext = new ClassFieldInspectorImpl( InterfaceChildImpl.class );
-        assertThat(ext.getFieldNames().size()).isEqualTo(8);
+        assertThat(ext.getFieldNames().size()).isEqualTo(9);
 
         // test inheritence from abstract class
         assertThat( ext.getFieldNames().get( "HTML" ) ).isNotNull();
@@ -114,7 +114,7 @@ public class ClassFieldInspectorTest {
             for ( final Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
                 final Map.Entry entry = (Map.Entry) i.next();
                 final String fieldName = (String) entry.getKey();
-                final int fieldIndex = ((Integer) entry.getValue()).intValue();
+                final int fieldIndex = (Integer) entry.getValue();
                 if ( fields[fieldIndex] == null ) {
                     fields[fieldIndex] = fieldName;
                 } else {
