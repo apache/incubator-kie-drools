@@ -58,15 +58,14 @@ import static org.drools.util.StringUtils.lcFirstForBean;
  */
 public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
-    private final Map<String, Integer>    fieldNames           = new HashMap<>();
-    private final Map<String, Class< ? >> fieldTypes           = new HashMap<>();
-    private final Map<String, Field>      fieldTypesField      = new HashMap<>();
-    private final Map<String, Method>     getterMethods        = new HashMap<>();
-    private final Map<String, Method>     setterMethods        = new HashMap<>();
-    private final Set<String>             nonGetters           = new HashSet<>();
-    private final Class< ? >              classUnderInspection;
-    private Map<String, Collection<KnowledgeBuilderResult>>
-                                          results              = null;
+    private final Map<String, Integer> fieldNames = new HashMap<>();
+    private final Map<String, Class<?>> fieldTypes = new HashMap<>();
+    private final Map<String, Field> fieldTypesField = new HashMap<>();
+    private final Map<String, Method> getterMethods = new HashMap<>();
+    private final Map<String, Method> setterMethods = new HashMap<>();
+    private final Set<String> nonGetters = new HashSet<>();
+    private final Class<?> classUnderInspection;
+    private Map<String, Collection<KnowledgeBuilderResult>> results = null;
 
     /**
      * @param classUnderInspection The class that the fields to be shadowed are extracted for.
@@ -80,6 +79,7 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
                                     final boolean includeFinalMethods) throws IOException {
         this.classUnderInspection = classUnderInspection;
         this.fieldNames.put("this", 0);
+        this.fieldTypes.put("this", classUnderInspection);
 
         final String name = getResourcePath( classUnderInspection );
         final InputStream stream = classUnderInspection.getResourceAsStream( name );
