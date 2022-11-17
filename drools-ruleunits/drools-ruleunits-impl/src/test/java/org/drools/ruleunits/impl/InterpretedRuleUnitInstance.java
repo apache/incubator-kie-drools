@@ -19,6 +19,8 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.util.EventListener;
+import java.util.List;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.DataSource;
@@ -28,8 +30,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 
 public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEvaluatorBasedRuleUnitInstance<T> {
 
-    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator) {
-        super(unit, workingMemory, reteEvaluator);
+    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, List<EventListener> eventListenerList) {
+        super(unit, workingMemory, reteEvaluator, eventListenerList);
     }
 
     protected void bind(ReteEvaluator reteEvaluator, T workingMemory) {

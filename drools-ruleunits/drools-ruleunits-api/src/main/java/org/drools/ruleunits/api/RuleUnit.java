@@ -15,6 +15,9 @@
  */
 package org.drools.ruleunits.api;
 
+import java.util.EventListener;
+import java.util.List;
+
 /**
  * A rule unit is an atomic module defining a set of rules and a set of strongly typed {@link DataSource}s through which
  * the facts processed by the rule engine are inserted. Users never need to implement this interface since the concrete
@@ -30,4 +33,9 @@ public interface RuleUnit<T extends RuleUnitData> {
      * Creates a {@link RuleUnitInstance} using the given {@link RuleUnitData}.
      */
     RuleUnitInstance<T> createInstance(T data);
+
+    /**
+     * Creates a {@link RuleUnitInstance} using the given {@link RuleUnitData} and event listeners.
+     */
+    RuleUnitInstance<T> createInstance(T data, List<EventListener> eventListenerList);
 }

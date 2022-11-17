@@ -15,6 +15,8 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.util.EventListener;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
@@ -69,9 +71,9 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
         }
 
         @Override
-        public RuleUnitInstance<T> internalCreateInstance(T data) {
+        public RuleUnitInstance<T> internalCreateInstance(T data, List<EventListener> eventListenerList) {
             ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, unitGlobalsResolver);
+            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, unitGlobalsResolver, eventListenerList);
         }
     }
 
@@ -79,6 +81,11 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 
         public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, UnitGlobalsResolver unitGlobalsResolver) {
             super(unit, workingMemory, reteEvaluator);
+            internalBind(unitGlobalsResolver);
+        }
+
+        public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, UnitGlobalsResolver unitGlobalsResolver, List<EventListener> eventListenerList) {
+            super(unit, workingMemory, reteEvaluator, eventListenerList);
             internalBind(unitGlobalsResolver);
         }
 

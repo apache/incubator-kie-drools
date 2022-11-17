@@ -49,6 +49,13 @@
       </dependency>
 
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-ruleunits-impl</artifactId>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
       </dependency>

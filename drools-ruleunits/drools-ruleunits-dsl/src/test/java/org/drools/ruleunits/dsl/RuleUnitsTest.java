@@ -15,6 +15,8 @@
  */
 package org.drools.ruleunits.dsl;
 
+import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -24,6 +26,9 @@ import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.dsl.domain.Cheese;
 import org.drools.ruleunits.dsl.domain.Person;
+import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
+import org.drools.ruleunits.impl.listener.TestRuleEventListener;
+import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -286,5 +291,39 @@ public class RuleUnitsTest {
 
         unitInstance.close();
         unitInstance2.close();
+    }
+
+    @Test
+    public void addEventListeners() {
+        List<EventListener> eventListerList = new ArrayList<>();
+        TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
+        TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();
+        TestRuleEventListener testRuleEventListener = new TestRuleEventListener();
+        eventListerList.add(testAgendaEventListener);
+        eventListerList.add(testRuleRuntimeEventListener);
+        eventListerList.add(testRuleEventListener);
+
+        HelloWorldUnit unit = new HelloWorldUnit();
+        unit.getStrings().add("Hello World");
+
+        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, eventListerList)) {
+
+            assertThat(unitInstance.fire()).isEqualTo(2);
+            assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
+
+            assertThat(testAgendaEventListener.getResults()).hasSize(6);
+            assertThat(testAgendaEventListener.getResults().get(0)).startsWith("matchCreated");
+            assertThat(testAgendaEventListener.getResults().get(1)).startsWith("matchCreated");
+            assertThat(testAgendaEventListener.getResults().get(2)).startsWith("beforeMatchFired");
+            assertThat(testAgendaEventListener.getResults().get(3)).startsWith("afterMatchFired");
+            assertThat(testAgendaEventListener.getResults().get(4)).startsWith("beforeMatchFired");
+            assertThat(testAgendaEventListener.getResults().get(5)).startsWith("afterMatchFired");
+            assertThat(testRuleRuntimeEventListener.getResults()).containsExactly("objectInserted : Hello World");
+            assertThat(testRuleEventListener.getResults()).hasSize(4);
+            assertThat(testRuleEventListener.getResults().get(0)).startsWith("onBeforeMatchFire");
+            assertThat(testRuleEventListener.getResults().get(1)).startsWith("onAfterMatchFire");
+            assertThat(testRuleEventListener.getResults().get(2)).startsWith("onBeforeMatchFire");
+            assertThat(testRuleEventListener.getResults().get(3)).startsWith("onAfterMatchFire");
+        }
     }
 }

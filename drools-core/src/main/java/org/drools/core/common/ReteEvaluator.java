@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.RuleBase;
@@ -98,6 +99,8 @@ public interface ReteEvaluator {
     }
 
     SessionConfiguration getSessionConfiguration();
+
+    AgendaEventSupport getAgendaEventSupport();
 
     RuleEventListenerSupport getRuleEventSupport();
 

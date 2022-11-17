@@ -1,3 +1,5 @@
+import java.util.EventListener;
+import java.util.List;
 import java.util.function.Function;
 
 import org.drools.core.SessionConfiguration;
@@ -33,8 +35,8 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     }
 
     @Override
-    public RULE_UNIT_INSTANCE_CLASS internalCreateInstance(RULE_UNIT_CLASS data) {
+    public RULE_UNIT_INSTANCE_CLASS internalCreateInstance(RULE_UNIT_CLASS data, List<EventListener> eventListenerList) {
         ReteEvaluator reteEvaluator = evaluatorConfigurator.apply(new RuleUnitExecutorImpl(ruleBase, sessionConfiguration));
-        return new RULE_UNIT_INSTANCE_CLASS(this, data, reteEvaluator);
+        return new RULE_UNIT_INSTANCE_CLASS(this, data, reteEvaluator, eventListenerList);
     }
 }

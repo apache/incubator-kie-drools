@@ -15,6 +15,9 @@
  */
 package org.drools.ruleunits.impl.factory;
 
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.List;
 import java.util.function.Function;
 
 import org.drools.core.common.ReteEvaluator;
@@ -39,7 +42,11 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
         this.ruleUnits = ruleUnits == null ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits;
     }
 
-    protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
+    protected RuleUnitInstance<T> internalCreateInstance(T data) {
+        return internalCreateInstance(data, new ArrayList<>());
+    }
+
+    protected abstract RuleUnitInstance<T> internalCreateInstance(T data, List<EventListener> eventListenerList);
 
     @Override
     public Class<T> getRuleUnitDataClass() {
@@ -48,12 +55,22 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
 
     @Override
     public RuleUnitInstance<T> createInstance(T data) {
-        return createInstance(data, null);
+        return createInstance(data, null, new ArrayList<>());
     }
 
     @Override
     public RuleUnitInstance<T> createInstance(T data, String name) {
-        RuleUnitInstance<T> instance = internalCreateInstance(data);
+        return createInstance(data, name, new ArrayList<>());
+    }
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data, List<EventListener> eventListenerList) {
+        return createInstance(data, null, eventListenerList);
+    }
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data, String name, List<EventListener> eventListenerList) {
+        RuleUnitInstance<T> instance = internalCreateInstance(data, eventListenerList);
         if (name != null) {
             ruleUnits.register(name, instance);
         }

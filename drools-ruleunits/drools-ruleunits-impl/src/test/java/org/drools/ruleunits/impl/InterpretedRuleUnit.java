@@ -15,6 +15,9 @@
  */
 package org.drools.ruleunits.impl;
 
+import java.util.EventListener;
+import java.util.List;
+
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -41,15 +44,20 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         return interpretedRuleUnit.createInstance(ruleUnitData);
     }
 
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnitData, List<EventListener> eventListerList) {
+        InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>((Class<T>) ruleUnitData.getClass());
+        return interpretedRuleUnit.createInstance(ruleUnitData, eventListerList);
+    }
+
     private InterpretedRuleUnit(Class<T> ruleUnitDataClass) {
         super(ruleUnitDataClass);
     }
 
     @Override
-    public RuleUnitInstance<T> internalCreateInstance(T data) {
+    public RuleUnitInstance<T> internalCreateInstance(T data, List<EventListener> eventListenerList) {
         RuleBase ruleBase = createRuleBase(data);
         ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator);
+        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator, eventListenerList);
     }
 
     private RuleBase createRuleBase(T data) {
