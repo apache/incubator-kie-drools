@@ -55,7 +55,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.6.3</version.info.picocli>
     <version.io.micrometer>1.9.5</version.io.micrometer>
-    <version.io.quarkus>2.14.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.14.1.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>2.3.1</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
@@ -185,12 +185,12 @@
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.shade.plugin>3.3.0</version.shade.plugin>
 
-    <version.net.byte-buddy>1.12.9</version.net.byte-buddy>
+    <version.net.byte-buddy>1.12.18</version.net.byte-buddy>
 
     <version.org.postgresql>42.5.0</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.org.jboss.jandex>3.0.1</version.org.jboss.jandex>
+    <version.org.jboss.jandex>3.0.3</version.org.jboss.jandex>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>

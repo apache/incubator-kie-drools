@@ -152,15 +152,15 @@ public class MetadataTest {
         SubKlassImpl ski = new SubKlassImpl();
         SubKlass_.SubKlass_Modify task = SubKlass_.modify( ski ).prop( "hello" ).subProp( 42 );
         task.call();
-        assertThat(task.getModificationMask().toString()).isEqualTo("144");
+        assertThat(task.getModificationMask().toString()).isEqualTo("288");
 
         SubKlass_.SubKlass_Modify task2 = SubKlass_.modify( ski ).prop( "hello" );
         task2.call();
-        assertThat(task2.getModificationMask().toString()).isEqualTo("16");
+        assertThat(task2.getModificationMask().toString()).isEqualTo("32");
 
         SubKlass_.SubKlass_Modify task3 = SubKlass_.modify( ski ).subProp( 42 );
         task3.call();
-        assertThat(task3.getModificationMask().toString()).isEqualTo("128");
+        assertThat(task3.getModificationMask().toString()).isEqualTo("256");
     }
 
 

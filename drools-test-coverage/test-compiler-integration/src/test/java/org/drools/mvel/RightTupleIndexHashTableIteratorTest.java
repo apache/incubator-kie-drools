@@ -99,26 +99,10 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
         rightTupleList.add(new RightTupleImpl(fh11, null));
         rightTupleList.add(new RightTupleImpl(fh12, null));
         rightTupleList.add(new RightTupleImpl(fh13, null));
-        ((TupleList) hashTable.getTable()[0]).setNext(rightTupleList);
+        hashTable.getTable()[0].setNext(rightTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
         assertThat(tableIndexList.size()).isEqualTo(5);
-
-        // This tests the hashcode index allocation. If the rehash function (or any other way hashcodes are computed) changes, these numbers will change.
-        // standard-drl and exec-model have different getRightExtractor().getIndex() value so hashCode changes
-        if (useLambdaConstraint) {
-            assertTableIndex(tableIndexList, 0, 0, 3);
-            assertTableIndex(tableIndexList, 1, 49, 3);
-            assertTableIndex(tableIndexList, 2, 51, 3);
-            assertTableIndex(tableIndexList, 3, 60, 2);
-            assertTableIndex(tableIndexList, 4, 61, 2);
-        } else {
-            assertTableIndex(tableIndexList, 0, 0, 3);
-            assertTableIndex(tableIndexList, 1, 102, 2);
-            assertTableIndex(tableIndexList, 2, 103, 2);
-            assertTableIndex(tableIndexList, 3, 115, 3);
-            assertTableIndex(tableIndexList, 4, 117, 3);
-        }
 
         List resultList = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getRightTupleMemory().iterator();
