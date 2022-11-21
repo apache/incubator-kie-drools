@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.event.rule.RuleEventListener;
 
 /**
- * A class which encapsulates configurations to create {@link RuleUnitInstance}
+ * A class which encapsulates configurations to create {@link org.drools.ruleunits.api.RuleUnitInstance}
  *
  */
 public interface RuleConfig {
