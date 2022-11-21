@@ -15,45 +15,28 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.EventListener;
-import java.util.List;
-
 import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.event.rule.RuleEventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData> extends AbstractRuleUnitInstance<ReteEvaluator, T> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReteEvaluatorBasedRuleUnitInstance.class);
-
-    public ReteEvaluatorBasedRuleUnitInstance(RuleUnit<T> unit, T unitMemory, ReteEvaluator evaluator) {
+    protected ReteEvaluatorBasedRuleUnitInstance(RuleUnit<T> unit, T unitMemory, ReteEvaluator evaluator) {
         super(unit, unitMemory, evaluator);
     }
 
-    public ReteEvaluatorBasedRuleUnitInstance(RuleUnit<T> unit, T unitMemory, ReteEvaluator evaluator, List<EventListener> eventListenerList) {
-        super(unit, unitMemory, evaluator, eventListenerList);
+    protected ReteEvaluatorBasedRuleUnitInstance(RuleUnit<T> unit, T unitMemory, ReteEvaluator evaluator, RuleConfig ruleConfig) {
+        super(unit, unitMemory, evaluator, ruleConfig);
     }
 
     @Override
     protected void addEventListeners() {
-        for (EventListener eventListener : eventListenerList) {
-            if (eventListener instanceof AgendaEventListener) {
-                evaluator.getAgendaEventSupport().addEventListener((AgendaEventListener)eventListener);
-            } else if (eventListener instanceof RuleRuntimeEventListener) {
-                evaluator.getRuleRuntimeEventSupport().addEventListener((RuleRuntimeEventListener)eventListener);
-            } else if (eventListener instanceof RuleEventListener) {
-                evaluator.getRuleEventSupport().addEventListener((RuleEventListener)eventListener);
-            } else {
-                LOG.warn("{} is not supported EventListener. Ignored.", eventListener.getClass());
-            }
-        }
+        ruleConfig.getAgendaEventListeners().stream().forEach(l -> evaluator.getAgendaEventSupport().addEventListener(l));
+        ruleConfig.getRuleRuntimeListeners().stream().forEach(l -> evaluator.getRuleRuntimeEventSupport().addEventListener(l));
+        ruleConfig.getRuleEventListeners().stream().forEach(l -> evaluator.getRuleEventSupport().addEventListener(l));
     }
 
     @Override

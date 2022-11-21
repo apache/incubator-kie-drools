@@ -15,17 +15,15 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
 import java.util.Objects;
 
 import org.drools.ruleunits.api.DataHandle;
+import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
-import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.builder.CompilationErrorsException;
 
@@ -102,18 +100,19 @@ public class RuleUnitProviderImplTest {
 
     @Test
     public void addEventListeners() {
-        List<EventListener> eventListerList = new ArrayList<>();
         TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
         TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();
         TestRuleEventListener testRuleEventListener = new TestRuleEventListener();
-        eventListerList.add(testAgendaEventListener);
-        eventListerList.add(testRuleRuntimeEventListener);
-        eventListerList.add(testRuleEventListener);
+
+        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
+        ruleConfig.getAgendaEventListeners().add(testAgendaEventListener);
+        ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
+        ruleConfig.getRuleEventListeners().add(testRuleEventListener);
 
         HelloWorld unit = new HelloWorld();
         unit.getStrings().add("Hello World");
 
-        try (RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, eventListerList)) {
+        try (RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("it worked!");
             assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");

@@ -15,9 +15,7 @@
  */
 package org.drools.ruleunits.api;
 
-import java.util.EventListener;
-import java.util.List;
-
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.kie.api.internal.utils.KieService;
 
 /**
@@ -48,20 +46,25 @@ public interface RuleUnitProvider extends KieService {
     }
 
     /**
-     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData} with event listeners.
+     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData} with {@link RuleConfig}.
      * This is equivalent to
      * <pre>
-     * RuleUnitProvider.get().getRuleUnit(ruleUnitData).createInstance(ruleUnitData, eventListenerList);
+     * RuleUnitProvider.get().getRuleUnit(ruleUnitData).createInstance(ruleUnitData, ruleConfig);
      * </pre>
      * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
      */
-    default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, List<EventListener> eventListenerList) {
+    default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, RuleConfig ruleConfig) {
         RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData);
         if (ruleUnit == null) {
             throw new RuntimeException("Cannot find any rule unit for RuleUnitData of class:" + ruleUnitData.getClass().getCanonicalName());
         }
-        return ruleUnit.createInstance(ruleUnitData, eventListenerList);
+        return ruleUnit.createInstance(ruleUnitData, ruleConfig);
     }
+
+    /**
+     * Creates a new RuleConfig instance.
+     */
+    RuleConfig newRuleConfig();
 
     /**
      * Returns an instance of the RuleUnitProvider.

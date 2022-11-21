@@ -15,20 +15,18 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
-
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.api.conf.RuleConfig;
 
 public abstract class AbstractRuleUnitInstance<E, T extends RuleUnitData> implements RuleUnitInstance<T> {
 
     private final T unitMemory;
     private final RuleUnit<T> unit;
     protected final E evaluator;
-    protected List<EventListener> eventListenerList = new ArrayList<>();
+    protected RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
 
     public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, E evaluator) {
         this.unit = unit;
@@ -37,11 +35,11 @@ public abstract class AbstractRuleUnitInstance<E, T extends RuleUnitData> implem
         bind(evaluator, unitMemory);
     }
 
-    public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, E evaluator, List<EventListener> eventListenerList) {
+    public AbstractRuleUnitInstance(RuleUnit<T> unit, T unitMemory, E evaluator, RuleConfig ruleConfig) {
         this.unit = unit;
         this.evaluator = evaluator;
         this.unitMemory = unitMemory;
-        this.eventListenerList = eventListenerList;
+        this.ruleConfig = ruleConfig;
         addEventListeners();
         bind(evaluator, unitMemory);
     }

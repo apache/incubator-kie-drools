@@ -15,9 +15,6 @@
  */
 package org.drools.ruleunits.impl;
 
-import java.util.EventListener;
-import java.util.List;
-
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -26,6 +23,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.builder.Message;
@@ -44,9 +42,9 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         return interpretedRuleUnit.createInstance(ruleUnitData);
     }
 
-    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnitData, List<EventListener> eventListerList) {
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnitData, RuleConfig ruleConfig) {
         InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>((Class<T>) ruleUnitData.getClass());
-        return interpretedRuleUnit.createInstance(ruleUnitData, eventListerList);
+        return interpretedRuleUnit.createInstance(ruleUnitData, ruleConfig);
     }
 
     private InterpretedRuleUnit(Class<T> ruleUnitDataClass) {
@@ -54,10 +52,10 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
     }
 
     @Override
-    public RuleUnitInstance<T> internalCreateInstance(T data, List<EventListener> eventListenerList) {
+    public RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig) {
         RuleBase ruleBase = createRuleBase(data);
         ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator, eventListenerList);
+        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator, ruleConfig);
     }
 
     private RuleBase createRuleBase(T data) {

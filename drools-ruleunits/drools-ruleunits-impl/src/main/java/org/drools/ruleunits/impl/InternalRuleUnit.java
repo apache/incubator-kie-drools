@@ -1,13 +1,12 @@
 package org.drools.ruleunits.impl;
 
-import java.util.EventListener;
-import java.util.List;
 import java.util.function.Function;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.conf.RuleConfig;
 
 public interface InternalRuleUnit<T extends RuleUnitData> extends RuleUnit<T> {
 
@@ -15,7 +14,7 @@ public interface InternalRuleUnit<T extends RuleUnitData> extends RuleUnit<T> {
 
     RuleUnitInstance<T> createInstance(T data, String name);
 
-    RuleUnitInstance<T> createInstance(T data, String name, List<EventListener> eventListenerList);
+    RuleUnitInstance<T> createInstance(T data, String name, RuleConfig ruleConfig);
 
     void setEvaluatorConfigurator(Function<ReteEvaluator, ReteEvaluator> evaluatorConfigurator);
 }

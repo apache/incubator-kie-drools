@@ -211,6 +211,7 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.getRuleEventSupport();
     }
 
+    @Override
     public AgendaEventSupport getAgendaEventSupport() {
         return delegate.getAgendaEventSupport();
     }

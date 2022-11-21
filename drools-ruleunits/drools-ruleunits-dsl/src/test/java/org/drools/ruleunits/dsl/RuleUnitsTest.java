@@ -15,15 +15,14 @@
  */
 package org.drools.ruleunits.dsl;
 
-import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
-import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.dsl.domain.Cheese;
 import org.drools.ruleunits.dsl.domain.Person;
 import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
@@ -295,18 +294,19 @@ public class RuleUnitsTest {
 
     @Test
     public void addEventListeners() {
-        List<EventListener> eventListerList = new ArrayList<>();
         TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
         TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();
         TestRuleEventListener testRuleEventListener = new TestRuleEventListener();
-        eventListerList.add(testAgendaEventListener);
-        eventListerList.add(testRuleRuntimeEventListener);
-        eventListerList.add(testRuleEventListener);
+
+        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
+        ruleConfig.getAgendaEventListeners().add(testAgendaEventListener);
+        ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
+        ruleConfig.getRuleEventListeners().add(testRuleEventListener);
 
         HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, eventListerList)) {
+        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
 
             assertThat(unitInstance.fire()).isEqualTo(2);
             assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");

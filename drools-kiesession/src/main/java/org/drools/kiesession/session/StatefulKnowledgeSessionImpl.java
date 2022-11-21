@@ -1342,6 +1342,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.ruleRuntimeEventSupport;
     }
 
+    @Override
     public AgendaEventSupport getAgendaEventSupport() {
         return this.agendaEventSupport;
     }
