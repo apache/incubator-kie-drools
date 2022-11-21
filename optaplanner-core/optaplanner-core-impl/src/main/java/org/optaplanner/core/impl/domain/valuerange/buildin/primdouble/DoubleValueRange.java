@@ -7,6 +7,11 @@ import java.util.Random;
 import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 
+/**
+ * Note: Floating point numbers (float, double) cannot represent a decimal number correctly.
+ * If floating point numbers leak into the scoring function, they are likely to cause score corruptions.
+ * To avoid that, use either {@link java.math.BigDecimal} or fixed-point arithmetic.
+ */
 public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
 
     private final double from;

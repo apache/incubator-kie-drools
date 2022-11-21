@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -123,11 +124,17 @@ public class FromSolutionPropertyValueSelector<Solution_> extends AbstractValueS
     @Override
     public Iterator<Object> iterator() {
         checkCachedEntityListIsDirty();
-        if (!randomSelection) {
-            return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
-        } else {
+        if (randomSelection) {
             return cachedValueRange.createRandomIterator(workingRandom);
         }
+        if (cachedValueRange instanceof CountableValueRange) {
+            return ((CountableValueRange<Object>) cachedValueRange).createOriginalIterator();
+        }
+        throw new IllegalStateException("Value range's class (" + cachedValueRange.getClass().getCanonicalName() + ") " +
+                "does not implement " + CountableValueRange.class + ", " +
+                "yet selectionOrder is not " + SelectionOrder.RANDOM + ".\n" +
+                "Maybe switch selectors' selectionOrder to " + SelectionOrder.RANDOM + "?\n" +
+                "Maybe switch selectors' cacheType to " + SelectionCacheType.JUST_IN_TIME + "?");
     }
 
     @Override
