@@ -12,10 +12,10 @@ environment:
     enabled: true
   mandrel:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
   mandrel_lts:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
     quarkus_version: 2.13
   runtimes_bdd:
     enabled: true
@@ -36,13 +36,13 @@ git:
     name: kiegroup
     credentials_id: kie-ci
     token_credentials_id: kie-ci3-token
-  bot_author: # This is meant to disappear in the near future
+  bot_author:
     name: bsig-gh-bot
     credentials_id: bsig-gh-bot
-  fork_author: # Used on repository where a fork is needed
+  fork_author:
     name: kie-ci
     credentials_id: kie-ci
-  quarkus: # Used by quarkus platform jobs
+  quarkus:
     author:
       name: quarkusio
       credentials_id: kie-ci
