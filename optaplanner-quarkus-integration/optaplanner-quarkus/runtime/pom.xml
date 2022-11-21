@@ -45,8 +45,8 @@
       <artifactId>drools-wiring-static</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.graalvm.nativeimage</groupId>
-      <artifactId>svm</artifactId>
+      <groupId>org.graalvm.sdk</groupId>
+      <artifactId>graal-sdk</artifactId>
     </dependency>
   </dependencies>
   <build>

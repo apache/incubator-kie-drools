@@ -53,12 +53,7 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <dependency> <!-- For GraalVM native support for GraalVM 22.2.0 and older. -->
-      <groupId>org.graalvm.nativeimage</groupId>
-      <artifactId>svm</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency> <!-- For GraalVM native support from GraalVM 22.3.0 onward. -->
+    <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
       <scope>provided</scope>

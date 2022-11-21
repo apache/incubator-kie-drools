@@ -27,7 +27,7 @@
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>4.0.3</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>2.14.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.14.1.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
     <version.org.apache.poi>5.2.2</version.org.apache.poi>
@@ -109,7 +109,7 @@
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>jandex</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.3</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
