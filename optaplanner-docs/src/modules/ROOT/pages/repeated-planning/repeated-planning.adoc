@@ -314,7 +314,7 @@ OptaPlanner can handle such scenarios with `ProblemChange` (in combination with 
 [[problemChange]]
 === `ProblemChange`
 
-While the `Solver` is solving, one of the problem facts may be changed by an outside event.
+While the `Solver` is solving, one of the problem facts or planning entities may be changed by an outside event.
 For example, an airplane is delayed and needs the runway at a later time.
 
 [IMPORTANT]
