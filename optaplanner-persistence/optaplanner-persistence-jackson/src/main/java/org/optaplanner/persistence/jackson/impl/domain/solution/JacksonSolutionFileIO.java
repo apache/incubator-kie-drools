@@ -82,4 +82,16 @@ public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     }
 
+    protected <Key, Value, Index> Map<Key, Value> deduplicateMap(Map<Key, Value> originalMap, Map<Index, Key> index,
+            Function<Key, Index> idFunction) {
+        if (originalMap == null || originalMap.isEmpty()) {
+            return originalMap;
+        }
+
+        var newMap = new LinkedHashMap<Key, Value>(originalMap.size());
+        originalMap.forEach(
+                (key, value) -> newMap.put(index.get(idFunction.apply(key)), value));
+        return newMap;
+    }
+
 }

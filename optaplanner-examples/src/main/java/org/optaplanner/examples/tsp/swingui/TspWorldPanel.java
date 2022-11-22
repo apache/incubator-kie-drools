@@ -88,7 +88,7 @@ public class TspWorldPanel extends JPanel {
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
                         TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
-                        if (dragSourceStandstill.getLocation().getId().equals(dragTargetStandstill.getLocation().getId())) {
+                        if (dragSourceStandstill.getLocation().getId() == dragTargetStandstill.getLocation().getId()) {
                             dragTargetStandstill = tspSolution.getDomicile();
                         }
                         resetPanel(tspSolution);
@@ -106,7 +106,7 @@ public class TspWorldPanel extends JPanel {
                 dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                         new AirLocation(-1L, latitude, longitude));
                 TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
-                if (dragSourceStandstill.getLocation().getId().equals(dragTargetStandstill.getLocation().getId())) {
+                if (dragSourceStandstill.getLocation().getId() == dragTargetStandstill.getLocation().getId()) {
                     dragTargetStandstill = tspSolution.getDomicile();
                 }
                 Standstill sourceStandstill = TspWorldPanel.this.dragSourceStandstill;

@@ -11,17 +11,14 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningSolution
-@XStreamAlias("TspSolution")
-public class TspSolution extends AbstractPersistable {
+public class TspSolution extends AbstractPersistableJackson {
 
     private String name;
     protected DistanceType distanceType;
@@ -31,8 +28,14 @@ public class TspSolution extends AbstractPersistable {
 
     private List<Visit> visitList;
 
-    @XStreamConverter(SimpleLongScoreXStreamConverter.class)
     private SimpleLongScore score;
+
+    public TspSolution() { // For Jackson.
+    }
+
+    public TspSolution(long id) {
+        super(id);
+    }
 
     public String getName() {
         return name;
@@ -100,10 +103,12 @@ public class TspSolution extends AbstractPersistable {
     // ************************************************************************
 
     @ValueRangeProvider(id = "domicileRange")
+    @JsonIgnore
     public List<Domicile> getDomicileRange() {
         return Collections.singletonList(domicile);
     }
 
+    @JsonIgnore
     public String getDistanceString(NumberFormat numberFormat) {
         if (score == null) {
             return null;

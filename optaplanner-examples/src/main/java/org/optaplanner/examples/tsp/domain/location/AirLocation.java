@@ -1,12 +1,9 @@
 package org.optaplanner.examples.tsp.domain.location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * The cost between 2 locations is a straight line: the euclidean distance between their GPS coordinates.
  * Used with {@link DistanceType#AIR_DISTANCE}.
  */
-@XStreamAlias("TspAirLocation")
 public class AirLocation extends Location {
 
     public AirLocation() {

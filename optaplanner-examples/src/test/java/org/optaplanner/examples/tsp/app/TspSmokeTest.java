@@ -9,7 +9,7 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 
 class TspSmokeTest extends SolverSmokeTest<TspSolution, SimpleLongScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/tsp/unsolved/europe40.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/tsp/unsolved/europe40.json";
 
     @Override
     protected TspApp createCommonApp() {

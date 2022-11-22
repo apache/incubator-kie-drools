@@ -1,27 +1,37 @@
 package org.optaplanner.examples.tsp.domain.location;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@XStreamAlias("TspLocation")
-@XStreamInclude({
-        AirLocation.class,
-        RoadLocation.class
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AirLocation.class, name = "air"),
+        @JsonSubTypes.Type(value = RoadLocation.class, name = "road"),
 })
-public abstract class Location extends AbstractPersistable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+public abstract class Location extends AbstractPersistableJackson {
 
     protected String name = null;
     protected double latitude;
     protected double longitude;
 
-    public Location() {
+    protected Location() {
     }
 
-    public Location(long id, double latitude, double longitude) {
+    protected Location(long id) {
         super(id);
+    }
+
+    protected Location(long id, double latitude, double longitude) {
+        this(id);
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -61,8 +71,10 @@ public abstract class Location extends AbstractPersistable {
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
+    @JsonIgnore
     public abstract long getDistanceTo(Location location);
 
+    @JsonIgnore
     public double getAirDistanceDoubleTo(Location location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
@@ -78,6 +90,7 @@ public abstract class Location extends AbstractPersistable {
      * @param location never null
      * @return in Cartesian coordinates
      */
+    @JsonIgnore
     public double getAngle(Location location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;

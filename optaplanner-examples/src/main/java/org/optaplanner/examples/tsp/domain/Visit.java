@@ -3,21 +3,28 @@ package org.optaplanner.examples.tsp.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory;
 import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = DomicileAngleVisitDifficultyWeightFactory.class)
-@XStreamAlias("Visit")
-public class Visit extends AbstractPersistable implements Standstill {
+public class Visit extends AbstractPersistableJackson implements Standstill {
 
     private Location location;
 
     // Planning variables: changes during planning, between score calculations.
     private Standstill previousStandstill;
+
+    public Visit() { // For Jackson.
+    }
+
+    public Visit(long id, Location location) {
+        super(id);
+        this.location = location;
+    }
 
     @Override
     public Location getLocation() {
@@ -46,6 +53,7 @@ public class Visit extends AbstractPersistable implements Standstill {
     /**
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
+    @JsonIgnore
     public long getDistanceFromPreviousStandstill() {
         if (previousStandstill == null) {
             return 0L;
@@ -57,6 +65,7 @@ public class Visit extends AbstractPersistable implements Standstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
+    @JsonIgnore
     public long getDistanceFrom(Standstill standstill) {
         return standstill.getLocation().getDistanceTo(location);
     }

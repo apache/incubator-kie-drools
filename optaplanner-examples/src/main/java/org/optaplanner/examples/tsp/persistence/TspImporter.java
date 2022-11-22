@@ -27,10 +27,10 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 
     public static void main(String[] args) {
         SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(
-                TspApp.DATA_DIR_NAME, new TspImporter(), TspSolution.class);
-        converter.convert("other/air/europe40.tsp", "europe40.xml");
-        converter.convert("cook/air/dj38.tsp", "dj38.xml");
-        converter.convert("cook/air/lu980.tsp", "lu980.xml");
+                TspApp.DATA_DIR_NAME, new TspImporter(), new TspSolutionFileIO());
+        converter.convert("other/air/europe40.tsp", "europe40.json");
+        converter.convert("other/road-km/americanRoadTrip-road-km-n50.tsp", "americanRoadTrip-road-km-n50.json");
+        converter.convert("cook/air/lu980.tsp", "lu980.json");
     }
 
     @Override
@@ -51,8 +51,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 
         @Override
         public TspSolution readSolution() throws IOException {
-            tspSolution = new TspSolution();
-            tspSolution.setId(0L);
+            tspSolution = new TspSolution(0);
             String firstLine = readStringValue();
             if (firstLine.matches("\\s*NAME\\s*:.*")) {
                 tspSolution.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
@@ -108,21 +107,21 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 3, 4, false, true);
                 Location location;
+                long id = Long.parseLong(lineTokens[0]);
+                double latitude = Double.parseDouble(lineTokens[1]);
+                double longitude = Double.parseDouble(lineTokens[2]);
                 switch (distanceType) {
                     case AIR_DISTANCE:
-                        location = new AirLocation();
+                        location = new AirLocation(id, latitude, longitude);
                         break;
                     case ROAD_DISTANCE:
-                        location = new RoadLocation();
+                        location = new RoadLocation(id, latitude, longitude);
                         break;
                     default:
                         throw new IllegalStateException("The distanceType (" + distanceType
                                 + ") is not implemented.");
 
                 }
-                location.setId(Long.parseLong(lineTokens[0]));
-                location.setLatitude(Double.parseDouble(lineTokens[1]));
-                location.setLongitude(Double.parseDouble(lineTokens[2]));
                 if (lineTokens.length >= 4) {
                     location.setName(lineTokens[3]);
                 }
@@ -159,14 +158,10 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
             int count = 0;
             for (Location location : locationList) {
                 if (count < 1) {
-                    Domicile domicile = new Domicile();
-                    domicile.setId(location.getId());
-                    domicile.setLocation(location);
+                    Domicile domicile = new Domicile(location.getId(), location);
                     tspSolution.setDomicile(domicile);
                 } else {
-                    Visit visit = new Visit();
-                    visit.setId(location.getId());
-                    visit.setLocation(location);
+                    Visit visit = new Visit(location.getId(), location);
                     // Notice that we leave the PlanningVariable properties on null
                     visitList.add(visit);
                 }
@@ -182,7 +177,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
             }
             long domicileId = readLongValue();
             Domicile domicile = tspSolution.getDomicile();
-            if (!domicile.getId().equals(domicileId)) {
+            if (domicile.getId() != domicileId) {
                 throw new IllegalStateException("The domicileId (" + domicileId
                         + ") is not the domicile's id (" + domicile.getId() + ").");
             }
@@ -214,11 +209,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
-                Location location = new AirLocation();
-                location.setId(id);
-                id++;
-                location.setLatitude(Double.parseDouble(lineTokens[0]));
-                location.setLongitude(Double.parseDouble(lineTokens[1]));
+                Location location = new AirLocation(id, Double.parseDouble(lineTokens[0]), Double.parseDouble(lineTokens[1]));
                 locationList.add(location);
             }
             tspSolution.setLocationList(locationList);

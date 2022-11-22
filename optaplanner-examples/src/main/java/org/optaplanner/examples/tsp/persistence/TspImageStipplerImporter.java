@@ -39,8 +39,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
 
         @Override
         public TspSolution readSolution() throws IOException {
-            tspSolution = new TspSolution();
-            tspSolution.setId(0L);
+            tspSolution = new TspSolution(0L);
             tspSolution.setName(SolutionBusiness.getBaseFileName(inputFile));
             floydSteinbergDithering();
             createVisitList();
@@ -74,11 +73,8 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
                     double diffusedGray = originalGray + errorDiffusion[x][y];
                     double error;
                     if (diffusedGray <= 0.5) {
-                        Location location = new AirLocation();
-                        location.setId(id);
+                        Location location = new AirLocation(id, -y, x);
                         id++;
-                        location.setLatitude(-y);
-                        location.setLongitude(x);
                         locationList.add(location);
                         error = diffusedGray;
                     } else {
@@ -107,14 +103,10 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
             int count = 0;
             for (Location location : locationList) {
                 if (count < 1) {
-                    Domicile domicile = new Domicile();
-                    domicile.setId(location.getId());
-                    domicile.setLocation(location);
+                    Domicile domicile = new Domicile(location.getId(), location);
                     tspSolution.setDomicile(domicile);
                 } else {
-                    Visit visit = new Visit();
-                    visit.setId(location.getId());
-                    visit.setLocation(location);
+                    Visit visit = new Visit(location.getId(), location);
                     // Notice that we leave the PlanningVariable properties on null
                     visitList.add(visit);
                 }

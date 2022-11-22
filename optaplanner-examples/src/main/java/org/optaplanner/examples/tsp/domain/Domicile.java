@@ -1,14 +1,23 @@
 package org.optaplanner.examples.tsp.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("Domicile")
-public class Domicile extends AbstractPersistable implements Standstill {
+public class Domicile extends AbstractPersistableJackson implements Standstill {
 
     private Location location;
+
+    public Domicile() { // For Jackson.
+    }
+
+    public Domicile(long id) {
+        super(id);
+    }
+
+    public Domicile(long id, Location location) {
+        this(id);
+        this.location = location;
+    }
 
     @Override
     public Location getLocation() {

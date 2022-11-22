@@ -51,7 +51,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
     private void resetNextLocationId() {
         long highestLocationId = 0L;
         for (Location location : getSolution().getLocationList()) {
-            if (highestLocationId < location.getId().longValue()) {
+            if (highestLocationId < location.getId()) {
                 highestLocationId = location.getId();
             }
         }
@@ -72,7 +72,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         final Location newLocation;
         switch (getSolution().getDistanceType()) {
             case AIR_DISTANCE:
-                newLocation = new AirLocation();
+                newLocation = new AirLocation(nextLocationId, latitude, longitude);
                 break;
             case ROAD_DISTANCE:
                 logger.warn("Adding locations for a road distance dataset is not supported.");
@@ -81,10 +81,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
                 throw new IllegalStateException("The distanceType (" + getSolution().getDistanceType()
                         + ") is not implemented.");
         }
-        newLocation.setId(nextLocationId);
         nextLocationId++;
-        newLocation.setLongitude(longitude);
-        newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((tspSolution, problemChangeDirector) -> {
             // A SolutionCloner does not clone problem fact lists (such as locationList)
@@ -93,9 +90,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
             // Add the problem fact itself
             problemChangeDirector.addProblemFact(newLocation, tspSolution.getLocationList()::add);
 
-            Visit newVisit = new Visit();
-            newVisit.setId(newLocation.getId());
-            newVisit.setLocation(newLocation);
+            Visit newVisit = new Visit(newLocation.getId(), newLocation);
             // A SolutionCloner clones planning entity lists (such as visitList), so no need to clone the visitList here
             // Add the planning entity itself
             problemChangeDirector.addEntity(newVisit, tspSolution.getVisitList()::add);

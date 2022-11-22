@@ -1,8 +1,6 @@
 package org.optaplanner.examples.vehiclerouting.persistence;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,18 +53,6 @@ public class VehicleRoutingSolutionFileIO extends JacksonSolutionFileIO<VehicleR
                 .forEach(customer -> customer.setLocation(locationsById.get(customer.getLocation().getId())));
         vehicleRoutingSolution.getDepotList()
                 .forEach(depot -> depot.setLocation(locationsById.get(depot.getLocation().getId())));
-    }
-
-    private <Key, Value, Index> Map<Key, Value> deduplicateMap(Map<Key, Value> originalMap, Map<Index, Key> index,
-            Function<Key, Index> idFunction) {
-        if (originalMap == null || originalMap.isEmpty()) {
-            return originalMap;
-        }
-
-        var newMap = new LinkedHashMap<Key, Value>(originalMap.size());
-        originalMap.forEach(
-                (key, value) -> newMap.put(index.get(idFunction.apply(key)), value));
-        return newMap;
     }
 
     private void deduplicateRoadSegments(VehicleRoutingSolution vehicleRoutingSolution) {

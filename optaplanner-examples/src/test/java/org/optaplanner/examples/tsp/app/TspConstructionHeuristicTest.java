@@ -15,6 +15,6 @@ class TspConstructionHeuristicTest extends AbstractConstructionHeuristicTest<Tsp
 
     @Override
     protected Stream<String> unsolvedFileNames() {
-        return Stream.of("europe40.xml");
+        return Stream.of("europe40.json");
     }
 }
