@@ -34,6 +34,8 @@ public class PrototypeImpl implements Prototype {
     private final String name;
     private final SortedMap<String, Field> fields;
 
+    private boolean event;
+
     public PrototypeImpl( String name ) {
         this(name, new Field[0]);
     }
@@ -99,6 +101,15 @@ public class PrototypeImpl implements Prototype {
     @Override
     public int hashCode() {
         return Objects.hash(pkg, name, fields);
+    }
+
+    public boolean isEvent() {
+        return event;
+    }
+
+    public PrototypeImpl setAsEvent(boolean event) {
+        this.event = event;
+        return this;
     }
 
     public static class FieldImpl implements Prototype.Field {
