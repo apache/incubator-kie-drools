@@ -922,4 +922,205 @@ public class FactTemplateTest {
 
         assertThat(result.getValue()).isEqualTo("RedHat worth 15");
     }
+
+    @Test
+    public void testNotEvent() {
+        // DROOLS-7244
+        Result result = new Result();
+
+        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeVariable controlVar1 = variable( controlPrototype );
+        PrototypeVariable controlVar2 = variable( controlPrototype );
+
+        Rule check = rule( "check" )
+                .build(
+                        protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "start_R" ),
+                        not( protoPattern(controlVar2).expr( "name", Index.ConstraintType.EQUAL, "end_R" ).expr( after(0, TimeUnit.SECONDS, 10, TimeUnit.SECONDS), controlVar1 ) ),
+                        on(controlVar1).execute((drools, c1) -> {
+                            drools.delete(c1);
+                            result.setValue("fired");
+                        })
+                );
+
+        Model model = new ModelImpl().addRule(check);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Event tick1 = createMapBasedEvent( controlPrototype );
+        tick1.set( "name", "start_R" );
+        ksession.insert(tick1);
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 6, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isEqualTo("fired");
+    }
+
+    @Test
+    public void testTimeOutBeforeAllEventsArrive() {
+        // DROOLS-7244
+        Result result = new Result();
+
+        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeVariable tick1Var = variable( stockTickPrototype );
+
+        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeVariable controlVar1 = variable( controlPrototype );
+        PrototypeVariable controlVar2 = variable( controlPrototype );
+
+        Rule rule1 = rule( "R1" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 10 ),
+                        not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R1" ) ),
+                        on(tick1Var).execute((drools, t1) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            controlEvent.set( "name", "R1" );
+                            controlEvent.set( "event", t1 );
+                            System.out.println("insert: " + controlEvent);
+                            drools.insert(controlEvent);
+                        })
+                );
+
+        Rule rule2 = rule( "R2" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.LESS_THAN, 5 ),
+                        not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "R2" ) ),
+                        on(tick1Var).execute((drools, t1) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            controlEvent.set( "name", "R2" );
+                            controlEvent.set( "event", t1 );
+                            System.out.println("insert: " + controlEvent);
+                            drools.insert(controlEvent);
+                        })
+                );
+
+        Variable<Long> resultCount = declarationOf( Long.class );
+
+        Rule acc1 = rule("acc1")
+                .build(
+                        not( protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "start_R" ) ),
+                        accumulate( protoPattern( controlVar2 ).expr(p -> ((String)p.get("name")).startsWith("R")),
+                                accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(resultCount)),
+                        pattern(resultCount).expr(count -> count > 0),
+                        on(resultCount).execute((drools, count) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            controlEvent.set( "name", "start_R" );
+                            System.out.println("insert: " + controlEvent);
+                            drools.insert(controlEvent);
+                        })
+                );
+
+        Rule acc2 = rule("acc2")
+                .build(
+                        protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "start_R" ),
+                        accumulate( protoPattern( controlVar2 ).expr(p -> ((String)p.get("name")).startsWith("R")),
+                                accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(resultCount)),
+                        pattern(resultCount).expr(count -> count == 2),
+                        on(resultCount).execute((drools, count) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            controlEvent.set( "name", "end_R" );
+                            System.out.println("insert: " + controlEvent);
+                            drools.insert(controlEvent);
+                        })
+                );
+
+        Rule check = rule( "check" )
+                .build(
+                        protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "start_R" ),
+                        not( protoPattern(controlVar2).expr( "name", Index.ConstraintType.EQUAL, "end_R" ).expr( after(0, TimeUnit.SECONDS, 10, TimeUnit.SECONDS), controlVar1 ) ),
+                        on(controlVar1).execute((drools, c1) -> {
+                            drools.delete(c1);
+                            System.out.println("FIRE!");
+                            result.setValue("fired");
+                        })
+                );
+
+        Rule cleanupEvents = rule( "cleanupEvents" )
+                .build(
+                        protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "end_R" ),
+                        protoPattern(controlVar2).expr(p -> ((String)p.get("name")).startsWith("R")),
+                        on(controlVar1, controlVar2).execute((drools, c1, c2) -> {
+                            drools.delete(c2.get("event"));
+                            drools.delete(c2);
+                        })
+                );
+
+        Rule cleanupTerminal = rule( "cleanupTerminal" )
+                .build(
+                        protoPattern(controlVar1).expr( "name", Index.ConstraintType.EQUAL, "start_R" ),
+                        protoPattern(controlVar2).expr( "name", Index.ConstraintType.EQUAL, "end_R" ),
+                        on(controlVar1, controlVar2).execute((drools, c1, c2) -> {
+                            drools.delete(c1);
+                            drools.delete(c2);
+                        })
+                );
+
+        Model model = new ModelImpl().addRule(rule1).addRule(rule2).addRule(acc1).addRule(acc2).addRule(check).addRule(cleanupEvents).addRule(cleanupTerminal);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        tick1.set( "name", "RedHat" );
+        tick1.set( "value", 7 );
+        ksession.insert(tick1);
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 1, TimeUnit.SECONDS );
+
+        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        tick2.set( "name", "RedHat" );
+        tick2.set( "value", 17 );
+        ksession.insert(tick2);
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 9, TimeUnit.SECONDS );
+
+        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        tick3.set( "name", "RedHat" );
+        tick3.set( "value", 3 );
+        ksession.insert(tick3);
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+
+        Event tick4 = createMapBasedEvent( stockTickPrototype );
+        tick4.set( "name", "RedHat" );
+        tick4.set( "value", 2 );
+        ksession.insert(tick4);
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 12, TimeUnit.SECONDS );
+
+        ksession.fireAllRules();
+        assertThat(result.getValue()).isEqualTo("fired");
+    }
 }

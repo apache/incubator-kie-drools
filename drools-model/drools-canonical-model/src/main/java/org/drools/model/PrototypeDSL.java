@@ -95,6 +95,14 @@ public class PrototypeDSL {
             super(variable);
         }
 
+        public PrototypeVariable getPrototypeVariable() {
+            return (PrototypeVariable) getFirstVariable();
+        }
+
+        public Prototype getPrototype() {
+            return getPrototypeVariable().getPrototype();
+        }
+
         @Override
         public PrototypePatternDef and() {
             return new PrototypeSubPatternDefImpl( this, PatternDSL.LogicalCombiner.AND );
@@ -112,9 +120,7 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right) {
-            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
-            Prototype prototype = protoVar.getPrototype();
-
+            Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor;
             AlphaIndex alphaIndex = null;
             if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
@@ -157,8 +163,7 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right) {
-            PrototypeVariable protoVar = (PrototypeVariable) getFirstVariable();
-            Prototype prototype = protoVar.getPrototype();
+            Prototype prototype = getPrototype();
             Prototype otherPrototype = other.getPrototype();
 
             Set<String> reactOnFields = new HashSet<>();
@@ -175,6 +180,8 @@ public class PrototypeDSL {
         @Override
         public PrototypePatternDef expr(TemporalPredicate temporalPredicate, PrototypeVariable other) {
             expr( randomUUID().toString(), other, temporalPredicate );
+            getPrototype().setAsEvent(true);
+            other.getPrototype().setAsEvent(true);
             return this;
         }
 
