@@ -138,6 +138,7 @@ If you have not done so on this machine, you need to:
 * Install Git and configure your GitHub access
 * Install Java SDK (OpenJDK recommended)
 * For Native Image, follow Quarkus instructions at [GraalVM](https://quarkus.io/guides/building-native-image)
+* On MAC, check [Setup MAC for Native image build](./Develop_on_Mac.md) for further instructions.
 
 Docker is not strictly necessary, but it is a required to run some of the integration tests. 
 These tests can be skipped (see the [Build](#build) section), but we recommend to install it to run these tests locally.
