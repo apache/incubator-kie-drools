@@ -2,6 +2,8 @@ package org.optaplanner.examples.vehiclerouting.domain.location;
 
 import java.util.Map;
 
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -26,7 +28,7 @@ public class RoadLocation extends Location {
         super(id, latitude, longitude);
     }
 
-    @JsonSerialize(keyUsing = RoadLocationKeySerializer.class)
+    @JsonSerialize(keyUsing = KeySerializer.class)
     @JsonDeserialize(keyUsing = RoadLocationKeyDeserializer.class)
     public Map<RoadLocation, Double> getTravelDistanceMap() {
         return travelDistanceMap;

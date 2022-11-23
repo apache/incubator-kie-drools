@@ -4,17 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
-import org.optaplanner.examples.machinereassignment.persistence.MrMachineKeyDeserializer;
-import org.optaplanner.examples.machinereassignment.persistence.MrMachineKeySerializer;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@JsonIdentityInfo(scope = MrMachine.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public class MrMachine extends AbstractPersistableJackson implements Labeled {
 
     private MrNeighborhood neighborhood;
@@ -24,7 +23,7 @@ public class MrMachine extends AbstractPersistableJackson implements Labeled {
     private List<MrMachineCapacity> machineCapacityList;
 
     @JsonIdentityReference(alwaysAsId = true)
-    @JsonSerialize(keyUsing = MrMachineKeySerializer.class)
+    @JsonSerialize(keyUsing = KeySerializer.class)
     @JsonDeserialize(keyUsing = MrMachineKeyDeserializer.class)
     private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
 

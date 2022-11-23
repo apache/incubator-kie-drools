@@ -63,7 +63,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
         final Location newLocation;
         switch (getSolution().getDistanceType()) {
             case AIR_DISTANCE:
-                newLocation = new AirLocation();
+                newLocation = new AirLocation(nextLocationId, latitude, longitude);
                 break;
             case ROAD_DISTANCE:
                 logger.warn("Adding locations for a road distance dataset is not supported.");
@@ -75,10 +75,7 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
                 throw new IllegalStateException("The distanceType (" + getSolution().getDistanceType()
                         + ") is not implemented.");
         }
-        newLocation.setId(nextLocationId);
         nextLocationId++;
-        newLocation.setLongitude(longitude);
-        newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemChange((vehicleRoutingSolution, problemChangeDirector) -> {
             // A SolutionCloner does not clone problem fact lists (such as locationList)

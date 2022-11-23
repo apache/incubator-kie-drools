@@ -2,6 +2,7 @@ package org.optaplanner.examples.vehiclerouting.domain.location.segmented;
 
 import java.util.Map;
 
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
@@ -31,7 +32,7 @@ public class RoadSegmentLocation extends Location {
         super(id, latitude, longitude);
     }
 
-    @JsonSerialize(keyUsing = RoadSegmentLocationKeySerializer.class)
+    @JsonSerialize(keyUsing = KeySerializer.class)
     @JsonDeserialize(keyUsing = RoadSegmentLocationKeyDeserializer.class)
     public Map<RoadSegmentLocation, Double> getNearbyTravelDistanceMap() {
         return nearbyTravelDistanceMap;
@@ -41,7 +42,7 @@ public class RoadSegmentLocation extends Location {
         this.nearbyTravelDistanceMap = nearbyTravelDistanceMap;
     }
 
-    @JsonSerialize(keyUsing = HubSegmentLocationKeySerializer.class)
+    @JsonSerialize(keyUsing = KeySerializer.class)
     @JsonDeserialize(keyUsing = HubSegmentLocationKeyDeserializer.class)
     public Map<HubSegmentLocation, Double> getHubTravelDistanceMap() {
         return hubTravelDistanceMap;

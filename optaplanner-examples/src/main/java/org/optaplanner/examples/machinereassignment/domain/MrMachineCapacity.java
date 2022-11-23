@@ -1,12 +1,12 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(scope = MrMachineCapacity.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public class MrMachineCapacity extends AbstractPersistableJackson {
 
     private MrMachine machine;

@@ -160,10 +160,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 for (int i = 0; i < hubListSize; i++) {
                     String line = bufferedReader.readLine();
                     String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
-                    HubSegmentLocation location = new HubSegmentLocation();
-                    location.setId(Long.parseLong(lineTokens[0]));
-                    location.setLatitude(Double.parseDouble(lineTokens[1]));
-                    location.setLongitude(Double.parseDouble(lineTokens[2]));
+                    HubSegmentLocation location = new HubSegmentLocation(Long.parseLong(lineTokens[0]),
+                            Double.parseDouble(lineTokens[1]), Double.parseDouble(lineTokens[2]));
                     if (lineTokens.length >= 4) {
                         location.setName(lineTokens[3]);
                     }
@@ -176,25 +174,25 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
+                long id = Long.parseLong(lineTokens[0]);
+                double latitude = Double.parseDouble(lineTokens[1]);
+                double longitude = Double.parseDouble(lineTokens[2]);
                 Location location;
                 switch (distanceType) {
                     case AIR_DISTANCE:
-                        location = new AirLocation();
+                        location = new AirLocation(id, latitude, longitude);
                         break;
                     case ROAD_DISTANCE:
-                        location = new RoadLocation();
+                        location = new RoadLocation(id, latitude, longitude);
                         break;
                     case SEGMENTED_ROAD_DISTANCE:
-                        location = new RoadSegmentLocation();
+                        location = new RoadSegmentLocation(id, latitude, longitude);
                         break;
                     default:
                         throw new IllegalStateException("The distanceType (" + distanceType
                                 + ") is not implemented.");
 
                 }
-                location.setId(Long.parseLong(lineTokens[0]));
-                location.setLatitude(Double.parseDouble(lineTokens[1]));
-                location.setLongitude(Double.parseDouble(lineTokens[2]));
                 if (lineTokens.length >= 4) {
                     location.setName(lineTokens[3]);
                 }
@@ -377,10 +375,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
-                AirLocation location = new AirLocation();
-                location.setId((long) i);
-                location.setLatitude(Double.parseDouble(lineTokens[1]));
-                location.setLongitude(Double.parseDouble(lineTokens[2]));
+                AirLocation location = new AirLocation(i, Double.parseDouble(lineTokens[1]), Double.parseDouble(lineTokens[2]));
                 if (lineTokens.length >= 4) {
                     location.setName(lineTokens[3]);
                 }
@@ -441,10 +436,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             while (line != null && !line.trim().isEmpty()) {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
                 long id = Long.parseLong(lineTokens[0]);
-                AirLocation location = new AirLocation();
-                location.setId(id);
-                location.setLatitude(Double.parseDouble(lineTokens[1]));
-                location.setLongitude(Double.parseDouble(lineTokens[2]));
+                AirLocation location =
+                        new AirLocation(id, Double.parseDouble(lineTokens[1]), Double.parseDouble(lineTokens[2]));
                 locationList.add(location);
                 int demand = Integer.parseInt(lineTokens[3]);
                 long readyTime = Long.parseLong(lineTokens[4]) * 1000L;

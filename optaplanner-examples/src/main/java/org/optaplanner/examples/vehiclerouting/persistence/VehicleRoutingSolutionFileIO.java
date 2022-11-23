@@ -4,15 +4,14 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.optaplanner.examples.common.persistence.jackson.AbstractExampleSolutionFileIO;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
-import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.HubSegmentLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
-import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
-public class VehicleRoutingSolutionFileIO extends JacksonSolutionFileIO<VehicleRoutingSolution> {
+public class VehicleRoutingSolutionFileIO extends AbstractExampleSolutionFileIO<VehicleRoutingSolution> {
 
     public VehicleRoutingSolutionFileIO() {
         super(VehicleRoutingSolution.class);
@@ -47,12 +46,6 @@ public class VehicleRoutingSolutionFileIO extends JacksonSolutionFileIO<VehicleR
                     locationsById, RoadLocation::getId);
             roadLocation.setTravelDistanceMap(newTravelDistanceMap);
         }
-
-        // Customers and depots have locations as well.
-        vehicleRoutingSolution.getCustomerList()
-                .forEach(customer -> customer.setLocation(locationsById.get(customer.getLocation().getId())));
-        vehicleRoutingSolution.getDepotList()
-                .forEach(depot -> depot.setLocation(locationsById.get(depot.getLocation().getId())));
     }
 
     private void deduplicateRoadSegments(VehicleRoutingSolution vehicleRoutingSolution) {
@@ -86,13 +79,5 @@ public class VehicleRoutingSolutionFileIO extends JacksonSolutionFileIO<VehicleR
             roadSegmentLocation.setHubTravelDistanceMap(newHubTravelDistanceMap);
             roadSegmentLocation.setNearbyTravelDistanceMap(newNearbyTravelDistanceMap);
         }
-
-        // Customers and depots have locations as well.
-        var locationsById = vehicleRoutingSolution.getLocationList().stream()
-                .collect(Collectors.toMap(Location::getId, Function.identity()));
-        vehicleRoutingSolution.getCustomerList()
-                .forEach(customer -> customer.setLocation(locationsById.get(customer.getLocation().getId())));
-        vehicleRoutingSolution.getDepotList()
-                .forEach(depot -> depot.setLocation(locationsById.get(depot.getLocation().getId())));
     }
 }

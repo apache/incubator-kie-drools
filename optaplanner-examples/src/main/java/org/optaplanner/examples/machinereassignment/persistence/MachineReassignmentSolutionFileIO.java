@@ -2,11 +2,11 @@ package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
+import org.optaplanner.examples.common.persistence.jackson.AbstractExampleSolutionFileIO;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
-import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
-public class MachineReassignmentSolutionFileIO extends JacksonSolutionFileIO<MachineReassignment> {
+public class MachineReassignmentSolutionFileIO extends AbstractExampleSolutionFileIO<MachineReassignment> {
 
     public MachineReassignmentSolutionFileIO() {
         super(MachineReassignment.class);

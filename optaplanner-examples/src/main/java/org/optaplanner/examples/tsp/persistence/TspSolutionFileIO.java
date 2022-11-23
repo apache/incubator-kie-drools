@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.optaplanner.examples.common.persistence.jackson.AbstractExampleSolutionFileIO;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.RoadLocation;
-import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
-public class TspSolutionFileIO extends JacksonSolutionFileIO<TspSolution> {
+public final class TspSolutionFileIO extends AbstractExampleSolutionFileIO<TspSolution> {
 
     public TspSolutionFileIO() {
         super(TspSolution.class);

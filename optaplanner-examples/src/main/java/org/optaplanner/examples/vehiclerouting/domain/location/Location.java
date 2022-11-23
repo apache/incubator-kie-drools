@@ -1,10 +1,12 @@
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.HubSegmentLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -18,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = RoadSegmentLocation.class, name = "roadSegment")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class Location extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public abstract class Location extends AbstractPersistableJackson {
 
     protected String name = null;
     protected double latitude;

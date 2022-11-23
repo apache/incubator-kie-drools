@@ -1,6 +1,6 @@
 package org.optaplanner.examples.tsp.domain;
 
-import org.optaplanner.examples.common.persistence.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Visit.class, name = "visit"),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public interface Standstill {
 
     /**
