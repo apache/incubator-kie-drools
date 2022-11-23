@@ -5,27 +5,27 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-1.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-2.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-3.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-4.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-5.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-6.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-7.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-8.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-9.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/A-10.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-1.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-2.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-3.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-4.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-5.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-6.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-7.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-8.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-9.xml</inputSolutionFile>
-      <inputSolutionFile>data/projectjobscheduling/unsolved/B-10.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-1.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-2.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-3.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-4.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-5.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-6.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-7.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-8.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-9.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-10.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-1.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-2.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-3.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-4.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-5.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-6.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-7.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-8.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-9.json</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-10.json</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>

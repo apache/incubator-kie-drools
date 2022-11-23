@@ -2,13 +2,19 @@ package org.optaplanner.examples.projectjobscheduling.domain.resource;
 
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("PjsLocalResource")
 public class LocalResource extends Resource {
 
     private Project project;
     private boolean renewable;
+
+    public LocalResource() { // For Jackson.
+    }
+
+    public LocalResource(long id, Project project, boolean renewable) {
+        super(id, 0);
+        this.project = project;
+        this.renewable = renewable;
+    }
 
     public Project getProject() {
         return project;

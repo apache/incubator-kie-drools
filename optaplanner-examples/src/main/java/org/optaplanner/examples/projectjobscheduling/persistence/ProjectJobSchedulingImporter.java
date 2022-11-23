@@ -33,8 +33,8 @@ import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Schedule> {
 
     public static void main(String[] args) {
-        SolutionConverter<Schedule> converter = SolutionConverter.createImportConverter(
-                ProjectJobSchedulingApp.DATA_DIR_NAME, new ProjectJobSchedulingImporter(), Schedule.class);
+        SolutionConverter<Schedule> converter = SolutionConverter.createImportConverter(ProjectJobSchedulingApp.DATA_DIR_NAME,
+                new ProjectJobSchedulingImporter(), new ProjectJobSchedulingSolutionFileIO());
         converter.convertAll();
     }
 
@@ -61,8 +61,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
 
         @Override
         public Schedule readSolution() throws IOException {
-            schedule = new Schedule();
-            schedule.setId(0L);
+            schedule = new Schedule(0L);
             readProjectList();
             readResourceList();
             for (Map.Entry<Project, File> entry : projectFileMap.entrySet()) {
@@ -86,10 +85,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
             List<Project> projectList = new ArrayList<>(projectListSize);
             projectFileMap = new LinkedHashMap<>(projectListSize);
             for (int i = 0; i < projectListSize; i++) {
-                Project project = new Project();
-                project.setId(projectId);
-                project.setReleaseDate(readIntegerValue());
-                project.setCriticalPathDuration(readIntegerValue());
+                Project project = new Project(projectId, readIntegerValue(), readIntegerValue());
                 File projectFile = new File(inputFile.getParentFile(), readStringValue());
                 if (!projectFile.exists()) {
                     throw new IllegalArgumentException("The projectFile (" + projectFile + ") does not exist.");
@@ -110,9 +106,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
             for (int i = 0; i < resourceListSize; i++) {
                 int capacity = Integer.parseInt(tokens[i]);
                 if (capacity != -1) {
-                    GlobalResource resource = new GlobalResource();
-                    resource.setId(resourceId);
-                    resource.setCapacity(capacity);
+                    GlobalResource resource = new GlobalResource(resourceId, capacity);
                     resourceList.add(resource);
                     resourceId++;
                 }
@@ -198,18 +192,12 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 List<LocalResource> localResourceList = new ArrayList<>(
                         globalResourceListSize + renewableLocalResourceSize + nonrenewableLocalResourceSize);
                 for (int i = 0; i < renewableLocalResourceSize; i++) {
-                    LocalResource localResource = new LocalResource();
-                    localResource.setId(resourceId);
-                    localResource.setProject(project);
-                    localResource.setRenewable(true);
+                    LocalResource localResource = new LocalResource(resourceId, project, true);
                     resourceId++;
                     localResourceList.add(localResource);
                 }
                 for (int i = 0; i < nonrenewableLocalResourceSize; i++) {
-                    LocalResource localResource = new LocalResource();
-                    localResource.setId(resourceId);
-                    localResource.setProject(project);
-                    localResource.setRenewable(false);
+                    LocalResource localResource = new LocalResource(resourceId, project, false);
                     resourceId++;
                     localResourceList.add(localResource);
                 }
@@ -239,9 +227,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 readConstantLine("jobnr\\. +\\#modes +\\#successors +successors");
                 List<Job> jobList = new ArrayList<>(jobListSize);
                 for (int i = 0; i < jobListSize; i++) {
-                    Job job = new Job();
-                    job.setId(jobId);
-                    job.setProject(project);
+                    Job job = new Job(jobId, project);
                     if (i == 0) {
                         job.setJobType(JobType.SOURCE);
                     } else if (i == jobListSize - 1) {
@@ -268,9 +254,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                     int executionModeListSize = Integer.parseInt(tokens[1]);
                     List<ExecutionMode> executionModeList = new ArrayList<>(executionModeListSize);
                     for (int j = 0; j < executionModeListSize; j++) {
-                        ExecutionMode executionMode = new ExecutionMode();
-                        executionMode.setId(executionModeId);
-                        executionMode.setJob(job);
+                        ExecutionMode executionMode = new ExecutionMode(executionModeId, job);
                         executionModeList.add(executionMode);
                         executionModeId++;
                     }
@@ -319,17 +303,11 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                         for (int k = 0; k < resourceSize; k++) {
                             int requirement = Integer.parseInt(tokens[(first ? 3 : 2) + k]);
                             if (requirement != 0) {
-                                ResourceRequirement resourceRequirement = new ResourceRequirement();
-                                resourceRequirement.setId(resourceRequirementId);
-                                resourceRequirement.setExecutionMode(executionMode);
-                                Resource resource;
-                                if (k < globalResourceListSize) {
-                                    resource = schedule.getResourceList().get(k);
-                                } else {
-                                    resource = project.getLocalResourceList().get(k - globalResourceListSize);
-                                }
-                                resourceRequirement.setResource(resource);
-                                resourceRequirement.setRequirement(requirement);
+                                Resource resource = (k < globalResourceListSize)
+                                        ? schedule.getResourceList().get(k)
+                                        : project.getLocalResourceList().get(k - globalResourceListSize);
+                                ResourceRequirement resourceRequirement =
+                                        new ResourceRequirement(resourceRequirementId, executionMode, resource, requirement);
                                 resourceRequirementList.add(resourceRequirement);
                                 resourceRequirementId++;
                             }
@@ -395,9 +373,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
             Map<Project, Allocation> projectToSourceAllocationMap = new HashMap<>(projectListSize);
             Map<Project, Allocation> projectToSinkAllocationMap = new HashMap<>(projectListSize);
             for (Job job : jobList) {
-                Allocation allocation = new Allocation();
-                allocation.setId(job.getId());
-                allocation.setJob(job);
+                Allocation allocation = new Allocation(job.getId(), job);
                 allocation.setPredecessorAllocationList(new ArrayList<>(job.getSuccessorJobList().size()));
                 allocation.setSuccessorAllocationList(new ArrayList<>(job.getSuccessorJobList().size()));
                 // Uninitialized allocations take no time, but don't break the predecessorsDoneDate cascade to sink.

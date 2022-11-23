@@ -2,19 +2,31 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("PjsProject")
-public class Project extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Project extends AbstractPersistableJackson implements Labeled {
 
     private int releaseDate;
     private int criticalPathDuration;
 
     private List<LocalResource> localResourceList;
     private List<Job> jobList;
+
+    public Project() { // For Jackson.
+    }
+
+    public Project(long id, int releaseDate, int criticalPathDuration) {
+        super(id);
+        this.releaseDate = releaseDate;
+        this.criticalPathDuration = criticalPathDuration;
+    }
 
     public int getReleaseDate() {
         return releaseDate;
@@ -52,10 +64,12 @@ public class Project extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getCriticalPathEndDate() {
         return releaseDate + criticalPathDuration;
     }
 
+    @Override
     public String getLabel() {
         return "Project " + id;
     }

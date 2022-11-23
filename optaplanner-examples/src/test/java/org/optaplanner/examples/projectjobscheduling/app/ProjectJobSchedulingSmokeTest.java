@@ -9,7 +9,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 class ProjectJobSchedulingSmokeTest extends SolverSmokeTest<Schedule, HardMediumSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/projectjobscheduling/unsolved/A-4.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/projectjobscheduling/unsolved/A-4.json";
 
     @Override
     protected ProjectJobSchedulingApp createCommonApp() {

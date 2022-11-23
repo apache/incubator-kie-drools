@@ -8,17 +8,20 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionModeStrengthWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.NotSourceOrSinkAllocationFilter;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(pinningFilter = NotSourceOrSinkAllocationFilter.class)
-@XStreamAlias("PjsAllocation")
-public class Allocation extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Allocation extends AbstractPersistableJackson implements Labeled {
 
     private Job job;
 
@@ -33,6 +36,14 @@ public class Allocation extends AbstractPersistable {
 
     // Shadow variables
     private Integer predecessorsDoneDate;
+
+    public Allocation() { // For Jackson.
+    }
+
+    public Allocation(long id, Job job) {
+        super(id);
+        this.job = job;
+    }
 
     public Job getJob() {
         return job;
@@ -108,6 +119,7 @@ public class Allocation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public Integer getStartDate() {
         if (predecessorsDoneDate == null) {
             return null;
@@ -115,6 +127,7 @@ public class Allocation extends AbstractPersistable {
         return predecessorsDoneDate + (delay == null ? 0 : delay);
     }
 
+    @JsonIgnore
     public Integer getEndDate() {
         if (predecessorsDoneDate == null) {
             return null;
@@ -123,18 +136,22 @@ public class Allocation extends AbstractPersistable {
                 + (executionMode == null ? 0 : executionMode.getDuration());
     }
 
+    @JsonIgnore
     public Project getProject() {
         return job.getProject();
     }
 
+    @JsonIgnore
     public int getProjectCriticalPathEndDate() {
         return job.getProject().getCriticalPathEndDate();
     }
 
+    @JsonIgnore
     public JobType getJobType() {
         return job.getJobType();
     }
 
+    @Override
     public String getLabel() {
         return "Job " + job.getId();
     }
@@ -144,11 +161,13 @@ public class Allocation extends AbstractPersistable {
     // ************************************************************************
 
     @ValueRangeProvider(id = "executionModeRange")
+    @JsonIgnore
     public List<ExecutionMode> getExecutionModeRange() {
         return job.getExecutionModeList();
     }
 
     @ValueRangeProvider(id = "delayRange")
+    @JsonIgnore
     public CountableValueRange<Integer> getDelayRange() {
         return ValueRangeFactory.createIntValueRange(0, 500);
     }

@@ -1,16 +1,28 @@
 package org.optaplanner.examples.projectjobscheduling.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("PjsResourceRequirement")
-public class ResourceRequirement extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class ResourceRequirement extends AbstractPersistableJackson {
 
     private ExecutionMode executionMode;
     private Resource resource;
     private int requirement;
+
+    public ResourceRequirement() { // For Jackson.
+    }
+
+    public ResourceRequirement(long id, ExecutionMode executionMode, Resource resource, int requirement) {
+        super(id);
+        this.executionMode = executionMode;
+        this.resource = resource;
+        this.requirement = requirement;
+    }
 
     public ExecutionMode getExecutionMode() {
         return executionMode;
@@ -40,6 +52,7 @@ public class ResourceRequirement extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public boolean isResourceRenewable() {
         return resource.isRenewable();
     }
