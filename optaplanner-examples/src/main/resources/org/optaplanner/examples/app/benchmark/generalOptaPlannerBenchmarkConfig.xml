@@ -269,8 +269,8 @@
       </localSearch>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.json</inputSolutionFile>
     </problemBenchmarks>
   </solverBenchmark>
 </plannerBenchmark>

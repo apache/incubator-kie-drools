@@ -9,7 +9,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentExporter;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentXmlSolutionFileIO;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -43,7 +43,7 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
 
     @Override
     public SolutionFileIO<TravelingTournament> createSolutionFileIO() {
-        return new TravelingTournamentXmlSolutionFileIO();
+        return new TravelingTournamentSolutionFileIO();
     }
 
     @Override

@@ -19,7 +19,8 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
 
     public static void main(String[] args) {
         SolutionConverter<TravelingTournament> converter = SolutionConverter.createImportConverter(
-                TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter(), TravelingTournament.class);
+                TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter(),
+                new TravelingTournamentSolutionFileIO());
         converter.convertAll();
     }
 
@@ -59,9 +60,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
         private void readTeamList(TravelingTournament travelingTournament, int n) throws IOException {
             List<Team> teamList = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                Team team = new Team();
-                team.setId((long) i);
-                team.setName(bufferedReader.readLine());
+                Team team = new Team(i, bufferedReader.readLine());
                 team.setDistanceToTeamMap(new HashMap<>());
                 teamList.add(team);
             }
@@ -89,9 +88,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
             int daySize = (n - 1) * 2; // Play vs each team (except itself) twice (home and away)
             Day previousDay = null;
             for (int i = 0; i < daySize; i++) {
-                Day day = new Day();
-                day.setId((long) i);
-                day.setIndex(i);
+                Day day = new Day(i);
                 dayList.add(day);
                 if (previousDay != null) {
                     previousDay.setNextDay(day);
@@ -113,11 +110,8 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
                     int distance = outerDistanceList.get(i).get(j);
                     homeTeam.getDistanceToTeamMap().put(awayTeam, distance);
                     if (i != j) {
-                        Match match = new Match();
-                        match.setId(matchId);
+                        Match match = new Match(matchId, homeTeam, awayTeam);
                         matchId++;
-                        match.setHomeTeam(homeTeam);
-                        match.setAwayTeam(awayTeam);
                         matchList.add(match);
                     }
                     j++;

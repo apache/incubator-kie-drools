@@ -2,18 +2,24 @@ package org.optaplanner.examples.travelingtournament.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningEntity
-@XStreamAlias("TtpMatch")
-public class Match extends AbstractPersistable {
+public class Match extends AbstractPersistableJackson {
 
     private Team homeTeam;
     private Team awayTeam;
 
     private Day day;
+
+    public Match() { // For Jackson.
+    }
+
+    public Match(long id, Team homeTeam, Team awayTeam) {
+        super(id);
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+    }
 
     public Team getHomeTeam() {
         return homeTeam;

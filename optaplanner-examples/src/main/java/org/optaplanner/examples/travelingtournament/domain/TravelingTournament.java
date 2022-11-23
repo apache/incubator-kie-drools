@@ -9,13 +9,10 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningSolution
-@XStreamAlias("TravelingTournament")
 public class TravelingTournament extends AbstractPersistable {
 
     private List<Day> dayList;
@@ -23,7 +20,6 @@ public class TravelingTournament extends AbstractPersistable {
 
     private List<Match> matchList;
 
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     @ValueRangeProvider(id = "dayRange")
@@ -67,6 +63,7 @@ public class TravelingTournament extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getN() {
         return teamList.size();
     }

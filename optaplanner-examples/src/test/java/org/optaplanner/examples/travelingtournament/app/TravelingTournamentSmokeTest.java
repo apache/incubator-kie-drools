@@ -9,7 +9,7 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 class TravelingTournamentSmokeTest extends SolverSmokeTest<TravelingTournament, HardSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/travelingtournament/unsolved/1-nl10.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/travelingtournament/unsolved/1-nl10.json";
 
     @Override
     protected TravelingTournamentApp createCommonApp() {

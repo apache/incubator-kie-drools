@@ -2,15 +2,33 @@ package org.optaplanner.examples.travelingtournament.domain;
 
 import java.util.Map;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@XStreamAlias("TtpTeam")
-public class Team extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Team extends AbstractPersistableJackson implements Labeled {
 
     private String name;
     private Map<Team, Integer> distanceToTeamMap;
+
+    public Team() { // For Jackson.
+    }
+
+    public Team(long id) {
+        super(id);
+    }
+
+    public Team(long id, String name) {
+        this(id);
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -20,6 +38,8 @@ public class Team extends AbstractPersistable {
         this.name = name;
     }
 
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = TeamKeyDeserializer.class)
     public Map<Team, Integer> getDistanceToTeamMap() {
         return distanceToTeamMap;
     }
@@ -28,10 +48,12 @@ public class Team extends AbstractPersistable {
         this.distanceToTeamMap = distanceToTeamMap;
     }
 
+    @JsonIgnore
     public int getDistance(Team other) {
         return distanceToTeamMap.get(other);
     }
 
+    @Override
     public String getLabel() {
         return name;
     }
