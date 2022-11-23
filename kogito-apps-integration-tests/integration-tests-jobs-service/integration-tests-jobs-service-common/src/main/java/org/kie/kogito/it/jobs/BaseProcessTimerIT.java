@@ -27,6 +27,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.kie.kogito.test.TestUtils.assertJobsAndProcessOnDataIndex;
 
 public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
 
@@ -42,11 +43,16 @@ public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
     //Timers Tests
     @Test
     public void testTimers() {
-        String id = createTimer(new RequestPayload("PT02S"), TIMERS);
+        String id = createTimer(new RequestPayload("PT01S"), TIMERS);
         Object id2 = getTimerById(id, TIMERS);
         assertThat(id).isEqualTo(id2);
         await().atMost(TIMEOUT)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
+        assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS, id, "COMPLETED", "EXECUTED", TIMEOUT);
+    }
+
+    public String dataIndexUrl() {
+        return null;
     }
 
     @Test
@@ -55,6 +61,7 @@ public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
         Object id2 = deleteTimer(id, TIMERS);
         assertThat(id).isEqualTo(id2);
         getTimerWithStatusCode(id, 404, TIMERS);
+        assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS, id, "ABORTED", "CANCELED", TIMEOUT);
     }
 
     //Cycle Timers Tests
@@ -64,25 +71,31 @@ public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
         String id2 = getTimerById(id, TIMERS_CYCLE);
         assertThat(id).isEqualTo(id2);
         await().atMost(TIMEOUT)
-                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
+                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_CYCLE));
+        assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS_CYCLE, id, "COMPLETED", "EXECUTED", TIMEOUT);
     }
 
     @Test
     public void testDeleteTimerCycle() {
-        String id = createTimer(new RequestPayload("R20/PT1S"), TIMERS_CYCLE);
+        String id = createTimer(new RequestPayload("R20/PT10S"), TIMERS_CYCLE);
         String id2 = getTimerById(id, TIMERS_CYCLE);
         assertThat(id).isEqualTo(id2);
         deleteTimer(id, TIMERS_CYCLE);
+        await().atMost(TIMEOUT)
+                .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_CYCLE));
+        await().atMost(TIMEOUT)
+                .untilAsserted(() -> assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS_CYCLE, id, "ABORTED", "CANCELED", TIMEOUT));
     }
 
     //Boundary Timers Tests
     @Test
     public void testBoundaryTimersOnTask() {
-        String id = createTimer(new RequestPayload("PT02S"), TIMERS_ON_TASK);
+        String id = createTimer(new RequestPayload("PT01S"), TIMERS_ON_TASK);
         String id2 = getTimerById(id, TIMERS_ON_TASK);
         assertThat(id).isEqualTo(id2);
         await().atMost(TIMEOUT)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_ON_TASK));
+        assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS_ON_TASK, id, "COMPLETED", "EXECUTED", TIMEOUT);
     }
 
     @Test
@@ -91,6 +104,7 @@ public abstract class BaseProcessTimerIT implements JobServiceHealthAware {
         String id2 = getTimerById(id, TIMERS_ON_TASK);
         assertThat(id).isEqualTo(id2);
         deleteTimer(id, TIMERS_ON_TASK);
+        assertJobsAndProcessOnDataIndex(dataIndexUrl(), TIMERS_ON_TASK, id, "ABORTED", "CANCELED", TIMEOUT);
     }
 
     private ValidatableResponse getTimerWithStatusCode(String id, int code, String path) {

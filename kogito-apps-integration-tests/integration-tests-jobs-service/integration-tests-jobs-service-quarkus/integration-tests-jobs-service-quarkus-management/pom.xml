@@ -17,13 +17,26 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-health</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <configuration>
+          <skipOriginalJarRename>true</skipOriginalJarRename>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -37,5 +50,4 @@
       </resource>
     </resources>
   </build>
-
 </project>

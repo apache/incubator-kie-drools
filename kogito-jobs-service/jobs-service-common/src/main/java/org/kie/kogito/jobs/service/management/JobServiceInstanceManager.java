@@ -93,7 +93,7 @@ public class JobServiceInstanceManager {
         //background task for heartbeat will be started when become leader
         heartbeat = vertx.periodicStream(TimeUnit.SECONDS.toMillis(heardBeatIntervalInSeconds))
                 .handler(t -> heartbeat(currentInfo.get())
-                        .subscribe().with(i -> LOGGER.info("Heartbeat {}", currentInfo.get()),
+                        .subscribe().with(i -> LOGGER.debug("Heartbeat {}", currentInfo.get()),
                                 ex -> LOGGER.error("Error on heartbeat {}", currentInfo.get(), ex)))
                 .pause();
 

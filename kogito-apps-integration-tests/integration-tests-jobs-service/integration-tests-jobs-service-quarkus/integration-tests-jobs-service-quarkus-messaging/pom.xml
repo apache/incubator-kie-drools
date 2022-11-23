@@ -17,10 +17,22 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-jobs-messaging</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-events-process</artifactId>
+    </dependency>
+    <!-- Used to enable the proto generation set in the data-index -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-persistence-filesystem</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-health</artifactId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+      <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -36,5 +48,41 @@
         </includes>
       </resource>
     </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <configuration>
+          <skipOriginalJarRename>true</skipOriginalJarRename>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-postgresql-file</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <sourceFile>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/data_index_create.sql</sourceFile>
+              <destinationFile>${project.basedir}/target/classes/data_index_postgresql_create.sql</destinationFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

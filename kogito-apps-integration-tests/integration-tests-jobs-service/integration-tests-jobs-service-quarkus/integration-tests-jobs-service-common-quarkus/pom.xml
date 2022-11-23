@@ -5,9 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.kie.kogito</groupId>
     <artifactId>integration-tests-jobs-service</artifactId>
+    <groupId>org.kie.kogito</groupId>
     <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
@@ -20,6 +21,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>integration-tests-data-index-service-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-jobs-service-common</artifactId>
@@ -39,4 +45,28 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*Base*IT*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

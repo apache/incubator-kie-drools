@@ -18,10 +18,6 @@
       <artifactId>kogito-addons-quarkus-jobs-knative-eventing</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-health</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
       <scope>test</scope>
@@ -29,6 +25,23 @@
   </dependencies>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.io.quarkus}</version>
+        <configuration>
+          <skipOriginalJarRename>true</skipOriginalJarRename>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

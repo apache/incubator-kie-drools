@@ -123,6 +123,9 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <skip>${skip.springboot}</skip>
+          <systemPropertyVariables>
+            <container.image.jobs-service>org.kie.kogito/jobs-service-common:${project.version}</container.image.jobs-service>
+          </systemPropertyVariables>
         </configuration>
         <executions>
           <execution>

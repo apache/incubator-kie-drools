@@ -229,7 +229,6 @@ public class ScheduledJob extends Job {
             instance.retries = retries;
             instance.status = status;
             instance.lastUpdate = getLastUpdate();
-            instance.executionResponse = executionResponse;
             instance.executionCounter = executionCounter;
             instance.executionResponse = executionResponse;
             return instance;

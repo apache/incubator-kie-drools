@@ -16,7 +16,6 @@
 
   <modules>
     <module>integration-tests-jobs-service-common</module>
-    <module>integration-tests-jobs-service-common-quarkus</module>
     <module>integration-tests-jobs-service-quarkus</module>
     <module>integration-tests-jobs-service-springboot</module>
   </modules>
@@ -33,6 +32,12 @@
         <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -40,7 +45,7 @@
     <!-- ensure jobs-service module was built, but not added in the classpath -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-service-common</artifactId>
+      <artifactId>jobs-service</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>provided</scope>
@@ -53,28 +58,34 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <!-- overriding parent configuration because quarkus.http.test-port should not be set -->
-        <configuration combine.self="override">
-          <includes>
-            <include>${failsafe.include}</include>
-          </includes>
-          <excludes>
-            <exclude>${failsafe.exclude}</exclude>
-          </excludes>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-            <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
-            <container.image.kafka>${container.image.kafka}</container.image.kafka>
-          </systemPropertyVariables>
-          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <profiles>
+    <profile>
+      <id>postgresql</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <container.image.jobs-service>org.kie.kogito/jobs-service-postgresql:${project.version}</container.image.jobs-service>
+        <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
+      </properties>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                <container.image.kafka>${container.image.kafka}</container.image.kafka>
+                <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
+                <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

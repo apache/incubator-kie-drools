@@ -112,7 +112,7 @@ public class ScheduledJobAdapter {
                         .<Trigger> map(interval -> new IntervalTrigger(0l,
                                 toDate(scheduledJob.getExpirationTime()),
                                 null,
-                                scheduledJob.getRepeatLimit() + 1, //IntervalTrigger uses repeatCount >= repeatLimit
+                                scheduledJob.getRepeatLimit(),
                                 0,
                                 interval,
                                 null,

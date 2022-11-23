@@ -84,10 +84,9 @@ class HttpJobExecutorTest {
                         .id(JOB_ID)
                         .recipient(new Recipient.HTTPRecipient(ENDPOINT))
                         .trigger(ScheduledJobAdapter.intervalTrigger(DateUtil.now(), 10, 1))
-                        .executionCounter(1).build();
-
+                        .build();
         Map queryParams = assertExecuteAndReturnQueryParams(request, params, scheduledJob, false);
-        assertThat(queryParams).hasSize(1).containsEntry("limit", "9");
+        assertThat(queryParams).hasSize(1).containsEntry("limit", "8");//repeatCount is init in 1
     }
 
     private Map assertExecuteAndReturnQueryParams(@Mock HttpRequest<Buffer> request, @Mock MultiMap params,

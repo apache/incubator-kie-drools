@@ -48,6 +48,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
@@ -61,6 +65,12 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>integration-tests-jobs-service-common-quarkus</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -81,40 +91,9 @@
   </dependencies>
 
   <modules>
+    <module>integration-tests-jobs-service-common-quarkus</module>
     <module>integration-tests-jobs-service-quarkus-management</module>
     <module>integration-tests-jobs-service-quarkus-messaging</module>
     <module>integration-tests-jobs-service-quarkus-knative-eventing</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${version.io.quarkus}</version>
-        <configuration>
-          <skipOriginalJarRename>true</skipOriginalJarRename>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

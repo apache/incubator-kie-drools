@@ -143,7 +143,7 @@ public class HttpJobExecutor implements JobExecutor {
     private String getLimit(JobDetails job) {
         return Optional.ofNullable(job.getTrigger())
                 .filter(IntervalTrigger.class::isInstance)
-                .map(interval -> getRepeatableJobCountDown(job))
+                .map(limit -> getRepeatableJobCountDown(job))
                 .map(String::valueOf)
                 .orElse(null);
     }
@@ -158,7 +158,7 @@ public class HttpJobExecutor implements JobExecutor {
 
     private int getRepeatableJobCountDown(JobDetails job) {
         IntervalTrigger trigger = (IntervalTrigger) job.getTrigger();
-        return trigger.getRepeatLimit() - trigger.getRepeatCount();
+        return trigger.getRepeatLimit() - trigger.getRepeatCount() - 1;//since repeatCount is init with 1
     }
 
     WebClient getClient() {
