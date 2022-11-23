@@ -1,11 +1,8 @@
 package org.optaplanner.examples.tennis.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("TennisUnavailabilityPenalty")
-public class UnavailabilityPenalty extends AbstractPersistable {
+public class UnavailabilityPenalty extends AbstractPersistableJackson {
 
     private Team team;
     private Day day;

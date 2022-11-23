@@ -3,13 +3,10 @@ package org.optaplanner.examples.tennis.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@PlanningEntity()
-@XStreamAlias("TennisTeamAssignment")
-public class TeamAssignment extends AbstractPersistable {
+@PlanningEntity
+public class TeamAssignment extends AbstractPersistableJackson {
 
     private Day day;
     private int indexInDay;

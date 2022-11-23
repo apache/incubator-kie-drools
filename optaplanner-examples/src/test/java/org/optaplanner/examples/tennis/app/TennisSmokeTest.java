@@ -9,7 +9,7 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 
 class TennisSmokeTest extends SolverSmokeTest<TennisSolution, HardMediumSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/tennis/unsolved/munich-7teams.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/tennis/unsolved/munich-7teams.json";
 
     @Override
     protected TennisApp createCommonApp() {

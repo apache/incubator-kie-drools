@@ -2,7 +2,7 @@ package org.optaplanner.examples.tennis.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
-import org.optaplanner.examples.tennis.persistence.TennisXmlSolutionFileIO;
+import org.optaplanner.examples.tennis.persistence.TennisSolutionFileIO;
 import org.optaplanner.examples.tennis.swingui.TennisPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -33,7 +33,7 @@ public class TennisApp extends CommonApp<TennisSolution> {
 
     @Override
     public SolutionFileIO<TennisSolution> createSolutionFileIO() {
-        return new TennisXmlSolutionFileIO();
+        return new TennisSolutionFileIO();
     }
 
 }

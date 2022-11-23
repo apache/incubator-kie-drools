@@ -8,13 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningSolution
-@XStreamAlias("TennisSolution")
-public class TennisSolution extends AbstractPersistable {
+public class TennisSolution extends AbstractPersistableJackson {
 
     private List<Team> teamList;
     private List<Day> dayList;
@@ -23,6 +20,13 @@ public class TennisSolution extends AbstractPersistable {
     private List<TeamAssignment> teamAssignmentList;
 
     private HardMediumSoftScore score;
+
+    public TennisSolution() { // For Jackson.
+    }
+
+    public TennisSolution(long id) {
+        super(id);
+    }
 
     @ValueRangeProvider(id = "teamRange")
     @ProblemFactCollectionProperty

@@ -1,11 +1,13 @@
 package org.optaplanner.examples.tennis.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("TennisDay")
-public class Day extends AbstractPersistable {
+@JsonIdentityInfo(scope = Day.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Day extends AbstractPersistableJackson implements Labeled {
 
     private int dateIndex;
 
@@ -25,6 +27,7 @@ public class Day extends AbstractPersistable {
         this.dateIndex = dateIndex;
     }
 
+    @Override
     public String getLabel() {
         return "day " + dateIndex;
     }

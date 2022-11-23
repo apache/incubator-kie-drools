@@ -15,7 +15,6 @@ import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TennisGenerator extends LoggingMain {
 
@@ -23,24 +22,22 @@ public class TennisGenerator extends LoggingMain {
         new TennisGenerator().generate();
     }
 
-    protected final SolutionFileIO<TennisSolution> solutionFileIO;
+    protected final SolutionFileIO<TennisSolution> solutionFileIO = new TennisSolutionFileIO();
     protected final File outputDir;
 
     public TennisGenerator() {
-        solutionFileIO = new XStreamSolutionFileIO<>(TennisSolution.class);
-        outputDir = new File(CommonApp.determineDataDir(TennisApp.DATA_DIR_NAME), "unsolved");
+        this.outputDir = new File(CommonApp.determineDataDir(TennisApp.DATA_DIR_NAME), "unsolved");
     }
 
     public void generate() {
-        File outputFile = new File(outputDir, "munich-7teams.xml");
+        File outputFile = new File(outputDir, "munich-7teams.json");
         TennisSolution tennisSolution = createTennisSolution();
         solutionFileIO.write(tennisSolution, outputFile);
         logger.info("Saved: {}", outputFile);
     }
 
     public TennisSolution createTennisSolution() {
-        TennisSolution tennisSolution = new TennisSolution();
-        tennisSolution.setId(0L);
+        TennisSolution tennisSolution = new TennisSolution(0L);
 
         List<Team> teamList = new ArrayList<>();
         teamList.add(new Team(0L, "Micha"));
