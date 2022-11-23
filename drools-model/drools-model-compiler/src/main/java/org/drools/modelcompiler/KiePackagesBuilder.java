@@ -1220,7 +1220,9 @@ public class KiePackagesBuilder {
     private ObjectType getPrototypeObjectType( Prototype prototype ) {
         return objectTypeCache.computeIfAbsent( prototype.getFullName(), name -> {
             KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( prototype.getPackage(), this::createKiePackage );
-            return new FactTemplateObjectType(prototypeToFactTemplate( prototype, pkg ));
+            FactTemplateObjectType objectType = new FactTemplateObjectType(prototypeToFactTemplate( prototype, pkg ));
+            objectType.setEvent(prototype.isEvent());
+            return objectType;
         } );
     }
 

@@ -35,6 +35,10 @@ public interface Prototype extends NamedModelItem {
         return field != null ? field.getExtractor() : p -> p.has(name) ? p.get(name) : UNDEFINED_VALUE;
     }
 
+    boolean isEvent();
+
+    Prototype setAsEvent(boolean event);
+
     interface Field {
         String getName();
 
