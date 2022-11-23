@@ -35,7 +35,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "7.67.x-blue"
   commit-message:
-    prefix: "[bot][7.67.x-blue]"
+    prefix: "[bot][blue]"
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
