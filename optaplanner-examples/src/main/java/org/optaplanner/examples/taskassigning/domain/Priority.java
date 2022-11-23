@@ -1,10 +1,13 @@
 package org.optaplanner.examples.taskassigning.domain;
 
-public enum Priority {
+import org.optaplanner.examples.common.swingui.components.Labeled;
+
+public enum Priority implements Labeled {
     MINOR,
     MAJOR,
     CRITICAL;
 
+    @Override
     public String getLabel() {
         switch (this) {
             case MINOR:

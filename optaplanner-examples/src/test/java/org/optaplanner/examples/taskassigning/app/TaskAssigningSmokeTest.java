@@ -9,7 +9,7 @@ import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
 class TaskAssigningSmokeTest extends SolverSmokeTest<TaskAssigningSolution, BendableScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/taskassigning/unsolved/50tasks-5employees.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/taskassigning/unsolved/50tasks-5employees.json";
 
     @Override
     protected TaskAssigningApp createCommonApp() {

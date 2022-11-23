@@ -9,14 +9,19 @@ import java.util.Set;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @PlanningEntity
-@XStreamAlias("TaEmployee")
-public class Employee extends AbstractPersistable implements Labeled {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Employee extends AbstractPersistableJackson implements Labeled {
 
     private String fullName;
 
@@ -59,6 +64,8 @@ public class Employee extends AbstractPersistable implements Labeled {
         return affinityMap;
     }
 
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = CustomerKeyDeserializer.class)
     public void setAffinityMap(Map<Customer, Affinity> affinityMap) {
         this.affinityMap = affinityMap;
     }
@@ -79,6 +86,7 @@ public class Employee extends AbstractPersistable implements Labeled {
      * @param customer never null
      * @return never null
      */
+    @JsonIgnore
     public Affinity getAffinity(Customer customer) {
         Affinity affinity = affinityMap.get(customer);
         if (affinity == null) {
@@ -87,6 +95,7 @@ public class Employee extends AbstractPersistable implements Labeled {
         return affinity;
     }
 
+    @JsonIgnore
     public Integer getEndTime() {
         return tasks.isEmpty() ? 0 : tasks.get(tasks.size() - 1).getEndTime();
     }
@@ -96,6 +105,7 @@ public class Employee extends AbstractPersistable implements Labeled {
         return fullName;
     }
 
+    @JsonIgnore
     public String getToolText() {
         StringBuilder toolText = new StringBuilder();
         toolText.append("<html><center><b>").append(fullName).append("</b><br/><br/>");

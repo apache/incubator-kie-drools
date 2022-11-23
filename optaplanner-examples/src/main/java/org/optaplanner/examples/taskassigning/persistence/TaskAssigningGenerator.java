@@ -25,7 +25,6 @@ import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 public class TaskAssigningGenerator extends LoggingMain {
 
@@ -110,7 +109,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     protected Random random;
 
     public TaskAssigningGenerator() {
-        solutionFileIO = new XStreamSolutionFileIO<>(TaskAssigningSolution.class);
+        solutionFileIO = new TaskAssigningSolutionFileIO();
         outputDir = new File(CommonApp.determineDataDir(TaskAssigningApp.DATA_DIR_NAME), "unsolved");
     }
 
@@ -119,7 +118,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         int taskTypeListSize = taskListSize / 5;
         int customerListSize = Math.min(taskTypeListSize, employeeListSize * 3);
         String fileName = determineFileName(taskListSize, employeeListSize);
-        File outputFile = new File(outputDir, fileName + ".xml");
+        File outputFile = new File(outputDir, fileName + ".json");
         TaskAssigningSolution solution = createTaskAssigningSolution(fileName,
                 taskListSize, skillListSize, employeeListSize, taskTypeListSize, customerListSize);
         solutionFileIO.write(solution, outputFile);
@@ -133,8 +132,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     public TaskAssigningSolution createTaskAssigningSolution(String fileName, int taskListSize, int skillListSize,
             int employeeListSize, int taskTypeListSize, int customerListSize) {
         random = new Random(37);
-        TaskAssigningSolution solution = new TaskAssigningSolution();
-        solution.setId(0L);
+        TaskAssigningSolution solution = new TaskAssigningSolution(0L);
 
         createSkillList(solution, skillListSize);
         createCustomerList(solution, customerListSize);
@@ -162,10 +160,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         List<Skill> skillList = new ArrayList<>(skillListSize);
         skillNameGenerator.predictMaximumSizeAndReset(skillListSize);
         for (int i = 0; i < skillListSize; i++) {
-            Skill skill = new Skill();
-            skill.setId((long) i);
             String skillName = skillNameGenerator.generateNextValue();
-            skill.setName(skillName);
+            Skill skill = new Skill(i, skillName);
             logger.trace("Created skill with skillName ({}).", skillName);
             skillList.add(skill);
         }
@@ -176,10 +172,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         List<Customer> customerList = new ArrayList<>(customerListSize);
         customerNameGenerator.predictMaximumSizeAndReset(customerListSize);
         for (int i = 0; i < customerListSize; i++) {
-            Customer customer = new Customer();
-            customer.setId((long) i);
             String customerName = customerNameGenerator.generateNextValue();
-            customer.setName(customerName);
+            Customer customer = new Customer(i, customerName);
             logger.trace("Created skill with customerName ({}).", customerName);
             customerList.add(customer);
         }
@@ -194,10 +188,8 @@ public class TaskAssigningGenerator extends LoggingMain {
         int skillListIndex = 0;
         employeeNameGenerator.predictMaximumSizeAndReset(employeeListSize);
         for (int i = 0; i < employeeListSize; i++) {
-            Employee employee = new Employee();
-            employee.setId((long) i);
             String fullName = employeeNameGenerator.generateNextValue();
-            employee.setFullName(fullName);
+            Employee employee = new Employee(i, fullName);
             int skillSetSize = SKILL_SET_SIZE_MINIMUM + random.nextInt(SKILL_SET_SIZE_MAXIMUM - SKILL_SET_SIZE_MINIMUM);
             if (skillSetSize > skillList.size()) {
                 skillSetSize = skillList.size();
@@ -226,10 +218,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         Set<String> codeSet = new LinkedHashSet<>(taskTypeListSize);
         taskTypeNameGenerator.predictMaximumSizeAndReset(taskTypeListSize);
         for (int i = 0; i < taskTypeListSize; i++) {
-            TaskType taskType = new TaskType();
-            taskType.setId((long) i);
             String title = taskTypeNameGenerator.generateNextValue();
-            taskType.setTitle(title);
             String code;
             switch (title.replaceAll("[^ ]", "").length() + 1) {
                 case 3:
@@ -252,8 +241,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                 code = code + codeSuffixNumber;
             }
             codeSet.add(code);
-            taskType.setCode(code);
-            taskType.setBaseDuration(
+            TaskType taskType = new TaskType(i, title, code,
                     BASE_DURATION_MINIMUM + random.nextInt(BASE_DURATION_MAXIMUM - BASE_DURATION_MINIMUM));
             Employee randomEmployee = employeeList.get(random.nextInt(employeeList.size()));
             ArrayList<Skill> randomSkillList = new ArrayList<>(randomEmployee.getSkillSet());
@@ -273,21 +261,16 @@ public class TaskAssigningGenerator extends LoggingMain {
         List<Task> taskList = new ArrayList<>(taskListSize);
         Map<TaskType, Integer> maxIndexInTaskTypeMap = new LinkedHashMap<>(taskTypeList.size());
         for (int i = 0; i < taskListSize; i++) {
-            Task task = new Task();
-            task.setId((long) i);
             TaskType taskType = taskTypeList.get(random.nextInt(taskTypeList.size()));
-            task.setTaskType(taskType);
             Integer indexInTaskType = maxIndexInTaskTypeMap.get(taskType);
             if (indexInTaskType == null) {
                 indexInTaskType = 1;
             } else {
                 indexInTaskType++;
             }
-            task.setIndexInTaskType(indexInTaskType);
             maxIndexInTaskTypeMap.put(taskType, indexInTaskType);
-            task.setCustomer(customerList.get(random.nextInt(customerList.size())));
-            task.setReadyTime(0);
-            task.setPriority(priorities[random.nextInt(priorities.length)]);
+            Task task = new Task(i, taskType, indexInTaskType, customerList.get(random.nextInt(customerList.size())), 0,
+                    priorities[random.nextInt(priorities.length)]);
             taskList.add(task);
         }
         solution.setTaskList(taskList);

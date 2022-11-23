@@ -152,7 +152,6 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             Priority[] priorities = Priority.values();
             List<Task> taskList = taskAssigningSolution.getTaskList();
             for (int i = 0; i < newTaskCount; i++) {
-                Task task = new Task();
                 TaskType taskType = taskTypeList.get(producingRandom.nextInt(taskTypeList.size()));
                 long nextTaskId = 0L;
                 int nextIndexInTaskType = 0;
@@ -166,14 +165,10 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                         }
                     }
                 }
-                task.setId(nextTaskId);
-                task.setTaskType(taskType);
-                task.setIndexInTaskType(nextIndexInTaskType);
-                task.setCustomer(customerList.get(producingRandom.nextInt(customerList.size())));
                 // Prevent the new task from being assigned retroactively
-                task.setReadyTime(readyTime);
-                task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
-
+                Task task = new Task(nextTaskId, taskType, nextIndexInTaskType,
+                        customerList.get(producingRandom.nextInt(customerList.size())), readyTime,
+                        priorities[producingRandom.nextInt(priorities.length)]);
                 problemChangeDirector.addEntity(task, taskList::add);
             }
         });

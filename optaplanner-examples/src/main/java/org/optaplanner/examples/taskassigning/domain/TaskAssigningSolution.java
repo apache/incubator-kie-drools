@@ -8,15 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.bendable.BendableScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningSolution
-@XStreamAlias("TaTaskAssigningSolution")
-public class TaskAssigningSolution extends AbstractPersistable {
+public class TaskAssigningSolution extends AbstractPersistableJackson {
 
     @ProblemFactCollectionProperty
     private List<Skill> skillList;
@@ -31,19 +26,22 @@ public class TaskAssigningSolution extends AbstractPersistable {
     @PlanningEntityCollectionProperty
     private List<Employee> employeeList;
 
-    @XStreamConverter(BendableScoreXStreamConverter.class)
     @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 4)
     private BendableScore score;
 
     /** Relates to {@link Task#getStartTime()}. */
     private int frozenCutoff; // In minutes
 
-    public TaskAssigningSolution() {
+    public TaskAssigningSolution() { // For Jackson.
+    }
+
+    public TaskAssigningSolution(long id) {
+        super(id);
     }
 
     public TaskAssigningSolution(long id, List<Skill> skillList, List<TaskType> taskTypeList,
             List<Customer> customerList, List<Employee> employeeList, List<Task> taskList) {
-        super(id);
+        this(id);
         this.skillList = skillList;
         this.taskTypeList = taskTypeList;
         this.customerList = customerList;

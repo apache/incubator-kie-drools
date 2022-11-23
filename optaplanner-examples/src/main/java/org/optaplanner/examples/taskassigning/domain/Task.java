@@ -3,15 +3,17 @@ package org.optaplanner.examples.taskassigning.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity
-@XStreamAlias("TaTask")
-public class Task extends AbstractPersistable implements Labeled {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Task extends AbstractPersistableJackson implements Labeled {
 
     private TaskType taskType;
     private int indexInTaskType;
@@ -98,6 +100,7 @@ public class Task extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getMissingSkillCount() {
         if (employee == null) {
             return 0;
@@ -116,15 +119,18 @@ public class Task extends AbstractPersistable implements Labeled {
      *
      * @return at least 1 minute
      */
+    @JsonIgnore
     public int getDuration() {
         Affinity affinity = getAffinity();
         return taskType.getBaseDuration() * affinity.getDurationMultiplier();
     }
 
+    @JsonIgnore
     public Affinity getAffinity() {
         return (employee == null) ? Affinity.NONE : employee.getAffinity(customer);
     }
 
+    @JsonIgnore
     public Integer getEndTime() {
         if (startTime == null) {
             return null;
@@ -132,10 +138,12 @@ public class Task extends AbstractPersistable implements Labeled {
         return startTime + getDuration();
     }
 
+    @JsonIgnore
     public String getCode() {
         return taskType + "-" + indexInTaskType;
     }
 
+    @JsonIgnore
     public String getTitle() {
         return taskType.getTitle();
     }
@@ -145,6 +153,7 @@ public class Task extends AbstractPersistable implements Labeled {
         return getCode() + ": " + taskType.getTitle();
     }
 
+    @JsonIgnore
     public String getToolText() {
         StringBuilder toolText = new StringBuilder();
         toolText.append("<html><center><b>").append(getLabel()).append("</b><br/>")

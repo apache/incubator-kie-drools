@@ -1,6 +1,8 @@
 package org.optaplanner.examples.taskassigning.domain;
 
-public enum Affinity {
+import org.optaplanner.examples.common.swingui.components.Labeled;
+
+public enum Affinity implements Labeled {
     NONE(4),
     LOW(3),
     MEDIUM(2),
@@ -16,6 +18,7 @@ public enum Affinity {
         return durationMultiplier;
     }
 
+    @Override
     public String getLabel() {
         switch (this) {
             case NONE:
