@@ -8,7 +8,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "main"
   commit-message:
-    prefix: "[dependabot][main]"
+    prefix: "[bot][main]"
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -17,7 +17,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "7.x"
   commit-message:
-    prefix: "[dependabot][7.x]"
+    prefix: "[bot][7.x]"
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -26,7 +26,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "7.67.x"
   commit-message:
-    prefix: "[dependabot][7.67.x]"
+    prefix: "[bot][7.67.x]"
 - package-ecosystem: maven
   directory: "/"
   schedule:
@@ -35,7 +35,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: "7.67.x-blue"
   commit-message:
-    prefix: "[dependabot][7.67.x-blue]"
+    prefix: "[bot][7.67.x-blue]"
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
