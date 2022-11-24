@@ -1,12 +1,18 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("BooleanContractLine")
 public class BooleanContractLine extends ContractLine {
 
     private boolean enabled;
     private int weight;
+
+    public BooleanContractLine() { // For Jackson.
+    }
+
+    public BooleanContractLine(long id, Contract contract, ContractLineType contractLineType, boolean enabled, int weight) {
+        super(id, contract, contractLineType);
+        this.enabled = enabled;
+        this.weight = weight;
+    }
 
     @Override
     public boolean isEnabled() {

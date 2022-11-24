@@ -1,15 +1,25 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("PatternContractLine")
-public class PatternContractLine extends AbstractPersistable {
+public class PatternContractLine extends AbstractPersistableJackson {
 
     private Contract contract;
     private Pattern pattern;
+
+    public PatternContractLine() { // For Jackson.
+    }
+
+    public PatternContractLine(long id) {
+        super(id);
+    }
+
+    public PatternContractLine(long id, Contract contract, Pattern pattern) {
+        super(id);
+        this.contract = contract;
+        this.pattern = pattern;
+    }
 
     public Contract getContract() {
         return contract;

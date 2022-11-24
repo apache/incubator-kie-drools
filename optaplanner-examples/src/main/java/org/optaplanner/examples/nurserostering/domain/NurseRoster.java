@@ -9,7 +9,7 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.contract.ContractLine;
 import org.optaplanner.examples.nurserostering.domain.contract.PatternContractLine;
@@ -18,16 +18,18 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @PlanningSolution
-@XStreamAlias("NurseRoster")
-public class NurseRoster extends AbstractPersistable {
+public class NurseRoster extends AbstractPersistableJackson {
 
     private String code;
+
+    public NurseRoster() { // For Jackson.
+    }
+
+    public NurseRoster(long id) {
+        super(id);
+    }
 
     @ProblemFactProperty
     private NurseRosterParametrization nurseRosterParametrization;
@@ -67,7 +69,6 @@ public class NurseRoster extends AbstractPersistable {
     private List<ShiftAssignment> shiftAssignmentList;
 
     @PlanningScore
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     public String getCode() {

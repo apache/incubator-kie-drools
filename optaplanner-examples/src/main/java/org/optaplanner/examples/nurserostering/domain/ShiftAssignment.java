@@ -5,18 +5,17 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
-@XStreamAlias("ShiftAssignment")
-public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
+public class ShiftAssignment extends AbstractPersistableJackson implements Comparable<ShiftAssignment> {
 
     private static final Comparator<Shift> COMPARATOR = Comparator.comparing(Shift::getShiftDate)
             .thenComparing(a -> a.getShiftType().getStartTimeString())
@@ -24,6 +23,15 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
 
     private Shift shift;
     private int indexInShift;
+
+    public ShiftAssignment() { // For Jackson.
+    }
+
+    public ShiftAssignment(long id, Shift shift, int indexInShift) {
+        super(id);
+        this.shift = shift;
+        this.indexInShift = indexInShift;
+    }
 
     // Planning variables: changes during planning, between score calculations.
     @PlanningVariable(valueRangeProviderRefs = { "employeeRange" }, strengthComparatorClass = EmployeeStrengthComparator.class)
@@ -57,22 +65,27 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public ShiftDate getShiftDate() {
         return shift.getShiftDate();
     }
 
+    @JsonIgnore
     public ShiftType getShiftType() {
         return shift.getShiftType();
     }
 
+    @JsonIgnore
     public int getShiftDateDayIndex() {
         return shift.getShiftDate().getDayIndex();
     }
 
+    @JsonIgnore
     public DayOfWeek getShiftDateDayOfWeek() {
         return shift.getShiftDate().getDayOfWeek();
     }
 
+    @JsonIgnore
     public Contract getContract() {
         if (employee == null) {
             return null;
@@ -80,6 +93,7 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
         return employee.getContract();
     }
 
+    @JsonIgnore
     public boolean isWeekend() {
         if (employee == null) {
             return false;
@@ -89,6 +103,7 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
         return weekendDefinition.isWeekend(dayOfWeek);
     }
 
+    @JsonIgnore
     public int getWeekendSundayIndex() {
         return shift.getShiftDate().getWeekendSundayIndex();
     }

@@ -25,6 +25,7 @@ public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution
     public JacksonSolutionFileIO(Class<Solution_> clazz, ObjectMapper mapper) {
         this.clazz = clazz;
         this.mapper = mapper;
+        mapper.findAndRegisterModules();
         mapper.registerModule(OptaPlannerJacksonModule.createModule());
     }
 

@@ -16,20 +16,20 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium04.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium05.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium02.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium03.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium04.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium05.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint02.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint03.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late02.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late03.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late04.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late05.json</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->

@@ -2,7 +2,9 @@ package org.optaplanner.examples.nurserostering.domain;
 
 import java.util.Map;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
@@ -10,18 +12,39 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@XStreamAlias("Employee")
-public class Employee extends AbstractPersistable implements Labeled, Comparable<Employee> {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Employee extends AbstractPersistableJackson implements Labeled, Comparable<Employee> {
 
     private String code;
     private String name;
     private Contract contract;
 
+    public Employee() { // For Jackson.
+    }
+
+    public Employee(long id, String code, String name, Contract contract) {
+        super(id);
+        this.code = code;
+        this.name = name;
+        this.contract = contract;
+    }
+
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = ShiftDateKeyDeserializer.class)
     private Map<ShiftDate, DayOffRequest> dayOffRequestMap;
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = ShiftDateKeyDeserializer.class)
     private Map<ShiftDate, DayOnRequest> dayOnRequestMap;
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = ShiftKeyDeserializer.class)
     private Map<Shift, ShiftOffRequest> shiftOffRequestMap;
+    @JsonSerialize(keyUsing = KeySerializer.class)
+    @JsonDeserialize(keyUsing = ShiftKeyDeserializer.class)
     private Map<Shift, ShiftOnRequest> shiftOnRequestMap;
 
     public String getCode() {
@@ -48,6 +71,7 @@ public class Employee extends AbstractPersistable implements Labeled, Comparable
         this.contract = contract;
     }
 
+    @JsonIgnore
     public int getWeekendLength() {
         return getContract().getWeekendLength();
     }

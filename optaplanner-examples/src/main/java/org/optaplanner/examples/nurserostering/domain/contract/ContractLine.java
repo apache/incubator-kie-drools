@@ -1,19 +1,33 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@XStreamAlias("ContractLine")
-@XStreamInclude({
-        BooleanContractLine.class,
-        MinMaxContractLine.class
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = BooleanContractLine.class, name = "boolean"),
+        @JsonSubTypes.Type(value = MinMaxContractLine.class, name = "minMax"),
 })
-public abstract class ContractLine extends AbstractPersistable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public abstract class ContractLine extends AbstractPersistableJackson {
 
     private Contract contract;
     private ContractLineType contractLineType;
+
+    protected ContractLine() { // For Jackson.
+    }
+
+    protected ContractLine(long id, Contract contract, ContractLineType contractLineType) {
+        super(id);
+        this.contract = contract;
+        this.contractLineType = contractLineType;
+    }
 
     public Contract getContract() {
         return contract;

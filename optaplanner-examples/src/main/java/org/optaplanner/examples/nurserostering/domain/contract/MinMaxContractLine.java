@@ -1,8 +1,7 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("MinMaxContractLine")
 public class MinMaxContractLine extends ContractLine {
 
     private boolean minimumEnabled;
@@ -12,6 +11,16 @@ public class MinMaxContractLine extends ContractLine {
     private boolean maximumEnabled;
     private int maximumValue;
     private int maximumWeight;
+
+    public MinMaxContractLine() { // For Jackson.
+    }
+
+    public MinMaxContractLine(long id, Contract contract, ContractLineType contractLineType, boolean minimumEnabled,
+            boolean maximumEnabled) {
+        super(id, contract, contractLineType);
+        this.minimumEnabled = minimumEnabled;
+        this.maximumEnabled = maximumEnabled;
+    }
 
     public boolean isViolated(int count) {
         return getViolationAmount(count) != 0;
@@ -76,6 +85,7 @@ public class MinMaxContractLine extends ContractLine {
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return minimumEnabled || maximumEnabled;
     }

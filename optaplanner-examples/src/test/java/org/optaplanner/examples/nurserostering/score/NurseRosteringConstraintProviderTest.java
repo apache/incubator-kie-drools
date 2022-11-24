@@ -46,12 +46,11 @@ class NurseRosteringConstraintProviderTest
     private final ThreadLocal<Map<Pair<Integer, ShiftType>, Shift>> indexShiftTypePairToShiftMap =
             ThreadLocal.withInitial(HashMap::new);
     private final ThreadLocal<Map<Integer, ShiftDate>> indexToShiftDateMap = ThreadLocal.withInitial(HashMap::new);
-    private final ShiftType dayShiftType = new ShiftType();
-    private final ShiftType nightShiftType = new ShiftType();
+    private final ShiftType dayShiftType = new ShiftType(idSupplier.get().getAndIncrement());
+    private final ShiftType nightShiftType = new ShiftType(idSupplier.get().getAndIncrement());
 
     @BeforeEach
     void setup() {
-        dayShiftType.setId(idSupplier.get().incrementAndGet());
         dayShiftType.setNight(false);
         dayShiftType.setStartTimeString("09:00");
         dayShiftType.setEndTimeString("17:00");
@@ -59,7 +58,6 @@ class NurseRosteringConstraintProviderTest
         dayShiftType.setIndex(0);
         dayShiftType.setDescription("Day Shift");
 
-        nightShiftType.setId(idSupplier.get().incrementAndGet());
         nightShiftType.setNight(true);
         nightShiftType.setStartTimeString("07:00");
         nightShiftType.setEndTimeString("04:00");
@@ -92,8 +90,8 @@ class NurseRosteringConstraintProviderTest
         private Integer maximumValue;
         private Integer minimumWeight;
         private Integer maximumWeight;
-        private ContractLineType contractLineType;
-        private WeekendDefinition weekendDefinition;
+        private final ContractLineType contractLineType;
+        private final WeekendDefinition weekendDefinition;
 
         public MinMaxContractBuilder(ContractLineType contractLineType) {
             this.contractLineType = contractLineType;
@@ -123,29 +121,24 @@ class NurseRosteringConstraintProviderTest
         }
 
         public Contract build() {
-            MinMaxContractLine contractLine = new MinMaxContractLine();
-            contractLine.setId(getNextId());
-            contractLine.setContractLineType(contractLineType);
+            long contractId = getNextId();
+            Contract contract =
+                    new Contract(contractId, "Contract - " + contractId, "Minimum/Maximum " + contractLineType + " Contract");
+            contract.setWeekendDefinition(weekendDefinition);
+
+            MinMaxContractLine contractLine =
+                    new MinMaxContractLine(getNextId(), contract, contractLineType, minimumValue != null, maximumValue != null);
             if (minimumValue != null) {
                 contractLine.setMinimumValue(minimumValue);
-                contractLine.setMinimumEnabled(true);
                 contractLine.setMinimumWeight(minimumWeight);
             }
             if (maximumValue != null) {
                 contractLine.setMaximumValue(maximumValue);
-                contractLine.setMaximumEnabled(true);
                 contractLine.setMaximumWeight(maximumWeight);
             }
 
-            Contract out = new Contract();
-            out.setId(getNextId());
-            out.setContractLineList(Collections.singletonList(contractLine));
-            contractLine.setContract(out);
-
-            out.setCode("Contract - " + out.getId());
-            out.setDescription("Minimum/Maximum " + contractLineType + " Contract");
-            out.setWeekendDefinition(weekendDefinition);
-            return out;
+            contract.setContractLineList(Collections.singletonList(contractLine));
+            return contract;
         }
     }
 
@@ -168,21 +161,15 @@ class NurseRosteringConstraintProviderTest
         }
 
         public Contract build() {
-            BooleanContractLine contractLine = new BooleanContractLine();
-            contractLine.setId(getNextId());
-            contractLine.setContractLineType(contractLineType);
-            contractLine.setWeight(weight);
-            contractLine.setEnabled(enabled);
+            long contractId = getNextId();
+            Contract contract =
+                    new Contract(contractId, "Contract - " + contractId, "Boolean " + contractLineType + " Contract");
+            contract.setWeekendDefinition(weekendDefinition);
 
-            Contract out = new Contract();
-            out.setId(getNextId());
-            out.setContractLineList(Collections.singletonList(contractLine));
-            contractLine.setContract(out);
-
-            out.setCode("Contract - " + out.getId());
-            out.setDescription("Boolean " + contractLineType + " Contract");
-            out.setWeekendDefinition(weekendDefinition);
-            return out;
+            BooleanContractLine contractLine =
+                    new BooleanContractLine(getNextId(), contract, contractLineType, enabled, weight);
+            contract.setContractLineList(Collections.singletonList(contractLine));
+            return contract;
         }
     }
 
@@ -190,21 +177,18 @@ class NurseRosteringConstraintProviderTest
         FreeBefore2DaysWithAWorkDayPattern freeBefore2DaysWithAWorkDayPattern;
         ShiftType2DaysPattern shiftType2DaysPattern;
         ShiftType3DaysPattern shiftType3DaysPattern;
-        private WeekendDefinition weekendDefinition = WeekendDefinition.SATURDAY_SUNDAY;
+        private final WeekendDefinition weekendDefinition = WeekendDefinition.SATURDAY_SUNDAY;
         int weight = 1;
 
         public PatternContractBuilder freeBefore2DaysWithAWorkDay(DayOfWeek workDay) {
-            freeBefore2DaysWithAWorkDayPattern = new FreeBefore2DaysWithAWorkDayPattern();
-            freeBefore2DaysWithAWorkDayPattern.setFreeDayOfWeek(workDay);
-            freeBefore2DaysWithAWorkDayPattern.setId(getNextId());
-            freeBefore2DaysWithAWorkDayPattern.setCode("Free Before 2 Days - " + workDay);
+            freeBefore2DaysWithAWorkDayPattern =
+                    new FreeBefore2DaysWithAWorkDayPattern(getNextId(), "Free Before 2 Days - " + workDay, workDay);
             return this;
         }
 
         public PatternContractBuilder shiftType2DaysPattern(ShiftType day0ShiftType, ShiftType day1ShiftType) {
-            shiftType2DaysPattern = new ShiftType2DaysPattern();
-            shiftType2DaysPattern.setId(getNextId());
-            shiftType2DaysPattern.setCode("Shift Type 2 Day Pattern - " + day0ShiftType + ", " + day1ShiftType);
+            shiftType2DaysPattern = new ShiftType2DaysPattern(getNextId(),
+                    "Shift Type 2 Day Pattern - " + day0ShiftType + ", " + day1ShiftType);
             shiftType2DaysPattern.setDayIndex0ShiftType(day0ShiftType);
             shiftType2DaysPattern.setDayIndex1ShiftType(day1ShiftType);
             return this;
@@ -212,10 +196,8 @@ class NurseRosteringConstraintProviderTest
 
         public PatternContractBuilder shiftType3DaysPattern(ShiftType day0ShiftType, ShiftType day1ShiftType,
                 ShiftType day2ShiftType) {
-            shiftType3DaysPattern = new ShiftType3DaysPattern();
-            shiftType3DaysPattern.setId(getNextId());
-            shiftType3DaysPattern
-                    .setCode("Shift Type 3 Day Pattern - " + day0ShiftType + ", " + day1ShiftType + ", " + day2ShiftType);
+            shiftType3DaysPattern = new ShiftType3DaysPattern(getNextId(),
+                    "Shift Type 3 Day Pattern - " + day0ShiftType + ", " + day1ShiftType + ", " + day2ShiftType);
             shiftType3DaysPattern.setDayIndex0ShiftType(day0ShiftType);
             shiftType3DaysPattern.setDayIndex1ShiftType(day1ShiftType);
             shiftType3DaysPattern.setDayIndex2ShiftType(day2ShiftType);
@@ -223,7 +205,7 @@ class NurseRosteringConstraintProviderTest
         }
 
         public Pair<PatternContractLine, Contract> build() {
-            PatternContractLine patternContractLine = new PatternContractLine();
+            PatternContractLine patternContractLine = new PatternContractLine(getNextId());
             if (freeBefore2DaysWithAWorkDayPattern != null) {
                 patternContractLine.setPattern(freeBefore2DaysWithAWorkDayPattern);
             }
@@ -242,10 +224,8 @@ class NurseRosteringConstraintProviderTest
             if (patternContractLine.getPattern() == null) {
                 throw new IllegalStateException("No patterns are set on the builder");
             }
-            patternContractLine.setId(getNextId());
             patternContractLine.getPattern().setWeight(weight);
-            Contract out = new Contract();
-            out.setId(getNextId());
+            Contract out = new Contract(getNextId());
             // PatternContractLine does not extend ContractLine
             out.setContractLineList(Collections.emptyList());
             patternContractLine.setContract(out);
@@ -262,11 +242,8 @@ class NurseRosteringConstraintProviderTest
     }
 
     private Employee getEmployee(Contract contract) {
-        Employee employee = new Employee();
-        employee.setContract(contract);
-        employee.setId(getNextId());
-        employee.setName("Employee " + employee.getId());
-        employee.setCode(employee.getName());
+        long employeeId = getNextId();
+        Employee employee = new Employee(employeeId, "Employee " + employeeId, "Employee " + employeeId, contract);
         employee.setDayOffRequestMap(new HashMap<>());
         employee.setDayOnRequestMap(new HashMap<>());
         employee.setShiftOffRequestMap(new HashMap<>());
@@ -276,10 +253,7 @@ class NurseRosteringConstraintProviderTest
 
     private ShiftDate getShiftDate(int dayIndex) {
         return indexToShiftDateMap.get().computeIfAbsent(dayIndex, key -> {
-            ShiftDate shiftDate = new ShiftDate();
-            shiftDate.setDayIndex(dayIndex);
-            shiftDate.setId(getNextId());
-            shiftDate.setDate(LocalDate.of(2000, 1, 1).plusDays(dayIndex));
+            ShiftDate shiftDate = new ShiftDate(getNextId(), dayIndex, LocalDate.of(2000, 1, 1).plusDays(dayIndex));
             shiftDate.setShiftList(new ArrayList<>());
             return shiftDate;
         });
@@ -292,82 +266,42 @@ class NurseRosteringConstraintProviderTest
     private ShiftAssignment getShiftAssignment(int dayIndex, Employee employee, ShiftType shiftType) {
         Shift shift = indexShiftTypePairToShiftMap.get().computeIfAbsent(Pair.of(dayIndex, shiftType), key -> {
             ShiftDate shiftDate = getShiftDate(dayIndex);
-
-            Shift newShift = new Shift();
-            newShift.setShiftType(shiftType);
-            newShift.setId(getNextId());
-            newShift.setRequiredEmployeeSize(0);
-            newShift.setIndex(0);
-            newShift.setShiftDate(shiftDate);
+            Shift newShift = new Shift(getNextId(), shiftDate, shiftType, 0, 0);
             shiftDate.getShiftList().add(newShift);
             return newShift;
         });
         shift.setRequiredEmployeeSize(shift.getRequiredEmployeeSize() + 1);
-        ShiftAssignment shiftAssignment = new ShiftAssignment();
-        shiftAssignment.setId(getNextId());
+        ShiftAssignment shiftAssignment = new ShiftAssignment(getNextId(), shift, 0);
         shiftAssignment.setEmployee(employee);
-        shiftAssignment.setIndexInShift(0);
-        shiftAssignment.setShift(shift);
         return shiftAssignment;
     }
 
     private DayOffRequest getDayOffRequest(Employee employee, ShiftDate shiftDate, int weight) {
-        DayOffRequest dayOffRequest = new DayOffRequest();
-        dayOffRequest.setId(getNextId());
-        dayOffRequest.setEmployee(employee);
-        dayOffRequest.setShiftDate(shiftDate);
-        dayOffRequest.setWeight(weight);
-        return dayOffRequest;
+        return new DayOffRequest(getNextId(), employee, shiftDate, weight);
     }
 
     private DayOnRequest getDayOnRequest(Employee employee, ShiftDate shiftDate, int weight) {
-        DayOnRequest dayOnRequest = new DayOnRequest();
-        dayOnRequest.setId(getNextId());
-        dayOnRequest.setEmployee(employee);
-        dayOnRequest.setShiftDate(shiftDate);
-        dayOnRequest.setWeight(weight);
-        return dayOnRequest;
+        return new DayOnRequest(getNextId(), employee, shiftDate, weight);
     }
 
     private ShiftOffRequest getShiftOffRequest(Employee employee, Shift shift, int weight) {
-        ShiftOffRequest shiftOffRequest = new ShiftOffRequest();
-        shiftOffRequest.setId(getNextId());
-        shiftOffRequest.setEmployee(employee);
-        shiftOffRequest.setShift(shift);
-        shiftOffRequest.setWeight(weight);
-        return shiftOffRequest;
+        return new ShiftOffRequest(getNextId(), employee, shift, weight);
     }
 
     private ShiftOnRequest getShiftOnRequest(Employee employee, Shift shift, int weight) {
-        ShiftOnRequest shiftOnRequest = new ShiftOnRequest();
-        shiftOnRequest.setId(getNextId());
-        shiftOnRequest.setEmployee(employee);
-        shiftOnRequest.setShift(shift);
-        shiftOnRequest.setWeight(weight);
-        return shiftOnRequest;
+        return new ShiftOnRequest(getNextId(), employee, shift, weight);
     }
 
     private Skill getSkill(String name) {
-        Skill skill = new Skill();
-        skill.setId(getNextId());
-        skill.setCode("Skill - " + name);
-        return skill;
+        return new Skill(getNextId(), "Skill - " + name);
     }
 
     private SkillProficiency getSkillProficiency(Employee employee, Skill skill) {
-        SkillProficiency skillProficiency = new SkillProficiency();
-        skillProficiency.setId(getNextId());
-        skillProficiency.setSkill(skill);
-        skillProficiency.setEmployee(employee);
-        return skillProficiency;
+        return new SkillProficiency(getNextId(), employee, skill);
     }
 
     private ShiftTypeSkillRequirement getSkillRequirement(ShiftType shiftType, Skill skill) {
-        ShiftTypeSkillRequirement skillRequirement = new ShiftTypeSkillRequirement();
-        skillRequirement.setId(getNextId());
-        skillRequirement.setShiftType(shiftType);
-        skillRequirement.setSkill(skill);
-        return skillRequirement;
+        return new ShiftTypeSkillRequirement(getNextId(), shiftType, skill);
     }
 
     // ******************************************************
@@ -490,12 +424,8 @@ class NurseRosteringConstraintProviderTest
         ShiftAssignment shift5 = getShiftAssignment(4, employee);
         ShiftAssignment shift7 = getShiftAssignment(6, employee);
 
-        NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
-
-        nurseRosterParametrization.setId(getNextId());
-        nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
-        nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
-        nurseRosterParametrization.setLastShiftDate(getShiftDate(6));
+        NurseRosterParametrization nurseRosterParametrization =
+                new NurseRosterParametrization(getNextId(), getShiftDate(0), getShiftDate(6), getShiftDate(0));
 
         SingleConstraintVerification<NurseRoster> consecutiveFreeDaysConstraint =
                 constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays);
@@ -536,12 +466,8 @@ class NurseRosteringConstraintProviderTest
         Employee employeeWithShifts = getEmployee(contract);
 
         ShiftAssignment shift = getShiftAssignment(0, employeeWithShifts);
-        NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
-
-        nurseRosterParametrization.setId(getNextId());
-        nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
-        nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
-        nurseRosterParametrization.setLastShiftDate(getShiftDate(5));
+        NurseRosterParametrization nurseRosterParametrization =
+                new NurseRosterParametrization(getNextId(), getShiftDate(0), getShiftDate(5), getShiftDate(0));
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::maximumConsecutiveFreeDaysNoAssignments)
                 .given(contract.getFirstConstractLine(),

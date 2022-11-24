@@ -14,8 +14,8 @@
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.json</inputSolutionFile>
     </problemBenchmarks>
 
   </inheritedSolverBenchmark>

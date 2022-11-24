@@ -2,19 +2,33 @@ package org.optaplanner.examples.nurserostering.domain.contract;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("Contract")
-public class Contract extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Contract extends AbstractPersistableJackson {
 
     private String code;
     private String description;
     private WeekendDefinition weekendDefinition;
-
     private List<ContractLine> contractLineList;
+
+    public Contract() { // For Jackson.
+    }
+
+    public Contract(long id) {
+        super(id);
+    }
+
+    public Contract(long id, String code, String description) {
+        super(id);
+        this.code = code;
+        this.description = description;
+    }
 
     public String getCode() {
         return code;
@@ -53,10 +67,12 @@ public class Contract extends AbstractPersistable {
         return code;
     }
 
+    @JsonIgnore
     public int getWeekendLength() {
         return weekendDefinition.getWeekendLength();
     }
 
+    @JsonIgnore
     public ContractLine getFirstConstractLine() {
         return contractLineList.get(0);
     }

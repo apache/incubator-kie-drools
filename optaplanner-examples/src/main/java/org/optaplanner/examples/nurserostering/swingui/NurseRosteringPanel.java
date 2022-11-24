@@ -1,6 +1,7 @@
 package org.optaplanner.examples.nurserostering.swingui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
@@ -165,10 +174,8 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                         + shiftDateList + ").");
             }
             ShiftDate oldLastShiftDate = shiftDateList.get(shiftDateList.size() - 1);
-            ShiftDate newShiftDate = new ShiftDate();
-            newShiftDate.setId(oldLastShiftDate.getId() + 1L);
-            newShiftDate.setDayIndex(oldLastShiftDate.getDayIndex() + 1);
-            newShiftDate.setDate(oldLastShiftDate.getDate().plusDays(1));
+            ShiftDate newShiftDate = new ShiftDate(oldLastShiftDate.getId() + 1L,
+                    oldLastShiftDate.getDayIndex() + 1, oldLastShiftDate.getDate().plusDays(1));
             List<Shift> refShiftList = planningWindowStart.getShiftList();
             List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
             newShiftDate.setShiftList(newShiftList);
@@ -179,23 +186,15 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             long shiftAssignmentId = nurseRoster.getShiftAssignmentList().get(
                     nurseRoster.getShiftAssignmentList().size() - 1).getId() + 1L;
             for (Shift refShift : refShiftList) {
-                Shift newShift = new Shift();
-                newShift.setId(shiftId);
+                Shift newShift = new Shift(shiftId, newShiftDate, refShift.getShiftType(), shiftIndex,
+                        refShift.getRequiredEmployeeSize());
                 shiftId++;
-                newShift.setShiftDate(newShiftDate);
-                newShift.setShiftType(refShift.getShiftType());
-                newShift.setIndex(shiftIndex);
                 shiftIndex++;
-                newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
                 newShiftList.add(newShift);
                 problemChangeDirector.addProblemFact(newShift, nurseRoster.getShiftList()::add);
                 for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
-                    ShiftAssignment newShiftAssignment = new ShiftAssignment();
-                    newShiftAssignment.setId(shiftAssignmentId);
+                    ShiftAssignment newShiftAssignment = new ShiftAssignment(shiftAssignmentId, newShift, indexInShift);
                     shiftAssignmentId++;
-                    newShiftAssignment.setShift(newShift);
-                    newShiftAssignment.setIndexInShift(indexInShift);
-
                     problemChangeDirector.addEntity(newShiftAssignment, nurseRoster.getShiftAssignmentList()::add);
                 }
             }

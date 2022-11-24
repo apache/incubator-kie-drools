@@ -45,15 +45,14 @@ public class AbstractExampleSolutionFileIO<Solution_> extends JacksonSolutionFil
 
     }
 
-    protected <Key, Value, Index> Map<Key, Value> deduplicateMap(Map<Key, Value> originalMap, Map<Index, Key> index,
-            Function<Key, Index> idFunction) {
+    protected <Key_, Value_, Index_> Map<Key_, Value_> deduplicateMap(Map<Key_, Value_> originalMap, Map<Index_, Key_> index,
+            Function<Key_, Index_> idFunction) {
         if (originalMap == null || originalMap.isEmpty()) {
             return originalMap;
         }
 
-        var newMap = new LinkedHashMap<Key, Value>(originalMap.size());
-        originalMap.forEach(
-                (key, value) -> newMap.put(index.get(idFunction.apply(key)), value));
+        Map<Key_, Value_> newMap = new LinkedHashMap<>(originalMap.size());
+        originalMap.forEach((key, value) -> newMap.put(index.get(idFunction.apply(key)), value));
         return newMap;
     }
 

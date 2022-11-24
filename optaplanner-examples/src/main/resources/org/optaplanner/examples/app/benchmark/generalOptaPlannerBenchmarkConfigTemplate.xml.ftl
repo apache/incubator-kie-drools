@@ -187,9 +187,9 @@
   <solverBenchmark>
     <name>Nurse Rostering Tabu Search ${randomType}</name>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/medium01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.json</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>

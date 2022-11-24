@@ -1,21 +1,34 @@
 package org.optaplanner.examples.nurserostering.domain.pattern;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@XStreamAlias("Pattern")
-@XStreamInclude({
-        ShiftType2DaysPattern.class,
-        ShiftType3DaysPattern.class,
-        WorkBeforeFreeSequencePattern.class,
-        FreeBefore2DaysWithAWorkDayPattern.class
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ShiftType2DaysPattern.class, name = "shiftType2"),
+        @JsonSubTypes.Type(value = ShiftType3DaysPattern.class, name = "shiftType3"),
+        @JsonSubTypes.Type(value = WorkBeforeFreeSequencePattern.class, name = "workBeforeFree"),
+        @JsonSubTypes.Type(value = FreeBefore2DaysWithAWorkDayPattern.class, name = "freeBeforeWork"),
 })
-public abstract class Pattern extends AbstractPersistable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public abstract class Pattern extends AbstractPersistableJackson {
 
     protected String code;
     protected int weight;
+
+    protected Pattern() { // For Jackson.
+    }
+
+    protected Pattern(long id, String code) {
+        super(id);
+        this.code = code;
+    }
 
     public String getCode() {
         return code;

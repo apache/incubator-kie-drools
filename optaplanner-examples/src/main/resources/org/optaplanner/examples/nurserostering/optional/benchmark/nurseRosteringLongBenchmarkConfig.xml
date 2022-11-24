@@ -16,20 +16,11 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nurserostering/unsolved/long01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/long02.xml</inputSolutionFile>
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long03.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long04.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long05.xml</inputSolutionFile>-->
-      <inputSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inputSolutionFile>
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_late01.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_late02.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_late03.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_late04.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/long_late05.xml</inputSolutionFile>-->
+      <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nurserostering/unsolved/long01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/long02.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/long_hint01.json</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/long_hint02.json</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->

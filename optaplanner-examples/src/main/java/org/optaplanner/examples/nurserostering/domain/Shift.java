@@ -1,17 +1,34 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-@XStreamAlias("Shift")
-public class Shift extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Shift extends AbstractPersistableJackson implements Labeled {
 
     private ShiftDate shiftDate;
     private ShiftType shiftType;
     private int index;
 
     private int requiredEmployeeSize;
+
+    public Shift() { // For Jackson.
+    }
+
+    public Shift(long id) {
+        super(id);
+    }
+
+    public Shift(long id, ShiftDate shiftDate, ShiftType shiftType, int index, int requiredEmployeeSize) {
+        this(id);
+        this.shiftDate = shiftDate;
+        this.shiftType = shiftType;
+        this.index = index;
+        this.requiredEmployeeSize = requiredEmployeeSize;
+    }
 
     public ShiftDate getShiftDate() {
         return shiftDate;
@@ -45,6 +62,7 @@ public class Shift extends AbstractPersistable {
         this.requiredEmployeeSize = requiredEmployeeSize;
     }
 
+    @Override
     public String getLabel() {
         return shiftType.getLabel() + " of " + shiftDate.getLabel();
     }

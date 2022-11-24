@@ -5,12 +5,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("ShiftDate")
-public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDate> {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class ShiftDate extends AbstractPersistableJackson implements Labeled, Comparable<ShiftDate> {
 
     private static final DateTimeFormatter LABEL_FORMATTER = DateTimeFormatter.ofPattern("E d MMM");
 
@@ -18,6 +21,19 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
     private LocalDate date;
 
     private List<Shift> shiftList;
+
+    public ShiftDate() { // For Jackson.
+    }
+
+    public ShiftDate(long id) {
+        super(id);
+    }
+
+    public ShiftDate(long id, int dayIndex, LocalDate date) {
+        this(id);
+        this.dayIndex = dayIndex;
+        this.date = date;
+    }
 
     public int getDayIndex() {
         return dayIndex;
@@ -35,6 +51,7 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
         this.date = date;
     }
 
+    @JsonIgnore
     public DayOfWeek getDayOfWeek() {
         return date.getDayOfWeek();
     }
@@ -47,6 +64,7 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
         this.shiftList = shiftList;
     }
 
+    @JsonIgnore
     public int getWeekendSundayIndex() {
         switch (date.getDayOfWeek()) {
             case MONDAY:
@@ -68,6 +86,7 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
         }
     }
 
+    @Override
     public String getLabel() {
         return date.format(LABEL_FORMATTER);
     }

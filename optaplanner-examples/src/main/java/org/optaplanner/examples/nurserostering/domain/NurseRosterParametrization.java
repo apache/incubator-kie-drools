@@ -1,16 +1,26 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("NurseRosterParametrization")
-public class NurseRosterParametrization extends AbstractPersistable {
+public class NurseRosterParametrization extends AbstractPersistableJackson {
 
     private ShiftDate firstShiftDate;
     private ShiftDate lastShiftDate;
 
     private ShiftDate planningWindowStart;
+
+    public NurseRosterParametrization() { // For Jackson.
+    }
+
+    public NurseRosterParametrization(long id, ShiftDate firstShiftDate, ShiftDate lastShiftDate,
+            ShiftDate planningWindowStart) {
+        super(id);
+        this.firstShiftDate = firstShiftDate;
+        this.lastShiftDate = lastShiftDate;
+        this.planningWindowStart = planningWindowStart;
+    }
 
     public ShiftDate getFirstShiftDate() {
         return firstShiftDate;
@@ -28,10 +38,12 @@ public class NurseRosterParametrization extends AbstractPersistable {
         this.lastShiftDate = lastShiftDate;
     }
 
+    @JsonIgnore
     public int getFirstShiftDateDayIndex() {
         return firstShiftDate.getDayIndex();
     }
 
+    @JsonIgnore
     public int getLastShiftDateDayIndex() {
         return lastShiftDate.getDayIndex();
     }

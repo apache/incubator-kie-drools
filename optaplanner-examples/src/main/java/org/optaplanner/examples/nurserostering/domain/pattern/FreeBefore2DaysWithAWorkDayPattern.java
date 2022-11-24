@@ -2,12 +2,21 @@ package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import java.time.DayOfWeek;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("FreeBefore2DaysWithAWorkDayPattern")
 public class FreeBefore2DaysWithAWorkDayPattern extends Pattern {
 
     private DayOfWeek freeDayOfWeek;
+
+    public FreeBefore2DaysWithAWorkDayPattern() { // For Jackson.
+    }
+
+    public FreeBefore2DaysWithAWorkDayPattern(long id, String code) {
+        super(id, code);
+    }
+
+    public FreeBefore2DaysWithAWorkDayPattern(long id, String code, DayOfWeek freeDayOfWeek) {
+        this(id, code);
+        this.freeDayOfWeek = freeDayOfWeek;
+    }
 
     public DayOfWeek getFreeDayOfWeek() {
         return freeDayOfWeek;

@@ -4,15 +4,22 @@ import java.time.DayOfWeek;
 
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("WorkBeforeFreeSequencePattern")
 public class WorkBeforeFreeSequencePattern extends Pattern {
 
     private DayOfWeek workDayOfWeek; // null means any
     private ShiftType workShiftType; // null means any
-
     private int freeDayLength;
+
+    public WorkBeforeFreeSequencePattern() { // For Jackson.
+    }
+
+    public WorkBeforeFreeSequencePattern(long id, String code, DayOfWeek workDayOfWeek, ShiftType workShiftType,
+            int freeDayLength) {
+        super(id, code);
+        this.workDayOfWeek = workDayOfWeek;
+        this.workShiftType = workShiftType;
+        this.freeDayLength = freeDayLength;
+    }
 
     public DayOfWeek getWorkDayOfWeek() {
         return workDayOfWeek;

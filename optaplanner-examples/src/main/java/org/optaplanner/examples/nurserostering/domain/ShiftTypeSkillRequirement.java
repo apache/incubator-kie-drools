@@ -1,14 +1,20 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("ShiftTypeSkillRequirement")
-public class ShiftTypeSkillRequirement extends AbstractPersistable {
+public class ShiftTypeSkillRequirement extends AbstractPersistableJackson {
 
     private ShiftType shiftType;
     private Skill skill;
+
+    public ShiftTypeSkillRequirement() { // For Jackson.
+    }
+
+    public ShiftTypeSkillRequirement(long id, ShiftType shiftType, Skill skill) {
+        super(id);
+        this.shiftType = shiftType;
+        this.skill = skill;
+    }
 
     public ShiftType getShiftType() {
         return shiftType;

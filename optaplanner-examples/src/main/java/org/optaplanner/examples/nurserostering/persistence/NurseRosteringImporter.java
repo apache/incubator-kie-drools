@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
     public static void main(String[] args) {
         SolutionConverter<NurseRoster> converter = SolutionConverter.createImportConverter(
-                NurseRosteringApp.DATA_DIR_NAME, new NurseRosteringImporter(), NurseRoster.class);
+                NurseRosteringApp.DATA_DIR_NAME, new NurseRosteringImporter(), new NurseRosterSolutionFileIO());
         converter.convertAll();
     }
 
@@ -77,8 +78,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
             Element schedulingPeriodElement = document.getRootElement();
             assertElementName(schedulingPeriodElement, "SchedulingPeriod");
-            NurseRoster nurseRoster = new NurseRoster();
-            nurseRoster.setId(0L);
+            NurseRoster nurseRoster = new NurseRoster(0L);
             nurseRoster.setCode(schedulingPeriodElement.getAttribute("ID").getValue());
 
             generateShiftDateList(nurseRoster,
@@ -91,7 +91,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             readPatternList(nurseRoster, schedulingPeriodElement.getChild("Patterns"));
             readContractList(nurseRoster, schedulingPeriodElement.getChild("Contracts"));
             readEmployeeList(nurseRoster, schedulingPeriodElement.getChild("Employees"));
-            readRequiredEmployeeSizes(nurseRoster, schedulingPeriodElement.getChild("CoverRequirements"));
+            readRequiredEmployeeSizes(schedulingPeriodElement.getChild("CoverRequirements"));
             readDayOffRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOffRequests"));
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
             readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
@@ -116,27 +116,21 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             return nurseRoster;
         }
 
-        private void generateShiftDateList(NurseRoster nurseRoster,
-                Element startDateElement, Element endDateElement) throws JDOMException {
+        private void generateShiftDateList(NurseRoster nurseRoster, Element startDateElement, Element endDateElement) {
             LocalDate startDate;
             try {
                 startDate = LocalDate.parse(startDateElement.getText(), DateTimeFormatter.ISO_DATE);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid startDate (" + startDateElement.getText() + ").", e);
             }
-            int startDayOfYear = startDate.getDayOfYear();
-            int startYear = startDate.getYear();
             LocalDate endDate;
             try {
                 endDate = LocalDate.parse(endDateElement.getText(), DateTimeFormatter.ISO_DATE);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid endDate (" + endDateElement.getText() + ").", e);
             }
-            int endDayOfYear = startDate.getDayOfYear();
-            int endYear = startDate.getYear();
             if (startDate.compareTo(endDate) >= 0) {
-                throw new IllegalStateException("The startDate (" + startDate
-                        + " must be before endDate (" + endDate + ").");
+                throw new IllegalStateException("The startDate (" + startDate + " must be before endDate (" + endDate + ").");
             }
             int maxDayIndex = Math.toIntExact(DAYS.between(startDate, endDate));
             int shiftDateSize = maxDayIndex + 1;
@@ -146,10 +140,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             int dayIndex = 0;
             LocalDate date = startDate;
             for (int i = 0; i < shiftDateSize; i++) {
-                ShiftDate shiftDate = new ShiftDate();
-                shiftDate.setId(id);
-                shiftDate.setDayIndex(dayIndex);
-                shiftDate.setDate(date);
+                ShiftDate shiftDate = new ShiftDate(id, dayIndex, date);
                 shiftDate.setShiftList(new ArrayList<>());
                 shiftDateList.add(shiftDate);
                 shiftDateMap.put(date, shiftDate);
@@ -162,18 +153,15 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void generateNurseRosterInfo(NurseRoster nurseRoster) {
             List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
-            NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
-            nurseRosterParametrization.setId(0L);
-            nurseRosterParametrization.setFirstShiftDate(shiftDateList.get(0));
-            nurseRosterParametrization.setLastShiftDate(shiftDateList.get(shiftDateList.size() - 1));
-            nurseRosterParametrization.setPlanningWindowStart(shiftDateList.get(0));
+            NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization(0L,
+                    shiftDateList.get(0), shiftDateList.get(shiftDateList.size() - 1), shiftDateList.get(0));
             nurseRoster.setNurseRosterParametrization(nurseRosterParametrization);
         }
 
         private void readSkillList(NurseRoster nurseRoster, Element skillsElement) {
             List<Skill> skillList;
             if (skillsElement == null) {
-                skillList = emptyList();
+                skillList = Collections.emptyList();
             } else {
                 List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
                 skillList = new ArrayList<>(skillElementList.size());
@@ -181,9 +169,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 long id = 0L;
                 for (Element element : skillElementList) {
                     assertElementName(element, "Skill");
-                    Skill skill = new Skill();
-                    skill.setId(id);
-                    skill.setCode(element.getText());
+                    Skill skill = new Skill(id, element.getText());
                     skillList.add(skill);
                     if (skillMap.containsKey(skill.getCode())) {
                         throw new IllegalArgumentException("There are 2 skills with the same code ("
@@ -196,12 +182,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             nurseRoster.setSkillList(skillList);
         }
 
-        private static <X> List<X> emptyList() {
-            // XStream causes illegal access when trying to use Collections.emptyList().
-            return new ArrayList<>(0);
-        }
-
-        private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) throws JDOMException {
+        private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) {
             List<Element> shiftTypeElementList = (List<Element>) shiftTypesElement.getChildren();
             List<ShiftType> shiftTypeList = new ArrayList<>(shiftTypeElementList.size());
             shiftTypeMap = new HashMap<>(shiftTypeElementList.size());
@@ -211,31 +192,24 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             long shiftTypeSkillRequirementId = 0L;
             for (Element element : shiftTypeElementList) {
                 assertElementName(element, "Shift");
-                ShiftType shiftType = new ShiftType();
-                shiftType.setId(id);
-                shiftType.setCode(element.getAttribute("ID").getValue());
-                shiftType.setIndex(index);
                 String startTimeString = element.getChild("StartTime").getText();
-                shiftType.setStartTimeString(startTimeString);
                 String endTimeString = element.getChild("EndTime").getText();
-                shiftType.setEndTimeString(endTimeString);
-                shiftType.setNight(startTimeString.compareTo(endTimeString) > 0);
-                shiftType.setDescription(element.getChild("Description").getText());
+                ShiftType shiftType = new ShiftType(id, element.getAttribute("ID").getValue(), index,
+                        startTimeString, endTimeString, startTimeString.compareTo(endTimeString) > 0,
+                        element.getChild("Description").getText());
 
                 Element skillsElement = element.getChild("Skills");
                 if (skillsElement != null) {
                     List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
                     for (Element skillElement : skillElementList) {
                         assertElementName(skillElement, "Skill");
-                        ShiftTypeSkillRequirement shiftTypeSkillRequirement = new ShiftTypeSkillRequirement();
-                        shiftTypeSkillRequirement.setId(shiftTypeSkillRequirementId);
-                        shiftTypeSkillRequirement.setShiftType(shiftType);
                         Skill skill = skillMap.get(skillElement.getText());
                         if (skill == null) {
                             throw new IllegalArgumentException("The skill (" + skillElement.getText()
                                     + ") of shiftType (" + shiftType.getCode() + ") does not exist.");
                         }
-                        shiftTypeSkillRequirement.setSkill(skill);
+                        ShiftTypeSkillRequirement shiftTypeSkillRequirement =
+                                new ShiftTypeSkillRequirement(shiftTypeSkillRequirementId, shiftType, skill);
                         shiftTypeSkillRequirementList.add(shiftTypeSkillRequirement);
                         shiftTypeSkillRequirementId++;
                     }
@@ -254,7 +228,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             nurseRoster.setShiftTypeSkillRequirementList(shiftTypeSkillRequirementList);
         }
 
-        private void generateShiftList(NurseRoster nurseRoster) throws JDOMException {
+        private void generateShiftList(NurseRoster nurseRoster) {
             List<ShiftType> shiftTypeList = nurseRoster.getShiftTypeList();
             int shiftListSize = shiftDateMap.size() * shiftTypeList.size();
             List<Shift> shiftList = new ArrayList<>(shiftListSize);
@@ -264,13 +238,9 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             int index = 0;
             for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
                 for (ShiftType shiftType : shiftTypeList) {
-                    Shift shift = new Shift();
-                    shift.setId(id);
-                    shift.setShiftDate(shiftDate);
+                    // Required employee size filled in later.
+                    Shift shift = new Shift(id, shiftDate, shiftType, index, 0);
                     shiftDate.getShiftList().add(shift);
-                    shift.setShiftType(shiftType);
-                    shift.setIndex(index);
-                    shift.setRequiredEmployeeSize(0); // Filled in later
                     shiftList.add(shift);
                     dateAndShiftTypeToShiftMap.put(Pair.of(shiftDate.getDate(), shiftType.getCode()), shift);
                     addShiftToDayOfWeekAndShiftTypeToShiftListMap(shiftDate, shiftType, shift);
@@ -281,8 +251,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             nurseRoster.setShiftList(shiftList);
         }
 
-        private void addShiftToDayOfWeekAndShiftTypeToShiftListMap(ShiftDate shiftDate, ShiftType shiftType,
-                Shift shift) {
+        private void addShiftToDayOfWeekAndShiftTypeToShiftListMap(ShiftDate shiftDate, ShiftType shiftType, Shift shift) {
             Pair<DayOfWeek, ShiftType> key = Pair.of(shiftDate.getDayOfWeek(), shiftType);
             List<Shift> dayOfWeekAndShiftTypeToShiftList = dayOfWeekAndShiftTypeToShiftListMap.computeIfAbsent(key,
                     k -> new ArrayList<>((shiftDateMap.size() + 6) / 7));
@@ -292,13 +261,12 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readPatternList(NurseRoster nurseRoster, Element patternsElement) throws JDOMException {
             List<Pattern> patternList;
             if (patternsElement == null) {
-                patternList = emptyList();
+                patternList = Collections.emptyList();
             } else {
                 List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
                 patternList = new ArrayList<>(patternElementList.size());
                 patternMap = new HashMap<>(patternElementList.size());
                 long id = 0L;
-                long patternEntryId = 0L;
                 for (Element element : patternElementList) {
                     assertElementName(element, "Pattern");
                     String code = element.getAttribute("ID").getValue();
@@ -312,22 +280,20 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     }
                     Pattern pattern;
                     if (patternEntryElementList.get(0).getChild("ShiftType").getText().equals("None")) {
-                        pattern = new FreeBefore2DaysWithAWorkDayPattern();
+                        pattern = new FreeBefore2DaysWithAWorkDayPattern(id, code);
                         if (patternEntryElementList.size() != 3) {
                             throw new IllegalStateException("boe");
                         }
                     } else if (patternEntryElementList.get(1).getChild("ShiftType").getText().equals("None")) {
-                        pattern = new WorkBeforeFreeSequencePattern();
-                        // TODO support this too (not needed for competition)
                         throw new UnsupportedOperationException("The pattern (" + code + ") is not supported."
                                 + " None of the test data exhibits such a pattern.");
                     } else {
                         switch (patternEntryElementList.size()) {
                             case 2:
-                                pattern = new ShiftType2DaysPattern();
+                                pattern = new ShiftType2DaysPattern(id, code);
                                 break;
                             case 3:
-                                pattern = new ShiftType3DaysPattern();
+                                pattern = new ShiftType3DaysPattern(id, code);
                                 break;
                             default:
                                 throw new IllegalArgumentException("A size of PatternEntries ("
@@ -335,8 +301,6 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                                         + ") above 3 is not supported.");
                         }
                     }
-                    pattern.setId(id);
-                    pattern.setCode(code);
                     pattern.setWeight(weight);
                     int patternEntryIndex = 0;
                     DayOfWeek firstDayOfWeek = null;
@@ -402,7 +366,6 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             FreeBefore2DaysWithAWorkDayPattern castedPattern = (FreeBefore2DaysWithAWorkDayPattern) pattern;
                             if (patternEntryIndex == 0) {
                                 if (dayOfWeek == null) {
-                                    // TODO Support an any dayOfWeek too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                             + ") the dayOfWeek should not be (Any)."
@@ -412,21 +375,12 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             }
                             if (patternEntryIndex == 1) {
                                 if (shiftType != null) {
-                                    // TODO Support a specific shiftType too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                             + ") the shiftType should be (Any)."
                                             + "\n None of the test data exhibits such a pattern.");
                                 }
-                                // castedPattern.setWorkShiftType(shiftType);
-                                // castedPattern.setWorkDayLength(patternEntryElementList.size() - 1);
                             }
-                            // if (patternEntryIndex > 1 && shiftType != castedPattern.getWorkShiftType()) {
-                            //     throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
-                            //             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
-                            //             + ") the shiftType (" + shiftType + ") should be ("
-                            //             + castedPattern.getWorkShiftType() + ").");
-                            // }
                             if (patternEntryIndex != 0 && shiftTypeIsNone) {
                                 throw new IllegalArgumentException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
@@ -448,16 +402,13 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             ShiftType2DaysPattern castedPattern = (ShiftType2DaysPattern) pattern;
                             if (patternEntryIndex == 0) {
                                 if (dayOfWeek != null) {
-                                    // TODO Support a specific dayOfWeek too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                             + ") the dayOfWeek should be (Any)."
                                             + "\n None of the test data exhibits such a pattern.");
                                 }
-                                // castedPattern.setStartDayOfWeek(dayOfWeek);
                             }
                             if (shiftType == null) {
-                                // TODO Support any shiftType too (not needed for competition)
                                 throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                         + ") the shiftType should not be (Any)."
@@ -478,16 +429,13 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             ShiftType3DaysPattern castedPattern = (ShiftType3DaysPattern) pattern;
                             if (patternEntryIndex == 0) {
                                 if (dayOfWeek != null) {
-                                    // TODO Support a specific dayOfWeek too (not needed for competition)
                                     throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                             + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                             + ") the dayOfWeek should be (Any)."
                                             + "\n None of the test data exhibits such a pattern.");
                                 }
-                                // castedPattern.setStartDayOfWeek(dayOfWeek);
                             }
                             if (shiftType == null) {
-                                // TODO Support any shiftType too
                                 throw new UnsupportedOperationException("On patternEntryIndex (" + patternEntryIndex
                                         + ") of FreeBeforeWorkSequence pattern (" + pattern.getCode()
                                         + ") the shiftType should not be (Any)."
@@ -538,10 +486,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             long patternContractLineId = 0L;
             for (Element element : contractElementList) {
                 assertElementName(element, "Contract");
-                Contract contract = new Contract();
-                contract.setId(id);
-                contract.setCode(element.getAttribute("ID").getValue());
-                contract.setDescription(element.getChild("Description").getText());
+                Contract contract = new Contract(id, element.getAttribute("ID").getValue(),
+                        element.getChild("Description").getText());
 
                 List<ContractLine> contractLineListOfContract = new ArrayList<>(contractLineTypeListSize);
                 contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
@@ -593,10 +539,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                         throw new IllegalArgumentException("The pattern (" + patternElement.getText()
                                 + ") of contract (" + contract.getCode() + ") does not exist.");
                     }
-                    PatternContractLine patternContractLine = new PatternContractLine();
-                    patternContractLine.setId(patternContractLineId);
-                    patternContractLine.setContract(contract);
-                    patternContractLine.setPattern(pattern);
+                    PatternContractLine patternContractLine = new PatternContractLine(patternContractLineId, contract, pattern);
                     patternContractLineList.add(patternContractLine);
                     patternContractLineId++;
                 }
@@ -617,7 +560,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private long readBooleanContractLine(Contract contract, List<ContractLine> contractLineList,
                 List<ContractLine> contractLineListOfContract, long contractLineId, Element element,
                 ContractLineType contractLineType) throws DataConversionException {
-            boolean enabled = Boolean.valueOf(element.getText());
+            boolean enabled = Boolean.parseBoolean(element.getText());
             int weight;
             if (enabled) {
                 weight = element.getAttribute("weight").getIntValue();
@@ -635,12 +578,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 weight = 0;
             }
             if (enabled) {
-                BooleanContractLine contractLine = new BooleanContractLine();
-                contractLine.setId(contractLineId);
-                contractLine.setContract(contract);
-                contractLine.setContractLineType(contractLineType);
-                contractLine.setEnabled(enabled);
-                contractLine.setWeight(weight);
+                BooleanContractLine contractLine =
+                        new BooleanContractLine(contractLineId, contract, contractLineType, enabled, weight);
                 contractLineList.add(contractLine);
                 contractLineListOfContract.add(contractLine);
                 contractLineId++;
@@ -652,7 +591,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 List<ContractLine> contractLineListOfContract, long contractLineId,
                 Element minElement, Element maxElement,
                 ContractLineType contractLineType) throws DataConversionException {
-            boolean minimumEnabled = minElement == null ? false : minElement.getAttribute("on").getBooleanValue();
+            boolean minimumEnabled = minElement != null && minElement.getAttribute("on").getBooleanValue();
             int minimumWeight;
             if (minimumEnabled) {
                 minimumWeight = minElement.getAttribute("weight").getIntValue();
@@ -669,7 +608,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             } else {
                 minimumWeight = 0;
             }
-            boolean maximumEnabled = maxElement == null ? false : maxElement.getAttribute("on").getBooleanValue();
+            boolean maximumEnabled = maxElement != null && maxElement.getAttribute("on").getBooleanValue();
             int maximumWeight;
             if (maximumEnabled) {
                 maximumWeight = maxElement.getAttribute("weight").getIntValue();
@@ -687,11 +626,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 maximumWeight = 0;
             }
             if (minimumEnabled || maximumEnabled) {
-                MinMaxContractLine contractLine = new MinMaxContractLine();
-                contractLine.setId(contractLineId);
-                contractLine.setContract(contract);
-                contractLine.setContractLineType(contractLineType);
-                contractLine.setMinimumEnabled(minimumEnabled);
+                MinMaxContractLine contractLine =
+                        new MinMaxContractLine(contractLineId, contract, contractLineType, minimumEnabled, maximumEnabled);
                 if (minimumEnabled) {
                     int minimumValue = Integer.parseInt(minElement.getText());
                     if (minimumValue < 1) {
@@ -702,7 +638,6 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     contractLine.setMinimumValue(minimumValue);
                     contractLine.setMinimumWeight(minimumWeight);
                 }
-                contractLine.setMaximumEnabled(maximumEnabled);
                 if (maximumEnabled) {
                     int maximumValue = Integer.parseInt(maxElement.getText());
                     if (maximumValue < 0) {
@@ -720,7 +655,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             return contractLineId;
         }
 
-        private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) throws JDOMException {
+        private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) {
             List<Element> employeeElementList = (List<Element>) employeesElement.getChildren();
             List<Employee> employeeList = new ArrayList<>(employeeElementList.size());
             employeeMap = new HashMap<>(employeeElementList.size());
@@ -729,17 +664,14 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             long skillProficiencyId = 0L;
             for (Element element : employeeElementList) {
                 assertElementName(element, "Employee");
-                Employee employee = new Employee();
-                employee.setId(id);
-                employee.setCode(element.getAttribute("ID").getValue());
-                employee.setName(element.getChild("Name").getText());
+                String code = element.getAttribute("ID").getValue();
                 Element contractElement = element.getChild("ContractID");
                 Contract contract = contractMap.get(contractElement.getText());
                 if (contract == null) {
                     throw new IllegalArgumentException("The contract (" + contractElement.getText()
-                            + ") of employee (" + employee.getCode() + ") does not exist.");
+                            + ") of employee (" + code + ") does not exist.");
                 }
-                employee.setContract(contract);
+                Employee employee = new Employee(id, code, element.getChild("Name").getText(), contract);
                 int estimatedRequestSize = (shiftDateMap.size() / employeeElementList.size()) + 1;
                 employee.setDayOffRequestMap(new HashMap<>(estimatedRequestSize));
                 employee.setDayOnRequestMap(new HashMap<>(estimatedRequestSize));
@@ -756,10 +688,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             throw new IllegalArgumentException("The skill (" + skillElement.getText()
                                     + ") of employee (" + employee.getCode() + ") does not exist.");
                         }
-                        SkillProficiency skillProficiency = new SkillProficiency();
-                        skillProficiency.setId(skillProficiencyId);
-                        skillProficiency.setEmployee(employee);
-                        skillProficiency.setSkill(skill);
+                        SkillProficiency skillProficiency = new SkillProficiency(skillProficiencyId, employee, skill);
                         skillProficiencyList.add(skillProficiency);
                         skillProficiencyId++;
                     }
@@ -777,7 +706,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             nurseRoster.setSkillProficiencyList(skillProficiencyList);
         }
 
-        private void readRequiredEmployeeSizes(NurseRoster nurseRoster, Element coverRequirementsElement) {
+        private void readRequiredEmployeeSizes(Element coverRequirementsElement) {
             List<Element> coverRequirementElementList = (List<Element>) coverRequirementsElement.getChildren();
             for (Element element : coverRequirementElementList) {
                 if (element.getName().equals("DayOfWeekCover")) {
@@ -844,34 +773,30 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readDayOffRequestList(NurseRoster nurseRoster, Element dayOffRequestsElement) throws JDOMException {
             List<DayOffRequest> dayOffRequestList;
             if (dayOffRequestsElement == null) {
-                dayOffRequestList = emptyList();
+                dayOffRequestList = Collections.emptyList();
             } else {
                 List<Element> dayOffElementList = (List<Element>) dayOffRequestsElement.getChildren();
                 dayOffRequestList = new ArrayList<>(dayOffElementList.size());
                 long id = 0L;
                 for (Element element : dayOffElementList) {
                     assertElementName(element, "DayOff");
-                    DayOffRequest dayOffRequest = new DayOffRequest();
-                    dayOffRequest.setId(id);
 
                     Element employeeElement = element.getChild("EmployeeID");
                     Employee employee = employeeMap.get(employeeElement.getText());
                     if (employee == null) {
                         throw new IllegalArgumentException("The shiftDate (" + employeeElement.getText()
-                                + ") of dayOffRequest (" + dayOffRequest + ") does not exist.");
+                                + ") of dayOffRequest (" + id + ") does not exist.");
                     }
-                    dayOffRequest.setEmployee(employee);
 
                     Element dateElement = element.getChild("Date");
                     ShiftDate shiftDate = shiftDateMap.get(LocalDate.parse(dateElement.getText(), DateTimeFormatter.ISO_DATE));
                     if (shiftDate == null) {
                         throw new IllegalArgumentException("The date (" + dateElement.getText()
-                                + ") of dayOffRequest (" + dayOffRequest + ") does not exist.");
+                                + ") of dayOffRequest (" + id + ") does not exist.");
                     }
-                    dayOffRequest.setShiftDate(shiftDate);
 
-                    dayOffRequest.setWeight(element.getAttribute("weight").getIntValue());
-
+                    DayOffRequest dayOffRequest =
+                            new DayOffRequest(id, employee, shiftDate, element.getAttribute("weight").getIntValue());
                     dayOffRequestList.add(dayOffRequest);
                     employee.getDayOffRequestMap().put(shiftDate, dayOffRequest);
                     id++;
@@ -883,34 +808,30 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readDayOnRequestList(NurseRoster nurseRoster, Element dayOnRequestsElement) throws JDOMException {
             List<DayOnRequest> dayOnRequestList;
             if (dayOnRequestsElement == null) {
-                dayOnRequestList = emptyList();
+                dayOnRequestList = Collections.emptyList();
             } else {
                 List<Element> dayOnElementList = (List<Element>) dayOnRequestsElement.getChildren();
                 dayOnRequestList = new ArrayList<>(dayOnElementList.size());
                 long id = 0L;
                 for (Element element : dayOnElementList) {
                     assertElementName(element, "DayOn");
-                    DayOnRequest dayOnRequest = new DayOnRequest();
-                    dayOnRequest.setId(id);
 
                     Element employeeElement = element.getChild("EmployeeID");
                     Employee employee = employeeMap.get(employeeElement.getText());
                     if (employee == null) {
                         throw new IllegalArgumentException("The shiftDate (" + employeeElement.getText()
-                                + ") of dayOnRequest (" + dayOnRequest + ") does not exist.");
+                                + ") of dayOnRequest (" + id + ") does not exist.");
                     }
-                    dayOnRequest.setEmployee(employee);
 
                     Element dateElement = element.getChild("Date");
                     ShiftDate shiftDate = shiftDateMap.get(LocalDate.parse(dateElement.getText(), DateTimeFormatter.ISO_DATE));
                     if (shiftDate == null) {
                         throw new IllegalArgumentException("The date (" + dateElement.getText()
-                                + ") of dayOnRequest (" + dayOnRequest + ") does not exist.");
+                                + ") of dayOnRequest (" + id + ") does not exist.");
                     }
-                    dayOnRequest.setShiftDate(shiftDate);
 
-                    dayOnRequest.setWeight(element.getAttribute("weight").getIntValue());
-
+                    DayOnRequest dayOnRequest =
+                            new DayOnRequest(id, employee, shiftDate, element.getAttribute("weight").getIntValue());
                     dayOnRequestList.add(dayOnRequest);
                     employee.getDayOnRequestMap().put(shiftDate, dayOnRequest);
                     id++;
@@ -922,23 +843,20 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readShiftOffRequestList(NurseRoster nurseRoster, Element shiftOffRequestsElement) throws JDOMException {
             List<ShiftOffRequest> shiftOffRequestList;
             if (shiftOffRequestsElement == null) {
-                shiftOffRequestList = emptyList();
+                shiftOffRequestList = Collections.emptyList();
             } else {
                 List<Element> shiftOffElementList = (List<Element>) shiftOffRequestsElement.getChildren();
                 shiftOffRequestList = new ArrayList<>(shiftOffElementList.size());
                 long id = 0L;
                 for (Element element : shiftOffElementList) {
                     assertElementName(element, "ShiftOff");
-                    ShiftOffRequest shiftOffRequest = new ShiftOffRequest();
-                    shiftOffRequest.setId(id);
 
                     Element employeeElement = element.getChild("EmployeeID");
                     Employee employee = employeeMap.get(employeeElement.getText());
                     if (employee == null) {
                         throw new IllegalArgumentException("The shift (" + employeeElement.getText()
-                                + ") of shiftOffRequest (" + shiftOffRequest + ") does not exist.");
+                                + ") of shiftOffRequest (" + id + ") does not exist.");
                     }
-                    shiftOffRequest.setEmployee(employee);
 
                     Element dateElement = element.getChild("Date");
                     Element shiftTypeElement = element.getChild("ShiftTypeID");
@@ -947,12 +865,11 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     if (shift == null) {
                         throw new IllegalArgumentException("The date (" + dateElement.getText()
                                 + ") or the shiftType (" + shiftTypeElement.getText()
-                                + ") of shiftOffRequest (" + shiftOffRequest + ") does not exist.");
+                                + ") of shiftOffRequest (" + id + ") does not exist.");
                     }
-                    shiftOffRequest.setShift(shift);
 
-                    shiftOffRequest.setWeight(element.getAttribute("weight").getIntValue());
-
+                    ShiftOffRequest shiftOffRequest =
+                            new ShiftOffRequest(id, employee, shift, element.getAttribute("weight").getIntValue());
                     shiftOffRequestList.add(shiftOffRequest);
                     employee.getShiftOffRequestMap().put(shift, shiftOffRequest);
                     id++;
@@ -964,23 +881,20 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readShiftOnRequestList(NurseRoster nurseRoster, Element shiftOnRequestsElement) throws JDOMException {
             List<ShiftOnRequest> shiftOnRequestList;
             if (shiftOnRequestsElement == null) {
-                shiftOnRequestList = emptyList();
+                shiftOnRequestList = Collections.emptyList();
             } else {
                 List<Element> shiftOnElementList = (List<Element>) shiftOnRequestsElement.getChildren();
                 shiftOnRequestList = new ArrayList<>(shiftOnElementList.size());
                 long id = 0L;
                 for (Element element : shiftOnElementList) {
                     assertElementName(element, "ShiftOn");
-                    ShiftOnRequest shiftOnRequest = new ShiftOnRequest();
-                    shiftOnRequest.setId(id);
 
                     Element employeeElement = element.getChild("EmployeeID");
                     Employee employee = employeeMap.get(employeeElement.getText());
                     if (employee == null) {
                         throw new IllegalArgumentException("The shift (" + employeeElement.getText()
-                                + ") of shiftOnRequest (" + shiftOnRequest + ") does not exist.");
+                                + ") of shiftOnRequest (" + id + ") does not exist.");
                     }
-                    shiftOnRequest.setEmployee(employee);
 
                     Element dateElement = element.getChild("Date");
                     Element shiftTypeElement = element.getChild("ShiftTypeID");
@@ -989,12 +903,11 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     if (shift == null) {
                         throw new IllegalArgumentException("The date (" + dateElement.getText()
                                 + ") or the shiftType (" + shiftTypeElement.getText()
-                                + ") of shiftOnRequest (" + shiftOnRequest + ") does not exist.");
+                                + ") of shiftOnRequest (" + id + ") does not exist.");
                     }
-                    shiftOnRequest.setShift(shift);
 
-                    shiftOnRequest.setWeight(element.getAttribute("weight").getIntValue());
-
+                    ShiftOnRequest shiftOnRequest =
+                            new ShiftOnRequest(id, employee, shift, element.getAttribute("weight").getIntValue());
                     shiftOnRequestList.add(shiftOnRequest);
                     employee.getShiftOnRequestMap().put(shift, shiftOnRequest);
                     id++;
@@ -1009,11 +922,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             long id = 0L;
             for (Shift shift : shiftList) {
                 for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
-                    ShiftAssignment shiftAssignment = new ShiftAssignment();
-                    shiftAssignment.setId(id);
+                    ShiftAssignment shiftAssignment = new ShiftAssignment(id, shift, i);
                     id++;
-                    shiftAssignment.setShift(shift);
-                    shiftAssignment.setIndexInShift(i);
                     // Notice that we leave the PlanningVariable properties on null
                     shiftAssignmentList.add(shiftAssignment);
                 }

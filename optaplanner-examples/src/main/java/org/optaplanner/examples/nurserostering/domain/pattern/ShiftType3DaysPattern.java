@@ -2,14 +2,18 @@ package org.optaplanner.examples.nurserostering.domain.pattern;
 
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("ShiftType3DaysPattern")
 public class ShiftType3DaysPattern extends Pattern {
 
     private ShiftType dayIndex0ShiftType;
     private ShiftType dayIndex1ShiftType;
     private ShiftType dayIndex2ShiftType;
+
+    public ShiftType3DaysPattern() { // For Jackson.
+    }
+
+    public ShiftType3DaysPattern(long id, String code) {
+        super(id, code);
+    }
 
     public ShiftType getDayIndex0ShiftType() {
         return dayIndex0ShiftType;

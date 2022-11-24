@@ -9,7 +9,7 @@ import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
 class NurseRosteringSmokeTest extends SolverSmokeTest<NurseRoster, HardSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/nurserostering/unsolved/medium_late01_initialized.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/nurserostering/unsolved/medium_late01_initialized.json";
 
     @Override
     protected NurseRosteringApp createCommonApp() {
