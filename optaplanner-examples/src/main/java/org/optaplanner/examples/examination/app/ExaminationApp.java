@@ -10,7 +10,7 @@ import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.persistence.ExaminationExporter;
 import org.optaplanner.examples.examination.persistence.ExaminationImporter;
-import org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO;
+import org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO;
 import org.optaplanner.examples.examination.swingui.ExaminationPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -44,7 +44,7 @@ public class ExaminationApp extends CommonApp<Examination> {
 
     @Override
     public SolutionFileIO<Examination> createSolutionFileIO() {
-        return new ExaminationXmlSolutionFileIO();
+        return new ExaminationSolutionFileIO();
     }
 
     @Override

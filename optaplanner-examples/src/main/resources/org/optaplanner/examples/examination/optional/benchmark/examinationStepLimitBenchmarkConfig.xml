@@ -15,8 +15,8 @@
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

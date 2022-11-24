@@ -18,7 +18,7 @@ public abstract class AbstractPersistableJackson {
         return id;
     }
 
-    void setId(long id) {
+    protected void setId(long id) {
         this.id = id;
     }
 

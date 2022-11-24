@@ -9,7 +9,7 @@ import org.optaplanner.examples.examination.domain.Examination;
 
 class ExaminationSmokeTest extends SolverSmokeTest<Examination, HardSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/examination/unsolved/exam_comp_set5.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/examination/unsolved/exam_comp_set5.json";
 
     @Override
     protected ExaminationApp createCommonApp() {

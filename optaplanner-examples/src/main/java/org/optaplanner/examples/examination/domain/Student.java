@@ -1,14 +1,15 @@
 package org.optaplanner.examples.examination.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 /**
  * Not used during score calculation, so not inserted into the working memory.
  */
-@XStreamAlias("Student")
-public class Student extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Student extends AbstractPersistableJackson {
     public Student() {
     }
 

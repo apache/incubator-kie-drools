@@ -3,9 +3,9 @@ package org.optaplanner.examples.examination.domain;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Institutional weightings.
@@ -14,8 +14,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Each {@link Examination} has only 1 instance of this class.
  */
 @ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.examination.score")
-@XStreamAlias("ExaminationConstraintConfiguration")
-public class ExaminationConstraintConfiguration extends AbstractPersistable {
+public class ExaminationConstraintConfiguration extends AbstractPersistableJackson {
     // Hard constraints
     private int conflictingExamsInSamePeriodPenalty = 1;
     private int periodDurationTooShortPenalty = 1;
@@ -37,78 +36,99 @@ public class ExaminationConstraintConfiguration extends AbstractPersistable {
     private int periodPenaltyPenalty = 1;
     private int roomPenaltyPenalty = 1;
 
+    public ExaminationConstraintConfiguration() { // For Jackson.
+    }
+
+    public ExaminationConstraintConfiguration(long id) {
+        super(id);
+    }
+
     // ************************************************************************
     // Constraint weight methods
     // ************************************************************************
 
     // Hard constraints
     @ConstraintWeight("conflictingExamsInSamePeriod")
+    @JsonIgnore
     public HardSoftScore getConflictingExamsInSamePeriodPenaltyAsScore() {
         return HardSoftScore.ofHard(conflictingExamsInSamePeriodPenalty);
     }
 
     @ConstraintWeight("periodDurationTooShort")
+    @JsonIgnore
     public HardSoftScore getPeriodDurationTooShortPenaltyAsScore() {
         return HardSoftScore.ofHard(periodDurationTooShortPenalty);
     }
 
     @ConstraintWeight("roomCapacityTooSmall")
+    @JsonIgnore
     public HardSoftScore getRoomCapacityTooSmallPenaltyAsScore() {
         return HardSoftScore.ofHard(roomCapacityTooSmallPenalty);
     }
 
     @ConstraintWeight("periodPenaltyExamCoincidence")
+    @JsonIgnore
     public HardSoftScore getPeriodPenaltyExamCoincidencePenaltyAsScore() {
         return HardSoftScore.ofHard(periodPenaltyExamCoincidencePenalty);
     }
 
     @ConstraintWeight("periodPenaltyExclusion")
+    @JsonIgnore
     public HardSoftScore getPeriodPenaltyExclusionPenaltyAsScore() {
         return HardSoftScore.ofHard(periodPenaltyExclusionPenalty);
     }
 
     @ConstraintWeight("periodPenaltyAfter")
+    @JsonIgnore
     public HardSoftScore getPeriodPenaltyAfterPenaltyAsScore() {
         return HardSoftScore.ofHard(periodPenaltyAfterPenalty);
     }
 
     @ConstraintWeight("roomPenaltyExclusive")
+    @JsonIgnore
     public HardSoftScore getRoomPenaltyExclusivePenaltyAsScore() {
         return HardSoftScore.ofHard(roomPenaltyExclusivePenalty);
     }
 
     // Soft constraints
     @ConstraintWeight("twoExamsInARow")
+    @JsonIgnore
     public HardSoftScore getTwoInARowPenaltyAsScore() {
         return HardSoftScore.ofSoft(twoInARowPenalty);
     }
 
     @ConstraintWeight("twoExamsInADay")
+    @JsonIgnore
     public HardSoftScore getTwoInADayPenaltyAsScore() {
         return HardSoftScore.ofSoft(twoInADayPenalty);
     }
 
     @ConstraintWeight("periodSpread")
+    @JsonIgnore
     public HardSoftScore getPeriodSpreadPenaltyAsScore() {
         return HardSoftScore.ofSoft(periodSpreadPenalty);
     }
 
     @ConstraintWeight("mixedDurations")
+    @JsonIgnore
     public HardSoftScore getMixedDurationPenaltyAsScore() {
         return HardSoftScore.ofSoft(mixedDurationPenalty);
     }
 
     @ConstraintWeight("frontLoad")
+    @JsonIgnore
     public HardSoftScore getFrontLoadPenaltyAsScore() {
         return HardSoftScore.ofSoft(frontLoadPenalty);
     }
 
     @ConstraintWeight("periodPenalty")
+    @JsonIgnore
     public HardSoftScore getPeriodPenaltyPenaltyAsScore() {
         return HardSoftScore.ofSoft(periodPenaltyPenalty);
     }
 
     @ConstraintWeight("roomPenalty")
+    @JsonIgnore
     public HardSoftScore getRoomPenaltyPenaltyAsScore() {
         return HardSoftScore.ofSoft(roomPenaltyPenalty);
     }

@@ -46,7 +46,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
     public static void main(String[] args) {
         SolutionConverter<Examination> converter = SolutionConverter.createImportConverter(
-                ExaminationApp.DATA_DIR_NAME, new ExaminationImporter(), Examination.class);
+                ExaminationApp.DATA_DIR_NAME, new ExaminationImporter(), new ExaminationSolutionFileIO());
         converter.convertAll();
     }
 
@@ -71,8 +71,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         @Override
         public Examination readSolution() throws IOException {
-            examination = new Examination();
-            examination.setId(0L);
+            examination = new Examination(0L);
 
             readTopicListAndStudentList();
             readPeriodList();
@@ -110,8 +109,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             int examSize = readHeaderWithNumber("Exams");
             List<Topic> topicList = new ArrayList<>(examSize);
             for (int i = 0; i < examSize; i++) {
-                Topic topic = new Topic();
-                topic.setId((long) i);
+                Topic topic = new Topic()
+                        .withId(i);
                 String line = bufferedReader.readLine();
                 String[] lineTokens = line.split(SPLIT_REGEX);
                 topic.setDuration(Integer.parseInt(lineTokens[0]));
@@ -156,8 +155,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         private Student findOrCreateStudent(Map<Integer, Student> studentMap, int id) {
             Student student = studentMap.get(id);
             if (student == null) {
-                student = new Student();
-                student.setId((long) id);
+                student = new Student(id);
                 studentMap.put(id, student);
             }
             return student;
@@ -169,8 +167,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd:MM:yyyy HH:mm:ss", Locale.UK);
             LocalDateTime referenceDateTime = null;
             for (int i = 0; i < periodSize; i++) {
-                Period period = new Period();
-                period.setId((long) i);
+                Period period = new Period().withId(i);
                 String line = bufferedReader.readLine();
                 String[] lineTokens = line.split(SPLIT_REGEX);
                 if (lineTokens.length != 4) {
@@ -204,8 +201,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             int roomSize = readHeaderWithNumber("Rooms");
             List<Room> roomList = new ArrayList<>(roomSize);
             for (int i = 0; i < roomSize; i++) {
-                Room room = new Room();
-                room.setId((long) i);
+                Room room = new Room().withId(i);
                 String line = bufferedReader.readLine();
                 String[] lineTokens = line.split(SPLIT_REGEX);
                 if (lineTokens.length != 2) {
@@ -229,20 +225,16 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 if (lineTokens.length != 3) {
                     throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
                 }
-                PeriodPenalty periodPenalty = new PeriodPenalty();
-                periodPenalty.setId((long) id);
-                id++;
                 Topic leftTopic = topicList.get(Integer.parseInt(lineTokens[0]));
-                periodPenalty.setLeftTopic(leftTopic);
                 PeriodPenaltyType periodPenaltyType = PeriodPenaltyType.valueOf(lineTokens[1]);
-                periodPenalty.setPeriodPenaltyType(periodPenaltyType);
                 Topic rightTopic = topicList.get(Integer.parseInt(lineTokens[2]));
-                periodPenalty.setRightTopic(rightTopic);
+                PeriodPenalty periodPenalty = new PeriodPenalty(id, leftTopic, rightTopic, periodPenaltyType);
+                id++;
                 boolean ignorePenalty = false;
 
                 switch (periodPenaltyType) {
                     case EXAM_COINCIDENCE:
-                        if (leftTopic.getId().equals(rightTopic.getId())) {
+                        if (leftTopic.getId() == rightTopic.getId()) {
                             logger.warn("  Filtering out periodPenalty (" + periodPenalty
                                     + ") because the left and right topic are the same.");
                             ignorePenalty = true;
@@ -266,7 +258,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                         }
                         break;
                     case EXCLUSION:
-                        if (leftTopic.getId().equals(rightTopic.getId())) {
+                        if (leftTopic.getId() == rightTopic.getId()) {
                             logger.warn("  Filtering out periodPenalty (" + periodPenalty
                                     + ") for leftTopic (" + leftTopic + ") and rightTopic (" + rightTopic
                                     + ") because the left and right topic are the same.");
@@ -315,13 +307,11 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                     for (Topic rightTopic : new ArrayList<>(coincidenceMap.get(middleTopic))) {
                         if (rightTopic != leftTopic
                                 && !middleTopicSet.contains(rightTopic)) {
-                            PeriodPenalty indirectPeriodPenalty = new PeriodPenalty();
-                            indirectPeriodPenalty.setId((long) id);
-                            id++;
-                            indirectPeriodPenalty.setPeriodPenaltyType(PeriodPenaltyType.EXAM_COINCIDENCE);
-                            indirectPeriodPenalty.setLeftTopic(leftTopic);
-                            indirectPeriodPenalty.setRightTopic(rightTopic);
+                            PeriodPenalty indirectPeriodPenalty =
+                                    new PeriodPenalty(id, leftTopic, rightTopic, PeriodPenaltyType.EXAM_COINCIDENCE);
                             periodPenaltyList.add(indirectPeriodPenalty);
+                            id++;
+
                             boolean added = coincidenceMap.get(leftTopic).add(rightTopic)
                                     && coincidenceMap.get(rightTopic).add(leftTopic);
                             if (!added) {
@@ -345,13 +335,11 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 while (!queue.isEmpty()) {
                     Topic rightTopic = queue.poll();
                     if (!afterLeftSet.contains(rightTopic)) {
-                        PeriodPenalty indirectPeriodPenalty = new PeriodPenalty();
-                        indirectPeriodPenalty.setId((long) id);
-                        id++;
-                        indirectPeriodPenalty.setPeriodPenaltyType(PeriodPenaltyType.AFTER);
-                        indirectPeriodPenalty.setLeftTopic(leftTopic);
-                        indirectPeriodPenalty.setRightTopic(rightTopic);
+                        PeriodPenalty indirectPeriodPenalty =
+                                new PeriodPenalty(id, leftTopic, rightTopic, PeriodPenaltyType.AFTER);
                         periodPenaltyList.add(indirectPeriodPenalty);
+                        id++;
+
                         boolean added = afterMap.get(leftTopic).add(rightTopic);
                         if (!added) {
                             throw new IllegalStateException("The periodPenalty (" + indirectPeriodPenalty
@@ -378,10 +366,10 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 if (lineTokens.length != 2) {
                     throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 2 tokens.");
                 }
-                RoomPenalty roomPenalty = new RoomPenalty();
-                roomPenalty.setId((long) id);
-                roomPenalty.setTopic(topicList.get(Integer.parseInt(lineTokens[0])));
-                roomPenalty.setRoomPenaltyType(RoomPenaltyType.valueOf(lineTokens[1]));
+                RoomPenalty roomPenalty = new RoomPenalty()
+                        .withId(id)
+                        .withTopic(topicList.get(Integer.parseInt(lineTokens[0])))
+                        .withRoomPenaltyType(RoomPenaltyType.valueOf(lineTokens[1]));
                 roomPenaltyList.add(roomPenalty);
                 line = bufferedReader.readLine();
                 id++;
@@ -399,8 +387,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         }
 
         private void readInstitutionalWeighting() throws IOException {
-            ExaminationConstraintConfiguration constraintConfiguration = new ExaminationConstraintConfiguration();
-            constraintConfiguration.setId(0L);
+            ExaminationConstraintConfiguration constraintConfiguration = new ExaminationConstraintConfiguration(0L);
             String[] lineTokens;
             lineTokens = readInstitutionalWeightingProperty("TWOINAROW", 2);
             constraintConfiguration.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
@@ -431,7 +418,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void tagFrontLoadLargeTopics() {
             List<Topic> sortedTopicList = new ArrayList<>(examination.getTopicList());
-            Collections.sort(sortedTopicList, COMPARATOR);
+            sortedTopicList.sort(COMPARATOR);
             int frontLoadLargeTopicSize = examination.getConstraintConfiguration().getFrontLoadLargeTopicSize();
             if (frontLoadLargeTopicSize == 0) {
                 return;
@@ -479,12 +466,12 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                     }
                 }
                 if (leadingTopic == topic) {
-                    LeadingExam leadingExam = new LeadingExam();
+                    LeadingExam leadingExam = new LeadingExam().withId(topic.getId());
                     leadingExam.setFollowingExamList(new ArrayList<>(10));
                     leadingTopicToExamMap.put(topic, leadingExam);
                     exam = leadingExam;
                 } else {
-                    FollowingExam followingExam = new FollowingExam();
+                    FollowingExam followingExam = new FollowingExam().withId(topic.getId());
                     LeadingExam leadingExam = leadingTopicToExamMap.get(leadingTopic);
                     if (leadingExam == null) {
                         throw new IllegalStateException("The followingExam (" + topic.getId()
@@ -494,7 +481,6 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                     leadingExam.getFollowingExamList().add(followingExam);
                     exam = followingExam;
                 }
-                exam.setId(topic.getId());
                 exam.setTopic(topic);
                 // Notice that we leave the PlanningVariable properties on null
                 examList.add(exam);

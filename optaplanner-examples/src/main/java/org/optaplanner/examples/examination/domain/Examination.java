@@ -9,16 +9,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @PlanningSolution
-@XStreamAlias("Examination")
-public class Examination extends AbstractPersistable {
+public class Examination extends AbstractPersistableJackson {
 
     private ExaminationConstraintConfiguration constraintConfiguration;
 
@@ -33,8 +28,14 @@ public class Examination extends AbstractPersistable {
 
     private List<Exam> examList;
 
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
+
+    public Examination() { // For Jackson.
+    }
+
+    public Examination(long id) {
+        super(id);
+    }
 
     @ConstraintConfigurationProvider
     public ExaminationConstraintConfiguration getConstraintConfiguration() {

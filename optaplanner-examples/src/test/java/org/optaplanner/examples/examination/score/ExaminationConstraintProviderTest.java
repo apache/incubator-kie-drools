@@ -103,7 +103,7 @@ class ExaminationConstraintProviderTest
         Topic topic1 = new Topic().withStudents(student1, student2);
         Topic topic2 = new Topic().withStudents(student1, student2);
 
-        PeriodPenalty periodPenalty = new PeriodPenalty(topic1, topic2, PeriodPenaltyType.EXCLUSION);
+        PeriodPenalty periodPenalty = new PeriodPenalty(0L, topic1, topic2, PeriodPenaltyType.EXCLUSION);
 
         Period period = new Period().withPeriodIndex(1);
 

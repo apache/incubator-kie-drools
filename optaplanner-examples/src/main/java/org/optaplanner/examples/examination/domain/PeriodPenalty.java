@@ -1,16 +1,14 @@
 package org.optaplanner.examples.examination.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+public class PeriodPenalty extends AbstractPersistableJackson {
 
-@XStreamAlias("PeriodPenalty")
-public class PeriodPenalty extends AbstractPersistable {
-
-    public PeriodPenalty() {
+    public PeriodPenalty() { // For Jackson.
     }
 
-    public PeriodPenalty(Topic leftTopic, Topic rightTopic, PeriodPenaltyType periodPenaltyType) {
+    public PeriodPenalty(long id, Topic leftTopic, Topic rightTopic, PeriodPenaltyType periodPenaltyType) {
+        super(id);
         this.leftTopic = leftTopic;
         this.rightTopic = rightTopic;
         this.periodPenaltyType = periodPenaltyType;

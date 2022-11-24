@@ -1,11 +1,8 @@
 package org.optaplanner.examples.examination.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("RoomPenalty")
-public class RoomPenalty extends AbstractPersistable {
+public class RoomPenalty extends AbstractPersistableJackson {
 
     private RoomPenaltyType roomPenaltyType;
     private Topic topic;

@@ -111,9 +111,9 @@
   <solverBenchmark>
     <name>Examination Tabu Search ${randomType}</name>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
-      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.json</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.json</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>

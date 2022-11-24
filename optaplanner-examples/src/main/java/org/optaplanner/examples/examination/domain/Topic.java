@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@XStreamAlias("Topic")
-public class Topic extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Topic extends AbstractPersistableJackson {
 
     private int duration; // in minutes
     private Set<Student> studentSet;
@@ -34,6 +36,7 @@ public class Topic extends AbstractPersistable {
         this.studentSet = studentSet;
     }
 
+    @JsonIgnore
     public int getStudentSize() {
         return studentSet.size();
     }

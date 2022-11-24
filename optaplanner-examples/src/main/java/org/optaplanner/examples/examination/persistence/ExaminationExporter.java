@@ -1,7 +1,6 @@
 package org.optaplanner.examples.examination.persistence;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Comparator;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
@@ -16,7 +15,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
     public static void main(String[] args) {
         SolutionConverter<Examination> converter = SolutionConverter.createExportConverter(
-                ExaminationApp.DATA_DIR_NAME, Examination.class, new ExaminationExporter());
+                ExaminationApp.DATA_DIR_NAME, new ExaminationSolutionFileIO(), new ExaminationExporter());
         converter.convertAll();
     }
 
@@ -34,7 +33,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
         @Override
         public void writeSolution() throws IOException {
-            Collections.sort(solution.getExamList(), Comparator.comparingLong(Exam::getId)); // TODO remove me when obsolete
+            solution.getExamList().sort(Comparator.comparingLong(Exam::getId)); // TODO remove me when obsolete
             for (Exam exam : solution.getExamList()) {
                 bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }

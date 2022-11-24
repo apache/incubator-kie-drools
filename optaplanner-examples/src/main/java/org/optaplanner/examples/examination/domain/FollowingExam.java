@@ -4,10 +4,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.examination.domain.solver.PeriodUpdatingVariableListener;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 @PlanningEntity
-@XStreamAlias("FollowingExam")
 public class FollowingExam extends Exam {
 
     protected LeadingExam leadingExam;

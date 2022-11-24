@@ -22,6 +22,9 @@ public class TopicConflict extends AbstractPersistable implements Comparable<Top
     private Topic rightTopic;
     private int studentSize;
 
+    public TopicConflict() { // For Jackson.
+    }
+
     public TopicConflict(long id, Topic leftTopic, Topic rightTopic, int studentSize) {
         super(id);
         this.leftTopic = leftTopic;

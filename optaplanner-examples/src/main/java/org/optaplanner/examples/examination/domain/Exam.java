@@ -2,18 +2,27 @@ package org.optaplanner.examples.examination.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
 import org.optaplanner.examples.examination.domain.solver.RoomStrengthWeightFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @PlanningEntity(difficultyWeightFactoryClass = ExamDifficultyWeightFactory.class)
-@XStreamInclude({
-        LeadingExam.class,
-        FollowingExam.class
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LeadingExam.class, name = "leading"),
+        @JsonSubTypes.Type(value = FollowingExam.class, name = "following"),
 })
-public abstract class Exam extends AbstractPersistable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public abstract class Exam extends AbstractPersistableJackson implements Labeled {
 
     protected Topic topic;
 
@@ -43,14 +52,17 @@ public abstract class Exam extends AbstractPersistable {
 
     public abstract Period getPeriod();
 
+    @JsonIgnore
     public int getTopicDuration() {
         return getTopic().getDuration();
     }
 
+    @JsonIgnore
     public int getTopicStudentSize() {
         return getTopic().getStudentSize();
     }
 
+    @JsonIgnore
     public int getDayIndex() {
         Period period = getPeriod();
         if (period == null) {
@@ -59,6 +71,7 @@ public abstract class Exam extends AbstractPersistable {
         return period.getDayIndex();
     }
 
+    @JsonIgnore
     public int getPeriodIndex() {
         Period period = getPeriod();
         if (period == null) {
@@ -67,6 +80,7 @@ public abstract class Exam extends AbstractPersistable {
         return period.getPeriodIndex();
     }
 
+    @JsonIgnore
     public int getPeriodDuration() {
         Period period = getPeriod();
         if (period == null) {
@@ -75,10 +89,12 @@ public abstract class Exam extends AbstractPersistable {
         return period.getDuration();
     }
 
+    @JsonIgnore
     public boolean isTopicFrontLoadLarge() {
         return topic.isFrontLoadLarge();
     }
 
+    @JsonIgnore
     public boolean isPeriodFrontLoadLast() {
         Period period = getPeriod();
         if (period == null) {
@@ -87,6 +103,7 @@ public abstract class Exam extends AbstractPersistable {
         return period.isFrontLoadLast();
     }
 
+    @Override
     public String getLabel() {
         return Long.toString(topic.getId());
     }

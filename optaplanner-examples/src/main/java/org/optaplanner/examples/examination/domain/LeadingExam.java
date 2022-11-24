@@ -5,10 +5,7 @@ import java.util.List;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 @PlanningEntity
-@XStreamAlias("LeadingExam")
 public class LeadingExam extends Exam {
 
     protected List<FollowingExam> followingExamList;
