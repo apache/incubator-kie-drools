@@ -2,17 +2,29 @@ package org.optaplanner.examples.pas.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Patient")
-public class Patient extends AbstractPersistable {
+@JsonIdentityInfo(scope = Patient.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Patient extends AbstractPersistableJackson {
 
     private String name;
     private Gender gender;
     private int age;
     private Integer preferredMaximumRoomCapacity;
+
+    public Patient() { // For Jackson.
+    }
+
+    public Patient(long id, String name, Gender gender, int age, Integer preferredMaximumRoomCapacity) {
+        super(id);
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.preferredMaximumRoomCapacity = preferredMaximumRoomCapacity;
+    }
 
     private List<RequiredPatientEquipment> requiredPatientEquipmentList;
     private List<PreferredPatientEquipment> preferredPatientEquipmentList;

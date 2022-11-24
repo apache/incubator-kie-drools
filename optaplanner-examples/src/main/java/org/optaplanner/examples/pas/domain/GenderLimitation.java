@@ -15,9 +15,9 @@ public enum GenderLimitation {
         return null;
     }
 
-    private String code;
+    private final String code;
 
-    private GenderLimitation(String code) {
+    GenderLimitation(String code) {
         this.code = code;
     }
 

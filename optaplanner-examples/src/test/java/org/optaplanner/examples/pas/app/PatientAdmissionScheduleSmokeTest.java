@@ -10,7 +10,7 @@ import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 class PatientAdmissionScheduleSmokeTest
         extends SolverSmokeTest<PatientAdmissionSchedule, HardMediumSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/pas/unsolved/testdata01.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/pas/unsolved/testdata01.json";
 
     @Override
     protected PatientAdmissionScheduleApp createCommonApp() {

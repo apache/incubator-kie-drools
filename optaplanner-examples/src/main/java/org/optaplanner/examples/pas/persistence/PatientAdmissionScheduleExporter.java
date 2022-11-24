@@ -4,7 +4,6 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Comparator;
 
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
@@ -20,7 +19,7 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
     public static void main(String[] args) {
         SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createExportConverter(
-                PatientAdmissionScheduleApp.DATA_DIR_NAME, PatientAdmissionSchedule.class,
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleSolutionFileIO(),
                 new PatientAdmissionScheduleExporter());
         converter.convertAll();
     }
@@ -39,7 +38,7 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
         @Override
         public void writeSolution() throws IOException {
-            Collections.sort(solution.getBedDesignationList(), COMPARATOR);
+            solution.getBedDesignationList().sort(COMPARATOR);
             for (Patient patient : solution.getPatientList()) {
                 bufferedWriter.write(Long.toString(patient.getId()));
                 for (BedDesignation bedDesignation : solution.getBedDesignationList()) {

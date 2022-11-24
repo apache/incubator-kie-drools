@@ -13,9 +13,9 @@ public enum Gender {
         return null;
     }
 
-    private String code;
+    private final String code;
 
-    private Gender(String code) {
+    Gender(String code) {
         this.code = code;
     }
 

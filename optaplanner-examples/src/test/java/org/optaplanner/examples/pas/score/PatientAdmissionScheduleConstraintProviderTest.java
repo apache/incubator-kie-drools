@@ -51,13 +51,11 @@ class PatientAdmissionScheduleConstraintProviderTest
     }
 
     private static Stream<Arguments> departmentAgeLimitationProvider() {
-        Department adultDepartment = new Department();
+        Department adultDepartment = new Department(1L, "Adult department");
         adultDepartment.setMinimumAge(18);
-        adultDepartment.setId(1L);
 
-        Department underageDepartment = new Department();
+        Department underageDepartment = new Department(2L, "Underage department");
         underageDepartment.setMaximumAge(18);
-        underageDepartment.setId(1L);
 
         return Stream.of(
                 Arguments.of(adultDepartment, 5,
@@ -81,7 +79,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Patient patient = new Patient();
         patient.setGender(gender);
 
-        AdmissionPart genderAdmission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart genderAdmission = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation genderLimitationDesignation = new BedDesignation(0L, genderAdmission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
@@ -96,7 +94,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Patient patient = new Patient();
         Bed bed = new Bed();
 
-        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPart = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation designation = new BedDesignation(1L, admissionPart, bed);
 
         BedDesignation sameBedAndNightsDesignation = new BedDesignation(2L, admissionPart, bed);
@@ -121,7 +119,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed bed = new Bed();
         bed.setRoom(room);
 
-        AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admission = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation designation = new BedDesignation(0L, admission, bed);
 
         constraintVerifier.verifyThat(constraintFunction)
@@ -142,7 +140,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed bed = new Bed();
         bed.setRoom(room);
 
-        AdmissionPart admission = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admission = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation designation = new BedDesignation(0L, admission, bed);
 
         //ReqPatientEq1
@@ -177,7 +175,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed bed1 = new Bed();
         bed1.setRoom(room);
 
-        AdmissionPart admissionPartFemale = new AdmissionPart(female, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPartFemale = new AdmissionPart(0L, female, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation bedDesignationFemale = new BedDesignation(1, admissionPartFemale, bed1);
 
         //Assign male
@@ -187,7 +185,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed bed2 = new Bed();
         bed2.setRoom(room);
 
-        AdmissionPart admissionPartMale = new AdmissionPart(male, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPartMale = new AdmissionPart(1L, male, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation bedDesignationMale = new BedDesignation(2, admissionPartMale, bed2);
 
         constraintVerifier
@@ -202,7 +200,7 @@ class PatientAdmissionScheduleConstraintProviderTest
 
         Patient patient = new Patient();
 
-        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPart = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation bedUnassignedDesignation = new BedDesignation(2, admissionPart, null);
 
         constraintVerifier
@@ -224,7 +222,8 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed assignedBedInExceedCapacity = new Bed();
         assignedBedInExceedCapacity.setRoom(room);
 
-        AdmissionPart admissionPart = new AdmissionPart(patientWithRoomPreferences, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPart =
+                new AdmissionPart(0L, patientWithRoomPreferences, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation bedDesignation = new BedDesignation(0L, admissionPart, assignedBedInExceedCapacity);
 
         constraintVerifier
@@ -244,7 +243,7 @@ class PatientAdmissionScheduleConstraintProviderTest
         Bed bed = new Bed();
         bed.setRoom(room);
 
-        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
+        AdmissionPart admissionPart = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, DEFAULT_SPECIALISM);
         BedDesignation bedDesignation = new BedDesignation(0L, admissionPart, bed);
 
         Equipment equipment1 = new Equipment();
@@ -284,13 +283,13 @@ class PatientAdmissionScheduleConstraintProviderTest
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
 
-        AdmissionPart admissionPartSpec1 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        AdmissionPart admissionPartSpec1 = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
         BedDesignation designationWithDepartmentSpecialism1 = new BedDesignation(0L, admissionPartSpec1, bedInRoomInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
 
-        AdmissionPart admissionPartSpec2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        AdmissionPart admissionPartSpec2 = new AdmissionPart(1L, patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
         BedDesignation designationWithDepartmentSpecialism2 = new BedDesignation(1L, admissionPartSpec2, bedInRoomInDep);
 
         DepartmentSpecialism departmentSpecialismWithOneSpec = new DepartmentSpecialism();
@@ -315,12 +314,12 @@ class PatientAdmissionScheduleConstraintProviderTest
 
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        AdmissionPart admissionPart = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        AdmissionPart admissionPart = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
         BedDesignation designationWithRoomSpecialism1 = new BedDesignation(0L, admissionPart, bedInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        AdmissionPart admissionPart2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        AdmissionPart admissionPart2 = new AdmissionPart(1L, patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
         BedDesignation designationWithRoomSpecialism2 = new BedDesignation(1L, admissionPart2, bedInDep);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();
@@ -344,12 +343,12 @@ class PatientAdmissionScheduleConstraintProviderTest
         bedInDep.setRoom(roomInDep);
         //Designation with 1st spec
         Specialism spec1 = new Specialism();
-        AdmissionPart admissionPart1 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
+        AdmissionPart admissionPart1 = new AdmissionPart(0L, patient, ZERO_NIGHT, FIVE_NIGHT, spec1);
         BedDesignation designationWithRoomSpecialism1 = new BedDesignation(0L, admissionPart1, bedInDep);
 
         //Designation with 2nd spec
         Specialism spec2 = new Specialism();
-        AdmissionPart admissionPart2 = new AdmissionPart(patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
+        AdmissionPart admissionPart2 = new AdmissionPart(1L, patient, ZERO_NIGHT, FIVE_NIGHT, spec2);
         BedDesignation designationWithRoomSpecialism2 = new BedDesignation(1L, admissionPart2, bedInDep);
 
         RoomSpecialism roomSpecialism = new RoomSpecialism();

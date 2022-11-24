@@ -1,14 +1,25 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("RequiredPatientEquipment")
-public class RequiredPatientEquipment extends AbstractPersistable {
+@JsonIdentityInfo(scope = RequiredPatientEquipment.class, generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+public class RequiredPatientEquipment extends AbstractPersistableJackson {
 
     private Patient patient;
     private Equipment equipment;
+
+    public RequiredPatientEquipment() { // For Jackson.
+    }
+
+    public RequiredPatientEquipment(long id, Patient patient, Equipment equipment) {
+        super(id);
+        this.patient = patient;
+        this.equipment = equipment;
+    }
 
     public Patient getPatient() {
         return patient;

@@ -8,15 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoft.HardMediumSoftScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningSolution
-@XStreamAlias("PatientAdmissionSchedule")
-public class PatientAdmissionSchedule extends AbstractPersistable {
+public class PatientAdmissionSchedule extends AbstractPersistableJackson {
 
     private List<Specialism> specialismList;
     private List<Equipment> equipmentList;
@@ -34,8 +29,14 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
 
     private List<BedDesignation> bedDesignationList;
 
-    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
     private HardMediumSoftScore score;
+
+    public PatientAdmissionSchedule() { // For Jackson.
+    }
+
+    public PatientAdmissionSchedule(long id) {
+        super(id);
+    }
 
     @ProblemFactCollectionProperty
     public List<Specialism> getSpecialismList() {

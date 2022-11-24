@@ -1,16 +1,23 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("DepartmentSpecialism")
-public class DepartmentSpecialism extends AbstractPersistable {
+public class DepartmentSpecialism extends AbstractPersistableJackson {
 
     private Department department;
     private Specialism specialism;
 
     private int priority; // AKA choice
+
+    public DepartmentSpecialism() { // For Jackson.
+    }
+
+    public DepartmentSpecialism(long id, Department department, Specialism specialism, int priority) {
+        super(id);
+        this.department = department;
+        this.specialism = specialism;
+        this.priority = priority;
+    }
 
     public Department getDepartment() {
         return department;

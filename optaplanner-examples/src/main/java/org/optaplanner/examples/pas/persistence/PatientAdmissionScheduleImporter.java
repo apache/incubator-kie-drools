@@ -6,7 +6,6 @@ import static java.util.Comparator.comparingLong;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
     public static void main(String[] args) {
         SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createImportConverter(
                 PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter(),
-                PatientAdmissionSchedule.class);
+                new PatientAdmissionScheduleSolutionFileIO());
         converter.convertAll();
     }
 
@@ -73,8 +72,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         @Override
         public PatientAdmissionSchedule readSolution() throws IOException {
-            patientAdmissionSchedule = new PatientAdmissionSchedule();
-            patientAdmissionSchedule.setId(0L);
+            patientAdmissionSchedule = new PatientAdmissionSchedule(0L);
             readSizes();
             readEmptyLine();
             readEmptyLine();
@@ -129,9 +127,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             for (int i = 0; i < specialismListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
-                Specialism specialism = new Specialism();
-                specialism.setId(Long.parseLong(lineTokens[0]));
-                specialism.setName(lineTokens[1]);
+                Specialism specialism = new Specialism(Long.parseLong(lineTokens[0]), lineTokens[1]);
                 specialismList.add(specialism);
                 idToSpecialismMap.put(specialism.getId(), specialism);
             }
@@ -150,17 +146,15 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 String[] lineTokens = splitByPipelineAndTrim(line, 2);
 
                 String[] departmentTokens = splitBySpace(lineTokens[0], 4);
-                Department department = new Department();
-                department.setId(Long.parseLong(departmentTokens[0]));
-                department.setName(departmentTokens[1]);
+                Department department = new Department(Long.parseLong(departmentTokens[0]), departmentTokens[1]);
                 department.setRoomList(new ArrayList<>());
                 int minimumAge = Integer.parseInt(departmentTokens[2]);
                 if (minimumAge != 0) {
-                    department.setMinimumAge(Integer.valueOf(minimumAge));
+                    department.setMinimumAge(minimumAge);
                 }
                 int maximumAge = Integer.parseInt(departmentTokens[3]);
                 if (maximumAge != 0) {
-                    department.setMaximumAge(Integer.valueOf(maximumAge));
+                    department.setMaximumAge(maximumAge);
                 }
                 departmentList.add(department);
                 idToDepartmentMap.put(department.getId(), department);
@@ -174,22 +168,19 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 for (int j = 0; j < departmentSpecialismTokens.length; j += 2) {
                     long specialismId = Long.parseLong(departmentSpecialismTokens[j + 1]);
                     if (specialismId != 0) {
-                        DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism();
-                        departmentSpecialism.setId(departmentSpecialismId);
-                        departmentSpecialism.setDepartment(department);
-                        departmentSpecialism.setPriority(Integer.parseInt(departmentSpecialismTokens[j]));
                         Specialism specialism = idToSpecialismMap.get(specialismId);
                         if (specialism == null) {
                             throw new IllegalArgumentException("Read line (" + line
                                     + ") has a non existing specialismId (" + specialismId + ").");
                         }
-                        departmentSpecialism.setSpecialism(specialism);
+                        DepartmentSpecialism departmentSpecialism = new DepartmentSpecialism(departmentSpecialismId, department,
+                                specialism, Integer.parseInt(departmentSpecialismTokens[j]));
                         departmentSpecialismList.add(departmentSpecialism);
                         departmentSpecialismId++;
                     }
                 }
             }
-            Collections.sort(departmentList, comparingLong(Department::getId));
+            departmentList.sort(comparingLong(Department::getId));
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }
@@ -201,9 +192,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             for (int i = 0; i < equipmentListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
-                Equipment equipment = new Equipment();
-                equipment.setId(Long.parseLong(lineTokens[0]));
-                equipment.setName(lineTokens[1]);
+                Equipment equipment = new Equipment(Long.parseLong(lineTokens[0]), lineTokens[1]);
                 equipmentList.add(equipment);
                 indexToEquipmentMap.put(i, equipment);
             }
@@ -221,16 +210,11 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             for (int i = 0; i < roomListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitByPipelineAndTrim(line, 6);
-
                 String[] roomTokens = splitBySpace(lineTokens[0], 2);
-                Room room = new Room();
-                room.setId(Long.parseLong(roomTokens[0]));
-                room.setName(roomTokens[1]);
-                room.setCapacity(Integer.parseInt(lineTokens[1]));
                 Department department = idToDepartmentMap.get(
                         Long.parseLong(lineTokens[2]));
-                room.setDepartment(department);
-                room.setGenderLimitation(GenderLimitation.valueOfCode(lineTokens[3]));
+                Room room = new Room(Long.parseLong(roomTokens[0]), roomTokens[1], department, Integer.parseInt(lineTokens[1]),
+                        GenderLimitation.valueOfCode(lineTokens[3]));
                 room.setBedList(new ArrayList<>());
                 roomList.add(room);
                 idToRoomMap.put(room.getId(), room);
@@ -247,16 +231,12 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     int priority = Integer.parseInt(roomSpecialismTokens[j]);
                     long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
                     if (specialismId != 0) {
-                        RoomSpecialism roomSpecialism = new RoomSpecialism();
-                        roomSpecialism.setId(roomSpecialismId);
-                        roomSpecialism.setRoom(room);
                         Specialism specialism = idToSpecialismMap.get(specialismId);
                         if (specialism == null) {
                             throw new IllegalArgumentException("Read line (" + line
                                     + ") has a non existing specialismId (" + specialismId + ").");
                         }
-                        roomSpecialism.setSpecialism(specialism);
-                        roomSpecialism.setPriority(priority);
+                        RoomSpecialism roomSpecialism = new RoomSpecialism(roomSpecialismId, room, specialism, priority);
                         roomSpecialismListOfRoom.add(roomSpecialism);
                         roomSpecialismList.add(roomSpecialism);
                         roomSpecialismId++;
@@ -274,10 +254,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 for (int j = 0; j < roomEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(roomEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        RoomEquipment roomEquipment = new RoomEquipment();
-                        roomEquipment.setId(roomEquipmentId);
-                        roomEquipment.setRoom(room);
-                        roomEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        RoomEquipment roomEquipment = new RoomEquipment(roomEquipmentId, room, indexToEquipmentMap.get(j));
                         roomEquipmentListOfRoom.add(roomEquipment);
                         roomEquipmentList.add(roomEquipment);
                         roomEquipmentId++;
@@ -288,7 +265,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
-            Collections.sort(roomList, ROOM_COMPARATOR);
+            roomList.sort(ROOM_COMPARATOR);
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -301,22 +278,19 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             for (int i = 0; i < bedListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
-                Bed bed = new Bed();
-                bed.setId(Long.parseLong(lineTokens[0]));
                 Room room = idToRoomMap.get(Long.parseLong(lineTokens[1]));
-                bed.setRoom(room);
                 Integer indexInRoom = roomToLastIndexInRoomMap.get(room);
                 if (indexInRoom == null) {
                     indexInRoom = 0;
                 } else {
                     indexInRoom++;
                 }
-                bed.setIndexInRoom(indexInRoom);
+                Bed bed = new Bed(Long.parseLong(lineTokens[0]), room, indexInRoom);
                 roomToLastIndexInRoomMap.put(room, indexInRoom);
                 bedList.add(bed);
                 room.getBedList().add(bed);
             }
-            Collections.sort(bedList, BED_COMPARATOR);
+            bedList.sort(BED_COMPARATOR);
             patientAdmissionSchedule.setBedList(bedList);
         }
 
@@ -325,9 +299,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             indexToNightMap = new HashMap<>(nightListSize);
             long nightId = 0L;
             for (int i = 0; i < nightListSize; i++) {
-                Night night = new Night();
-                night.setId(nightId);
-                night.setIndex(i);
+                Night night = new Night(nightId, i);
                 nightList.add(night);
                 indexToNightMap.put(i, night);
                 nightId++;
@@ -360,15 +332,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
 
                 String[] patientTokens = splitBySpace(lineTokens[0], 4);
-                Patient patient = new Patient();
-                patient.setId(Long.parseLong(patientTokens[0]));
-                patient.setName(patientTokens[1]);
-                patient.setAge(Integer.parseInt(patientTokens[2]));
-                patient.setGender(Gender.valueOfCode(patientTokens[3]));
                 int preferredMaximumRoomCapacity = Integer.parseInt(lineTokens[3]);
-                patient.setPreferredMaximumRoomCapacity(preferredMaximumRoomCapacity == 0
-                        ? null
-                        : preferredMaximumRoomCapacity);
+                Patient patient = new Patient(Long.parseLong(patientTokens[0]), patientTokens[1],
+                        Gender.valueOfCode(patientTokens[3]), Integer.parseInt(patientTokens[2]),
+                        preferredMaximumRoomCapacity == 0 ? null : preferredMaximumRoomCapacity);
                 patientList.add(patient);
 
                 String[] admissionPartTokens = splitBySpace(lineTokens[2]);
@@ -386,15 +353,11 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                         nextFirstNightIndex += admissionPartNightListSize;
                         continue;
                     }
-                    AdmissionPart admissionPart = new AdmissionPart();
-                    admissionPart.setId(admissionPartId);
-                    admissionPart.setPatient(patient);
                     Specialism specialism = (specialismId == 0) ? null : idToSpecialismMap.get(specialismId);
                     if (specialism == null) {
                         throw new IllegalArgumentException("Read line (" + line
                                 + ") has a non existing specialismId (" + specialismId + ").");
                     }
-                    admissionPart.setSpecialism(specialism);
                     int admissionPartFirstNightIndex = nextFirstNightIndex;
                     Night admissionPartFirstNight = indexToNightMap.get(admissionPartFirstNightIndex);
                     if (admissionPartFirstNight == null) {
@@ -402,9 +365,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                                 "The admissionPartFirstNight was not found for admissionPartFirstNightIndex("
                                         + admissionPartFirstNightIndex + ").");
                     }
-                    admissionPart.setFirstNight(admissionPartFirstNight);
                     int admissionPartLastNightIndex = nextFirstNightIndex + admissionPartNightListSize - 1;
-                    // TODO Instead of ensureEnoughNights(lastNightIndex);
                     // the official score function ignores any broken constraints after the planning horizon
                     if (admissionPartLastNightIndex >= nightListSize) {
                         admissionPartLastNightIndex = nightListSize - 1;
@@ -415,7 +376,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                                 "The admissionPartLastNight was not found for admissionPartLastNightIndex("
                                         + admissionPartLastNightIndex + ").");
                     }
-                    admissionPart.setLastNight(admissionPartLastNight);
+                    AdmissionPart admissionPart = new AdmissionPart(admissionPartId, patient, admissionPartFirstNight,
+                            admissionPartLastNight, specialism);
                     admissionPartList.add(admissionPart);
                     admissionPartId++;
                     nextFirstNightIndex += admissionPartNightListSize;
@@ -438,10 +400,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        RequiredPatientEquipment requiredPatientEquipment = new RequiredPatientEquipment();
-                        requiredPatientEquipment.setId(requiredPatientEquipmentId);
-                        requiredPatientEquipment.setPatient(patient);
-                        requiredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        RequiredPatientEquipment requiredPatientEquipment =
+                                new RequiredPatientEquipment(requiredPatientEquipmentId, patient, indexToEquipmentMap.get(j));
                         requiredPatientEquipmentOfPatientList.add(requiredPatientEquipment);
                         requiredPatientEquipmentList.add(requiredPatientEquipment);
                         requiredPatientEquipmentId++;
@@ -465,12 +425,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     if (hasEquipment == 1) {
                         boolean alreadyRequired = (Integer.parseInt(requiredPatientEquipmentTokens[j]) == 1);
                         // Official spec: if equipment is required
-                        // then a duplicate preffered constraint should be ignored
+                        // then a duplicate preferred constraint should be ignored
                         if (!alreadyRequired) {
-                            PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
-                            preferredPatientEquipment.setId(preferredPatientEquipmentId);
-                            preferredPatientEquipment.setPatient(patient);
-                            preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                            PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment(
+                                    preferredPatientEquipmentId, patient, indexToEquipmentMap.get(j));
                             preferredPatientEquipmentOfPatientList.add(preferredPatientEquipment);
                             preferredPatientEquipmentList.add(preferredPatientEquipment);
                             preferredPatientEquipmentId++;
@@ -488,36 +446,15 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             patientAdmissionSchedule.setPreferredPatientEquipmentList(preferredPatientEquipmentList);
         }
 
-        //        /**
-        //         * hack to make sure there are enough nights
-        //         * @param lastNightIndex {@code >= 0}
-        //         */
-        //        private void ensureEnoughNights(int lastNightIndex) {
-        //            List<Night> nightList = patientAdmissionSchedule.getNightList();
-        //            if (lastNightIndex >= nightList.size()) {
-        //                long nightId = nightList.size();
-        //                for (int j = nightList.size(); j <= lastNightIndex; j++) {
-        //                    Night night = new Night();
-        //                    night.setId(nightId);
-        //                    night.setIndex(j);
-        //                    nightList.add(night);
-        //                    indexToNightMap.put(j, night);
-        //                    nightId++;
-        //                }
-        //            }
-        //        }
-
         private void createBedDesignationList() {
             List<AdmissionPart> admissionPartList = patientAdmissionSchedule.getAdmissionPartList();
             List<BedDesignation> bedDesignationList = new ArrayList<>(admissionPartList.size());
             long id = 0L;
             for (AdmissionPart admissionPart : admissionPartList) {
-                BedDesignation bedDesignation = new BedDesignation();
-                bedDesignation.setId(id);
-                id++;
-                bedDesignation.setAdmissionPart(admissionPart);
                 // Notice that we leave the PlanningVariable properties on null
+                BedDesignation bedDesignation = new BedDesignation(id, admissionPart);
                 bedDesignationList.add(bedDesignation);
+                id++;
             }
             patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
         }

@@ -1,21 +1,24 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("AdmissionPart")
-public class AdmissionPart extends AbstractPersistable {
+@JsonIdentityInfo(scope = AdmissionPart.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class AdmissionPart extends AbstractPersistableJackson {
 
     private Patient patient;
     private Night firstNight;
     private Night lastNight;
     private Specialism specialism;
 
-    public AdmissionPart() {
+    public AdmissionPart() { // For Jackson.
     }
 
-    public AdmissionPart(Patient patient, Night firstNight, Night lastNight, Specialism specialism) {
+    public AdmissionPart(long id, Patient patient, Night firstNight, Night lastNight, Specialism specialism) {
+        super(id);
         this.patient = patient;
         this.firstNight = firstNight;
         this.lastNight = lastNight;
@@ -54,6 +57,7 @@ public class AdmissionPart extends AbstractPersistable {
         this.specialism = specialism;
     }
 
+    @JsonIgnore
     public int getNightCount() {
         return lastNight.getIndex() - firstNight.getIndex() + 1;
     }

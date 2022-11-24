@@ -1,18 +1,25 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Night")
-public class Night extends AbstractPersistable {
+@JsonIdentityInfo(scope = Night.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Night extends AbstractPersistableJackson implements Labeled {
 
     private int index;
 
-    public Night() {
+    public Night() { // For Jackson.
     }
 
     public Night(int index) {
+        this(index, index);
+    }
+
+    public Night(long id, int index) {
+        super(id);
         this.index = index;
     }
 
@@ -24,6 +31,7 @@ public class Night extends AbstractPersistable {
         this.index = index;
     }
 
+    @Override
     public String getLabel() {
         return (index + 1) + "-JAN";
     }

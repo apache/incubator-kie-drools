@@ -16,20 +16,20 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/pas/unsolved/testdata01.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata02.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata03.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata04.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata05.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata06.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata07.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata08.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata09.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata10.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata11.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata12.xml</inputSolutionFile>
-      <inputSolutionFile>data/pas/unsolved/testdata13.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/pas/unsolved/testdata01.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata02.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata03.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata04.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata05.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata06.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata07.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata08.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata09.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata10.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata11.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata12.json</inputSolutionFile>
+      <inputSolutionFile>data/pas/unsolved/testdata13.json</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->

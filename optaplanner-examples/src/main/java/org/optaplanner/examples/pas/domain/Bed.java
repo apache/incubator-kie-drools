@@ -1,20 +1,23 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Bed")
-public class Bed extends AbstractPersistable implements Labeled {
+@JsonIdentityInfo(scope = Bed.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Bed extends AbstractPersistableJackson implements Labeled {
 
     private Room room;
     private int indexInRoom;
 
-    public Bed() {
+    public Bed() { // For Jackson.
     }
 
-    public Bed(Room room, int indexInRoom) {
+    public Bed(long id, Room room, int indexInRoom) {
+        super(id);
         this.room = room;
         this.indexInRoom = indexInRoom;
     }
@@ -35,6 +38,7 @@ public class Bed extends AbstractPersistable implements Labeled {
         this.indexInRoom = indexInRoom;
     }
 
+    @JsonIgnore
     public String getLabelInRoom() {
         if (indexInRoom > 'Z') {
             return Integer.toString(indexInRoom);
