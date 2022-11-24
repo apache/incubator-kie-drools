@@ -36,7 +36,7 @@ class PooledEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement<TestdataSolution>> placementIterator = placer.iterator();
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
@@ -44,7 +44,7 @@ class PooledEntityPlacerTest {
                 "a1", "a2", "b1");
         placer.stepEnded(stepScopeA1);
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
@@ -52,7 +52,7 @@ class PooledEntityPlacerTest {
                 "a1", "a2", "b1");
         placer.stepEnded(stepScopeA2);
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
@@ -67,7 +67,7 @@ class PooledEntityPlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);

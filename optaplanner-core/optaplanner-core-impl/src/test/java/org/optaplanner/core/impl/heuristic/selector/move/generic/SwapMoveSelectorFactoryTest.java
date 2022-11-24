@@ -86,7 +86,7 @@ class SwapMoveSelectorFactoryTest {
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
-        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList()).hasSize(2);
     }
 
     @Test
@@ -123,7 +123,7 @@ class SwapMoveSelectorFactoryTest {
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector)
                 .isInstanceOf(UnionMoveSelector.class);
-        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size()).isEqualTo(2);
+        assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList()).hasSize(2);
     }
 
     @Test

@@ -294,8 +294,8 @@ class PlannerBenchmarkFactoryTest {
         DefaultPlannerBenchmark plannerBenchmark =
                 (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(solution1, solution2);
         assertThat(plannerBenchmark).isNotNull();
-        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getSolverBenchmarkResultList().size()).isEqualTo(3);
-        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getUnifiedProblemBenchmarkResultList().size()).isEqualTo(2);
+        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getSolverBenchmarkResultList()).hasSize(3);
+        assertThat(plannerBenchmark.getPlannerBenchmarkResult().getUnifiedProblemBenchmarkResultList()).hasSize(2);
     }
 
     public static class TestdataConstraintProvider implements ConstraintProvider {

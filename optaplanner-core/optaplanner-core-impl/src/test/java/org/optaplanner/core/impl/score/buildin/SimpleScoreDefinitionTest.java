@@ -28,7 +28,7 @@ class SimpleScoreDefinitionTest {
 
     @Test
     void getLevelLabels() {
-        assertThat(new SimpleScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
+        assertThat(new SimpleScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test

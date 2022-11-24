@@ -70,17 +70,17 @@ class ProbabilityEntitySelectorTest {
         assertThat(entitySelector.isNeverEnding()).isTrue();
         assertThat(entitySelector.getSize()).isEqualTo(4L);
         Iterator<Object> iterator = entitySelector.iterator();
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertCode("e3", iterator.next());
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertCode("e1", iterator.next());
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertCode("e1", iterator.next());
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertCode("e4", iterator.next());
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         assertCode("e2", iterator.next());
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
 
         entitySelector.stepEnded(stepScopeA1);
         entitySelector.phaseEnded(phaseScopeA);

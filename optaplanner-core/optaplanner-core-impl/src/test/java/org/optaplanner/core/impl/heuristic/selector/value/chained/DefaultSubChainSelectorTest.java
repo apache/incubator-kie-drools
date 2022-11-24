@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -544,31 +545,26 @@ class DefaultSubChainSelectorTest {
         Iterator<SubChain> iterator = subChainSelector.iterator();
         assertThat(iterator).isNotNull();
         int selectionSize = subChains.length;
-        Map<SubChain, Integer> subChainCountMap = new HashMap<>(selectionSize);
+        Map<SubChain, AtomicInteger> subChainCountMap = new HashMap<>(selectionSize);
         for (int i = 0; i < selectionSize * 10; i++) {
             collectNextSubChain(iterator, subChainCountMap);
         }
         for (SubChain subChain : subChains) {
-            Integer count = subChainCountMap.remove(subChain);
+            AtomicInteger count = subChainCountMap.remove(subChain);
             assertThat(count)
                     .as("The subChain (" + subChain + ") was not collected.")
                     .isNotNull();
         }
-        assertThat(subChainCountMap.isEmpty()).isTrue();
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(subChainCountMap).isEmpty();
+        assertThat(iterator).hasNext();
         assertThat(subChainSelector.isCountable()).isTrue();
         assertThat(subChainSelector.isNeverEnding()).isTrue();
         assertThat(subChainSelector.getSize()).isEqualTo(selectionSize);
     }
 
-    private void collectNextSubChain(Iterator<SubChain> iterator, Map<SubChain, Integer> subChainCountMap) {
-        assertThat(iterator.hasNext()).isTrue();
+    private void collectNextSubChain(Iterator<SubChain> iterator, Map<SubChain, AtomicInteger> subChainCountMap) {
+        assertThat(iterator).hasNext();
         SubChain subChain = iterator.next();
-        Integer count = subChainCountMap.get(subChain);
-        if (count == null) {
-            subChainCountMap.put(subChain, 1);
-        } else {
-            subChainCountMap.put(subChain, count + 1);
-        }
+        subChainCountMap.computeIfAbsent(subChain, subChain1 -> new AtomicInteger()).incrementAndGet();
     }
 }

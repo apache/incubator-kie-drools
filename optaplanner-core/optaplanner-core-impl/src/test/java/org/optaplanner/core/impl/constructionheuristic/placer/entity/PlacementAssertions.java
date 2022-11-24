@@ -11,30 +11,28 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 
 final class PlacementAssertions {
 
-    static <Solution_> void assertEntityPlacement(Placement<Solution_> placement, String entityCode,
-            String... valueCodes) {
+    static <Solution_> void assertEntityPlacement(Placement<Solution_> placement, String entityCode, String... valueCodes) {
         Iterator<Move<Solution_>> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
         for (String valueCode : valueCodes) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             ChangeMove<Solution_> move = (ChangeMove<Solution_>) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
-    static <Solution_> void assertValuePlacement(Placement<Solution_> placement, String valueCode,
-            String... entityCodes) {
+    static <Solution_> void assertValuePlacement(Placement<Solution_> placement, String valueCode, String... entityCodes) {
         Iterator<Move<Solution_>> iterator = placement.iterator();
         assertThat(iterator).isNotNull();
         for (String entityCode : entityCodes) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             ChangeMove<Solution_> move = (ChangeMove<Solution_>) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     private PlacementAssertions() {

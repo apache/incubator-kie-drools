@@ -53,13 +53,14 @@ class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(HardMediumSoftBigDecimalScore.of(new BigDecimal("0.0"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
-                .toString()).isEqualTo("0.0hard/-3.20medium/-258.3soft");
-        assertThat(HardMediumSoftBigDecimalScore.of(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
-                .toString()).isEqualTo("-147.2hard/-3.20medium/-258.3soft");
+        assertThat(HardMediumSoftBigDecimalScore.of(new BigDecimal("0.0"), new BigDecimal("-3.20"), new BigDecimal("-258.3")))
+                .hasToString("0.0hard/-3.20medium/-258.3soft");
         assertThat(HardMediumSoftBigDecimalScore
-                .ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3"))
-                .toString()).isEqualTo("-7init/-147.2hard/-3.20medium/-258.3soft");
+                .of(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")))
+                        .hasToString("-147.2hard/-3.20medium/-258.3soft");
+        assertThat(HardMediumSoftBigDecimalScore
+                .ofUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")))
+                        .hasToString("-7init/-147.2hard/-3.20medium/-258.3soft");
     }
 
     @Test
@@ -219,11 +220,10 @@ class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
                 HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             HardMediumSoftBigDecimalScore manualOne =
                     HardMediumSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

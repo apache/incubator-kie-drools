@@ -37,9 +37,9 @@ class HardSoftScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(HardSoftScore.of(0, -258).toString()).isEqualTo("0hard/-258soft");
-        assertThat(HardSoftScore.of(-147, -258).toString()).isEqualTo("-147hard/-258soft");
-        assertThat(HardSoftScore.ofUninitialized(-7, -147, -258).toString()).isEqualTo("-7init/-147hard/-258soft");
+        assertThat(HardSoftScore.of(0, -258)).hasToString("0hard/-258soft");
+        assertThat(HardSoftScore.of(-147, -258)).hasToString("-147hard/-258soft");
+        assertThat(HardSoftScore.ofUninitialized(-7, -147, -258)).hasToString("-7init/-147hard/-258soft");
     }
 
     @Test
@@ -123,10 +123,9 @@ class HardSoftScoreTest extends AbstractScoreTest {
         HardSoftScore manualZero = HardSoftScore.of(0, 0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             HardSoftScore manualOne = HardSoftScore.of(0, 1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

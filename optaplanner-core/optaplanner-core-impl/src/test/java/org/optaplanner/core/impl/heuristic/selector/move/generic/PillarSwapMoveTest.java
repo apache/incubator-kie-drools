@@ -300,12 +300,12 @@ class PillarSwapMoveTest {
         List<GenuineVariableDescriptor<TestdataSolution>> variableDescriptorList = TestdataEntity.buildEntityDescriptor()
                 .getGenuineVariableDescriptorList();
 
-        assertThat(new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(a, b), Arrays.asList(c, d, e)).toString()).isEqualTo("[a, b] {null} <-> [c, d, e] {v1}");
-        assertThat(new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(b), Arrays.asList(c)).toString()).isEqualTo("[b] {null} <-> [c] {v1}");
-        assertThat(new PillarSwapMove<>(variableDescriptorList,
-                Arrays.asList(f, g), Arrays.asList(c, d, e)).toString()).isEqualTo("[f, g] {v2} <-> [c, d, e] {v1}");
+        assertThat(new PillarSwapMove<>(variableDescriptorList, Arrays.asList(a, b), Arrays.asList(c, d, e)))
+                .hasToString("[a, b] {null} <-> [c, d, e] {v1}");
+        assertThat(new PillarSwapMove<>(variableDescriptorList, Arrays.asList(b), Arrays.asList(c)))
+                .hasToString("[b] {null} <-> [c] {v1}");
+        assertThat(new PillarSwapMove<>(variableDescriptorList, Arrays.asList(f, g), Arrays.asList(c, d, e)))
+                .hasToString("[f, g] {v2} <-> [c, d, e] {v1}");
     }
 
 }

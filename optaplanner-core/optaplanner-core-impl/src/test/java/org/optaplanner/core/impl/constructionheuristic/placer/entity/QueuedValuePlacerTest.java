@@ -52,21 +52,21 @@ class QueuedValuePlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement<TestdataSolution>> placementIterator = placer.iterator();
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertValuePlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeA1);
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertValuePlacement(placementIterator.next(), "2", "a", "b", "c");
         placer.stepEnded(stepScopeA2);
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
@@ -82,7 +82,7 @@ class QueuedValuePlacerTest {
         placer.phaseStarted(phaseScopeB);
         placementIterator = placer.iterator();
 
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
         AbstractStepScope<TestdataSolution> stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);

@@ -55,13 +55,13 @@ class BendableScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(scoreDefinitionHSS.createScore(0, -258, -369).toString()).isEqualTo("[0]hard/[-258/-369]soft");
-        assertThat(scoreDefinitionHSS.createScore(-147, -258, -369).toString()).isEqualTo("[-147]hard/[-258/-369]soft");
-        assertThat(scoreDefinitionHHH.createScore(-147, -258, -369).toString()).isEqualTo("[-147/-258/-369]hard/[]soft");
-        assertThat(scoreDefinitionSSS.createScore(-147, -258, -369).toString()).isEqualTo("[]hard/[-147/-258/-369]soft");
-        assertThat(scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toString())
-                .isEqualTo("-7init/[]hard/[-147/-258/-369]soft");
-        assertThat(new BendableScoreDefinition(0, 0).createScore().toString()).isEqualTo("[]hard/[]soft");
+        assertThat(scoreDefinitionHSS.createScore(0, -258, -369)).hasToString("[0]hard/[-258/-369]soft");
+        assertThat(scoreDefinitionHSS.createScore(-147, -258, -369)).hasToString("[-147]hard/[-258/-369]soft");
+        assertThat(scoreDefinitionHHH.createScore(-147, -258, -369)).hasToString("[-147/-258/-369]hard/[]soft");
+        assertThat(scoreDefinitionSSS.createScore(-147, -258, -369)).hasToString("[]hard/[-147/-258/-369]soft");
+        assertThat(scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369))
+                .hasToString("-7init/[]hard/[-147/-258/-369]soft");
+        assertThat(new BendableScoreDefinition(0, 0).createScore()).hasToString("[]hard/[]soft");
     }
 
     @Test
@@ -159,10 +159,9 @@ class BendableScoreTest extends AbstractScoreTest {
         BendableScore manualZero = BendableScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             BendableScore manualOne = BendableScore.ofSoft(0, 1, 0, 1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

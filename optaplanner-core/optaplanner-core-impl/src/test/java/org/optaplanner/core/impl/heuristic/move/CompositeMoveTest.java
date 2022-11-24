@@ -109,7 +109,7 @@ class CompositeMoveTest {
         ChangeMove<TestdataSolution> b = new ChangeMove<>(variableDescriptor, e2, v1);
         CompositeMove<TestdataSolution> rebaseMove = new CompositeMove<>(a, b).rebase(destinationScoreDirector);
         Move<TestdataSolution>[] rebasedChildMoves = rebaseMove.getMoves();
-        assertThat(rebasedChildMoves.length).isEqualTo(2);
+        assertThat(rebasedChildMoves).hasSize(2);
         ChangeMove<TestdataSolution> rebasedA = (ChangeMove<TestdataSolution>) rebasedChildMoves[0];
         assertThat(rebasedA.getEntity()).isSameAs(destinationE1);
         assertThat(rebasedA.getToPlanningValue()).isSameAs(destinationV2);
@@ -191,13 +191,13 @@ class CompositeMoveTest {
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
         Move<TestdataSolution> other = CompositeMove.buildMove(first, second);
-        assertThat(move.equals(other)).isTrue();
+        assertThat(move).isEqualTo(other);
 
         move = CompositeMove.buildMove(first, second);
         other = CompositeMove.buildMove(second, first);
-        assertThat(move.equals(other)).isFalse();
-        assertThat(move.equals(new DummyMove())).isFalse();
-        assertThat(move.equals(move)).isTrue();
+        assertThat(move).isNotEqualTo(other);
+        assertThat(move).isNotEqualTo(new DummyMove());
+        assertThat(move).isEqualTo(move);
     }
 
     @Test

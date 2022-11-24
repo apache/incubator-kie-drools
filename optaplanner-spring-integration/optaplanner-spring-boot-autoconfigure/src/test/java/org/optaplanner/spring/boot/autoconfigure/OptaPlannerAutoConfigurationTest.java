@@ -359,7 +359,7 @@ class OptaPlannerAutoConfigurationTest {
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.DROOLS);
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilationEnabled())
-                            .isEqualTo(false);
+                            .isFalse();
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
                             .mapToObj(i -> "v" + i)

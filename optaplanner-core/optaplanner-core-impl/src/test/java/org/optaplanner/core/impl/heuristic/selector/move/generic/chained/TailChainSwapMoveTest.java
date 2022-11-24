@@ -276,17 +276,15 @@ class TailChainSwapMoveTest {
                 .demand(new AnchorVariableDemand<>(variableDescriptor));
 
         assertThat(new TailChainSwapMove<>(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b0).toString()).isEqualTo("a1 {a0} <-tailChainSwap-> b1 {b0}");
+                inverseVariableSupply, anchorVariableSupply, a1, b0)).hasToString("a1 {a0} <-tailChainSwap-> b1 {b0}");
         assertThat(new TailChainSwapMove<>(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, b1).toString())
-                        .isEqualTo("a1 {a0} <-tailChainSwap-> null {b1}");
+                inverseVariableSupply, anchorVariableSupply, a1, b1)).hasToString("a1 {a0} <-tailChainSwap-> null {b1}");
         assertThat(new TailChainSwapMove<>(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, b1, a0).toString()).isEqualTo("b1 {b0} <-tailChainSwap-> a1 {a0}");
+                inverseVariableSupply, anchorVariableSupply, b1, a0)).hasToString("b1 {b0} <-tailChainSwap-> a1 {a0}");
         assertThat(new TailChainSwapMove<>(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a1, a3).toString())
-                        .isEqualTo("a1 {a0} <-tailChainSwap-> null {a3}");
+                inverseVariableSupply, anchorVariableSupply, a1, a3)).hasToString("a1 {a0} <-tailChainSwap-> null {a3}");
         assertThat(new TailChainSwapMove<>(variableDescriptor,
-                inverseVariableSupply, anchorVariableSupply, a2, a0).toString()).isEqualTo("a2 {a1} <-tailChainSwap-> a1 {a0}");
+                inverseVariableSupply, anchorVariableSupply, a2, a0)).hasToString("a2 {a1} <-tailChainSwap-> a1 {a0}");
     }
 
     @Test

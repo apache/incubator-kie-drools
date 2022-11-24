@@ -28,7 +28,7 @@ class SimpleLongScoreDefinitionTest {
 
     @Test
     void getLevelLabels() {
-        assertThat(new SimpleLongScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
+        assertThat(new SimpleLongScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     @Test

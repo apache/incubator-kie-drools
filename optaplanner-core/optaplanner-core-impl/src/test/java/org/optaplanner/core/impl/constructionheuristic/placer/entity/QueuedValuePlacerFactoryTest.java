@@ -42,7 +42,7 @@ class QueuedValuePlacerFactoryTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(generateSolution());
         placer.phaseStarted(phaseScope);
         Iterator<Placement<TestdataSolution>> placementIterator = placer.iterator();
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
 
         AbstractStepScope<TestdataSolution> stepScope = mock(AbstractStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);

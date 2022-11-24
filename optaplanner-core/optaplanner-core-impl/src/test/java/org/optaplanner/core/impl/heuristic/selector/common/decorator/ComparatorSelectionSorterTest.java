@@ -21,40 +21,16 @@ class ComparatorSelectionSorterTest {
         ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<>(
                 new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertThat(ascendingSort(arrayToSort)).isTrue();
+        assertThat(arrayToSort).isSortedAccordingTo(new TestComparator());
 
         arrayToSort = new ArrayList<>();
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter<>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
-        assertThat(descendingSort(arrayToSort)).isTrue();
+        assertThat(arrayToSort).isSortedAccordingTo(new TestComparator().reversed());
     }
 
-    private boolean ascendingSort(List<Integer> list) {
-        Integer tmp = list.get(0);
-        for (Integer aList : list) {
-            if (tmp <= aList) {
-                tmp = aList;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean descendingSort(List<Integer> list) {
-        Integer tmp = list.get(0);
-        for (Integer aList : list) {
-            if (tmp >= aList) {
-                tmp = aList;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private class TestComparator implements Comparator<Integer> {
+    private static class TestComparator implements Comparator<Integer> {
 
         @Override
         public int compare(Integer a, Integer b) {

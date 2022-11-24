@@ -2,6 +2,9 @@ package org.optaplanner.core.config.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,7 +21,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -157,20 +159,20 @@ class SolverConfigTest {
     @Test
     void visitReferencedClasses() {
         SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
-        Consumer<Class<?>> classVisitor = Mockito.mock(Consumer.class);
+        Consumer<Class<?>> classVisitor = mock(Consumer.class);
         solverConfig.visitReferencedClasses(classVisitor);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataAnnotatedExtendedSolution.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataEntity.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataAnnotatedExtendedEntity.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyEasyScoreCalculator.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyConstraintProvider.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyIncrementalScoreCalculator.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyEntityFilter.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyValueFilter.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyChangeMoveFilter.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyMoveIteratorFactory.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyMoveListFactory.class);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(CustomPhaseCommand.class);
+        verify(classVisitor, atLeastOnce()).accept(TestdataAnnotatedExtendedSolution.class);
+        verify(classVisitor, atLeastOnce()).accept(TestdataEntity.class);
+        verify(classVisitor, atLeastOnce()).accept(TestdataAnnotatedExtendedEntity.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyEasyScoreCalculator.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyConstraintProvider.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyIncrementalScoreCalculator.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyEntityFilter.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyValueFilter.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyChangeMoveFilter.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyMoveIteratorFactory.class);
+        verify(classVisitor, atLeastOnce()).accept(DummyMoveListFactory.class);
+        verify(classVisitor, atLeastOnce()).accept(CustomPhaseCommand.class);
     }
 
     /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */

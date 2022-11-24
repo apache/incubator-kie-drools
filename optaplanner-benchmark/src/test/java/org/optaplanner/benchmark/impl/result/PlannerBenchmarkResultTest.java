@@ -90,11 +90,11 @@ class PlannerBenchmarkResultTest {
         assertThat(mergedResult.getAggregation()).isTrue();
         List<ProblemBenchmarkResult> mergedProblemBenchmarkResultList = mergedResult.getUnifiedProblemBenchmarkResultList();
         List<SolverBenchmarkResult> mergedSolverBenchmarkResultList = mergedResult.getSolverBenchmarkResultList();
-        assertThat(mergedSolverBenchmarkResultList.size()).isEqualTo(3);
+        assertThat(mergedSolverBenchmarkResultList).hasSize(3);
         assertThat(mergedSolverBenchmarkResultList.get(0).getName()).isEqualTo("Solver X");
         assertThat(mergedSolverBenchmarkResultList.get(1).getName()).isEqualTo("Solver Y");
         assertThat(mergedSolverBenchmarkResultList.get(2).getName()).isEqualTo("Solver Z");
-        assertThat(mergedProblemBenchmarkResultList.size()).isEqualTo(2);
+        assertThat(mergedProblemBenchmarkResultList).hasSize(2);
         assertThat(mergedProblemBenchmarkResultList.get(0).getProblemProvider().getProblemName()).isEqualTo("problemA");
         assertThat(mergedProblemBenchmarkResultList.get(1).getProblemProvider().getProblemName()).isEqualTo("problemB");
     }

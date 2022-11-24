@@ -2,12 +2,16 @@ package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.gizmo.GizmoTestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
@@ -37,29 +41,29 @@ class GizmoMemberDescriptorTest {
     @Test
     void testThatWhenIsMethodExecuteConsumerIffMemberIsMethod() throws Exception {
         GizmoMemberDescriptor methodMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getMethod("getId"));
-        Consumer<MethodDescriptor> methodDescriptorConsumer = Mockito.mock(Consumer.class);
+        Consumer<MethodDescriptor> methodDescriptorConsumer = mock(Consumer.class);
         methodMemberDescriptor.whenIsMethod(methodDescriptorConsumer);
-        Mockito.verify(methodDescriptorConsumer).accept(Mockito.any());
+        verify(methodDescriptorConsumer).accept(any());
 
-        Mockito.reset(methodDescriptorConsumer);
+        reset(methodDescriptorConsumer);
 
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
         fieldMemberDescriptor.whenIsMethod(methodDescriptorConsumer);
-        Mockito.verifyNoInteractions(methodDescriptorConsumer);
+        verifyNoInteractions(methodDescriptorConsumer);
     }
 
     @Test
     void testThatWhenIsFieldExecuteConsumerIffMemberIsField() throws Exception {
         GizmoMemberDescriptor fieldMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getField("value"));
-        Consumer<FieldDescriptor> methodDescriptorConsumer = Mockito.mock(Consumer.class);
+        Consumer<FieldDescriptor> methodDescriptorConsumer = mock(Consumer.class);
         fieldMemberDescriptor.whenIsField(methodDescriptorConsumer);
-        Mockito.verify(methodDescriptorConsumer).accept(Mockito.any());
+        verify(methodDescriptorConsumer).accept(any());
 
-        Mockito.reset(methodDescriptorConsumer);
+        reset(methodDescriptorConsumer);
 
         GizmoMemberDescriptor methodMemberDescriptor = new GizmoMemberDescriptor(GizmoTestdataEntity.class.getMethod("getId"));
         methodMemberDescriptor.whenIsField(methodDescriptorConsumer);
-        Mockito.verifyNoInteractions(methodDescriptorConsumer);
+        verifyNoInteractions(methodDescriptorConsumer);
     }
 
     @Test

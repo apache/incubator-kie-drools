@@ -79,7 +79,7 @@ class PartitionQueueTest {
         assertThat(it.next()).isSameAs(moveC2);
 
         executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
-        assertThat(it.hasNext()).isSameAs(false);
+        assertThat(it).isExhausted();
     }
 
     @Test
@@ -96,14 +96,14 @@ class PartitionQueueTest {
         executorService.submit(() -> partitionQueue.addMove(2, moveC2)).get();
         executorService.submit(() -> partitionQueue.addFinish(2, 123)).get();
         executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
-        assertThat(it.hasNext()).isTrue();
+        assertThat(it).hasNext();
         assertThat(it.next()).isSameAs(moveA1);
-        assertThat(it.hasNext()).isTrue();
+        assertThat(it).hasNext();
         assertThat(it.next()).isSameAs(moveC2);
-        assertThat(it.hasNext()).isFalse();
+        assertThat(it).isExhausted();
     }
 
-    @Test()
+    @Test
     void addExceptionWithNonEmptyQueue() throws ExecutionException, InterruptedException {
         PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
         Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
@@ -120,9 +120,9 @@ class PartitionQueueTest {
         PartitionChangeMove<TestdataSolution> moveB1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(1, moveB1)).get();
         executorService.submit(() -> partitionQueue.addFinish(1, 123)).get();
-        assertThat(it.hasNext()).isTrue();
+        assertThat(it).hasNext();
         assertThat(it.next()).isSameAs(moveA1);
-        assertThat(it.hasNext()).isTrue();
+        assertThat(it).hasNext();
         assertThat(it.next()).isSameAs(moveC2);
         assertThatIllegalStateException().isThrownBy(it::hasNext).withCause(exception);
     }

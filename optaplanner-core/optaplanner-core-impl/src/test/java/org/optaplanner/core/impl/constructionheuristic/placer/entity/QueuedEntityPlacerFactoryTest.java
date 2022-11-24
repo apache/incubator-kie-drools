@@ -59,7 +59,7 @@ class QueuedEntityPlacerFactoryTest {
         when(scoreDirector.getWorkingSolution()).thenReturn(generateTestdataSolution());
         entityPlacer.phaseStarted(phaseScope);
         Iterator<Placement<TestdataMultiVarSolution>> placementIterator = entityPlacer.iterator();
-        assertThat(placementIterator.hasNext()).isTrue();
+        assertThat(placementIterator).hasNext();
 
         AbstractStepScope<TestdataMultiVarSolution> stepScope = mock(AbstractStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);

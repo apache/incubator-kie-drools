@@ -28,7 +28,7 @@ class HardSoftLongScoreDefinitionTest {
 
     @Test
     void getLevelLabels() {
-        assertThat(new HardSoftLongScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "hard score", "soft score" });
+        assertThat(new HardSoftLongScoreDefinition().getLevelLabels()).containsExactly("hard score", "soft score");
     }
 
     @Test

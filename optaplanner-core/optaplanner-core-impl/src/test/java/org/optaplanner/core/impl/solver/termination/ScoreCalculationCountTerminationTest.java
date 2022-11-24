@@ -59,14 +59,10 @@ class ScoreCalculationCountTerminationTest {
         assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(0.7, offset(0.0));
         when(scoreDirector.getCalculationCount()).thenReturn(1000L);
-        boolean b1 = true;
-        boolean solverTerminated1 = termination.isPhaseTerminated(phaseScope);
-        assertThat(b1).isTrue();
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
         when(scoreDirector.getCalculationCount()).thenReturn(1200L);
-        boolean b = true;
-        boolean solverTerminated = termination.isPhaseTerminated(phaseScope);
-        assertThat(b).isTrue();
+        assertThat(termination.isPhaseTerminated(phaseScope)).isTrue();
         assertThat(termination.calculatePhaseTimeGradient(phaseScope)).isEqualTo(1.0, offset(0.0));
     }
 

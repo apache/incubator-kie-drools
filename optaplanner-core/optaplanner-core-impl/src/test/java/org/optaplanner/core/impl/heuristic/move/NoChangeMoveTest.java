@@ -22,12 +22,12 @@ class NoChangeMoveTest {
 
     @Test
     void getPlanningEntities() {
-        assertThat(new NoChangeMove<>().getPlanningEntities().isEmpty()).isTrue();
+        assertThat(new NoChangeMove<>().getPlanningEntities()).isEmpty();
     }
 
     @Test
     void getPlanningValues() {
-        assertThat(new NoChangeMove<>().getPlanningValues().isEmpty()).isTrue();
+        assertThat(new NoChangeMove<>().getPlanningValues()).isEmpty();
     }
 
     @Test

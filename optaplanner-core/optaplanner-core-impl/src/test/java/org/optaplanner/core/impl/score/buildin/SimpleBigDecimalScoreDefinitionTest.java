@@ -28,7 +28,7 @@ class SimpleBigDecimalScoreDefinitionTest {
 
     @Test
     void getLevelLabels() {
-        assertThat(new SimpleBigDecimalScoreDefinition().getLevelLabels()).isEqualTo(new String[] { "score" });
+        assertThat(new SimpleBigDecimalScoreDefinition().getLevelLabels()).containsExactly("score");
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition

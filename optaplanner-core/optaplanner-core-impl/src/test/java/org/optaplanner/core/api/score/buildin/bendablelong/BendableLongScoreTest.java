@@ -46,15 +46,15 @@ class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(scoreDefinitionHSS.createScore(0L, -9876543210L, -3456789012L).toString())
-                .isEqualTo("[0]hard/[-9876543210/-3456789012]soft");
-        assertThat(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L).toString())
-                .isEqualTo("[-5432109876]hard/[-9876543210/-3456789012]soft");
-        assertThat(new BendableLongScoreDefinition(2, 1).createScore(-5432109876L, -9876543210L, -3456789012L).toString())
-                .isEqualTo("[-5432109876/-9876543210]hard/[-3456789012]soft");
-        assertThat(scoreDefinitionHSS.createScoreUninitialized(-7, -5432109876L, -9876543210L, -3456789012L).toString())
-                .isEqualTo("-7init/[-5432109876]hard/[-9876543210/-3456789012]soft");
-        assertThat(new BendableLongScoreDefinition(0, 0).createScore().toString()).isEqualTo("[]hard/[]soft");
+        assertThat(scoreDefinitionHSS.createScore(0L, -9876543210L, -3456789012L))
+                .hasToString("[0]hard/[-9876543210/-3456789012]soft");
+        assertThat(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L))
+                .hasToString("[-5432109876]hard/[-9876543210/-3456789012]soft");
+        assertThat(new BendableLongScoreDefinition(2, 1).createScore(-5432109876L, -9876543210L, -3456789012L))
+                .hasToString("[-5432109876/-9876543210]hard/[-3456789012]soft");
+        assertThat(scoreDefinitionHSS.createScoreUninitialized(-7, -5432109876L, -9876543210L, -3456789012L))
+                .hasToString("-7init/[-5432109876]hard/[-9876543210/-3456789012]soft");
+        assertThat(new BendableLongScoreDefinition(0, 0).createScore()).hasToString("[]hard/[]soft");
     }
 
     @Test
@@ -167,10 +167,9 @@ class BendableLongScoreTest extends AbstractScoreTest {
         BendableLongScore manualZero = BendableLongScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             BendableLongScore manualOne = BendableLongScore.ofSoft(0, 1, 0, 1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

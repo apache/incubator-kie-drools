@@ -1,5 +1,6 @@
 package org.optaplanner.examples.common.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         Solution_ originalSolution = solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
         Score_ originalScore = scoreManager.updateScore(originalSolution);
-        Assertions.assertThat(originalScore).isNotNull();
+        assertThat(originalScore).isNotNull();
         // Write the solution to a temp file and read it back.
         Solution_ roundTripSolution = null;
         try {
@@ -84,7 +85,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         }
         // Make sure the solutions equal by checking their scores against each other.
         Score_ roundTripScore = scoreManager.updateScore(roundTripSolution);
-        Assertions.assertThat(roundTripScore).isEqualTo(originalScore);
+        assertThat(roundTripScore).isEqualTo(originalScore);
     }
 
 }

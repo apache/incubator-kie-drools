@@ -91,7 +91,7 @@ class DefaultConstructionHeuristicPhaseTest {
 
         solution = PlannerTestUtils.solve(solverConfig, solution);
         assertThat(solution).isNotNull();
-        assertThat(solution.getEntityList().size()).isEqualTo(0);
+        assertThat(solution.getEntityList()).isEmpty();
     }
 
 }

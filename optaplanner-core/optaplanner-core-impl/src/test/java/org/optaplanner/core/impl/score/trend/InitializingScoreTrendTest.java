@@ -10,10 +10,10 @@ class InitializingScoreTrendTest {
     @Test
     void parseTrend() {
         assertThat(InitializingScoreTrend.parseTrend("ONLY_DOWN/ANY/ONLY_UP", 3).getTrendLevels())
-                .isEqualTo(new InitializingScoreTrendLevel[] {
+                .containsExactly(
                         InitializingScoreTrendLevel.ONLY_DOWN,
                         InitializingScoreTrendLevel.ANY,
-                        InitializingScoreTrendLevel.ONLY_UP });
+                        InitializingScoreTrendLevel.ONLY_UP);
     }
 
     @Test

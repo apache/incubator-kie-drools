@@ -145,12 +145,12 @@ class ChangeMoveTest {
         TestdataEntity b = new TestdataEntity("b", v1);
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 
-        assertThat(new ChangeMove<>(variableDescriptor, a, null).toString()).isEqualTo("a {null -> null}");
-        assertThat(new ChangeMove<>(variableDescriptor, a, v1).toString()).isEqualTo("a {null -> v1}");
-        assertThat(new ChangeMove<>(variableDescriptor, a, v2).toString()).isEqualTo("a {null -> v2}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, null).toString()).isEqualTo("b {v1 -> null}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, v1).toString()).isEqualTo("b {v1 -> v1}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, v2).toString()).isEqualTo("b {v1 -> v2}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, null)).hasToString("a {null -> null}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, v1)).hasToString("a {null -> v1}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, v2)).hasToString("a {null -> v2}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, null)).hasToString("b {v1 -> null}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, v1)).hasToString("b {v1 -> v1}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, v2)).hasToString("b {v1 -> v2}");
     }
 
     @Test
@@ -167,13 +167,13 @@ class ChangeMoveTest {
         GenuineVariableDescriptor<TestdataMultiVarSolution> variableDescriptor =
                 TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue();
 
-        assertThat(new ChangeMove<>(variableDescriptor, a, null).toString()).isEqualTo("a {null -> null}");
-        assertThat(new ChangeMove<>(variableDescriptor, a, v1).toString()).isEqualTo("a {null -> v1}");
-        assertThat(new ChangeMove<>(variableDescriptor, a, v2).toString()).isEqualTo("a {null -> v2}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, null).toString()).isEqualTo("b {v3 -> null}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, v1).toString()).isEqualTo("b {v3 -> v1}");
-        assertThat(new ChangeMove<>(variableDescriptor, b, v2).toString()).isEqualTo("b {v3 -> v2}");
-        assertThat(new ChangeMove<>(variableDescriptor, c, v3).toString()).isEqualTo("c {v4 -> v3}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, null)).hasToString("a {null -> null}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, v1)).hasToString("a {null -> v1}");
+        assertThat(new ChangeMove<>(variableDescriptor, a, v2)).hasToString("a {null -> v2}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, null)).hasToString("b {v3 -> null}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, v1)).hasToString("b {v3 -> v1}");
+        assertThat(new ChangeMove<>(variableDescriptor, b, v2)).hasToString("b {v3 -> v2}");
+        assertThat(new ChangeMove<>(variableDescriptor, c, v3)).hasToString("c {v4 -> v3}");
     }
 
 }

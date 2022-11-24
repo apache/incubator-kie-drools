@@ -88,26 +88,26 @@ class MimicReplayingValueSelectorTest {
         Iterator<Object> replayingIterator = replayingValueSelector.iterator();
         assertThat(replayingIterator).isNotNull();
 
-        assertThat(recordingIterator.hasNext()).isTrue();
-        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(recordingIterator).hasNext();
+        assertThat(replayingIterator).hasNext();
         assertCode("v1", recordingIterator.next());
         assertCode("v1", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isTrue();
-        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(recordingIterator).hasNext();
+        assertThat(replayingIterator).hasNext();
         assertCode("v2", recordingIterator.next());
         assertCode("v2", replayingIterator.next());
         // Extra call
-        assertThat(replayingIterator.hasNext()).isFalse();
-        assertThat(recordingIterator.hasNext()).isTrue();
-        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator).isExhausted();
+        assertThat(recordingIterator).hasNext();
+        assertThat(replayingIterator).hasNext();
         // Duplicated call
-        assertThat(replayingIterator.hasNext()).isTrue();
+        assertThat(replayingIterator).hasNext();
         assertCode("v3", recordingIterator.next());
         assertCode("v3", replayingIterator.next());
-        assertThat(recordingIterator.hasNext()).isFalse();
-        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(recordingIterator).isExhausted();
+        assertThat(replayingIterator).isExhausted();
         // Duplicated call
-        assertThat(replayingIterator.hasNext()).isFalse();
+        assertThat(replayingIterator).isExhausted();
 
         assertThat(recordingValueSelector.isCountable()).isTrue();
         assertThat(replayingValueSelector.isCountable()).isTrue();
