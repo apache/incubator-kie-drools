@@ -33,18 +33,18 @@ import static org.assertj.core.api.Assertions.fail;
 public class RuleUnitProviderImplTest {
 
     @Test
-    public void testHelloWorldGenerated() {
-        HelloWorld unit = new HelloWorld();
+    public void helloWorldGenerated() {
+        HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        try ( RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
+        try ( RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("it worked!");
         }
     }
 
     @Test
-    public void testNotWithAndWithoutSingleQuote() {
+    public void notWithAndWithoutSingleQuote() {
         NotTestUnit unit = new NotTestUnit();
 
         try ( RuleUnitInstance<NotTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
@@ -53,7 +53,7 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
-    public void testLogicalAdd() {
+    public void logicalAdd() {
         // KOGITO-6466
         LogicalAddTestUnit unit = new LogicalAddTestUnit();
 
@@ -73,7 +73,7 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void update() {
         UpdateTestUnit unit = new UpdateTestUnit();
 
         try ( RuleUnitInstance<UpdateTestUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit) ) {
@@ -86,7 +86,7 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
-    public void testWrongType() {
+    public void wrongType() {
         try {
             RuleUnitProvider.get().createRuleUnitInstance(new WronglyTypedUnit());
             fail("Compilation should fail");
@@ -109,10 +109,10 @@ public class RuleUnitProviderImplTest {
         ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
         ruleConfig.getRuleEventListeners().add(testRuleEventListener);
 
-        HelloWorld unit = new HelloWorld();
+        HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        try (RuleUnitInstance<HelloWorld> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
+        try (RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig)) {
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("it worked!");
             assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");

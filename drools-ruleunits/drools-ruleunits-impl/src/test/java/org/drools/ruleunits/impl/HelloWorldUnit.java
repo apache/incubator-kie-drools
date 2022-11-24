@@ -22,15 +22,15 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
 
-public class HelloWorld implements RuleUnitData {
+public class HelloWorldUnit implements RuleUnitData {
     private final DataStore<String> strings;
     private final List<String> results = new ArrayList<>();
 
-    public HelloWorld() {
+    public HelloWorldUnit() {
         this(DataSource.createStore());
     }
 
-    public HelloWorld(DataStore<String> strings) {
+    public HelloWorldUnit(DataStore<String> strings) {
         this.strings = strings;
     }
 

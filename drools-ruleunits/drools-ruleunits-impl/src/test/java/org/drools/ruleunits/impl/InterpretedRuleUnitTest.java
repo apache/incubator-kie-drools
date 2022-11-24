@@ -28,11 +28,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InterpretedRuleUnitTest {
 
     @Test
-    public void testHelloWorldInterpreted() {
-        HelloWorld unit = new HelloWorld();
+    public void helloWorldInterpreted() {
+        HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        try ( RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit) ) {
+        try ( RuleUnitInstance<HelloWorldUnit> unitInstance = InterpretedRuleUnit.instance(unit) ) {
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("it worked!");
         }
@@ -49,10 +49,10 @@ public class InterpretedRuleUnitTest {
         ruleConfig.getRuleRuntimeListeners().add(testRuleRuntimeEventListener);
         ruleConfig.getRuleEventListeners().add(testRuleEventListener);
 
-        HelloWorld unit = new HelloWorld();
+        HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        try (RuleUnitInstance<HelloWorld> unitInstance = InterpretedRuleUnit.instance(unit, ruleConfig)) {
+        try (RuleUnitInstance<HelloWorldUnit> unitInstance = InterpretedRuleUnit.instance(unit, ruleConfig)) {
             assertThat(unitInstance.fire()).isEqualTo(1);
             assertThat(unit.getResults()).containsExactly("it worked!");
             assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");

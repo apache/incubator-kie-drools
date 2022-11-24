@@ -46,6 +46,7 @@ public abstract class ReteEvaluatorBasedRuleUnitInstance<T extends RuleUnitData>
 
     @Override
     public void close() {
+        System.out.println("CLOSE!!");
         evaluator.dispose();
     }
 
