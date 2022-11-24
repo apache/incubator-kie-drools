@@ -6,7 +6,7 @@ import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@PlanningEntity()
+@PlanningEntity
 public class MeetingAssignment extends AbstractPersistable {
 
     private Meeting meeting;

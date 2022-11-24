@@ -284,6 +284,7 @@ Tabu Search is a Local Search that maintains a tabu list to avoid getting stuck 
 The tabu list holds recently used objects that are _taboo_ to use for now.
 Moves that involve an object in the tabu list, are not accepted.
 The tabu list objects can be anything related to the move, such as the planning entity, planning value, move, solution, ...
+{nbsp}
 Here's an example with entity tabu for four queens, so the queens are put in the tabu list:
 
 image::local-search/entityTabuSearch.png[align="center"]

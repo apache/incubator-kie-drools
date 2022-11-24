@@ -211,7 +211,7 @@ class PatientAdmissionScheduleConstraintProviderTest
                 .penalizesBy(6);
     }
 
-    @ConstraintProviderTest()
+    @ConstraintProviderTest
     void preferredMaximumRoomCapacityConstraintTest(
             ConstraintVerifier<PatientAdmissionScheduleConstraintProvider, PatientAdmissionSchedule> constraintVerifier) {
 

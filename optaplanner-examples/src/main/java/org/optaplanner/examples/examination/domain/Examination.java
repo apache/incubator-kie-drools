@@ -16,7 +16,7 @@ import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftSc
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
-@PlanningSolution()
+@PlanningSolution
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable {
 

@@ -270,7 +270,7 @@ public class GizmoMemberDescriptor {
 
     /**
      * Returns the member type (for fields) / return type (for methods) name.
-     * The name does not include generic infomation.
+     * The name does not include generic information.
      */
     public String getTypeName() {
         String typeName;

@@ -40,7 +40,7 @@ class CustomVariableListenerTest {
         assertThatIllegalStateException().isThrownBy(TestdataCyclicReferencedShadowedSolution::buildSolutionDescriptor);
     }
 
-    @Test()
+    @Test
     void nonCyclicWithSevenDisorderedShadows() {
         SolutionDescriptor<TestdataSevenNonCyclicShadowedSolution> solutionDescriptor =
                 TestdataSevenNonCyclicShadowedSolution.buildSolutionDescriptor();

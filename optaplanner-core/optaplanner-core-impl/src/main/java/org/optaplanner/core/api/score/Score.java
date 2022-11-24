@@ -125,7 +125,7 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
 
     /**
      *
-     * @return true when this {@link #equals(Object) is equal to} {@link #zero()}.
+     * @return true when this {@link Object#equals(Object) is equal to} {@link #zero()}.
      */
     default boolean isZero() {
         return this.equals(zero());

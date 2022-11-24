@@ -122,7 +122,7 @@ public abstract class AbstractTabuAcceptor<Solution_> extends AbstractAcceptor<S
 
     @Override
     public boolean isAccepted(LocalSearchMoveScope<Solution_> moveScope) {
-        int maximumTabuStepIndex = locateMaximumTabStepIndex(moveScope);
+        int maximumTabuStepIndex = locateMaximumTabuStepIndex(moveScope);
         if (maximumTabuStepIndex < 0) {
             // The move isn't tabu at all
             return true;
@@ -157,7 +157,7 @@ public abstract class AbstractTabuAcceptor<Solution_> extends AbstractAcceptor<S
         return accepted;
     }
 
-    private int locateMaximumTabStepIndex(LocalSearchMoveScope<Solution_> moveScope) {
+    private int locateMaximumTabuStepIndex(LocalSearchMoveScope<Solution_> moveScope) {
         Collection<? extends Object> checkingTabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object checkingTabu : checkingTabus) {

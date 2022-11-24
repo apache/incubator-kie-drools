@@ -87,14 +87,14 @@ public class AcceptedLocalSearchForager<Solution_> extends AbstractLocalSearchFo
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
                 Score bestScore = moveScope.getStepScope().getPhaseScope().getBestScore();
-                if (((Score) moveScope.getScore()).compareTo(bestScore) > 0) {
+                if (moveScope.getScore().compareTo(bestScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (((Score) moveScope.getScore()).compareTo(lastStepScore) > 0) {
+                if (moveScope.getScore().compareTo(lastStepScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
