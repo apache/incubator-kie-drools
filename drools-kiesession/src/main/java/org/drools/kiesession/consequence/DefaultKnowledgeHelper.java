@@ -90,9 +90,9 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         out.writeObject(reteEvaluator);
     }
 
-    public void setActivation(final Activation agendaItem) {
-        this.activation = agendaItem;
-        this.tuple = agendaItem.getTuple();
+    public void setActivation(final Activation activation) {
+        this.activation = activation;
+        this.tuple = activation.getTuple();
     }
 
     public Activation getActivation() {

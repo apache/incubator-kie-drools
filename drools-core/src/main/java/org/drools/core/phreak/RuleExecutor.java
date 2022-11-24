@@ -441,8 +441,8 @@ public class RuleExecutor {
     }
 
     private void innerFireActivation( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence ) {
+        KnowledgeHelper knowledgeHelper = activationsManager.getKnowledgeHelper();
         try {
-            KnowledgeHelper knowledgeHelper = activationsManager.getKnowledgeHelper();
             knowledgeHelper.setActivation( activation );
 
             if ( log.isTraceEnabled() ) {
@@ -457,6 +457,7 @@ public class RuleExecutor {
             activation.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
+            knowledgeHelper.restoreActivationOnConsequenceFailure( activation );
             activationsManager.handleException( activation, e );
         } finally {
             if ( activation.getActivationFactHandle() != null ) {
