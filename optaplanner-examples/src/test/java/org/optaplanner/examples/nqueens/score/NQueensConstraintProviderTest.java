@@ -10,7 +10,8 @@ import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO;
+import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 
 class NQueensConstraintProviderTest
@@ -105,7 +106,7 @@ class NQueensConstraintProviderTest
     }
 
     private static NQueens readSolution(String resource) throws IOException {
-        XStreamSolutionFileIO<NQueens> solutionFileIO = new XStreamSolutionFileIO<>(NQueens.class);
+        JacksonSolutionFileIO<NQueens> solutionFileIO = new NQueensSolutionFileIO();
         try (InputStream inputStream = NQueensConstraintProviderTest.class.getResourceAsStream(resource)) {
             return solutionFileIO.read(inputStream);
         }
@@ -115,8 +116,8 @@ class NQueensConstraintProviderTest
     void givenSolutionMultipleConstraints(ConstraintVerifier<NQueensConstraintProvider, NQueens> constraintVerifier)
             throws IOException {
         constraintVerifier.verifyThat()
-                .givenSolution(readSolution("256queensScore-30.xml"))
-                .scores(SimpleScore.of(-30));
+                .givenSolution(readSolution("256queensScore-29.json"))
+                .scores(SimpleScore.of(-29));
     }
 
     @ConstraintProviderTest

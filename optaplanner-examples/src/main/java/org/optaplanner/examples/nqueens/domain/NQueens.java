@@ -8,15 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.api.score.buildin.simple.SimpleScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 @PlanningSolution
-@XStreamAlias("NQueens")
-public class NQueens extends AbstractPersistable {
+public class NQueens extends AbstractPersistableJackson {
 
     private int n;
 
@@ -25,8 +20,14 @@ public class NQueens extends AbstractPersistable {
 
     private List<Queen> queenList;
 
-    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
+
+    public NQueens() { // For Jackson.
+    }
+
+    public NQueens(long id) {
+        super(id);
+    }
 
     public int getN() {
         return n;

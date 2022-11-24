@@ -15,6 +15,6 @@ class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest
 
     @Override
     protected Stream<String> unsolvedFileNames() {
-        return Stream.of("4queens.xml", "8queens.xml");
+        return Stream.of("4queens.json", "8queens.json");
     }
 }

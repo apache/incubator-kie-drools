@@ -2,7 +2,7 @@ package org.optaplanner.examples.nqueens.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO;
+import org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
@@ -35,7 +35,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
     @Override
     public SolutionFileIO<NQueens> createSolutionFileIO() {
-        return new NQueensXmlSolutionFileIO();
+        return new NQueensSolutionFileIO();
     }
 
 }

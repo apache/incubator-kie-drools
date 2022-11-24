@@ -212,7 +212,7 @@ and use it in the benchmark configuration:
 [source,xml,options="nowrap"]
 ----
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       ...
     </problemBenchmarks>
@@ -382,7 +382,7 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
     </problemBenchmarks>

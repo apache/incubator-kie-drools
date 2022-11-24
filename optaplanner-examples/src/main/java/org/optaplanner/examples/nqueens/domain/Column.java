@@ -1,15 +1,16 @@
 package org.optaplanner.examples.nqueens.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Column")
-public class Column extends AbstractPersistable {
+@JsonIdentityInfo(scope = Column.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Column extends AbstractPersistableJackson {
 
     private int index;
 
-    public Column() {
+    public Column() { // For Jackson.
     }
 
     public Column(int index) {

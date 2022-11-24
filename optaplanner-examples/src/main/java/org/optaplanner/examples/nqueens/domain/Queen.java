@@ -2,26 +2,29 @@ package org.optaplanner.examples.nqueens.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
-import org.optaplanner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.nqueens.domain.solver.QueenDifficultyWeightFactory;
+import org.optaplanner.examples.nqueens.domain.solver.RowStrengthWeightFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
-@XStreamAlias("Queen")
-public class Queen extends AbstractPersistable {
+public class Queen extends AbstractPersistableJackson {
 
     private Column column;
 
     // Planning variables: changes during planning, between score calculations.
     private Row row;
 
-    public Queen() {
+    public Queen() { // For Jackson.
+    }
+
+    public Queen(long id) {
+        super(id);
     }
 
     public Queen(long id, Row row, Column column) {
-        super(id);
+        this(id);
         this.row = row;
         this.column = column;
     }
@@ -47,10 +50,12 @@ public class Queen extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getColumnIndex() {
         return column.getIndex();
     }
 
+    @JsonIgnore
     public int getRowIndex() {
         if (row == null) {
             return Integer.MIN_VALUE;
@@ -58,10 +63,12 @@ public class Queen extends AbstractPersistable {
         return row.getIndex();
     }
 
+    @JsonIgnore
     public int getAscendingDiagonalIndex() {
         return (getColumnIndex() + getRowIndex());
     }
 
+    @JsonIgnore
     public int getDescendingDiagonalIndex() {
         return (getColumnIndex() - getRowIndex());
     }

@@ -29,10 +29,10 @@
       </localSearch>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.json</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/64queens.json</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/256queens.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

@@ -1,0 +1,168 @@
+{
+  "id" : 0,
+  "n" : 16,
+  "columnList" : [ {
+    "id" : 0,
+    "index" : 0
+  }, {
+    "id" : 1,
+    "index" : 1
+  }, {
+    "id" : 2,
+    "index" : 2
+  }, {
+    "id" : 3,
+    "index" : 3
+  }, {
+    "id" : 4,
+    "index" : 4
+  }, {
+    "id" : 5,
+    "index" : 5
+  }, {
+    "id" : 6,
+    "index" : 6
+  }, {
+    "id" : 7,
+    "index" : 7
+  }, {
+    "id" : 8,
+    "index" : 8
+  }, {
+    "id" : 9,
+    "index" : 9
+  }, {
+    "id" : 10,
+    "index" : 10
+  }, {
+    "id" : 11,
+    "index" : 11
+  }, {
+    "id" : 12,
+    "index" : 12
+  }, {
+    "id" : 13,
+    "index" : 13
+  }, {
+    "id" : 14,
+    "index" : 14
+  }, {
+    "id" : 15,
+    "index" : 15
+  } ],
+  "rowList" : [ {
+    "id" : 0,
+    "index" : 0
+  }, {
+    "id" : 1,
+    "index" : 1
+  }, {
+    "id" : 2,
+    "index" : 2
+  }, {
+    "id" : 3,
+    "index" : 3
+  }, {
+    "id" : 4,
+    "index" : 4
+  }, {
+    "id" : 5,
+    "index" : 5
+  }, {
+    "id" : 6,
+    "index" : 6
+  }, {
+    "id" : 7,
+    "index" : 7
+  }, {
+    "id" : 8,
+    "index" : 8
+  }, {
+    "id" : 9,
+    "index" : 9
+  }, {
+    "id" : 10,
+    "index" : 10
+  }, {
+    "id" : 11,
+    "index" : 11
+  }, {
+    "id" : 12,
+    "index" : 12
+  }, {
+    "id" : 13,
+    "index" : 13
+  }, {
+    "id" : 14,
+    "index" : 14
+  }, {
+    "id" : 15,
+    "index" : 15
+  } ],
+  "queenList" : [ {
+    "id" : 0,
+    "column" : 0,
+    "row" : null
+  }, {
+    "id" : 1,
+    "column" : 1,
+    "row" : null
+  }, {
+    "id" : 2,
+    "column" : 2,
+    "row" : null
+  }, {
+    "id" : 3,
+    "column" : 3,
+    "row" : null
+  }, {
+    "id" : 4,
+    "column" : 4,
+    "row" : null
+  }, {
+    "id" : 5,
+    "column" : 5,
+    "row" : null
+  }, {
+    "id" : 6,
+    "column" : 6,
+    "row" : null
+  }, {
+    "id" : 7,
+    "column" : 7,
+    "row" : null
+  }, {
+    "id" : 8,
+    "column" : 8,
+    "row" : null
+  }, {
+    "id" : 9,
+    "column" : 9,
+    "row" : null
+  }, {
+    "id" : 10,
+    "column" : 10,
+    "row" : null
+  }, {
+    "id" : 11,
+    "column" : 11,
+    "row" : null
+  }, {
+    "id" : 12,
+    "column" : 12,
+    "row" : null
+  }, {
+    "id" : 13,
+    "column" : 13,
+    "row" : null
+  }, {
+    "id" : 14,
+    "column" : 14,
+    "row" : null
+  }, {
+    "id" : 15,
+    "column" : 15,
+    "row" : null
+  } ],
+  "score" : null
+}

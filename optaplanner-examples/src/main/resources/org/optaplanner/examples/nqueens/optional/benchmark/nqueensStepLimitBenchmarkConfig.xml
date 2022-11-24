@@ -14,8 +14,8 @@
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/256queens.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

@@ -13,7 +13,7 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO;
 
 class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 
@@ -28,8 +28,8 @@ class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test
     @Timeout(100)
     void benchmarkBroken8queens() {
-        NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
-                .read(new File("data/nqueens/unsolved/8queens.xml"));
+        NQueens problem = new NQueensSolutionFileIO()
+                .read(new File("data/nqueens/unsolved/8queens.json"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         benchmarkConfig.setWarmUpSecondsSpentLimit(0L);
         benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()

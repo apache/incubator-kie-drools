@@ -15,9 +15,12 @@ import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO;
 
 class NQueensBenchmarkTest extends PlannerBenchmarkTest {
+
+    private final NQueens problem = new NQueensSolutionFileIO()
+            .read(new File("data/nqueens/unsolved/64queens.json"));
 
     NQueensBenchmarkTest() {
         super(NQueensApp.SOLVER_CONFIG);
@@ -27,10 +30,9 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
+    @Test
     @Timeout(600)
     void benchmark64queens() {
-        NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
-                .read(new File("data/nqueens/unsolved/64queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         addAllStatistics(benchmarkConfig);
         benchmarkConfig.setParallelBenchmarkCount("AUTO");
@@ -41,8 +43,6 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test
     @Timeout(600)
     void benchmark64queensSingleThread() {
-        NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
-                .read(new File("data/nqueens/unsolved/64queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         addAllStatistics(benchmarkConfig);
         benchmarkConfig.setParallelBenchmarkCount("1");
@@ -59,8 +59,6 @@ class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 
     @Test
     void benchmarkDirectoryNameDuplication() {
-        NQueens problem = new XStreamSolutionFileIO<NQueens>(NQueens.class)
-                .read(new File("data/nqueens/unsolved/4queens.xml"));
         PlannerBenchmarkConfig benchmarkConfig = buildPlannerBenchmarkConfig();
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.create(benchmarkConfig);
         DefaultPlannerBenchmark plannerBenchmark = (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(problem);

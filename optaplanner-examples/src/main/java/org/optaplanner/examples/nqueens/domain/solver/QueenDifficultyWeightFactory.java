@@ -1,4 +1,4 @@
-package org.optaplanner.examples.nqueens.domain.solution;
+package org.optaplanner.examples.nqueens.domain.solver;
 
 import java.util.Comparator;
 

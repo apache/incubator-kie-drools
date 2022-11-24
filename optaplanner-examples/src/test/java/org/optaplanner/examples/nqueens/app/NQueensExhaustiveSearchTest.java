@@ -17,7 +17,7 @@ class NQueensExhaustiveSearchTest extends AbstractExhaustiveSearchTest<NQueens> 
 
     @Override
     protected Stream<String> unsolvedFileNames() {
-        return Stream.of("4queens.xml");
+        return Stream.of("4queens.json");
     }
 
     @Override

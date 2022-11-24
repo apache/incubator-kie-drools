@@ -2,6 +2,7 @@ package org.optaplanner.persistence.jackson.impl.domain.solution;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -45,6 +46,14 @@ public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution
             return mapper.readValue(inputSolutionFile, clazz);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
+        }
+    }
+
+    public Solution_ read(InputStream inputSolutionStream) {
+        try {
+            return mapper.readValue(inputSolutionStream, clazz);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed reading inputSolutionStream.", e);
         }
     }
 

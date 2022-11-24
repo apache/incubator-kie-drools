@@ -17,11 +17,11 @@ class NQueensSmokeTest extends SolverSmokeTest<NQueens, SimpleScore> {
     @Override
     protected Stream<TestData<SimpleScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, "data/nqueens/unsolved/16queens.xml",
+                TestData.of(ConstraintStreamImplType.DROOLS, "data/nqueens/unsolved/16queens.json",
                         SimpleScore.ZERO,
                         SimpleScore.ZERO,
                         SimpleScore.ZERO),
-                TestData.of(ConstraintStreamImplType.BAVET, "data/nqueens/unsolved/16queens.xml",
+                TestData.of(ConstraintStreamImplType.BAVET, "data/nqueens/unsolved/16queens.json",
                         SimpleScore.ZERO,
                         SimpleScore.ZERO,
                         SimpleScore.ZERO));
