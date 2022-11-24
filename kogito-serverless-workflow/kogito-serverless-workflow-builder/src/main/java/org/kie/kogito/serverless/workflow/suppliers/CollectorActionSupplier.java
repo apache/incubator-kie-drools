@@ -29,6 +29,7 @@ public class CollectorActionSupplier extends CollectorAction implements Expressi
 
     public CollectorActionSupplier(String lang, String expr, String inputVar, String outputVar) {
         super(lang, expr, inputVar, outputVar);
+        ExpressionUtils.checkValid(lang, expr);
         expression = ExpressionUtils.getObjectCreationExpr(CollectorAction.class, lang, expr, inputVar, outputVar);
     }
 

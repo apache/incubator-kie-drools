@@ -35,6 +35,7 @@ public class JsonPathExpression implements Expression {
 
     private final String expr;
     private Boolean isValid;
+    private Exception validationError;
 
     public JsonPathExpression(String expr) {
         expr = replaceMagic(expr, ExpressionHandlerUtils.CONST_MAGIC);
@@ -93,6 +94,7 @@ public class JsonPathExpression implements Expression {
                 JsonPath.compile(expr);
                 isValid = true;
             } catch (JsonPathException ex) {
+                validationError = ex;
                 isValid = false;
             }
         }
@@ -112,5 +114,10 @@ public class JsonPathExpression implements Expression {
     @Override
     public String asString() {
         return expr;
+    }
+
+    @Override
+    public Exception validationError() {
+        return validationError;
     }
 }

@@ -1,5 +1,6 @@
 id: function
 name: test-wf
+expressionLang: jsonpath
 version: '1.0'
 start: WaitForGreeting
 events:
@@ -17,7 +18,7 @@ states:
       - eventRefs:
           - TestKafkaEvent
         eventDataFilter:
-          toStateData: "{{ $.data.greet }}"
+          toStateData: "${$.data.greet }"
         actions:
           - functionRef:
               refName: greetFunction

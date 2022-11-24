@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
@@ -49,6 +50,13 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 public class ExpressionUtils {
 
     private ExpressionUtils() {
+    }
+
+    public static void checkValid(String lang, String expr) {
+        org.kie.kogito.process.expr.Expression exprObj = ExpressionHandlerFactory.get(lang, expr);
+        if (!exprObj.isValid()) {
+            throw new IllegalArgumentException(String.format("Expression %s for language %s is not a valid one", expr, lang), exprObj.validationError());
+        }
     }
 
     public static ObjectCreationExpr getObjectCreationExpr(Class<?> runtimeClass, Object... args) {

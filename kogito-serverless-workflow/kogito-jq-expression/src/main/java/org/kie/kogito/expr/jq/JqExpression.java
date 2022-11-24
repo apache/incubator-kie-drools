@@ -40,6 +40,7 @@ public class JqExpression implements Expression {
     private final Supplier<Scope> scope;
     private final String expr;
     private JsonQuery query;
+    private Exception validationError;
 
     public JqExpression(Supplier<Scope> scope, String expr) {
         this.expr = expr;
@@ -167,6 +168,7 @@ public class JqExpression implements Expression {
             compile();
             return true;
         } catch (JsonQueryException e) {
+            validationError = e;
             return false;
         }
     }
@@ -174,5 +176,10 @@ public class JqExpression implements Expression {
     @Override
     public String asString() {
         return expr;
+    }
+
+    @Override
+    public Exception validationError() {
+        return validationError;
     }
 }

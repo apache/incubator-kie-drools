@@ -95,7 +95,7 @@
           "functionRef": {
             "refName": "printMessage",
             "arguments": {
-              "message": ".result"
+              "message": "\"Result is: \"+(.result|tostring)"
             }
           }
          },

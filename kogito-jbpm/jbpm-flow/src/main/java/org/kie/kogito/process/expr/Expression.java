@@ -23,6 +23,8 @@ public interface Expression {
 
     boolean isValid();
 
+    Exception validationError();
+
     void assign(Object target, Object value, KogitoProcessContext context);
 
     String asString();

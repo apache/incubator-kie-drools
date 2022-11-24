@@ -24,6 +24,6 @@ public class SysoutAction extends BaseExpressionAction {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        System.out.println(super.evaluate(context, String.class));
+        System.out.println(expr.isValid() ? evaluate(context, String.class) : expr);
     }
 }
