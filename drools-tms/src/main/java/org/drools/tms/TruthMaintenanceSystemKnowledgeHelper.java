@@ -53,13 +53,20 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
     }
 
     @Override
-    public void setActivation(final Activation agendaItem) {
-        TruthMaintenanceSystemActivation tmsActivation = (TruthMaintenanceSystemActivation)agendaItem;
+    public void setActivation(final Activation activation) {
+        TruthMaintenanceSystemActivation tmsActivation = (TruthMaintenanceSystemActivation) activation;
         this.previousJustified = tmsActivation.getLogicalDependencies();
         this.previousBlocked = tmsActivation.getBlocked();
-        super.setActivation(agendaItem);
+        super.setActivation(activation);
         tmsActivation.setLogicalDependencies( null );
         tmsActivation.setBlocked( null );
+    }
+
+    @Override
+    public void restoreActivationOnConsequenceFailure(Activation activation) {
+        TruthMaintenanceSystemActivation tmsActivation = (TruthMaintenanceSystemActivation) activation;
+        tmsActivation.setLogicalDependencies( this.previousJustified );
+        tmsActivation.setBlocked( tmsActivation.getBlocked() );
     }
 
     @Override

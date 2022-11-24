@@ -44,13 +44,12 @@ import org.kie.api.runtime.rule.RuleContext;
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
  */
-public interface KnowledgeHelper
-    extends
-    RuleContext,
-    Serializable {
+public interface KnowledgeHelper extends RuleContext, Serializable {
     
-    void setActivation(final Activation agendaItem);
-    
+    void setActivation(Activation activation);
+
+    default void restoreActivationOnConsequenceFailure(Activation activation) { }
+
     void reset();
     
     
