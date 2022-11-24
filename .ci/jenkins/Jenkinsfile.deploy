@@ -116,20 +116,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy()
-                }
-            }
-        }
         stage('Deploy locally') {
-            when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
-            }
             steps {
                 script {
                     runMavenDeploy(true)
@@ -138,7 +125,7 @@ pipeline {
         }
         stage('Upload artifacts to given repository') {
             when {
-                expression { return isSpecificArtifactsUpload() }
+                expression { return !isRelease() && shouldDeployToRepository() }
             }
             steps {
                 script {
@@ -240,11 +227,11 @@ boolean isSpecificArtifactsUpload() {
 }
 
 boolean shouldStageArtifacts() {
-    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+    return isRelease()
 }
 
 boolean shouldDeployToRepository() {
-    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID && getGitAuthor() == 'kiegroup'
 }
 
 boolean isRelease() {
