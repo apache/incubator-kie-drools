@@ -2,16 +2,18 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Teacher")
-public class Teacher extends AbstractPersistable {
+@JsonIdentityInfo(scope = Teacher.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Teacher extends AbstractPersistableJackson implements Labeled {
 
     private String code;
 
-    public Teacher() {
+    public Teacher() { // For Jackson.
     }
 
     public Teacher(int id, String code) {
@@ -27,6 +29,7 @@ public class Teacher extends AbstractPersistable {
         this.code = code;
     }
 
+    @Override
     public String getLabel() {
         return code;
     }

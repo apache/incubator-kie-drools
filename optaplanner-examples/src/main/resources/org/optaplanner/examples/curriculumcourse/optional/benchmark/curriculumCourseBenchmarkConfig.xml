@@ -16,21 +16,21 @@
       </termination>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp04.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp05.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp06.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp09.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp10.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp11.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp01.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp02.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp03.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp04.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp05.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp06.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp07.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp08.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp09.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp10.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp11.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp12.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp13.json</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp14.json</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->

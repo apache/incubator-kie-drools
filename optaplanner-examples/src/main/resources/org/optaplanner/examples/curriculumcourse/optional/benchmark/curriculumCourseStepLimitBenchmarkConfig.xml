@@ -13,8 +13,8 @@
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
+      <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 

@@ -1,0 +1,115 @@
+{
+  "id" : 0,
+  "name" : "Toy01",
+  "teacherList" : [ {
+    "id" : 0,
+    "code" : "t1"
+  }, {
+    "id" : 1,
+    "code" : "t2"
+  } ],
+  "curriculumList" : [ {
+    "id" : 0,
+    "code" : "mafr"
+  }, {
+    "id" : 1,
+    "code" : "masc"
+  } ],
+  "courseList" : [ {
+    "id" : 0,
+    "code" : "math",
+    "teacher" : 0,
+    "lectureSize" : 2,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0, 1 ],
+    "studentSize" : 100
+  }, {
+    "id" : 1,
+    "code" : "science",
+    "teacher" : 0,
+    "lectureSize" : 1,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 1 ],
+    "studentSize" : 80
+  }, {
+    "id" : 2,
+    "code" : "french",
+    "teacher" : 1,
+    "lectureSize" : 1,
+    "minWorkingDaySize" : 1,
+    "curriculumSet" : [ 0 ],
+    "studentSize" : 20
+  } ],
+  "dayList" : [ {
+    "id" : 0,
+    "dayIndex" : 0,
+    "periodList" : [ {
+      "id" : 0,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 0,
+        "timeslotIndex" : 0
+      }
+    }, {
+      "id" : 1,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 1,
+        "timeslotIndex" : 1
+      }
+    }, {
+      "id" : 2,
+      "day" : 0,
+      "timeslot" : {
+        "id" : 2,
+        "timeslotIndex" : 2
+      }
+    } ]
+  } ],
+  "timeslotList" : [ 0, 1, 2 ],
+  "periodList" : [ 0, 1, 2 ],
+  "roomList" : [ {
+    "id" : 0,
+    "code" : "A",
+    "capacity" : 90
+  }, {
+    "id" : 1,
+    "code" : "B",
+    "capacity" : 110
+  } ],
+  "unavailablePeriodPenaltyList" : [ {
+    "id" : 0,
+    "course" : 1,
+    "period" : 1
+  } ],
+  "lectureList" : [ {
+    "id" : 0,
+    "course" : 0,
+    "lectureIndexInCourse" : 0,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 1,
+    "course" : 0,
+    "lectureIndexInCourse" : 1,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 2,
+    "course" : 1,
+    "lectureIndexInCourse" : 0,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  }, {
+    "id" : 3,
+    "course" : 2,
+    "lectureIndexInCourse" : 0,
+    "pinned" : false,
+    "period" : null,
+    "room" : null
+  } ],
+  "score" : null
+}

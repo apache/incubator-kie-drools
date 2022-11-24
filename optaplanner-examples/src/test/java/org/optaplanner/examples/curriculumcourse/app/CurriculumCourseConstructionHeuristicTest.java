@@ -26,6 +26,6 @@ class CurriculumCourseConstructionHeuristicTest extends AbstractConstructionHeur
 
     @Override
     protected Stream<String> unsolvedFileNames() {
-        return Stream.of("toy01.xml");
+        return Stream.of("toy01.json");
     }
 }

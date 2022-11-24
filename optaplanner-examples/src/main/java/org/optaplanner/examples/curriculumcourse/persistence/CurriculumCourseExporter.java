@@ -13,7 +13,7 @@ public class CurriculumCourseExporter extends AbstractTxtSolutionExporter<Course
 
     public static void main(String[] args) {
         SolutionConverter<CourseSchedule> converter = SolutionConverter.createExportConverter(
-                CurriculumCourseApp.DATA_DIR_NAME, CourseSchedule.class, new CurriculumCourseExporter());
+                CurriculumCourseApp.DATA_DIR_NAME, new CurriculumCourseSolutionFileIO(), new CurriculumCourseExporter());
         converter.convertAll();
     }
 

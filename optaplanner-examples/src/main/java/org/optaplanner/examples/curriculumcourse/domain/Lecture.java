@@ -5,16 +5,16 @@ import java.util.Set;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
-@XStreamAlias("Lecture")
-public class Lecture extends AbstractPersistable {
+public class Lecture extends AbstractPersistableJackson implements Labeled {
 
     private Course course;
     private int lectureIndexInCourse;
@@ -24,10 +24,17 @@ public class Lecture extends AbstractPersistable {
     private Period period;
     private Room room;
 
-    public Lecture() {
+    public Lecture() { // For Jackson.
     }
 
-    public Lecture(int id, Course course, Period period, Room room) {
+    public Lecture(long id, Course course, int lectureIndexInCourse, boolean pinned) {
+        super(id);
+        this.course = course;
+        this.lectureIndexInCourse = lectureIndexInCourse;
+        this.pinned = pinned;
+    }
+
+    public Lecture(long id, Course course, Period period, Room room) {
         super(id);
         this.course = course;
         this.period = period;
@@ -82,18 +89,22 @@ public class Lecture extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public Teacher getTeacher() {
         return course.getTeacher();
     }
 
+    @JsonIgnore
     public int getStudentSize() {
         return course.getStudentSize();
     }
 
+    @JsonIgnore
     public Set<Curriculum> getCurriculumSet() {
         return course.getCurriculumSet();
     }
 
+    @JsonIgnore
     public Day getDay() {
         if (period == null) {
             return null;
@@ -101,6 +112,7 @@ public class Lecture extends AbstractPersistable {
         return period.getDay();
     }
 
+    @JsonIgnore
     public int getTimeslotIndex() {
         if (period == null) {
             return Integer.MIN_VALUE;
@@ -108,6 +120,7 @@ public class Lecture extends AbstractPersistable {
         return period.getTimeslot().getTimeslotIndex();
     }
 
+    @Override
     public String getLabel() {
         return course.getCode() + "-" + lectureIndexInCourse;
     }

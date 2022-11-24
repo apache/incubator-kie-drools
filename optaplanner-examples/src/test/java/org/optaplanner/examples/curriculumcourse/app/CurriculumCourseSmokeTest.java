@@ -9,7 +9,7 @@ import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
 class CurriculumCourseSmokeTest extends SolverSmokeTest<CourseSchedule, HardSoftScore> {
 
-    private static final String UNSOLVED_DATA_FILE = "data/curriculumcourse/unsolved/comp01_initialized.xml";
+    private static final String UNSOLVED_DATA_FILE = "data/curriculumcourse/unsolved/comp01_initialized.json";
 
     @Override
     protected CurriculumCourseApp createCommonApp() {

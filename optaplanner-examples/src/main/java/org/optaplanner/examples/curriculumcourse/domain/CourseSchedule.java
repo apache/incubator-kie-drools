@@ -9,16 +9,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
-import org.optaplanner.persistence.xstream.api.score.buildin.hardsoft.HardSoftScoreXStreamConverter;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @PlanningSolution
-@XStreamAlias("CourseSchedule")
-public class CourseSchedule extends AbstractPersistable {
+public class CourseSchedule extends AbstractPersistableJackson {
 
     private String name;
 
@@ -34,8 +29,14 @@ public class CourseSchedule extends AbstractPersistable {
 
     private List<Lecture> lectureList;
 
-    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
+
+    public CourseSchedule() { // For Jackson.
+    }
+
+    public CourseSchedule(long id) {
+        super(id);
+    }
 
     public String getName() {
         return name;

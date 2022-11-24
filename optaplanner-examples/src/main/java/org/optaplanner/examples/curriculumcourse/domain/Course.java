@@ -7,12 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Course")
-public class Course extends AbstractPersistable {
+@JsonIdentityInfo(scope = Course.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Course extends AbstractPersistableJackson {
 
     private String code;
 
@@ -23,7 +24,7 @@ public class Course extends AbstractPersistable {
     private Set<Curriculum> curriculumSet;
     private int studentSize;
 
-    public Course() {
+    public Course() { // For Jackson.
     }
 
     public Course(int id, String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,

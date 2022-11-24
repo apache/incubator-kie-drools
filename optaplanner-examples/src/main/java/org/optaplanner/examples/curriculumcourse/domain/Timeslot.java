@@ -1,16 +1,21 @@
 package org.optaplanner.examples.curriculumcourse.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Timeslot")
-public class Timeslot extends AbstractPersistable {
+@JsonIdentityInfo(scope = Timeslot.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Timeslot extends AbstractPersistableJackson implements Labeled {
 
     private static final String[] TIMES = { "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00",
             "18:00" };
 
     private int timeslotIndex;
+
+    public Timeslot() { // For Jackson.
+    }
 
     public Timeslot(int timeslotIndex) {
         super(timeslotIndex);
@@ -25,6 +30,7 @@ public class Timeslot extends AbstractPersistable {
         this.timeslotIndex = timeslotIndex;
     }
 
+    @Override
     public String getLabel() {
         String time = TIMES[timeslotIndex % TIMES.length];
         if (timeslotIndex > TIMES.length) {

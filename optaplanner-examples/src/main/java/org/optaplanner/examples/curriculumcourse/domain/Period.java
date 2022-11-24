@@ -2,21 +2,23 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("Period")
-public class Period extends AbstractPersistable implements Labeled {
+@JsonIdentityInfo(scope = Period.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Period extends AbstractPersistableJackson implements Labeled {
 
     private Day day;
     private Timeslot timeslot;
 
-    public Period() {
+    public Period() { // For Jackson.
     }
 
-    public Period(int id, Day day, Timeslot timeslot) {
+    public Period(long id, Day day, Timeslot timeslot) {
         super(id);
         this.day = requireNonNull(day);
         day.getPeriodList().add(this);
@@ -40,6 +42,7 @@ public class Period extends AbstractPersistable implements Labeled {
     }
 
     @Override
+    @JsonIgnore
     public String getLabel() {
         return day.getLabel() + " " + timeslot.getLabel();
     }
