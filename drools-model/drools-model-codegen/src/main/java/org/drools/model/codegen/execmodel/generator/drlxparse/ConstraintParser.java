@@ -30,6 +30,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -243,6 +244,10 @@ public class ConstraintParser {
                 ((SingleDrlxParseSuccess)result).setExprBinding(bind.asString());
             }
             return result;
+        }
+
+        if (drlxExpr instanceof ConditionalExpr) {
+            return parseConditionalExpr((ConditionalExpr) drlxExpr, patternType, bindingId, constraint, hasBind, isPositional);
         }
 
         if ( drlxExpr instanceof UnaryExpr ) {
@@ -665,6 +670,39 @@ public class ConstraintParser {
                 .setIsPredicate(isPredicate)
                 .setImplicitCastExpression(leftTypedExpressionResult.getInlineCastExpression())
                 .setNullSafeExpressions(leftTypedExpressionResult.getNullSafeExpressions()); // This would be empty if NullSafeExpressions were combined earlier
+    }
+
+    private DrlxParseResult parseConditionalExpr(ConditionalExpr conditionalExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, boolean hasBind, boolean isPositional) {
+        Expression condition = conditionalExpr.getCondition();
+        Expression thenExpr = conditionalExpr.getThenExpr();
+        Expression elseExpr = conditionalExpr.getElseExpr();
+
+        List<String> usedDeclarations = new ArrayList<>();
+        TypedExpressionResult conditionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(condition);
+        usedDeclarations.addAll(conditionResult.getUsedDeclarations());
+
+        SingleDrlxParseSuccess conditionParseResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, condition, hasBind, isPositional);
+        Expression parsedCondition = conditionParseResult.getExpr();
+        conditionalExpr.setCondition(parsedCondition);
+
+        TypedExpressionResult thenExprResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(thenExpr);
+        Optional<TypedExpression> opt = thenExprResult.getTypedExpression();
+        if (!opt.isPresent()) {
+            return new DrlxParseFail(new ParseExpressionErrorResult(conditionalExpr));
+        }
+        TypedExpression typedExpression = opt.get();
+        usedDeclarations.addAll(thenExprResult.getUsedDeclarations());
+
+        SingleDrlxParseSuccess thenExprParseResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, thenExpr, hasBind, isPositional);
+        conditionalExpr.setThenExpr(thenExprParseResult.getExpr());
+
+        TypedExpressionResult elseExprResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(elseExpr);
+        usedDeclarations.addAll(elseExprResult.getUsedDeclarations());
+
+        SingleDrlxParseSuccess elseExprParseResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, elseExpr, hasBind, isPositional);
+        conditionalExpr.setElseExpr(elseExprParseResult.getExpr());
+
+        return new SingleDrlxParseSuccess(patternType, bindingId, conditionalExpr, typedExpression.getType()).setUsedDeclarations(usedDeclarations);
     }
 
     private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {
