@@ -549,8 +549,8 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public void setActivation(Activation agendaItem) {
-            knowledgeHelper.setActivation(agendaItem);
+        public void setActivation(Activation activation) {
+            knowledgeHelper.setActivation(activation);
         }
 
         public Activation getActivation() {
