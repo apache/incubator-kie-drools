@@ -1,8 +1,8 @@
 package org.optaplanner.examples.tennis.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class UnavailabilityPenalty extends AbstractPersistableJackson {
+public class UnavailabilityPenalty extends AbstractPersistable {
 
     private Team team;
     private Day day;

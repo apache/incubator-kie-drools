@@ -8,10 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
-public class PatientAdmissionSchedule extends AbstractPersistableJackson {
+public class PatientAdmissionSchedule extends AbstractPersistable {
 
     private List<Specialism> specialismList;
     private List<Equipment> equipmentList;
@@ -31,7 +31,7 @@ public class PatientAdmissionSchedule extends AbstractPersistableJackson {
 
     private HardMediumSoftScore score;
 
-    public PatientAdmissionSchedule() { // For Jackson.
+    public PatientAdmissionSchedule() {
     }
 
     public PatientAdmissionSchedule(long id) {

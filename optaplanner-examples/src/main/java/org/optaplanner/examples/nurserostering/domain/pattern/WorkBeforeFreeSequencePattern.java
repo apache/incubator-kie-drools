@@ -10,7 +10,7 @@ public class WorkBeforeFreeSequencePattern extends Pattern {
     private ShiftType workShiftType; // null means any
     private int freeDayLength;
 
-    public WorkBeforeFreeSequencePattern() { // For Jackson.
+    public WorkBeforeFreeSequencePattern() {
     }
 
     public WorkBeforeFreeSequencePattern(long id, String code, DayOfWeek workDayOfWeek, ShiftType workShiftType,

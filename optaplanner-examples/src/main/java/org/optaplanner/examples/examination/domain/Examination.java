@@ -9,11 +9,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.solver.TopicConflict;
 
 @PlanningSolution
-public class Examination extends AbstractPersistableJackson {
+public class Examination extends AbstractPersistable {
 
     private ExaminationConstraintConfiguration constraintConfiguration;
 
@@ -30,7 +30,7 @@ public class Examination extends AbstractPersistableJackson {
 
     private HardSoftScore score;
 
-    public Examination() { // For Jackson.
+    public Examination() {
     }
 
     public Examination(long id) {

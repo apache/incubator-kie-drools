@@ -2,14 +2,14 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class UnavailablePeriodPenalty extends AbstractPersistableJackson {
+public class UnavailablePeriodPenalty extends AbstractPersistable {
 
     private Course course;
     private Period period;
 
-    public UnavailablePeriodPenalty() { // For Jackson.
+    public UnavailablePeriodPenalty() {
     }
 
     public UnavailablePeriodPenalty(long id, Course course, Period period) {

@@ -10,13 +10,13 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningSolution
-public class MachineReassignment extends AbstractPersistableJackson {
+public class MachineReassignment extends AbstractPersistable {
 
     private MrGlobalPenaltyInfo globalPenaltyInfo;
     private List<MrResource> resourceList;
@@ -30,7 +30,7 @@ public class MachineReassignment extends AbstractPersistableJackson {
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    MachineReassignment() { // For Jackson.
+    MachineReassignment() {
     }
 
     public MachineReassignment(long id) {

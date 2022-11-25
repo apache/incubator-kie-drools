@@ -173,10 +173,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize,
             int roomListSize) {
         random = new Random(37);
-        MeetingSchedule meetingSchedule = new MeetingSchedule();
-        meetingSchedule.setId(0L);
-        MeetingConstraintConfiguration constraintConfiguration = new MeetingConstraintConfiguration();
-        constraintConfiguration.setId(0L);
+        MeetingSchedule meetingSchedule = new MeetingSchedule(0L);
+        MeetingConstraintConfiguration constraintConfiguration = new MeetingConstraintConfiguration(0L);
         meetingSchedule.setConstraintConfiguration(constraintConfiguration);
 
         createMeetingListAndAttendanceList(meetingSchedule, meetingListSize);
@@ -188,11 +186,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
         BigInteger possibleSolutionSize = BigInteger.valueOf((long) timeGrainListSize * roomListSize)
                 .pow(meetingSchedule.getMeetingAssignmentList().size());
-        logger.info("MeetingSchedule {} has {} meetings, {} timeGrains and {} rooms with a search space of {}.",
-                fileName,
-                meetingListSize,
-                timeGrainListSize,
-                roomListSize,
+        logger.info("MeetingSchedule {} has {} meetings, {} timeGrains and {} rooms with a search space of {}.", fileName,
+                meetingListSize, timeGrainListSize, roomListSize,
                 AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return meetingSchedule;
     }
@@ -203,21 +198,14 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         long attendanceId = 0L;
         topicGenerator.predictMaximumSizeAndReset(meetingListSize);
         for (int i = 0; i < meetingListSize; i++) {
-            Meeting meeting = new Meeting();
-            meeting.setId((long) i);
             String topic = topicGenerator.generateNextValue();
-            meeting.setTopic(topic);
             int durationInGrains = durationInGrainsOptions[random.nextInt(durationInGrainsOptions.length)];
-            meeting.setDurationInGrains(durationInGrains);
-
             int attendanceListSize = personsPerMeetingOptions[random.nextInt(personsPerMeetingOptions.length)];
             int requiredAttendanceListSize = Math.max(2, random.nextInt(attendanceListSize + 1));
+            Meeting meeting = new Meeting(i, topic, durationInGrains);
             List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(requiredAttendanceListSize);
             for (int j = 0; j < requiredAttendanceListSize; j++) {
-                RequiredAttendance attendance = new RequiredAttendance();
-                attendance.setId(attendanceId);
-                attendanceId++;
-                attendance.setMeeting(meeting);
+                RequiredAttendance attendance = new RequiredAttendance(attendanceId++, meeting);
                 // person is filled in later
                 requiredAttendanceList.add(attendance);
                 globalAttendanceList.add(attendance);
@@ -226,20 +214,16 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             int preferredAttendanceListSize = attendanceListSize - requiredAttendanceListSize;
             List<PreferredAttendance> preferredAttendanceList = new ArrayList<>(preferredAttendanceListSize);
             for (int j = 0; j < preferredAttendanceListSize; j++) {
-                PreferredAttendance attendance = new PreferredAttendance();
-                attendance.setId(attendanceId);
-                attendanceId++;
-                attendance.setMeeting(meeting);
+                PreferredAttendance attendance = new PreferredAttendance(attendanceId++, meeting);
                 // person is filled in later
                 preferredAttendanceList.add(attendance);
                 globalAttendanceList.add(attendance);
             }
             meeting.setPreferredAttendanceList(preferredAttendanceList);
 
-            logger.trace("Created meeting with topic ({}), durationInGrains ({}),"
-                    + " requiredAttendanceListSize ({}), preferredAttendanceListSize ({}).",
-                    topic, durationInGrains,
-                    requiredAttendanceListSize, preferredAttendanceListSize);
+            logger.trace("Created meeting with topic ({}), durationInGrains ({}), requiredAttendanceListSize ({}), " +
+                    "preferredAttendanceListSize ({}).", topic, durationInGrains, requiredAttendanceListSize,
+                    preferredAttendanceListSize);
             meetingList.add(meeting);
         }
         meetingSchedule.setMeetingList(meetingList);
@@ -252,23 +236,16 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         Day day = null;
         List<TimeGrain> timeGrainList = new ArrayList<>(timeGrainListSize);
         for (int i = 0; i < timeGrainListSize; i++) {
-            TimeGrain timeGrain = new TimeGrain();
-            timeGrain.setId((long) i);
-            int grainIndex = i;
-            timeGrain.setGrainIndex(grainIndex);
             int dayOfYear = (i / startingMinuteOfDayOptions.length) + 1;
             if (day == null || day.getDayOfYear() != dayOfYear) {
-                day = new Day();
-                day.setId(dayId);
-                day.setDayOfYear(dayOfYear);
+                day = new Day(dayId, dayOfYear);
                 dayId++;
                 dayList.add(day);
             }
-            timeGrain.setDay(day);
             int startingMinuteOfDay = startingMinuteOfDayOptions[i % startingMinuteOfDayOptions.length];
-            timeGrain.setStartingMinuteOfDay(startingMinuteOfDay);
-            logger.trace("Created timeGrain with grainIndex ({}), dayOfYear ({}), startingMinuteOfDay ({}).",
-                    grainIndex, dayOfYear, startingMinuteOfDay);
+            TimeGrain timeGrain = new TimeGrain(i, i, day, startingMinuteOfDay);
+            logger.trace("Created timeGrain with grainIndex ({}), dayOfYear ({}), startingMinuteOfDay ({}).", i, dayOfYear,
+                    startingMinuteOfDay);
             timeGrainList.add(timeGrain);
         }
         meetingSchedule.setDayList(dayList);
@@ -279,15 +256,11 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         final int roomsPerFloor = 20;
         List<Room> roomList = new ArrayList<>(roomListSize);
         for (int i = 0; i < roomListSize; i++) {
-            Room room = new Room();
-            room.setId((long) i);
             String name = "R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1);
-            room.setName(name);
             int capacityOptionsSubsetSize = personsPerMeetingOptions.length * 3 / 4;
             int capacity = personsPerMeetingOptions[personsPerMeetingOptions.length - (i % capacityOptionsSubsetSize) - 1];
-            room.setCapacity(capacity);
-            logger.trace("Created room with name ({}), capacity ({}).",
-                    name, capacity);
+            Room room = new Room(i, name, capacity);
+            logger.trace("Created room with name ({}), capacity ({}).", name, capacity);
             roomList.add(room);
         }
         meetingSchedule.setRoomList(roomList);
@@ -304,12 +277,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         List<Person> personList = new ArrayList<>(personListSize);
         fullNameGenerator.predictMaximumSizeAndReset(personListSize);
         for (int i = 0; i < personListSize; i++) {
-            Person person = new Person();
-            person.setId((long) i);
             String fullName = fullNameGenerator.generateNextValue();
-            person.setFullName(fullName);
-            logger.trace("Created person with fullName ({}).",
-                    fullName);
+            Person person = new Person(i, fullName);
+            logger.trace("Created person with fullName ({}).", fullName);
             personList.add(person);
         }
         meetingSchedule.setPersonList(personList);
@@ -336,9 +306,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         List<Meeting> meetingList = meetingSchedule.getMeetingList();
         List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(meetingList.size());
         for (Meeting meeting : meetingList) {
-            MeetingAssignment meetingAssignment = new MeetingAssignment();
-            meetingAssignment.setId(meeting.getId());
-            meetingAssignment.setMeeting(meeting);
+            MeetingAssignment meetingAssignment = new MeetingAssignment(meeting.getId(), meeting);
             meetingAssignmentList.add(meetingAssignment);
         }
         meetingSchedule.setMeetingAssignmentList(meetingAssignmentList);

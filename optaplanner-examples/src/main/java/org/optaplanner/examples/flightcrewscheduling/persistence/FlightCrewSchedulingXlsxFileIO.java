@@ -63,8 +63,8 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
 
     @Override
     public void write(FlightCrewSolution solution, File outputSolutionFile) {
-        try (FileOutputStream out = new FileOutputStream(outputSolutionFile)) {
-            Workbook workbook = new FlightCrewSchedulingXlsxWriter(solution).write();
+        try (FileOutputStream out = new FileOutputStream(outputSolutionFile);
+                Workbook workbook = new FlightCrewSchedulingXlsxWriter(solution).write()) {
             workbook.write(out);
         } catch (IOException | RuntimeException e) {
             throw new IllegalStateException("Failed writing outputSolutionFile ("
@@ -107,8 +107,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             readHeaderCell("Constraint");
             readHeaderCell("Weight");
             readHeaderCell("Description");
-            FlightCrewParametrization parametrization = new FlightCrewParametrization();
-            parametrization.setId(0L);
+            FlightCrewParametrization parametrization = new FlightCrewParametrization(0L);
             readLongConstraintParameterLine(LOAD_BALANCE_FLIGHT_DURATION_TOTAL_PER_EMPLOYEE,
                     parametrization::setLoadBalanceFlightDurationTotalPerEmployee,
                     "Soft penalty per 0.001 minute difference with the average flight duration total per employee.");
@@ -131,9 +130,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             skillMap = new HashMap<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
-                Skill skill = new Skill();
-                skill.setId(id++);
-                skill.setName(nextStringCell().getStringCellValue());
+                Skill skill = new Skill(id++, nextStringCell().getStringCellValue());
                 skillMap.put(skill.getName(), skill);
                 skillList.add(skill);
             }
@@ -151,12 +148,9 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             airportMap = new HashMap<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
-                Airport airport = new Airport();
-                airport.setId(id++);
-                airport.setCode(nextStringCell().getStringCellValue());
-                airport.setName(nextStringCell().getStringCellValue());
-                airport.setLatitude(nextNumericCell().getNumericCellValue());
-                airport.setLongitude(nextNumericCell().getNumericCellValue());
+                Airport airport =
+                        new Airport(id++, nextStringCell().getStringCellValue(), nextStringCell().getStringCellValue(),
+                                nextNumericCell().getNumericCellValue(), nextNumericCell().getNumericCellValue());
                 airportMap.put(airport.getCode(), airport);
                 airportList.add(airport);
             }
@@ -207,15 +201,14 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             nameToEmployeeMap = new HashMap<>(currentSheet.getLastRowNum() - 2);
             long id = 0L;
             while (nextRow()) {
-                Employee employee = new Employee();
-                employee.setId(id++);
-                employee.setName(nextStringCell().getStringCellValue());
-                if (!VALID_NAME_PATTERN.matcher(employee.getName()).matches()) {
-                    throw new IllegalStateException(currentPosition() + ": The employee name (" + employee.getName()
+                String name = nextStringCell().getStringCellValue();
+                if (!VALID_NAME_PATTERN.matcher(name).matches()) {
+                    throw new IllegalStateException(currentPosition() + ": The employee name (" + name
                             + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
                 }
                 String homeAirportCode = nextStringCell().getStringCellValue();
                 Airport homeAirport = airportMap.get(homeAirportCode);
+                Employee employee = new Employee(id++, name, homeAirport);
                 if (homeAirport == null) {
                     throw new IllegalStateException(currentPosition()
                             + ": The employee (" + employee.getName()
@@ -271,39 +264,32 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
             long id = 0L;
             long flightAssignmentId = 0L;
             while (nextRow()) {
-                Flight flight = new Flight();
-                flight.setId(id++);
-                flight.setFlightNumber(nextStringCell().getStringCellValue());
+                String flightNumber = nextStringCell().getStringCellValue();
                 String departureAirportCode = nextStringCell().getStringCellValue();
                 Airport departureAirport = airportMap.get(departureAirportCode);
                 if (departureAirport == null) {
                     throw new IllegalStateException(currentPosition()
-                            + ": The flight (" + flight.getFlightNumber()
-                            + ")'s departureAirport (" + departureAirportCode
+                            + ": The flight (" + flightNumber + ")'s departureAirport (" + departureAirportCode
                             + ") does not exist in the airports (" + airportMap.keySet()
                             + ") of the other sheet (Airports).");
                 }
-                flight.setDepartureAirport(departureAirport);
-                flight.setDepartureUTCDateTime(LocalDateTime.parse(nextStringCell().getStringCellValue(), DATE_TIME_FORMATTER));
+                LocalDateTime departureDateTime =
+                        LocalDateTime.parse(nextStringCell().getStringCellValue(), DATE_TIME_FORMATTER);
                 String arrivalAirportCode = nextStringCell().getStringCellValue();
                 Airport arrivalAirport = airportMap.get(arrivalAirportCode);
                 if (arrivalAirport == null) {
                     throw new IllegalStateException(currentPosition()
-                            + ": The flight (" + flight.getFlightNumber()
-                            + ")'s arrivalAirport (" + arrivalAirportCode
+                            + ": The flight (" + flightNumber + ")'s arrivalAirport (" + arrivalAirportCode
                             + ") does not exist in the airports (" + airportMap.keySet()
                             + ") of the other sheet (Airports).");
                 }
-                flight.setArrivalAirport(arrivalAirport);
-                flight.setArrivalUTCDateTime(LocalDateTime.parse(nextStringCell().getStringCellValue(), DATE_TIME_FORMATTER));
+                LocalDateTime arrivalDateTime = LocalDateTime.parse(nextStringCell().getStringCellValue(), DATE_TIME_FORMATTER);
+                Flight flight =
+                        new Flight(id++, flightNumber, departureAirport, departureDateTime, arrivalAirport, arrivalDateTime);
 
                 String[] skillNames = nextStringCell().getStringCellValue().split(", ");
                 String[] employeeNames = nextStringCell().getStringCellValue().split(", ");
                 for (int i = 0; i < skillNames.length; i++) {
-                    FlightAssignment flightAssignment = new FlightAssignment();
-                    flightAssignment.setId(flightAssignmentId++);
-                    flightAssignment.setFlight(flight);
-                    flightAssignment.setIndexInFlight(i);
                     Skill requiredSkill = skillMap.get(skillNames[i]);
                     if (requiredSkill == null) {
                         throw new IllegalStateException(currentPosition()
@@ -312,7 +298,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                                 + ") does not exist in the skills (" + skillMap.keySet()
                                 + ") of the other sheet (Skills).");
                     }
-                    flightAssignment.setRequiredSkill(requiredSkill);
+                    FlightAssignment flightAssignment = new FlightAssignment(flightAssignmentId, flight, i, requiredSkill);
                     if (employeeNames.length > i && !employeeNames[i].isEmpty()) {
                         Employee employee = nameToEmployeeMap.get(employeeNames[i]);
                         if (employee == null) {
@@ -325,6 +311,7 @@ public class FlightCrewSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<F
                         flightAssignment.setEmployee(employee);
                     }
                     flightAssignmentList.add(flightAssignment);
+                    flightAssignmentId++;
                 }
                 flightList.add(flight);
             }

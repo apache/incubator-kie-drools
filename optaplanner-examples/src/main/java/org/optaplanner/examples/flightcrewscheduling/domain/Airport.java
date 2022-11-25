@@ -17,6 +17,14 @@ public class Airport extends AbstractPersistable implements Comparable<Airport> 
     public Airport() {
     }
 
+    public Airport(long id, String code, String name, double latitude, double longitude) {
+        super(id);
+        this.code = code;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     /**
      * @param other never null
      * @return null if no taxi connection

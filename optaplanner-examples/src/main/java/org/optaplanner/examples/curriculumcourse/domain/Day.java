@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Day.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Day extends AbstractPersistableJackson implements Labeled {
+public class Day extends AbstractPersistable implements Labeled {
 
     private static final String[] WEEKDAYS = { "Mo", "Tu", "We", "Th", "Fr", "Sat", "Sun" };
 
@@ -19,7 +19,7 @@ public class Day extends AbstractPersistableJackson implements Labeled {
 
     private List<Period> periodList;
 
-    public Day() { // For Jackson.
+    public Day() {
     }
 
     public Day(int dayIndex, Period... periods) {

@@ -2,7 +2,7 @@ package org.optaplanner.examples.nurserostering.domain.contract;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 
@@ -10,14 +10,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Contract extends AbstractPersistableJackson {
+public class Contract extends AbstractPersistable {
 
     private String code;
     private String description;
     private WeekendDefinition weekendDefinition;
     private List<ContractLine> contractLineList;
 
-    public Contract() { // For Jackson.
+    public Contract() {
     }
 
     public Contract(long id) {

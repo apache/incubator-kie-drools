@@ -2,7 +2,7 @@ package org.optaplanner.examples.nurserostering.domain;
 
 import java.util.Map;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
@@ -18,13 +18,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Employee extends AbstractPersistableJackson implements Labeled, Comparable<Employee> {
+public class Employee extends AbstractPersistable implements Labeled, Comparable<Employee> {
 
     private String code;
     private String name;
     private Contract contract;
 
-    public Employee() { // For Jackson.
+    public Employee() {
     }
 
     public Employee(long id, String code, String name, Contract contract) {

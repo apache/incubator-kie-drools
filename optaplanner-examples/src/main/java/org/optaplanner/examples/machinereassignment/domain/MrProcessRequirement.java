@@ -1,8 +1,8 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class MrProcessRequirement extends AbstractPersistableJackson {
+public class MrProcessRequirement extends AbstractPersistable {
 
     private MrProcess process;
     private MrResource resource;
@@ -10,7 +10,7 @@ public class MrProcessRequirement extends AbstractPersistableJackson {
     private long usage;
 
     @SuppressWarnings("unused")
-    MrProcessRequirement() { // For Jackson.
+    MrProcessRequirement() {
     }
 
     public MrProcessRequirement(MrProcess process, MrResource resource, long usage) {

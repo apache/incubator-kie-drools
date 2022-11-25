@@ -1,13 +1,13 @@
 package org.optaplanner.examples.examination.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Room extends AbstractPersistableJackson implements Labeled {
+public class Room extends AbstractPersistable implements Labeled {
 
     private int capacity;
     private int penalty;

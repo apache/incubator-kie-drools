@@ -9,18 +9,11 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolutionConverter<Solution_> extends LoggingMain {
-
-    public static <Solution_> SolutionConverter<Solution_> createImportConverter(String dataDirName,
-            AbstractSolutionImporter<Solution_> importer, Class<Solution_> solutionClass) {
-        XStreamSolutionFileIO<Solution_> outputSolutionFileIO = new XStreamSolutionFileIO<>(solutionClass);
-        return createImportConverter(dataDirName, importer, outputSolutionFileIO);
-    }
 
     public static <Solution_> SolutionConverter<Solution_> createImportConverter(String dataDirName,
             AbstractSolutionImporter<Solution_> importer, SolutionFileIO<Solution_> outputSolutionFileIO) {
@@ -46,13 +39,7 @@ public class SolutionConverter<Solution_> extends LoggingMain {
     }
 
     public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
-            Class<Solution_> solutionClass, AbstractSolutionExporter<Solution_> exporter) {
-        XStreamSolutionFileIO<Solution_> inputSolutionFileIO = new XStreamSolutionFileIO<>(solutionClass);
-        return createExportConverter(dataDirName, inputSolutionFileIO, exporter);
-    }
-
-    public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
-            SolutionFileIO<Solution_> inputSolutionFileIO, AbstractSolutionExporter<Solution_> exporter) {
+            AbstractSolutionExporter<Solution_> exporter, SolutionFileIO<Solution_> inputSolutionFileIO) {
         SolutionFileIO<Solution_> outputSolutionFileIO = new SolutionFileIO<>() {
             @Override
             public String getInputFileExtension() {

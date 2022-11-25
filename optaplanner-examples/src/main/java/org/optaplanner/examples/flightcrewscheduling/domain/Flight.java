@@ -25,6 +25,16 @@ public class Flight extends AbstractPersistable implements Comparable<Flight> {
     public Flight() {
     }
 
+    public Flight(long id, String flightNumber, Airport departureAirport, LocalDateTime departureUTCDateTime,
+            Airport arrivalAirport, LocalDateTime arrivalUTCDateTime) {
+        super(id);
+        this.flightNumber = flightNumber;
+        this.departureAirport = departureAirport;
+        this.departureUTCDateTime = departureUTCDateTime;
+        this.arrivalAirport = arrivalAirport;
+        this.arrivalUTCDateTime = arrivalUTCDateTime;
+    }
+
     public long getDurationInMinutes() {
         return ChronoUnit.MINUTES.between(departureUTCDateTime, arrivalUTCDateTime);
     }

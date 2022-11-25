@@ -1,13 +1,13 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class SkillProficiency extends AbstractPersistableJackson {
+public class SkillProficiency extends AbstractPersistable {
 
     private Employee employee;
     private Skill skill;
 
-    public SkillProficiency() { // For Jackson.
+    public SkillProficiency() {
     }
 
     public SkillProficiency(long id, Employee employee, Skill skill) {

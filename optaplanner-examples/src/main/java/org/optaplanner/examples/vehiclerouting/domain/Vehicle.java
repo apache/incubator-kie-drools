@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Vehicle extends AbstractPersistableJackson {
+public class Vehicle extends AbstractPersistable {
 
     protected int capacity;
     protected Depot depot;

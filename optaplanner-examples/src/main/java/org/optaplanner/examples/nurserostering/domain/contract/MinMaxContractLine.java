@@ -12,7 +12,7 @@ public class MinMaxContractLine extends ContractLine {
     private int maximumValue;
     private int maximumWeight;
 
-    public MinMaxContractLine() { // For Jackson.
+    public MinMaxContractLine() {
     }
 
     public MinMaxContractLine(long id, Contract contract, ContractLineType contractLineType, boolean minimumEnabled,

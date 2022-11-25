@@ -23,6 +23,12 @@ public class Employee extends AbstractPersistable {
     public Employee() {
     }
 
+    public Employee(long id, String name, Airport homeAirport) {
+        super(id);
+        this.name = name;
+        this.homeAirport = homeAirport;
+    }
+
     public boolean hasSkill(Skill skill) {
         return skillSet.contains(skill);
     }

@@ -2,13 +2,13 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Job extends AbstractPersistableJackson {
+public class Job extends AbstractPersistable {
 
     private Project project;
     private JobType jobType;
@@ -16,7 +16,7 @@ public class Job extends AbstractPersistableJackson {
 
     private List<Job> successorJobList;
 
-    public Job() { // For Jackson.
+    public Job() {
     }
 
     public Job(long id, Project project) {

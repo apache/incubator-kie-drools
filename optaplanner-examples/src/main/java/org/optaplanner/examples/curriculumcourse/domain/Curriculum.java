@@ -2,18 +2,18 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Curriculum.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Curriculum extends AbstractPersistableJackson implements Labeled {
+public class Curriculum extends AbstractPersistable implements Labeled {
 
     private String code;
 
-    public Curriculum() { // For Jackson.
+    public Curriculum() {
     }
 
     public Curriculum(int id, String code) {

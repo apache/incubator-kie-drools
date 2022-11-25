@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class ShiftDate extends AbstractPersistableJackson implements Labeled, Comparable<ShiftDate> {
+public class ShiftDate extends AbstractPersistable implements Labeled, Comparable<ShiftDate> {
 
     private static final DateTimeFormatter LABEL_FORMATTER = DateTimeFormatter.ofPattern("E d MMM");
 
@@ -22,7 +22,7 @@ public class ShiftDate extends AbstractPersistableJackson implements Labeled, Co
 
     private List<Shift> shiftList;
 
-    public ShiftDate() { // For Jackson.
+    public ShiftDate() {
     }
 
     public ShiftDate(long id) {

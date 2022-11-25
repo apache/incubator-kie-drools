@@ -2,13 +2,13 @@ package org.optaplanner.examples.machinereassignment.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrService extends AbstractPersistableJackson {
+public class MrService extends AbstractPersistable {
 
     private List<MrService> toDependencyServiceList;
     private List<MrService> fromDependencyServiceList;
@@ -16,7 +16,7 @@ public class MrService extends AbstractPersistableJackson {
     private int locationSpread;
 
     @SuppressWarnings("unused")
-    MrService() { // For Jackson.
+    MrService() {
     }
 
     public MrService(long id) {

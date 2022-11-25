@@ -8,7 +8,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(pinningFilter = NotSourceOrSinkAllocationFilter.class)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Allocation extends AbstractPersistableJackson implements Labeled {
+public class Allocation extends AbstractPersistable implements Labeled {
 
     private Job job;
 
@@ -37,7 +37,7 @@ public class Allocation extends AbstractPersistableJackson implements Labeled {
     // Shadow variables
     private Integer predecessorsDoneDate;
 
-    public Allocation() { // For Jackson.
+    public Allocation() {
     }
 
     public Allocation(long id, Job job) {

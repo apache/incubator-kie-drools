@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.persistence.jackson.AbstractExampleSolutionFileIO;
+import org.optaplanner.examples.common.persistence.AbstractJsonSolutionFileIO;
 import org.optaplanner.examples.taskassigning.domain.Customer;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class TaskAssigningSolutionFileIO extends AbstractExampleSolutionFileIO<TaskAssigningSolution> {
+public class TaskAssigningSolutionFileIO extends AbstractJsonSolutionFileIO<TaskAssigningSolution> {
 
     public TaskAssigningSolutionFileIO() {
         super(TaskAssigningSolution.class);

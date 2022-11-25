@@ -1,13 +1,13 @@
 package org.optaplanner.examples.tennis.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Team.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Team extends AbstractPersistableJackson implements Labeled {
+public class Team extends AbstractPersistable implements Labeled {
 
     private String name;
 

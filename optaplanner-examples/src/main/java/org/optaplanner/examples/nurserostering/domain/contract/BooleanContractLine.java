@@ -5,7 +5,7 @@ public class BooleanContractLine extends ContractLine {
     private boolean enabled;
     private int weight;
 
-    public BooleanContractLine() { // For Jackson.
+    public BooleanContractLine() {
     }
 
     public BooleanContractLine(long id, Contract contract, ContractLineType contractLineType, boolean enabled, int weight) {

@@ -85,7 +85,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             "OptaPlanner",
             "jBPM",
             "Camel",
-            "XStream",
+            "Jackson",
             "Docker",
             "Hibernate",
             "GWT",
@@ -190,7 +190,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             "Managers");
 
     private static final String TIMESLOT_AFTER_LUNCH_TAG = "After lunch";
-    private static final List<String> mutuallyExclusiveTagList = Arrays.asList("Platinum Sponsor");
+    private static final List<String> mutuallyExclusiveTagList = List.of("Platinum Sponsor");
 
     protected final SolutionFileIO<ConferenceSolution> solutionFileIO;
     protected final File outputDir;
@@ -226,12 +226,10 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     public ConferenceSolution createConferenceSolution(String fileName, int timeslotListSize, int roomListSize,
             int speakerListSize, int talkListSize) {
         random = new Random(37);
-        ConferenceSolution solution = new ConferenceSolution();
-        solution.setId(0L);
+        ConferenceSolution solution = new ConferenceSolution(0L);
         solution.setConferenceName(conferenceNameGenerator.generateNextValue());
-        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration();
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(0L);
         constraintConfiguration.setMinimumConsecutiveTalksPauseInMinutes(15);
-        constraintConfiguration.setId(0L);
         solution.setConstraintConfiguration(constraintConfiguration);
 
         createTalkTypeList(solution);
@@ -271,8 +269,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         int timeslotOptionsIndex = 0;
         LocalDate day = timeslotFirstDay;
         for (int i = 0; i < timeslotListSize; i++) {
-            Timeslot timeslot = new Timeslot();
-            timeslot.setId((long) i);
+            Timeslot timeslot = new Timeslot(i);
             if (timeslotOptionsIndex >= timeslotOptions.size()) {
                 timeslotOptionsIndex = 0;
                 day = day.plusDays(1);
@@ -285,7 +282,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
             timeslot.setTalkTypeSet(Collections.singleton(talkType));
             timeslotOptionsIndex++;
             Set<String> tagSet = new LinkedHashSet<>(2);
-            if (timeslot.getStartDateTime().getHour() >= 13 && timeslot.getStartDateTime().getHour() < 14) {
+            if (timeslot.getStartDateTime().getHour() == 13) {
                 tagSet.add(TIMESLOT_AFTER_LUNCH_TAG);
             }
             timeslot.setTagSet(tagSet);
@@ -300,8 +297,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         final int roomsPerFloor = 12;
         List<Room> roomList = new ArrayList<>(roomListSize);
         for (int i = 0; i < roomListSize; i++) {
-            Room room = new Room();
-            room.setId((long) i);
+            Room room = new Room(i);
             room.setName("R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1));
             room.setCapacity((1 + random.nextInt(100)) * 10);
             TalkType talkType;
@@ -335,8 +331,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         List<Speaker> speakerList = new ArrayList<>(speakerListSize);
         speakerNameGenerator.predictMaximumSizeAndReset(speakerListSize);
         for (int i = 0; i < speakerListSize; i++) {
-            Speaker speaker = new Speaker();
-            speaker.setId((long) i);
+            Speaker speaker = new Speaker(i);
             speaker.setName(speakerNameGenerator.generateNextValue());
             Set<Timeslot> unavailableTimeslotSet;
             Set<String> preferredTimeslotTagSet = new LinkedHashSet<>();
@@ -396,8 +391,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
         talkTitleGenerator.predictMaximumSizeAndReset(talkListSize);
         int speakerListIndex = 0;
         for (int i = 0; i < talkListSize; i++) {
-            Talk talk = new Talk();
-            talk.setId((long) i);
+            Talk talk = new Talk(i);
             talk.setCode(String.format("S%0" + ((String.valueOf(talkListSize).length()) + "d"), i));
             talk.setTitle(talkTitleGenerator.generateNextValue());
             double speakerRandomDouble = random.nextDouble();
@@ -499,7 +493,7 @@ public class ConferenceSchedulingGenerator extends LoggingMain {
     private void initializeRoomTagSets(Set<String> requiredRoomTagSet, Set<String> preferredRoomTagSet,
             Set<String> prohibitedRoomTagSet, Set<String> undesiredRoomTagSet) {
         for (Pair<String, Double> roomTagProbability : roomTagProbabilityList) {
-            Double segmentRandom = random.nextDouble();
+            double segmentRandom = random.nextDouble();
             if (segmentRandom < roomTagProbability.getValue() / 25.0) {
                 requiredRoomTagSet.add(roomTagProbability.getKey());
             } else if (segmentRandom < roomTagProbability.getValue() / 20.0) {

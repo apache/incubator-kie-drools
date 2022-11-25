@@ -22,6 +22,13 @@ public class TravelingTournament extends AbstractPersistable {
 
     private HardSoftScore score;
 
+    public TravelingTournament() {
+    }
+
+    public TravelingTournament(long id) {
+        super(id);
+    }
+
     @ValueRangeProvider(id = "dayRange")
     @ProblemFactCollectionProperty
     public List<Day> getDayList() {

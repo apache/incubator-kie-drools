@@ -2,18 +2,18 @@ package org.optaplanner.examples.projectjobscheduling.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class ExecutionMode extends AbstractPersistableJackson {
+public class ExecutionMode extends AbstractPersistable {
 
     private Job job;
     private int duration; // In days
 
-    public ExecutionMode() { // For Jackson.
+    public ExecutionMode() {
     }
 
     public ExecutionMode(long id, Job job) {

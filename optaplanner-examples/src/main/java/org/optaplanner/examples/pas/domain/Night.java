@@ -1,17 +1,17 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Night.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Night extends AbstractPersistableJackson implements Labeled {
+public class Night extends AbstractPersistable implements Labeled {
 
     private int index;
 
-    public Night() { // For Jackson.
+    public Night() {
     }
 
     public Night(int index) {

@@ -14,8 +14,8 @@ public class SvgTspLineAndCircleExporter extends AbstractTxtSolutionExporter<Tsp
     public static final String OUTPUT_FILE_SUFFIX = "line.svg";
 
     public static void main(String[] args) {
-        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(
-                TspApp.DATA_DIR_NAME, TspSolution.class, new SvgTspLineAndCircleExporter());
+        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(TspApp.DATA_DIR_NAME,
+                new SvgTspLineAndCircleExporter(), new TspSolutionFileIO());
         converter.convertAll();
     }
 

@@ -8,10 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
-public class CloudBalance extends AbstractPersistableJackson {
+public class CloudBalance extends AbstractPersistable {
 
     private List<CloudComputer> computerList;
 
@@ -19,7 +19,7 @@ public class CloudBalance extends AbstractPersistableJackson {
 
     private HardSoftScore score;
 
-    CloudBalance() { // For Jackson.
+    CloudBalance() {
     }
 
     public CloudBalance(long id, List<CloudComputer> computerList, List<CloudProcess> processList) {

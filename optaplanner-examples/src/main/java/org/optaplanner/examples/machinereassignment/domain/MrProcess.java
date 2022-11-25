@@ -2,14 +2,14 @@ package org.optaplanner.examples.machinereassignment.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrProcess extends AbstractPersistableJackson {
+public class MrProcess extends AbstractPersistable {
 
     private MrService service;
     private int moveCost;
@@ -17,7 +17,7 @@ public class MrProcess extends AbstractPersistableJackson {
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MrProcessRequirement> processRequirementList;
 
-    public MrProcess() { // For Jackson.
+    public MrProcess() {
     }
 
     public MrProcess(int moveCost) {

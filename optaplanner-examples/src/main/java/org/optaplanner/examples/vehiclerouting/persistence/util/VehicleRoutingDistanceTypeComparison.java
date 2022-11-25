@@ -10,7 +10,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
@@ -87,7 +87,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         scoreManager.updateScore(inputSolution);
     }
 
-    private <T extends AbstractPersistableJackson> T findInputObjectById(Map<Long, T> inputMap, T varObject) {
+    private <T extends AbstractPersistable> T findInputObjectById(Map<Long, T> inputMap, T varObject) {
         return varObject == null ? null : inputMap.get(varObject.getId());
     }
 

@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(pinningFilter = ShiftAssignmentPinningFilter.class,
         difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
-public class ShiftAssignment extends AbstractPersistableJackson implements Comparable<ShiftAssignment> {
+public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
 
     private static final Comparator<Shift> COMPARATOR = Comparator.comparing(Shift::getShiftDate)
             .thenComparing(a -> a.getShiftType().getStartTimeString())
@@ -24,7 +24,7 @@ public class ShiftAssignment extends AbstractPersistableJackson implements Compa
     private Shift shift;
     private int indexInShift;
 
-    public ShiftAssignment() { // For Jackson.
+    public ShiftAssignment() {
     }
 
     public ShiftAssignment(long id, Shift shift, int indexInShift) {

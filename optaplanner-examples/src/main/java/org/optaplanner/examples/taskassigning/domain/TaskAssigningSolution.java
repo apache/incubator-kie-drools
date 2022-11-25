@@ -8,10 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
-public class TaskAssigningSolution extends AbstractPersistableJackson {
+public class TaskAssigningSolution extends AbstractPersistable {
 
     @ProblemFactCollectionProperty
     private List<Skill> skillList;
@@ -32,7 +32,7 @@ public class TaskAssigningSolution extends AbstractPersistableJackson {
     /** Relates to {@link Task#getStartTime()}. */
     private int frozenCutoff; // In minutes
 
-    public TaskAssigningSolution() { // For Jackson.
+    public TaskAssigningSolution() {
     }
 
     public TaskAssigningSolution(long id) {

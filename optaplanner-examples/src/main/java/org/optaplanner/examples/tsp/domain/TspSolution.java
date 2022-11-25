@@ -11,14 +11,14 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningSolution
-public class TspSolution extends AbstractPersistableJackson {
+public class TspSolution extends AbstractPersistable {
 
     private String name;
     protected DistanceType distanceType;
@@ -30,7 +30,7 @@ public class TspSolution extends AbstractPersistableJackson {
 
     private SimpleLongScore score;
 
-    public TspSolution() { // For Jackson.
+    public TspSolution() {
     }
 
     public TspSolution(long id) {

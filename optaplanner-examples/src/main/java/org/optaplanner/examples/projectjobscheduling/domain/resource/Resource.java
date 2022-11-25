@@ -1,6 +1,6 @@
 package org.optaplanner.examples.projectjobscheduling.domain.resource;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -15,11 +15,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public abstract class Resource extends AbstractPersistableJackson {
+public abstract class Resource extends AbstractPersistable {
 
     private int capacity;
 
-    protected Resource() { // For Jackson.
+    protected Resource() {
     }
 
     protected Resource(long id, int capacity) {

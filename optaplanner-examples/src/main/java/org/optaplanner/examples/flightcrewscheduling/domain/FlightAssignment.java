@@ -23,6 +23,13 @@ public class FlightAssignment extends AbstractPersistable implements Comparable<
     public FlightAssignment() {
     }
 
+    public FlightAssignment(long id, Flight flight, int indexInFlight, Skill requiredSkill) {
+        super(id);
+        this.flight = flight;
+        this.indexInFlight = indexInFlight;
+        this.requiredSkill = requiredSkill;
+    }
+
     public long getFlightDurationInMinutes() {
         return flight.getDurationInMinutes();
     }

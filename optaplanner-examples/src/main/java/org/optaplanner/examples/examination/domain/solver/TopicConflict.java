@@ -6,12 +6,9 @@ import java.util.Objects;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.examination.domain.Topic;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-@XStreamAlias("TopicConflict")
 public class TopicConflict extends AbstractPersistable implements Comparable<TopicConflict> {
 
     private static final Comparator<Topic> TOPIC_COMPARATOR = Comparator.comparingLong(Topic::getId);
@@ -22,7 +19,7 @@ public class TopicConflict extends AbstractPersistable implements Comparable<Top
     private Topic rightTopic;
     private int studentSize;
 
-    public TopicConflict() { // For Jackson.
+    public TopicConflict() {
     }
 
     public TopicConflict(long id, Topic leftTopic, Topic rightTopic, int studentSize) {

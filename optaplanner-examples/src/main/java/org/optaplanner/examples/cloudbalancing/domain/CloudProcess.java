@@ -4,14 +4,14 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
 public class CloudProcess
-        extends AbstractPersistableJackson
+        extends AbstractPersistable
         implements Labeled {
 
     private int requiredCpuPower; // in gigahertz
@@ -21,7 +21,7 @@ public class CloudProcess
     // Planning variables: changes during planning, between score calculations.
     private CloudComputer computer;
 
-    CloudProcess() { // For Jackson.
+    CloudProcess() {
     }
 
     public CloudProcess(long id, int requiredCpuPower, int requiredMemory, int requiredNetworkBandwidth) {

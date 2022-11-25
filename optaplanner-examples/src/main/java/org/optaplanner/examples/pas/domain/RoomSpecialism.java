@@ -1,18 +1,18 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = RoomSpecialism.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class RoomSpecialism extends AbstractPersistableJackson {
+public class RoomSpecialism extends AbstractPersistable {
 
     private Room room;
     private Specialism specialism;
     private int priority; // AKA choice
 
-    public RoomSpecialism() { // For Jackson.
+    public RoomSpecialism() {
     }
 
     public RoomSpecialism(long id, Room room, Specialism specialism, int priority) {

@@ -1,13 +1,13 @@
 package org.optaplanner.examples.tsp.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
-public class Domicile extends AbstractPersistableJackson implements Standstill {
+public class Domicile extends AbstractPersistable implements Standstill {
 
     private Location location;
 
-    public Domicile() { // For Jackson.
+    public Domicile() {
     }
 
     public Domicile(long id) {

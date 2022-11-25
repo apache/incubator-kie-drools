@@ -9,6 +9,11 @@ public class Skill extends AbstractPersistable {
     public Skill() {
     }
 
+    public Skill(long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return name;

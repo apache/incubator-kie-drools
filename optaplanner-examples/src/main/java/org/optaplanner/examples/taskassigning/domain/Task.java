@@ -3,7 +3,7 @@ package org.optaplanner.examples.taskassigning.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Task extends AbstractPersistableJackson implements Labeled {
+public class Task extends AbstractPersistable implements Labeled {
 
     private TaskType taskType;
     private int indexInTaskType;

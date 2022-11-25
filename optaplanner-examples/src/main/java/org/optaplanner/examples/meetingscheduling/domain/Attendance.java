@@ -7,6 +7,14 @@ public abstract class Attendance extends AbstractPersistable {
     private Person person;
     private Meeting meeting;
 
+    protected Attendance() {
+    }
+
+    protected Attendance(long id, Meeting meeting) {
+        super(id);
+        this.meeting = meeting;
+    }
+
     public Person getPerson() {
         return person;
     }

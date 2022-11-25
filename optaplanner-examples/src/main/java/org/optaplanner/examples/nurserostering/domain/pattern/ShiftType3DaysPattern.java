@@ -8,7 +8,7 @@ public class ShiftType3DaysPattern extends Pattern {
     private ShiftType dayIndex1ShiftType;
     private ShiftType dayIndex2ShiftType;
 
-    public ShiftType3DaysPattern() { // For Jackson.
+    public ShiftType3DaysPattern() {
     }
 
     public ShiftType3DaysPattern(long id, String code) {

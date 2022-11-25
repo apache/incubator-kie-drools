@@ -1,8 +1,8 @@
 package org.optaplanner.examples.examination.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class RoomPenalty extends AbstractPersistableJackson {
+public class RoomPenalty extends AbstractPersistable {
 
     private RoomPenaltyType roomPenaltyType;
     private Topic topic;

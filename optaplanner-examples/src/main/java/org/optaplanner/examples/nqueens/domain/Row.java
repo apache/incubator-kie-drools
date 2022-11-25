@@ -1,17 +1,17 @@
 package org.optaplanner.examples.nqueens.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Row.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Row extends AbstractPersistableJackson implements Labeled {
+public class Row extends AbstractPersistable implements Labeled {
 
     private int index;
 
-    public Row() { // For Jackson.
+    public Row() {
     }
 
     public Row(int index) {

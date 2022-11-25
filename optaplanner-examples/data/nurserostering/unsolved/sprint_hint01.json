@@ -648,88 +648,6 @@
         },
         "weight" : 1
       },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#5",
-        "id" : 5,
-        "employee" : "Employee#0",
-        "shiftDate" : {
-          "@id" : "ShiftDate#3",
-          "id" : 3,
-          "dayIndex" : 3,
-          "date" : [ 2010, 1, 4 ],
-          "shiftList" : [ {
-            "@id" : "Shift#12",
-            "id" : 12,
-            "shiftDate" : "ShiftDate#3",
-            "shiftType" : "ShiftType#0",
-            "index" : 12,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#13",
-            "id" : 13,
-            "shiftDate" : "ShiftDate#3",
-            "shiftType" : "ShiftType#1",
-            "index" : 13,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#14",
-            "id" : 14,
-            "shiftDate" : "ShiftDate#3",
-            "shiftType" : "ShiftType#2",
-            "index" : 14,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#15",
-            "id" : 15,
-            "shiftDate" : "ShiftDate#3",
-            "shiftType" : "ShiftType#3",
-            "index" : 15,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
-      "ShiftDate#15" : {
-        "@id" : "DayOffRequest#7",
-        "id" : 7,
-        "employee" : "Employee#0",
-        "shiftDate" : {
-          "@id" : "ShiftDate#15",
-          "id" : 15,
-          "dayIndex" : 15,
-          "date" : [ 2010, 1, 16 ],
-          "shiftList" : [ {
-            "@id" : "Shift#60",
-            "id" : 60,
-            "shiftDate" : "ShiftDate#15",
-            "shiftType" : "ShiftType#0",
-            "index" : 60,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#61",
-            "id" : 61,
-            "shiftDate" : "ShiftDate#15",
-            "shiftType" : "ShiftType#1",
-            "index" : 61,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#62",
-            "id" : 62,
-            "shiftDate" : "ShiftDate#15",
-            "shiftType" : "ShiftType#2",
-            "index" : 62,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#63",
-            "id" : 63,
-            "shiftDate" : "ShiftDate#15",
-            "shiftType" : "ShiftType#3",
-            "index" : 63,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
       "ShiftDate#6" : {
         "@id" : "DayOffRequest#2",
         "id" : 2,
@@ -812,47 +730,6 @@
         },
         "weight" : 1
       },
-      "ShiftDate#24" : {
-        "@id" : "DayOffRequest#6",
-        "id" : 6,
-        "employee" : "Employee#0",
-        "shiftDate" : {
-          "@id" : "ShiftDate#24",
-          "id" : 24,
-          "dayIndex" : 24,
-          "date" : [ 2010, 1, 25 ],
-          "shiftList" : [ {
-            "@id" : "Shift#96",
-            "id" : 96,
-            "shiftDate" : "ShiftDate#24",
-            "shiftType" : "ShiftType#0",
-            "index" : 96,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#97",
-            "id" : 97,
-            "shiftDate" : "ShiftDate#24",
-            "shiftType" : "ShiftType#1",
-            "index" : 97,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#98",
-            "id" : 98,
-            "shiftDate" : "ShiftDate#24",
-            "shiftType" : "ShiftType#2",
-            "index" : 98,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#99",
-            "id" : 99,
-            "shiftDate" : "ShiftDate#24",
-            "shiftType" : "ShiftType#3",
-            "index" : 99,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
       "ShiftDate#14" : {
         "@id" : "DayOffRequest#4",
         "id" : 4,
@@ -894,6 +771,136 @@
         },
         "weight" : 1
       },
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#5",
+        "id" : 5,
+        "employee" : "Employee#0",
+        "shiftDate" : {
+          "@id" : "ShiftDate#3",
+          "id" : 3,
+          "dayIndex" : 3,
+          "date" : [ 2010, 1, 4 ],
+          "shiftList" : [ {
+            "@id" : "Shift#12",
+            "id" : 12,
+            "shiftDate" : "ShiftDate#3",
+            "shiftType" : "ShiftType#0",
+            "index" : 12,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#13",
+            "id" : 13,
+            "shiftDate" : "ShiftDate#3",
+            "shiftType" : "ShiftType#1",
+            "index" : 13,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#14",
+            "id" : 14,
+            "shiftDate" : "ShiftDate#3",
+            "shiftType" : "ShiftType#2",
+            "index" : 14,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#15",
+            "id" : 15,
+            "shiftDate" : "ShiftDate#3",
+            "shiftType" : "ShiftType#3",
+            "index" : 15,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#24" : {
+        "@id" : "DayOffRequest#6",
+        "id" : 6,
+        "employee" : "Employee#0",
+        "shiftDate" : {
+          "@id" : "ShiftDate#24",
+          "id" : 24,
+          "dayIndex" : 24,
+          "date" : [ 2010, 1, 25 ],
+          "shiftList" : [ {
+            "@id" : "Shift#96",
+            "id" : 96,
+            "shiftDate" : "ShiftDate#24",
+            "shiftType" : "ShiftType#0",
+            "index" : 96,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#97",
+            "id" : 97,
+            "shiftDate" : "ShiftDate#24",
+            "shiftType" : "ShiftType#1",
+            "index" : 97,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#98",
+            "id" : 98,
+            "shiftDate" : "ShiftDate#24",
+            "shiftType" : "ShiftType#2",
+            "index" : 98,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#99",
+            "id" : 99,
+            "shiftDate" : "ShiftDate#24",
+            "shiftType" : "ShiftType#3",
+            "index" : 99,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#15" : {
+        "@id" : "DayOffRequest#7",
+        "id" : 7,
+        "employee" : "Employee#0",
+        "shiftDate" : {
+          "@id" : "ShiftDate#15",
+          "id" : 15,
+          "dayIndex" : 15,
+          "date" : [ 2010, 1, 16 ],
+          "shiftList" : [ {
+            "@id" : "Shift#60",
+            "id" : 60,
+            "shiftDate" : "ShiftDate#15",
+            "shiftType" : "ShiftType#0",
+            "index" : 60,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#61",
+            "id" : 61,
+            "shiftDate" : "ShiftDate#15",
+            "shiftType" : "ShiftType#1",
+            "index" : 61,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#62",
+            "id" : 62,
+            "shiftDate" : "ShiftDate#15",
+            "shiftType" : "ShiftType#2",
+            "index" : 62,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#63",
+            "id" : 63,
+            "shiftDate" : "ShiftDate#15",
+            "shiftType" : "ShiftType#3",
+            "index" : 63,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#0" : {
+        "@id" : "DayOffRequest#8",
+        "id" : 8,
+        "employee" : "Employee#0",
+        "shiftDate" : "ShiftDate#0",
+        "weight" : 1
+      },
       "ShiftDate#26" : {
         "@id" : "DayOffRequest#9",
         "id" : 9,
@@ -933,13 +940,6 @@
             "requiredEmployeeSize" : 1
           } ]
         },
-        "weight" : 1
-      },
-      "ShiftDate#0" : {
-        "@id" : "DayOffRequest#8",
-        "id" : 8,
-        "employee" : "Employee#0",
-        "shiftDate" : "ShiftDate#0",
         "weight" : 1
       }
     },
@@ -986,47 +986,6 @@
         },
         "weight" : 1
       },
-      "Shift#47" : {
-        "@id" : "ShiftOffRequest#2",
-        "id" : 2,
-        "employee" : "Employee#0",
-        "shift" : {
-          "@id" : "Shift#47",
-          "id" : 47,
-          "shiftDate" : {
-            "@id" : "ShiftDate#11",
-            "id" : 11,
-            "dayIndex" : 11,
-            "date" : [ 2010, 1, 12 ],
-            "shiftList" : [ {
-              "@id" : "Shift#44",
-              "id" : 44,
-              "shiftDate" : "ShiftDate#11",
-              "shiftType" : "ShiftType#0",
-              "index" : 44,
-              "requiredEmployeeSize" : 2
-            }, {
-              "@id" : "Shift#45",
-              "id" : 45,
-              "shiftDate" : "ShiftDate#11",
-              "shiftType" : "ShiftType#1",
-              "index" : 45,
-              "requiredEmployeeSize" : 2
-            }, {
-              "@id" : "Shift#46",
-              "id" : 46,
-              "shiftDate" : "ShiftDate#11",
-              "shiftType" : "ShiftType#2",
-              "index" : 46,
-              "requiredEmployeeSize" : 1
-            }, "Shift#47" ]
-          },
-          "shiftType" : "ShiftType#3",
-          "index" : 47,
-          "requiredEmployeeSize" : 1
-        },
-        "weight" : 1
-      },
       "Shift#49" : {
         "@id" : "ShiftOffRequest#1",
         "id" : 1,
@@ -1065,6 +1024,47 @@
           "shiftType" : "ShiftType#1",
           "index" : 49,
           "requiredEmployeeSize" : 2
+        },
+        "weight" : 1
+      },
+      "Shift#47" : {
+        "@id" : "ShiftOffRequest#2",
+        "id" : 2,
+        "employee" : "Employee#0",
+        "shift" : {
+          "@id" : "Shift#47",
+          "id" : 47,
+          "shiftDate" : {
+            "@id" : "ShiftDate#11",
+            "id" : 11,
+            "dayIndex" : 11,
+            "date" : [ 2010, 1, 12 ],
+            "shiftList" : [ {
+              "@id" : "Shift#44",
+              "id" : 44,
+              "shiftDate" : "ShiftDate#11",
+              "shiftType" : "ShiftType#0",
+              "index" : 44,
+              "requiredEmployeeSize" : 2
+            }, {
+              "@id" : "Shift#45",
+              "id" : 45,
+              "shiftDate" : "ShiftDate#11",
+              "shiftType" : "ShiftType#1",
+              "index" : 45,
+              "requiredEmployeeSize" : 2
+            }, {
+              "@id" : "Shift#46",
+              "id" : 46,
+              "shiftDate" : "ShiftDate#11",
+              "shiftType" : "ShiftType#2",
+              "index" : 46,
+              "requiredEmployeeSize" : 1
+            }, "Shift#47" ]
+          },
+          "shiftType" : "ShiftType#3",
+          "index" : 47,
+          "requiredEmployeeSize" : 1
         },
         "weight" : 1
       },
@@ -1132,107 +1132,11 @@
         },
         "weight" : 1
       },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#15",
-        "id" : 15,
+      "ShiftDate#14" : {
+        "@id" : "DayOffRequest#11",
+        "id" : 11,
         "employee" : "Employee#1",
-        "shiftDate" : "ShiftDate#3",
-        "weight" : 1
-      },
-      "ShiftDate#7" : {
-        "@id" : "DayOffRequest#16",
-        "id" : 16,
-        "employee" : "Employee#1",
-        "shiftDate" : "ShiftDate#7",
-        "weight" : 1
-      },
-      "ShiftDate#16" : {
-        "@id" : "DayOffRequest#14",
-        "id" : 14,
-        "employee" : "Employee#1",
-        "shiftDate" : {
-          "@id" : "ShiftDate#16",
-          "id" : 16,
-          "dayIndex" : 16,
-          "date" : [ 2010, 1, 17 ],
-          "shiftList" : [ {
-            "@id" : "Shift#64",
-            "id" : 64,
-            "shiftDate" : "ShiftDate#16",
-            "shiftType" : "ShiftType#0",
-            "index" : 64,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#65",
-            "id" : 65,
-            "shiftDate" : "ShiftDate#16",
-            "shiftType" : "ShiftType#1",
-            "index" : 65,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#66",
-            "id" : 66,
-            "shiftDate" : "ShiftDate#16",
-            "shiftType" : "ShiftType#2",
-            "index" : 66,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#67",
-            "id" : 67,
-            "shiftDate" : "ShiftDate#16",
-            "shiftType" : "ShiftType#3",
-            "index" : 67,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
-      "ShiftDate#22" : {
-        "@id" : "DayOffRequest#18",
-        "id" : 18,
-        "employee" : "Employee#1",
-        "shiftDate" : {
-          "@id" : "ShiftDate#22",
-          "id" : 22,
-          "dayIndex" : 22,
-          "date" : [ 2010, 1, 23 ],
-          "shiftList" : [ {
-            "@id" : "Shift#88",
-            "id" : 88,
-            "shiftDate" : "ShiftDate#22",
-            "shiftType" : "ShiftType#0",
-            "index" : 88,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#89",
-            "id" : 89,
-            "shiftDate" : "ShiftDate#22",
-            "shiftType" : "ShiftType#1",
-            "index" : 89,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#90",
-            "id" : 90,
-            "shiftDate" : "ShiftDate#22",
-            "shiftType" : "ShiftType#2",
-            "index" : 90,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#91",
-            "id" : 91,
-            "shiftDate" : "ShiftDate#22",
-            "shiftType" : "ShiftType#3",
-            "index" : 91,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
-      "ShiftDate#6" : {
-        "@id" : "DayOffRequest#17",
-        "id" : 17,
-        "employee" : "Employee#1",
-        "shiftDate" : "ShiftDate#6",
+        "shiftDate" : "ShiftDate#14",
         "weight" : 1
       },
       "ShiftDate#17" : {
@@ -1271,54 +1175,6 @@
             "shiftDate" : "ShiftDate#17",
             "shiftType" : "ShiftType#3",
             "index" : 71,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
-      "ShiftDate#14" : {
-        "@id" : "DayOffRequest#11",
-        "id" : 11,
-        "employee" : "Employee#1",
-        "shiftDate" : "ShiftDate#14",
-        "weight" : 1
-      },
-      "ShiftDate#5" : {
-        "@id" : "DayOffRequest#19",
-        "id" : 19,
-        "employee" : "Employee#1",
-        "shiftDate" : {
-          "@id" : "ShiftDate#5",
-          "id" : 5,
-          "dayIndex" : 5,
-          "date" : [ 2010, 1, 6 ],
-          "shiftList" : [ {
-            "@id" : "Shift#20",
-            "id" : 20,
-            "shiftDate" : "ShiftDate#5",
-            "shiftType" : "ShiftType#0",
-            "index" : 20,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#21",
-            "id" : 21,
-            "shiftDate" : "ShiftDate#5",
-            "shiftType" : "ShiftType#1",
-            "index" : 21,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#22",
-            "id" : 22,
-            "shiftDate" : "ShiftDate#5",
-            "shiftType" : "ShiftType#2",
-            "index" : 22,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#23",
-            "id" : 23,
-            "shiftDate" : "ShiftDate#5",
-            "shiftType" : "ShiftType#3",
-            "index" : 23,
             "requiredEmployeeSize" : 1
           } ]
         },
@@ -1364,10 +1220,161 @@
           } ]
         },
         "weight" : 1
+      },
+      "ShiftDate#16" : {
+        "@id" : "DayOffRequest#14",
+        "id" : 14,
+        "employee" : "Employee#1",
+        "shiftDate" : {
+          "@id" : "ShiftDate#16",
+          "id" : 16,
+          "dayIndex" : 16,
+          "date" : [ 2010, 1, 17 ],
+          "shiftList" : [ {
+            "@id" : "Shift#64",
+            "id" : 64,
+            "shiftDate" : "ShiftDate#16",
+            "shiftType" : "ShiftType#0",
+            "index" : 64,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#65",
+            "id" : 65,
+            "shiftDate" : "ShiftDate#16",
+            "shiftType" : "ShiftType#1",
+            "index" : 65,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#66",
+            "id" : 66,
+            "shiftDate" : "ShiftDate#16",
+            "shiftType" : "ShiftType#2",
+            "index" : 66,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#67",
+            "id" : 67,
+            "shiftDate" : "ShiftDate#16",
+            "shiftType" : "ShiftType#3",
+            "index" : 67,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#15",
+        "id" : 15,
+        "employee" : "Employee#1",
+        "shiftDate" : "ShiftDate#3",
+        "weight" : 1
+      },
+      "ShiftDate#7" : {
+        "@id" : "DayOffRequest#16",
+        "id" : 16,
+        "employee" : "Employee#1",
+        "shiftDate" : "ShiftDate#7",
+        "weight" : 1
+      },
+      "ShiftDate#6" : {
+        "@id" : "DayOffRequest#17",
+        "id" : 17,
+        "employee" : "Employee#1",
+        "shiftDate" : "ShiftDate#6",
+        "weight" : 1
+      },
+      "ShiftDate#22" : {
+        "@id" : "DayOffRequest#18",
+        "id" : 18,
+        "employee" : "Employee#1",
+        "shiftDate" : {
+          "@id" : "ShiftDate#22",
+          "id" : 22,
+          "dayIndex" : 22,
+          "date" : [ 2010, 1, 23 ],
+          "shiftList" : [ {
+            "@id" : "Shift#88",
+            "id" : 88,
+            "shiftDate" : "ShiftDate#22",
+            "shiftType" : "ShiftType#0",
+            "index" : 88,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#89",
+            "id" : 89,
+            "shiftDate" : "ShiftDate#22",
+            "shiftType" : "ShiftType#1",
+            "index" : 89,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#90",
+            "id" : 90,
+            "shiftDate" : "ShiftDate#22",
+            "shiftType" : "ShiftType#2",
+            "index" : 90,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#91",
+            "id" : 91,
+            "shiftDate" : "ShiftDate#22",
+            "shiftType" : "ShiftType#3",
+            "index" : 91,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#5" : {
+        "@id" : "DayOffRequest#19",
+        "id" : 19,
+        "employee" : "Employee#1",
+        "shiftDate" : {
+          "@id" : "ShiftDate#5",
+          "id" : 5,
+          "dayIndex" : 5,
+          "date" : [ 2010, 1, 6 ],
+          "shiftList" : [ {
+            "@id" : "Shift#20",
+            "id" : 20,
+            "shiftDate" : "ShiftDate#5",
+            "shiftType" : "ShiftType#0",
+            "index" : 20,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#21",
+            "id" : 21,
+            "shiftDate" : "ShiftDate#5",
+            "shiftType" : "ShiftType#1",
+            "index" : 21,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#22",
+            "id" : 22,
+            "shiftDate" : "ShiftDate#5",
+            "shiftType" : "ShiftType#2",
+            "index" : 22,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#23",
+            "id" : 23,
+            "shiftDate" : "ShiftDate#5",
+            "shiftType" : "ShiftType#3",
+            "index" : 23,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
+      "Shift#71" : {
+        "@id" : "ShiftOffRequest#5",
+        "id" : 5,
+        "employee" : "Employee#1",
+        "shift" : "Shift#71",
+        "weight" : 1
+      },
       "Shift#35" : {
         "@id" : "ShiftOffRequest#6",
         "id" : 6,
@@ -1409,11 +1416,18 @@
         },
         "weight" : 1
       },
-      "Shift#71" : {
-        "@id" : "ShiftOffRequest#5",
-        "id" : 5,
+      "Shift#105" : {
+        "@id" : "ShiftOffRequest#7",
+        "id" : 7,
         "employee" : "Employee#1",
-        "shift" : "Shift#71",
+        "shift" : "Shift#105",
+        "weight" : 1
+      },
+      "Shift#29" : {
+        "@id" : "ShiftOffRequest#8",
+        "id" : 8,
+        "employee" : "Employee#1",
+        "shift" : "Shift#29",
         "weight" : 1
       },
       "Shift#75" : {
@@ -1456,20 +1470,6 @@
           "requiredEmployeeSize" : 1
         },
         "weight" : 1
-      },
-      "Shift#105" : {
-        "@id" : "ShiftOffRequest#7",
-        "id" : 7,
-        "employee" : "Employee#1",
-        "shift" : "Shift#105",
-        "weight" : 1
-      },
-      "Shift#29" : {
-        "@id" : "ShiftOffRequest#8",
-        "id" : 8,
-        "employee" : "Employee#1",
-        "shift" : "Shift#29",
-        "weight" : 1
       }
     },
     "shiftOnRequestMap" : { }
@@ -1480,20 +1480,6 @@
     "name" : "2",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
-      "ShiftDate#8" : {
-        "@id" : "DayOffRequest#27",
-        "id" : 27,
-        "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#8",
-        "weight" : 1
-      },
-      "ShiftDate#19" : {
-        "@id" : "DayOffRequest#29",
-        "id" : 29,
-        "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#19",
-        "weight" : 1
-      },
       "ShiftDate#7" : {
         "@id" : "DayOffRequest#20",
         "id" : 20,
@@ -1501,107 +1487,11 @@
         "shiftDate" : "ShiftDate#7",
         "weight" : 1
       },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#24",
-        "id" : 24,
+      "ShiftDate#0" : {
+        "@id" : "DayOffRequest#21",
+        "id" : 21,
         "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#3",
-        "weight" : 1
-      },
-      "ShiftDate#15" : {
-        "@id" : "DayOffRequest#23",
-        "id" : 23,
-        "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#15",
-        "weight" : 1
-      },
-      "ShiftDate#16" : {
-        "@id" : "DayOffRequest#28",
-        "id" : 28,
-        "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#16",
-        "weight" : 1
-      },
-      "ShiftDate#13" : {
-        "@id" : "DayOffRequest#26",
-        "id" : 26,
-        "employee" : "Employee#2",
-        "shiftDate" : {
-          "@id" : "ShiftDate#13",
-          "id" : 13,
-          "dayIndex" : 13,
-          "date" : [ 2010, 1, 14 ],
-          "shiftList" : [ {
-            "@id" : "Shift#52",
-            "id" : 52,
-            "shiftDate" : "ShiftDate#13",
-            "shiftType" : "ShiftType#0",
-            "index" : 52,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#53",
-            "id" : 53,
-            "shiftDate" : "ShiftDate#13",
-            "shiftType" : "ShiftType#1",
-            "index" : 53,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#54",
-            "id" : 54,
-            "shiftDate" : "ShiftDate#13",
-            "shiftType" : "ShiftType#2",
-            "index" : 54,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#55",
-            "id" : 55,
-            "shiftDate" : "ShiftDate#13",
-            "shiftType" : "ShiftType#3",
-            "index" : 55,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
-        "weight" : 1
-      },
-      "ShiftDate#21" : {
-        "@id" : "DayOffRequest#25",
-        "id" : 25,
-        "employee" : "Employee#2",
-        "shiftDate" : {
-          "@id" : "ShiftDate#21",
-          "id" : 21,
-          "dayIndex" : 21,
-          "date" : [ 2010, 1, 22 ],
-          "shiftList" : [ {
-            "@id" : "Shift#84",
-            "id" : 84,
-            "shiftDate" : "ShiftDate#21",
-            "shiftType" : "ShiftType#0",
-            "index" : 84,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#85",
-            "id" : 85,
-            "shiftDate" : "ShiftDate#21",
-            "shiftType" : "ShiftType#1",
-            "index" : 85,
-            "requiredEmployeeSize" : 2
-          }, {
-            "@id" : "Shift#86",
-            "id" : 86,
-            "shiftDate" : "ShiftDate#21",
-            "shiftType" : "ShiftType#2",
-            "index" : 86,
-            "requiredEmployeeSize" : 1
-          }, {
-            "@id" : "Shift#87",
-            "id" : 87,
-            "shiftDate" : "ShiftDate#21",
-            "shiftType" : "ShiftType#3",
-            "index" : 87,
-            "requiredEmployeeSize" : 1
-          } ]
-        },
+        "shiftDate" : "ShiftDate#0",
         "weight" : 1
       },
       "ShiftDate#20" : {
@@ -1645,16 +1535,133 @@
         },
         "weight" : 1
       },
-      "ShiftDate#0" : {
-        "@id" : "DayOffRequest#21",
-        "id" : 21,
+      "ShiftDate#15" : {
+        "@id" : "DayOffRequest#23",
+        "id" : 23,
         "employee" : "Employee#2",
-        "shiftDate" : "ShiftDate#0",
+        "shiftDate" : "ShiftDate#15",
+        "weight" : 1
+      },
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#24",
+        "id" : 24,
+        "employee" : "Employee#2",
+        "shiftDate" : "ShiftDate#3",
+        "weight" : 1
+      },
+      "ShiftDate#21" : {
+        "@id" : "DayOffRequest#25",
+        "id" : 25,
+        "employee" : "Employee#2",
+        "shiftDate" : {
+          "@id" : "ShiftDate#21",
+          "id" : 21,
+          "dayIndex" : 21,
+          "date" : [ 2010, 1, 22 ],
+          "shiftList" : [ {
+            "@id" : "Shift#84",
+            "id" : 84,
+            "shiftDate" : "ShiftDate#21",
+            "shiftType" : "ShiftType#0",
+            "index" : 84,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#85",
+            "id" : 85,
+            "shiftDate" : "ShiftDate#21",
+            "shiftType" : "ShiftType#1",
+            "index" : 85,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#86",
+            "id" : 86,
+            "shiftDate" : "ShiftDate#21",
+            "shiftType" : "ShiftType#2",
+            "index" : 86,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#87",
+            "id" : 87,
+            "shiftDate" : "ShiftDate#21",
+            "shiftType" : "ShiftType#3",
+            "index" : 87,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#13" : {
+        "@id" : "DayOffRequest#26",
+        "id" : 26,
+        "employee" : "Employee#2",
+        "shiftDate" : {
+          "@id" : "ShiftDate#13",
+          "id" : 13,
+          "dayIndex" : 13,
+          "date" : [ 2010, 1, 14 ],
+          "shiftList" : [ {
+            "@id" : "Shift#52",
+            "id" : 52,
+            "shiftDate" : "ShiftDate#13",
+            "shiftType" : "ShiftType#0",
+            "index" : 52,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#53",
+            "id" : 53,
+            "shiftDate" : "ShiftDate#13",
+            "shiftType" : "ShiftType#1",
+            "index" : 53,
+            "requiredEmployeeSize" : 2
+          }, {
+            "@id" : "Shift#54",
+            "id" : 54,
+            "shiftDate" : "ShiftDate#13",
+            "shiftType" : "ShiftType#2",
+            "index" : 54,
+            "requiredEmployeeSize" : 1
+          }, {
+            "@id" : "Shift#55",
+            "id" : 55,
+            "shiftDate" : "ShiftDate#13",
+            "shiftType" : "ShiftType#3",
+            "index" : 55,
+            "requiredEmployeeSize" : 1
+          } ]
+        },
+        "weight" : 1
+      },
+      "ShiftDate#8" : {
+        "@id" : "DayOffRequest#27",
+        "id" : 27,
+        "employee" : "Employee#2",
+        "shiftDate" : "ShiftDate#8",
+        "weight" : 1
+      },
+      "ShiftDate#16" : {
+        "@id" : "DayOffRequest#28",
+        "id" : 28,
+        "employee" : "Employee#2",
+        "shiftDate" : "ShiftDate#16",
+        "weight" : 1
+      },
+      "ShiftDate#19" : {
+        "@id" : "DayOffRequest#29",
+        "id" : 29,
+        "employee" : "Employee#2",
+        "shiftDate" : "ShiftDate#19",
         "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
+      "Shift#105" : {
+        "@id" : "ShiftOffRequest#10",
+        "id" : 10,
+        "employee" : "Employee#2",
+        "shift" : "Shift#105",
+        "weight" : 1
+      },
       "Shift#35" : {
         "@id" : "ShiftOffRequest#11",
         "id" : 11,
@@ -1716,13 +1723,6 @@
         "employee" : "Employee#2",
         "shift" : "Shift#65",
         "weight" : 1
-      },
-      "Shift#105" : {
-        "@id" : "ShiftOffRequest#10",
-        "id" : 10,
-        "employee" : "Employee#2",
-        "shift" : "Shift#105",
-        "weight" : 1
       }
     },
     "shiftOnRequestMap" : { }
@@ -1733,6 +1733,48 @@
     "name" : "3",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
+      "ShiftDate#13" : {
+        "@id" : "DayOffRequest#30",
+        "id" : 30,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#13",
+        "weight" : 1
+      },
+      "ShiftDate#20" : {
+        "@id" : "DayOffRequest#31",
+        "id" : 31,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#20",
+        "weight" : 1
+      },
+      "ShiftDate#16" : {
+        "@id" : "DayOffRequest#32",
+        "id" : 32,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#16",
+        "weight" : 1
+      },
+      "ShiftDate#19" : {
+        "@id" : "DayOffRequest#33",
+        "id" : 33,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#19",
+        "weight" : 1
+      },
+      "ShiftDate#15" : {
+        "@id" : "DayOffRequest#34",
+        "id" : 34,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#15",
+        "weight" : 1
+      },
+      "ShiftDate#24" : {
+        "@id" : "DayOffRequest#35",
+        "id" : 35,
+        "employee" : "Employee#3",
+        "shiftDate" : "ShiftDate#24",
+        "weight" : 1
+      },
       "ShiftDate#9" : {
         "@id" : "DayOffRequest#36",
         "id" : 36,
@@ -1774,20 +1816,6 @@
         },
         "weight" : 1
       },
-      "ShiftDate#8" : {
-        "@id" : "DayOffRequest#38",
-        "id" : 38,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#8",
-        "weight" : 1
-      },
-      "ShiftDate#19" : {
-        "@id" : "DayOffRequest#33",
-        "id" : 33,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#19",
-        "weight" : 1
-      },
       "ShiftDate#12" : {
         "@id" : "DayOffRequest#37",
         "id" : 37,
@@ -1795,32 +1823,11 @@
         "shiftDate" : "ShiftDate#12",
         "weight" : 1
       },
-      "ShiftDate#16" : {
-        "@id" : "DayOffRequest#32",
-        "id" : 32,
+      "ShiftDate#8" : {
+        "@id" : "DayOffRequest#38",
+        "id" : 38,
         "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#16",
-        "weight" : 1
-      },
-      "ShiftDate#15" : {
-        "@id" : "DayOffRequest#34",
-        "id" : 34,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#15",
-        "weight" : 1
-      },
-      "ShiftDate#13" : {
-        "@id" : "DayOffRequest#30",
-        "id" : 30,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#13",
-        "weight" : 1
-      },
-      "ShiftDate#24" : {
-        "@id" : "DayOffRequest#35",
-        "id" : 35,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#24",
+        "shiftDate" : "ShiftDate#8",
         "weight" : 1
       },
       "ShiftDate#17" : {
@@ -1829,17 +1836,17 @@
         "employee" : "Employee#3",
         "shiftDate" : "ShiftDate#17",
         "weight" : 1
-      },
-      "ShiftDate#20" : {
-        "@id" : "DayOffRequest#31",
-        "id" : 31,
-        "employee" : "Employee#3",
-        "shiftDate" : "ShiftDate#20",
-        "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
+      "Shift#40" : {
+        "@id" : "ShiftOffRequest#15",
+        "id" : 15,
+        "employee" : "Employee#3",
+        "shift" : "Shift#40",
+        "weight" : 1
+      },
       "Shift#74" : {
         "@id" : "ShiftOffRequest#16",
         "id" : 16,
@@ -1852,13 +1859,6 @@
         "id" : 17,
         "employee" : "Employee#3",
         "shift" : "Shift#48",
-        "weight" : 1
-      },
-      "Shift#40" : {
-        "@id" : "ShiftOffRequest#15",
-        "id" : 15,
-        "employee" : "Employee#3",
-        "shift" : "Shift#40",
         "weight" : 1
       },
       "Shift#36" : {
@@ -1884,39 +1884,11 @@
     "name" : "4",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
-      "ShiftDate#9" : {
-        "@id" : "DayOffRequest#49",
-        "id" : 49,
+      "ShiftDate#17" : {
+        "@id" : "DayOffRequest#40",
+        "id" : 40,
         "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#9",
-        "weight" : 1
-      },
-      "ShiftDate#27" : {
-        "@id" : "DayOffRequest#43",
-        "id" : 43,
-        "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#27",
-        "weight" : 1
-      },
-      "ShiftDate#1" : {
-        "@id" : "DayOffRequest#42",
-        "id" : 42,
-        "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#1",
-        "weight" : 1
-      },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#48",
-        "id" : 48,
-        "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#3",
-        "weight" : 1
-      },
-      "ShiftDate#16" : {
-        "@id" : "DayOffRequest#44",
-        "id" : 44,
-        "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#16",
+        "shiftDate" : "ShiftDate#17",
         "weight" : 1
       },
       "ShiftDate#6" : {
@@ -1926,18 +1898,25 @@
         "shiftDate" : "ShiftDate#6",
         "weight" : 1
       },
-      "ShiftDate#17" : {
-        "@id" : "DayOffRequest#40",
-        "id" : 40,
+      "ShiftDate#1" : {
+        "@id" : "DayOffRequest#42",
+        "id" : 42,
         "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#17",
+        "shiftDate" : "ShiftDate#1",
         "weight" : 1
       },
-      "ShiftDate#23" : {
-        "@id" : "DayOffRequest#46",
-        "id" : 46,
+      "ShiftDate#27" : {
+        "@id" : "DayOffRequest#43",
+        "id" : 43,
         "employee" : "Employee#4",
-        "shiftDate" : "ShiftDate#23",
+        "shiftDate" : "ShiftDate#27",
+        "weight" : 1
+      },
+      "ShiftDate#16" : {
+        "@id" : "DayOffRequest#44",
+        "id" : 44,
+        "employee" : "Employee#4",
+        "shiftDate" : "ShiftDate#16",
         "weight" : 1
       },
       "ShiftDate#20" : {
@@ -1947,28 +1926,42 @@
         "shiftDate" : "ShiftDate#20",
         "weight" : 1
       },
+      "ShiftDate#23" : {
+        "@id" : "DayOffRequest#46",
+        "id" : 46,
+        "employee" : "Employee#4",
+        "shiftDate" : "ShiftDate#23",
+        "weight" : 1
+      },
       "ShiftDate#5" : {
         "@id" : "DayOffRequest#47",
         "id" : 47,
         "employee" : "Employee#4",
         "shiftDate" : "ShiftDate#5",
         "weight" : 1
+      },
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#48",
+        "id" : 48,
+        "employee" : "Employee#4",
+        "shiftDate" : "ShiftDate#3",
+        "weight" : 1
+      },
+      "ShiftDate#9" : {
+        "@id" : "DayOffRequest#49",
+        "id" : 49,
+        "employee" : "Employee#4",
+        "shiftDate" : "ShiftDate#9",
+        "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
-      "Shift#96" : {
-        "@id" : "ShiftOffRequest#22",
-        "id" : 22,
+      "Shift#0" : {
+        "@id" : "ShiftOffRequest#20",
+        "id" : 20,
         "employee" : "Employee#4",
-        "shift" : "Shift#96",
-        "weight" : 1
-      },
-      "Shift#84" : {
-        "@id" : "ShiftOffRequest#24",
-        "id" : 24,
-        "employee" : "Employee#4",
-        "shift" : "Shift#84",
+        "shift" : "Shift#0",
         "weight" : 1
       },
       "Shift#80" : {
@@ -1978,6 +1971,13 @@
         "shift" : "Shift#80",
         "weight" : 1
       },
+      "Shift#96" : {
+        "@id" : "ShiftOffRequest#22",
+        "id" : 22,
+        "employee" : "Employee#4",
+        "shift" : "Shift#96",
+        "weight" : 1
+      },
       "Shift#66" : {
         "@id" : "ShiftOffRequest#23",
         "id" : 23,
@@ -1985,11 +1985,11 @@
         "shift" : "Shift#66",
         "weight" : 1
       },
-      "Shift#0" : {
-        "@id" : "ShiftOffRequest#20",
-        "id" : 20,
+      "Shift#84" : {
+        "@id" : "ShiftOffRequest#24",
+        "id" : 24,
         "employee" : "Employee#4",
-        "shift" : "Shift#0",
+        "shift" : "Shift#84",
         "weight" : 1
       }
     },
@@ -2001,20 +2001,6 @@
     "name" : "5",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
-      "ShiftDate#8" : {
-        "@id" : "DayOffRequest#58",
-        "id" : 58,
-        "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#8",
-        "weight" : 1
-      },
-      "ShiftDate#19" : {
-        "@id" : "DayOffRequest#57",
-        "id" : 57,
-        "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#19",
-        "weight" : 1
-      },
       "ShiftDate#3" : {
         "@id" : "DayOffRequest#50",
         "id" : 50,
@@ -2022,18 +2008,11 @@
         "shiftDate" : "ShiftDate#3",
         "weight" : 1
       },
-      "ShiftDate#16" : {
-        "@id" : "DayOffRequest#56",
-        "id" : 56,
+      "ShiftDate#21" : {
+        "@id" : "DayOffRequest#51",
+        "id" : 51,
         "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#16",
-        "weight" : 1
-      },
-      "ShiftDate#22" : {
-        "@id" : "DayOffRequest#59",
-        "id" : 59,
-        "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#22",
+        "shiftDate" : "ShiftDate#21",
         "weight" : 1
       },
       "ShiftDate#13" : {
@@ -2050,11 +2029,11 @@
         "shiftDate" : "ShiftDate#6",
         "weight" : 1
       },
-      "ShiftDate#21" : {
-        "@id" : "DayOffRequest#51",
-        "id" : 51,
+      "ShiftDate#26" : {
+        "@id" : "DayOffRequest#54",
+        "id" : 54,
         "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#21",
+        "shiftDate" : "ShiftDate#26",
         "weight" : 1
       },
       "ShiftDate#24" : {
@@ -2064,11 +2043,32 @@
         "shiftDate" : "ShiftDate#24",
         "weight" : 1
       },
-      "ShiftDate#26" : {
-        "@id" : "DayOffRequest#54",
-        "id" : 54,
+      "ShiftDate#16" : {
+        "@id" : "DayOffRequest#56",
+        "id" : 56,
         "employee" : "Employee#5",
-        "shiftDate" : "ShiftDate#26",
+        "shiftDate" : "ShiftDate#16",
+        "weight" : 1
+      },
+      "ShiftDate#19" : {
+        "@id" : "DayOffRequest#57",
+        "id" : 57,
+        "employee" : "Employee#5",
+        "shiftDate" : "ShiftDate#19",
+        "weight" : 1
+      },
+      "ShiftDate#8" : {
+        "@id" : "DayOffRequest#58",
+        "id" : 58,
+        "employee" : "Employee#5",
+        "shiftDate" : "ShiftDate#8",
+        "weight" : 1
+      },
+      "ShiftDate#22" : {
+        "@id" : "DayOffRequest#59",
+        "id" : 59,
+        "employee" : "Employee#5",
+        "shiftDate" : "ShiftDate#22",
         "weight" : 1
       }
     },
@@ -2079,20 +2079,6 @@
         "id" : 25,
         "employee" : "Employee#5",
         "shift" : "Shift#16",
-        "weight" : 1
-      },
-      "Shift#18" : {
-        "@id" : "ShiftOffRequest#29",
-        "id" : 29,
-        "employee" : "Employee#5",
-        "shift" : "Shift#18",
-        "weight" : 1
-      },
-      "Shift#12" : {
-        "@id" : "ShiftOffRequest#28",
-        "id" : 28,
-        "employee" : "Employee#5",
-        "shift" : "Shift#12",
         "weight" : 1
       },
       "Shift#49" : {
@@ -2108,6 +2094,20 @@
         "employee" : "Employee#5",
         "shift" : "Shift#77",
         "weight" : 1
+      },
+      "Shift#12" : {
+        "@id" : "ShiftOffRequest#28",
+        "id" : 28,
+        "employee" : "Employee#5",
+        "shift" : "Shift#12",
+        "weight" : 1
+      },
+      "Shift#18" : {
+        "@id" : "ShiftOffRequest#29",
+        "id" : 29,
+        "employee" : "Employee#5",
+        "shift" : "Shift#18",
+        "weight" : 1
       }
     },
     "shiftOnRequestMap" : { }
@@ -2118,34 +2118,6 @@
     "name" : "6",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
-      "ShiftDate#9" : {
-        "@id" : "DayOffRequest#61",
-        "id" : 61,
-        "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#9",
-        "weight" : 1
-      },
-      "ShiftDate#18" : {
-        "@id" : "DayOffRequest#65",
-        "id" : 65,
-        "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#18",
-        "weight" : 1
-      },
-      "ShiftDate#27" : {
-        "@id" : "DayOffRequest#69",
-        "id" : 69,
-        "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#27",
-        "weight" : 1
-      },
-      "ShiftDate#19" : {
-        "@id" : "DayOffRequest#66",
-        "id" : 66,
-        "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#19",
-        "weight" : 1
-      },
       "ShiftDate#16" : {
         "@id" : "DayOffRequest#60",
         "id" : 60,
@@ -2153,11 +2125,18 @@
         "shiftDate" : "ShiftDate#16",
         "weight" : 1
       },
-      "ShiftDate#2" : {
-        "@id" : "DayOffRequest#68",
-        "id" : 68,
+      "ShiftDate#9" : {
+        "@id" : "DayOffRequest#61",
+        "id" : 61,
         "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#2",
+        "shiftDate" : "ShiftDate#9",
+        "weight" : 1
+      },
+      "ShiftDate#26" : {
+        "@id" : "DayOffRequest#62",
+        "id" : 62,
+        "employee" : "Employee#6",
+        "shiftDate" : "ShiftDate#26",
         "weight" : 1
       },
       "ShiftDate#6" : {
@@ -2167,13 +2146,6 @@
         "shiftDate" : "ShiftDate#6",
         "weight" : 1
       },
-      "ShiftDate#17" : {
-        "@id" : "DayOffRequest#67",
-        "id" : 67,
-        "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#17",
-        "weight" : 1
-      },
       "ShiftDate#14" : {
         "@id" : "DayOffRequest#64",
         "id" : 64,
@@ -2181,11 +2153,39 @@
         "shiftDate" : "ShiftDate#14",
         "weight" : 1
       },
-      "ShiftDate#26" : {
-        "@id" : "DayOffRequest#62",
-        "id" : 62,
+      "ShiftDate#18" : {
+        "@id" : "DayOffRequest#65",
+        "id" : 65,
         "employee" : "Employee#6",
-        "shiftDate" : "ShiftDate#26",
+        "shiftDate" : "ShiftDate#18",
+        "weight" : 1
+      },
+      "ShiftDate#19" : {
+        "@id" : "DayOffRequest#66",
+        "id" : 66,
+        "employee" : "Employee#6",
+        "shiftDate" : "ShiftDate#19",
+        "weight" : 1
+      },
+      "ShiftDate#17" : {
+        "@id" : "DayOffRequest#67",
+        "id" : 67,
+        "employee" : "Employee#6",
+        "shiftDate" : "ShiftDate#17",
+        "weight" : 1
+      },
+      "ShiftDate#2" : {
+        "@id" : "DayOffRequest#68",
+        "id" : 68,
+        "employee" : "Employee#6",
+        "shiftDate" : "ShiftDate#2",
+        "weight" : 1
+      },
+      "ShiftDate#27" : {
+        "@id" : "DayOffRequest#69",
+        "id" : 69,
+        "employee" : "Employee#6",
+        "shiftDate" : "ShiftDate#27",
         "weight" : 1
       }
     },
@@ -2198,18 +2198,18 @@
         "shift" : "Shift#104",
         "weight" : 1
       },
+      "Shift#54" : {
+        "@id" : "ShiftOffRequest#31",
+        "id" : 31,
+        "employee" : "Employee#6",
+        "shift" : "Shift#54",
+        "weight" : 1
+      },
       "Shift#68" : {
         "@id" : "ShiftOffRequest#32",
         "id" : 32,
         "employee" : "Employee#6",
         "shift" : "Shift#68",
-        "weight" : 1
-      },
-      "Shift#10" : {
-        "@id" : "ShiftOffRequest#34",
-        "id" : 34,
-        "employee" : "Employee#6",
-        "shift" : "Shift#10",
         "weight" : 1
       },
       "Shift#57" : {
@@ -2219,11 +2219,11 @@
         "shift" : "Shift#57",
         "weight" : 1
       },
-      "Shift#54" : {
-        "@id" : "ShiftOffRequest#31",
-        "id" : 31,
+      "Shift#10" : {
+        "@id" : "ShiftOffRequest#34",
+        "id" : 34,
         "employee" : "Employee#6",
-        "shift" : "Shift#54",
+        "shift" : "Shift#10",
         "weight" : 1
       }
     },
@@ -2235,18 +2235,11 @@
     "name" : "7",
     "contract" : "Contract#1",
     "dayOffRequestMap" : {
-      "ShiftDate#18" : {
-        "@id" : "DayOffRequest#74",
-        "id" : 74,
+      "ShiftDate#26" : {
+        "@id" : "DayOffRequest#70",
+        "id" : 70,
         "employee" : "Employee#7",
-        "shiftDate" : "ShiftDate#18",
-        "weight" : 1
-      },
-      "ShiftDate#11" : {
-        "@id" : "DayOffRequest#77",
-        "id" : 77,
-        "employee" : "Employee#7",
-        "shiftDate" : "ShiftDate#11",
+        "shiftDate" : "ShiftDate#26",
         "weight" : 1
       },
       "ShiftDate#1" : {
@@ -2256,25 +2249,11 @@
         "shiftDate" : "ShiftDate#1",
         "weight" : 1
       },
-      "ShiftDate#15" : {
-        "@id" : "DayOffRequest#78",
-        "id" : 78,
-        "employee" : "Employee#7",
-        "shiftDate" : "ShiftDate#15",
-        "weight" : 1
-      },
       "ShiftDate#6" : {
         "@id" : "DayOffRequest#72",
         "id" : 72,
         "employee" : "Employee#7",
         "shiftDate" : "ShiftDate#6",
-        "weight" : 1
-      },
-      "ShiftDate#13" : {
-        "@id" : "DayOffRequest#76",
-        "id" : 76,
-        "employee" : "Employee#7",
-        "shiftDate" : "ShiftDate#13",
         "weight" : 1
       },
       "ShiftDate#24" : {
@@ -2284,11 +2263,39 @@
         "shiftDate" : "ShiftDate#24",
         "weight" : 1
       },
+      "ShiftDate#18" : {
+        "@id" : "DayOffRequest#74",
+        "id" : 74,
+        "employee" : "Employee#7",
+        "shiftDate" : "ShiftDate#18",
+        "weight" : 1
+      },
       "ShiftDate#17" : {
         "@id" : "DayOffRequest#75",
         "id" : 75,
         "employee" : "Employee#7",
         "shiftDate" : "ShiftDate#17",
+        "weight" : 1
+      },
+      "ShiftDate#13" : {
+        "@id" : "DayOffRequest#76",
+        "id" : 76,
+        "employee" : "Employee#7",
+        "shiftDate" : "ShiftDate#13",
+        "weight" : 1
+      },
+      "ShiftDate#11" : {
+        "@id" : "DayOffRequest#77",
+        "id" : 77,
+        "employee" : "Employee#7",
+        "shiftDate" : "ShiftDate#11",
+        "weight" : 1
+      },
+      "ShiftDate#15" : {
+        "@id" : "DayOffRequest#78",
+        "id" : 78,
+        "employee" : "Employee#7",
+        "shiftDate" : "ShiftDate#15",
         "weight" : 1
       },
       "ShiftDate#21" : {
@@ -2297,17 +2304,17 @@
         "employee" : "Employee#7",
         "shiftDate" : "ShiftDate#21",
         "weight" : 1
-      },
-      "ShiftDate#26" : {
-        "@id" : "DayOffRequest#70",
-        "id" : 70,
-        "employee" : "Employee#7",
-        "shiftDate" : "ShiftDate#26",
-        "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
+      "Shift#69" : {
+        "@id" : "ShiftOffRequest#35",
+        "id" : 35,
+        "employee" : "Employee#7",
+        "shift" : "Shift#69",
+        "weight" : 1
+      },
       "Shift#25" : {
         "@id" : "ShiftOffRequest#36",
         "id" : 36,
@@ -2320,13 +2327,6 @@
         "id" : 37,
         "employee" : "Employee#7",
         "shift" : "Shift#37",
-        "weight" : 1
-      },
-      "Shift#69" : {
-        "@id" : "ShiftOffRequest#35",
-        "id" : 35,
-        "employee" : "Employee#7",
-        "shift" : "Shift#69",
         "weight" : 1
       },
       "Shift#71" : {
@@ -2352,6 +2352,27 @@
     "name" : "8",
     "contract" : "Contract#2",
     "dayOffRequestMap" : {
+      "ShiftDate#6" : {
+        "@id" : "DayOffRequest#80",
+        "id" : 80,
+        "employee" : "Employee#8",
+        "shiftDate" : "ShiftDate#6",
+        "weight" : 1
+      },
+      "ShiftDate#4" : {
+        "@id" : "DayOffRequest#81",
+        "id" : 81,
+        "employee" : "Employee#8",
+        "shiftDate" : "ShiftDate#4",
+        "weight" : 1
+      },
+      "ShiftDate#14" : {
+        "@id" : "DayOffRequest#82",
+        "id" : 82,
+        "employee" : "Employee#8",
+        "shiftDate" : "ShiftDate#14",
+        "weight" : 1
+      },
       "ShiftDate#9" : {
         "@id" : "DayOffRequest#83",
         "id" : 83,
@@ -2359,11 +2380,18 @@
         "shiftDate" : "ShiftDate#9",
         "weight" : 1
       },
-      "ShiftDate#8" : {
-        "@id" : "DayOffRequest#87",
-        "id" : 87,
+      "ShiftDate#7" : {
+        "@id" : "DayOffRequest#84",
+        "id" : 84,
         "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#8",
+        "shiftDate" : "ShiftDate#7",
+        "weight" : 1
+      },
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#85",
+        "id" : 85,
+        "employee" : "Employee#8",
+        "shiftDate" : "ShiftDate#3",
         "weight" : 1
       },
       "ShiftDate#25" : {
@@ -2407,25 +2435,11 @@
         },
         "weight" : 1
       },
-      "ShiftDate#7" : {
-        "@id" : "DayOffRequest#84",
-        "id" : 84,
+      "ShiftDate#8" : {
+        "@id" : "DayOffRequest#87",
+        "id" : 87,
         "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#7",
-        "weight" : 1
-      },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#85",
-        "id" : 85,
-        "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#3",
-        "weight" : 1
-      },
-      "ShiftDate#6" : {
-        "@id" : "DayOffRequest#80",
-        "id" : 80,
-        "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#6",
+        "shiftDate" : "ShiftDate#8",
         "weight" : 1
       },
       "ShiftDate#13" : {
@@ -2435,37 +2449,16 @@
         "shiftDate" : "ShiftDate#13",
         "weight" : 1
       },
-      "ShiftDate#4" : {
-        "@id" : "DayOffRequest#81",
-        "id" : 81,
-        "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#4",
-        "weight" : 1
-      },
       "ShiftDate#21" : {
         "@id" : "DayOffRequest#89",
         "id" : 89,
         "employee" : "Employee#8",
         "shiftDate" : "ShiftDate#21",
         "weight" : 1
-      },
-      "ShiftDate#14" : {
-        "@id" : "DayOffRequest#82",
-        "id" : 82,
-        "employee" : "Employee#8",
-        "shiftDate" : "ShiftDate#14",
-        "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
-      "Shift#104" : {
-        "@id" : "ShiftOffRequest#44",
-        "id" : 44,
-        "employee" : "Employee#8",
-        "shift" : "Shift#104",
-        "weight" : 1
-      },
       "Shift#64" : {
         "@id" : "ShiftOffRequest#40",
         "id" : 40,
@@ -2480,6 +2473,13 @@
         "shift" : "Shift#47",
         "weight" : 1
       },
+      "Shift#111" : {
+        "@id" : "ShiftOffRequest#42",
+        "id" : 42,
+        "employee" : "Employee#8",
+        "shift" : "Shift#111",
+        "weight" : 1
+      },
       "Shift#88" : {
         "@id" : "ShiftOffRequest#43",
         "id" : 43,
@@ -2487,11 +2487,11 @@
         "shift" : "Shift#88",
         "weight" : 1
       },
-      "Shift#111" : {
-        "@id" : "ShiftOffRequest#42",
-        "id" : 42,
+      "Shift#104" : {
+        "@id" : "ShiftOffRequest#44",
+        "id" : 44,
         "employee" : "Employee#8",
-        "shift" : "Shift#111",
+        "shift" : "Shift#104",
         "weight" : 1
       }
     },
@@ -2503,11 +2503,32 @@
     "name" : "9",
     "contract" : "Contract#2",
     "dayOffRequestMap" : {
+      "ShiftDate#5" : {
+        "@id" : "DayOffRequest#90",
+        "id" : 90,
+        "employee" : "Employee#9",
+        "shiftDate" : "ShiftDate#5",
+        "weight" : 1
+      },
+      "ShiftDate#21" : {
+        "@id" : "DayOffRequest#91",
+        "id" : 91,
+        "employee" : "Employee#9",
+        "shiftDate" : "ShiftDate#21",
+        "weight" : 1
+      },
       "ShiftDate#18" : {
         "@id" : "DayOffRequest#92",
         "id" : 92,
         "employee" : "Employee#9",
         "shiftDate" : "ShiftDate#18",
+        "weight" : 1
+      },
+      "ShiftDate#20" : {
+        "@id" : "DayOffRequest#93",
+        "id" : 93,
+        "employee" : "Employee#9",
+        "shiftDate" : "ShiftDate#20",
         "weight" : 1
       },
       "ShiftDate#1" : {
@@ -2517,11 +2538,18 @@
         "shiftDate" : "ShiftDate#1",
         "weight" : 1
       },
-      "ShiftDate#3" : {
-        "@id" : "DayOffRequest#99",
-        "id" : 99,
+      "ShiftDate#26" : {
+        "@id" : "DayOffRequest#95",
+        "id" : 95,
         "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#3",
+        "shiftDate" : "ShiftDate#26",
+        "weight" : 1
+      },
+      "ShiftDate#23" : {
+        "@id" : "DayOffRequest#96",
+        "id" : 96,
+        "employee" : "Employee#9",
+        "shiftDate" : "ShiftDate#23",
         "weight" : 1
       },
       "ShiftDate#16" : {
@@ -2538,44 +2566,30 @@
         "shiftDate" : "ShiftDate#15",
         "weight" : 1
       },
-      "ShiftDate#21" : {
-        "@id" : "DayOffRequest#91",
-        "id" : 91,
+      "ShiftDate#3" : {
+        "@id" : "DayOffRequest#99",
+        "id" : 99,
         "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#21",
-        "weight" : 1
-      },
-      "ShiftDate#23" : {
-        "@id" : "DayOffRequest#96",
-        "id" : 96,
-        "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#23",
-        "weight" : 1
-      },
-      "ShiftDate#5" : {
-        "@id" : "DayOffRequest#90",
-        "id" : 90,
-        "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#5",
-        "weight" : 1
-      },
-      "ShiftDate#20" : {
-        "@id" : "DayOffRequest#93",
-        "id" : 93,
-        "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#20",
-        "weight" : 1
-      },
-      "ShiftDate#26" : {
-        "@id" : "DayOffRequest#95",
-        "id" : 95,
-        "employee" : "Employee#9",
-        "shiftDate" : "ShiftDate#26",
+        "shiftDate" : "ShiftDate#3",
         "weight" : 1
       }
     },
     "dayOnRequestMap" : { },
     "shiftOffRequestMap" : {
+      "Shift#3" : {
+        "@id" : "ShiftOffRequest#45",
+        "id" : 45,
+        "employee" : "Employee#9",
+        "shift" : "Shift#3",
+        "weight" : 1
+      },
+      "Shift#81" : {
+        "@id" : "ShiftOffRequest#46",
+        "id" : 46,
+        "employee" : "Employee#9",
+        "shift" : "Shift#81",
+        "weight" : 1
+      },
       "Shift#39" : {
         "@id" : "ShiftOffRequest#47",
         "id" : 47,
@@ -2588,20 +2602,6 @@
         "id" : 48,
         "employee" : "Employee#9",
         "shift" : "Shift#83",
-        "weight" : 1
-      },
-      "Shift#81" : {
-        "@id" : "ShiftOffRequest#46",
-        "id" : 46,
-        "employee" : "Employee#9",
-        "shift" : "Shift#81",
-        "weight" : 1
-      },
-      "Shift#3" : {
-        "@id" : "ShiftOffRequest#45",
-        "id" : 45,
-        "employee" : "Employee#9",
-        "shift" : "Shift#3",
         "weight" : 1
       },
       "Shift#97" : {

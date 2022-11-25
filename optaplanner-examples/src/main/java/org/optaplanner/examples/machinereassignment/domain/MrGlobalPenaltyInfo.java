@@ -1,15 +1,15 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class MrGlobalPenaltyInfo extends AbstractPersistableJackson {
+public class MrGlobalPenaltyInfo extends AbstractPersistable {
 
     private int processMoveCostWeight;
     private int serviceMoveCostWeight;
     private int machineMoveCostWeight;
 
     @SuppressWarnings("unused")
-    MrGlobalPenaltyInfo() { // For Jackson.
+    MrGlobalPenaltyInfo() {
     }
 
     public MrGlobalPenaltyInfo(long id) {

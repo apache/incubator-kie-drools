@@ -57,11 +57,11 @@
     "name" : "BFN",
     "distanceToTeamMap" : {
       "Team#0" : 0,
-      "Team#5" : 6782,
+      "Team#1" : 7431,
       "Team#2" : 6628,
       "Team#3" : 226,
-      "Team#1" : 7431,
-      "Team#4" : 7387
+      "Team#4" : 7387,
+      "Team#5" : 6782
     }
   }, {
     "@id" : "Team#1",
@@ -69,11 +69,11 @@
     "name" : "AKL",
     "distanceToTeamMap" : {
       "Team#0" : 7431,
-      "Team#5" : 1338,
+      "Team#1" : 0,
       "Team#2" : 1429,
       "Team#3" : 7586,
-      "Team#1" : 0,
-      "Team#4" : 71
+      "Team#4" : 71,
+      "Team#5" : 1338
     }
   }, {
     "@id" : "Team#2",
@@ -81,11 +81,11 @@
     "name" : "CAN",
     "distanceToTeamMap" : {
       "Team#0" : 6628,
-      "Team#5" : 154,
+      "Team#1" : 1429,
       "Team#2" : 0,
       "Team#3" : 6712,
-      "Team#1" : 1429,
-      "Team#4" : 1455
+      "Team#4" : 1455,
+      "Team#5" : 154
     }
   }, {
     "@id" : "Team#3",
@@ -93,11 +93,11 @@
     "name" : "PRE",
     "distanceToTeamMap" : {
       "Team#0" : 226,
-      "Team#5" : 6867,
+      "Team#1" : 7586,
       "Team#2" : 6712,
       "Team#3" : 0,
-      "Team#1" : 7586,
-      "Team#4" : 7546
+      "Team#4" : 7546,
+      "Team#5" : 6867
     }
   }, {
     "@id" : "Team#4",
@@ -105,11 +105,11 @@
     "name" : "HLM",
     "distanceToTeamMap" : {
       "Team#0" : 7387,
-      "Team#5" : 1369,
+      "Team#1" : 71,
       "Team#2" : 1455,
       "Team#3" : 7546,
-      "Team#1" : 71,
-      "Team#4" : 0
+      "Team#4" : 0,
+      "Team#5" : 1369
     }
   }, {
     "@id" : "Team#5",
@@ -117,11 +117,11 @@
     "name" : "SYD",
     "distanceToTeamMap" : {
       "Team#0" : 6782,
-      "Team#5" : 0,
+      "Team#1" : 1338,
       "Team#2" : 154,
       "Team#3" : 6867,
-      "Team#1" : 1338,
-      "Team#4" : 1369
+      "Team#4" : 1369,
+      "Team#5" : 0
     }
   } ],
   "matchList" : [ {

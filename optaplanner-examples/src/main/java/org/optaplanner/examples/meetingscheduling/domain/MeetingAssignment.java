@@ -19,9 +19,17 @@ public class MeetingAssignment extends AbstractPersistable {
     public MeetingAssignment() {
     }
 
-    public MeetingAssignment(long id, Meeting meeting, TimeGrain startingTimeGrain, Room room) {
+    public MeetingAssignment(long id) {
         super(id);
+    }
+
+    public MeetingAssignment(long id, Meeting meeting) {
+        this(id);
         this.meeting = meeting;
+    }
+
+    public MeetingAssignment(long id, Meeting meeting, TimeGrain startingTimeGrain, Room room) {
+        this(id, meeting);
         this.startingTimeGrain = startingTimeGrain;
         this.room = room;
     }

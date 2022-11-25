@@ -1,4 +1,4 @@
-package org.optaplanner.examples.common.persistence.jackson;
+package org.optaplanner.examples.common.persistence;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.optaplanner.examples.common.persistence.jackson.AbstractKeyDeserializer;
 import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +16,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @see AbstractKeyDeserializer
  */
-public class AbstractExampleSolutionFileIO<Solution_> extends JacksonSolutionFileIO<Solution_> {
+public class AbstractJsonSolutionFileIO<Solution_> extends JacksonSolutionFileIO<Solution_> {
 
-    public AbstractExampleSolutionFileIO(Class<Solution_> clazz) {
+    public AbstractJsonSolutionFileIO(Class<Solution_> clazz) {
         super(clazz);
     }
 
-    public AbstractExampleSolutionFileIO(Class<Solution_> clazz, ObjectMapper mapper) {
+    public AbstractJsonSolutionFileIO(Class<Solution_> clazz, ObjectMapper mapper) {
         super(clazz, mapper);
     }
 

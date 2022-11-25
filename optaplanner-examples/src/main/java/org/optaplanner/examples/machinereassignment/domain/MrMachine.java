@@ -3,7 +3,7 @@ package org.optaplanner.examples.machinereassignment.domain;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrMachine extends AbstractPersistableJackson implements Labeled {
+public class MrMachine extends AbstractPersistable implements Labeled {
 
     private MrNeighborhood neighborhood;
     private MrLocation location;
@@ -28,7 +28,7 @@ public class MrMachine extends AbstractPersistableJackson implements Labeled {
     private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
 
     @SuppressWarnings("unused")
-    MrMachine() { // For Jackson.
+    MrMachine() {
     }
 
     public MrMachine(long id) {

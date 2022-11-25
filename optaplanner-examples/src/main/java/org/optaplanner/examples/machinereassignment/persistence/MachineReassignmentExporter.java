@@ -13,8 +13,9 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<MachineReassignment> {
 
     public static void main(String[] args) {
-        SolutionConverter<MachineReassignment> converter = SolutionConverter.createExportConverter(
-                MachineReassignmentApp.DATA_DIR_NAME, MachineReassignment.class, new MachineReassignmentExporter());
+        SolutionConverter<MachineReassignment> converter =
+                SolutionConverter.createExportConverter(MachineReassignmentApp.DATA_DIR_NAME,
+                        new MachineReassignmentExporter(), new MachineReassignmentSolutionFileIO());
         converter.convertAll();
     }
 

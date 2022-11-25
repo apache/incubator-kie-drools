@@ -19,8 +19,8 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
     public static void main(String[] args) {
         SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createExportConverter(
-                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleSolutionFileIO(),
-                new PatientAdmissionScheduleExporter());
+                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleExporter(),
+                new PatientAdmissionScheduleSolutionFileIO());
         converter.convertAll();
     }
 

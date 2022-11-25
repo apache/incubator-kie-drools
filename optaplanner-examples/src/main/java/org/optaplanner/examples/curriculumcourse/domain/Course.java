@@ -7,13 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Course.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Course extends AbstractPersistableJackson {
+public class Course extends AbstractPersistable {
 
     private String code;
 
@@ -24,7 +24,7 @@ public class Course extends AbstractPersistableJackson {
     private Set<Curriculum> curriculumSet;
     private int studentSize;
 
-    public Course() { // For Jackson.
+    public Course() {
     }
 
     public Course(int id, String code, Teacher teacher, int lectureSize, int studentSize, int minWorkingDaySize,

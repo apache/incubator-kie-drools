@@ -9,11 +9,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 
 @PlanningSolution
-public class CourseSchedule extends AbstractPersistableJackson {
+public class CourseSchedule extends AbstractPersistable {
 
     private String name;
 
@@ -31,7 +31,7 @@ public class CourseSchedule extends AbstractPersistableJackson {
 
     private HardSoftScore score;
 
-    public CourseSchedule() { // For Jackson.
+    public CourseSchedule() {
     }
 
     public CourseSchedule(long id) {

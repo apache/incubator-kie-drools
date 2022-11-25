@@ -2,20 +2,20 @@ package org.optaplanner.examples.pas.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Patient.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Patient extends AbstractPersistableJackson {
+public class Patient extends AbstractPersistable {
 
     private String name;
     private Gender gender;
     private int age;
     private Integer preferredMaximumRoomCapacity;
 
-    public Patient() { // For Jackson.
+    public Patient() {
     }
 
     public Patient(long id, String name, Gender gender, int age, Integer preferredMaximumRoomCapacity) {

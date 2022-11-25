@@ -14,8 +14,8 @@ public class SvgTspPathExporter extends AbstractTxtSolutionExporter<TspSolution>
     public static final String OUTPUT_FILE_SUFFIX = "path.svg";
 
     public static void main(String[] args) {
-        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(
-                TspApp.DATA_DIR_NAME, TspSolution.class, new SvgTspPathExporter());
+        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(TspApp.DATA_DIR_NAME,
+                new SvgTspPathExporter(), new TspSolutionFileIO());
         converter.convertAll();
     }
 

@@ -90,103 +90,6 @@ public class StringDataGenerator {
                         "ES");
     }
 
-    public static StringDataGenerator buildLocationNames() {
-        return new StringDataGenerator()
-                .addPart(true, 0,
-                        "Los",
-                        "San",
-                        "Las",
-                        "Santa",
-                        "New",
-                        "Fort",
-                        "Mount",
-                        "Saint",
-                        "Little",
-                        "El")
-                .addPart(true, 1,
-                        "Angeles",
-                        "Francisco",
-                        "Vegas",
-                        "Barbara",
-                        "York",
-                        "Collins",
-                        "Vernon",
-                        "Peter",
-                        "Rock",
-                        "Paso")
-                .addPart(false, 2,
-                        "Town",
-                        "City",
-                        "Falls",
-                        "Ville",
-                        "Field",
-                        "Polis",
-                        "Shire",
-                        "Berg",
-                        "Borough",
-                        "Island")
-                .addPart(false, 3,
-                        "AL",
-                        "CA",
-                        "DE",
-                        "FL",
-                        "GA",
-                        "HI",
-                        "IN",
-                        "KS",
-                        "LA",
-                        "ME");
-    }
-
-    public static StringDataGenerator buildAssemblyLineNames() {
-        return new StringDataGenerator()
-                .addPart("Chassis",
-                        "Engine",
-                        "Battery",
-                        "Radiator",
-                        "Tires",
-                        "Lights",
-                        "Doors",
-                        "Bumper",
-                        "Windows",
-                        "Sunroof",
-                        "Spoiler",
-                        "Seats",
-                        "Radio",
-                        "Airbag",
-                        "GPS")
-                .addPart("Factory A",
-                        "Factory B",
-                        "Factory C",
-                        "Factory D",
-                        "Factory E",
-                        "Factory F",
-                        "Factory G",
-                        "Factory H",
-                        "Factory I",
-                        "Factory J",
-                        "Factory K",
-                        "Factory L",
-                        "Factory M",
-                        "Factory N",
-                        "Factory O")
-                .addPart("line 1",
-                        "line 2",
-                        "line 3",
-                        "line 4",
-                        "line 5",
-                        "line 6",
-                        "line 7",
-                        "line 8",
-                        "line 9",
-                        "line 10",
-                        "line 11",
-                        "line 12",
-                        "line 13",
-                        "line 14",
-                        "line 15");
-    }
-
     /**
      * Determines how to go through the unique combinations to maximize uniqueness, even on small subsets.
      * It does not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...).
@@ -200,9 +103,9 @@ public class StringDataGenerator {
 
     private final boolean capitalizeFirstLetter;
     private final String delimiter;
-    private List<String[]> partValuesList = new ArrayList<>();
+    private final List<String[]> partValuesList = new ArrayList<>();
     private int partValuesLength;
-    private List<Integer> eliminationIndexMap = new ArrayList<>();
+    private final List<Integer> eliminationIndexMap = new ArrayList<>();
     private int requiredSize = 0;
 
     private List<String[]> filteredPartValuesList = partValuesList;

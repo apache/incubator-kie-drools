@@ -7,7 +7,7 @@ public class LocalResource extends Resource {
     private Project project;
     private boolean renewable;
 
-    public LocalResource() { // For Jackson.
+    public LocalResource() {
     }
 
     public LocalResource(long id, Project project, boolean renewable) {

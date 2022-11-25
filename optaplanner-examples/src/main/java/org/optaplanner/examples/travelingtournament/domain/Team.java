@@ -2,7 +2,7 @@ package org.optaplanner.examples.travelingtournament.domain;
 
 import java.util.Map;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.persistence.jackson.KeySerializer;
 import org.optaplanner.examples.common.swingui.components.Labeled;
@@ -13,12 +13,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Team extends AbstractPersistableJackson implements Labeled {
+public class Team extends AbstractPersistable implements Labeled {
 
     private String name;
     private Map<Team, Integer> distanceToTeamMap;
 
-    public Team() { // For Jackson.
+    public Team() {
     }
 
     public Team(long id) {

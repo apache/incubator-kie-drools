@@ -76,112 +76,112 @@
     "id" : 0,
     "name" : "BFN",
     "distanceToTeamMap" : {
-      "Team#3" : 226,
-      "Team#2" : 6628,
-      "Team#4" : 7387,
-      "Team#7" : 6974,
-      "Team#6" : 232,
       "Team#0" : 0,
+      "Team#1" : 7431,
+      "Team#2" : 6628,
+      "Team#3" : 226,
+      "Team#4" : 7387,
       "Team#5" : 6782,
-      "Team#1" : 7431
+      "Team#6" : 232,
+      "Team#7" : 6974
     }
   }, {
     "@id" : "Team#1",
     "id" : 1,
     "name" : "AKL",
     "distanceToTeamMap" : {
-      "Team#3" : 7586,
-      "Team#2" : 1429,
-      "Team#4" : 71,
-      "Team#7" : 474,
-      "Team#6" : 7563,
       "Team#0" : 7431,
+      "Team#1" : 0,
+      "Team#2" : 1429,
+      "Team#3" : 7586,
+      "Team#4" : 71,
       "Team#5" : 1338,
-      "Team#1" : 0
+      "Team#6" : 7563,
+      "Team#7" : 474
     }
   }, {
     "@id" : "Team#2",
     "id" : 2,
     "name" : "CAN",
     "distanceToTeamMap" : {
-      "Team#3" : 6712,
-      "Team#2" : 0,
-      "Team#4" : 1455,
-      "Team#7" : 1369,
-      "Team#6" : 6698,
       "Team#0" : 6628,
+      "Team#1" : 1429,
+      "Team#2" : 0,
+      "Team#3" : 6712,
+      "Team#4" : 1455,
       "Team#5" : 154,
-      "Team#1" : 1429
+      "Team#6" : 6698,
+      "Team#7" : 1369
     }
   }, {
     "@id" : "Team#3",
     "id" : 3,
     "name" : "PRE",
     "distanceToTeamMap" : {
-      "Team#3" : 0,
-      "Team#2" : 6712,
-      "Team#4" : 7546,
-      "Team#7" : 7136,
-      "Team#6" : 34,
       "Team#0" : 226,
+      "Team#1" : 7586,
+      "Team#2" : 6712,
+      "Team#3" : 0,
+      "Team#4" : 7546,
       "Team#5" : 6867,
-      "Team#1" : 7586
+      "Team#6" : 34,
+      "Team#7" : 7136
     }
   }, {
     "@id" : "Team#4",
     "id" : 4,
     "name" : "HLM",
     "distanceToTeamMap" : {
-      "Team#3" : 7546,
-      "Team#2" : 1455,
-      "Team#4" : 0,
-      "Team#7" : 419,
-      "Team#6" : 7522,
       "Team#0" : 7387,
+      "Team#1" : 71,
+      "Team#2" : 1455,
+      "Team#3" : 7546,
+      "Team#4" : 0,
       "Team#5" : 1369,
-      "Team#1" : 71
+      "Team#6" : 7522,
+      "Team#7" : 419
     }
   }, {
     "@id" : "Team#5",
     "id" : 5,
     "name" : "SYD",
     "distanceToTeamMap" : {
-      "Team#3" : 6867,
-      "Team#2" : 154,
-      "Team#4" : 1369,
-      "Team#7" : 1327,
-      "Team#6" : 6852,
       "Team#0" : 6782,
+      "Team#1" : 1338,
+      "Team#2" : 154,
+      "Team#3" : 6867,
+      "Team#4" : 1369,
       "Team#5" : 0,
-      "Team#1" : 1338
+      "Team#6" : 6852,
+      "Team#7" : 1327
     }
   }, {
     "@id" : "Team#6",
     "id" : 6,
     "name" : "JOH",
     "distanceToTeamMap" : {
-      "Team#3" : 34,
-      "Team#2" : 6698,
-      "Team#4" : 7522,
-      "Team#7" : 7113,
-      "Team#6" : 0,
       "Team#0" : 232,
+      "Team#1" : 7563,
+      "Team#2" : 6698,
+      "Team#3" : 34,
+      "Team#4" : 7522,
       "Team#5" : 6852,
-      "Team#1" : 7563
+      "Team#6" : 0,
+      "Team#7" : 7113
     }
   }, {
     "@id" : "Team#7",
     "id" : 7,
     "name" : "CHC",
     "distanceToTeamMap" : {
-      "Team#3" : 7136,
-      "Team#2" : 1369,
-      "Team#4" : 419,
-      "Team#7" : 0,
-      "Team#6" : 7113,
       "Team#0" : 6974,
+      "Team#1" : 474,
+      "Team#2" : 1369,
+      "Team#3" : 7136,
+      "Team#4" : 419,
       "Team#5" : 1327,
-      "Team#1" : 474
+      "Team#6" : 7113,
+      "Team#7" : 0
     }
   } ],
   "matchList" : [ {

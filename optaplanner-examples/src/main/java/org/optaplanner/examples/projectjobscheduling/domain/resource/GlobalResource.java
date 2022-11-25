@@ -2,7 +2,7 @@ package org.optaplanner.examples.projectjobscheduling.domain.resource;
 
 public class GlobalResource extends Resource {
 
-    public GlobalResource() { // For Jackson.
+    public GlobalResource() {
     }
 
     public GlobalResource(long id, int capacity) {

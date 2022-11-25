@@ -7,11 +7,11 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
 @PlanningSolution
-public class Schedule extends AbstractPersistableJackson {
+public class Schedule extends AbstractPersistable {
 
     private List<Project> projectList;
     private List<Job> jobList;
@@ -23,7 +23,7 @@ public class Schedule extends AbstractPersistableJackson {
 
     private HardMediumSoftScore score;
 
-    public Schedule() { // For Jackson.
+    public Schedule() {
     }
 
     public Schedule(long id) {

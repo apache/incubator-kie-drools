@@ -21,8 +21,8 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
     private static final double GRAY_MAXIMUM = 256.0 * 3.0;
 
     public static void main(String[] args) {
-        SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(
-                TspApp.DATA_DIR_NAME, new TspImageStipplerImporter(), TspSolution.class);
+        SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(TspApp.DATA_DIR_NAME,
+                new TspImageStipplerImporter(), new TspSolutionFileIO());
         converter.convertAll();
     }
 

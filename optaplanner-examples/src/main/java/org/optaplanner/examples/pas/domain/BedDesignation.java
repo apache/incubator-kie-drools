@@ -2,7 +2,7 @@ package org.optaplanner.examples.pas.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory;
 import org.optaplanner.examples.pas.domain.solver.BedStrengthComparator;
 
@@ -12,12 +12,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
 @JsonIdentityInfo(scope = BedDesignation.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class BedDesignation extends AbstractPersistableJackson {
+public class BedDesignation extends AbstractPersistable {
 
     private AdmissionPart admissionPart;
     private Bed bed;
 
-    public BedDesignation() { // For Jackson.
+    public BedDesignation() {
     }
 
     public BedDesignation(long id, AdmissionPart admissionPart) {

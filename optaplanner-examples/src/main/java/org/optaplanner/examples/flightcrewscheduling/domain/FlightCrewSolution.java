@@ -43,6 +43,10 @@ public class FlightCrewSolution extends AbstractPersistable {
     public FlightCrewSolution() {
     }
 
+    public FlightCrewSolution(long id) {
+        super(id);
+    }
+
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************

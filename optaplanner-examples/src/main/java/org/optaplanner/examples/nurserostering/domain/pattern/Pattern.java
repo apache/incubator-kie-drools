@@ -1,6 +1,6 @@
 package org.optaplanner.examples.nurserostering.domain.pattern;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -17,12 +17,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public abstract class Pattern extends AbstractPersistableJackson {
+public abstract class Pattern extends AbstractPersistable {
 
     protected String code;
     protected int weight;
 
-    protected Pattern() { // For Jackson.
+    protected Pattern() {
     }
 
     protected Pattern(long id, String code) {

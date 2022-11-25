@@ -1,15 +1,15 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class DepartmentSpecialism extends AbstractPersistableJackson {
+public class DepartmentSpecialism extends AbstractPersistable {
 
     private Department department;
     private Specialism specialism;
 
     private int priority; // AKA choice
 
-    public DepartmentSpecialism() { // For Jackson.
+    public DepartmentSpecialism() {
     }
 
     public DepartmentSpecialism(long id, Department department, Specialism specialism, int priority) {

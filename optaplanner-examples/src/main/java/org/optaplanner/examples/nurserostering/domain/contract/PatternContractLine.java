@@ -1,14 +1,14 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nurserostering.domain.pattern.Pattern;
 
-public class PatternContractLine extends AbstractPersistableJackson {
+public class PatternContractLine extends AbstractPersistable {
 
     private Contract contract;
     private Pattern pattern;
 
-    public PatternContractLine() { // For Jackson.
+    public PatternContractLine() {
     }
 
     public PatternContractLine(long id) {

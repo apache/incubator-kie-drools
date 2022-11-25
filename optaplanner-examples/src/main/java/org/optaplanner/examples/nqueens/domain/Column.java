@@ -1,16 +1,16 @@
 package org.optaplanner.examples.nqueens.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Column.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Column extends AbstractPersistableJackson {
+public class Column extends AbstractPersistable {
 
     private int index;
 
-    public Column() { // For Jackson.
+    public Column() {
     }
 
     public Column(int index) {

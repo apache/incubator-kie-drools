@@ -7,7 +7,7 @@ public class ShiftType2DaysPattern extends Pattern {
     private ShiftType dayIndex0ShiftType;
     private ShiftType dayIndex1ShiftType;
 
-    public ShiftType2DaysPattern() { // For Jackson.
+    public ShiftType2DaysPattern() {
     }
 
     public ShiftType2DaysPattern(long id, String code) {

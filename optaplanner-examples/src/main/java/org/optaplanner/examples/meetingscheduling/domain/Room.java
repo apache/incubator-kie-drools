@@ -8,6 +8,19 @@ public class Room extends AbstractPersistable implements Labeled {
     private String name;
     private int capacity;
 
+    public Room() {
+    }
+
+    public Room(long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
+    public Room(long id, String name, int capacity) {
+        this(id, name);
+        this.capacity = capacity;
+    }
+
     public String getName() {
         return name;
     }

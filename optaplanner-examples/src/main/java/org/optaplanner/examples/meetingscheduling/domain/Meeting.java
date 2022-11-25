@@ -18,6 +18,19 @@ public class Meeting extends AbstractPersistable {
     private List<RequiredAttendance> requiredAttendanceList;
     private List<PreferredAttendance> preferredAttendanceList;
 
+    public Meeting() {
+    }
+
+    public Meeting(long id) {
+        super(id);
+    }
+
+    public Meeting(long id, String topic, int durationInGrains) {
+        this(id);
+        this.topic = topic;
+        this.durationInGrains = durationInGrains;
+    }
+
     public String getTopic() {
         return topic;
     }

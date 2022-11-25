@@ -21,14 +21,13 @@ import org.optaplanner.test.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 
 class MeetingSchedulingScoreConstraintTest {
 
-    private HardMediumSoftScoreVerifier<MeetingSchedule> scoreVerifier = new HardMediumSoftScoreVerifier<>(
-            SolverFactory.createFromXmlResource(MeetingSchedulingApp.SOLVER_CONFIG));
+    private HardMediumSoftScoreVerifier<MeetingSchedule> scoreVerifier =
+            new HardMediumSoftScoreVerifier<>(SolverFactory.createFromXmlResource(MeetingSchedulingApp.SOLVER_CONFIG));
 
     private MeetingSchedule getMeetingSchedule(int numberOfEntities) {
         // After getting the solution, need to set AttendanceList for it. And for every meeting Required & Preferred attendance lists
         MeetingSchedule solution = new MeetingSchedule();
-        MeetingConstraintConfiguration constraintConfiguration = new MeetingConstraintConfiguration();
-        constraintConfiguration.setId(0L);
+        MeetingConstraintConfiguration constraintConfiguration = new MeetingConstraintConfiguration(0L);
         solution.setConstraintConfiguration(constraintConfiguration);
 
         List<Meeting> meetingList = new ArrayList<>();
@@ -39,35 +38,23 @@ class MeetingSchedulingScoreConstraintTest {
         List<MeetingAssignment> meetingAssignmentList = new ArrayList<>();
 
         for (int i = 0; i < numberOfEntities; i++) {
-            Meeting m = new Meeting();
-            m.setId((long) i);
+            Meeting m = new Meeting(i);
             m.setTopic("meeting" + i);
             meetingList.add(m);
 
-            Day d = new Day();
-            d.setId((long) i);
-            d.setDayOfYear(i + 1);
+            Day d = new Day(i, i + 1);
             dayList.add(d);
 
-            TimeGrain t = new TimeGrain();
-            t.setId((long) i);
-            t.setGrainIndex(i);
-            t.setDay(dayList.get(0));
-            t.setStartingMinuteOfDay(i * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
+            TimeGrain t = new TimeGrain(i, i, dayList.get(0), i * TimeGrain.GRAIN_LENGTH_IN_MINUTES);
             timeGrainList.add(t);
 
-            Room r = new Room();
-            r.setId((long) i);
-            r.setName("room" + i);
+            Room r = new Room(i, "room" + i);
             roomList.add(r);
 
-            Person p = new Person();
-            p.setId((long) i);
-            p.setFullName("person" + i);
+            Person p = new Person(i, "person" + i);
             personList.add(p);
 
-            MeetingAssignment ma = new MeetingAssignment();
-            ma.setId((long) i);
+            MeetingAssignment ma = new MeetingAssignment(i);
             meetingAssignmentList.add(ma);
         }
 
@@ -91,10 +78,8 @@ class MeetingSchedulingScoreConstraintTest {
             m.setDurationInGrains(2);
             solution.getMeetingAssignmentList().get(i).setMeeting(m);
 
-            RequiredAttendance ra = new RequiredAttendance();
-            ra.setId((long) i);
+            RequiredAttendance ra = new RequiredAttendance(i, m);
             ra.setPerson(solution.getPersonList().get(0));
-            ra.setMeeting(m);
             aList.add(ra);
             m.setPreferredAttendanceList(new ArrayList<>());
             m.setRequiredAttendanceList(Collections.singletonList(ra));

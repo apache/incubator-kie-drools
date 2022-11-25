@@ -1,17 +1,17 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class NurseRosterParametrization extends AbstractPersistableJackson {
+public class NurseRosterParametrization extends AbstractPersistable {
 
     private ShiftDate firstShiftDate;
     private ShiftDate lastShiftDate;
 
     private ShiftDate planningWindowStart;
 
-    public NurseRosterParametrization() { // For Jackson.
+    public NurseRosterParametrization() {
     }
 
     public NurseRosterParametrization(long id, ShiftDate firstShiftDate, ShiftDate lastShiftDate,

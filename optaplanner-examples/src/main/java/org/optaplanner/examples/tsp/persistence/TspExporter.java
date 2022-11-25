@@ -14,8 +14,8 @@ public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
     public static final String OUTPUT_FILE_SUFFIX = "tour";
 
     public static void main(String[] args) {
-        SolutionConverter<TspSolution> converter = SolutionConverter.createExportConverter(
-                TspApp.DATA_DIR_NAME, TspSolution.class, new TspExporter());
+        SolutionConverter<TspSolution> converter =
+                SolutionConverter.createExportConverter(TspApp.DATA_DIR_NAME, new TspExporter(), new TspSolutionFileIO());
         converter.convertAll();
     }
 

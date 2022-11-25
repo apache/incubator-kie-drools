@@ -1,19 +1,19 @@
 package org.optaplanner.examples.travelingtournament.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Day extends AbstractPersistableJackson implements Labeled {
+public class Day extends AbstractPersistable implements Labeled {
 
     private int index;
 
     private Day nextDay;
 
-    public Day() { // For Jackson.
+    public Day() {
     }
 
     public Day(int id) {

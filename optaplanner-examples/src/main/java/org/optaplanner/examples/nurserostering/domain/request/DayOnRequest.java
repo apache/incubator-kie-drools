@@ -1,6 +1,6 @@
 package org.optaplanner.examples.nurserostering.domain.request;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
@@ -8,13 +8,13 @@ import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class DayOnRequest extends AbstractPersistableJackson {
+public class DayOnRequest extends AbstractPersistable {
 
     private Employee employee;
     private ShiftDate shiftDate;
     private int weight;
 
-    public DayOnRequest() { // For Jackson.
+    public DayOnRequest() {
     }
 
     public DayOnRequest(long id, Employee employee, ShiftDate shiftDate, int weight) {

@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.optaplanner.examples.common.persistence.jackson.AbstractExampleSolutionFileIO;
+import org.optaplanner.examples.common.persistence.AbstractJsonSolutionFileIO;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
-public class NurseRosterSolutionFileIO extends AbstractExampleSolutionFileIO<NurseRoster> {
+public class NurseRosterSolutionFileIO extends AbstractJsonSolutionFileIO<NurseRoster> {
 
     public NurseRosterSolutionFileIO() {
         super(NurseRoster.class);

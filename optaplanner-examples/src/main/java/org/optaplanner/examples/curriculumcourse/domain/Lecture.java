@@ -5,7 +5,7 @@ import java.util.Set;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
@@ -14,7 +14,7 @@ import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeigh
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
-public class Lecture extends AbstractPersistableJackson implements Labeled {
+public class Lecture extends AbstractPersistable implements Labeled {
 
     private Course course;
     private int lectureIndexInCourse;
@@ -24,7 +24,7 @@ public class Lecture extends AbstractPersistableJackson implements Labeled {
     private Period period;
     private Room room;
 
-    public Lecture() { // For Jackson.
+    public Lecture() {
     }
 
     public Lecture(long id, Course course, int lectureIndexInCourse, boolean pinned) {

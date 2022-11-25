@@ -1,6 +1,6 @@
 package org.optaplanner.examples.cloudbalancing.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = CloudComputer.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class CloudComputer
-        extends AbstractPersistableJackson
+        extends AbstractPersistable
         implements Labeled {
 
     private int cpuPower; // in gigahertz
@@ -17,7 +17,7 @@ public class CloudComputer
     private int networkBandwidth; // in gigabyte per hour
     private int cost; // in euro per month
 
-    CloudComputer() { // For Jackson.
+    CloudComputer() {
     }
 
     public CloudComputer(long id, int cpuPower, int memory, int networkBandwidth, int cost) {

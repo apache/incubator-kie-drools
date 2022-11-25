@@ -3,10 +3,10 @@ package org.optaplanner.examples.tennis.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-public class TeamAssignment extends AbstractPersistableJackson {
+public class TeamAssignment extends AbstractPersistable {
 
     private Day day;
     private int indexInDay;

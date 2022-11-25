@@ -1,13 +1,13 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrMachineCapacity extends AbstractPersistableJackson {
+public class MrMachineCapacity extends AbstractPersistable {
 
     private MrMachine machine;
     private MrResource resource;
@@ -16,7 +16,7 @@ public class MrMachineCapacity extends AbstractPersistableJackson {
     private long safetyCapacity;
 
     @SuppressWarnings("unused")
-    MrMachineCapacity() { // For Jackson.
+    MrMachineCapacity() {
     }
 
     public MrMachineCapacity(MrMachine machine, MrResource resource, long maximumCapacity, long safetyCapacity) {

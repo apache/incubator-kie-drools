@@ -8,10 +8,10 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
-public class NQueens extends AbstractPersistableJackson {
+public class NQueens extends AbstractPersistable {
 
     private int n;
 
@@ -22,7 +22,7 @@ public class NQueens extends AbstractPersistableJackson {
 
     private SimpleScore score;
 
-    public NQueens() { // For Jackson.
+    public NQueens() {
     }
 
     public NQueens(long id) {

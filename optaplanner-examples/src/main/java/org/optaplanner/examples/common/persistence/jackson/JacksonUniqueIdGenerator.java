@@ -1,6 +1,7 @@
 package org.optaplanner.examples.common.persistence.jackson;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.persistence.AbstractJsonSolutionFileIO;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
@@ -25,7 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
  * typically called "@id".
  * This field is used exclusively for referencing objects in the serialized JSON,
  * it never enters the Java data model.
- * Therefore it is not related to {@link AbstractPersistableJackson#getId()},
+ * Therefore it is not related to {@link AbstractPersistable#getId()},
  * which is the actual object ID used in the Java examples.
  * See Vehicle Routing example to learn how to use this pattern.
  * <p>
@@ -34,12 +35,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
  * See Cloud Balancing example to learn how to use this pattern.
  * <p>
  * The implementation is similar in principle to {@link UUIDGenerator}, but without the long and undescriptive UUIDs.
- * Works only for children of {@link AbstractPersistableJackson}.
+ * Works only for children of {@link AbstractPersistable}.
  * No two such classes must have the same {@link Class#getSimpleName()}.
  *
  * @see KeySerializer
  * @see AbstractKeyDeserializer
- * @see AbstractExampleSolutionFileIO
+ * @see AbstractJsonSolutionFileIO
  */
 public final class JacksonUniqueIdGenerator extends ObjectIdGenerator<String> {
 
@@ -79,6 +80,6 @@ public final class JacksonUniqueIdGenerator extends ObjectIdGenerator<String> {
 
     @Override
     public String generateId(Object forPojo) {
-        return forPojo.getClass().getSimpleName() + "#" + ((AbstractPersistableJackson) forPojo).getId();
+        return forPojo.getClass().getSimpleName() + "#" + ((AbstractPersistable) forPojo).getId();
     }
 }

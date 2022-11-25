@@ -3,7 +3,7 @@ package org.optaplanner.examples.examination.domain;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
 import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Each {@link Examination} has only 1 instance of this class.
  */
 @ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.examination.score")
-public class ExaminationConstraintConfiguration extends AbstractPersistableJackson {
+public class ExaminationConstraintConfiguration extends AbstractPersistable {
     // Hard constraints
     private int conflictingExamsInSamePeriodPenalty = 1;
     private int periodDurationTooShortPenalty = 1;
@@ -36,7 +36,7 @@ public class ExaminationConstraintConfiguration extends AbstractPersistableJacks
     private int periodPenaltyPenalty = 1;
     private int roomPenaltyPenalty = 1;
 
-    public ExaminationConstraintConfiguration() { // For Jackson.
+    public ExaminationConstraintConfiguration() {
     }
 
     public ExaminationConstraintConfiguration(long id) {

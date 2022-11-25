@@ -15,7 +15,7 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
     public static void main(String[] args) {
         SolutionConverter<Examination> converter = SolutionConverter.createExportConverter(
-                ExaminationApp.DATA_DIR_NAME, new ExaminationSolutionFileIO(), new ExaminationExporter());
+                ExaminationApp.DATA_DIR_NAME, new ExaminationExporter(), new ExaminationSolutionFileIO());
         converter.convertAll();
     }
 

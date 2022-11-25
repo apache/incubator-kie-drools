@@ -7,6 +7,14 @@ public class Person extends AbstractPersistable implements Labeled {
 
     private String fullName;
 
+    public Person() {
+    }
+
+    public Person(long id, String fullName) {
+        super(id);
+        this.fullName = fullName;
+    }
+
     public String getFullName() {
         return fullName;
     }

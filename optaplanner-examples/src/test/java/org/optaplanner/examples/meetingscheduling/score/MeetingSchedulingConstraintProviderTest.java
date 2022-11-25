@@ -113,10 +113,8 @@ class MeetingSchedulingConstraintProviderTest
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
 
-        RequiredAttendance requiredAttendance1 = new RequiredAttendance();
-        requiredAttendance1.setId(0L);
+        RequiredAttendance requiredAttendance1 = new RequiredAttendance(0L, leftMeeting);
         requiredAttendance1.setPerson(person);
-        requiredAttendance1.setMeeting(leftMeeting);
 
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
@@ -128,10 +126,8 @@ class MeetingSchedulingConstraintProviderTest
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
 
-        RequiredAttendance requiredAttendance2 = new RequiredAttendance();
-        requiredAttendance2.setId(1L);
+        RequiredAttendance requiredAttendance2 = new RequiredAttendance(1L, rightMeeting);
         requiredAttendance2.setPerson(person);
-        requiredAttendance2.setMeeting(rightMeeting);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
@@ -150,10 +146,8 @@ class MeetingSchedulingConstraintProviderTest
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
 
-        RequiredAttendance requiredAttendance1 = new RequiredAttendance();
-        requiredAttendance1.setId(0L);
+        RequiredAttendance requiredAttendance1 = new RequiredAttendance(0L, leftMeeting);
         requiredAttendance1.setPerson(person);
-        requiredAttendance1.setMeeting(leftMeeting);
 
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
@@ -165,10 +159,8 @@ class MeetingSchedulingConstraintProviderTest
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
 
-        RequiredAttendance requiredAttendance2 = new RequiredAttendance();
-        requiredAttendance2.setId(1L);
+        RequiredAttendance requiredAttendance2 = new RequiredAttendance(1L, rightMeeting);
         requiredAttendance2.setPerson(person);
-        requiredAttendance2.setMeeting(rightMeeting);
 
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(2);
@@ -365,18 +357,14 @@ class MeetingSchedulingConstraintProviderTest
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
 
-        PreferredAttendance leftAttendance = new PreferredAttendance();
-        leftAttendance.setId(0L);
+        PreferredAttendance leftAttendance = new PreferredAttendance(0L, leftMeeting);
         leftAttendance.setPerson(person);
-        leftAttendance.setMeeting(leftMeeting);
 
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
 
-        PreferredAttendance rightAttendance = new PreferredAttendance();
-        rightAttendance.setId(1L);
+        PreferredAttendance rightAttendance = new PreferredAttendance(1L, rightMeeting);
         rightAttendance.setPerson(person);
-        rightAttendance.setMeeting(rightMeeting);
 
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
@@ -403,18 +391,14 @@ class MeetingSchedulingConstraintProviderTest
         Meeting leftMeeting = new Meeting();
         leftMeeting.setDurationInGrains(4);
 
-        PreferredAttendance leftAttendance = new PreferredAttendance();
-        leftAttendance.setId(0L);
+        PreferredAttendance leftAttendance = new PreferredAttendance(0L, leftMeeting);
         leftAttendance.setPerson(person);
-        leftAttendance.setMeeting(leftMeeting);
 
         Meeting rightMeeting = new Meeting();
         rightMeeting.setDurationInGrains(4);
 
-        PreferredAttendance rightAttendance = new PreferredAttendance();
-        rightAttendance.setId(1L);
+        PreferredAttendance rightAttendance = new PreferredAttendance(1L, rightMeeting);
         rightAttendance.setPerson(person);
-        rightAttendance.setMeeting(rightMeeting);
 
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
@@ -521,8 +505,7 @@ class MeetingSchedulingConstraintProviderTest
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(0);
 
-        Meeting leftMeeting = new Meeting();
-        leftMeeting.setId(1L);
+        Meeting leftMeeting = new Meeting(1L);
         leftMeeting.setDurationInGrains(4);
 
         Room room = new Room();
@@ -532,8 +515,7 @@ class MeetingSchedulingConstraintProviderTest
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(4);
 
-        Meeting rightMeeting = new Meeting();
-        rightMeeting.setId(0L);
+        Meeting rightMeeting = new Meeting(0L);
         rightMeeting.setDurationInGrains(4);
 
         MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
@@ -549,8 +531,7 @@ class MeetingSchedulingConstraintProviderTest
         TimeGrain leftTimeGrain = new TimeGrain();
         leftTimeGrain.setGrainIndex(1);
 
-        Meeting leftMeeting = new Meeting();
-        leftMeeting.setId(1L);
+        Meeting leftMeeting = new Meeting(1L);
         leftMeeting.setDurationInGrains(3);
 
         Room room = new Room();
@@ -560,8 +541,7 @@ class MeetingSchedulingConstraintProviderTest
         TimeGrain rightTimeGrain = new TimeGrain();
         rightTimeGrain.setGrainIndex(0);
 
-        Meeting rightMeeting = new Meeting();
-        rightMeeting.setId(0L);
+        Meeting rightMeeting = new Meeting(0L);
         rightMeeting.setDurationInGrains(3);
 
         MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);

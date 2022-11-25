@@ -11,6 +11,15 @@ public class Day extends AbstractPersistable
         implements Comparable<Day>, Labeled {
 
     private int dayOfYear;
+
+    public Day() {
+    }
+
+    public Day(long id, int dayOfYear) {
+        super(id);
+        this.dayOfYear = dayOfYear;
+    }
+
     private static final DateTimeFormatter DAY_FORMATTER = DateTimeFormatter.ofPattern("E", Locale.ENGLISH);
 
     public int getDayOfYear() {

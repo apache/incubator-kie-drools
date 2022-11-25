@@ -96,160 +96,160 @@
     "id" : 0,
     "name" : "ATL",
     "distanceToTeamMap" : {
-      "Team#1" : 745,
-      "Team#8" : 467,
-      "Team#7" : 587,
-      "Team#9" : 670,
-      "Team#6" : 370,
       "Team#0" : 0,
+      "Team#1" : 745,
+      "Team#2" : 665,
       "Team#3" : 929,
       "Team#4" : 605,
       "Team#5" : 521,
-      "Team#2" : 665
+      "Team#6" : 370,
+      "Team#7" : 587,
+      "Team#8" : 467,
+      "Team#9" : 670
     }
   }, {
     "@id" : "Team#1",
     "id" : 1,
     "name" : "NYM",
     "distanceToTeamMap" : {
-      "Team#1" : 0,
-      "Team#8" : 871,
-      "Team#7" : 712,
-      "Team#9" : 741,
-      "Team#6" : 567,
       "Team#0" : 745,
+      "Team#1" : 0,
+      "Team#2" : 80,
       "Team#3" : 337,
       "Team#4" : 1090,
       "Team#5" : 315,
-      "Team#2" : 80
+      "Team#6" : 567,
+      "Team#7" : 712,
+      "Team#8" : 871,
+      "Team#9" : 741
     }
   }, {
     "@id" : "Team#2",
     "id" : 2,
     "name" : "PHI",
     "distanceToTeamMap" : {
-      "Team#1" : 80,
-      "Team#8" : 808,
-      "Team#7" : 664,
-      "Team#9" : 697,
-      "Team#6" : 501,
       "Team#0" : 665,
+      "Team#1" : 80,
+      "Team#2" : 0,
       "Team#3" : 380,
       "Team#4" : 1020,
       "Team#5" : 257,
-      "Team#2" : 0
+      "Team#6" : 501,
+      "Team#7" : 664,
+      "Team#8" : 808,
+      "Team#9" : 697
     }
   }, {
     "@id" : "Team#3",
     "id" : 3,
     "name" : "MON",
     "distanceToTeamMap" : {
-      "Team#1" : 337,
-      "Team#8" : 878,
-      "Team#7" : 646,
-      "Team#9" : 732,
-      "Team#6" : 622,
       "Team#0" : 929,
+      "Team#1" : 337,
+      "Team#2" : 380,
       "Team#3" : 0,
       "Team#4" : 1380,
       "Team#5" : 408,
-      "Team#2" : 380
+      "Team#6" : 622,
+      "Team#7" : 646,
+      "Team#8" : 878,
+      "Team#9" : 732
     }
   }, {
     "@id" : "Team#4",
     "id" : 4,
     "name" : "FLA",
     "distanceToTeamMap" : {
-      "Team#1" : 1090,
-      "Team#8" : 1060,
-      "Team#7" : 1190,
-      "Team#9" : 1270,
-      "Team#6" : 957,
       "Team#0" : 605,
+      "Team#1" : 1090,
+      "Team#2" : 1020,
       "Team#3" : 1380,
       "Team#4" : 0,
       "Team#5" : 1010,
-      "Team#2" : 1020
+      "Team#6" : 957,
+      "Team#7" : 1190,
+      "Team#8" : 1060,
+      "Team#9" : 1270
     }
   }, {
     "@id" : "Team#5",
     "id" : 5,
     "name" : "PIT",
     "distanceToTeamMap" : {
-      "Team#1" : 315,
-      "Team#8" : 557,
-      "Team#7" : 410,
-      "Team#9" : 451,
-      "Team#6" : 253,
       "Team#0" : 521,
+      "Team#1" : 315,
+      "Team#2" : 257,
       "Team#3" : 408,
       "Team#4" : 1010,
       "Team#5" : 0,
-      "Team#2" : 257
+      "Team#6" : 253,
+      "Team#7" : 410,
+      "Team#8" : 557,
+      "Team#9" : 451
     }
   }, {
     "@id" : "Team#6",
     "id" : 6,
     "name" : "CIN",
     "distanceToTeamMap" : {
-      "Team#1" : 567,
-      "Team#8" : 311,
-      "Team#7" : 250,
-      "Team#9" : 325,
-      "Team#6" : 0,
       "Team#0" : 370,
+      "Team#1" : 567,
+      "Team#2" : 501,
       "Team#3" : 622,
       "Team#4" : 957,
       "Team#5" : 253,
-      "Team#2" : 501
+      "Team#6" : 0,
+      "Team#7" : 250,
+      "Team#8" : 311,
+      "Team#9" : 325
     }
   }, {
     "@id" : "Team#7",
     "id" : 7,
     "name" : "CHI",
     "distanceToTeamMap" : {
-      "Team#1" : 712,
-      "Team#8" : 260,
-      "Team#7" : 0,
-      "Team#9" : 86,
-      "Team#6" : 250,
       "Team#0" : 587,
+      "Team#1" : 712,
+      "Team#2" : 664,
       "Team#3" : 646,
       "Team#4" : 1190,
       "Team#5" : 410,
-      "Team#2" : 664
+      "Team#6" : 250,
+      "Team#7" : 0,
+      "Team#8" : 260,
+      "Team#9" : 86
     }
   }, {
     "@id" : "Team#8",
     "id" : 8,
     "name" : "STL",
     "distanceToTeamMap" : {
-      "Team#1" : 871,
-      "Team#8" : 0,
-      "Team#7" : 260,
-      "Team#9" : 328,
-      "Team#6" : 311,
       "Team#0" : 467,
+      "Team#1" : 871,
+      "Team#2" : 808,
       "Team#3" : 878,
       "Team#4" : 1060,
       "Team#5" : 557,
-      "Team#2" : 808
+      "Team#6" : 311,
+      "Team#7" : 260,
+      "Team#8" : 0,
+      "Team#9" : 328
     }
   }, {
     "@id" : "Team#9",
     "id" : 9,
     "name" : "MIL",
     "distanceToTeamMap" : {
-      "Team#1" : 741,
-      "Team#8" : 328,
-      "Team#7" : 86,
-      "Team#9" : 0,
-      "Team#6" : 325,
       "Team#0" : 670,
+      "Team#1" : 741,
+      "Team#2" : 697,
       "Team#3" : 732,
       "Team#4" : 1270,
       "Team#5" : 451,
-      "Team#2" : 697
+      "Team#6" : 325,
+      "Team#7" : 86,
+      "Team#8" : 328,
+      "Team#9" : 0
     }
   } ],
   "matchList" : [ {

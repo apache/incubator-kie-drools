@@ -14,8 +14,8 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 public class NurseRosteringExporter extends AbstractXmlSolutionExporter<NurseRoster> {
 
     public static void main(String[] args) {
-        SolutionConverter<NurseRoster> converter = SolutionConverter.createExportConverter(
-                NurseRosteringApp.DATA_DIR_NAME, NurseRoster.class, new NurseRosteringExporter());
+        SolutionConverter<NurseRoster> converter = SolutionConverter.createExportConverter(NurseRosteringApp.DATA_DIR_NAME,
+                new NurseRosteringExporter(), new NurseRosterSolutionFileIO());
         converter.convertAll();
     }
 

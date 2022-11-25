@@ -1,15 +1,15 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrLocation extends AbstractPersistableJackson {
+public class MrLocation extends AbstractPersistable {
 
     @SuppressWarnings("unused")
-    MrLocation() { // For Jackson.
+    MrLocation() {
     }
 
     public MrLocation(long id) {

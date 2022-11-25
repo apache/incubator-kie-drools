@@ -1,13 +1,13 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class ShiftTypeSkillRequirement extends AbstractPersistableJackson {
+public class ShiftTypeSkillRequirement extends AbstractPersistable {
 
     private ShiftType shiftType;
     private Skill skill;
 
-    public ShiftTypeSkillRequirement() { // For Jackson.
+    public ShiftTypeSkillRequirement() {
     }
 
     public ShiftTypeSkillRequirement(long id, ShiftType shiftType, Skill skill) {

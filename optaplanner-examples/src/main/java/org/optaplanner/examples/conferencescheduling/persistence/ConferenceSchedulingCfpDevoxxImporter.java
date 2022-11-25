@@ -67,11 +67,9 @@ public class ConferenceSchedulingCfpDevoxxImporter {
     }
 
     public ConferenceSolution importSolution() {
-        solution = new ConferenceSolution();
-        solution.setId(0L);
+        solution = new ConferenceSolution(0L);
         solution.setConferenceName(getConferenceName());
-        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration();
-        constraintConfiguration.setId(0L);
+        ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(0L);
         solution.setConstraintConfiguration(constraintConfiguration);
 
         importTalkTypeList();

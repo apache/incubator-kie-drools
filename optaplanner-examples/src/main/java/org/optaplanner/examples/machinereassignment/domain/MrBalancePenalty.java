@@ -1,8 +1,8 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-public class MrBalancePenalty extends AbstractPersistableJackson {
+public class MrBalancePenalty extends AbstractPersistable {
 
     private MrResource originResource;
     private MrResource targetResource;
@@ -10,7 +10,7 @@ public class MrBalancePenalty extends AbstractPersistableJackson {
     private int weight;
 
     @SuppressWarnings("unused")
-    MrBalancePenalty() { // For Jackson.
+    MrBalancePenalty() {
     }
 
     public MrBalancePenalty(MrResource originResource, MrResource targetResource, int multiplicand, int weight) {

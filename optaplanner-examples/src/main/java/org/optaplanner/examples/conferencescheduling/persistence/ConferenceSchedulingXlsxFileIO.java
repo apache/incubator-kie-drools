@@ -241,13 +241,12 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 throw new IllegalStateException(currentPosition() + ": The conference name (" + solution.getConferenceName()
                         + ") must match to the regular expression (" + VALID_NAME_PATTERN + ").");
             }
-            ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration();
+            ConferenceConstraintConfiguration constraintConfiguration = new ConferenceConstraintConfiguration(0L);
 
             readIntConstraintParameterLine("Minimum consecutive talks pause in minutes",
                     constraintConfiguration::setMinimumConsecutiveTalksPauseInMinutes,
                     "The amount of time a speaker needs between 2 talks");
             readScoreConstraintHeaders();
-            constraintConfiguration.setId(0L);
 
             constraintConfiguration.setRoomUnavailableTimeslot(readScoreConstraintLine(ROOM_UNAVAILABLE_TIMESLOT,
                     ROOM_UNAVAILABLE_TIMESLOT_DESCRIPTION));
@@ -347,8 +346,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             long id = 0L;
             long talkTypeId = 0L;
             while (nextRow()) {
-                Timeslot timeslot = new Timeslot();
-                timeslot.setId(id++);
+                Timeslot timeslot = new Timeslot(id++);
                 LocalDate day = LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER);
                 LocalTime startTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
                 LocalTime endTime = LocalTime.parse(nextStringCell().getStringCellValue(), TIME_FORMATTER);
@@ -418,8 +416,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             List<Room> roomList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
-                Room room = new Room();
-                room.setId(id++);
+                Room room = new Room(id++);
                 room.setName(nextStringCell().getStringCellValue());
                 if (strict && !VALID_NAME_PATTERN.matcher(room.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The room name (" + room.getName()
@@ -502,8 +499,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
             List<Speaker> speakerList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             long id = 0L;
             while (nextRow()) {
-                Speaker speaker = new Speaker();
-                speaker.setId(id++);
+                Speaker speaker = new Speaker(id++);
                 speaker.setName(nextStringCell().getStringCellValue());
                 if (strict && !VALID_NAME_PATTERN.matcher(speaker.getName()).matches()) {
                     throw new IllegalStateException(currentPosition() + ": The speaker name (" + speaker.getName()
@@ -595,8 +591,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     Collectors.toMap(Room::getName, Function.identity()));
             Map<Talk, Set<String>> talkToPrerequisiteTalkSetMap = new HashMap<>();
             while (nextRow()) {
-                Talk talk = new Talk();
-                talk.setId(id++);
+                Talk talk = new Talk(id++);
                 talk.setCode(nextStringCell().getStringCellValue());
                 totalTalkCodeMap.put(talk.getCode(), talk);
                 if (strict && !VALID_CODE_PATTERN.matcher(talk.getCode()).matches()) {

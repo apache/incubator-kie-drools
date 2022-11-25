@@ -3,14 +3,14 @@ package org.optaplanner.examples.taskassigning.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class TaskType extends AbstractPersistableJackson implements Labeled {
+public class TaskType extends AbstractPersistable implements Labeled {
 
     private String code;
     private String title;

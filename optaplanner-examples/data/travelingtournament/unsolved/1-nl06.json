@@ -56,72 +56,72 @@
     "id" : 0,
     "name" : "ATL",
     "distanceToTeamMap" : {
-      "Team#2" : 665,
       "Team#0" : 0,
       "Team#1" : 745,
+      "Team#2" : 665,
+      "Team#3" : 929,
       "Team#4" : 605,
-      "Team#5" : 521,
-      "Team#3" : 929
+      "Team#5" : 521
     }
   }, {
     "@id" : "Team#1",
     "id" : 1,
     "name" : "NYM",
     "distanceToTeamMap" : {
-      "Team#2" : 80,
       "Team#0" : 745,
       "Team#1" : 0,
+      "Team#2" : 80,
+      "Team#3" : 337,
       "Team#4" : 1090,
-      "Team#5" : 315,
-      "Team#3" : 337
+      "Team#5" : 315
     }
   }, {
     "@id" : "Team#2",
     "id" : 2,
     "name" : "PHI",
     "distanceToTeamMap" : {
-      "Team#2" : 0,
       "Team#0" : 665,
       "Team#1" : 80,
+      "Team#2" : 0,
+      "Team#3" : 380,
       "Team#4" : 1020,
-      "Team#5" : 257,
-      "Team#3" : 380
+      "Team#5" : 257
     }
   }, {
     "@id" : "Team#3",
     "id" : 3,
     "name" : "MON",
     "distanceToTeamMap" : {
-      "Team#2" : 380,
       "Team#0" : 929,
       "Team#1" : 337,
+      "Team#2" : 380,
+      "Team#3" : 0,
       "Team#4" : 1380,
-      "Team#5" : 408,
-      "Team#3" : 0
+      "Team#5" : 408
     }
   }, {
     "@id" : "Team#4",
     "id" : 4,
     "name" : "FLA",
     "distanceToTeamMap" : {
-      "Team#2" : 1020,
       "Team#0" : 605,
       "Team#1" : 1090,
+      "Team#2" : 1020,
+      "Team#3" : 1380,
       "Team#4" : 0,
-      "Team#5" : 1010,
-      "Team#3" : 1380
+      "Team#5" : 1010
     }
   }, {
     "@id" : "Team#5",
     "id" : 5,
     "name" : "PIT",
     "distanceToTeamMap" : {
-      "Team#2" : 257,
       "Team#0" : 521,
       "Team#1" : 315,
+      "Team#2" : 257,
+      "Team#3" : 408,
       "Team#4" : 1010,
-      "Team#5" : 0,
-      "Team#3" : 408
+      "Team#5" : 0
     }
   } ],
   "matchList" : [ {

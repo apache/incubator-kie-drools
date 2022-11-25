@@ -17,6 +17,10 @@ public class FlightCrewParametrization extends AbstractPersistable {
     public FlightCrewParametrization() {
     }
 
+    public FlightCrewParametrization(long id) {
+        super(id);
+    }
+
     // ************************************************************************
     // Simple getters and setters
     // ************************************************************************

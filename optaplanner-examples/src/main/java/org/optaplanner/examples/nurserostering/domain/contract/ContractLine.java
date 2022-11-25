@@ -1,6 +1,6 @@
 package org.optaplanner.examples.nurserostering.domain.contract;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -15,12 +15,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public abstract class ContractLine extends AbstractPersistableJackson {
+public abstract class ContractLine extends AbstractPersistable {
 
     private Contract contract;
     private ContractLineType contractLineType;
 
-    protected ContractLine() { // For Jackson.
+    protected ContractLine() {
     }
 
     protected ContractLine(long id, Contract contract, ContractLineType contractLineType) {

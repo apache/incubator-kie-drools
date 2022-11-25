@@ -2,17 +2,17 @@ package org.optaplanner.examples.travelingtournament.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-public class Match extends AbstractPersistableJackson {
+public class Match extends AbstractPersistable {
 
     private Team homeTeam;
     private Team awayTeam;
 
     private Day day;
 
-    public Match() { // For Jackson.
+    public Match() {
     }
 
     public Match(long id, Team homeTeam, Team awayTeam) {

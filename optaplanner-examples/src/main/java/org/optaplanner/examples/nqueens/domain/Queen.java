@@ -2,21 +2,21 @@ package org.optaplanner.examples.nqueens.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nqueens.domain.solver.QueenDifficultyWeightFactory;
 import org.optaplanner.examples.nqueens.domain.solver.RowStrengthWeightFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
-public class Queen extends AbstractPersistableJackson {
+public class Queen extends AbstractPersistable {
 
     private Column column;
 
     // Planning variables: changes during planning, between score calculations.
     private Row row;
 
-    public Queen() { // For Jackson.
+    public Queen() {
     }
 
     public Queen(long id) {

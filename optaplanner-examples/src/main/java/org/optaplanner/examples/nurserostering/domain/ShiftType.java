@@ -1,13 +1,13 @@
 package org.optaplanner.examples.nurserostering.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class ShiftType extends AbstractPersistableJackson implements Labeled {
+public class ShiftType extends AbstractPersistable implements Labeled {
 
     private String code;
     private int index;
@@ -16,7 +16,7 @@ public class ShiftType extends AbstractPersistableJackson implements Labeled {
     private boolean night;
     private String description;
 
-    public ShiftType() { // For Jackson.
+    public ShiftType() {
     }
 
     public ShiftType(long id) {

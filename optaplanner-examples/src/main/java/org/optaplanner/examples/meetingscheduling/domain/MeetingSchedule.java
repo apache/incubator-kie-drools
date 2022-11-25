@@ -38,6 +38,13 @@ public class MeetingSchedule extends AbstractPersistable {
     @PlanningScore
     private HardMediumSoftScore score;
 
+    public MeetingSchedule() {
+    }
+
+    public MeetingSchedule(long id) {
+        super(id);
+    }
+
     public MeetingConstraintConfiguration getConstraintConfiguration() {
         return constraintConfiguration;
     }

@@ -15,8 +15,9 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
     private static final String OUTPUT_FILE_SUFFIX = "trick.txt";
 
     public static void main(String[] args) {
-        SolutionConverter<TravelingTournament> converter = SolutionConverter.createExportConverter(
-                TravelingTournamentApp.DATA_DIR_NAME, TravelingTournament.class, new TravelingTournamentExporter());
+        SolutionConverter<TravelingTournament> converter =
+                SolutionConverter.createExportConverter(TravelingTournamentApp.DATA_DIR_NAME,
+                        new TravelingTournamentExporter(), new TravelingTournamentSolutionFileIO());
         converter.convertAll();
     }
 

@@ -57,9 +57,9 @@
       "safetyCapacity" : 3677748
     } ],
     "machineMoveCostMap" : {
+      "MrMachine#0" : 0,
       "MrMachine#1" : 1,
       "MrMachine#2" : 1,
-      "MrMachine#0" : 0,
       "MrMachine#3" : 1
     }
   }, {
@@ -83,9 +83,9 @@
       "safetyCapacity" : 2323148
     } ],
     "machineMoveCostMap" : {
+      "MrMachine#0" : 1,
       "MrMachine#1" : 0,
       "MrMachine#2" : 1,
-      "MrMachine#0" : 1,
       "MrMachine#3" : 1
     }
   }, {
@@ -109,9 +109,9 @@
       "safetyCapacity" : 3836165
     } ],
     "machineMoveCostMap" : {
+      "MrMachine#0" : 1,
       "MrMachine#1" : 1,
       "MrMachine#2" : 0,
-      "MrMachine#0" : 1,
       "MrMachine#3" : 1
     }
   }, {
@@ -135,9 +135,9 @@
       "safetyCapacity" : 4320455
     } ],
     "machineMoveCostMap" : {
+      "MrMachine#0" : 1,
       "MrMachine#1" : 1,
       "MrMachine#2" : 1,
-      "MrMachine#0" : 1,
       "MrMachine#3" : 0
     }
   } ],

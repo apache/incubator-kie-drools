@@ -1,19 +1,19 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class MrResource extends AbstractPersistableJackson {
+public class MrResource extends AbstractPersistable {
 
     private int index;
     private boolean transientlyConsumed;
     private int loadCostWeight;
 
     @SuppressWarnings("unused")
-    MrResource() { // For Jackson.
+    MrResource() {
     }
 
     public MrResource(long id) {

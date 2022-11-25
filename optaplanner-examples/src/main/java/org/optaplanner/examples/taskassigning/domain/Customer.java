@@ -1,17 +1,17 @@
 package org.optaplanner.examples.taskassigning.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Customer extends AbstractPersistableJackson implements Labeled {
+public class Customer extends AbstractPersistable implements Labeled {
 
     private String name;
 
-    public Customer() { // For Jackson.
+    public Customer() {
     }
 
     public Customer(long id) {

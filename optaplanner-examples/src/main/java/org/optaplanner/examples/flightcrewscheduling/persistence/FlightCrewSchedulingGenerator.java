@@ -85,13 +85,11 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
     public FlightCrewSolution createFlightCrewSolution(String fileName,
             List<LocationDataGenerator.LocationData> locationDataList, int flightRoundTripsPerDay, int dayCount) {
         random = new Random(37);
-        FlightCrewSolution solution = new FlightCrewSolution();
-        solution.setId(0L);
+        FlightCrewSolution solution = new FlightCrewSolution(0L);
         LocalDate firstDate = LocalDate.of(2018, 1, 1);
         solution.setScheduleFirstUTCDate(firstDate);
         solution.setScheduleLastUTCDate(firstDate.plusDays(dayCount - 1));
-        FlightCrewParametrization parametrization = new FlightCrewParametrization();
-        parametrization.setId(0L);
+        FlightCrewParametrization parametrization = new FlightCrewParametrization(0L);
         solution.setParametrization(parametrization);
 
         createSkillList(solution);
@@ -117,13 +115,9 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
     private void createSkillList(FlightCrewSolution solution) {
         List<Skill> skillList = new ArrayList<>(2);
-        pilotSkill = new Skill();
-        pilotSkill.setId(0L);
-        pilotSkill.setName("Pilot");
+        pilotSkill = new Skill(0L, "Pilot");
         skillList.add(pilotSkill);
-        flightAttendantSkill = new Skill();
-        flightAttendantSkill.setId(1L);
-        flightAttendantSkill.setName("Flight attendant");
+        flightAttendantSkill = new Skill(1L, "Flight attendant");
         skillList.add(flightAttendantSkill);
         solution.setSkillList(skillList);
     }
@@ -133,15 +127,11 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         List<Airport> airportList = new ArrayList<>(locationDataList.size());
         long id = 0L;
         for (LocationDataGenerator.LocationData locationData : locationDataList) {
-            Airport airport = new Airport();
-            airport.setId(id);
-            id++;
-            airport.setCode(locationData.getName().replaceAll("\\,.*", ""));
-            airport.setName(locationData.getName());
-            airport.setLatitude(locationData.getLatitude());
-            airport.setLongitude(locationData.getLongitude());
+            Airport airport = new Airport(id, locationData.getName().replaceAll("\\,.*", ""),
+                    locationData.getName(), locationData.getLatitude(), locationData.getLongitude());
             logger.trace("Created airport ({}).", airport);
             airportList.add(airport);
+            id++;
         }
         for (Airport a : airportList) {
             Map<Airport, Long> taxiTimeInMinutesMap = new LinkedHashMap<>(airportList.size());
@@ -190,16 +180,12 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
                         END_MINUTE_OF_DAY - flyingTime - START_MINUTE_OF_DAY + 1);
                 int arrivalMinute = departureMinute + flyingTime;
                 for (LocalDate date = firstDate; date.compareTo(lastDate) <= 0; date = date.plusDays(1)) {
-                    Flight flight = new Flight();
-                    flight.setId(flightId);
-                    flightId++;
-                    flight.setFlightNumber(flightNumber);
-                    flight.setDepartureAirport(departureAirport);
-                    flight.setDepartureUTCDateTime(date.atTime(departureMinute / 60, departureMinute % 60));
-                    flight.setArrivalAirport(arrivalAirport);
-                    flight.setArrivalUTCDateTime(date.atTime(arrivalMinute / 60, arrivalMinute % 60));
+                    Flight flight = new Flight(flightId, flightNumber, departureAirport,
+                            date.atTime(departureMinute / 60, departureMinute % 60), arrivalAirport,
+                            date.atTime(arrivalMinute / 60, arrivalMinute % 60));
                     logger.trace("Created flight ({}).", flight);
                     flightList.add(flight);
+                    flightId++;
                 }
             }
         }
@@ -213,14 +199,11 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         long flightAssignmentId = 0L;
         for (Flight flight : flightList) {
             for (int indexInFlight = 0; indexInFlight < EMPLOYEE_COUNT_PER_FLIGHT; indexInFlight++) {
-                FlightAssignment flightAssignment = new FlightAssignment();
-                flightAssignment.setId(flightAssignmentId);
-                flightAssignmentId++;
-                flightAssignment.setFlight(flight);
-                flightAssignment.setIndexInFlight(indexInFlight);
                 Skill requiredSkill = indexInFlight < PILOT_COUNT_PER_FLIGHT ? pilotSkill : flightAttendantSkill;
-                flightAssignment.setRequiredSkill(requiredSkill);
+                FlightAssignment flightAssignment =
+                        new FlightAssignment(flightAssignmentId, flight, indexInFlight, requiredSkill);
                 flightAssignmentList.add(flightAssignment);
+                flightAssignmentId++;
             }
         }
         solution.setFlightAssignmentList(flightAssignmentList);
@@ -240,11 +223,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         Collections.shuffle(unavailableDayPool, random);
         long id = 0L;
         for (int i = 0; i < employeeListSize; i++) {
-            Employee employee = new Employee();
-            employee.setId(id);
-            id++;
-            employee.setName(employeeNameGenerator.generateNextValue());
-            employee.setHomeAirport(extractRandomElement(random, homeAirportList));
+            Employee employee =
+                    new Employee(id, employeeNameGenerator.generateNextValue(), extractRandomElement(random, homeAirportList));
             employee.setSkillSet(Collections.singleton((i % 5) < 2 ? pilotSkill : flightAttendantSkill));
             int unavailableDayCount = 0;
             for (int j = 0; j < dayCount && unavailableDayCount < dayCount; j++) {
@@ -256,6 +236,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
             employee.setFlightAssignmentSet(new TreeSet<>());
             logger.trace("Created employee ({}).", employee);
             employeeList.add(employee);
+            id++;
         }
         solution.setEmployeeList(employeeList);
 

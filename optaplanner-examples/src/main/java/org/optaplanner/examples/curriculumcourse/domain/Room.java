@@ -2,19 +2,19 @@ package org.optaplanner.examples.curriculumcourse.domain;
 
 import java.util.Objects;
 
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(scope = Room.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Room extends AbstractPersistableJackson implements Labeled {
+public class Room extends AbstractPersistable implements Labeled {
 
     private String code;
     private int capacity;
 
-    public Room() { // For Jackson.
+    public Room() {
     }
 
     public Room(int id, String code, int capacity) {

@@ -4,13 +4,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrProcessAssignmentDifficultyComparator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = MrProcessAssignmentDifficultyComparator.class)
-public class MrProcessAssignment extends AbstractPersistableJackson {
+public class MrProcessAssignment extends AbstractPersistable {
 
     public static MrProcessAssignment withOriginalMachine(long id, MrProcess process, MrMachine originalMachine) {
         return new MrProcessAssignment(id, process, originalMachine, null);
@@ -25,7 +25,7 @@ public class MrProcessAssignment extends AbstractPersistableJackson {
     private MrMachine machine;
 
     @SuppressWarnings("unused")
-    MrProcessAssignment() { // For Jackson.
+    MrProcessAssignment() {
     }
 
     public MrProcessAssignment(long id, MrProcess process) {

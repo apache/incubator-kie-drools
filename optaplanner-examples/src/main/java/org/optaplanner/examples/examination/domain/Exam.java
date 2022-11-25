@@ -2,7 +2,7 @@ package org.optaplanner.examples.examination.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.examination.domain.solver.ExamDifficultyWeightFactory;
@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public abstract class Exam extends AbstractPersistableJackson implements Labeled {
+public abstract class Exam extends AbstractPersistable implements Labeled {
 
     protected Topic topic;
 
