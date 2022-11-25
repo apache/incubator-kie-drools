@@ -36,11 +36,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class ArithmeticTest extends BaseOperatorsTest {
+public class EqualityComparisonTest extends BaseOperatorsTest {
 
     private static final RUN_TYPE[] RUN_TYPES = new BaseModelTest.RUN_TYPE[]{RUN_TYPE.STANDARD_FROM_DRL, RUN_TYPE.PATTERN_DSL};
+
     private static final Class[] TYPES = new Class[]{Integer.class, Long.class, Byte.class, Character.class, Short.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
-    private static final String[] ARITHMETIC_OPERATORS = new String[]{"+", "-", "*", "/"};
+    private static final String[] EQUALITY_COMPARISON_OPERATORS = new String[]{"==", "!="};
     private static final boolean[] PROPERTY_ON_LEFT = new boolean[]{true, false};
 
     @Parameters(name = "{0} {1} {2} {3}")
@@ -48,7 +49,7 @@ public class ArithmeticTest extends BaseOperatorsTest {
         List<Object[]> parameterData = new ArrayList<Object[]>();
         for (RUN_TYPE runType : RUN_TYPES) {
             for (Class type : TYPES) {
-                for (String operator : ARITHMETIC_OPERATORS) {
+                for (String operator : EQUALITY_COMPARISON_OPERATORS) {
                     for (boolean propertyOnLeft : PROPERTY_ON_LEFT)
                         parameterData.add(new Object[]{runType, type, operator, propertyOnLeft});
                 }
@@ -83,36 +84,33 @@ public class ArithmeticTest extends BaseOperatorsTest {
 
     @Test
     public void operatorsWithNull() throws Exception {
-        String propertyName = getPropertyName(type);
-        String instanceValueString = getInstanceValueString(type);
+        String propertyName = ArithmeticTest.getPropertyName(type);
+        String instanceValueString = ArithmeticTest.getInstanceValueString(type);
         String drl = "import " + type.getCanonicalName() + ";\n" +
                      "import " + ValueHolder.class.getCanonicalName() + ";\n" +
                      "rule R\n" +
                      "when\n";
         if (propertyOnLeft) {
-            drl += "  ValueHolder((" + propertyName + " " + operator + " " + instanceValueString + ") == " + instanceValueString + ")\n";
+            drl += "  ValueHolder(" + propertyName + " " + operator + " " + instanceValueString + ")\n";
         } else {
-            drl += "  ValueHolder((" + instanceValueString + " " + operator + " " + propertyName + ") == " + instanceValueString + ")\n";
+            drl += "  ValueHolder(" + instanceValueString + " " + operator + " " + propertyName + ")\n";
         }
         drl += "then\n" +
                "end\n";
 
-        //System.out.println(drl);
+        System.out.println(drl);
         KieSession ksession = getKieSession(drl, testRunType);
         ksession.insert(new ValueHolder());
         try {
             int fired = ksession.fireAllRules();
-//            System.out.println("fired = " + fired);
-            fail("Should throw NPE");
-        } catch (org.drools.mvel.ConstraintEvaluationException | org.drools.modelcompiler.constraints.ConstraintEvaluationException e) {
-            if (getRootCause(e) instanceof NullPointerException) {
+            System.out.println("  => fired = " + fired);
+            if (operator.equals("==") && fired == 0 || operator.equals("!=") && fired == 1) {
                 assertTrue(true);
             } else {
-                throw new RuntimeException("Unexpected Cause", e);
+                fail("Wrong result");
             }
-        } catch (Exception e) {
+        } catch (org.drools.mvel.ConstraintEvaluationException | org.drools.modelcompiler.constraints.ConstraintEvaluationException e) {
             throw new RuntimeException("Unexpected Exception", e);
         }
     }
-
 }

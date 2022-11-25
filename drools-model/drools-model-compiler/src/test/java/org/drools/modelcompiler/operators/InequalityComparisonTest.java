@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.drools.modelcompiler.BaseModelTest;
 import org.drools.modelcompiler.BaseModelTest.RUN_TYPE;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,11 +36,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class ComparisonTest extends BaseOperatorsTest {
+public class InequalityComparisonTest extends BaseOperatorsTest {
 
     private static final RUN_TYPE[] RUN_TYPES = new BaseModelTest.RUN_TYPE[]{RUN_TYPE.STANDARD_FROM_DRL, RUN_TYPE.PATTERN_DSL};
+
     private static final Class[] TYPES = new Class[]{Integer.class, Long.class, Byte.class, Character.class, Short.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
-    private static final String[] COMPARISON_OPERATORS = new String[]{"==", "!=", "<", ">", "<=", ">="};
+    private static final String[] COMPARISON_OPERATORS = new String[]{"<", ">", "<=", ">="};
     private static final boolean[] PROPERTY_ON_LEFT = new boolean[]{true, false};
 
     @Parameters(name = "{0} {1} {2} {3}")
@@ -67,6 +70,18 @@ public class ComparisonTest extends BaseOperatorsTest {
     @Parameterized.Parameter(3)
     public boolean propertyOnLeft;
 
+    @Before
+    public void setUp() {
+        org.drools.compiler.rule.builder.util.ConstraintTestUtil.disableNormalizeConstraint();
+        org.drools.modelcompiler.builder.generator.ConstraintTestUtil.disableNormalizeConstraint();
+    }
+
+    @After
+    public void tearDown() {
+        org.drools.compiler.rule.builder.util.ConstraintTestUtil.enableNormalizeConstraint();
+        org.drools.modelcompiler.builder.generator.ConstraintTestUtil.enableNormalizeConstraint();
+    }
+
     @Test
     public void operatorsWithNull() throws Exception {
         String propertyName = ArithmeticTest.getPropertyName(type);
@@ -83,18 +98,19 @@ public class ComparisonTest extends BaseOperatorsTest {
         drl += "then\n" +
                "end\n";
 
-        //System.out.println(drl);
+        System.out.println(drl);
         KieSession ksession = getKieSession(drl, testRunType);
         ksession.insert(new ValueHolder());
         try {
             int fired = ksession.fireAllRules();
-            //            if (fired != 0) {
-            //                System.out.println("fired = " + fired + ", " + testRunType + ", " + type + ", " + operator + ", " + propertyOnLeft);
-            //            }
-
+            System.out.println("  => fired = " + fired);
             fail("Should throw NPE");
         } catch (org.drools.mvel.ConstraintEvaluationException | org.drools.modelcompiler.constraints.ConstraintEvaluationException e) {
-            assertTrue(true);
+            if (getRootCause(e) instanceof NullPointerException) {
+                assertTrue(true);
+            } else {
+                throw new RuntimeException("Unexpected Cause", e);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Unexpected Exception", e);
         }

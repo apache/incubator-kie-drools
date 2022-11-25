@@ -79,4 +79,11 @@ public class BaseOperatorsTest {
             return "new " + clazz.getSimpleName() + "(\"0\")";
         }
     }
+
+    protected static Throwable getRootCause(Throwable th) {
+        while (th.getCause() != null) {
+            th = th.getCause();
+        }
+        return th;
+    }
 }
