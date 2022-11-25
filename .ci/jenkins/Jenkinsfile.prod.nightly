@@ -103,7 +103,7 @@ pipeline {
                         echo '[INFO] Sending RHBOP UMB message to QE.'
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
-                        def optaplannerArchiveUrl = "https://${env.LOCAL_NEXUS_IP}:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
+                        def optaplannerArchiveUrl = "https://${env.LOCAL_NEXUS_IP}:8443/nexus/content/groups/rhbop-${calculateArchiveRepoBranch()}-nightly/"
                         def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-sources.zip"
                         def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-quickstarts-sources.zip"
 
@@ -114,7 +114,7 @@ pipeline {
                             optaplannerSourcesFileUrl,
                             optaplannerQuickstartsSourcesFileUrl,
                             env.ALREADY_BUILT_PROJECTS,
-                            ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
+                            ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'optaplanner': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion'], 'platform.quarkus.bom': PME_BUILD_VARIABLES['quarkusVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: '')],
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                         )
 
@@ -206,4 +206,15 @@ String getCurrentBranch() {
 String getOptaPlannerQuickstartsBranch() {
     def branch = getCurrentBranch()
     return branch == 'main' ? 'development' : branch
+}
+
+String calculateArchiveRepoBranch() {
+    def branch = getCurrentBranch()
+    String [] branchSplit = branch.split("\\.")
+    if (branchSplit.length == 3) {
+        // e.g., 8.29.x --> 8.29
+        return "${branchSplit[0]}.${branchSplit[1]}"
+    }
+    // e.g., main
+    return branch
 }
