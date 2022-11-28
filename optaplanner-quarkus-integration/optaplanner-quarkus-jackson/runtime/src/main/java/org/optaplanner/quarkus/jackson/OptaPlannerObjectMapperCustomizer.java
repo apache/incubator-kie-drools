@@ -2,22 +2,19 @@ package org.optaplanner.quarkus.jackson;
 
 import javax.inject.Singleton;
 
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
 
 /**
- * OptaPlanner doesn't use Jackson, but it does have optional Jackson support for {@link Score}, etc.
+ * OptaPlanner doesn't use Jackson, but it does have optional Jackson support for serializing the score etc.
  */
 @Singleton
 public class OptaPlannerObjectMapperCustomizer implements ObjectMapperCustomizer {
 
     @Override
     public void customize(ObjectMapper objectMapper) {
-        objectMapper.registerModule(OptaPlannerJacksonModule.createModule());
+        objectMapper.findAndRegisterModules(); // Loads OptaPlanner Jackson module via ServiceLoader.
     }
 
 }

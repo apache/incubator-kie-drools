@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,8 +25,8 @@ public class JacksonSolutionFileIO<Solution_> implements SolutionFileIO<Solution
     public JacksonSolutionFileIO(Class<Solution_> clazz, ObjectMapper mapper) {
         this.clazz = clazz;
         this.mapper = mapper;
+        // Loads OptaPlannerJacksonModule via ServiceLoader, as well as any other Jackson modules on the classpath.
         mapper.findAndRegisterModules();
-        mapper.registerModule(OptaPlannerJacksonModule.createModule());
     }
 
     @Override

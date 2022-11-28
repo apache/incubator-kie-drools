@@ -39,6 +39,7 @@ import org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal.Si
 import org.optaplanner.persistence.jackson.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreJacksonSerializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonDeserializer;
 import org.optaplanner.persistence.jackson.api.score.buildin.simplelong.SimpleLongScoreJacksonSerializer;
+import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,46 +47,56 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * This class adds all Jackson serializers and deserializers.
- *
  */
-public class OptaPlannerJacksonModule {
+public class OptaPlannerJacksonModule extends SimpleModule {
 
     /**
-     * @return never null, register it with {@link ObjectMapper#registerModule(Module)}.
+     * Jackson modules can be loaded automatically via {@link java.util.ServiceLoader}.
+     * This will happen if you use {@link JacksonSolutionFileIO}.
+     * Otherwise, register the module with {@link ObjectMapper#registerModule(Module)}.
+     *
+     * @return never null
      */
     public static Module createModule() {
-        SimpleModule module = new SimpleModule("OptaPlanner");
+        return new OptaPlannerJacksonModule();
 
+    }
+
+    /**
+     * @deprecated Have the module loaded automatically via {@link JacksonSolutionFileIO} or use {@link #createModule()}.
+     *             This constructor will be hidden in a future major version of OptaPlanner.
+     */
+    @Deprecated(forRemoval = true)
+    public OptaPlannerJacksonModule() {
+        super("OptaPlanner");
         // For non-subtype Score fields/properties, we also need to record the score type
-        module.addSerializer(Score.class, new PolymorphicScoreJacksonSerializer());
-        module.addDeserializer(Score.class, new PolymorphicScoreJacksonDeserializer());
+        addSerializer(Score.class, new PolymorphicScoreJacksonSerializer());
+        addDeserializer(Score.class, new PolymorphicScoreJacksonDeserializer());
 
-        module.addSerializer(SimpleScore.class, new SimpleScoreJacksonSerializer());
-        module.addDeserializer(SimpleScore.class, new SimpleScoreJacksonDeserializer());
-        module.addSerializer(SimpleLongScore.class, new SimpleLongScoreJacksonSerializer());
-        module.addDeserializer(SimpleLongScore.class, new SimpleLongScoreJacksonDeserializer());
-        module.addSerializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonSerializer());
-        module.addDeserializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonDeserializer());
-        module.addSerializer(HardSoftScore.class, new HardSoftScoreJacksonSerializer());
-        module.addDeserializer(HardSoftScore.class, new HardSoftScoreJacksonDeserializer());
-        module.addSerializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonSerializer());
-        module.addDeserializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonDeserializer());
-        module.addSerializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonSerializer());
-        module.addDeserializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonDeserializer());
-        module.addSerializer(HardMediumSoftScore.class, new HardMediumSoftScoreJsonSerializer());
-        module.addDeserializer(HardMediumSoftScore.class, new HardMediumSoftScoreJacksonDeserializer());
-        module.addSerializer(HardMediumSoftLongScore.class, new HardMediumSoftLongScoreJacksonSerializer());
-        module.addDeserializer(HardMediumSoftLongScore.class, new HardMediumSoftLongScoreJacksonDeserializer());
-        module.addSerializer(HardMediumSoftBigDecimalScore.class, new HardMediumSoftBigDecimalScoreJacksonSerializer());
-        module.addDeserializer(HardMediumSoftBigDecimalScore.class, new HardMediumSoftBigDecimalScoreJacksonDeserializer());
-        module.addSerializer(BendableScore.class, new BendableScoreJacksonSerializer());
-        module.addDeserializer(BendableScore.class, new BendableScoreJacksonDeserializer());
-        module.addSerializer(BendableLongScore.class, new BendableLongScoreJacksonSerializer());
-        module.addDeserializer(BendableLongScore.class, new BendableLongScoreJacksonDeserializer());
-        module.addSerializer(BendableBigDecimalScore.class, new BendableBigDecimalScoreJacksonSerializer());
-        module.addDeserializer(BendableBigDecimalScore.class, new BendableBigDecimalScoreJacksonDeserializer());
-
-        return module;
+        addSerializer(SimpleScore.class, new SimpleScoreJacksonSerializer());
+        addDeserializer(SimpleScore.class, new SimpleScoreJacksonDeserializer());
+        addSerializer(SimpleLongScore.class, new SimpleLongScoreJacksonSerializer());
+        addDeserializer(SimpleLongScore.class, new SimpleLongScoreJacksonDeserializer());
+        addSerializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonSerializer());
+        addDeserializer(SimpleBigDecimalScore.class, new SimpleBigDecimalScoreJacksonDeserializer());
+        addSerializer(HardSoftScore.class, new HardSoftScoreJacksonSerializer());
+        addDeserializer(HardSoftScore.class, new HardSoftScoreJacksonDeserializer());
+        addSerializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonSerializer());
+        addDeserializer(HardSoftLongScore.class, new HardSoftLongScoreJacksonDeserializer());
+        addSerializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonSerializer());
+        addDeserializer(HardSoftBigDecimalScore.class, new HardSoftBigDecimalScoreJacksonDeserializer());
+        addSerializer(HardMediumSoftScore.class, new HardMediumSoftScoreJsonSerializer());
+        addDeserializer(HardMediumSoftScore.class, new HardMediumSoftScoreJacksonDeserializer());
+        addSerializer(HardMediumSoftLongScore.class, new HardMediumSoftLongScoreJacksonSerializer());
+        addDeserializer(HardMediumSoftLongScore.class, new HardMediumSoftLongScoreJacksonDeserializer());
+        addSerializer(HardMediumSoftBigDecimalScore.class, new HardMediumSoftBigDecimalScoreJacksonSerializer());
+        addDeserializer(HardMediumSoftBigDecimalScore.class, new HardMediumSoftBigDecimalScoreJacksonDeserializer());
+        addSerializer(BendableScore.class, new BendableScoreJacksonSerializer());
+        addDeserializer(BendableScore.class, new BendableScoreJacksonDeserializer());
+        addSerializer(BendableLongScore.class, new BendableLongScoreJacksonSerializer());
+        addDeserializer(BendableLongScore.class, new BendableLongScoreJacksonDeserializer());
+        addSerializer(BendableBigDecimalScore.class, new BendableBigDecimalScoreJacksonSerializer());
+        addDeserializer(BendableBigDecimalScore.class, new BendableBigDecimalScoreJacksonDeserializer());
     }
 
 }
