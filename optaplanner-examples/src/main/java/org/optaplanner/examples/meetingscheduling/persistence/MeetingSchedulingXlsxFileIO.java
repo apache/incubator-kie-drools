@@ -38,6 +38,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
+import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.WordUtils;
@@ -177,7 +178,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             List<Attendance> attendanceList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             AtomicLong attendanceIdCounter = new AtomicLong();
-            long meetingId = 0L, meetingAssignmentId = 0L;
+            long meetingId = 0L;
+            long meetingAssignmentId = 0L;
             Map<LocalDateTime, TimeGrain> timeGrainMap = solution.getTimeGrainList().stream().collect(
                     Collectors.toMap(TimeGrain::getDateTime, Function.identity()));
             Map<String, Room> roomMap = solution.getRoomList().stream().collect(
@@ -249,7 +251,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     }).collect(toList()));
         }
 
-        private <E extends Attendance> E createAttendance(AtomicLong idCounter, Function<Long, E> constructor) {
+        private <E extends Attendance> E createAttendance(AtomicLong idCounter, LongFunction<E> constructor) {
             return constructor.apply(idCounter.getAndIncrement());
         }
 
@@ -405,7 +407,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             readHeaderCell("End");
             List<Day> dayList = new ArrayList<>(currentSheet.getLastRowNum() - 1);
             List<TimeGrain> timeGrainList = new ArrayList<>();
-            int dayId = 0, timeGrainId = 0;
+            int dayId = 0;
+            int timeGrainId = 0;
             while (nextRow()) {
                 Day day = new Day(dayId, LocalDate.parse(nextStringCell().getStringCellValue(), DAY_FORMATTER).getDayOfYear());
                 dayList.add(day);
