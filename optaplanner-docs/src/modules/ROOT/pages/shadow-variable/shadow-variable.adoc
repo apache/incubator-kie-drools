@@ -382,7 +382,7 @@ To planning clone a shadow variable, add `@DeepPlanningClone` annotation:
 [source,java,options="nowrap"]
 ----
     @DeepPlanningClone
-    @CustomShadowVariable(...)
+    @ShadowVariable(...)
     private Map<LocalDateTime, Integer> usedManHoursPerDayMap;
 ----
 
