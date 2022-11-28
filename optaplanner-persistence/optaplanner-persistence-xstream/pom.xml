@@ -11,13 +11,13 @@
 
   <artifactId>optaplanner-persistence-xstream</artifactId>
 
-  <name>OptaPlanner persistence XStream</name>
+  <name>OptaPlanner persistence XStream (Deprecated)</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the XStream integration.
+    This module contains the deprecated XStream integration.
   </description>
   <url>https://www.optaplanner.org</url>
 

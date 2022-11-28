@@ -19,7 +19,6 @@ public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
     public PureSubSingleStatistic buildPureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
-        // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
                 return new ConstraintMatchTotalBestScoreSubSingleStatistic(subSingleBenchmarkResult);

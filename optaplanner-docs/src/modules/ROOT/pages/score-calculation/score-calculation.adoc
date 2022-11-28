@@ -280,7 +280,7 @@ Most use cases use a ``HardSoftScore``.
 
 [NOTE]
 ====
-To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson),
+To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with JAXB/Jackson),
 see xref:integration/integration.adoc#integration[the integration chapter].
 ====
 

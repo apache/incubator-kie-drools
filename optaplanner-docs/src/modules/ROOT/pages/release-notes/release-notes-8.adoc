@@ -1,6 +1,20 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.32.0.Final]]
+=== OptaPlanner 8.32.0.Final
+
+==== XStream support deprecated
+
+Given that XStream has multiple CVEs against it and no recent releases,
+we have decided to deprecate OptaPlanner's support for serializing into XML using XStream.
+To continue serializing into XML, please switch to the `optaplanner-persistence-jaxb` module.
+
+All classes in the `optaplanner-persistence-xstream`, as well as the module itself, are now deprecated and will be removed in a future major version of OptaPlanner.
+
+All examples in the `optaplanner-examples` module have been refactored to  JSON using the `optaplanner-persistance-jackson` module.
+Quickstarts were not affected by these changes, as they already were serializing into JSON.
+
 [[releaseNotes-8.31.0.Final]]
 === OptaPlanner 8.31.0.Final
 
@@ -276,8 +290,7 @@ and game-changing platforms such as https://quarkus.io/[Quarkus].
 Meanwhile, we still fully support OpenJDK 11 and platforms such as Spring Boot or plain Java.
 
 For example, when running OptaPlanner in Java 11 or higher with a classpath,
-OptaPlanner no longer triggers `WARNING: An illegal reflective access operation has occurred`
-for XStream.
+OptaPlanner no longer triggers `WARNING: An illegal reflective access operation has occurred` for XStream.
 
 ==== Code completion for solverConfig.xml and benchmarkConfig.xml through XSD
 

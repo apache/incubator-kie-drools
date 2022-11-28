@@ -194,7 +194,7 @@ public class ConfigUtils {
         if (inheritedList == null) {
             return originalList;
         } else if (originalList == null) {
-            // Shallow clone due to XStream implicit elements and modifications after calling inherit
+            // Shallow clone due to modifications after calling inherit
             return new ArrayList<>(inheritedList);
         } else {
             // The inheritedList should be before the originalList

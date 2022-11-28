@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 
 class PlannerBenchmarkConfigTest {
 
@@ -68,7 +68,7 @@ class PlannerBenchmarkConfigTest {
                 + "      <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>\n"
                 + "    </solver>\n"
                 + "    <problemBenchmarks>\n"
-                + "      <solutionFileIOClass>org.optaplanner.benchmark.config.PlannerBenchmarkConfigTest$TestdataSolutionFileIO</solutionFileIOClass>\n"
+                + "      <solutionFileIOClass>" + TestdataSolutionFileIO.class.getCanonicalName() + "</solutionFileIOClass>\n"
                 + "      <inputSolutionFile>nonExistingDataset1.xml</inputSolutionFile>\n"
                 + "    </problemBenchmarks>\n"
                 + "  </solverBenchmark>\n"
@@ -81,8 +81,7 @@ class PlannerBenchmarkConfigTest {
                 .withMessageContaining("solutionKlazz");
     }
 
-    // Used by the testBenchmarkConfig.xml
-    private static class TestdataSolutionFileIO extends XStreamSolutionFileIO<TestdataSolution> {
+    private static class TestdataSolutionFileIO extends JacksonSolutionFileIO<TestdataSolution> {
         private TestdataSolutionFileIO() {
             super(TestdataSolution.class);
         }

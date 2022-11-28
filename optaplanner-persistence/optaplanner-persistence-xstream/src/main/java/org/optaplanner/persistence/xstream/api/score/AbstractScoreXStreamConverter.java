@@ -16,6 +16,10 @@ import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLo
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 
+/**
+ * @deprecated Prefer JAXB for serialization into XML.
+ */
+@Deprecated(forRemoval = true)
 public abstract class AbstractScoreXStreamConverter implements Converter {
 
     public static void registerScoreConverters(XStream xStream) {

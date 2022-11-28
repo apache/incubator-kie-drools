@@ -437,13 +437,9 @@ public class PlannerBenchmarkConfig {
             ClassLoader classLoader) {
         Configuration freemarkerConfiguration = new Configuration(Configuration.VERSION_2_3_31);
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
-        // Write each number according to Java language spec (as expected by XStream), so not formatted by locale
         freemarkerConfiguration.setNumberFormat("computer");
-        // Write each date according to OSI standard (as expected by XStream)
         freemarkerConfiguration.setDateFormat("yyyy-mm-dd");
-        // Write each datetime in format expected by XStream
         freemarkerConfiguration.setDateTimeFormat("yyyy-mm-dd HH:mm:ss.SSS z");
-        // Write each time in format expected by XStream
         freemarkerConfiguration.setTimeFormat("HH:mm:ss.SSS");
         Template template;
         try {

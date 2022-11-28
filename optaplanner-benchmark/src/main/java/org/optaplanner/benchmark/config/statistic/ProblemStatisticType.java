@@ -24,7 +24,6 @@ public enum ProblemStatisticType implements StatisticType {
     MEMORY_USE;
 
     public ProblemStatistic buildProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
-        // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case BEST_SCORE:
                 return new BestScoreProblemStatistic(problemBenchmarkResult);

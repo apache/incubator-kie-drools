@@ -12,8 +12,8 @@ OptaPlanner's input and output data (the planning problem and the best solution)
 For example:
 
 * To read a planning problem from the database (and store the best solution in it), annotate the domain POJOs with JPA annotations.
-* To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJOs with XStream or JAXB annotations.
-* To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJOs with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
+* To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJOs with JAXB annotations.
+* To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJOs with JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
 
 image::integration/integrationOverview.png[align="center"]
 

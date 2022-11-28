@@ -189,53 +189,8 @@ public interface SolutionFileIO<Solution_> {
 ----
 
 The `SolutionFileIO` interface is in the `optaplanner-persistence-common` jar (which is a dependency of the `optaplanner-benchmark` jar).
-There are several ways to serialize a solution:
+There are several ways to serialize a solution.
 
-
-[[xStreamSolutionFileIO]]
-==== `XStreamSolutionFileIO`: serialize to and from an XML format
-
-To read and write solutions in the XML format via XStream, extend the `XStreamSolutionFileIO`:
-
-[source,java,options="nowrap"]
-----
-public class NQueensXmlSolutionFileIO extends XStreamSolutionFileIO<NQueens> {
-    public NQueensXmlSolutionFileIO() {
-        // NQueens is the @PlanningSolution class.
-        super(NQueens.class);
-    }
-}
-----
-
-and use it in the benchmark configuration:
-
-[source,xml,options="nowrap"]
-----
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      ...
-    </problemBenchmarks>
-----
-
-Those input files need to have been written with the same `SolutionFileIO` class that uses or extends the
-`XStreamSolutionFileIO`, not just any `XStream` instance, because the `XStreamSolutionFileIO` uses a customized `XStream`
-instance.
-
-[IMPORTANT]
-====
-The `inputSolutionFile` needs to come from a trusted source:
-if it contains malicious data, it can be exploited.
-The `XStreamSolutionFileIO` disables the `XStream` security framework, so it just works out of the box.
-
-If you expose benchmarking in production, use `XStreamSolutionFileIO.getXStream()`
-to enable the security framework and explicitly allow all marshalled classes.
-====
-
-Add XStream annotations (such as ``@XStreamAlias``) on your domain classes to use a less verbose XML format.
-Regardless, XML is still a very verbose format.
-Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError`
-or large performance degradation.
 
 [[JacksonSolutionFileIO]]
 ==== `JacksonSolutionFileIO`: serialize to and from an JSON format
@@ -281,6 +236,39 @@ Then use it in the benchmark configuration like so:
     </problemBenchmarks>
 ----
 
+
+[[jaxbSolutionFileIO]]
+==== `JaxbSolutionFileIO`: serialize to and from an XML format
+
+To read and write solutions in the XML format via Java Architecture for XML Binding (JAXB), extend the `JaxbSolutionFileIO`:
+
+[source,java,options="nowrap"]
+----
+public class NQueensXmlSolutionFileIO extends JaxbSolutionFileIO<NQueens> {
+    public NQueensXmlSolutionFileIO() {
+        // NQueens is the @PlanningSolution class.
+        super(NQueens.class);
+    }
+}
+----
+
+and use it in the benchmark configuration:
+
+[source,xml,options="nowrap"]
+----
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
+      ...
+    </problemBenchmarks>
+----
+
+Add JAXB annotations (such as ``@XmlElement``) on your domain classes to use a less verbose XML format.
+Regardless, XML is still a very verbose format.
+Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError`
+or large performance degradation.
+
+
 [[customSolutionFileIO]]
 ==== Custom `SolutionFileIO`: serialize to and from a custom format
 
@@ -309,7 +297,7 @@ A `SolutionFileIO` implementation must be thread-safe.
 
 There are two options if your dataset is in a relational database or another type of repository:
 
-* Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose).
+* Extract the datasets from the database and serialize them to a local file, for example as JSON with `JacksonSolutionFileIO`.
 Then use those files in `<inputSolutionFile>` elements.
 ** The benchmarks are now more reliable because they run offline.
 ** Each dataset is only loaded just in time.
@@ -383,8 +371,8 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
     </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.json</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/64queens.json</inputSolutionFile>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 
@@ -410,7 +398,7 @@ The following ``SolverBenchmarkBluePrintType``s are supported:
 
 The best solution of each benchmark run can be written in the ``benchmarkDirectory``.
 By default, this is disabled, because the files are rarely used and considered bloat.
-Also, on large datasets, writing the best solution of each single benchmark can take quite some time and memory (causing an ``OutOfMemoryError``), especially in a verbose format like XStream XML.
+Also, on large datasets, writing the best solution of each single benchmark can take quite some time and memory (causing an ``OutOfMemoryError``), especially in a verbose format like XML.
 
 To write those solutions in the ``benchmarkDirectory``, enable ``writeOutputSolutionEnabled``:
 

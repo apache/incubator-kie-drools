@@ -8,6 +8,10 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+/**
+ * @deprecated Prefer JAXB for serialization into XML.
+ */
+@Deprecated(forRemoval = true)
 public class HardMediumSoftLongScoreXStreamConverter extends AbstractScoreXStreamConverter {
 
     @Override

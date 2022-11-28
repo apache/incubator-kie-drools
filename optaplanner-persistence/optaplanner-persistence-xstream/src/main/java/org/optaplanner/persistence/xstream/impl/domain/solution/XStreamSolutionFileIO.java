@@ -24,7 +24,9 @@ import com.thoughtworks.xstream.security.AnyTypePermission;
  * which can be exploited if the XML comes from an untrusted source.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @deprecated Prefer JAXB for serialization into XML.
  */
+@Deprecated(forRemoval = true)
 public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
     protected XStream xStream;
