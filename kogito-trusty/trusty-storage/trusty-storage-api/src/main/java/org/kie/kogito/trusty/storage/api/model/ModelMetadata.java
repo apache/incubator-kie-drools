@@ -51,17 +51,17 @@ public abstract class ModelMetadata {
     @JsonProperty("@type")
     private ModelDomain modelDomain;
 
-    public ModelMetadata() {
+    protected ModelMetadata() {
     }
 
-    public ModelMetadata(String groupId, String artifactId, String modelVersion, ModelDomain modelDomain) {
+    protected ModelMetadata(String groupId, String artifactId, String modelVersion, ModelDomain modelDomain) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.modelVersion = modelVersion;
         this.modelDomain = modelDomain;
     }
 
-    public ModelMetadata(KogitoGAV gav, ModelDomain modelDomain) {
+    protected ModelMetadata(KogitoGAV gav, ModelDomain modelDomain) {
         this(gav.getGroupId(), gav.getArtifactId(), gav.getVersion(), modelDomain);
     }
 

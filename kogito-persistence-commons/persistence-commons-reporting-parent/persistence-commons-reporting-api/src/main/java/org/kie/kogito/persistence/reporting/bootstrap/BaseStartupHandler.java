@@ -47,7 +47,7 @@ public abstract class BaseStartupHandler<T, F extends Field, P extends Partition
         //CDI proxy
     }
 
-    public BaseStartupHandler(final BootstrapLoader<T, F, P, J, M, D, S> loader,
+    protected BaseStartupHandler(final BootstrapLoader<T, F, P, J, M, D, S> loader,
             final DatabaseManager<T, F, P, J, M, D, C> databaseManager,
             final MappingService<T, F, P, J, M, D> mappingService,
             final SchemaGenerationAction action) {

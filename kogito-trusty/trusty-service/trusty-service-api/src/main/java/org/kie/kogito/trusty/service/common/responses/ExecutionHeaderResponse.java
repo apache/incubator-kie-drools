@@ -64,7 +64,7 @@ public abstract class ExecutionHeaderResponse {
     protected ExecutionHeaderResponse() {
     }
 
-    public ExecutionHeaderResponse(String executionId,
+    protected ExecutionHeaderResponse(String executionId,
             OffsetDateTime executionDate,
             Boolean hasSucceeded,
             String executorName,

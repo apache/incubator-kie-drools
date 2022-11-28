@@ -28,7 +28,7 @@ public abstract class AbstractMarshaller {
 
     protected ObjectMapper mapper;
 
-    public AbstractMarshaller(ObjectMapper mapper) {
+    protected AbstractMarshaller(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

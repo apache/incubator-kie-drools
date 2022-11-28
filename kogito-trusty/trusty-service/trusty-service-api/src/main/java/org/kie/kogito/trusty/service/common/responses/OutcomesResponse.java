@@ -54,7 +54,7 @@ public abstract class OutcomesResponse<T extends ExecutionHeaderResponse, E exte
     protected OutcomesResponse() {
     }
 
-    public OutcomesResponse(T header, Collection<E> outcomes, ModelDomain modelDomain) {
+    protected OutcomesResponse(T header, Collection<E> outcomes, ModelDomain modelDomain) {
         this.header = header;
         this.outcomes = outcomes;
         this.modelDomain = modelDomain;

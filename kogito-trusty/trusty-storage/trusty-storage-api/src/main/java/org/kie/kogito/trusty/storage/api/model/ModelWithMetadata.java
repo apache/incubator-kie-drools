@@ -38,10 +38,10 @@ public abstract class ModelWithMetadata<T extends ModelMetadata> {
     @JsonProperty("@type")
     private ModelDomain modelDomain;
 
-    public ModelWithMetadata() {
+    protected ModelWithMetadata() {
     }
 
-    public ModelWithMetadata(T modelMetaData, ModelDomain modelDomain) {
+    protected ModelWithMetadata(T modelMetaData, ModelDomain modelDomain) {
         this.modelMetaData = modelMetaData;
         this.modelDomain = modelDomain;
     }

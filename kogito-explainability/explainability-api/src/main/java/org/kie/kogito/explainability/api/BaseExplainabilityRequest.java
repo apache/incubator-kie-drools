@@ -57,7 +57,7 @@ public abstract class BaseExplainabilityRequest {
     protected BaseExplainabilityRequest() {
     }
 
-    public BaseExplainabilityRequest(@NotNull String executionId,
+    protected BaseExplainabilityRequest(@NotNull String executionId,
             @NotBlank String serviceUrl,
             @NotNull ModelIdentifier modelIdentifier) {
         this.executionId = Objects.requireNonNull(executionId);

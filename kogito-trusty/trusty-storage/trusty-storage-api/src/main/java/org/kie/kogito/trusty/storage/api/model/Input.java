@@ -42,10 +42,10 @@ public abstract class Input {
     @JsonProperty(VALUE_FIELD)
     private TypedValue value;
 
-    public Input() {
+    protected Input() {
     }
 
-    public Input(String id, String name, TypedValue value) {
+    protected Input(String id, String name, TypedValue value) {
         this.id = id;
         this.name = name;
         this.value = value;

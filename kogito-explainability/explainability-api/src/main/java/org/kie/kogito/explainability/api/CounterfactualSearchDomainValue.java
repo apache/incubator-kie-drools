@@ -26,10 +26,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 })
 public abstract class CounterfactualSearchDomainValue extends BaseTypedValue<CounterfactualSearchDomainCollectionValue, CounterfactualSearchDomainStructureValue, CounterfactualSearchDomainUnitValue> {
 
-    public CounterfactualSearchDomainValue() {
+    protected CounterfactualSearchDomainValue() {
     }
 
-    public CounterfactualSearchDomainValue(Kind kind, String type) {
+    protected CounterfactualSearchDomainValue(Kind kind, String type) {
         super(kind, type);
     }
 }

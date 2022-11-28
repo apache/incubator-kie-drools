@@ -38,7 +38,7 @@ public abstract class AbstractInputObjectTypeMapper implements Function<GraphQLO
     private GraphQLSchema schema;
     private Map<String, GraphQLType> additionalTypes;
 
-    public AbstractInputObjectTypeMapper(GraphQLSchema schema, Map<String, GraphQLType> additionalTypes) {
+    protected AbstractInputObjectTypeMapper(GraphQLSchema schema, Map<String, GraphQLType> additionalTypes) {
         this.schema = schema;
         this.additionalTypes = additionalTypes;
     }

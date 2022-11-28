@@ -48,7 +48,7 @@ public abstract class StructuredInputsResponse<T extends Input> {
     protected StructuredInputsResponse() {
     }
 
-    public StructuredInputsResponse(Collection<T> inputs, ModelDomain modelDomain) {
+    protected StructuredInputsResponse(Collection<T> inputs, ModelDomain modelDomain) {
         this.inputs = inputs;
         this.modelDomain = modelDomain;
     }

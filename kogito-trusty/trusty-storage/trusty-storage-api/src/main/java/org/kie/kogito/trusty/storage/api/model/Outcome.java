@@ -57,10 +57,10 @@ public abstract class Outcome {
     @JsonProperty(MESSAGES_FIELD)
     private Collection<Message> messages;
 
-    public Outcome() {
+    protected Outcome() {
     }
 
-    public Outcome(String outcomeId, String outcomeName, String evaluationStatus,
+    protected Outcome(String outcomeId, String outcomeName, String evaluationStatus,
             TypedValue outcomeResult,
             Collection<NamedTypedValue> outcomeInputs,
             Collection<Message> messages) {

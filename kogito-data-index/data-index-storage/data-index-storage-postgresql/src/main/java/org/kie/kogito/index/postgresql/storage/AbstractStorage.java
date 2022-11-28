@@ -40,10 +40,10 @@ public abstract class AbstractStorage<E extends AbstractEntity, V> implements St
     private Function<E, V> mapToModel;
     private Function<V, E> mapToEntity;
 
-    public AbstractStorage() {
+    protected AbstractStorage() {
     }
 
-    public AbstractStorage(PanacheRepositoryBase<E, String> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
+    protected AbstractStorage(PanacheRepositoryBase<E, String> repository, Class<V> modelClass, Class<E> entityClass, Function<E, V> mapToModel,
             Function<V, E> mapToEntity) {
         this.repository = repository;
         this.modelClass = modelClass;

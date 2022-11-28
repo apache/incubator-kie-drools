@@ -32,11 +32,11 @@ import org.kie.kogito.persistence.reporting.api.BaseMappingsApiV1;
 public abstract class BasePostgresMappingsApiV1
         extends BaseMappingsApiV1<JsonType, PostgresField, PostgresPartitionField, PostgresJsonField, PostgresMapping, PostgresMappingDefinition, PostgresMappingDefinitions, PostgresContext> {
 
-    public BasePostgresMappingsApiV1() {
+    protected BasePostgresMappingsApiV1() {
         //CDI proxies
     }
 
-    public BasePostgresMappingsApiV1(final PostgresMappingServiceImpl mappingService,
+    protected BasePostgresMappingsApiV1(final PostgresMappingServiceImpl mappingService,
             final BasePostgresDatabaseManagerImpl databaseManager) {
         super(mappingService, databaseManager);
     }

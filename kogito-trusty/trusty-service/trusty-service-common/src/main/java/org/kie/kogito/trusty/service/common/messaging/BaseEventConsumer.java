@@ -50,7 +50,7 @@ public abstract class BaseEventConsumer<E> {
         this(null, null, null, null);
     }
 
-    public BaseEventConsumer(final TrustyService service,
+    protected BaseEventConsumer(final TrustyService service,
             final ObjectMapper mapper,
             final StorageExceptionsProvider storageExceptionsProvider,
             final ManagedExecutor executor) {

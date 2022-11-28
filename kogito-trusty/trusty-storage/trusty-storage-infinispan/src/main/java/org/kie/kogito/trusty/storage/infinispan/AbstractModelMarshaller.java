@@ -24,7 +24,7 @@ abstract class AbstractModelMarshaller<T> extends AbstractMarshaller implements 
 
     private final Class<? extends T> javaClass;
 
-    public AbstractModelMarshaller(ObjectMapper mapper, Class<? extends T> javaClass) {
+    protected AbstractModelMarshaller(ObjectMapper mapper, Class<? extends T> javaClass) {
         super(mapper);
         this.javaClass = javaClass;
     }

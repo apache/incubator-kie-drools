@@ -37,7 +37,7 @@ public abstract class BaseReactiveJobRepository implements ReactiveJobRepository
 
     private JobStreams jobStreams;
 
-    public BaseReactiveJobRepository(Vertx vertx, JobStreams jobStreams) {
+    protected BaseReactiveJobRepository(Vertx vertx, JobStreams jobStreams) {
         this.vertx = vertx;
         this.jobStreams = jobStreams;
     }

@@ -36,7 +36,7 @@ public abstract class BaseTransactionalStorage<T> implements Storage<String, T> 
         //CDI proxy
     }
 
-    public BaseTransactionalStorage(String name, CacheEntityRepository repository, ObjectMapper mapper, Class<T> type) {
+    protected BaseTransactionalStorage(String name, CacheEntityRepository repository, ObjectMapper mapper, Class<T> type) {
         this(new PostgresStorage<>(name, repository, mapper, type));
     }
 

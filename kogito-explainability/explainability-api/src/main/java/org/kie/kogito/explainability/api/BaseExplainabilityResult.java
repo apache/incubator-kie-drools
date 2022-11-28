@@ -51,10 +51,10 @@ public abstract class BaseExplainabilityResult {
     @JsonProperty(STATUS_DETAILS_FIELD)
     private String statusDetails;
 
-    public BaseExplainabilityResult() {
+    protected BaseExplainabilityResult() {
     }
 
-    public BaseExplainabilityResult(@NotNull String executionId,
+    protected BaseExplainabilityResult(@NotNull String executionId,
             @NotNull ExplainabilityStatus status,
             String statusDetails) {
         this.executionId = Objects.requireNonNull(executionId);
