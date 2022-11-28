@@ -1395,4 +1395,104 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
     }
+
+    @Test
+    public void fromWithTernaryExpressionBoolean() {
+        // DROOLS-7236
+        String str =
+                "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  when\n" +
+                     "    $foo: Number()\n" +
+                     "    $bar: Boolean() from ($foo > 0 ? true : false)\n" +
+                     "  then\n" +
+                     "    results.add($bar);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Boolean> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(Integer.valueOf(10));
+
+        ksession.fireAllRules();
+        assertThat(results).containsExactly(true);
+    }
+
+    @Test
+    public void fromWithTernaryExpressionBooleanWithMethodCall() {
+        // DROOLS-7236
+        String str =
+                "import " + MyFact.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  when\n" +
+                     "    $fact : MyFact($flag : flag)\n" +
+                     "    $bar: Boolean() from ($flag ? false : $fact.getStrValue().matches(\".*[^a-zA-Z0-9].*\"))\n" +
+                     "  then\n" +
+                     "    results.add($bar);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Boolean> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(new MyFact(false, "$"));
+
+        ksession.fireAllRules();
+        assertThat(results).containsExactly(true);
+    }
+
+    @Test
+    public void fromWithTernaryExpressionStringWithMethodCall() {
+        // DROOLS-7236
+        String str =
+                "import " + MyFact.class.getCanonicalName() + ";\n" +
+                     "global java.util.List results;\n" +
+                     "rule R\n" +
+                     "  when\n" +
+                     "    $fact : MyFact($flag : flag)\n" +
+                     "    $bar: String() from ($flag ? \"-\" : $fact.getStrValue())\n" +
+                     "  then\n" +
+                     "    results.add($bar);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(new MyFact(false, "ABC"));
+
+        ksession.fireAllRules();
+        assertThat(results).containsExactly("ABC");
+    }
+
+    public static class MyFact {
+
+        private boolean flag;
+        private String strValue;
+
+        public MyFact(boolean flag, String strValue) {
+            super();
+            this.flag = flag;
+            this.strValue = strValue;
+        }
+
+        public boolean isFlag() {
+            return flag;
+        }
+
+        public void setFlag(boolean flag) {
+            this.flag = flag;
+        }
+
+        public String getStrValue() {
+            return strValue;
+        }
+
+        public void setStrValue(String strValue) {
+            this.strValue = strValue;
+        }
+
+    }
 }
