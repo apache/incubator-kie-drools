@@ -26,6 +26,7 @@ import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.EntryPointDataProcessor;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.RuleUnitProviderImpl;
@@ -69,9 +70,9 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
         }
 
         @Override
-        public RuleUnitInstance<T> internalCreateInstance(T data) {
+        public RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig) {
             ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, unitGlobalsResolver);
+            return new DSLRuleUnitInstance<>(this, data, reteEvaluator, unitGlobalsResolver, ruleConfig);
         }
     }
 
@@ -79,6 +80,11 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
 
         public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, UnitGlobalsResolver unitGlobalsResolver) {
             super(unit, workingMemory, reteEvaluator);
+            internalBind(unitGlobalsResolver);
+        }
+
+        public DSLRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, UnitGlobalsResolver unitGlobalsResolver, RuleConfig ruleConfig) {
+            super(unit, workingMemory, reteEvaluator, ruleConfig);
             internalBind(unitGlobalsResolver);
         }
 

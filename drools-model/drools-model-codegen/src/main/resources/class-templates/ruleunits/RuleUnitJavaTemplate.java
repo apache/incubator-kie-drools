@@ -5,6 +5,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.RuleUnits;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
@@ -31,8 +32,8 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     }
 
     @Override
-    public RULE_UNIT_INSTANCE_CLASS internalCreateInstance(RULE_UNIT_CLASS data) {
+    public RULE_UNIT_INSTANCE_CLASS internalCreateInstance(RULE_UNIT_CLASS data, RuleConfig ruleConfig) {
         ReteEvaluator reteEvaluator = evaluatorConfigurator.apply(new RuleUnitExecutorImpl(ruleBase, sessionConfiguration));
-        return new RULE_UNIT_INSTANCE_CLASS(this, data, reteEvaluator);
+        return new RULE_UNIT_INSTANCE_CLASS(this, data, reteEvaluator, ruleConfig);
     }
 }

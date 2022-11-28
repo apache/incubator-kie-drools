@@ -58,7 +58,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <sourcepath>${project.basedir}/src/main/java:${project.basedir}/../drools-ruleunits/drools-ruleunits-api/src/main/java</sourcepath>
+          <sourcepath>${project.basedir}/src/main/java</sourcepath>
           <excludePackageNames>org.kie.util*</excludePackageNames>
           <source>${maven.compiler.source}</source>
           <groups>
@@ -97,10 +97,6 @@
             <group>
               <title>Task API</title>
               <packages>org.kie.api.task*</packages>
-            </group>
-            <group>
-              <title>Rule Unit API</title>
-              <packages>org.drools.ruleunits.api*</packages>
             </group>
           </groups>
           <useStandardDocletOptions>true</useStandardDocletOptions>

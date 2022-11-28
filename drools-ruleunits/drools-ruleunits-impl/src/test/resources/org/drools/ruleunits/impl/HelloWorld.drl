@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.drools.ruleunits.impl;
-unit HelloWorld;
+unit HelloWorldUnit;
 
 rule HelloWorld
 when

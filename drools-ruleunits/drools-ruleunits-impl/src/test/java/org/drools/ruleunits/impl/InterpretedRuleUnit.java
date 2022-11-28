@@ -23,6 +23,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 import org.kie.api.builder.Message;
@@ -41,15 +42,20 @@ public class InterpretedRuleUnit<T extends RuleUnitData> extends AbstractRuleUni
         return interpretedRuleUnit.createInstance(ruleUnitData);
     }
 
+    public static <T extends RuleUnitData> RuleUnitInstance<T> instance(T ruleUnitData, RuleConfig ruleConfig) {
+        InterpretedRuleUnit<T> interpretedRuleUnit = new InterpretedRuleUnit<>((Class<T>) ruleUnitData.getClass());
+        return interpretedRuleUnit.createInstance(ruleUnitData, ruleConfig);
+    }
+
     private InterpretedRuleUnit(Class<T> ruleUnitDataClass) {
         super(ruleUnitDataClass);
     }
 
     @Override
-    public RuleUnitInstance<T> internalCreateInstance(T data) {
+    public RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig) {
         RuleBase ruleBase = createRuleBase(data);
         ReteEvaluator reteEvaluator = new RuleUnitExecutorImpl(ruleBase);
-        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator);
+        return new InterpretedRuleUnitInstance<>(this, data, reteEvaluator, ruleConfig);
     }
 
     private RuleBase createRuleBase(T data) {

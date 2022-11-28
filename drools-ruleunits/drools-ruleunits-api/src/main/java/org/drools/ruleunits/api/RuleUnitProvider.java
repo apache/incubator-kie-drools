@@ -15,6 +15,7 @@
  */
 package org.drools.ruleunits.api;
 
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.kie.api.internal.utils.KieService;
 
 /**
@@ -43,6 +44,27 @@ public interface RuleUnitProvider extends KieService {
         }
         return ruleUnit.createInstance(ruleUnitData);
     }
+
+    /**
+     * Creates a new {@link RuleUnitInstance} from the {@link RuleUnit} generated for the given {@link RuleUnitData} with {@link RuleConfig}.
+     * This is equivalent to
+     * <pre>
+     * RuleUnitProvider.get().getRuleUnit(ruleUnitData).createInstance(ruleUnitData, ruleConfig);
+     * </pre>
+     * throwing a runtime exception if there isn't any {@link RuleUnit} generated for the given {@link RuleUnitData}.
+     */
+    default <T extends RuleUnitData> RuleUnitInstance<T> createRuleUnitInstance(T ruleUnitData, RuleConfig ruleConfig) {
+        RuleUnit<T> ruleUnit = getRuleUnit(ruleUnitData);
+        if (ruleUnit == null) {
+            throw new RuntimeException("Cannot find any rule unit for RuleUnitData of class:" + ruleUnitData.getClass().getCanonicalName());
+        }
+        return ruleUnit.createInstance(ruleUnitData, ruleConfig);
+    }
+
+    /**
+     * Creates a new RuleConfig instance.
+     */
+    RuleConfig newRuleConfig();
 
     /**
      * Returns an instance of the RuleUnitProvider.

@@ -24,12 +24,13 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.kie.api.runtime.rule.EntryPoint;
 
 public class InterpretedRuleUnitInstance<T extends RuleUnitData> extends ReteEvaluatorBasedRuleUnitInstance<T> {
 
-    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator) {
-        super(unit, workingMemory, reteEvaluator);
+    InterpretedRuleUnitInstance(RuleUnit<T> unit, T workingMemory, ReteEvaluator reteEvaluator, RuleConfig ruleConfig) {
+        super(unit, workingMemory, reteEvaluator, ruleConfig);
     }
 
     protected void bind(ReteEvaluator reteEvaluator, T workingMemory) {
