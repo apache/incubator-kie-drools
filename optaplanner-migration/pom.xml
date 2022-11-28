@@ -21,7 +21,24 @@
 
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
+    <version.org.antlr>4.9.3</version.org.antlr>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- TODO: Remove the version override after https://github.com/openrewrite/rewrite/issues/1615 is resolved. -->
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${version.org.antlr}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
