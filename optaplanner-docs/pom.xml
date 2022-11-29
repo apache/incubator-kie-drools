@@ -51,7 +51,7 @@
             <maven-version>${maven.min.version}</maven-version>
             <quarkus-version>${version.io.quarkus}</quarkus-version>
             <spring-boot-version>${version.org.springframework.boot}</spring-boot-version>
-            <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
+            <html-googleAnalyticsId>G-KJ89NSGDQ9</html-googleAnalyticsId>
           </attributes>
         </configuration>
         <executions>
