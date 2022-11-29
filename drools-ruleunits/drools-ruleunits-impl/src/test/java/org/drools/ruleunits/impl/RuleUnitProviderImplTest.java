@@ -17,6 +17,7 @@ package org.drools.ruleunits.impl;
 
 import java.util.Objects;
 
+import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
@@ -118,6 +119,17 @@ public class RuleUnitProviderImplTest {
             assertThat(testAgendaEventListener.getResults()).containsExactly("matchCreated : HelloWorld", "beforeMatchFired : HelloWorld", "afterMatchFired : HelloWorld");
             assertThat(testRuleRuntimeEventListener.getResults()).containsExactly("objectInserted : Hello World");
             assertThat(testRuleEventListener.getResults()).containsExactly("onBeforeMatchFire : HelloWorld", "onAfterMatchFire : HelloWorld");
+        }
+    }
+
+    @Test
+    public void fireWithAgendaFilter() {
+        RuleNameUnit unit = new RuleNameUnit();
+        unit.getStrings().add("Hello World");
+
+        try (RuleUnitInstance<RuleNameUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit)) {
+            assertThat(unitInstance.fire(new RuleNameStartsWithAgendaFilter("GoodBye"))).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("GoodByeWorld");
         }
     }
 }
