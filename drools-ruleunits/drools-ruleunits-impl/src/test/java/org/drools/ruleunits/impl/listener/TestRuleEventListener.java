@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.impl.listener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.ruleunits.api.DataSource;
-import org.drools.ruleunits.api.DataStore;
-import org.drools.ruleunits.api.RuleUnitData;
+import org.kie.api.runtime.rule.Match;
+import org.kie.internal.event.rule.RuleEventListener;
 
-public class HelloWorld implements RuleUnitData {
-    private final DataStore<String> strings;
-    private final List<String> results = new ArrayList<>();
+public class TestRuleEventListener implements RuleEventListener {
 
-    public HelloWorld() {
-        this(DataSource.createStore());
-    }
-
-    public HelloWorld(DataStore<String> strings) {
-        this.strings = strings;
-    }
-
-    public DataStore<String> getStrings() {
-        return strings;
-    }
+    private List<String> results = new ArrayList<>();
 
     public List<String> getResults() {
         return results;
+    }
+
+    public void onBeforeMatchFire(Match match) {
+        results.add("onBeforeMatchFire : " + match.getRule().getName());
+    }
+
+    public void onAfterMatchFire(Match match) {
+        results.add("onAfterMatchFire : " + match.getRule().getName());
     }
 }

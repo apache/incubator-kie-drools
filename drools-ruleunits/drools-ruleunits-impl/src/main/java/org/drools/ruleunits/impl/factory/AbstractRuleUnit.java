@@ -20,8 +20,10 @@ import java.util.function.Function;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.InternalRuleUnit;
+import org.drools.ruleunits.impl.RuleUnits;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> implements InternalRuleUnit<T> {
 
@@ -39,7 +41,11 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
         this.ruleUnits = ruleUnits == null ? AbstractRuleUnits.DummyRuleUnits.INSTANCE : ruleUnits;
     }
 
-    protected abstract RuleUnitInstance<T> internalCreateInstance(T data);
+    protected RuleUnitInstance<T> internalCreateInstance(T data) {
+        return internalCreateInstance(data, RuleUnitProvider.get().newRuleConfig());
+    }
+
+    protected abstract RuleUnitInstance<T> internalCreateInstance(T data, RuleConfig ruleConfig);
 
     @Override
     public Class<T> getRuleUnitDataClass() {
@@ -48,12 +54,22 @@ public abstract class AbstractRuleUnit<T extends RuleUnitData> implements Intern
 
     @Override
     public RuleUnitInstance<T> createInstance(T data) {
-        return createInstance(data, null);
+        return createInstance(data, null, RuleUnitProvider.get().newRuleConfig());
     }
 
     @Override
     public RuleUnitInstance<T> createInstance(T data, String name) {
-        RuleUnitInstance<T> instance = internalCreateInstance(data);
+        return createInstance(data, name, RuleUnitProvider.get().newRuleConfig());
+    }
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data, RuleConfig ruleConfig) {
+        return createInstance(data, null, ruleConfig);
+    }
+
+    @Override
+    public RuleUnitInstance<T> createInstance(T data, String name, RuleConfig ruleConfig) {
+        RuleUnitInstance<T> instance = internalCreateInstance(data, ruleConfig);
         if (name != null) {
             ruleUnits.register(name, instance);
         }

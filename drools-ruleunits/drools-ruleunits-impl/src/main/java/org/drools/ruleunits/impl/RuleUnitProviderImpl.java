@@ -33,6 +33,8 @@ import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.CanonicalModelKieProject;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitProvider;
+import org.drools.ruleunits.api.conf.RuleConfig;
+import org.drools.ruleunits.impl.conf.RuleConfigImpl;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -115,4 +117,10 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         }
         return resources;
     }
+
+    @Override
+    public RuleConfig newRuleConfig() {
+        return new RuleConfigImpl();
+    }
+
 }

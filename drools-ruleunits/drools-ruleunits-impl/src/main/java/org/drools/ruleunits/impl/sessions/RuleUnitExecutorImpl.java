@@ -47,6 +47,7 @@ import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
@@ -224,6 +225,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
+    public AgendaEventSupport getAgendaEventSupport() {
+        return activationsManager.getAgendaEventSupport();
+    }
+
+    @Override
     public Calendars getCalendars() {
         if (this.calendars == null) {
             this.calendars = new CalendarsImpl();
@@ -272,6 +278,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
             ep.dispose();
         }
 
+        this.activationsManager.getAgendaEventSupport().clear();
         this.ruleRuntimeEventSupport.clear();
         this.ruleEventListenerSupport.clear();
 
