@@ -14,9 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom.DataConversionException;
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.jdom2.DataConversionException;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.common.util.Pair;
@@ -74,7 +74,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         @Override
         public NurseRoster readSolution() throws IOException, JDOMException {
-            // Note: javax.xml is terrible. JDom is much much easier.
+            // Note: javax.xml is terrible. JDom is much, much easier.
 
             Element schedulingPeriodElement = document.getRootElement();
             assertElementName(schedulingPeriodElement, "SchedulingPeriod");

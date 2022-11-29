@@ -3,7 +3,7 @@ package org.optaplanner.examples.nurserostering.persistence;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.optaplanner.examples.common.persistence.SolutionConverter;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
