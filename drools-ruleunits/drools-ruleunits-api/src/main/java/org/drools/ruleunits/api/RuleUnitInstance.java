@@ -58,7 +58,7 @@ public interface RuleUnitInstance<T extends RuleUnitData> extends AutoCloseable 
      * Executes the query with the given name on this instance, using the given set of arguments
      * @param query The name of the query to be executed
      * @param arguments The arguments to be passed to the query
-     * @return TODO this should return a {@link org.kie.api.runtime.rule.QueryResults}
+     * @return query results
      */
     QueryResults executeQuery(String query, Object... arguments);
 
