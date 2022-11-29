@@ -84,6 +84,7 @@
     <version.org.jboss.transaction.spi>7.6.1.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
+    <version.jakarta.activation>1.2.1</version.jakarta.activation>
     <version.jakarta.activation-api>1.2.1</version.jakarta.activation-api>
     <version.jakarta.inject-api>1.0</version.jakarta.inject-api>
     <version.jakarta.annotation-api>1.3.5</version.jakarta.annotation-api>
@@ -416,7 +417,7 @@
       <dependency>
         <groupId>com.sun.activation</groupId>
         <artifactId>jakarta.activation</artifactId>
-        <version>${version.jakarta.activation-api}</version>
+        <version>${version.jakarta.activation}</version>
       </dependency>
       <dependency>
         <groupId>jakarta.activation</groupId>
