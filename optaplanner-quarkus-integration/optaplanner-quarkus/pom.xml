@@ -17,6 +17,7 @@
     <module>runtime</module>
     <module>deployment</module>
     <module>integration-test</module>
+    <module>reflection-integration-test</module>
     <module>devui-integration-test</module>
     <module>drl-integration-test</module>
   </modules>
