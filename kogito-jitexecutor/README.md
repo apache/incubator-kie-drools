@@ -2,7 +2,7 @@
 
 Kogito JIT (Just In Time) Executor is an application that allow to execute a business model on the fly on a given context. The JIT Executor is intended to be an helpful support during **_Modeling and Development phases_**; for instance, when modeling a DMN asset, the JIT Executor can be used to support live interactions with the DMN model, while still being authored. The JIT Executor is **not** recommended for Deployment solution; when looking to deploy to the Cloud, we recommend to build and deploy a standard Kogito -based project containing the assets, in order to take advantage of the all features and full capabilities of the [Kogito platform](https://docs.kogito.kie.org/latest/html_single/#con-kogito-automation_kogito-docs).
 
-At the moment, the application supports only DMN models.
+At the moment, the application supports DMN and BPMN models.
 
 Once the user has compiled and packaged the application for example with:
 
@@ -15,6 +15,9 @@ run the generated application under `jitexecutor-runner/target/quarkus-app/` wit
 ```bash
 java -jar jitexecutor-runner/target/quarkus-app/quarkus-run.jar
 ``` 
+
+DMN
+===
 
 An helper HTML page is available at `localhost:8080/index.html`. You can use this page to submit a DMN model with a context and get back the results. 
 Otherwise, you can make a POST request directly to the endpoint `/jitdmn` with the following body
@@ -211,3 +214,46 @@ Example:
     ]
 }
 ```
+
+BPMN
+===
+
+For the moment being, BPMN expose only a validation endpoint.
+You can make a POST request directly to the endpoint `/jitbpmn/validate` with the following body
+
+```json
+{
+  "mainURI": "string",
+  "resources": [
+    {
+      "URI": "string",
+      "content": "string"
+    }
+  ]
+}
+``` 
+
+For example, validate a simple valid BPMN model:
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/jitbpmn/validate -d '{"mainURI":"uri","resources":[{"content":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions id=\"Definition\"\n             targetNamespace=\"http://www.example.org/EvaluationExample\"\n             typeLanguage=\"http://www.java.com/javaTypes\"\n             expressionLanguage=\"http://www.mvel.org/2.0\"\n             xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\"\n             xmlns:tns=\"http://www.example.org/EvaluationExample\">\n\n  <process id=\"Evaluation\" name=\"Evaluation Process\">\n    \n    \n  \n    <!-- nodes -->  \n    <startEvent id=\"_1\" name=\"StartProcess\"/>\n    <scriptTask id=\"_2\" name=\"Log\">\n      <script>System.out.println(\"Just outputting something\");</script>\n    </scriptTask>\n    <endEvent id=\"_3\" name=\"EndProcess\">\n      <terminateEventDefinition/>\n    </endEvent>\n    \n    <!-- connections -->\n    <sequenceFlow sourceRef=\"_1\" targetRef=\"_2\"/>\n    <sequenceFlow sourceRef=\"_2\" targetRef=\"_3\"/>\n    \n    <!-- associations -->\n    <association id=\"_1234\" sourceRef=\"_1\" targetRef=\"_2\"/>\n  </process>\n</definitions>","URI":"uri"}]}'
+```
+
+will return an empty body
+````json
+[]
+````
+
+On the other side, validate multiple models, some of which invalid:
+
+```bash
+curl -H "Content-Type: application/json" -X POST http://localhost:8080/jitbpmn/validate -d '{"mainURI":"mainUri","resources":[{"content":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions id=\"Definition\"\n             targetNamespace=\"http://www.example.org/EvaluationExample\"\n             typeLanguage=\"http://www.java.com/javaTypes\"\n             expressionLanguage=\"http://www.mvel.org/2.0\"\n             xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n             xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n             xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\"\n             xmlns:tns=\"http://www.example.org/EvaluationExample\">\n\n  <process id=\"Evaluation\" name=\"Evaluation Process\">\n    \n    \n  \n    <!-- nodes -->  \n    <startEvent id=\"_1\" name=\"StartProcess\"/>\n    <scriptTask id=\"_2\" name=\"Log\">\n      <script>System.out.println(\"Just outputting something\");</script>\n    </scriptTask>\n    <endEvent id=\"_3\" name=\"EndProcess\">\n      <terminateEventDefinition/>\n    </endEvent>\n    \n    <!-- connections -->\n    <sequenceFlow sourceRef=\"_1\" targetRef=\"_2\"/>\n    <sequenceFlow sourceRef=\"_2\" targetRef=\"_3\"/>\n    \n    <!-- associations -->\n    <association id=\"_1234\" sourceRef=\"_1\" targetRef=\"_2\"/>\n  </process>\n</definitions>","URI":"UriValid"},{"content":"<bpmn2:definitions xmlns:bpmn2=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:bpsim=\"http://www.bpsim.org/schemas/1.0\" xmlns:drools=\"http://www.jboss.org/drools\" id=\"_BxAKkfY4EDims_O2rjOXww\" exporter=\"jBPM Process Modeler\" exporterVersion=\"2.0\" targetNamespace=\"http://www.omg.org/bpmn20\">\n  <bpmn2:process id=\"invalid\" drools:packageName=\"com.example\" drools:version=\"1.0\" drools:adHoc=\"false\" name=\"invalid-process-id\" isExecutable=\"true\" processType=\"Public\"/>\n  <bpmndi:BPMNDiagram>\n    <bpmndi:BPMNPlane bpmnElement=\"invalid\"/>\n  </bpmndi:BPMNDiagram>\n  <bpmn2:relationship type=\"BPSimData\">\n    <bpmn2:extensionElements>\n      <bpsim:BPSimData>\n        <bpsim:Scenario id=\"default\" name=\"Simulationscenario\">\n          <bpsim:ScenarioParameters/>\n        </bpsim:Scenario>\n      </bpsim:BPSimData>\n    </bpmn2:extensionElements>\n    <bpmn2:source>_BxAKkfY4EDims_O2rjOXww</bpmn2:source>\n    <bpmn2:target>_BxAKkfY4EDims_O2rjOXww</bpmn2:target>\n  </bpmn2:relationship>\n</bpmn2:definitions>","URI":"UriInvalid"}]}'
+```
+
+would return validation errors
+````json
+[
+  "Uri: UriInvalid - Process id: invalid - name : invalid-process-id - error : Process has no start node.",
+  "Uri: UriInvalid - Process id: invalid - name : invalid-process-id - error : Process has no end node."
+]
+````

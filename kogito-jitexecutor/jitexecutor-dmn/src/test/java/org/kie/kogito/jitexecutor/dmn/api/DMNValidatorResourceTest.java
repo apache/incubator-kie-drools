@@ -39,9 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
-public class ValidatorResourceTest {
+public class DMNValidatorResourceTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ValidatorResourceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DMNValidatorResourceTest.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
     static {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

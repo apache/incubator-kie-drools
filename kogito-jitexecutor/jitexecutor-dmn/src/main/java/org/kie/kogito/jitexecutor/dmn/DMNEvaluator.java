@@ -30,8 +30,8 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.internal.utils.DynamicDMNContextBuilder;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
-import org.kie.kogito.jitexecutor.dmn.requests.ResourceWithURI;
+import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
+import org.kie.kogito.jitexecutor.common.requests.ResourceWithURI;
 import org.kie.kogito.jitexecutor.dmn.utils.ResolveByKey;
 
 public class DMNEvaluator {

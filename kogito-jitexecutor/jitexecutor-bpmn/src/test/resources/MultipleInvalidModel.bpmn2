@@ -1,0 +1,32 @@
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:drools="http://www.jboss.org/drools" id="_BxAKkfY4EDims_O2rjOXww" exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="invalid1" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="invalid1-process-id" isExecutable="true" processType="Public"/>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="invalid1"/>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default1" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_BxAKkfY4EDims_O2rjOXww</bpmn2:source>
+    <bpmn2:target>_BxAKkfY4EDims_O2rjOXww</bpmn2:target>
+  </bpmn2:relationship>
+  <bpmn2:process id="invalid2" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="invalid2-process-id" isExecutable="true" processType="Public"/>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="invalid2"/>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default2" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_DvgeoPY4EDiBwYf9WA348w</bpmn2:source>
+    <bpmn2:target>_DvgeoPY4EDiBwYf9WA348w</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

@@ -1,5 +1,7 @@
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>jitexecutor</artifactId>
@@ -7,11 +9,11 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>jitexecutor-dmn</artifactId>
-  <name>Kogito Apps :: JIT Executor DMN</name>
+  <artifactId>jitexecutor-bpmn</artifactId>
+  <name>Kogito Apps :: JIT Executor BPMN</name>
 
   <properties>
-    <java.module.name>org.kie.kogito.jitexecutor.dmn</java.module.name>
+    <java.module.name>org.kie.kogito.jitexecutor.bpmn</java.module.name>
   </properties>
 
   <dependencyManagement>
@@ -44,32 +46,9 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>jitexecutor-common</artifactId>
     </dependency>
-    <dependency><!-- Leverage easily the best POM from: -->
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-dmn</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-dmn-openapi</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>explainability-core</artifactId>
-      <exclusions>
-        <!-- Counterfactual explaination is not supported so excluding optaplanner to avoid undesired dependencies (e.g. drools-core-dynamic) -->
-        <exclusion>
-          <groupId>org.optaplanner</groupId>
-          <artifactId>optaplanner-quarkus</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>trusty-service-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>trusty-storage-api</artifactId>
+      <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
 
     <dependency>
@@ -88,4 +67,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>

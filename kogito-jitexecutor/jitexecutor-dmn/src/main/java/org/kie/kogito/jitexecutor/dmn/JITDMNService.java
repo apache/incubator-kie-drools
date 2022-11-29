@@ -18,7 +18,7 @@ package org.kie.kogito.jitexecutor.dmn;
 
 import java.util.Map;
 
-import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
+import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
 

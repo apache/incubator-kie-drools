@@ -36,8 +36,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.openapi.DMNOASGeneratorFactory;
 import org.kie.dmn.openapi.model.DMNOASResult;
+import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.DMNEvaluator;
-import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;

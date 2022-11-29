@@ -40,7 +40,7 @@ import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
+import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;

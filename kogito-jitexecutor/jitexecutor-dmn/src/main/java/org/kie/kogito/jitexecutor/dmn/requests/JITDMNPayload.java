@@ -19,6 +19,9 @@ package org.kie.kogito.jitexecutor.dmn.requests;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
+import org.kie.kogito.jitexecutor.common.requests.ResourceWithURI;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

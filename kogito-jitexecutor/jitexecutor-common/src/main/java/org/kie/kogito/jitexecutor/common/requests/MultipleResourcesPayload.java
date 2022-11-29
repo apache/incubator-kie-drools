@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jitexecutor.dmn.requests;
+package org.kie.kogito.jitexecutor.common.requests;
 
 import java.util.List;
 

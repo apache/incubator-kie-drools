@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.jitexecutor.bpmn.responses;
 
-package org.kie.kogito.jitexecutor.runner;
+import java.io.Serializable;
+import java.util.Collection;
 
-import org.kie.kogito.jitexecutor.dmn.api.ValidatorResourceTest;
+public class JITBPMNValidationResult implements Serializable {
 
-import io.quarkus.test.junit.QuarkusIntegrationTest;
+    private final Collection<String> errors;
 
-@QuarkusIntegrationTest
-public class ValidatorResourceIT extends ValidatorResourceTest {
-    // Execute the same tests but in native mode.
+    public JITBPMNValidationResult(Collection<String> errors) {
+        this.errors = errors;
+    }
+
+    public Collection<String> getErrors() {
+        return errors;
+    }
 }

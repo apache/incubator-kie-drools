@@ -24,6 +24,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>jitexecutor-bpmn</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>jitexecutor-dmn</artifactId>
     </dependency>
     <dependency>
@@ -31,6 +35,12 @@
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jitexecutor-bpmn</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>jitexecutor-dmn</artifactId>
