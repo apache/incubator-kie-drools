@@ -87,7 +87,7 @@ The `@CustomShadowVariable` has been deprecated.
 Read more about xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom shadow variables] in the documentation.
 
 
-=== Planning list variable
+==== Planning list variable
 
 OptaPlanner now adds a limited support for planning list variables that can hold multiple planning values.
 The planning list variable provides an alternative approach to modeling planning problems that were previously modeled using the xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
