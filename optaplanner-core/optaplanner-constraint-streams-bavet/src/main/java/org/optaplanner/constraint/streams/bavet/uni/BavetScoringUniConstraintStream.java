@@ -119,25 +119,25 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
                 int matchWeight = intMatchWeigher.applyAsInt(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a));
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = a -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a));
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = a -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a));
             };
         } else if (noMatchWeigher) {
             scoreImpacter = a -> weightedScoreImpacter.impactScore(1,
-                    of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
+                    of(constraint, justificationMapping, indictedObjectsMapping, a));
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }

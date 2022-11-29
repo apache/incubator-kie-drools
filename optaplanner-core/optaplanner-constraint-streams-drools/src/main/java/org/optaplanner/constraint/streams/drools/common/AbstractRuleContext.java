@@ -31,28 +31,45 @@ abstract class AbstractRuleContext {
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
             WeightedScoreImpacter scoreImpacter, int impact, JustificationsSupplier justificationsSupplier) {
-        constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
-        addUndo(drools, undoImpact);
-    }
-
-    protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
-            WeightedScoreImpacter scoreImpacter, long impact, JustificationsSupplier justificationsSupplier) {
-        constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
-        addUndo(drools, undoImpact);
-    }
-
-    protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
-            WeightedScoreImpacter scoreImpacter, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
-        constraint.assertCorrectImpact(impact);
-        UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
-        addUndo(drools, undoImpact);
+        try {
+            constraint.assertCorrectImpact(impact);
+            UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
+            addUndo(drools, undoImpact);
+        } catch (Exception e) {
+            throw createExceptionOnImpact(constraint, e);
+        }
     }
 
     private static void addUndo(Drools drools, UndoScoreImpacter undoImpact) {
         AgendaItem agendaItem = (AgendaItem) ((RuleContext) drools).getMatch();
         agendaItem.setCallback(undoImpact);
+    }
+
+    private static RuntimeException createExceptionOnImpact(DroolsConstraint<?> constraint, Exception cause) {
+        return new IllegalStateException(
+                "Consequence of a constraint (" + constraint.getConstraintId() + ") threw an exception.", cause);
+    }
+
+    protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
+            WeightedScoreImpacter scoreImpacter, long impact, JustificationsSupplier justificationsSupplier) {
+        try {
+            constraint.assertCorrectImpact(impact);
+            UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
+            addUndo(drools, undoImpact);
+        } catch (Exception e) {
+            throw createExceptionOnImpact(constraint, e);
+        }
+    }
+
+    protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
+            WeightedScoreImpacter scoreImpacter, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
+        try {
+            constraint.assertCorrectImpact(impact);
+            UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
+            addUndo(drools, undoImpact);
+        } catch (Exception e) {
+            throw createExceptionOnImpact(constraint, e);
+        }
     }
 
     protected <Solution_> RuleBuilder<Solution_> assemble(ConsequenceBuilder<Solution_> consequenceBuilder) {

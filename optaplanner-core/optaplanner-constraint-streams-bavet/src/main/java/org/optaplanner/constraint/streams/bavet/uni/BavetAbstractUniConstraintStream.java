@@ -416,12 +416,12 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     @Override
     protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerUniConstraintStream.getDefaultJustificationMapping();
+        return InnerUniConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerUniConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerUniConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
 }

@@ -37,8 +37,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, score),
-                                                () -> indictedObjectsMapping.apply(a, b));
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b),
                                         justificationsSupplier);
                             });
@@ -55,8 +54,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, score),
-                                                () -> indictedObjectsMapping.apply(a, b));
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b),
                                         justificationsSupplier);
                             });
@@ -73,17 +71,12 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, score),
-                                                () -> indictedObjectsMapping.apply(a, b));
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b),
                                         justificationsSupplier);
                             });
                 };
         return assemble(consequenceBuilder);
-    }
-
-    public <Solution_> RuleBuilder<Solution_> newRuleBuilder() {
-        return newRuleBuilder((ToIntBiFunction<A, B>) (a, b) -> 1);
     }
 
 }

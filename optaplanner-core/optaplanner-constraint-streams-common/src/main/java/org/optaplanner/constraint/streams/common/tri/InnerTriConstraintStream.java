@@ -20,11 +20,11 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
 
-    static <A, B, C> QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+    static <A, B, C> QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> createDefaultJustificationMapping() {
         return (a, b, c, score) -> DefaultConstraintJustification.of(score, a, b, c);
     }
 
-    static <A, B, C> TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
+    static <A, B, C> TriFunction<A, B, C, Collection<?>> createDefaultIndictedObjectsMapping() {
         return List::of;
     }
 

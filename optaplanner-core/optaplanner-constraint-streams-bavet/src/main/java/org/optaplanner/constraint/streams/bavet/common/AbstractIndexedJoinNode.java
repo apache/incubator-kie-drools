@@ -115,7 +115,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         }
     }
 
-    private final void indexAndPropagateLeft(LeftTuple_ leftTuple, IndexProperties indexProperties) {
+    private void indexAndPropagateLeft(LeftTuple_ leftTuple, IndexProperties indexProperties) {
         leftTuple.setStore(inputStoreIndexLeftProperties, indexProperties);
         TupleListEntry<LeftTuple_> leftEntry = indexerLeft.put(indexProperties, leftTuple);
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);

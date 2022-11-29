@@ -123,9 +123,9 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
-        ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(justificationsSupplier.createConstraintJustification(score),
-                        justificationsSupplier.createIndictedObjects(), score);
+        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(
+                justificationsSupplier.createConstraintJustification(score),
+                justificationsSupplier.createIndictedObjects(), score);
         List<DefaultIndictment<Score_>> indictments = constraintMatch.getIndictedObjectList()
                 .stream()
                 .distinct() // One match might have the same justification twice

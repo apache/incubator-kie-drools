@@ -36,7 +36,13 @@ public enum JoinerType {
     }
 
     public boolean matches(Object left, Object right) {
-        return matcher.test(left, right);
+        try {
+            return matcher.test(left, right);
+        } catch (Exception e) { // For easier debugging, in the absence of pointing to a specific constraint.
+            throw new IllegalStateException(
+                    "Joiner (" + this + ") threw an exception matching left (" + left + ") and right (" + right + ") objects.",
+                    e);
+        }
     }
 
     private static boolean disjoint(Collection leftCollection, Collection rightCollection) {

@@ -17,11 +17,12 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
 
-    static <A, B, C, D> PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+    static <A, B, C, D> PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification>
+            createDefaultJustificationMapping() {
         return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
     }
 
-    static <A, B, C, D> QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
+    static <A, B, C, D> QuadFunction<A, B, C, D, Collection<?>> createDefaultIndictedObjectsMapping() {
         return List::of;
     }
 

@@ -298,12 +298,12 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     protected final PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerQuadConstraintStream.getDefaultJustificationMapping();
+        return InnerQuadConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerQuadConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerQuadConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();

@@ -116,29 +116,25 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
                 int matchWeight = intMatchWeigher.applyAsInt(a, b, c);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, c, score),
-                                () -> indictedObjectsMapping.apply(a, b, c)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c));
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = (a, b, c) -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a, b, c);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, c, score),
-                                () -> indictedObjectsMapping.apply(a, b, c)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c));
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = (a, b, c) -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, c, score),
-                                () -> indictedObjectsMapping.apply(a, b, c)));
+                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c));
             };
         } else if (noMatchWeigher) {
             scoreImpacter = (a, b, c) -> weightedScoreImpacter.impactScore(1,
-                    of(score -> justificationMapping.apply(a, b, c, score),
-                            () -> indictedObjectsMapping.apply(a, b, c)));
+                    of(constraint, justificationMapping, indictedObjectsMapping, a, b, c));
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }

@@ -472,10 +472,6 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new BiLeftHandSide<>(patternVariableA.getPrimaryVariable(), newPatternVariableB, variableFactory);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate() {
-        return ruleContext.newRuleBuilder();
-    }
-
     public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntBiFunction<A, B> matchWeigher) {
         return ruleContext.newRuleBuilder(matchWeigher);
     }

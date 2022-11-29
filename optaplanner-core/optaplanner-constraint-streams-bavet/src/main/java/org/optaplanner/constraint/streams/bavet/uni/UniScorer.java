@@ -18,6 +18,10 @@ final class UniScorer<A> extends AbstractScorer<UniTuple<A>> {
 
     @Override
     protected UndoScoreImpacter impact(UniTuple<A> tuple) {
-        return scoreImpacter.apply(tuple.getFactA());
+        try {
+            return scoreImpacter.apply(tuple.getFactA());
+        } catch (Exception e) {
+            throw createExceptionOnImpact(tuple, e);
+        }
     }
 }

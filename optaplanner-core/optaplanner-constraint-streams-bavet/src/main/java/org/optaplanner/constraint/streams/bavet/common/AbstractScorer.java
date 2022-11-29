@@ -38,6 +38,19 @@ public abstract class AbstractScorer<Tuple_ extends Tuple> implements TupleLifec
 
     protected abstract UndoScoreImpacter impact(Tuple_ tuple);
 
+    /**
+     * Helps with debugging exceptions thrown by user code during impact calls.
+     *
+     * @param tuple never null
+     * @param cause never null
+     * @return never null, exception to be thrown.
+     */
+    protected RuntimeException createExceptionOnImpact(Tuple_ tuple, Exception cause) {
+        return new IllegalStateException(
+                "Consequence of a constraint (" + constraintId + ") threw an exception processing a tuple (" + tuple + ").",
+                cause);
+    }
+
     @Override
     public final void retract(Tuple_ tuple) {
         UndoScoreImpacter undoScoreImpacter = tuple.getStore(inputStoreIndex);

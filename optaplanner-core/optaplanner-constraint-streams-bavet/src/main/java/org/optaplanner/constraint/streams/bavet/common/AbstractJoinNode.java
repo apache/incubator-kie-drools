@@ -74,7 +74,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         doUpdateOutTuple(outTuple);
     }
 
-    private final void doUpdateOutTuple(OutTuple_ outTuple) {
+    private void doUpdateOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:

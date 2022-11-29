@@ -308,12 +308,12 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     protected final TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerBiConstraintStream.getDefaultJustificationMapping();
+        return InnerBiConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerBiConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerBiConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();

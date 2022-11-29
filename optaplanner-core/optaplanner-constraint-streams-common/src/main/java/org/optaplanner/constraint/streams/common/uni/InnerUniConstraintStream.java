@@ -22,11 +22,11 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
-    static <A> BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+    static <A> BiFunction<A, Score<?>, DefaultConstraintJustification> createDefaultJustificationMapping() {
         return (a, score) -> DefaultConstraintJustification.of(score, a);
     }
 
-    static <A> Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+    static <A> Function<A, Collection<?>> createDefaultIndictedObjectsMapping() {
         return List::of;
     }
 

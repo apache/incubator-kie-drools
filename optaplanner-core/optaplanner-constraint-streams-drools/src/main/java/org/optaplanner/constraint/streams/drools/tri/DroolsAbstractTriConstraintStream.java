@@ -312,12 +312,12 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected final QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerTriConstraintStream.getDefaultJustificationMapping();
+        return InnerTriConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerTriConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerTriConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

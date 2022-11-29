@@ -22,11 +22,11 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
 
-    static <A, B> TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+    static <A, B> TriFunction<A, B, Score<?>, DefaultConstraintJustification> createDefaultJustificationMapping() {
         return (a, b, score) -> DefaultConstraintJustification.of(score, a, b);
     }
 
-    static <A, B> BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+    static <A, B> BiFunction<A, B, Collection<?>> createDefaultIndictedObjectsMapping() {
         return List::of;
     }
 

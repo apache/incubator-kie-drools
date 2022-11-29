@@ -415,12 +415,12 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     protected final TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerBiConstraintStream.getDefaultJustificationMapping();
+        return InnerBiConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerBiConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerBiConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
 }

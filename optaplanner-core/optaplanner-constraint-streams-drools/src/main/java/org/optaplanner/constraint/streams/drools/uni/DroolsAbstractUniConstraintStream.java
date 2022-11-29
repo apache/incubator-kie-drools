@@ -315,12 +315,12 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerUniConstraintStream.getDefaultJustificationMapping();
+        return InnerUniConstraintStream.createDefaultJustificationMapping();
     }
 
     @Override
     protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerUniConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerUniConstraintStream.createDefaultIndictedObjectsMapping();
     }
 
     public abstract UniLeftHandSide<A> getLeftHandSide();
