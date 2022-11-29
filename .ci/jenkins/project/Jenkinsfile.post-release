@@ -122,7 +122,7 @@ pipeline {
                 script {
                     String prLink = null
                     String commitMsg = 'bumped up kie-version to next SNAPSHOT'
-                    String localBranch = 'kie-benchmarks-update'
+                    String localBranch = "bump-up-kie-benchmarks-${env.BOT_BRANCH_HASH}"
                     String targetBranch = 'main'
                     dir(kieBenchmarksRepo){
                         checkoutRepo(kieBenchmarksRepo, targetBranch)
