@@ -41,7 +41,7 @@ public class RuleUnits extends org.kie.kogito.drools.core.unit.AbstractRuleUnits
     }
 
     @Override
-    public void register(InternalRuleUnit<?> unit) {
-        registerRuleUnit(application, unit);
+    public void register(RuleUnit<?> unit) {
+        registerRuleUnit(application, (InternalRuleUnit<?>) unit);
     }
 }

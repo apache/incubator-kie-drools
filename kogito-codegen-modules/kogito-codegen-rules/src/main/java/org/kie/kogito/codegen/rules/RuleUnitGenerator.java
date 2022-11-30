@@ -21,9 +21,9 @@ import java.util.Optional;
 
 import org.drools.model.codegen.execmodel.QueryModel;
 import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.drools.ruleunits.impl.AbstractRuleUnitDescription;
 import org.drools.ruleunits.impl.GeneratedRuleUnitDescription;
-import org.drools.ruleunits.impl.RuleUnitConfig;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 

@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.Id;
 import org.kie.kogito.incubation.common.MapDataContext;

@@ -76,7 +76,7 @@ public class KieModuleModelWrapper {
     void addRuleUnitConfig(RuleUnitDescription ruleUnitDescription, RuleUnitConfig overridingConfig) {
         // merge config from the descriptor with configs from application.conf
         // application.conf overrides any other config
-        org.drools.ruleunits.impl.RuleUnitConfig config =
+        org.drools.ruleunits.api.conf.RuleUnitConfig config =
                 ((AbstractRuleUnitDescription) ruleUnitDescription).getConfig()
                         .merged(overridingConfig);
 

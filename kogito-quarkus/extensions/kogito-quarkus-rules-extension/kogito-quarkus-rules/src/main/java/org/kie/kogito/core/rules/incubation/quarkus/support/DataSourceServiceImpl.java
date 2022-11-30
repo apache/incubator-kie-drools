@@ -25,7 +25,7 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitInstance;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 import org.drools.ruleunits.impl.datasources.ListDataStore;
 import org.drools.ruleunits.impl.factory.DataHandleImpl;
 import org.kie.kogito.incubation.common.DataContext;

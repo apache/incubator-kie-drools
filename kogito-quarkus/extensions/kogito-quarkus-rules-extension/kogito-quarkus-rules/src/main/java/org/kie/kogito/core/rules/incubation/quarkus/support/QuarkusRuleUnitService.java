@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 import org.kie.kogito.incubation.common.DataContext;
 import org.kie.kogito.incubation.common.Id;
 import org.kie.kogito.incubation.rules.services.RuleUnitService;
