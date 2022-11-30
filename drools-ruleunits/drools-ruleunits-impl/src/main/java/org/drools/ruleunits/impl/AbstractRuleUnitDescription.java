@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;

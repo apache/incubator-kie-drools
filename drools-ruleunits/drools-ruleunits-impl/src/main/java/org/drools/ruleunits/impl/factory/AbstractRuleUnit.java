@@ -23,7 +23,7 @@ import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.InternalRuleUnit;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 
 public abstract class AbstractRuleUnit<T extends RuleUnitData> implements InternalRuleUnit<T> {
 

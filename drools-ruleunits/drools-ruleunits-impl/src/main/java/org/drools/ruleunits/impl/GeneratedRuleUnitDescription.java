@@ -17,6 +17,7 @@ package org.drools.ruleunits.impl;
 
 import java.util.function.Function;
 
+import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.drools.util.TypeResolver;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
@@ -41,7 +42,7 @@ public class GeneratedRuleUnitDescription extends AbstractRuleUnitDescription {
             this.packageName = "";
             this.canonicalName = simpleName;
         }
-        setConfig(RuleUnitConfig.Default);
+        setConfig(RuleUnitConfig.DEFAULT);
     }
 
     public GeneratedRuleUnitDescription(String name, TypeResolver typeResolver) {

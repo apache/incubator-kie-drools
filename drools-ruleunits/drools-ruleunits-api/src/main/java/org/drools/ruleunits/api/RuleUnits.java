@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
-
-import org.drools.ruleunits.api.RuleUnit;
-import org.drools.ruleunits.api.RuleUnitData;
-import org.drools.ruleunits.api.RuleUnitInstance;
+package org.drools.ruleunits.api;
 
 public interface RuleUnits {
 
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
 
-    void register(InternalRuleUnit<?> unit);
+    void register(RuleUnit<?> unit);
 
     void register(String name, RuleUnitInstance<?> unitInstance);
 
