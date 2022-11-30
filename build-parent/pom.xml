@@ -1314,7 +1314,7 @@
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>efesto-bom</artifactId>
+        <artifactId>kie-efesto-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>

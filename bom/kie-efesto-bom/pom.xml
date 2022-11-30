@@ -10,7 +10,7 @@
     <relativePath>../kie-core-bom/pom.xml</relativePath>
   </parent>
 
-  <artifactId>efesto-bom</artifactId>
+  <artifactId>kie-efesto-bom</artifactId>
   <packaging>pom</packaging>
 
   <name>Efesto BOM (Bill Of Materials)</name>
