@@ -23,8 +23,8 @@
       <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>data/nurserostering/unsolved/sprint01.json</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/sprint02.json</inputSolutionFile>
-      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint01.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint02.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint01.json</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint02.json</inputSolutionFile>-->
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
