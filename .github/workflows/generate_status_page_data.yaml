@@ -20,7 +20,7 @@ jobs:
       - name: Generate status page data
         uses: kiegroup/chain-status/.ci/actions/generate-data@main
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/.ci/pull-request-config.yaml
+          definition-file: https://raw.githubusercontent.com/kiegroup/optaplanner/main/.ci/builchain-config.yaml
           title: Pull Request Status
           subtitle: OptaPlanner organization repositories CI Status
           base-branch-filter: main,8\.*

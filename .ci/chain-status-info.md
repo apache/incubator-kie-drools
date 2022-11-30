@@ -1,5 +1,5 @@
 # OptaPlanner CI Status
 
-This project is based on [chain-status](https://github.com/kiegroup/chain-status) and information generated thanks to [build-chain-configuration-reader](https://github.com/kiegroup/build-chain-configuration-reader) using [kogito-pipelines definition file](https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/.ci/pull-request-config.yaml).
+This project is based on [chain-status](https://github.com/kiegroup/chain-status) and information generated thanks to [build-chain-configuration-reader](https://github.com/kiegroup/build-chain-configuration-reader) using [definition file](.ci/buildchain-config.yaml).
 
 Because the retrieved information requires a `GITHUB_TOKEN` and GitHub API has a limitation, it is better to not collect the information on every request made from this webpage. So this webpage does not really require an application service and all the required data is stored in GitHub pages. This information is normally retrieved, treated and stored using [chain-status/action tool](https://github.com/kiegroup/chain-status/tree/main/packages/action) which is exposed as a GitHub Action tool, so we can customize the job execution frequency as we need.

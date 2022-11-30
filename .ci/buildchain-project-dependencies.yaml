@@ -1,0 +1,20 @@
+version: "2.1"
+dependencies:
+  - project: kiegroup/optaplanner
+
+  - project: kiegroup/optaweb-vehicle-routing
+    dependencies:
+      - project: kiegroup/optaplanner
+
+  - project: kiegroup/optaplanner-quickstarts
+    dependencies:
+      - project: kiegroup/optaplanner
+    mapping:
+      dependencies:
+        default:
+          - source: development
+            target: main
+      dependant:
+        default:
+          - source: main
+            target: development

@@ -48,6 +48,10 @@ git:
       credentials_id: kie-ci
     branch: main
   jenkins_config_path: .ci/jenkins
+buildchain_config:
+  git:
+    repository: optaplanner
+    file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kogito_release_settings
   nexus:
