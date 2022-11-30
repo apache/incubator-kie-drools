@@ -15,6 +15,9 @@
  */
 package org.drools.ruleunits.api;
 
+/**
+ * A register for {@link RuleUnit}s.
+ */
 public interface RuleUnits {
 
     <T extends RuleUnitData> RuleUnit<T> create(Class<T> clazz);
