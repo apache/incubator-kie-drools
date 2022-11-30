@@ -55,7 +55,7 @@ when
   ....
 ----
 
-=== Data sources
+== Data sources
 
 Data sources are typed sources of data that rule units can subscribe to for updates. You interact with the rule unit through the data sources it exposes.
 
@@ -153,6 +153,22 @@ Finally, you instantiate a `RuleUnitInstance` using `RuleUnitProvider` to execut
             instance.dispose();
         }
     }
+----
+
+=== Configurations
+
+You can add configurations by creating `RuleUnitInstance` with `RuleConfig`.
+
+.Configuring event listeners
+[source,java]
+----
+        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
+        ruleConfig.getAgendaEventListeners().add(new MyAgendaEventListener());
+        ruleConfig.getRuleRuntimeListeners().add(new MyRuleRuntimeEventListener());
+        ruleConfig.getRuleEventListeners().add(new MyRuleEventListener());
+
+        HelloWorldUnit unit = new HelloWorldUnit();
+        RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig);
 ----
 
 == Declare rule units in DRL

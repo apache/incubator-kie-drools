@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -27,6 +28,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.KieBaseOption;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.isPackageInKieBase;
 
@@ -62,6 +64,10 @@ public class KieBaseBuilder {
         return createKieBaseFromModel( Collections.singleton( model ), kieBaseConf );
     }
 
+    public static InternalKnowledgeBase createKieBaseFromModel( Model model, KieBaseConfiguration kieBaseConf, KnowledgeBuilderConfiguration knowledgeBuilderConf) {
+        return createKieBaseFromModel( Collections.singleton( model ), kieBaseConf, knowledgeBuilderConf );
+    }
+
     public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseOption... options ) {
         KieBaseConfiguration kieBaseConf = KieServices.get().newKieBaseConfiguration();
         if (options != null) {
@@ -74,6 +80,12 @@ public class KieBaseBuilder {
 
     public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseConfiguration kieBaseConf ) {
         KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf);
+        models.forEach( builder::addModel );
+        return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
+    }
+
+    public static InternalKnowledgeBase createKieBaseFromModel( Collection<Model> models, KieBaseConfiguration kieBaseConf, KnowledgeBuilderConfiguration knowledgeBuilderConf ) {
+        KiePackagesBuilder builder = new KiePackagesBuilder(kieBaseConf, knowledgeBuilderConf, new ArrayList<>());
         models.forEach( builder::addModel );
         return new KieBaseBuilder(kieBaseConf).createKieBase(builder.build());
     }
