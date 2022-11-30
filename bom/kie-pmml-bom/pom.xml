@@ -117,33 +117,33 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Scorecard -->
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
-        <version>${drools.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <!-- Regression -->
       <dependency>
@@ -159,38 +159,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-pmml-models-regression-evaluator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Tree -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <!-- Scorecard -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- Mining -->

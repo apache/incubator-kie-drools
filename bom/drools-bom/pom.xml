@@ -993,7 +993,6 @@
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
