@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.data.Person;
@@ -48,14 +49,13 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.InvalidTransitionException;
 import org.kie.kogito.process.workitem.NotAuthorizedException;
 import org.kie.kogito.process.workitem.Policy;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class UserTaskIT extends AbstractCodegenIT {
 
-    private Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
+    private Policy<?> securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
 
     @Test
     public void testBasicUserTaskProcess() throws Exception {
@@ -344,7 +344,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(wi.getResults()).isEmpty();
 
         final String wiId = wi.getId();
-        IdentityProvider identity = new StaticIdentityProvider("kelly");
+        IdentityProvider identity = IdentityProviders.of("kelly");
 
         // if user that is not authorized to work on work item both listing and getting by id should apply it
         List<WorkItem> securedWorkItems = processInstance.workItems(SecurityPolicy.of(identity));
@@ -365,7 +365,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
         assertThat(wi.getResults()).isEmpty();
 
-        IdentityProvider identityCorrect = new StaticIdentityProvider("john");
+        IdentityProvider identityCorrect = IdentityProviders.of("john");
 
         processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, identityCorrect));
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
@@ -398,7 +398,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
-        StaticIdentityProvider identity = new StaticIdentityProvider("admin", Collections.singletonList("managers"));
+        IdentityProvider identity = IdentityProviders.of("admin", Collections.singletonList("managers"));
         SecurityPolicy policy = SecurityPolicy.of(identity);
 
         processInstance.workItems(policy);
@@ -411,7 +411,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         workItems = processInstance.workItems(policy);
         assertThat(workItems).isEmpty();
 
-        identity = new StaticIdentityProvider("john", Collections.singletonList("managers"));
+        identity = IdentityProviders.of("john", Collections.singletonList("managers"));
         policy = SecurityPolicy.of(identity);
 
         workItems = processInstance.workItems(policy);
@@ -439,7 +439,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
-        StaticIdentityProvider identity = new StaticIdentityProvider("admin", Collections.singletonList("managers"));
+        IdentityProvider identity = IdentityProviders.of("admin", Collections.singletonList("managers"));
         SecurityPolicy policy = SecurityPolicy.of(identity);
 
         processInstance.workItems(policy);
@@ -452,7 +452,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         workItems = processInstance.workItems(policy);
         assertThat(workItems).isEmpty();
 
-        identity = new StaticIdentityProvider("john", Collections.singletonList("managers"));
+        identity = IdentityProviders.of("john", Collections.singletonList("managers"));
         policy = SecurityPolicy.of(identity);
 
         workItems = processInstance.workItems(policy);

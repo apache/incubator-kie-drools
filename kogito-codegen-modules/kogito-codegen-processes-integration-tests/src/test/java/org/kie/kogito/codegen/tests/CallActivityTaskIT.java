@@ -26,6 +26,7 @@ import org.jbpm.process.instance.impl.workitem.Complete;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.data.Address;
@@ -36,13 +37,12 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.workitem.Policy;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CallActivityTaskIT extends AbstractCodegenIT {
 
-    private Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
+    private Policy<?> securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
 
     @Test
     public void testBasicCallActivityTask() throws Exception {

@@ -263,7 +263,10 @@ public class ProcessCodegen extends AbstractGenerator {
         this.processes = new HashMap<>();
         for (GeneratedInfo<KogitoWorkflowProcess> process : processes) {
             if (this.processes.containsKey(process.info().getId())) {
-                throw new ProcessCodegenException(format("Duplicated process with id %s found in the project, please review .bpmn files", process.info().getId()));
+                throw new ProcessCodegenException(
+                        format("Duplicated item found with id %s. Please review the .%s files",
+                                process.info().getId(),
+                                process.info().getType().toLowerCase()));
             }
             generatedFiles.addAll(process.files());
             this.processes.put(process.info().getId(), process.info());
@@ -400,7 +403,6 @@ public class ProcessCodegen extends AbstractGenerator {
                         metaData.addProducer(trigger.getName(), messageProducerGenerator.compilationUnit());
                     }
                 }
-
             }
 
             processGenerators.add(p);

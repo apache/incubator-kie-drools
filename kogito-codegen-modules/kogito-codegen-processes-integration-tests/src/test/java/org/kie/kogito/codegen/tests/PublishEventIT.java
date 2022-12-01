@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.event.DataEvent;
@@ -44,7 +45,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.ItemDescription.Status;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.uow.UnitOfWork;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -175,13 +175,13 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
-        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(IdentityProviders.of("john")));
         assertThat(workItems).hasSize(1);
         assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
-        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(IdentityProviders.of("john")));
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         events = publisher.extract();
@@ -194,13 +194,13 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertUserTaskInstanceEvent(events.get(1), "SecondTask", null, "1", "Ready", "UserTasksProcess", "Second Task");
         assertUserTaskInstanceEvent(events.get(2), "FirstTask", null, "1", "Completed", "UserTasksProcess", "First Task");
 
-        workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
+        workItems = processInstance.workItems(SecurityPolicy.of(IdentityProviders.of("john")));
         assertThat(workItems).hasSize(1);
         assertThat(workItems.get(0).getName()).isEqualTo("SecondTask");
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
-        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
+        processInstance.completeWorkItem(workItems.get(0).getId(), null, SecurityPolicy.of(IdentityProviders.of("john")));
         uow.end();
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         events = publisher.extract();
@@ -244,7 +244,7 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
-        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(IdentityProviders.of("john")));
         assertThat(workItems).hasSize(1);
         assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
 
