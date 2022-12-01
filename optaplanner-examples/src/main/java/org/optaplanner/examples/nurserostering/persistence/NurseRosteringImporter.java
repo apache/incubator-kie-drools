@@ -163,7 +163,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (skillsElement == null) {
                 skillList = Collections.emptyList();
             } else {
-                List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
+                List<Element> skillElementList = skillsElement.getChildren();
                 skillList = new ArrayList<>(skillElementList.size());
                 skillMap = new LinkedHashMap<>(skillElementList.size());
                 long id = 0L;
@@ -183,7 +183,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         }
 
         private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) {
-            List<Element> shiftTypeElementList = (List<Element>) shiftTypesElement.getChildren();
+            List<Element> shiftTypeElementList = shiftTypesElement.getChildren();
             List<ShiftType> shiftTypeList = new ArrayList<>(shiftTypeElementList.size());
             shiftTypeMap = new LinkedHashMap<>(shiftTypeElementList.size());
             long id = 0L;
@@ -200,7 +200,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
                 Element skillsElement = element.getChild("Skills");
                 if (skillsElement != null) {
-                    List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
+                    List<Element> skillElementList = skillsElement.getChildren();
                     for (Element skillElement : skillElementList) {
                         assertElementName(skillElement, "Skill");
                         Skill skill = skillMap.get(skillElement.getText());
@@ -263,7 +263,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (patternsElement == null) {
                 patternList = Collections.emptyList();
             } else {
-                List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
+                List<Element> patternElementList = patternsElement.getChildren();
                 patternList = new ArrayList<>(patternElementList.size());
                 patternMap = new LinkedHashMap<>(patternElementList.size());
                 long id = 0L;
@@ -272,7 +272,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     String code = element.getAttribute("ID").getValue();
                     int weight = element.getAttribute("weight").getIntValue();
 
-                    List<Element> patternEntryElementList = (List<Element>) element.getChild("PatternEntries")
+                    List<Element> patternEntryElementList = element.getChild("PatternEntries")
                             .getChildren();
                     if (patternEntryElementList.size() < 2) {
                         throw new IllegalArgumentException("The size of PatternEntries ("
@@ -474,7 +474,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
             int contractLineTypeListSize = ContractLineType.values().length;
-            List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
+            List<Element> contractElementList = contractsElement.getChildren();
             List<Contract> contractList = new ArrayList<>(contractElementList.size());
             contractMap = new LinkedHashMap<>(contractElementList.size());
             long id = 0L;
@@ -530,7 +530,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                         ContractLineType.ALTERNATIVE_SKILL_CATEGORY);
                 contract.setContractLineList(contractLineListOfContract);
 
-                List<Element> unwantedPatternElementList = (List<Element>) element.getChild("UnwantedPatterns")
+                List<Element> unwantedPatternElementList = element.getChild("UnwantedPatterns")
                         .getChildren();
                 for (Element patternElement : unwantedPatternElementList) {
                     assertElementName(patternElement, "Pattern");
@@ -656,7 +656,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         }
 
         private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) {
-            List<Element> employeeElementList = (List<Element>) employeesElement.getChildren();
+            List<Element> employeeElementList = employeesElement.getChildren();
             List<Employee> employeeList = new ArrayList<>(employeeElementList.size());
             employeeMap = new LinkedHashMap<>(employeeElementList.size());
             long id = 0L;
@@ -680,7 +680,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
                 Element skillsElement = element.getChild("Skills");
                 if (skillsElement != null) {
-                    List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
+                    List<Element> skillElementList = skillsElement.getChildren();
                     for (Element skillElement : skillElementList) {
                         assertElementName(skillElement, "Skill");
                         Skill skill = skillMap.get(skillElement.getText());
@@ -707,7 +707,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         }
 
         private void readRequiredEmployeeSizes(Element coverRequirementsElement) {
-            List<Element> coverRequirementElementList = (List<Element>) coverRequirementsElement.getChildren();
+            List<Element> coverRequirementElementList = coverRequirementsElement.getChildren();
             for (Element element : coverRequirementElementList) {
                 if (element.getName().equals("DayOfWeekCover")) {
                     Element dayOfWeekElement = element.getChild("Day");
@@ -723,7 +723,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                                 + ") of an entity DayOfWeekCover does not exist.");
                     }
 
-                    List<Element> coverElementList = (List<Element>) element.getChildren("Cover");
+                    List<Element> coverElementList = element.getChildren("Cover");
                     for (Element coverElement : coverElementList) {
                         Element shiftTypeElement = coverElement.getChild("Shift");
                         ShiftType shiftType = shiftTypeMap.get(shiftTypeElement.getText());
@@ -751,7 +751,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     }
                 } else if (element.getName().equals("DateSpecificCover")) {
                     Element dateElement = element.getChild("Date");
-                    List<Element> coverElementList = (List<Element>) element.getChildren("Cover");
+                    List<Element> coverElementList = element.getChildren("Cover");
                     for (Element coverElement : coverElementList) {
                         Element shiftTypeElement = coverElement.getChild("Shift");
                         LocalDate date = LocalDate.parse(dateElement.getText(), DateTimeFormatter.ISO_DATE);
@@ -775,7 +775,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (dayOffRequestsElement == null) {
                 dayOffRequestList = Collections.emptyList();
             } else {
-                List<Element> dayOffElementList = (List<Element>) dayOffRequestsElement.getChildren();
+                List<Element> dayOffElementList = dayOffRequestsElement.getChildren();
                 dayOffRequestList = new ArrayList<>(dayOffElementList.size());
                 long id = 0L;
                 for (Element element : dayOffElementList) {
@@ -810,7 +810,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (dayOnRequestsElement == null) {
                 dayOnRequestList = Collections.emptyList();
             } else {
-                List<Element> dayOnElementList = (List<Element>) dayOnRequestsElement.getChildren();
+                List<Element> dayOnElementList = dayOnRequestsElement.getChildren();
                 dayOnRequestList = new ArrayList<>(dayOnElementList.size());
                 long id = 0L;
                 for (Element element : dayOnElementList) {
@@ -845,7 +845,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (shiftOffRequestsElement == null) {
                 shiftOffRequestList = Collections.emptyList();
             } else {
-                List<Element> shiftOffElementList = (List<Element>) shiftOffRequestsElement.getChildren();
+                List<Element> shiftOffElementList = shiftOffRequestsElement.getChildren();
                 shiftOffRequestList = new ArrayList<>(shiftOffElementList.size());
                 long id = 0L;
                 for (Element element : shiftOffElementList) {
@@ -883,7 +883,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             if (shiftOnRequestsElement == null) {
                 shiftOnRequestList = Collections.emptyList();
             } else {
-                List<Element> shiftOnElementList = (List<Element>) shiftOnRequestsElement.getChildren();
+                List<Element> shiftOnElementList = shiftOnRequestsElement.getChildren();
                 shiftOnRequestList = new ArrayList<>(shiftOnElementList.size());
                 long id = 0L;
                 for (Element element : shiftOnElementList) {
