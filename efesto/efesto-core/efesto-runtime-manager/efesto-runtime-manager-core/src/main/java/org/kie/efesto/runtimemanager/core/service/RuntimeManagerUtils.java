@@ -16,6 +16,7 @@
 package org.kie.efesto.runtimemanager.core.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class RuntimeManagerUtils {
                                         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate) {
         discoveredKieRuntimeServices.forEach(kieRuntimeService -> {
             EfestoClassKey efestoClassKey = kieRuntimeService.getEfestoClassKeyIdentifier();
-            toPopulate.merge(efestoClassKey, List.of(kieRuntimeService), (previous,
+            toPopulate.merge(efestoClassKey, new ArrayList<>(Collections.singletonList(kieRuntimeService)), (previous,
                                                                           toAdd) -> {
                 List<KieRuntimeService> toReturn = new ArrayList<>();
                 toReturn.addAll(previous);
@@ -122,14 +123,18 @@ public class RuntimeManagerUtils {
         Optional<KieRuntimeService> retrieved = getKieRuntimeServiceFromEfestoRuntimeContext(input, context);
         if (retrieved.isPresent()) {
             KieRuntimeService toAdd = retrieved.get();
-            List<KieRuntimeService> stored = firstLevelCache.get(input.getFirstLevelCacheKey());
-            if (stored == null) {
-                stored = new ArrayList<>();
-                firstLevelCache.put(input.getFirstLevelCacheKey(), stored);
-            }
-            stored.add(toAdd);
+            addKieRuntimeServiceToFirstLevelCache(toAdd, input.getFirstLevelCacheKey());
         }
         return retrieved;
+    }
+
+    static void addKieRuntimeServiceToFirstLevelCache(KieRuntimeService toAdd, EfestoClassKey firstLevelClassKey) {
+        List<KieRuntimeService> stored = firstLevelCache.get(firstLevelClassKey);
+        if (stored == null) {
+            stored = new ArrayList<>();
+            firstLevelCache.put(firstLevelClassKey, stored);
+        }
+        stored.add(toAdd);
     }
 
     static Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
