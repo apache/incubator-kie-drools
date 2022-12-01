@@ -45,12 +45,12 @@ public enum JoinerType {
         }
     }
 
-    private static boolean disjoint(Collection leftCollection, Collection rightCollection) {
+    private static boolean disjoint(Collection<?> leftCollection, Collection<?> rightCollection) {
         return leftCollection.stream().noneMatch(rightCollection::contains) &&
                 rightCollection.stream().noneMatch(leftCollection::contains);
     }
 
-    private static boolean intersecting(Collection leftCollection, Collection rightCollection) {
+    private static boolean intersecting(Collection<?> leftCollection, Collection<?> rightCollection) {
         return leftCollection.stream().anyMatch(rightCollection::contains) ||
                 rightCollection.stream().anyMatch(leftCollection::contains);
     }

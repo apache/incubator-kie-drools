@@ -53,7 +53,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void update(InTuple_ tuple) {
-        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.getStore(flattenLastStoreIndex);
+        List<OutTuple_> outTupleList = tuple.getStore(flattenLastStoreIndex);
         if (outTupleList == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s).
             insert(tuple);
@@ -105,7 +105,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
 
     @Override
     public void retract(InTuple_ tuple) {
-        List<OutTuple_> outTupleList = (List<OutTuple_>) tuple.removeStore(flattenLastStoreIndex);
+        List<OutTuple_> outTupleList = tuple.removeStore(flattenLastStoreIndex);
         if (outTupleList == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;

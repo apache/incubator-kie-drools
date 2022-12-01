@@ -610,7 +610,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             for (Day dayOfYear : solution.getDayList()) {
                 nextRow();
                 LocalDate date = LocalDate.ofYearDay(Year.now().getValue(), dayOfYear.getDayOfYear());
-                int startMinuteOfDay = 24 * 60, endMinuteOfDay = 0;
+                int startMinuteOfDay = 24 * 60;
+                int endMinuteOfDay = 0;
                 for (TimeGrain timeGrain : solution.getTimeGrainList()) {
                     if (timeGrain.getDay().equals(dayOfYear)) {
                         startMinuteOfDay = Math.min(timeGrain.getStartingMinuteOfDay(), startMinuteOfDay);
