@@ -30,7 +30,7 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 
 public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessionImpl {
 

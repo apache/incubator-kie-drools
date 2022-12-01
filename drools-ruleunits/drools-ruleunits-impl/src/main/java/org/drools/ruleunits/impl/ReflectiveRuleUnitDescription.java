@@ -26,6 +26,7 @@ import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.conf.Clock;
 import org.drools.ruleunits.api.conf.EventProcessing;
+import org.drools.ruleunits.api.conf.RuleUnitConfig;
 import org.drools.ruleunits.api.conf.SessionsPool;
 
 import static org.drools.wiring.api.util.ClassUtils.getSetter;

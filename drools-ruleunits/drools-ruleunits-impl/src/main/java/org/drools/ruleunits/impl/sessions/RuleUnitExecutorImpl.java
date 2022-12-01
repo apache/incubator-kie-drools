@@ -70,7 +70,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
-import org.drools.ruleunits.impl.RuleUnits;
+import org.drools.ruleunits.api.RuleUnits;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Calendars;

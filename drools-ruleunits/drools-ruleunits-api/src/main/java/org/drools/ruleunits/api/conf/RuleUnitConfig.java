@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.api.conf;
 
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import org.drools.ruleunits.api.conf.ClockType;
-import org.drools.ruleunits.api.conf.EventProcessingType;
-
 public class RuleUnitConfig {
 
-    public static final RuleUnitConfig Default =
-            new RuleUnitConfig(EventProcessingType.CLOUD, ClockType.REALTIME, null);
+    public static final RuleUnitConfig DEFAULT = new RuleUnitConfig(EventProcessingType.CLOUD, ClockType.REALTIME, null);
 
     private final Optional<EventProcessingType> eventProcessingType;
     private final Optional<ClockType> clockType;
@@ -47,7 +43,7 @@ public class RuleUnitConfig {
     }
 
     public EventProcessingType getDefaultedEventProcessingType() {
-        return getEventProcessingType().orElseGet(Default.getEventProcessingType()::get);
+        return getEventProcessingType().orElseGet(DEFAULT.getEventProcessingType()::get);
     }
 
     public Optional<ClockType> getClockType() {
@@ -55,7 +51,7 @@ public class RuleUnitConfig {
     }
 
     public ClockType getDefaultedClockType() {
-        return getClockType().orElseGet(Default.getClockType()::get);
+        return getClockType().orElseGet(DEFAULT.getClockType()::get);
     }
 
     public OptionalInt getSessionPool() {
@@ -63,7 +59,7 @@ public class RuleUnitConfig {
     }
 
     public OptionalInt getDefaultedSessionPool() {
-        return sessionPool.isPresent() ? sessionPool : Default.getSessionPool();
+        return sessionPool.isPresent() ? sessionPool : DEFAULT.getSessionPool();
     }
 
     /**

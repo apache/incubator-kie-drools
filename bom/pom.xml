@@ -16,7 +16,7 @@
     <modules>
       <module>kie-core-bom</module>
       <module>drools-bom</module>
-      <module>efesto-bom</module>
+      <module>kie-efesto-bom</module>
       <module>kie-dmn-bom</module>
       <module>kie-pmml-bom</module>
     </modules>
