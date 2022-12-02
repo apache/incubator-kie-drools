@@ -177,7 +177,7 @@
             <!-- provides git() step -->
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>git</artifactId>
-            <version>4.11.4</version>
+            <version>4.11.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
