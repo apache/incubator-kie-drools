@@ -126,7 +126,11 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression fieldAccessScope = n.getScope().accept(this, arg);
         n.getName().accept(this, arg);
 
-        if(parentIsArrayAccessExpr(n)) {
+        if (n.isInternal()) {
+            // a part of a larger FieldAccessExpr. e.g. [$p.address] of [$p.address.city]
+            return tryParseItAsGetter(n, fieldAccessScope)
+                    .orElse(new UnalteredTypedExpression(n));
+        } else if(parentIsArrayAccessExpr(n)) {
             return tryParseItAsMap(n, fieldAccessScope)
                     .map(Optional::of)
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
@@ -259,6 +263,16 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                     .orElse(emptyList());
 
             return optAccessor.map(accessor -> new FieldToAccessorTExpr(scope, accessor, arguments));
+        });
+    }
+
+    private Optional<TypedExpression> tryParseItAsGetter(FieldAccessExpr n, TypedExpression scope) {
+        return scope.getType().flatMap(scopeType -> {
+            String propertyName = printNode(n.getName());
+            Optional<Method> optAccessor =
+                    ofNullable(getAccessor((Class<?>) scopeType, propertyName));
+
+            return optAccessor.map(accessor -> new FieldToAccessorTExpr(scope, accessor, emptyList()));
         });
     }
 

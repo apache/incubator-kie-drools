@@ -6,6 +6,7 @@ public class Address {
     private int number;
     private short shortNumber;
     private String city;
+    private Counter visitorCounter = new Counter();
 
     public Address() {
         this("", 0, "");
@@ -56,6 +57,14 @@ public class Address {
 
     public void setShortNumber(short shortNumber) {
         this.shortNumber = shortNumber;
+    }
+
+    public Counter getVisitorCounter() {
+        return visitorCounter;
+    }
+
+    public void setVisitorCounter(Counter visitorCounter) {
+        this.visitorCounter = visitorCounter;
     }
 
     public int hashCode() {

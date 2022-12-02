@@ -32,7 +32,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 // A special case of compiler in which only the modify statements are processed
 public class ModifyCompiler {
 
-    private static final PreprocessPhase preprocessPhase = new PreprocessPhase(true);
+    private static final PreprocessPhase preprocessPhase = new PreprocessPhase();
 
     public CompiledBlockResult compile(String mvelBlock) {
 
