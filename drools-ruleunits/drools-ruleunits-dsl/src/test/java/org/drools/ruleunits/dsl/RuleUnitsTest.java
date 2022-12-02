@@ -18,6 +18,7 @@ package org.drools.ruleunits.dsl;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
 import org.drools.ruleunits.api.RuleUnitInstance;
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RuleUnitsTest {
 
     @Test
-    public void testHelloWorld() {
+    public void helloWorld() {
         HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
@@ -54,7 +55,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testInference() {
+    public void inference() {
         InferenceUnit unit = new InferenceUnit();
         unit.getStrings().add("test");
 
@@ -91,7 +92,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testSelfJoin() {
+    public void selfJoin() {
         SelfJoinUnit unit = new SelfJoinUnit();
         unit.getStrings().add("abc");
         unit.getStrings().add("bcd");
@@ -105,7 +106,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testAccumulate() {
+    public void accumulate() {
         AccumulateUnit unit = new AccumulateUnit();
         unit.getStrings().add("A1");
         unit.getStrings().add("A123");
@@ -138,7 +139,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testGroupBy() {
+    public void groupBy() {
         GroupByUnit unit = new GroupByUnit();
 
         unit.getPersons().add(new Person("Mario", 48));
@@ -169,7 +170,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testExistential() {
+    public void existential() {
         ExistentialUnit unit = new ExistentialUnit();
 
         RuleUnitInstance<ExistentialUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
@@ -200,7 +201,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testMultiJoin() {
+    public void multiJoin() {
         MultiJoinUnit unit = new MultiJoinUnit();
 
         RuleUnitInstance<MultiJoinUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
@@ -224,7 +225,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testUnitsCoordination() {
+    public void unitsCoordination() {
         UnitOne unitOne = new UnitOne();
         UnitTwo unitTwo = new UnitTwo(unitOne.getInts());
 
@@ -241,7 +242,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testSelfJoinWithInferenceAndNot() {
+    public void selfJoinWithInferenceAndNot() {
         SelfJoinWithInferenceAndNotUnit unit = new SelfJoinWithInferenceAndNotUnit();
         unit.getStrings().add("abc");
         unit.getStrings().add("axy");
@@ -253,7 +254,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testLogicalAdd() {
+    public void logicalAdd() {
         LogicalAddUnit unit = new LogicalAddUnit();
         DataHandle dh = unit.getStrings().add("abc");
 
@@ -272,7 +273,7 @@ public class RuleUnitsTest {
     }
 
     @Test
-    public void testRuleUnitDefinitionReuse() {
+    public void ruleUnitDefinitionReuse() {
         // DROOLS-7181
         SumAccumulateUnit unit = new SumAccumulateUnit();
         RuleUnitInstance<SumAccumulateUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
@@ -324,6 +325,17 @@ public class RuleUnitsTest {
             assertThat(testRuleEventListener.getResults().get(1)).startsWith("onAfterMatchFire");
             assertThat(testRuleEventListener.getResults().get(2)).startsWith("onBeforeMatchFire");
             assertThat(testRuleEventListener.getResults().get(3)).startsWith("onAfterMatchFire");
+        }
+    }
+
+    @Test
+    public void fireWithAgendaFilter() {
+        RuleNameUnit unit = new RuleNameUnit();
+        unit.getStrings().add("Hello World");
+
+        try (RuleUnitInstance<RuleNameUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit)) {
+            assertThat(unitInstance.fire(new RuleNameStartsWithAgendaFilter("GoodBye"))).isEqualTo(1);
+            assertThat(unit.getResults()).containsExactly("GoodByeWorld");
         }
     }
 }

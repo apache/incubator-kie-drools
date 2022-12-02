@@ -15,6 +15,7 @@
  */
 package org.drools.ruleunits.api;
 
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
 
@@ -43,10 +44,21 @@ public interface RuleUnitInstance<T extends RuleUnitData> extends AutoCloseable 
     int fire();
 
     /**
+     * Trigger the pattern matching algorithm on all the facts contained in the {@link DataSource}s of the {@link RuleUnitData}
+     * used by this RuleUnitInstance and fires all the rules activated by them.
+     *
+     * @param agendaFilter
+     *      filters the Matches that may fire
+     * @return
+     *      The number of fired rules.
+     */
+    int fire(AgendaFilter agendaFilter);
+
+    /**
      * Executes the query with the given name on this instance, using the given set of arguments
      * @param query The name of the query to be executed
      * @param arguments The arguments to be passed to the query
-     * @return TODO this should return a {@link org.kie.api.runtime.rule.QueryResults}
+     * @return query results
      */
     QueryResults executeQuery(String query, Object... arguments);
 
