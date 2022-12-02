@@ -218,7 +218,7 @@
             <!-- provides @Library() step -->
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-cps-global-lib</artifactId>
-            <version>2.13</version>
+            <version>588.v576c103a_ff86</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
