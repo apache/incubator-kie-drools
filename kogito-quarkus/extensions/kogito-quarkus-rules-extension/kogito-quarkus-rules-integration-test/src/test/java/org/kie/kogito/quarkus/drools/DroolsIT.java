@@ -17,14 +17,14 @@ package org.kie.kogito.quarkus.drools;
 
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class DroolsIT {
 
     @Test

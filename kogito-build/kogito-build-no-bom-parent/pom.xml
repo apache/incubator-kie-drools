@@ -326,7 +326,6 @@
             </includes>
             <excludes>
               <exclude>${tests.surefire.include}</exclude>
-              <exclude>**/Native*</exclude>
             </excludes>
             <argLine>-Xms2048m -Xmx4g  -XX:-TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none</argLine>
             <systemPropertyVariables>
