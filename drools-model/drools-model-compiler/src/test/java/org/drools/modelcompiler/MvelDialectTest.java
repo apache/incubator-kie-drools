@@ -29,6 +29,7 @@ import java.util.Set;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
+import org.drools.modelcompiler.domain.ValueHolder;
 
 import org.junit.Test;
 import org.kie.api.builder.Message;
@@ -1540,5 +1541,51 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getAge()).isEqualTo(20);
         assertThat(p.getAddresses().size()).isEqualTo(0);
         assertThat(fired).isEqualTo(1);
+    }
+
+    @Test
+    public void assign_primitiveBooleanProperty() {
+        // DROOLS-7250
+        String str = "package com.example.reproducer\n" +
+                     "import " + ValueHolder.class.getCanonicalName() + ";\n" +
+                     "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $holder : ValueHolder()\n" +
+                     "then\n" +
+                     "  $holder.primitiveBooleanValue = true;\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ValueHolder holder = new ValueHolder();
+        holder.setPrimitiveBooleanValue(false);
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        assertThat(holder.isPrimitiveBooleanValue()).isTrue();
+    }
+
+    @Test
+    public void assign_wrapperBooleanProperty() {
+        // DROOLS-7250
+        String str = "package com.example.reproducer\n" +
+                     "import " + ValueHolder.class.getCanonicalName() + ";\n" +
+                     "rule R\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  $holder : ValueHolder()\n" +
+                     "then\n" +
+                     "  $holder.wrapperBooleanValue = true;\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ValueHolder holder = new ValueHolder();
+        holder.setWrapperBooleanValue(false);
+        ksession.insert(holder);
+        ksession.fireAllRules();
+
+        assertThat(holder.getWrapperBooleanValue()).isTrue();
     }
 }
