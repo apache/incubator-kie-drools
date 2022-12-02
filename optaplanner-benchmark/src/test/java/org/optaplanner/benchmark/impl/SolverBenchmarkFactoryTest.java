@@ -86,7 +86,7 @@ class SolverBenchmarkFactoryTest {
         SolverBenchmarkFactory solverBenchmarkFactory = new SolverBenchmarkFactory(config);
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
         assertThat(solverBenchmarkFactory.getSolverMetrics(problemBenchmarksConfig))
-                .isEqualTo(List.of(SolverMetric.BEST_SCORE));
+                .containsExactly(SolverMetric.BEST_SCORE);
     }
 
     @Test
@@ -99,7 +99,7 @@ class SolverBenchmarkFactoryTest {
         problemBenchmarksConfig.setProblemStatisticTypeList(List.of(ProblemStatisticType.STEP_SCORE));
         problemBenchmarksConfig.setSingleStatisticTypeList(List.of(SingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE));
         assertThat(solverBenchmarkFactory.getSolverMetrics(problemBenchmarksConfig))
-                .isEqualTo(List.of(SolverMetric.STEP_SCORE, SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE));
+                .containsExactly(SolverMetric.STEP_SCORE, SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
     }
 
     private void validateConfig(SolverBenchmarkConfig config) {

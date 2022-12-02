@@ -20,31 +20,19 @@ class ConfigUtilsTest {
 
     @Test
     void mergeProperty() {
-        Integer a = null;
-        Integer b = null;
-        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
-        a = Integer.valueOf(1);
-        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
-        b = Integer.valueOf(10);
-        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
-        b = Integer.valueOf(1);
-        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(Integer.valueOf(1));
-        a = null;
-        assertThat(ConfigUtils.mergeProperty(a, b)).isEqualTo(null);
+        assertThat(ConfigUtils.<Integer> mergeProperty(null, null)).isNull();
+        assertThat(ConfigUtils.<Integer> mergeProperty(1, null)).isNull();
+        assertThat(ConfigUtils.<Integer> mergeProperty(null, 1)).isNull();
+        assertThat(ConfigUtils.<Integer> mergeProperty(1, 10)).isNull();
+        assertThat(ConfigUtils.<Integer> mergeProperty(1, 1)).isEqualTo(1);
     }
 
     @Test
     void meldProperty() {
-        Integer a = null;
-        Integer b = null;
-        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(null);
-        a = Integer.valueOf(1);
-        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(Integer.valueOf(1));
-        b = Integer.valueOf(10);
-        assertThat(ConfigUtils.meldProperty(a, b))
-                .isEqualTo(ConfigUtils.mergeProperty(Integer.valueOf(1), Integer.valueOf(10)));
-        a = null;
-        assertThat(ConfigUtils.meldProperty(a, b)).isEqualTo(Integer.valueOf(10));
+        assertThat(ConfigUtils.<Integer> meldProperty(null, null)).isNull();
+        assertThat(ConfigUtils.<Integer> meldProperty(1, null)).isEqualTo(1);
+        assertThat(ConfigUtils.<Integer> meldProperty(null, 10)).isEqualTo(10);
+        assertThat(ConfigUtils.<Integer> meldProperty(1, 10)).isEqualTo(ConfigUtils.mergeProperty(1, 10));
     }
 
     @Test
@@ -209,8 +197,7 @@ class ConfigUtilsTest {
     @Test
     void newInstanceStaticInnerClassWithArgsConstructor() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> ConfigUtils.newInstance(
-                        this, "testProperty", StaticInnerClassWithArgsConstructor.class))
+                .isThrownBy(() -> ConfigUtils.newInstance(this, "testProperty", StaticInnerClassWithArgsConstructor.class))
                 .withMessageContaining("no-arg constructor.");
     }
 
@@ -263,18 +250,19 @@ class ConfigUtilsTest {
 
     @Test
     void ignoreSyntheticMembers() {
-        assertThat(ConfigUtils.getDeclaredMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class)).hasSize(1);
         assertThat(ConfigUtils.getDeclaredMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class))
+                .hasSize(1)
                 .noneMatch(Member::isSynthetic);
         assertThat(ConfigUtils.getAllMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class, PlanningScore.class))
-                .hasSize(1);
-        assertThat(ConfigUtils.getAllMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class, PlanningScore.class))
+                .hasSize(1)
                 .noneMatch(Member::isSynthetic);
 
-        assertThat(ConfigUtils.getDeclaredMembers(ClassWithBridgeMethod.class)).hasSize(2);
-        assertThat(ConfigUtils.getDeclaredMembers(ClassWithBridgeMethod.class)).noneMatch(Member::isSynthetic);
-        assertThat(ConfigUtils.getAllMembers(ClassWithBridgeMethod.class, PlanningScore.class)).hasSize(1);
-        assertThat(ConfigUtils.getAllMembers(ClassWithBridgeMethod.class, PlanningScore.class)).noneMatch(Member::isSynthetic);
+        assertThat(ConfigUtils.getDeclaredMembers(ClassWithBridgeMethod.class))
+                .hasSize(2)
+                .noneMatch(Member::isSynthetic);
+        assertThat(ConfigUtils.getAllMembers(ClassWithBridgeMethod.class, PlanningScore.class))
+                .hasSize(1)
+                .noneMatch(Member::isSynthetic);
     }
 
     public static class ClassWithSyntheticFieldParent {

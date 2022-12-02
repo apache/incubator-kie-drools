@@ -19,30 +19,30 @@ class ProblemBenchmarksConfigTest {
         problemBenchmarksConfig.setProblemStatisticTypeList(Collections.emptyList());
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
                 .isEqualTo(ProblemStatisticType.defaultList());
+
+        // This verifies that the statistic type tested below is not the default one.
+        assertThat(ProblemStatisticType.defaultList()).isNotEqualTo(List.of(ProblemStatisticType.MEMORY_USE));
+
         problemBenchmarksConfig.setProblemStatisticTypeList(List.of(ProblemStatisticType.MEMORY_USE));
-
-        // This assert is to verify the assert below is testing against a different list from the default
-        assertThat(List.of(ProblemStatisticType.MEMORY_USE)).isNotEqualTo(ProblemStatisticType.defaultList());
-
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
-                .isEqualTo(List.of(ProblemStatisticType.MEMORY_USE));
+                .containsExactly(ProblemStatisticType.MEMORY_USE);
 
         problemBenchmarksConfig.setProblemStatisticEnabled(true);
         assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList())
-                .isEqualTo(List.of(ProblemStatisticType.MEMORY_USE));
+                .containsExactly(ProblemStatisticType.MEMORY_USE);
 
         problemBenchmarksConfig.setProblemStatisticEnabled(false);
-        assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList()).isEqualTo(Collections.emptyList());
+        assertThat(problemBenchmarksConfig.determineProblemStatisticTypeList()).isEmpty();
     }
 
     @Test
     void testDetermineSingleStatisticTypeList() {
         ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
-        assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList()).isEqualTo(Collections.emptyList());
+        assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList()).isEmpty();
         problemBenchmarksConfig.setSingleStatisticTypeList(Collections.emptyList());
-        assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList()).isEqualTo(Collections.emptyList());
+        assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList()).isEmpty();
         problemBenchmarksConfig.setSingleStatisticTypeList(List.of(SingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE));
         assertThat(problemBenchmarksConfig.determineSingleStatisticTypeList())
-                .isEqualTo(List.of(SingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE));
+                .containsExactly(SingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE);
     }
 }
