@@ -54,6 +54,8 @@ class RuntimeManagerUtilsTest {
     private static KieRuntimeService kieRuntimeServiceB;
     private static KieRuntimeService kieRuntimeServiceC;
 
+    private static KieRuntimeService kieRuntimeServiceA_cloned;
+
     private static EfestoClassKey efestoClassKeyA;
     private static EfestoClassKey efestoClassKeyB;
     private static EfestoClassKey efestoClassKeyC;
@@ -76,6 +78,8 @@ class RuntimeManagerUtilsTest {
         kieRuntimeServiceC = mock(KieRuntimeService.class);
         efestoClassKeyC = new EfestoClassKey(List.class, String.class);
         when(kieRuntimeServiceC.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyC);
+        kieRuntimeServiceA_cloned = mock(KieRuntimeService.class);
+        when(kieRuntimeServiceA_cloned.getEfestoClassKeyIdentifier()).thenReturn(efestoClassKeyA);
 
         // setup
         String path = "/example/some-id/instances/some-instance-id";
@@ -89,7 +93,8 @@ class RuntimeManagerUtilsTest {
     @Test
     void populateFirstLevelCache() {
         List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA, kieRuntimeServiceB,
-                                                                             kieRuntimeServiceC);
+                                                                             kieRuntimeServiceC,
+                                                                             kieRuntimeServiceA_cloned);
         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
         RuntimeManagerUtils.populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
         assertThat(toPopulate).hasSize(2);
@@ -97,10 +102,27 @@ class RuntimeManagerUtilsTest {
         List<KieRuntimeService> servicesA = toPopulate.get(efestoClassKeyA);
         List<KieRuntimeService> servicesB = toPopulate.get(efestoClassKeyB);
         assertThat(servicesA).isEqualTo(servicesB);
-        assertThat(servicesA).hasSize(2);
-        assertThat(servicesA).contains(kieRuntimeServiceA, kieRuntimeServiceB);
+        assertThat(servicesA).hasSize(3);
+        assertThat(servicesA).contains(kieRuntimeServiceA, kieRuntimeServiceB, kieRuntimeServiceA_cloned);
         List<KieRuntimeService> servicesC = toPopulate.get(efestoClassKeyC);
         assertThat(servicesC).containsExactly(kieRuntimeServiceC);
+    }
+
+    @Test
+    void addKieRuntimeServiceToFirstLevelCache() {
+        List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA);
+        final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
+        RuntimeManagerUtils.populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
+        assertThat(toPopulate).hasSize(1);
+        assertThat(toPopulate).containsKeys(efestoClassKeyA);
+        List<KieRuntimeService> servicesA = toPopulate.get(efestoClassKeyA);
+        assertThat(servicesA).containsExactly(kieRuntimeServiceA);
+
+        RuntimeManagerUtils.firstLevelCache.putAll(toPopulate);
+        RuntimeManagerUtils.addKieRuntimeServiceToFirstLevelCache(kieRuntimeServiceA_cloned, efestoClassKeyA);
+        servicesA = RuntimeManagerUtils.firstLevelCache.get(efestoClassKeyA);
+        assertThat(servicesA).containsExactly(kieRuntimeServiceA, kieRuntimeServiceA_cloned);
+
     }
 
     @Test
