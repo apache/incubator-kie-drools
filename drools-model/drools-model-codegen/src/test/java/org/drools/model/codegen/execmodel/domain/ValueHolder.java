@@ -25,6 +25,9 @@ public class ValueHolder {
     private BigDecimal bdValue;
     private Object objValue;
 
+    private boolean primitiveBooleanValue;
+    private Boolean wrapperBooleanValue;
+
     public ValueHolder() {}
 
     public int getIntValue() {
@@ -59,4 +62,19 @@ public class ValueHolder {
         this.objValue = objValue;
     }
 
+    public boolean isPrimitiveBooleanValue() {
+        return primitiveBooleanValue;
+    }
+
+    public void setPrimitiveBooleanValue(boolean primitiveBooleanValue) {
+        this.primitiveBooleanValue = primitiveBooleanValue;
+    }
+
+    public Boolean getWrapperBooleanValue() {
+        return wrapperBooleanValue;
+    }
+
+    public void setWrapperBooleanValue(Boolean wrapperBooleanValue) {
+        this.wrapperBooleanValue = wrapperBooleanValue;
+    }
 }

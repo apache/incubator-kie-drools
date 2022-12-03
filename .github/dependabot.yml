@@ -1,0 +1,41 @@
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: '03:00'
+  open-pull-requests-limit: 0
+  target-branch: "main"
+  commit-message:
+    prefix: "[bot][main]"
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: '04:00'
+  open-pull-requests-limit: 0
+  target-branch: "7.x"
+  commit-message:
+    prefix: "[bot][7.x]"    
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: '05:00'
+  open-pull-requests-limit: 0
+  target-branch: "7.67.x"
+  commit-message:
+    prefix: "[bot][7.67.x]"
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: '06:00'
+  open-pull-requests-limit: 0
+  target-branch: "7.67.x-blue"
+  commit-message:
+    prefix: "[bot][blue]"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
