@@ -5,7 +5,7 @@ updates:
   schedule:
     interval: daily
     time: '03:00'
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 10
   target-branch: "main"
   commit-message:
     prefix: "[bot]"
