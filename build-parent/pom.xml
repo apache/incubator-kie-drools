@@ -1918,6 +1918,11 @@
           <version>1.0</version>
         </plugin>
         <plugin>
+          <groupId>org.jboss.jandex</groupId>
+          <artifactId>jandex-maven-plugin</artifactId>
+          <version>${version.org.jboss.jandex}</version>
+        </plugin>
+        <plugin>
           <groupId>org.jboss.maven.plugins</groupId>
           <artifactId>maven-jdocbook-plugin</artifactId>
           <version>${version.org.jboss.maven.plugins.maven-jdocbook-plugin}</version>
