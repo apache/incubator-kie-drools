@@ -25,7 +25,7 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.ofHard(BigDecimal.valueOf(90));
-        WeightedScoreImpacter hardImpacter =
+        WeightedScoreImpacter<HardSoftBigDecimalScore, HardSoftBigDecimalScoreContext> hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
@@ -50,7 +50,7 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.ofSoft(BigDecimal.valueOf(90));
-        WeightedScoreImpacter hardImpacter =
+        WeightedScoreImpacter<HardSoftBigDecimalScore, HardSoftBigDecimalScoreContext> hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
@@ -75,7 +75,7 @@ class HardSoftBigDecimalScoreInlinerTest
                 new HardSoftBigDecimalScoreInliner(constraintMatchEnabled);
 
         HardSoftBigDecimalScore constraintWeight = HardSoftBigDecimalScore.of(BigDecimal.valueOf(10), BigDecimal.valueOf(100));
-        WeightedScoreImpacter hardImpacter =
+        WeightedScoreImpacter<HardSoftBigDecimalScore, HardSoftBigDecimalScoreContext> hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))

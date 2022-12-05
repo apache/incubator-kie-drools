@@ -109,12 +109,12 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
 
     /**
      * Create a new instance of {@link WeightedScoreImpacter} for a particular constraint.
-     * 
+     *
      * @param constraint never null
      * @param constraintWeight never null
      * @return never null
      */
-    public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
+    public abstract WeightedScoreImpacter<Score_, ?> buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
             JustificationsSupplier justificationsSupplier) {
@@ -150,6 +150,10 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                 key -> new DefaultIndictment<>(indictedObject, constraintMatch.getScore().zero()));
         indictment.addConstraintMatch(constraintMatch);
         return indictment;
+    }
+
+    public boolean isConstraintMatchEnabled() {
+        return constraintMatchEnabled;
     }
 
     public final Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {

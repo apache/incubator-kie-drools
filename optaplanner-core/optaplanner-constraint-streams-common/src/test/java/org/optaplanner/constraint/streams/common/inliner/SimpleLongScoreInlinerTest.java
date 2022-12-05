@@ -22,7 +22,7 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
                 new SimpleLongScoreInliner(constraintMatchEnabled);
 
         SimpleLongScore constraintWeight = SimpleLongScore.of(10);
-        WeightedScoreImpacter hardImpacter =
+        WeightedScoreImpacter<SimpleLongScore, SimpleLongScoreContext> hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))

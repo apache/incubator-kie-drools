@@ -30,7 +30,7 @@ abstract class AbstractRuleContext {
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
-            WeightedScoreImpacter scoreImpacter, int impact, JustificationsSupplier justificationsSupplier) {
+            WeightedScoreImpacter<?, ?> scoreImpacter, int impact, JustificationsSupplier justificationsSupplier) {
         try {
             constraint.assertCorrectImpact(impact);
             UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
@@ -51,7 +51,7 @@ abstract class AbstractRuleContext {
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
-            WeightedScoreImpacter scoreImpacter, long impact, JustificationsSupplier justificationsSupplier) {
+            WeightedScoreImpacter<?, ?> scoreImpacter, long impact, JustificationsSupplier justificationsSupplier) {
         try {
             constraint.assertCorrectImpact(impact);
             UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);
@@ -62,7 +62,7 @@ abstract class AbstractRuleContext {
     }
 
     protected static void runConsequence(DroolsConstraint<?> constraint, Drools drools,
-            WeightedScoreImpacter scoreImpacter, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
+            WeightedScoreImpacter<?, ?> scoreImpacter, BigDecimal impact, JustificationsSupplier justificationsSupplier) {
         try {
             constraint.assertCorrectImpact(impact);
             UndoScoreImpacter undoImpact = scoreImpacter.impactScore(impact, justificationsSupplier);

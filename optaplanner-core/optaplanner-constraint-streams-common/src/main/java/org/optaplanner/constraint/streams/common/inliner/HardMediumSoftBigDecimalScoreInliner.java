@@ -16,80 +16,26 @@ final class HardMediumSoftBigDecimalScoreInliner extends AbstractScoreInliner<Ha
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint,
-            HardMediumSoftBigDecimalScore constraintWeight) {
+    public WeightedScoreImpacter<HardMediumSoftBigDecimalScore, HardMediumSoftBigDecimalScoreContext>
+            buildWeightedScoreImpacter(Constraint constraint,
+                    HardMediumSoftBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
         BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
         BigDecimal mediumConstraintWeight = constraintWeight.getMediumScore();
         BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
+        HardMediumSoftBigDecimalScoreContext context =
+                new HardMediumSoftBigDecimalScoreContext(this, constraint, constraintWeight,
+                        impact -> this.hardScore = this.hardScore.add(impact),
+                        impact -> this.mediumScore = this.mediumScore.add(impact),
+                        impact -> this.softScore = this.softScore.add(impact));
         if (mediumConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
-                this.hardScore = this.hardScore.add(hardImpact);
-                UndoScoreImpacter undoScoreImpact = () -> this.hardScore = this.hardScore.subtract(hardImpact);
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftBigDecimalScore.ofHard(hardImpact), justificationsSupplier);
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
-            });
+            return WeightedScoreImpacter.of(context, HardMediumSoftBigDecimalScoreContext::changeHardScoreBy);
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && softConstraintWeight.equals(BigDecimal.ZERO)) {
-            return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
-                this.mediumScore = this.mediumScore.add(mediumImpact);
-                UndoScoreImpacter undoScoreImpact = () -> this.mediumScore = this.mediumScore.subtract(mediumImpact);
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftBigDecimalScore.ofMedium(mediumImpact), justificationsSupplier);
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
-            });
+            return WeightedScoreImpacter.of(context, HardMediumSoftBigDecimalScoreContext::changeMediumScoreBy);
         } else if (hardConstraintWeight.equals(BigDecimal.ZERO) && mediumConstraintWeight.equals(BigDecimal.ZERO)) {
-            return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
-                this.softScore = this.softScore.add(softImpact);
-                UndoScoreImpacter undoScoreImpact = () -> this.softScore = this.softScore.subtract(softImpact);
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftBigDecimalScore.ofSoft(softImpact), justificationsSupplier);
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
-            });
+            return WeightedScoreImpacter.of(context, HardMediumSoftBigDecimalScoreContext::changeSoftScoreBy);
         } else {
-            return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                BigDecimal hardImpact = hardConstraintWeight.multiply(matchWeight);
-                BigDecimal mediumImpact = mediumConstraintWeight.multiply(matchWeight);
-                BigDecimal softImpact = softConstraintWeight.multiply(matchWeight);
-                this.hardScore = this.hardScore.add(hardImpact);
-                this.mediumScore = this.mediumScore.add(mediumImpact);
-                this.softScore = this.softScore.add(softImpact);
-                UndoScoreImpacter undoScoreImpact = () -> {
-                    this.hardScore = this.hardScore.subtract(hardImpact);
-                    this.mediumScore = this.mediumScore.subtract(mediumImpact);
-                    this.softScore = this.softScore.subtract(softImpact);
-                };
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        HardMediumSoftBigDecimalScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier);
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
-            });
+            return WeightedScoreImpacter.of(context, HardMediumSoftBigDecimalScoreContext::changeScoreBy);
         }
     }
 

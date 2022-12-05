@@ -1,0 +1,76 @@
+package org.optaplanner.constraint.streams.common.inliner;
+
+import java.math.BigDecimal;
+import java.util.function.Consumer;
+
+import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
+import org.optaplanner.core.api.score.stream.Constraint;
+
+final class HardMediumSoftBigDecimalScoreContext extends ScoreContext<HardMediumSoftBigDecimalScore> {
+
+    private final Consumer<BigDecimal> softScoreUpdater;
+    private final Consumer<BigDecimal> mediumScoreUpdater;
+    private final Consumer<BigDecimal> hardScoreUpdater;
+
+    public HardMediumSoftBigDecimalScoreContext(AbstractScoreInliner<HardMediumSoftBigDecimalScore> parent,
+            Constraint constraint, HardMediumSoftBigDecimalScore constraintWeight, Consumer<BigDecimal> hardScoreUpdater,
+            Consumer<BigDecimal> mediumScoreUpdater, Consumer<BigDecimal> softScoreUpdater) {
+        super(parent, constraint, constraintWeight);
+        this.softScoreUpdater = softScoreUpdater;
+        this.mediumScoreUpdater = mediumScoreUpdater;
+        this.hardScoreUpdater = hardScoreUpdater;
+    }
+
+    public UndoScoreImpacter changeSoftScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        BigDecimal softImpact = constraintWeight.getSoftScore().multiply(matchWeight);
+        softScoreUpdater.accept(softImpact);
+        UndoScoreImpacter undoScoreImpact = () -> softScoreUpdater.accept(softImpact.negate());
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, HardMediumSoftBigDecimalScore.ofSoft(softImpact),
+                justificationsSupplier);
+    }
+
+    public UndoScoreImpacter changeMediumScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        BigDecimal mediumImpact = constraintWeight.getMediumScore().multiply(matchWeight);
+        mediumScoreUpdater.accept(mediumImpact);
+        UndoScoreImpacter undoScoreImpact = () -> mediumScoreUpdater.accept(mediumImpact.negate());
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, HardMediumSoftBigDecimalScore.ofMedium(mediumImpact),
+                justificationsSupplier);
+    }
+
+    public UndoScoreImpacter changeHardScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        BigDecimal hardImpact = constraintWeight.getHardScore().multiply(matchWeight);
+        hardScoreUpdater.accept(hardImpact);
+        UndoScoreImpacter undoScoreImpact = () -> hardScoreUpdater.accept(hardImpact.negate());
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, HardMediumSoftBigDecimalScore.ofHard(hardImpact),
+                justificationsSupplier);
+    }
+
+    public UndoScoreImpacter changeScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        BigDecimal hardImpact = constraintWeight.getHardScore().multiply(matchWeight);
+        BigDecimal mediumImpact = constraintWeight.getMediumScore().multiply(matchWeight);
+        BigDecimal softImpact = constraintWeight.getSoftScore().multiply(matchWeight);
+        hardScoreUpdater.accept(hardImpact);
+        mediumScoreUpdater.accept(mediumImpact);
+        softScoreUpdater.accept(softImpact);
+        UndoScoreImpacter undoScoreImpact = () -> {
+            hardScoreUpdater.accept(hardImpact.negate());
+            mediumScoreUpdater.accept(mediumImpact.negate());
+            softScoreUpdater.accept(softImpact.negate());
+        };
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact,
+                HardMediumSoftBigDecimalScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier);
+    }
+
+}

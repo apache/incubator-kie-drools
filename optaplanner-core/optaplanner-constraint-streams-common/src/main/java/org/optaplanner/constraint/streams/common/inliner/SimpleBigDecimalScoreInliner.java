@@ -14,23 +14,12 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
     }
 
     @Override
-    public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, SimpleBigDecimalScore constraintWeight) {
+    public WeightedScoreImpacter<SimpleBigDecimalScore, SimpleBigDecimalScoreContext> buildWeightedScoreImpacter(
+            Constraint constraint, SimpleBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-            BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
-            this.score = this.score.add(impact);
-            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
-            if (!constraintMatchEnabled) {
-                return undoScoreImpact;
-            }
-            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                    SimpleBigDecimalScore.of(impact), justificationsSupplier);
-            return () -> {
-                undoScoreImpact.run();
-                undoConstraintMatch.run();
-            };
-        });
+        SimpleBigDecimalScoreContext context = new SimpleBigDecimalScoreContext(this, constraint, constraintWeight,
+                impact -> this.score = this.score.add(impact));
+        return WeightedScoreImpacter.of(context, SimpleBigDecimalScoreContext::changeScoreBy);
     }
 
     @Override

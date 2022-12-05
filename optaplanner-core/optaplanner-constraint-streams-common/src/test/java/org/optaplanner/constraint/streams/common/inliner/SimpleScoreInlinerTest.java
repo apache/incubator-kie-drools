@@ -22,7 +22,7 @@ class SimpleScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSolution, 
                 new SimpleScoreInliner(constraintMatchEnabled);
 
         SimpleScore constraintWeight = SimpleScore.of(10);
-        WeightedScoreImpacter hardImpacter =
+        WeightedScoreImpacter<SimpleScore, SimpleScoreContext> hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
         UndoScoreImpacter undo1 = hardImpacter.impactScore(10, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
