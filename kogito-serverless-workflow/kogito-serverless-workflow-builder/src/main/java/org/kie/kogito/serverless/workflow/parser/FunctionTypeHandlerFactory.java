@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.function.BiFunction;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
@@ -31,31 +32,47 @@ public class FunctionTypeHandlerFactory {
     private static final FunctionTypeHandlerFactory INSTANCE = new FunctionTypeHandlerFactory();
     private static final String CUSTOM_TYPE_SEPARATOR = ":";
 
+    // we need two maps to avoid clashing
     private final Map<String, FunctionTypeHandler> typeMap = new HashMap<>();
     private final Map<String, FunctionTypeHandler> customMap = new HashMap<>();
 
     public Optional<FunctionTypeHandler> getTypeHandler(FunctionDefinition functionDef) {
         final boolean isCustom = functionDef.getType() == FunctionDefinition.Type.CUSTOM;
-        return Optional.ofNullable(getMap(isCustom).get(isCustom ? getTypeFromOperation(functionDef) : functionDef.getType().toString()));
+        Map<String, FunctionTypeHandler> map;
+        String key;
+        if (isCustom) {
+            map = customMap;
+            key = getTypeFromOperation(functionDef);
+        } else {
+            map = typeMap;
+            key = functionDef.getType().toString();
+        }
+        return Optional.ofNullable(map.get(key));
     }
 
     private static String getTypeFromOperation(FunctionDefinition functionDef) {
+        return trimString(functionDef, FunctionTypeHandlerFactory::trimStart);
+    }
+
+    private static String trimStart(String operation, int indexOf) {
+        return operation.substring(0, indexOf);
+    }
+
+    private static String trimEnd(String operation, int indexOf) {
+        return operation.substring(indexOf + 1);
+    }
+
+    private static String trimString(FunctionDefinition functionDef, BiFunction<String, Integer, String> function) {
         String operation = functionDef.getOperation();
         int indexOf = operation.indexOf(CUSTOM_TYPE_SEPARATOR);
-        return indexOf == -1 ? operation : operation.substring(0, indexOf);
+        return indexOf == -1 ? operation : function.apply(operation, indexOf);
     }
 
     public static String trimCustomOperation(FunctionDefinition functionDef) {
-        String operation = functionDef.getOperation();
-        int indexOf = operation.indexOf(CUSTOM_TYPE_SEPARATOR);
-        return indexOf == -1 ? operation : operation.substring(indexOf + 1);
-    }
-
-    private Map<String, FunctionTypeHandler> getMap(boolean isCustom) {
-        return isCustom ? customMap : typeMap;
+        return trimString(functionDef, FunctionTypeHandlerFactory::trimEnd);
     }
 
     private FunctionTypeHandlerFactory() {
-        ServiceLoader.load(FunctionTypeHandler.class).forEach(handler -> getMap(handler.isCustom()).put(handler.type(), handler));
+        ServiceLoader.load(FunctionTypeHandler.class).forEach(handler -> (handler.isCustom() ? customMap : typeMap).put(handler.type(), handler));
     }
 }

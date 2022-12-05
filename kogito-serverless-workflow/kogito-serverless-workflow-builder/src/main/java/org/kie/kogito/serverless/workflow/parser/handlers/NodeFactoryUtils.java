@@ -23,9 +23,11 @@ import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.ruleflow.core.factory.EventNodeFactory;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
+import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
@@ -35,6 +37,7 @@ import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.SimpleCorrelation;
+import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.suppliers.ParamsRestBodyBuilderSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
@@ -69,24 +72,51 @@ public class NodeFactoryUtils {
 
     public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(NodeFactory<T, P> actionNode,
             EventDefinition eventDefinition, String inputVar) {
+        return sendEventNode(actionNode, eventDefinition.getName(), eventDefinition.getType(), inputVar);
+    }
+
+    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T sendEventNode(NodeFactory<T, P> actionNode, String name,
+            String type, String inputVar) {
         return actionNode
-                .name(eventDefinition.getName())
+                .name(name)
                 .metaData(Metadata.EVENT_TYPE, "message")
                 .metaData(Metadata.MAPPING_VARIABLE, inputVar)
-                .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
+                .metaData(Metadata.TRIGGER_REF, type)
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
     }
 
-    public static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T messageNode(T nodeFactory, EventDefinition eventDefinition, String inputVar) {
+    public static <T extends StartNodeFactory<P>, P extends RuleFlowNodeContainerFactory<P, ?>> T startMessageNode(T nodeFactory, EventDefinition eventDefinition, String inputVar, String outputVar) {
+        return (T) addEventDefinition(messageNode(nodeFactory, eventDefinition.getName(), eventDefinition.getType(), inputVar), eventDefinition).trigger(ServerlessWorkflowParser.JSON_NODE, outputVar);
+    }
+
+    public static <T extends EventNodeFactory<P>, P extends RuleFlowNodeContainerFactory<P, ?>> T consumeMessageNode(T nodeFactory, EventDefinition eventDefinition, String inputVar,
+            String outputVar) {
+        return (T) addEventDefinition(consumeMessageNode(nodeFactory, eventDefinition.getName(), eventDefinition.getType(), inputVar, outputVar), eventDefinition);
+    }
+
+    public static <T extends EventNodeFactory<P>, P extends RuleFlowNodeContainerFactory<P, ?>> T consumeMessageNode(T eventNode, String name, String type,
+            String inputVar, String outputVar) {
+        return (T) messageNode(eventNode, name, type, inputVar)
+                .inputVariableName(inputVar)
+                .variableName(outputVar)
+                .outMapping(inputVar, outputVar)
+                .metaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR)
+                .eventType("Message-" + type);
+    }
+
+    private static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T messageNode(T nodeFactory, String name, String type, String inputVar) {
         return nodeFactory
-                .name(eventDefinition.getName())
+                .name(name)
                 .metaData(Metadata.EVENT_TYPE, "message")
                 .metaData(Metadata.TRIGGER_MAPPING, inputVar)
-                .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
+                .metaData(Metadata.TRIGGER_REF, type)
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
-                .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
-                .metaData(Metadata.DATA_ONLY, eventDefinition.isDataOnly())
+                .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage");
+    }
+
+    private static <T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> T addEventDefinition(T nodeFactory, EventDefinition eventDefinition) {
+        return nodeFactory.metaData(Metadata.DATA_ONLY, eventDefinition.isDataOnly())
                 .metaData(Metadata.CORRELATION_ATTRIBUTES, getCorrelationAttributes(eventDefinition));
     }
 

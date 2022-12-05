@@ -67,7 +67,6 @@ import io.serverlessworkflow.api.workflow.Errors;
 import static org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.eventBasedSplitNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.joinExclusiveNode;
-import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.messageNode;
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
 import static org.kie.kogito.serverless.workflow.utils.TimeoutsConfigResolver.resolveEventTimeout;
 
@@ -452,12 +451,7 @@ public abstract class StateHandler<S extends State> {
 
     protected final NodeFactory<?, ?> consumeEventNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
         EventDefinition eventDefinition = eventDefinition(eventRef);
-        return messageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar)
-                .inputVariableName(inputVar)
-                .variableName(outputVar)
-                .outMapping(inputVar, outputVar)
-                .metaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR)
-                .eventType("Message-" + eventDefinition.getType());
+        return NodeFactoryUtils.consumeMessageNode(factory.eventNode(parserContext.newId()), eventDefinition, inputVar, outputVar);
     }
 
     protected final EventDefinition eventDefinition(String eventName) {

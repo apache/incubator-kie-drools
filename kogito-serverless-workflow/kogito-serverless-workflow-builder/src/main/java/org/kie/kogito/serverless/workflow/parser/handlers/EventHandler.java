@@ -31,7 +31,7 @@ import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.events.OnEvents;
 import io.serverlessworkflow.api.states.EventState;
 
-import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.messageNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.startMessageNode;
 
 public class EventHandler extends CompositeContextNodeHandler<EventState> {
 
@@ -88,6 +88,6 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
     }
 
     private StartNodeFactory<?> messageStartNode(RuleFlowNodeContainerFactory<?, ?> factory, String eventRef, String inputVar, String outputVar) {
-        return messageNode(factory.startNode(parserContext.newId()), eventDefinition(eventRef), inputVar).trigger(ServerlessWorkflowParser.JSON_NODE, outputVar);
+        return startMessageNode(factory.startNode(parserContext.newId()), eventDefinition(eventRef), inputVar, outputVar);
     }
 }
