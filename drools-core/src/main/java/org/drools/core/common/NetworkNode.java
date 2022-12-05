@@ -16,12 +16,8 @@
 
 package org.drools.core.common;
 
-import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
@@ -34,8 +30,6 @@ public interface NetworkNode {
      */
     int getId();
 
-    int getPosInSegment();
-
     /**
      * Returns the partition ID to which this node belongs to
      */
@@ -47,7 +41,10 @@ public interface NetworkNode {
 
     boolean isAssociatedWith( Rule rule );
 
-    Map<Integer, TerminalNode> getAssociatedTerminals();
+    void addAssociatedTerminal(TerminalNode terminalNode);
+    void removeAssociatedTerminal(TerminalNode terminalNode);
+    int getAssociatedTerminalsSize();
+    boolean hasAssociatedTerminal(NetworkNode terminalNode);
 
     NetworkNode[] getSinks();
 }

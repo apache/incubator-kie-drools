@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
@@ -68,6 +67,17 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     }
 
+    public SegmentMemory(LeftTupleNode rootNode) {
+        this.proto = new SegmentPrototype(rootNode, null);
+    }
+
+    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory,
+                                                 ReteEvaluator reteEvaluator) {
+        T memory = reteEvaluator.getNodeMemory(memoryFactory);
+        addNodeMemory(memory);
+        return memory;
+    }
+
     public LeftTupleNode getRootNode() {
         return proto.getRootNode();
     }
@@ -80,19 +90,25 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return proto.getTipNode();
     }
 
+    public void setTipNode(LeftTupleNode tipNode) {
+        this.proto.setTipNode(tipNode);
+    }
+
     public LeftTupleSink getSinkFactory() {
         return (LeftTupleSink) proto.getRootNode();
     }
 
-    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory,
-                                                 ReteEvaluator reteEvaluator) {
-        T memory = reteEvaluator.getNodeMemory(memoryFactory);
-        nodeMemories.add(memory);
-        return memory;
-    }
-
     public List<Memory> getNodeMemories() {
         return nodeMemories;
+    }
+
+    public void addNodeMemory(Memory memory) {
+        if (!nodeMemories.isEmpty()) {
+            Memory last = nodeMemories.get(nodeMemories.size() - 1);
+            last.setNext(memory);
+            memory.setPrevious(last);
+        }
+        nodeMemories.add(memory);
     }
 
     public long getLinkedNodeMask() {
@@ -241,6 +257,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return allLinkedMaskTest;
     }
 
+    public void setAllLinkedMaskTest(long allLinkedTestMask) {
+        this.allLinkedMaskTest = allLinkedTestMask;
+    }
+
     public boolean isSegmentLinked() {
         return (linkedNodeMask & allLinkedMaskTest) == allLinkedMaskTest;
     }
@@ -274,14 +294,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         if (NodeTypeEnums.RightInputAdapterNode == pmem.getNodeType()) {
             for (PathEndNode endNode : pmem.getPathEndNode().getPathEndNodes() ) {
                 if (NodeTypeEnums.isTerminalNode(endNode)) {
-                    if ( proto.getRootNode().getAssociatedTerminals().containsKey(endNode.getId())) {
+                    if ( proto.getRootNode().hasAssociatedTerminal(endNode)) {
                         return true;
                     }
                 }
             }
             return false;
         }
-        return proto.getRootNode().getAssociatedTerminals().containsKey( pmem.getPathEndNode().getId() );
+        return proto.getRootNode().hasAssociatedTerminal( pmem.getPathEndNode() );
     }
 
     public void removePathMemory(PathMemory pathMemory) {
@@ -308,6 +328,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public long getSegmentPosMaskBit() {
         return segmentPosMaskBit;
+    }
+
+    public void setSegmentPosMaskBit(long nodeSegmenMask) {
+        this.segmentPosMaskBit = nodeSegmenMask;
     }
 
     public boolean isActive() {
@@ -401,8 +425,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public static class SegmentPrototype {
-        LeftTupleNode rootNode;
-        LeftTupleNode tipNode;
+        private final LeftTupleNode rootNode;
+        private LeftTupleNode tipNode;
         long linkedNodeMask;
         long allLinkedMaskTest;
         long segmentPosMaskBit;
@@ -418,6 +442,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         public SegmentPrototype(LeftTupleNode rootNode, LeftTupleNode tipNode) {
             this.rootNode = rootNode;
+            this.tipNode = tipNode;
+        }
+
+        public void setTipNode(LeftTupleNode tipNode) {
             this.tipNode = tipNode;
         }
 
@@ -438,21 +466,26 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             for (NetworkNode node : getNodesInSegment()) {
                 Memory mem = reteEvaluator.getNodeMemory((MemoryFactory) node);
                 mem.setSegmentMemory(smem);
-                List<Memory> mems =smem.getNodeMemories();
-                if (!mems.isEmpty()) {
-                    Memory last = mems.get(mems.size()-1);
-                    last.setNext(mem);
-                    mem.setPrevious(last);
-                }
-
-                smem.getNodeMemories().add(mem);
-                ((BaseNode)node).setPosInSegment(i);
+                smem.addNodeMemory(mem);
                 MemoryPrototype proto = memories[i];
                 if (proto != null) {
                     proto.populateMemory(reteEvaluator, mem);
                 }
                 i++;
             }
+        }
+
+        public SegmentPrototype initFromSegmentMemory(SegmentMemory smem) {
+            this.linkedNodeMask = smem.linkedNodeMask;
+            this.allLinkedMaskTest = smem.allLinkedMaskTest;
+            this.segmentPosMaskBit = smem.segmentPosMaskBit;
+            this.pos = smem.pos;
+            int i = 0;
+            memories = new MemoryPrototype[smem.nodeMemories.size()];
+            for (Memory mem : smem.nodeMemories) {
+                memories[i++] = MemoryPrototype.get(mem);
+            }
+            return this;
         }
 
         public LeftTupleNode getRootNode() {
@@ -532,6 +565,31 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public abstract static class MemoryPrototype {
+        public static MemoryPrototype get(Memory memory) {
+            if (memory instanceof BetaMemory) {
+                BetaMemory betaMemory = (BetaMemory)memory;
+                return new BetaMemoryPrototype(betaMemory.getNodePosMaskBit(), betaMemory.getRiaRuleMemory() != null ? betaMemory.getRiaRuleMemory().getRightInputAdapterNode() : null);
+            }
+            if (memory instanceof LeftInputAdapterNode.LiaNodeMemory) {
+                return new LiaMemoryPrototype(((LeftInputAdapterNode.LiaNodeMemory)memory).getNodePosMaskBit());
+            }
+            if (memory instanceof QueryElementNode.QueryElementNodeMemory) {
+                QueryElementNode.QueryElementNodeMemory queryMemory = (QueryElementNode.QueryElementNodeMemory)memory;
+                return new QueryMemoryPrototype(queryMemory.getNodePosMaskBit(), queryMemory.getNode());
+            }
+            if (memory instanceof TimerNodeMemory) {
+                return new TimerMemoryPrototype(((TimerNodeMemory)memory).getNodePosMaskBit());
+            }
+            if (memory instanceof AccumulateNode.AccumulateMemory) {
+                BetaMemory betaMemory = ((AccumulateNode.AccumulateMemory)memory).getBetaMemory();
+                return new AccumulateMemoryPrototype(new BetaMemoryPrototype( betaMemory.getNodePosMaskBit(), betaMemory.getRiaRuleMemory() != null ? betaMemory.getRiaRuleMemory().getRightInputAdapterNode() : null) );
+            }
+            if (memory instanceof ReactiveFromNode.ReactiveFromMemory) {
+                return new ReactiveFromMemoryPrototype(((ReactiveFromNode.ReactiveFromMemory)memory).getNodePosMaskBit());
+            }
+            return null;
+        }
+
         public abstract void populateMemory(ReteEvaluator reteEvaluator, Memory memory);
     }
 

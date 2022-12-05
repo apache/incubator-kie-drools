@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
-import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
+import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 
 public interface PathEndNode extends LeftTupleSinkNode {
     LeftTupleNode[] getPathNodes();
@@ -46,6 +46,8 @@ public interface PathEndNode extends LeftTupleSinkNode {
     PathMemSpec getPathMemSpec();
 
     PathMemSpec getPathMemSpec(TerminalNode removingTN);
+
+    void resetPathMemSpec(TerminalNode removingTN);
 
     class PathMemSpec implements Serializable {
         final long allLinkedTestMask;
