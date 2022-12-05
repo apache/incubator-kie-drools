@@ -186,7 +186,7 @@ public class AsConstraintRecipe extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "ConstraintStreams: use asConstraint() methods to define constraints.";
+        return "ConstraintStreams: use asConstraint() methods to define constraints";
     }
 
     @Override
