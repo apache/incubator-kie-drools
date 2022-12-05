@@ -44,8 +44,12 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-model-codegen</artifactId>
         </dependency>
+      <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-drl-map-input-runtime</artifactId>
+      </dependency>
 
-        <!-- quarkus -->
+      <!-- quarkus -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-core-deployment</artifactId>
@@ -74,10 +78,6 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-drl-map-input-runtime</artifactId>
     </dependency>
 
   </dependencies>

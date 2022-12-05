@@ -571,6 +571,12 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-deployment</artifactId>
         <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
