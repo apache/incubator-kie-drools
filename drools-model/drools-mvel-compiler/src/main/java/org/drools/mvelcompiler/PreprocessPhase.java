@@ -16,11 +16,8 @@
 
 package org.drools.mvelcompiler;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,28 +31,22 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
-import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvel.parser.printer.PrintUtil;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
- * This phase transforms modify and with statements in valid Java code
+ * This phase transforms modify statements in valid Java code
  *
  * It's used both in the MVEL Compiler and also to preprocess Drools' Java consequences that
- * use modify and with blocks.
+ * use modify blocks.
  */
 public class PreprocessPhase {
 
@@ -102,8 +93,6 @@ public class PreprocessPhase {
 
         if (statement instanceof ModifyStatement) {
             return modifyPreprocessor((ModifyStatement) statement);
-        } else if (statement instanceof WithStatement) {
-            return withPreprocessor((WithStatement) statement);
         } else {
             return new StatementResult();
         }
@@ -115,83 +104,18 @@ public class PreprocessPhase {
         final Expression scope = modifyStatement.getModifyObject();
         modifyStatement
                 .findAll(AssignExpr.class)
-                .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr, true));
+                .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr));
 
         // Do not use findAll as we should only process top level expressions
         modifyStatement
                 .getExpressions()
-                .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e, true));
+                .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
 
         NodeList<Statement> statements = wrapToExpressionStmt(modifyStatement.getExpressions());
         // delete modify statement and replace its own block of statements
         modifyStatement.replace(new BlockStmt(statements));
 
         return result;
-    }
-
-    private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
-        PreprocessPhaseResult result = new StatementResult();
-
-        Deque<Statement> allNewStatements = new ArrayDeque<>();
-
-        Optional<Expression> initScope = addTypeToInitialization(withStatement, allNewStatements);
-        final Expression scope = initScope.orElse(withStatement.getWithObject());
-
-        withStatement
-                .findAll(AssignExpr.class)
-                .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr, false));
-
-        // Do not use findAll as we should only process top level expressions
-        withStatement
-                .getExpressions()
-                .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e, false));
-
-        NodeList<Statement> bodyStatements = wrapToExpressionStmt(withStatement.getExpressions());
-
-        allNewStatements.addAll(bodyStatements);
-
-        // delete modify statement and add the new statements to its children
-        Node parentNode = withStatement.getParentNode()
-                .orElseThrow(() -> new MvelCompilerException("A parent node is expected here"));
-
-        // We need to replace the with statement with the statements without nesting the new statements inside
-        // a BlockStmt otherwise other statements might reference the newly created instance
-        // See RuleChainingTest.testRuleChainingWithLogicalInserts
-        if(parentNode instanceof BlockStmt) {
-            BlockStmt parentBlock = (BlockStmt) parentNode;
-
-            Iterator<Statement> newStatementsReversed = allNewStatements.descendingIterator();
-            while(newStatementsReversed.hasNext()) {
-                parentBlock.getStatements().addAfter(newStatementsReversed.next(), withStatement);
-            }
-
-            withStatement.remove();
-        } else {
-            throw new MvelCompilerException("Expecting a BlockStmt as a parent");
-        }
-
-
-        return result;
-    }
-
-    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, Deque<Statement> allNewStatements) {
-        if (withStatement.getWithObject().isAssignExpr()) {
-            AssignExpr assignExpr = withStatement.getWithObject().asAssignExpr();
-            Expression assignExprValue = assignExpr.getValue();
-            Expression assignExprTarget = assignExpr.getTarget();
-
-            if (assignExprValue.isObjectCreationExpr() && assignExprTarget instanceof DrlNameExpr) {
-                ObjectCreationExpr constructor = assignExprValue.asObjectCreationExpr();
-                ClassOrInterfaceType ctorType = constructor.getType();
-
-                String targetVariableName = ((DrlNameExpr) assignExprTarget).getNameAsString();
-                VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
-                AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
-                allNewStatements.add(new ExpressionStmt(withTypeAssignmentExpr));
-                return of(new DrlNameExpr(targetVariableName));
-            }
-        }
-        return empty();
     }
 
     private NodeList<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
@@ -204,7 +128,7 @@ public class PreprocessPhase {
                 .collect(Collectors.toList()));
     }
 
-    private Statement addScopeToMethodCallExpr(PreprocessPhaseResult result, Expression scope, Statement e, boolean modify) {
+    private Statement addScopeToMethodCallExpr(PreprocessPhaseResult result, Expression scope, Statement e) {
         if (e != null && e.isExpressionStmt()) {
             Expression expression = e.asExpressionStmt().getExpression();
             if (expression.isMethodCallExpr()) {
@@ -224,10 +148,6 @@ public class PreprocessPhase {
 
                     return new ExpressionStmt(mcExpr);
                 } else if (rootExpr instanceof DrlNameExpr) {
-                    if (!modify) {
-                        // with(){} doesn't need to replace with FieldAccess
-                        return e;
-                    }
                     throwExceptionIfSameDrlName(rootExpr, scope);
                     // Unknown name. Assume a property of the fact
                     result.addUsedBinding(printNode(scope));
@@ -271,7 +191,7 @@ public class PreprocessPhase {
         return scope;
     }
 
-    private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr, boolean modify) {
+    private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
         result.addUsedBinding(printNode(scope));
         Expression target = assignExpr.getTarget();
 
@@ -279,10 +199,6 @@ public class PreprocessPhase {
             return propertyNameToFieldAccess(scope, assignExpr, (DrlNameExpr) target);
         } else if (target.isFieldAccessExpr()) { // e.g. address.city = 10
             Expression rootScope = findRootScope(target);
-            if (!modify) {
-                // with(){} doesn't need to replace with FieldAccess
-                return assignExpr;
-            }
             throwExceptionIfSameDrlName(rootScope, scope);
             replaceRootExprWithFieldAccess(scope, (DrlNameExpr) rootScope);
             return assignExpr;
