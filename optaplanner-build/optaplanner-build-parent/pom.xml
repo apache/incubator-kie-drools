@@ -30,7 +30,7 @@
     <version.io.quarkus>2.14.1.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.10.0</version.org.apache.commons.text>
-    <version.org.apache.poi>5.2.2</version.org.apache.poi>
+    <version.org.apache.poi>5.2.3</version.org.apache.poi>
     <version.org.assertj>3.22.0</version.org.assertj>
     <version.org.freemarker>2.3.31</version.org.freemarker>
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
