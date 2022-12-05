@@ -65,7 +65,7 @@
     <!-- TODO name impsort should indicate it's related to formatting -->
     <impsort.goal>sort</impsort.goal>
     <!-- Jacoco plugin configurations -->
-    <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+    <version.jacoco.plugin>0.8.8</version.jacoco.plugin>
     <!-- JaCoCo coverage data file location -->
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <jacoco.agent.argLine/>
