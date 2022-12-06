@@ -46,6 +46,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-drl-quarkus-deployment</artifactId>
+            <type>pom</type>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

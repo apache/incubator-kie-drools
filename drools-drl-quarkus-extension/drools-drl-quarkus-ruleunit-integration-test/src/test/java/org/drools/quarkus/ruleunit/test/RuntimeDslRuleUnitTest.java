@@ -1,11 +1,11 @@
 package org.drools.quarkus.ruleunit.test;
 
-import javax.inject.Inject;
-
 import io.quarkus.test.junit.QuarkusTest;
 import org.drools.ruleunits.api.RuleUnit;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
