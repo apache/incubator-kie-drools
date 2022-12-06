@@ -346,7 +346,7 @@ export const getProcessDefinitionList = (
       .then(response => {
         const processDefinitionObjs = [];
         const paths = response.paths;
-        const regexPattern = /^\/[A-Za-z_]+\/schema/;
+        const regexPattern = /^\/[A-Za-z0-9_]+\/schema/;
         Object.getOwnPropertyNames(paths)
           .filter(path => regexPattern.test(path.toString()))
           .forEach(url => {
@@ -474,10 +474,10 @@ export const getCustomDashboardContent = (name: string): Promise<string> => {
   });
 };
 
-export const getCustomWorkflowSchema = (devUIUrl: string, openApiPath: string): Promise<Record<string, any>> => {
+export const getCustomWorkflowSchema = (devUIUrl: string, openApiPath: string, workflowName: string): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`).then((response: any) => {
-      const schema = response.components.schemas.workflowdata
+      const schema = response.components.schemas[workflowName];
       if (schema) {
         resolve(schema);
       } else {

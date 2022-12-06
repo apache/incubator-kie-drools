@@ -39,13 +39,13 @@ const WorkflowFormContainer: React.FC<WorkflowFormContainerProps &
     ouiaSafe
   }) => {
     const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
-
+    
     return (
       <EmbeddedWorkflowForm
         {...componentOuiaProps(ouiaId, 'workflow-form-container', ouiaSafe)}
         driver={{
           async getCustomWorkflowSchema(): Promise<Record<string, any>> {
-            return gatewayApi.getCustomWorkflowSchema();
+            return gatewayApi.getCustomWorkflowSchema(workflowDefinitionData.workflowName);
           },
           async startWorkflowCloudEvent(formData: any): Promise<void> {
             return gatewayApi

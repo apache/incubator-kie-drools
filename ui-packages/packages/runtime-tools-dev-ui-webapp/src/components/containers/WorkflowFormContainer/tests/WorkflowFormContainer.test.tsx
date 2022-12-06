@@ -82,8 +82,8 @@ describe('WorkflowFormContainer tests', () => {
     const getCustomWorkflowSchemaSpy = jest.spyOn(gatewayApi, 'getCustomWorkflowSchema');
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
-
-    forwardRef.props().driver['getCustomWorkflowSchema']();
+    const workflowName = 'expression';
+    forwardRef.props().driver['getCustomWorkflowSchema'](workflowName);
     expect(getCustomWorkflowSchemaSpy).toHaveBeenCalled();
   })
 

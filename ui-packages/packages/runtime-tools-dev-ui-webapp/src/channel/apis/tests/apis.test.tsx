@@ -1058,17 +1058,18 @@ describe('swf custom form tests', () => {
         }
       }
     }
+    const workflowName = "expression";
     SwaggerParser.parse['mockImplementation'](() =>
       Promise.resolve({
         components: {
           schemas: {
-            workflowdata: { ...schema }
+            [workflowName]: { ...schema }
           }
         }
       }
       )
     );
-    const result = await getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json');
+    const result = await getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json', workflowName);
     expect(result).toEqual(schema);
   });
 
@@ -1078,7 +1079,8 @@ describe('swf custom form tests', () => {
        errorMessage: "No workflow data"
       })
     );
-    getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json').catch(error=>{
+    const workflowName = "expression";
+    getCustomWorkflowSchema('http://localhost:8080', '/q/openapi.json',workflowName).catch(error=>{
       expect(error).toEqual({ errorMessage: 'No workflow data' });
     })
   });

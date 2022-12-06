@@ -49,8 +49,9 @@ describe('WorkflowFormListGatewayApi tests', () => {
   });
 
   it('get custom workflow schema', async () => {
-    await gatewayApi.getCustomWorkflowSchema();
-    expect(getCustomWorkflowSchema).toHaveBeenCalled();
+    const workflowName = 'expression';
+    await gatewayApi.getCustomWorkflowSchema(workflowName);
+    expect(getCustomWorkflowSchema).toHaveBeenCalledWith("baseUrl", "/q/dev", "expression");
   });
 
   it('start workflow rest', async () => {
