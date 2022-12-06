@@ -31,7 +31,7 @@ class DRLParserTest {
                     "end\n";
 
     @Test
-    void testParse() {
+    void parse_basicRule() {
         PackageDescr packageDescr = parse(drl);
         assertThat(packageDescr.getName()).isEqualTo("org.test");
 
@@ -72,7 +72,7 @@ class DRLParserTest {
     }
 
     @Test
-    void testComputeTokenIndex() {
+    void computeTokenIndex_basicRule() {
         DRLParser parser = createDrlParser(drl);
         parser.compilationUnit();
 
