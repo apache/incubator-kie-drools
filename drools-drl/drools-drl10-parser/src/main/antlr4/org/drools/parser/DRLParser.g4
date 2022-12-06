@@ -34,9 +34,9 @@ globaldef : DRL_GLOBAL type drlIdentifier SEMI? ;
 
 // rule := RULE stringId (EXTENDS stringId)? annotation* attributes? lhs? rhs END
 
-ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? DRL_WHEN lhs DRL_THEN rhs DRL_END ;
+ruledef : DRL_RULE name=stringId (EXTENDS stringId)? drlAnnotation* attributes? lhs rhs DRL_END ;
 
-lhs : lhsExpression? ;
+lhs : DRL_WHEN lhsExpression? ;
 lhsExpression : lhsOr+ ;
 lhsOr : LPAREN DRL_OR lhsAnd+ RPAREN | lhsAnd (DRL_OR lhsAnd)* ;
 lhsAnd : LPAREN DRL_AND lhsUnary+ RPAREN | lhsUnary (DRL_AND lhsUnary)* ;
@@ -260,7 +260,9 @@ lhsExists : DRL_EXISTS lhsPatternBind ;
 */
 lhsNot : DRL_NOT lhsPatternBind ;
 
-rhs : drlRhsBlockStatement* ;
+rhs : DRL_THEN consequence ;
+
+consequence : drlRhsBlockStatement* ;
 
 stringId : ( IDENTIFIER | DRL_STRING_LITERAL ) ;
 
