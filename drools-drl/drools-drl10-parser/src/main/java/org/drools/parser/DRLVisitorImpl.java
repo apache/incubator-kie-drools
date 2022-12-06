@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.AnnotationDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -115,7 +116,6 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     @Override
     public Object visitRuledef(DRLParser.RuledefContext ctx) {
         currentRule = new RuleDescr(safeStripStringDelimiters(ctx.name.getText()));
-        currentRule.setConsequence(ParserStringUtils.getTextPreservingWhitespace(ctx.rhs()));
         packageDescr.addRule(currentRule);
 
         Object result = super.visitRuledef(ctx);
@@ -137,7 +137,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public Object visitLhsPatternBind(DRLParser.LhsPatternBindContext ctx) {
         if (ctx.lhsPattern().size() == 1) {
             Object result = super.visitLhsPatternBind(ctx);
-            PatternDescr patternDescr = (PatternDescr) currentConstructStack.peek().getDescrs().get(0);
+            ConditionalElementDescr parentDescr = currentConstructStack.peek();
+            PatternDescr patternDescr = (PatternDescr) parentDescr.getDescrs().get(parentDescr.getDescrs().size() - 1);
             if (ctx.label() != null) {
                 patternDescr.setIdentifier(ctx.label().IDENTIFIER().getText());
             }
@@ -175,7 +176,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             currentPattern.setSource(from);
         }
         Object result = super.visitLhsPattern(ctx);
-            currentConstructStack.peek().addDescr(currentPattern);
+        currentConstructStack.peek().addDescr(currentPattern);
         currentPattern = null;
         return result;
     }
@@ -184,7 +185,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     public Object visitConstraint(DRLParser.ConstraintContext ctx) {
         Object constraint = super.visitConstraint(ctx);
         if (constraint != null) {
-            ExprConstraintDescr constr = new ExprConstraintDescr(constraint.toString());
+            String constraintString = constraint.toString();
+            DRLParser.LabelContext label = ctx.label();
+            if (label != null) {
+                constraintString = label.getText() + constraintString;
+            }
+            ExprConstraintDescr constr = new ExprConstraintDescr(constraintString);
             constr.setType(ExprConstraintDescr.Type.NAMED);
             currentPattern.addConstraint(constr);
         }
@@ -290,6 +296,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         } else {
             return super.visitLhsOr(ctx);
         }
+    }
+
+    @Override
+    public Object visitRhs(DRLParser.RhsContext ctx) {
+        currentRule.setConsequenceLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine()); // location of "then"
+        currentRule.setConsequence(ParserStringUtils.getTextPreservingWhitespace(ctx.consequence()));
+        return super.visitChildren(ctx);
     }
 
     public PackageDescr getPackageDescr() {
