@@ -1,0 +1,32 @@
+{
+  "id": "JOB_ID",
+  "correlationId": "CORRELATION_ID",
+  "state": "TBD1",
+  "schedule": {
+    "type": "timer",
+    "startTime": "2023-01-30T22:01:15.001+01:00",
+    "repeatCount": 5,
+    "delay": 2,
+    "delayUnit": "HOURS"
+  },
+  "retry": {
+    "maxRetries": 3,
+    "delay": 10,
+    "delayUnit": "SECONDS",
+    "maxDuration": 1,
+    "durationUnit": "MINUTES"
+  },
+  "recipient": {
+    "type": "http",
+    "payload": "PHVzZXI+PG5hbWU+TWljaGFlbDwvbmFtZT48c3VybmFtZT5KYWNrc29uPC9zdXJuYW1lPjwvdXNlcj4=",
+    "url": "http://bank.gateway.internal/adduser",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/xml"
+    },
+    "queryParams": {
+      "param1": "value1",
+      "param2": "value2"
+    }
+  }
+}

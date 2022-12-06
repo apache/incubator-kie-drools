@@ -1,0 +1,2 @@
+org.kie.kogito.jobs.service.api.schedule.cron.CronScheduleDescriptor
+org.kie.kogito.jobs.service.api.schedule.timer.TimerScheduleDescriptor

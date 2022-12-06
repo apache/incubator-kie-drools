@@ -1,0 +1,11 @@
+{
+  "id": "ID",
+  "source": "http://localhost:8080/kogito-process",
+  "type": "job.delete",
+  "time": "2022-12-24T18:01:15.001+01:00",
+  "subject": "SUBJECT",
+  "specversion": "1.0",
+  "data": {
+    "correlationId": "CORRELATION_ID"
+  }
+}

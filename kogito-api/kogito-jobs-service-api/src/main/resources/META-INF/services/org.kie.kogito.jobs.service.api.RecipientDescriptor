@@ -1,0 +1,3 @@
+org.kie.kogito.jobs.service.api.recipient.kafka.KafkaRecipientDescriptor
+org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientDescriptor
+org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientDescriptor

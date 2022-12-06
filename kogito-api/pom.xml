@@ -2,50 +2,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-build-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-build-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
+    </parent>
 
-  <artifactId>kogito-api-parent</artifactId>
-  <packaging>pom</packaging>
+    <artifactId>kogito-api-parent</artifactId>
+    <packaging>pom</packaging>
 
-  <name>Kogito :: API</name>
-  <description>The common API for Kogito</description>
+    <name>Kogito :: API</name>
+    <description>The common API for Kogito</description>
 
-  <modules>
-    <module>kogito-events-api</module>
-    <module>kogito-events-core</module>
-    <module>kogito-api</module>
-    <module>kogito-services</module>
-    <module>kogito-timer</module>
-    <module>kogito-api-incubation-common</module>
-    <module>kogito-api-incubation-common-objectmapper</module>
-    <module>kogito-api-incubation-application</module>
-    <module>kogito-api-incubation-processes</module>
-    <module>kogito-api-incubation-processes-services</module>
-  </modules>
+    <modules>
+        <module>kogito-events-api</module>
+        <module>kogito-events-core</module>
+        <module>kogito-api</module>
+        <module>kogito-services</module>
+        <module>kogito-timer</module>
+        <module>kogito-api-incubation-common</module>
+        <module>kogito-api-incubation-common-objectmapper</module>
+        <module>kogito-api-incubation-application</module>
+        <module>kogito-api-incubation-processes</module>
+        <module>kogito-api-incubation-processes-services</module>
+        <module>kogito-jobs-service-api</module>
+    </modules>
 
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kogito-api-incubation-predictions</module>
-        <module>kogito-api-incubation-predictions-services</module>
-        <module>kogito-api-incubation-decisions</module>
-        <module>kogito-api-incubation-decisions-services</module>
-        <module>kogito-api-incubation-rules</module>
-        <module>kogito-api-incubation-rules-services</module>
-      </modules>
-    </profile>
-  </profiles>
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <property>
+                    <name>!productized</name>
+                </property>
+            </activation>
+            <modules>
+                <module>kogito-api-incubation-predictions</module>
+                <module>kogito-api-incubation-predictions-services</module>
+                <module>kogito-api-incubation-decisions</module>
+                <module>kogito-api-incubation-decisions-services</module>
+                <module>kogito-api-incubation-rules</module>
+                <module>kogito-api-incubation-rules-services</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
