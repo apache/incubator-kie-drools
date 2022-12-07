@@ -22,8 +22,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.drools.ruleunits.impl.domain.SimpleFact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -165,5 +169,16 @@ public class RuleUnitDescriptionTest {
         final Optional<Type> variableTable = ruleUnitDescr.getVarType(varName);
         assertThat(variableTable).isPresent();
         assertThat(variableTable.get()).isEqualTo(expectedType);
+    }
+
+    @Test
+    public void getClockType() {
+        assertThat(ruleUnitDescr.getClockType()).isEqualTo(ClockTypeOption.PSEUDO);
+    }
+
+    @Test
+    public void getKieBaseOptions() {
+        Collection<KieBaseOption> kieBaseOptions = ruleUnitDescr.getKieBaseOptions();
+        assertThat(kieBaseOptions).contains(EventProcessingOption.STREAM);
     }
 }

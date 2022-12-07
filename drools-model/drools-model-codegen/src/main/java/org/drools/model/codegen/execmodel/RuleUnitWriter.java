@@ -19,6 +19,7 @@ package org.drools.model.codegen.execmodel;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Collection;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -26,6 +27,8 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -38,6 +41,8 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
 import org.drools.model.codegen.project.template.TemplatedGenerator;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
@@ -112,6 +117,9 @@ public class RuleUnitWriter {
 
         parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$ClockType$"))
                 .ifPresent(e -> e.replace(clockConfigExpression(ruleUnitDescr.getClockType())));
+
+        parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$KieBaseOptions$"))
+        .ifPresent(e -> e.replace(kieBaseOptionsExpression(ruleUnitDescr)));
 
         return getPrettyPrinter().print(cu);
     }
@@ -201,5 +209,31 @@ public class RuleUnitWriter {
         Expression replacement =
                 (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
         return replacement;
+    }
+
+    private Expression kieBaseOptionsExpression(RuleUnitDescription description) {
+        Collection<KieBaseOption> kieBaseOptions = description.getKieBaseOptions();
+        ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr();
+        arrayCreationExpr.setElementType(KieBaseOption.class.getCanonicalName());
+
+        NodeList<Expression> optionExpressionList = new NodeList<>();
+        for (KieBaseOption kieBaseOption : kieBaseOptions) {
+            if (kieBaseOption instanceof EventProcessingOption) {
+                optionExpressionList.addLast(eventProcessingOptionExpression((EventProcessingOption) kieBaseOption));
+            }
+            // Add any KieBaseOptions if available
+        }
+
+        ArrayInitializerExpr arrayInitializerExpr = new ArrayInitializerExpr(optionExpressionList);
+        arrayCreationExpr.setInitializer(arrayInitializerExpr);
+        return arrayCreationExpr;
+    }
+
+    private Expression eventProcessingOptionExpression(EventProcessingOption eventProcessingOption) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(EventProcessingOption.class.getCanonicalName());
+        sb.append(".");
+        sb.append(eventProcessingOption.getMode().toUpperCase());
+        return parseExpression(sb.toString());
     }
 }

@@ -22,6 +22,7 @@ import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.conf.RuleConfig;
+import org.drools.ruleunits.impl.domain.Person;
 import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
