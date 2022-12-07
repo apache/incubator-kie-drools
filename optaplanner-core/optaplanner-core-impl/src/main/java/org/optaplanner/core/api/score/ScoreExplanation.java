@@ -35,7 +35,7 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
      * Return the {@link Score} being explained.
      * If the specific {@link Score} type used by the {@link PlanningSolution} is required,
      * call {@link #getSolution()} and retrieve it from there.
-     * 
+     *
      * @return never null
      */
     Score_ getScore();

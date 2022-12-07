@@ -15,8 +15,8 @@ public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssi
 
     private static final Comparator<Shift> COMPARATOR = comparing(Shift::getShiftDate,
             Collections.reverseOrder(comparing(ShiftDate::getDate)))
-                    .thenComparing(Shift::getShiftType, comparingLong(ShiftType::getId).reversed())
-                    .thenComparingInt(Shift::getRequiredEmployeeSize);
+            .thenComparing(Shift::getShiftType, comparingLong(ShiftType::getId).reversed())
+            .thenComparingInt(Shift::getRequiredEmployeeSize);
 
     @Override
     public int compare(ShiftAssignment a, ShiftAssignment b) {

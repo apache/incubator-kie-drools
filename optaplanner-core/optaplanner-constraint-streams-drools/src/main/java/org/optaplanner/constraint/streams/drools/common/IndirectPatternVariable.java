@@ -43,7 +43,7 @@ import org.drools.model.view.ViewItem;
  * Unfortunately, this would have been inefficient, as that would prevent these higher-arity functions from being
  * properly JITted and the performance would arguably suffer more than when we have to call an inexpensive mapping
  * function which would likely be optimized by the JIT anyway.
- * 
+ *
  * @param <A> generic type of the primary variable as obtained by the mapping function from the pattern variable
  * @param <PatternVar_>> generic type of the pattern variable
  */

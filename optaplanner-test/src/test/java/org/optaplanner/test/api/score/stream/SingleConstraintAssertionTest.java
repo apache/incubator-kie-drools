@@ -27,7 +27,7 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
                 .given(solution.getEntityList().toArray())
                 .rewards("There should be rewards")).hasMessageContaining("There should be rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("Expected reward");
     }
 
     @Test
@@ -40,7 +40,7 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
                 .given(solution.getEntityList().toArray())
                 .penalizes("There should be penalties.")).hasMessageContaining("There should be penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("Expected penalty");
     }
 
     @Test
@@ -48,50 +48,50 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given()
                 .penalizes(0, "There should be no penalties"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizes(0, "There should be no penalties"))
-                        .hasMessageContaining("There should be no penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should be no penalties")
+                .hasMessageContaining("Expected penalty");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizes(1, "There should be penalties"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizes(2, "There should only be one penalty"))
-                        .hasMessageContaining("There should only be one penalty")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should only be one penalty")
+                .hasMessageContaining("Expected penalty");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .rewards(1, "There should not be rewards"))
-                        .hasMessageContaining("There should not be rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should not be rewards")
+                .hasMessageContaining("Expected reward");
 
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given()
                 .rewards(0, "There should be no rewards"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewards(0, "There should be no rewards"))
-                        .hasMessageContaining("There should be no rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should be no rewards")
+                .hasMessageContaining("Expected reward");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewards(1, "There should be rewards"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewards(2, "There should only be one reward"))
-                        .hasMessageContaining("There should only be one reward")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should only be one reward")
+                .hasMessageContaining("Expected reward");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .penalizes(1, "There should not be penalties"))
-                        .hasMessageContaining("There should not be penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should not be penalties")
+                .hasMessageContaining("Expected penalty");
     }
 
     @Test
@@ -99,50 +99,50 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given()
                 .penalizesBy(0, "There should no penalties"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizesBy(0, "There should be no penalties"))
-                        .hasMessageContaining("There should be no penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should be no penalties")
+                .hasMessageContaining("Expected penalty");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizesBy(1, "There should be penalties"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .penalizesBy(2, "There should only be one penalty"))
-                        .hasMessageContaining("There should only be one penalty")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should only be one penalty")
+                .hasMessageContaining("Expected penalty");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("A", new TestdataValue()))
                 .rewardsWith(1, "There should not be rewards"))
-                        .hasMessageContaining("There should not be rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should not be rewards")
+                .hasMessageContaining("Expected reward");
 
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given()
                 .rewardsWith(0, "There should no rewards"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewardsWith(0, "There should be no rewards"))
-                        .hasMessageContaining("There should be no rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should be no rewards")
+                .hasMessageContaining("Expected reward");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewardsWith(1, "There should be rewards"))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .rewardsWith(2, "There should only be one reward"))
-                        .hasMessageContaining("There should only be one reward")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("There should only be one reward")
+                .hasMessageContaining("Expected reward");
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::impactEveryEntity)
                 .given(new TestdataEntity("B", new TestdataValue()))
                 .penalizesBy(1, "There should not be penalties"))
-                        .hasMessageContaining("There should not be penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("There should not be penalties")
+                .hasMessageContaining("Expected penalty");
     }
 
     @Test
@@ -155,7 +155,7 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
                 .given(solution.getEntityList().toArray())
                 .rewards(1, "There should be rewards")).hasMessageContaining("There should be rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("Expected reward");
     }
 
     @Test
@@ -168,7 +168,7 @@ class SingleConstraintAssertionTest {
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
                 .given(solution.getEntityList().toArray())
                 .penalizes(1, "There should be penalties.")).hasMessageContaining("There should be penalties")
-                        .hasMessageContaining("Expected penalty");
+                .hasMessageContaining("Expected penalty");
     }
 
     @Test
@@ -182,6 +182,6 @@ class SingleConstraintAssertionTest {
                 .given(new TestdataStringPlanningIdEntity("A", "1"),
                         new TestdataStringPlanningIdEntity("B", "1"))
                 .rewards(1, "There should be rewards")).hasMessageContaining("There should be rewards")
-                        .hasMessageContaining("Expected reward");
+                .hasMessageContaining("Expected reward");
     }
 }

@@ -287,7 +287,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * {@link ConstraintFactory#forEach(Class)},
      * a different definition of exists applies.
      * (See {@link ConstraintFactory#from(Class)} Javadoc.)
-     * 
+     *
      * @param otherClass never null
      * @param joiner never null
      * @param <C> the type of the third matched fact

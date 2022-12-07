@@ -72,35 +72,35 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     void toShortString() {
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(-369)).toShortString())
-                        .isEqualTo("[0/-369]soft");
+                .isEqualTo("[0/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toShortString())
-                        .isEqualTo("[-258/-369]soft");
+                .isEqualTo("[-258/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(0), BigDecimal.valueOf(0)).toShortString())
-                        .isEqualTo("[-147]hard");
+                .isEqualTo("[-147]hard");
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toShortString())
-                        .isEqualTo("[-147]hard/[-258/-369]soft");
+                .isEqualTo("[-147]hard/[-258/-369]soft");
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-7,
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toShortString())
-                        .isEqualTo("-7init/[-147]hard/[-258/-369]soft");
+                .isEqualTo("-7init/[-147]hard/[-258/-369]soft");
     }
 
     @Test
     void testToString() {
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(0), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
-                        .hasToString("[0]hard/[-258/-369]soft");
+                .hasToString("[0]hard/[-258/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
-                        .hasToString("[-147]hard/[-258/-369]soft");
+                .hasToString("[-147]hard/[-258/-369]soft");
         assertThat(new BendableBigDecimalScoreDefinition(2, 1).createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
-                        .hasToString("[-147/-258]hard/[-369]soft");
+                .hasToString("[-147/-258]hard/[-369]soft");
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-7,
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
-                        .hasToString("-7init/[-147]hard/[-258/-369]soft");
+                .hasToString("-7init/[-147]hard/[-258/-369]soft");
         assertThat(new BendableBigDecimalScoreDefinition(0, 0).createScore()).hasToString("[]hard/[]soft");
     }
 
@@ -142,20 +142,20 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     void addHSS() {
         assertThat(scoreDefinitionHSS.createScore(PLUS_20, MINUS_20, MINUS_4000).add(
                 scoreDefinitionHSS.createScore(MINUS_ONE, MINUS_300, PLUS_4000)))
-                        .isEqualTo(scoreDefinitionHSS.createScore(PLUS_19, MINUS_320, ZERO));
+                .isEqualTo(scoreDefinitionHSS.createScore(PLUS_19, MINUS_320, ZERO));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, PLUS_20, MINUS_20, MINUS_4000).add(
                 scoreDefinitionHSS.createScoreUninitialized(-7, MINUS_ONE, MINUS_300, PLUS_4000)))
-                        .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-77, PLUS_19, MINUS_320, ZERO));
+                .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-77, PLUS_19, MINUS_320, ZERO));
     }
 
     @Test
     void subtractHSS() {
         assertThat(scoreDefinitionHSS.createScore(PLUS_20, MINUS_20, MINUS_4000).subtract(
                 scoreDefinitionHSS.createScore(MINUS_ONE, MINUS_300, PLUS_4000)))
-                        .isEqualTo(scoreDefinitionHSS.createScore(PLUS_21, PLUS_280, MINUS_8000));
+                .isEqualTo(scoreDefinitionHSS.createScore(PLUS_21, PLUS_280, MINUS_8000));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, PLUS_20, MINUS_20, MINUS_4000).subtract(
                 scoreDefinitionHSS.createScoreUninitialized(-7, MINUS_ONE, MINUS_300, PLUS_4000)))
-                        .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-63, PLUS_21, PLUS_280, MINUS_8000));
+                .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-63, PLUS_21, PLUS_280, MINUS_8000));
     }
 
     @Test
@@ -296,14 +296,14 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     void addHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(PLUS_20, MINUS_20, MINUS_4000, ZERO, ZERO).add(
                 scoreDefinitionHHSSS.createScore(MINUS_ONE, MINUS_300, PLUS_4000, ZERO, ZERO)))
-                        .isEqualTo(scoreDefinitionHHSSS.createScore(PLUS_19, MINUS_320, ZERO, ZERO, ZERO));
+                .isEqualTo(scoreDefinitionHHSSS.createScore(PLUS_19, MINUS_320, ZERO, ZERO, ZERO));
     }
 
     @Test
     void subtractHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(PLUS_20, MINUS_20, MINUS_4000, ZERO, ZERO).subtract(
                 scoreDefinitionHHSSS.createScore(MINUS_ONE, MINUS_300, PLUS_4000, ZERO, ZERO)))
-                        .isEqualTo(scoreDefinitionHHSSS.createScore(PLUS_21, PLUS_280, MINUS_8000, ZERO, ZERO));
+                .isEqualTo(scoreDefinitionHHSSS.createScore(PLUS_21, PLUS_280, MINUS_8000, ZERO, ZERO));
     }
 
     @Test

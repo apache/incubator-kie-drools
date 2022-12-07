@@ -94,7 +94,7 @@ class ListVariableListenerTest {
                 sourceEntity, fromIndex, toIndex - fromIndex,
                 destinationEntity, destinationIndex,
                 reversing)
-                        .doMoveOnly(scoreDirector);
+                .doMoveOnly(scoreDirector);
     }
 
     void doSubListSwapMove(
@@ -105,7 +105,7 @@ class ListVariableListenerTest {
                 leftEntity, leftFromIndex, leftToIndex,
                 rightEntity, rightFromIndex, rightToIndex,
                 reversing)
-                        .doMoveOnly(scoreDirector);
+                .doMoveOnly(scoreDirector);
     }
 
     @Test

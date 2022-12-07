@@ -78,7 +78,7 @@ class HardMediumSoftLongScoreTest extends AbstractScoreTest {
                 HardMediumSoftLongScore.of(-1L, -300L, 4000L))).isEqualTo(HardMediumSoftLongScore.of(19L, -320L, 0L));
         assertThat(HardMediumSoftLongScore.ofUninitialized(-70, 20L, -20L, -4000L).add(
                 HardMediumSoftLongScore.ofUninitialized(-7, -1L, -300L, 4000L)))
-                        .isEqualTo(HardMediumSoftLongScore.ofUninitialized(-77, 19L, -320L, 0L));
+                .isEqualTo(HardMediumSoftLongScore.ofUninitialized(-77, 19L, -320L, 0L));
     }
 
     @Test
@@ -87,7 +87,7 @@ class HardMediumSoftLongScoreTest extends AbstractScoreTest {
                 HardMediumSoftLongScore.of(-1L, -300L, 4000L))).isEqualTo(HardMediumSoftLongScore.of(21L, 280L, -8000L));
         assertThat(HardMediumSoftLongScore.ofUninitialized(-70, 20L, -20L, -4000L).subtract(
                 HardMediumSoftLongScore.ofUninitialized(-7, -1L, -300L, 4000L)))
-                        .isEqualTo(HardMediumSoftLongScore.ofUninitialized(-63, 21L, 280L, -8000L));
+                .isEqualTo(HardMediumSoftLongScore.ofUninitialized(-63, 21L, 280L, -8000L));
     }
 
     @Test

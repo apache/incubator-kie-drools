@@ -32,10 +32,10 @@ class GizmoMemberDescriptorTest {
 
         assertThatCode(() -> new GizmoMemberDescriptor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPrivateProperty")))
-                        .hasMessage("Member (" + "getPrivateProperty" + ") of class (" +
-                                TestdataVisibilityModifierSolution.class.getName()
-                                + ") is not public and domainAccessType is GIZMO.\n" +
-                                "Maybe use domainAccessType REFLECTION instead of GIZMO.");
+                .hasMessage("Member (" + "getPrivateProperty" + ") of class (" +
+                        TestdataVisibilityModifierSolution.class.getName()
+                        + ") is not public and domainAccessType is GIZMO.\n" +
+                        "Maybe use domainAccessType REFLECTION instead of GIZMO.");
     }
 
     @Test

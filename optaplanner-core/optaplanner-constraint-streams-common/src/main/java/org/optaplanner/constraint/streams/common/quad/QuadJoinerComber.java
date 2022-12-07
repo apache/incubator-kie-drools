@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 
 /**
  * Combs an array of {@link QuadJoiner} instances into a mergedJoiner and a mergedFiltering.
- * 
+ *
  * @param <A>
  * @param <B>
  * @param <C>

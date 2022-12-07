@@ -30,7 +30,7 @@ final class BestSolutionHolder<Solution_> {
 
     /**
      * NOT thread-safe.
-     * 
+     *
      * @return the last best solution together with problem changes the solution contains.
      */
     BestSolutionContainingProblemChanges<Solution_> take() {
@@ -54,7 +54,7 @@ final class BestSolutionHolder<Solution_> {
     /**
      * Sets the new best solution if all known problem changes have been processed and thus are contained in this
      * best solution.
-     * 
+     *
      * @param bestSolution the new best solution that replaces the previous one if there is any
      * @param isEveryProblemChangeProcessed a supplier that tells if all problem changes have been processed
      */
@@ -79,7 +79,7 @@ final class BestSolutionHolder<Solution_> {
     /**
      * Adds a new problem change to a solver and registers the problem change to be later retrieved together with
      * a relevant best solution by the {@link #take()} method.
-     * 
+     *
      * @return CompletableFuture that will be completed after the best solution containing this change is passed to
      *         a user-defined Consumer.
      */

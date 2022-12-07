@@ -372,9 +372,9 @@ public abstract class AbstractTriConstraintStreamTest
                 .ifExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -592,9 +592,9 @@ public abstract class AbstractTriConstraintStreamTest
                 .ifNotExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override

@@ -216,7 +216,7 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
                 .map(ConstraintMatchTotal::getScore)
                 .reduce(Score::add)
                 .orElse(bestScore.zero()))
-                        .isEqualTo(scoreExplanation.getScore());
+                .isEqualTo(scoreExplanation.getScore());
         assertThat(scoreExplanation.getIndictmentMap()).isNotNull();
     }
 

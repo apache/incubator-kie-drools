@@ -71,7 +71,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.of(-1L, -300L))).isEqualTo(HardSoftLongScore.of(19L, -320L));
         assertThat(HardSoftLongScore.ofUninitialized(-70, 20L, -20L).add(
                 HardSoftLongScore.ofUninitialized(-7, -1L, -300L)))
-                        .isEqualTo(HardSoftLongScore.ofUninitialized(-77, 19L, -320L));
+                .isEqualTo(HardSoftLongScore.ofUninitialized(-77, 19L, -320L));
     }
 
     @Test
@@ -80,7 +80,7 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
                 HardSoftLongScore.of(-1L, -300L))).isEqualTo(HardSoftLongScore.of(21L, 280L));
         assertThat(HardSoftLongScore.ofUninitialized(-70, 20L, -20L).subtract(
                 HardSoftLongScore.ofUninitialized(-7, -1L, -300L)))
-                        .isEqualTo(HardSoftLongScore.ofUninitialized(-63, 21L, 280L));
+                .isEqualTo(HardSoftLongScore.ofUninitialized(-63, 21L, 280L));
     }
 
     @Test

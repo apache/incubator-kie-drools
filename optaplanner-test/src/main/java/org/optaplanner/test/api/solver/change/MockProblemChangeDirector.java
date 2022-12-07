@@ -15,7 +15,7 @@ import org.optaplanner.core.api.solver.change.ProblemChangeDirector;
  * the {@link ProblemChangeDirector}.
  *
  * Example of usage:
- * 
+ *
  * <pre>
  * {@code java
  *  MockProblemChangeDirector mockProblemChangeDirector = spy(new MockProblemChangeDirector());
@@ -63,7 +63,7 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
     /**
      * If the look-up result has been provided by a {@link #whenLookingUp(Object)} call, returns the defined object.
      * Otherwise, returns the original externalObject.
-     * 
+     *
      * @param externalObject entity or problem fact to look up
      */
     @Override
@@ -75,7 +75,7 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
     /**
      * If the look-up result has been provided by a {@link #whenLookingUp(Object)} call, returns the defined object.
      * Otherwise, returns null.
-     * 
+     *
      * @param externalObject entity or problem fact to look up
      */
     @Override

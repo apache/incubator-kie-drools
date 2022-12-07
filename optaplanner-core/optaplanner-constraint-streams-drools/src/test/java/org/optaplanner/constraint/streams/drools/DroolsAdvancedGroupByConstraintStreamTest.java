@@ -581,7 +581,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         sum((group, count, entity) -> 1))
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
 }

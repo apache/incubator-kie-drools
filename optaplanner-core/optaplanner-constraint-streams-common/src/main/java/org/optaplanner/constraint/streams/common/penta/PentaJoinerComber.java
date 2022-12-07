@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 
 /**
  * Combs an array of {@link PentaJoiner} instances into a mergedJoiner and a mergedFiltering.
- * 
+ *
  * @param <A>
  * @param <B>
  * @param <C>

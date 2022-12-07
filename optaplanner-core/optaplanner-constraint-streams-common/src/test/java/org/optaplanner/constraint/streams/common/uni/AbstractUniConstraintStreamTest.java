@@ -189,9 +189,9 @@ public abstract class AbstractUniConstraintStreamTest
                 .join(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -438,9 +438,9 @@ public abstract class AbstractUniConstraintStreamTest
                 .ifExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -691,9 +691,9 @@ public abstract class AbstractUniConstraintStreamTest
                 .ifNotExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -965,9 +965,9 @@ public abstract class AbstractUniConstraintStreamTest
         assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @TestTemplate

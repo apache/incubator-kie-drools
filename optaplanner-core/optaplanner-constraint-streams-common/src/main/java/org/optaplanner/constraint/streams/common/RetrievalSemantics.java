@@ -34,7 +34,7 @@ public enum RetrievalSemantics {
      * <p>
      * Applies when the stream comes off of a {@link org.optaplanner.core.api.score.stream.ConstraintFactory#from(Class)}
      * family of methods.
-     * 
+     *
      * @deprecated this semantics is deprecated and kept around for backward compatibility reasons. It will be removed in 9.0
      *             together with the from() family of methods, along with this entire enum.
      */

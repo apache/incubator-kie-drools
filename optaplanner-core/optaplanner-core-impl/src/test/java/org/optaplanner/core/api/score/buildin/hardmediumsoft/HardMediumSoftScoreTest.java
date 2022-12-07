@@ -78,7 +78,7 @@ class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.of(-1, -300, 4000))).isEqualTo(HardMediumSoftScore.of(19, -320, 0));
         assertThat(HardMediumSoftScore.ofUninitialized(-70, 20, -20, -4000).add(
                 HardMediumSoftScore.ofUninitialized(-7, -1, -300, 4000)))
-                        .isEqualTo(HardMediumSoftScore.ofUninitialized(-77, 19, -320, 0));
+                .isEqualTo(HardMediumSoftScore.ofUninitialized(-77, 19, -320, 0));
     }
 
     @Test
@@ -87,7 +87,7 @@ class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.of(-1, -300, 4000))).isEqualTo(HardMediumSoftScore.of(21, 280, -8000));
         assertThat(HardMediumSoftScore.ofUninitialized(-70, 20, -20, -4000).subtract(
                 HardMediumSoftScore.ofUninitialized(-7, -1, -300, 4000)))
-                        .isEqualTo(HardMediumSoftScore.ofUninitialized(-63, 21, 280, -8000));
+                .isEqualTo(HardMediumSoftScore.ofUninitialized(-63, 21, 280, -8000));
     }
 
     @Test

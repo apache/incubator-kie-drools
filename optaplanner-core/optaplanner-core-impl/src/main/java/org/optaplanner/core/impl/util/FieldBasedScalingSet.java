@@ -142,7 +142,7 @@ public final class FieldBasedScalingSet<E> implements Set<E> {
     /**
      * As defined by {@link Set#iterator()}.
      * May throw an exception if the iterator is used to remove an element while the set is based on a field.
-     * 
+     *
      * @return never null
      */
     @Override

@@ -33,8 +33,8 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
         private static final Comparator<BedDesignation> COMPARATOR = comparing(BedDesignation::getAdmissionPart,
                 comparingLong(AdmissionPart::getId))
-                        .thenComparing(BedDesignation::getBed, comparingLong(Bed::getId))
-                        .thenComparingLong(BedDesignation::getId);
+                .thenComparing(BedDesignation::getBed, comparingLong(Bed::getId))
+                .thenComparingLong(BedDesignation::getId);
 
         @Override
         public void writeSolution() throws IOException {

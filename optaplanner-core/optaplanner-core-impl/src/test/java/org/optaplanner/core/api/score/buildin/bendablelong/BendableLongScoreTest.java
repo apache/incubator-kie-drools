@@ -92,20 +92,20 @@ class BendableLongScoreTest extends AbstractScoreTest {
     void addHSS() {
         assertThat(scoreDefinitionHSS.createScore(1111111111L, -20L, -9876543210L).add(
                 scoreDefinitionHSS.createScore(2222222222L, -300L, 9876543210L)))
-                        .isEqualTo(scoreDefinitionHSS.createScore(3333333333L, -320L, 0L));
+                .isEqualTo(scoreDefinitionHSS.createScore(3333333333L, -320L, 0L));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, 1111111111L, -20L, -9876543210L).add(
                 scoreDefinitionHSS.createScoreUninitialized(-7, 2222222222L, -300L, 9876543210L)))
-                        .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-77, 3333333333L, -320L, 0L));
+                .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-77, 3333333333L, -320L, 0L));
     }
 
     @Test
     void subtractHSS() {
         assertThat(scoreDefinitionHSS.createScore(3333333333L, -20L, -5555555555L).subtract(
                 scoreDefinitionHSS.createScore(1111111111L, -300L, 3333333333L)))
-                        .isEqualTo(scoreDefinitionHSS.createScore(2222222222L, 280L, -8888888888L));
+                .isEqualTo(scoreDefinitionHSS.createScore(2222222222L, 280L, -8888888888L));
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-70, 3333333333L, -20L, -5555555555L).subtract(
                 scoreDefinitionHSS.createScoreUninitialized(-7, 1111111111L, -300L, 3333333333L)))
-                        .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-63, 2222222222L, 280L, -8888888888L));
+                .isEqualTo(scoreDefinitionHSS.createScoreUninitialized(-63, 2222222222L, 280L, -8888888888L));
     }
 
     @Test
@@ -235,14 +235,14 @@ class BendableLongScoreTest extends AbstractScoreTest {
     void addHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).add(
                 scoreDefinitionHHSSS.createScore(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)))
-                        .isEqualTo(scoreDefinitionHHSSS.createScore(19000000000L, -320000000000L, 0L, 0L, 0L));
+                .isEqualTo(scoreDefinitionHHSSS.createScore(19000000000L, -320000000000L, 0L, 0L, 0L));
     }
 
     @Test
     void subtractHHSSS() {
         assertThat(scoreDefinitionHHSSS.createScore(20000000000L, -20000000000L, -4000000000000L, 0L, 0L).subtract(
                 scoreDefinitionHHSSS.createScore(-1000000000L, -300000000000L, 4000000000000L, 0L, 0L)))
-                        .isEqualTo(scoreDefinitionHHSSS.createScore(21000000000L, 280000000000L, -8000000000000L, 0L, 0L));
+                .isEqualTo(scoreDefinitionHHSSS.createScore(21000000000L, 280000000000L, -8000000000000L, 0L, 0L));
     }
 
     @Test

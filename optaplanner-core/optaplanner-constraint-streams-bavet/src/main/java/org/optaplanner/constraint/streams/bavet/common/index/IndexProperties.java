@@ -9,7 +9,7 @@ public interface IndexProperties {
 
     /**
      * Retrieves index property at a given position.
-     * 
+     *
      * @param index
      * @return never null
      * @param <Type_> {@link ComparisonIndexer} will expect this to implement {@link Comparable}.

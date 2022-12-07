@@ -149,7 +149,7 @@ public class GizmoMemberAccessorEntityEnhancer {
      * Generates the bytecode for the member accessor for the specified field.
      * Additionally enhances the class that declares the field with public simple
      * getters/setters methods for the field if the field is private.
-     * 
+     *
      * @param annotationInstance The annotations on the field
      * @param classOutput Where to output the bytecode
      * @param classInfo The declaring class for the field
@@ -217,7 +217,7 @@ public class GizmoMemberAccessorEntityEnhancer {
      * Additionally enhances the class that declares the method with public simple
      * read/(optionally write if getter method and setter present) methods for the method
      * if the method is private.
-     * 
+     *
      * @param annotationInstance The annotations on the field
      * @param classOutput Where to output the bytecode
      * @param classInfo The declaring class for the field

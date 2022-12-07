@@ -12,7 +12,7 @@ public class MrServiceMovedProcessesCount implements Comparable<MrServiceMovedPr
 
     private static final Comparator<MrServiceMovedProcessesCount> COMPARATOR = comparing(
             (MrServiceMovedProcessesCount count) -> count.service, comparingLong(MrService::getId))
-                    .thenComparingInt(count -> count.movedProcessesCount);
+            .thenComparingInt(count -> count.movedProcessesCount);
     private MrService service;
     private int movedProcessesCount;
 

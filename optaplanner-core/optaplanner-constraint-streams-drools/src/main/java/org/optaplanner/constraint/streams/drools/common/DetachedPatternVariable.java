@@ -54,7 +54,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
  * <p>
  * The pattern that produces the detached variable will be included in prerequisites for another variable.
  * Therefore {@link #build()} of this class returns an empty result.
- * 
+ *
  * @param <A> generic type of the variable
  * @param <PatternVar_>> generic type of the pattern variable, has no effect and exists only to satisfy the interface
  */

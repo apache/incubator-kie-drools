@@ -52,7 +52,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.of(new BigDecimal("-1")))).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("19")));
         assertThat(SimpleBigDecimalScore.ofUninitialized(-70, new BigDecimal("20")).add(
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-1"))))
-                        .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-77, new BigDecimal("19")));
+                .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-77, new BigDecimal("19")));
     }
 
     @Test
@@ -61,7 +61,7 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.of(new BigDecimal("-1")))).isEqualTo(SimpleBigDecimalScore.of(new BigDecimal("21")));
         assertThat(SimpleBigDecimalScore.ofUninitialized(-70, new BigDecimal("20")).subtract(
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-1"))))
-                        .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-63, new BigDecimal("21")));
+                .isEqualTo(SimpleBigDecimalScore.ofUninitialized(-63, new BigDecimal("21")));
     }
 
     @Test

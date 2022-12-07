@@ -64,6 +64,6 @@ class EasyScoreDirectorTest {
         scoreDirector.triggerVariableListeners();
         assertThatThrownBy(
                 () -> scoreDirector.assertShadowVariablesAreNotStale(SimpleScore.ofUninitialized(0, 0), "FirstChange"))
-                        .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 }

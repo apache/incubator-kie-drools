@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 
 /**
  * Combs an array of {@link BiJoiner} instances into a mergedJoiner and a mergedFiltering.
- * 
+ *
  * @param <A>
  * @param <B>
  */

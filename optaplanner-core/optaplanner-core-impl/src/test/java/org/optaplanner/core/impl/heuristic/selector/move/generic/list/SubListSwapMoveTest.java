@@ -145,7 +145,7 @@ class SubListSwapMoveTest {
         assertSameProperties(destinationE1, leftFromIndex, leftToIndex, destinationE2, rightFromIndex, rightToIndex, reversing,
                 new SubListSwapMove<>(variableDescriptor, e1, leftFromIndex, leftToIndex, e2, rightFromIndex, rightToIndex,
                         reversing)
-                                .rebase(destinationScoreDirector));
+                        .rebase(destinationScoreDirector));
     }
 
     static void assertSameProperties(

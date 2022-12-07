@@ -30,8 +30,8 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
     private static final Comparator<BedDesignation> COMPARATOR = comparing(
             (BedDesignation bedDesignation) -> bedDesignation.getAdmissionPart().getFirstNight(),
             NIGHT_COMPARATOR)
-                    .thenComparing(bedDesignation -> bedDesignation.getAdmissionPart().getLastNight(), NIGHT_COMPARATOR)
-                    .thenComparing(BedDesignation::getAdmissionPart, comparingLong(AdmissionPart::getId));
+            .thenComparing(bedDesignation -> bedDesignation.getAdmissionPart().getLastNight(), NIGHT_COMPARATOR)
+            .thenComparing(BedDesignation::getAdmissionPart, comparingLong(AdmissionPart::getId));
 
     @Override
     public List<Move<PatientAdmissionSchedule>> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {

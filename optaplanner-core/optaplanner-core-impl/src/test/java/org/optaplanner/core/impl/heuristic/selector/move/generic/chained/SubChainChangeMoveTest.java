@@ -194,16 +194,16 @@ class SubChainChangeMoveTest {
 
         assertThat(new SubChainChangeMove<>(
                 new SubChain(Arrays.asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0))
-                        .hasToString("[a2..a4] {a1 -> b0}");
+                .hasToString("[a2..a4] {a1 -> b0}");
         assertThat(new SubChainChangeMove<>(
                 new SubChain(Arrays.asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3))
-                        .hasToString("[a1..a5] {a0 -> b3}");
+                .hasToString("[a1..a5] {a0 -> b3}");
         assertThat(new SubChainChangeMove<>(
                 new SubChain(Arrays.asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5))
-                        .hasToString("[a1..a3] {a0 -> a5}");
+                .hasToString("[a1..a3] {a0 -> a5}");
         assertThat(new SubChainChangeMove<>(
                 new SubChain(Arrays.asList(a3)), variableDescriptor, inverseVariableSupply, b2))
-                        .hasToString("[a3..a3] {a2 -> b2}");
+                .hasToString("[a3..a3] {a2 -> b2}");
     }
 
 }

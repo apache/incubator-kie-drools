@@ -545,7 +545,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     /**
      * Assert that the parameter is non-negative and return its value,
      * converting {@code null} to 0.
-     * 
+     *
      * @param param the parameter to test/convert
      * @param name the name of the parameter, for use in the exception message
      * @throws IllegalArgumentException iff param is negative

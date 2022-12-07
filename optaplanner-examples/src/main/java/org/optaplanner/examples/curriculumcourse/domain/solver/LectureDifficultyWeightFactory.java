@@ -29,11 +29,11 @@ public class LectureDifficultyWeightFactory implements SelectionSorterWeightFact
 
         private static final Comparator<LectureDifficultyWeight> COMPARATOR = comparingInt(
                 (LectureDifficultyWeight c) -> c.lecture.getCurriculumSet().size())
-                        .thenComparing(c -> c.unavailablePeriodPenaltyCount)
-                        .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
-                        .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
-                        .thenComparing(c -> c.lecture.getCourse().getMinWorkingDaySize())
-                        .thenComparing(c -> c.lecture, comparingLong(Lecture::getId));
+                .thenComparing(c -> c.unavailablePeriodPenaltyCount)
+                .thenComparingInt(c -> c.lecture.getCourse().getLectureSize())
+                .thenComparingInt(c -> c.lecture.getCourse().getStudentSize())
+                .thenComparing(c -> c.lecture.getCourse().getMinWorkingDaySize())
+                .thenComparing(c -> c.lecture, comparingLong(Lecture::getId));
 
         private final Lecture lecture;
         private final int unavailablePeriodPenaltyCount;

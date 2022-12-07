@@ -14,8 +14,8 @@ public class MrMachineTransientUsage implements Comparable<MrMachineTransientUsa
 
     private static final Comparator<MrMachineTransientUsage> COMPARATOR = comparing(
             (MrMachineTransientUsage transientUsage) -> transientUsage.getClass().getName())
-                    .thenComparing(transientUsage -> transientUsage.machineCapacity, comparingLong(MrMachineCapacity::getId))
-                    .thenComparingLong(transientUsage -> transientUsage.usage);
+            .thenComparing(transientUsage -> transientUsage.machineCapacity, comparingLong(MrMachineCapacity::getId))
+            .thenComparingLong(transientUsage -> transientUsage.usage);
 
     private MrMachineCapacity machineCapacity;
     private long usage;

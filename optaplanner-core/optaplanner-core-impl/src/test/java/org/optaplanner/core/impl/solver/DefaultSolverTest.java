@@ -343,20 +343,20 @@ class DefaultSolverTest {
             if (step.get() != -1) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
-                                .isEqualTo(0);
+                        .isEqualTo(0);
             }
             if (step.get() == 0) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(0);
+                        .isEqualTo(0);
             } else if (step.get() == 1) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(1);
+                        .isEqualTo(1);
             } else if (step.get() == 2) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(2);
+                        .isEqualTo(2);
             }
             step.incrementAndGet();
         });
@@ -451,33 +451,33 @@ class DefaultSolverTest {
                         assertThat(
                                 meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE")
                                         .intValue())
-                                                .isEqualTo(0);
+                                .isEqualTo(0);
 
                         if (step.get() == 2) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(0);
+                                    .isEqualTo(0);
                         } else if (step.get() == 3) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(1);
+                                    .isEqualTo(1);
                         } else if (step.get() == 4) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(2);
+                                    .isEqualTo(2);
                         } else if (step.get() == 5) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(1);
+                                    .isEqualTo(1);
                         } else if (step.get() == 6) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(2);
+                                    .isEqualTo(2);
                         }
                         step.incrementAndGet();
                     }

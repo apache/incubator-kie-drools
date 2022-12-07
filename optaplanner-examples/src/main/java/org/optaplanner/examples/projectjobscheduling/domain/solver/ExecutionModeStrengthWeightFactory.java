@@ -47,7 +47,7 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
 
         private static final Comparator<ExecutionModeStrengthWeight> COMPARATOR = comparingDouble(
                 (ExecutionModeStrengthWeight weight) -> weight.requirementDesirability)
-                        .thenComparing(weight -> weight.executionMode, comparingLong(ExecutionMode::getId));
+                .thenComparing(weight -> weight.executionMode, comparingLong(ExecutionMode::getId));
 
         private final ExecutionMode executionMode;
         private final double requirementDesirability;

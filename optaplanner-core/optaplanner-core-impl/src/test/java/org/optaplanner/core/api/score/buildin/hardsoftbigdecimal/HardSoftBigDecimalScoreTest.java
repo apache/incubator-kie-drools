@@ -85,20 +85,20 @@ class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
     void add() {
         assertThat(HardSoftBigDecimalScore.of(new BigDecimal("20"), new BigDecimal("-20")).add(
                 HardSoftBigDecimalScore.of(new BigDecimal("-1"), new BigDecimal("-300"))))
-                        .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("19"), new BigDecimal("-320")));
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("19"), new BigDecimal("-320")));
         assertThat(HardSoftBigDecimalScore.ofUninitialized(-70, new BigDecimal("20"), new BigDecimal("-20")).add(
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
-                        .isEqualTo(HardSoftBigDecimalScore.ofUninitialized(-77, new BigDecimal("19"), new BigDecimal("-320")));
+                .isEqualTo(HardSoftBigDecimalScore.ofUninitialized(-77, new BigDecimal("19"), new BigDecimal("-320")));
     }
 
     @Test
     void subtract() {
         assertThat(HardSoftBigDecimalScore.of(new BigDecimal("20"), new BigDecimal("-20")).subtract(
                 HardSoftBigDecimalScore.of(new BigDecimal("-1"), new BigDecimal("-300"))))
-                        .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("21"), new BigDecimal("280")));
+                .isEqualTo(HardSoftBigDecimalScore.of(new BigDecimal("21"), new BigDecimal("280")));
         assertThat(HardSoftBigDecimalScore.ofUninitialized(-70, new BigDecimal("20"), new BigDecimal("-20")).subtract(
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-1"), new BigDecimal("-300"))))
-                        .isEqualTo(HardSoftBigDecimalScore.ofUninitialized(-63, new BigDecimal("21"), new BigDecimal("280")));
+                .isEqualTo(HardSoftBigDecimalScore.ofUninitialized(-63, new BigDecimal("21"), new BigDecimal("280")));
     }
 
     @Test

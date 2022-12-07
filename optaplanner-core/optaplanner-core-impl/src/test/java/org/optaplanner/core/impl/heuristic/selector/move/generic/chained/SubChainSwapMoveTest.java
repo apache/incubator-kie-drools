@@ -174,11 +174,11 @@ class SubChainSwapMoveTest {
         assertSameProperties(Arrays.asList(destinationA1, destinationA2, destinationA3), Arrays.asList(destinationC1),
                 new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                         new SubChain(Arrays.asList(a1, a2, a3)), new SubChain(Arrays.asList(c1)))
-                                .rebase(destinationScoreDirector));
+                        .rebase(destinationScoreDirector));
         assertSameProperties(Arrays.asList(destinationA1, destinationA2), Arrays.asList(destinationA3),
                 new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                         new SubChain(Arrays.asList(a1, a2)), new SubChain(Arrays.asList(a3)))
-                                .rebase(destinationScoreDirector));
+                        .rebase(destinationScoreDirector));
     }
 
     public void assertSameProperties(List<Object> leftEntityList, List<Object> rightEntityList, SubChainSwapMove move) {
@@ -207,13 +207,13 @@ class SubChainSwapMoveTest {
 
         assertThat(new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.asList(a2, a3, a4)), new SubChain(Arrays.asList(b1, b2, b3))))
-                        .hasToString("[a2..a4] {a1} <-> [b1..b3] {b0}");
+                .hasToString("[a2..a4] {a1} <-> [b1..b3] {b0}");
         assertThat(new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.asList(a1, a2)), new SubChain(Arrays.asList(a4, a5))))
-                        .hasToString("[a1..a2] {a0} <-> [a4..a5] {a3}");
+                .hasToString("[a1..a2] {a0} <-> [a4..a5] {a3}");
         assertThat(new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.asList(a3)), new SubChain(Arrays.asList(b2))))
-                        .hasToString("[a3..a3] {a2} <-> [b2..b2] {b1}");
+                .hasToString("[a3..a3] {a2} <-> [b2..b2] {b1}");
     }
 
 }

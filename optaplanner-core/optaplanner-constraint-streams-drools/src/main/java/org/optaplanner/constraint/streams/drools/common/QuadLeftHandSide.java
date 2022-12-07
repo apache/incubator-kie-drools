@@ -241,8 +241,8 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<D> variableD = patternVariableD.getPrimaryVariable();
         return new AccumulateFunction(null,
                 () -> new QuadAccumulator<>(variableA, variableB, variableC, variableD, collector))
-                        .with(variableA, variableB, variableC, variableD)
-                        .as(out);
+                .with(variableA, variableB, variableC, variableD)
+                .as(out);
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(QuadFunction<A, B, C, D, NewA> keyMapping) {

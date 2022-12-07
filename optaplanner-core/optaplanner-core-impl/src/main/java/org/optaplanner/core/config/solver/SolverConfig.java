@@ -507,7 +507,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link ScoreDirectorFactoryConfig#withEasyScoreCalculatorClass(Class)}, but returns this.
-     * 
+     *
      * @param easyScoreCalculatorClass sometimes null
      * @return this, never null
      */
@@ -521,7 +521,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link ScoreDirectorFactoryConfig#withConstraintProviderClass(Class)}, but returns this.
-     * 
+     *
      * @param constraintProviderClass sometimes null
      * @return this, never null
      */
@@ -548,7 +548,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     /**
      * As defined by {@link TerminationConfig#withSpentLimit(Duration)}, but returns this.
-     * 
+     *
      * @param spentLimit sometimes null
      * @return this, never null
      */

@@ -32,7 +32,7 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
 
     /**
      * Builds a base {@link MoveSelector} without any advanced capabilities (filtering, sorting, ...).
-     * 
+     *
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching

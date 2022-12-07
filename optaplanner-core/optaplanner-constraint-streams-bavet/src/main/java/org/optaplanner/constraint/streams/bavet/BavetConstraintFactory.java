@@ -47,7 +47,7 @@ public final class BavetConstraintFactory<Solution_>
      * {@link BavetConstraintSessionFactory#buildSession(boolean, Object)} relies on this occurring for all streams.
      * <p>
      * This must be called before the stream receives child streams.
-     * 
+     *
      * @param stream never null
      * @param consumer never null
      * @param <Stream_> the {@link BavetAbstractConstraintStream} subclass

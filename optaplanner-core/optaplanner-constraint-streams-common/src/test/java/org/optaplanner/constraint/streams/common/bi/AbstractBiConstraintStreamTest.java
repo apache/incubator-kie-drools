@@ -359,7 +359,7 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 .join(TestdataLavishExtra.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @TestTemplate
@@ -462,9 +462,9 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 .ifExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override
@@ -656,9 +656,9 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 .ifNotExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
     }
 
     @Override

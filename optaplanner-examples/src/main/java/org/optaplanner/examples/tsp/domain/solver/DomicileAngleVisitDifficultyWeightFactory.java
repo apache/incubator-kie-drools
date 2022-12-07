@@ -30,8 +30,8 @@ public class DomicileAngleVisitDifficultyWeightFactory
 
         private static final Comparator<DomicileAngleVisitDifficultyWeight> COMPARATOR = comparingDouble(
                 (DomicileAngleVisitDifficultyWeight weight) -> weight.domicileAngle)
-                        .thenComparingLong(weight -> weight.domicileRoundTripDistance) // Ascending (further from the depot are more difficult)
-                        .thenComparing(weight -> weight.visit, comparingLong(Visit::getId));
+                .thenComparingLong(weight -> weight.domicileRoundTripDistance) // Ascending (further from the depot are more difficult)
+                .thenComparing(weight -> weight.visit, comparingLong(Visit::getId));
 
         private final Visit visit;
         private final double domicileAngle;

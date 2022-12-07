@@ -16,7 +16,7 @@ import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
  * <p>
  * This class implements {@link Comparable} for consistent ordering of constraint matches in visualizations.
  * The details of this ordering are unspecified and are subject to change.
- * 
+ *
  * @param <Score_> the actual score type
  */
 public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comparable<ConstraintMatch<Score_>> {

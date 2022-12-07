@@ -36,6 +36,6 @@ public final class BavetConstraintStreamImplSupport
             SolutionDescriptor<Solution_> solutionDescriptorSupplier, ConstraintProvider constraintProvider) {
         return (InnerScoreDirector<Solution_, Score_>) new BavetConstraintStreamScoreDirectorFactory<>(
                 solutionDescriptorSupplier, constraintProvider)
-                        .buildScoreDirector(false, constraintMatchEnabled);
+                .buildScoreDirector(false, constraintMatchEnabled);
     }
 }

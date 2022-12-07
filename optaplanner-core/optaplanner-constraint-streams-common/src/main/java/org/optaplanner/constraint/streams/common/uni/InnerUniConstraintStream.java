@@ -51,7 +51,7 @@ public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
 
     /**
      * Allows {@link ConstraintFactory#forEachUniquePair(Class)} to reuse the joiner combing logic.
-     * 
+     *
      * @param otherStream never null
      * @param joinerComber never null
      * @param <B>

@@ -298,7 +298,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     /**
      * Unlike {@link IntMatchExecutor} and its counterparts, this is not being used on CS-D code paths.
      * Therefore it does not require justifications, as DRL will always infer them from the Drools working memory.
-     * 
+     *
      * @param <Score_> the {@link Score} type
      */
     @FunctionalInterface

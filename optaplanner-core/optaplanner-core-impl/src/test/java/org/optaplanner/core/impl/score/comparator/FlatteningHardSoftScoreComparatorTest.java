@@ -42,6 +42,7 @@ class FlatteningHardSoftScoreComparatorTest {
     void compare(int expectedResult, int modifier, String firstScore, String secondScore) {
         assertThat(new FlatteningHardSoftScoreComparator(modifier)
                 .compare(new HardSoftScoreDefinition().parseScore(firstScore),
-                        new HardSoftScoreDefinition().parseScore(secondScore))).isEqualTo(expectedResult);
+                        new HardSoftScoreDefinition().parseScore(secondScore)))
+                .isEqualTo(expectedResult);
     }
 }

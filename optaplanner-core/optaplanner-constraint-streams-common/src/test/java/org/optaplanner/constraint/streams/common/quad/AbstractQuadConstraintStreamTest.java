@@ -160,9 +160,9 @@ public abstract class AbstractQuadConstraintStreamTest
                 .ifExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
 
     }
 
@@ -329,9 +329,9 @@ public abstract class AbstractQuadConstraintStreamTest
                 .ifNotExists(Integer.class)
                 .penalize(SimpleScore.ONE)
                 .asConstraint(TEST_CONSTRAINT_NAME)))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining(Integer.class.getCanonicalName())
-                        .hasMessageContaining("assignable from");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(Integer.class.getCanonicalName())
+                .hasMessageContaining("assignable from");
 
     }
 

@@ -8,7 +8,7 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 /**
  * Combs an array of {@link TriJoiner} instances into a mergedJoiner and a mergedFiltering.
- * 
+ *
  * @param <A>
  * @param <B>
  * @param <C>

@@ -30,12 +30,12 @@ public class BedDesignationDifficultyWeightFactory
 
         private static final Comparator<BedDesignationDifficultyWeight> COMPARATOR = comparingInt(
                 (BedDesignationDifficultyWeight weight) -> weight.requiredEquipmentCount * weight.nightCount)
-                        .thenComparingInt(weight -> weight.hardDisallowedCount * weight.nightCount)
-                        .thenComparingInt(weight -> weight.nightCount)
-                        .thenComparingInt(weight -> weight.softDisallowedCount * weight.nightCount)
-                        // Descending (earlier nights are more difficult) // TODO probably because less occupancy
-                        .thenComparingInt(weight -> -weight.bedDesignation.getAdmissionPart().getFirstNight().getIndex())
-                        .thenComparing(weight -> weight.bedDesignation, comparing(BedDesignation::getId));
+                .thenComparingInt(weight -> weight.hardDisallowedCount * weight.nightCount)
+                .thenComparingInt(weight -> weight.nightCount)
+                .thenComparingInt(weight -> weight.softDisallowedCount * weight.nightCount)
+                // Descending (earlier nights are more difficult) // TODO probably because less occupancy
+                .thenComparingInt(weight -> -weight.bedDesignation.getAdmissionPart().getFirstNight().getIndex())
+                .thenComparing(weight -> weight.bedDesignation, comparing(BedDesignation::getId));
         private final BedDesignation bedDesignation;
         private int requiredEquipmentCount;
         private int nightCount;

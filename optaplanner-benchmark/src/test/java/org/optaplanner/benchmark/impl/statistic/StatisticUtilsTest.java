@@ -25,7 +25,7 @@ class StatisticUtilsTest {
                 .asList(createSubSingleBenchmarkResult(SimpleScore.of(0), 0));
         assertThat(StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList,
                 SimpleScore.of(0), subSingleBenchmarkResultList.size()))
-                        .containsSequence(new double[] { 0d }, offset(DELTA));
+                .containsSequence(new double[] { 0d }, offset(DELTA));
     }
 
     @Test
@@ -35,7 +35,7 @@ class StatisticUtilsTest {
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.of(-4), 1));
         assertThat(StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList,
                 SimpleScore.of(-3), subSingleBenchmarkResultList.size()))
-                        .containsSequence(new double[] { 1d }, offset(DELTA));
+                .containsSequence(new double[] { 1d }, offset(DELTA));
     }
 
     @Test
@@ -52,7 +52,7 @@ class StatisticUtilsTest {
         averageScore = averageScore.divide(subSingleBenchmarkScores.length);
         assertThat(StatisticUtils.determineStandardDeviationDoubles(
                 subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()))
-                        .containsSequence(new double[] { 160338212.294 }, offset(DELTA));
+                .containsSequence(new double[] { 160338212.294 }, offset(DELTA));
     }
 
     @Test
