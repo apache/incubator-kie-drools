@@ -52,6 +52,8 @@ import static org.drools.model.codegen.execmodel.JavaParserCompiler.getPrettyPri
 
 public class RuleUnitWriter {
 
+    private static final String RULE_UNIT_VAR = "ruleUnit";
+
     private static final String TEMPLATE_RULE_UNITS_FOLDER = "/class-templates/ruleunits/";
 
     private final TemplatedGenerator.Builder templateBuilder;
@@ -153,9 +155,9 @@ public class RuleUnitWriter {
             String propertyName = m.getName();
 
             if (m.isDataSource() && m.setter() != null) { // if writable and DataSource is null create and set a new one
-                Expression nullCheck = new BinaryExpr(new MethodCallExpr(new NameExpr("ruleUnit"), methodName), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS);
+                Expression nullCheck = new BinaryExpr(new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS);
                 Expression createDataSourceExpr = createDataSourceMethodCallExpr(m.getBoxedVarType());
-                Expression dataSourceSetter = new MethodCallExpr(new NameExpr("ruleUnit"), m.setter(), new NodeList<>(createDataSourceExpr));
+                Expression dataSourceSetter = new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), m.setter(), new NodeList<>(createDataSourceExpr));
                 methodBlock.addStatement(new IfStmt(nullCheck, new BlockStmt().addStatement(dataSourceSetter), null));
             }
 
@@ -163,7 +165,7 @@ public class RuleUnitWriter {
 
                 //  ruleUnit.$method())
                 Expression fieldAccessor =
-                        new MethodCallExpr(new NameExpr("ruleUnit"), methodName);
+                        new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName);
 
                 // .subscribe( new EntryPointDataProcessor(runtime.getEntryPoint()) )
 
@@ -178,7 +180,7 @@ public class RuleUnitWriter {
 
             MethodCallExpr setGlobalCall = new MethodCallExpr(new NameExpr("evaluator"), "setGlobal");
             setGlobalCall.addArgument(new StringLiteralExpr(propertyName));
-            setGlobalCall.addArgument(new MethodCallExpr(new NameExpr("ruleUnit"), methodName));
+            setGlobalCall.addArgument(new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName));
             methodBlock.addStatement(setGlobalCall);
         }
 
@@ -206,9 +208,7 @@ public class RuleUnitWriter {
     }
 
     private Expression clockConfigExpression(ClockTypeOption clockType) {
-        Expression replacement =
-                (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
-        return replacement;
+        return (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
     }
 
     private Expression kieBaseOptionsExpression(RuleUnitDescription description) {

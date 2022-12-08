@@ -97,14 +97,14 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
 
     @Override
     public Collection<KieBaseOption> getKieBaseOptions() {
-        List<KieBaseOption> KieBaseOptions = new ArrayList<>();
+        List<KieBaseOption> kieBaseOptions = new ArrayList<>();
 
         EventProcessingOption eventProcessingOption = (config.getDefaultedEventProcessingType() == EventProcessingType.CLOUD) ? EventProcessingOption.CLOUD : EventProcessingOption.STREAM;
-        KieBaseOptions.add(eventProcessingOption);
+        kieBaseOptions.add(eventProcessingOption);
 
         // Add any KieBaseOptions if available
 
-        return KieBaseOptions;
+        return kieBaseOptions;
     }
 
     @Override
