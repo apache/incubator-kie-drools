@@ -41,7 +41,7 @@ public class KieSessionModelBuilder {
 
     public KieSessionModelBuilder(DroolsModelBuildContext context, Collection<CodegenPackageSources> packageSources) {
         this.context = context;
-        this.kieBaseModels = KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getResourcePaths()).kieBaseModels();
+        this.kieBaseModels = KieModuleModelWrapper.fromResourcePaths(context.getAppPaths().getPaths()).kieBaseModels();
         this.modelByKBase = getModelByKBase(packageSources, this.kieBaseModels);
     }
 
