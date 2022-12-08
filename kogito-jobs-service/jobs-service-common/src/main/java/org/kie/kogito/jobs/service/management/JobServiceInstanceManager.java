@@ -123,7 +123,15 @@ public class JobServiceInstanceManager {
         LOGGER.warn("Enabled communication for leader instance");
     }
 
-    void onShutdown(@Observes ShutdownEvent shutdownEvent) {
+    void onShutdown(@Observes ShutdownEvent event) {
+        shutdown();
+    }
+
+    void onReleaseLeader(@Observes ReleaseLeaderEvent event) {
+        shutdown();
+    }
+
+    private void shutdown() {
         release(currentInfo.get())
                 .onItem().invoke(i -> checkLeader.cancel())
                 .onItem().invoke(i -> heartbeat.cancel())
@@ -166,6 +174,7 @@ public class JobServiceInstanceManager {
 
     protected Uni<Void> release(JobServiceManagementInfo info) {
         return repository.set(new JobServiceManagementInfo(info.getId(), null, null))
+                .onItem().invoke(this::disableCommunication)
                 .onItem().invoke(i -> leader.set(false))
                 .onItem().invoke(i -> LOGGER.info("Leader instance released"))
                 .onFailure().invoke(ex -> LOGGER.error("Error releasing leader"))
