@@ -65,24 +65,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-postgresql-file</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <sourceFile>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/data_index_create.sql</sourceFile>
-              <destinationFile>${project.basedir}/target/classes/data_index_postgresql_create.sql</destinationFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>

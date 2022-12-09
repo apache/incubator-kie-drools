@@ -163,6 +163,9 @@ public class CompositeTestResource implements TestResource {
                                 service.addEnv("QUARKUS_DATASOURCE_USERNAME", username);
                                 service.addEnv("QUARKUS_DATASOURCE_PASSWORD", password);
                                 service.addEnv("QUARKUS_DATASOURCE_DB-KIND", "postgresql");
+                                service.addEnv("QUARKUS_FLYWAY_MIGRATE_AT_START", "true");
+                                service.addEnv("QUARKUS_FLYWAY_BASELINE_ON_MIGRATE", "true");
+                                service.addEnv("QUARKUS_FLYWAY_CLEAN_AT_START", "false");
                             });
                 });
     }

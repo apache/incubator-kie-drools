@@ -17,10 +17,10 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources</directory>
+            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/db/migration</directory>
             <outputDirectory>postgresql</outputDirectory>
             <includes>
-                <include>*_create.sql</include>
+                <include>*.sql</include>
             </includes>
         </fileSet>
         <fileSet>
