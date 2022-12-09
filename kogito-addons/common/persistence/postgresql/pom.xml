@@ -28,6 +28,18 @@
 
     <!-- test dependencies -->
     <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${version.org.flywaydb}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${version.org.postgresql}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-test-utils</artifactId>
       <scope>test</scope>

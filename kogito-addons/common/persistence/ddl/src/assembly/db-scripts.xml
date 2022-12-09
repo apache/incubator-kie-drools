@@ -8,10 +8,10 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${path.to.persistence.modules}/postgresql/src/main/resources/sql</directory>
+      <directory>${path.to.persistence.modules}/postgresql/src/main/resources/db/migration</directory>
       <outputDirectory>postgresql</outputDirectory>
       <includes>
-        <include>*_create.sql</include>
+        <include>*.sql</include>
       </includes>
     </fileSet>
   </fileSets>

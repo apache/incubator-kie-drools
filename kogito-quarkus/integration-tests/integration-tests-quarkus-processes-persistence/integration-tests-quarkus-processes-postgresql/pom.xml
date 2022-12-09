@@ -23,6 +23,10 @@
       <artifactId>kogito-addons-quarkus-persistence-postgresql</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-process-management</artifactId>
     </dependency>
@@ -45,11 +49,6 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

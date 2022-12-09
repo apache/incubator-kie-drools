@@ -24,17 +24,15 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
 
     private final Long queryTimeout;
     private final PgPool client;
-    private final Boolean autoDDL;
     private final Boolean lock;
 
     // Constructor for DI
     protected AbstractProcessInstancesFactory() {
-        this(null, true, 10000L, false);
+        this(null, 10000L, false);
     }
 
-    public AbstractProcessInstancesFactory(PgPool client, Boolean autoDDL, Long queryTimeout, Boolean lock) {
+    public AbstractProcessInstancesFactory(PgPool client, Long queryTimeout, Boolean lock) {
         this.client = client;
-        this.autoDDL = autoDDL;
         this.queryTimeout = queryTimeout;
         this.lock = lock;
     }
@@ -49,6 +47,6 @@ public abstract class AbstractProcessInstancesFactory implements ProcessInstance
 
     @Override
     public PostgresqlProcessInstances createProcessInstances(Process<?> process) {
-        return new PostgresqlProcessInstances(process, client(), autoDDL, queryTimeout, lock());
+        return new PostgresqlProcessInstances(process, client(), queryTimeout, lock());
     }
 }

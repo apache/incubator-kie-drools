@@ -44,6 +44,15 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-persistence-postgresql</artifactId>
     </dependency>
+    <!--  Flyway  -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-flyway</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

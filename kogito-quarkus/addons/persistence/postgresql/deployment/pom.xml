@@ -26,6 +26,14 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-reactive-pg-client-deployment</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-flyway-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql-deployment</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

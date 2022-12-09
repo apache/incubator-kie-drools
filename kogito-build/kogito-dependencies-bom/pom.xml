@@ -52,6 +52,8 @@
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>6.2.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.9.5</version.io.micrometer>
+    <version.org.flywaydb>9.3.1</version.org.flywaydb>
+    <version.org.postgresql>42.5.0</version.org.postgresql>
     <version.io.serverlessworkflow>4.0.3.Final</version.io.serverlessworkflow>
     <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
     <version.io.smallrye-open-api>2.3.1</version.io.smallrye-open-api>

@@ -69,18 +69,15 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     private final Process<?> process;
     private final PgPool client;
     private final ProcessInstanceMarshallerService marshaller;
-    private final boolean autoDDL;
     private final Long queryTimeoutMillis;
     private final boolean lock;
 
-    public PostgresqlProcessInstances(Process<?> process, PgPool client, boolean autoDDL, Long queryTimeoutMillis, boolean lock) {
+    public PostgresqlProcessInstances(Process<?> process, PgPool client, Long queryTimeoutMillis, boolean lock) {
         this.process = process;
         this.client = client;
-        this.autoDDL = autoDDL;
         this.queryTimeoutMillis = queryTimeoutMillis;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
         this.lock = lock;
-        init();
     }
 
     @Override
@@ -269,48 +266,6 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
             throw uncheckedException(e, "Error counting process instances, for processId %s", process.id());
         } catch (Exception e) {
             throw uncheckedException(e, "Error counting process instances, for processId %s", process.id());
-        }
-    }
-
-    /**
-     * Try to create the table using the same application user, this should not be necessary since the database
-     * is recommended to be configured properly before starting the application.
-     * <p>
-     * Note:
-     * This method could be useful for development and testing purposes and does not break the execution flow,
-     * throwing any exception.
-     * This is only executed in case the configuration for auto DDL is enabled.
-     */
-    private void init() {
-        if (!autoDDL) {
-            LOGGER.debug("Auto DDL is disabled, do not running initializer scripts");
-            return;
-        }
-
-        try {
-            Future<RowSet<Row>> future = client.query(getQueryFromFile("exists_tables")).execute();
-            Future<RowSet<Row>> futureCompose =
-                    future.compose(rows -> Optional.ofNullable(rows.iterator()).filter(Iterator::hasNext).map(Iterator::next).map(row -> row.getBoolean("exists")).filter(Boolean.FALSE::equals)
-                            .map(e -> client.query(getQueryFromFile("runtime_create"))).map(q -> {
-                                LOGGER.info("Creating process_instances table.");
-                                return q.execute();
-                            }).orElseGet(() -> {
-                                LOGGER.info("Table process_instances already exists.");
-                                return Future.succeededFuture(null);
-                            }));
-            getResultFromFuture(futureCompose).map(RowSet::rowCount).ifPresent(count -> {
-                if (count > 0) {
-                    LOGGER.info("DDL successfully done for ProcessInstance");
-                } else {
-                    LOGGER.info("DDL executed with no changes for ProcessInstance");
-                }
-            });
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LOGGER.error("Error creating process_instances table, the database should be configured properly before " + "starting the application", e);
-        } catch (Exception e) {
-            //not break the execution flow in case of any missing permission for db application user, for instance.
-            LOGGER.error("Error creating process_instances table, the database should be configured properly before " + "starting the application", e);
         }
     }
 

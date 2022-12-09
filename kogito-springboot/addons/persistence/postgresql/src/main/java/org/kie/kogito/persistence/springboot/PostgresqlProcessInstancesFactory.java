@@ -29,10 +29,9 @@ public class PostgresqlProcessInstancesFactory extends AbstractProcessInstancesF
 
     @Autowired
     public PostgresqlProcessInstancesFactory(@Qualifier("kogito") PgPool client,
-            @Value("${kogito.persistence.auto.ddl:true}") Boolean autoDDL,
             @Value("${kogito.persistence.query.timeout.millis:10000}") Long queryTimeout,
             @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock) {
-        super(client, autoDDL, queryTimeout, lock);
+        super(client, queryTimeout, lock);
     }
 
     protected PostgresqlProcessInstancesFactory() {
