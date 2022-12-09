@@ -72,7 +72,7 @@ createSetupBranchJob()
 
 // Nightly jobs
 setupSonarCloudJob()
-setupDeployJob(Folder.NIGHTLY)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, Folder.NIGHTLY, true)
 
 setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_NATIVE)
 
