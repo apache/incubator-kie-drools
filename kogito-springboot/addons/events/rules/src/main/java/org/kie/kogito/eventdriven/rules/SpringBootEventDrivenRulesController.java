@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.eventdriven.rules;
 
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
 import org.springframework.beans.factory.annotation.Autowired;

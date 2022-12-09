@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus.conf;
+package org.kie.kogito.quarkus.config;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.conf.StaticConfigBean;
+import org.kie.kogito.config.StaticConfigBean;
 
 @Singleton
 public class ConfigBean extends StaticConfigBean {

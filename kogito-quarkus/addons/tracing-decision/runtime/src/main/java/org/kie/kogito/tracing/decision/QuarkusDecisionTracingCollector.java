@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.kie.kogito.Application;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 

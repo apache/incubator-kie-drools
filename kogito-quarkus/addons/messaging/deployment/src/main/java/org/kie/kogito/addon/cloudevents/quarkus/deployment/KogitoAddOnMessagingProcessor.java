@@ -33,7 +33,7 @@ import org.kie.kogito.codegen.process.ProcessGenerator;
 import org.kie.kogito.quarkus.addons.common.deployment.AnyEngineKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPostGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
-import org.kie.kogito.quarkus.conf.KogitoBuildTimeConfig;
+import org.kie.kogito.quarkus.config.KogitoBuildTimeConfig;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 
 import com.github.javaparser.ast.CompilationUnit;

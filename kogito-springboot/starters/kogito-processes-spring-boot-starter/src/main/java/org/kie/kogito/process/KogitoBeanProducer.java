@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.process;
 
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;

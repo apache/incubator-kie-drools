@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.kogito.Application;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 import org.kie.kogito.tracing.decision.modelsupplier.ApplicationModelSupplier;
 

@@ -15,6 +15,6 @@
  */
 package $Package$;
 
-public class ConfigBean extends org.kie.kogito.conf.StaticConfigBean {
+public class ConfigBean extends org.kie.kogito.config.StaticConfigBean {
 
 }

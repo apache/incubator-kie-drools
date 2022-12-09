@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.quarkus.config;
 
-package org.kie.kogito.quarkus.conf;
+import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.runtime.annotations.ConfigItem;
 
-public enum PersistenceType {
-    JDBC,
-    MONGODB,
-    FILESYSTEM,
-    KAFKA,
-    INFINISPAN,
-    POSTGRESQL
+@ConfigGroup
+public class KogitoRPCRuntimeConfig {
+
+    /**
+     * Indicates if default value of enumerations should be included in grpc response
+     * 
+     */
+    @ConfigItem(name = "enum.includeDefault", defaultValue = "false")
+    public boolean enumDefault;
+
+    /**
+     * Time to wait for response from server when using streams
+     * 
+     */
+    @ConfigItem(name = "stream.timeout", defaultValue = "20")
+    public int streamTimeout;
 }

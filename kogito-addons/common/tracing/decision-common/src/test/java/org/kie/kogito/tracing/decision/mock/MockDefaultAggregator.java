@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.feel.util.Pair;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.tracing.decision.aggregator.DefaultAggregator;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
 

@@ -26,7 +26,7 @@ import java.util.function.Function;
 import javax.annotation.PostConstruct;
 
 import org.kie.kogito.addon.cloudevents.Subscription;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.CloudEventUnmarshallerFactory;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventReceiver;

@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.kie.kogito.event.EventKind;
 

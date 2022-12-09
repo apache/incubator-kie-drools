@@ -24,8 +24,8 @@ import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.conf.StaticConfigBean;
+import org.kie.kogito.config.ConfigBean;
+import org.kie.kogito.config.StaticConfigBean;
 import org.kie.kogito.explainability.model.PredictOutput;
 import org.kie.kogito.test.utils.SocketUtils;
 

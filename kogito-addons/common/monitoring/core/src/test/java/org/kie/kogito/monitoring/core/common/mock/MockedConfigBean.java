@@ -18,7 +18,7 @@ package org.kie.kogito.monitoring.core.common.mock;
 import java.util.Optional;
 
 import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 
 public class MockedConfigBean implements ConfigBean {
 

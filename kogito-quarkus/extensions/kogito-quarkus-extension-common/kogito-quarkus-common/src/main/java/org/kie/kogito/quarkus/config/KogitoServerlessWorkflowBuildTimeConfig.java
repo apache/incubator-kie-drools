@@ -14,24 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.quarkus.conf;
+package org.kie.kogito.quarkus.config;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
 
 @ConfigGroup
-public class KogitoPersistenceBuildTimeConfig {
+public class KogitoServerlessWorkflowBuildTimeConfig {
 
     /**
-     * Generate Protobuf marshallers for runtime
+     * Strategy for generating the configuration key of open API specifications.<br>
+     * Possible values are:
+     * <UL>
+     * <LI>file_name. Uses the last element of the spec uri</LI>
+     * <LI>full_uri. Uses the full path of the uri</LI>
+     * <LI>spec_title. Uses the spec title</LI>
+     * <LI>function_name. Uses the function name</LI>
+     * </UL>
      */
-    @ConfigItem(name = "proto.marshaller", defaultValue = "true")
-    public boolean runtimeProtoMarshaller;
+    @ConfigItem(name = "operationIdStrategy", defaultValue = "file_name")
+    public String operationIdStrategy;
 
     /**
-     * Generate Protobuf marshallers for Data Index
+     * Variable name for foreach loop
      */
-    @ConfigItem(name = "data-index.proto.generation", defaultValue = "true")
-    public boolean dataIndexProtoMarshaller;
+    @ConfigItem(name = "states.foreach.outputVarName", defaultValue = "_swf_eval_temp")
+    public String forEachOutputVarName;
 
 }

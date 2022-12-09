@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.concurrent.CompletionStage;
 
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventEmitter;

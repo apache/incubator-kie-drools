@@ -37,7 +37,7 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
             List<ProcessEventListenerConfig> processEventListenerConfigs,
             List<ProcessEventListener> processEventListeners,
             List<EventPublisher> eventPublishers,
-            org.kie.kogito.conf.ConfigBean configBean,
+            org.kie.kogito.config.ConfigBean configBean,
             List<UnitOfWorkEventListener> unitOfWorkEventListeners,
             List<ProcessVersionResolver> versionResolver) {
 

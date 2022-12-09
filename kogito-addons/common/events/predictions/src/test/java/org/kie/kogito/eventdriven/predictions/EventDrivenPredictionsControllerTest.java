@@ -16,7 +16,7 @@
 package org.kie.kogito.eventdriven.predictions;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventReceiver;
 import org.kie.kogito.prediction.PredictionModels;

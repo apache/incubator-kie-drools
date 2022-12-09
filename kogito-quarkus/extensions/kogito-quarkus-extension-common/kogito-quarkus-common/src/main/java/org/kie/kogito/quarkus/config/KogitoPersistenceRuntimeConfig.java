@@ -14,31 +14,38 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.quarkus.conf;
+package org.kie.kogito.quarkus.config;
+
+import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
 
 @ConfigGroup
-public class KogitoServerlessWorkflowBuildTimeConfig {
+public class KogitoPersistenceRuntimeConfig {
 
     /**
-     * Strategy for generating the configuration key of open API specifications.<br>
-     * Possible values are:
-     * <UL>
-     * <LI>file_name. Uses the last element of the spec uri</LI>
-     * <LI>full_uri. Uses the full path of the uri</LI>
-     * <LI>spec_title. Uses the spec title</LI>
-     * <LI>function_name. Uses the function name</LI>
-     * </UL>
+     * Persistence DB type
      */
-    @ConfigItem(name = "operationIdStrategy", defaultValue = "file_name")
-    public String operationIdStrategy;
+    @ConfigItem
+    public Optional<PersistenceType> type;
 
     /**
-     * Variable name for foreach loop
+     * Automatically apply database schema changes
      */
-    @ConfigItem(name = "states.foreach.outputVarName", defaultValue = "_swf_eval_temp")
-    public String forEachOutputVarName;
+    @ConfigItem(name = "auto.ddl", defaultValue = "true")
+    public boolean autoDDL;
+
+    /**
+     * Use optimistic locking
+     */
+    @ConfigItem(name = "optimistic.lock", defaultValue = "false")
+    public boolean optimisticLock;
+
+    /**
+     * Query execution timeout
+     */
+    @ConfigItem(name = "query.timeout.millis", defaultValue = "10000")
+    public long queryTimeout;
 
 }

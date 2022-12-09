@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.kogito.conf.StaticConfigBean;
+import org.kie.kogito.config.StaticConfigBean;
 import org.kie.kogito.dmn.DecisionTestUtils;
 import org.kie.kogito.tracing.decision.DecisionTracingTestUtils;
 import org.kie.kogito.tracing.decision.event.evaluate.EvaluateEvent;
