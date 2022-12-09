@@ -76,7 +76,8 @@ KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConf
 createSetupBranchJob()
 
 // Nightly jobs
-setupDeployJob(Folder.NIGHTLY)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, Folder.NIGHTLY, true)
+
 setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_NATIVE)
 
 setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN)
