@@ -53,7 +53,7 @@
       "type": "operation",
       "actions": [
        {
-          "name": "maxAction",
+         "name": "maxAction",
           "functionRef": {
             "refName": "max"
           },
@@ -101,9 +101,15 @@
          },
          {
            "name": "discardedResultAction",
+           "sleep" : {
+             "before" : "PT0.001S"
+           },
            "functionRef" : {
              "refName" : "discardedResult"
             },
+           "sleep" : {
+             "after" : "PT0.001S"
+           },
             "actionDataFilter" : {
               "useResults" : false 
             }

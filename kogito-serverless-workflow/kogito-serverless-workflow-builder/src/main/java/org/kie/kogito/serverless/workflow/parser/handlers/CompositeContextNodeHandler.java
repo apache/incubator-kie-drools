@@ -24,6 +24,7 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.AbstractCompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
+import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespaceFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -37,9 +38,11 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionRef;
 import io.serverlessworkflow.api.functions.SubFlowRef;
 import io.serverlessworkflow.api.interfaces.State;
+import io.serverlessworkflow.api.sleep.Sleep;
 import io.serverlessworkflow.api.workflow.Functions;
 
 import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.subprocessNode;
+import static org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils.timerNode;
 
 public abstract class CompositeContextNodeHandler<S extends State> extends StateHandler<S> {
 
@@ -60,7 +63,14 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             NodeFactory<?, ?> startNode = embeddedSubProcess.startNode(parserContext.newId()).name("EmbeddedStart");
             NodeFactory<?, ?> currentNode = startNode;
             for (Action action : actions) {
+                Sleep sleep = action.getSleep();
+                if (sleep != null && isDurationThere(sleep.getBefore())) {
+                    currentNode = connect(currentNode, createTimerNode(embeddedSubProcess, sleep.getBefore()));
+                }
                 currentNode = connect(currentNode, getActionNode(embeddedSubProcess, action, outputVar, shouldMerge));
+                if (sleep != null && isDurationThere(sleep.getAfter())) {
+                    currentNode = connect(currentNode, createTimerNode(embeddedSubProcess, sleep.getAfter()));
+                }
             }
             connect(currentNode, embeddedSubProcess.endNode(parserContext.newId()).name("EmbeddedEnd").terminate(true)).done();
         } else {
@@ -100,6 +110,10 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
         } else {
             throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
         }
+    }
+
+    private TimerNodeFactory<?> createTimerNode(RuleFlowNodeContainerFactory<?, ?> factory, String duration) {
+        return timerNode(factory.timerNode(parserContext.newId()), duration);
     }
 
     private NodeFactory<?, ?> getActionNode(RuleFlowNodeContainerFactory<?, ?> factory,
@@ -145,5 +159,9 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private Optional<NodeFactory> fromPredefinedFunction(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             FunctionRef functionRef, VariableInfo varInfo) {
         return FunctionNamespaceFactory.instance().getNamespace(functionRef).map(f -> f.getActionNode(workflow, parserContext, embeddedSubProcess, functionRef, varInfo));
+    }
+
+    private static boolean isDurationThere(String sleepTime) {
+        return sleepTime != null && !sleepTime.isBlank();
     }
 }
