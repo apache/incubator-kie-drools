@@ -16,9 +16,12 @@
 
 package org.kie.dmn.core.classloader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -29,19 +32,13 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.decisiontable.DTListenerTest;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionTable;
-import org.kie.dmn.model.api.FunctionDefinition;
-import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.model.api.RuleAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DTAnnotationListenerTest {
 
@@ -56,22 +53,7 @@ public class DTAnnotationListenerTest {
         }
 
         public static DecisionTable locateDTfromEvent(AfterEvaluateDecisionTableEvent event) {
-            DMNModel dmnModel = ((DMNResultImpl) event.getResult()).getModel();
-            String decisionTableName = event.getDecisionTableName();
-            DRGElement drge = dmnModel.getDefinitions().getDrgElement().stream().filter(e -> e.getName().equals(event.getNodeName())).findFirst().orElseThrow(IllegalStateException::new);
-            DecisionTable dt = drge.findAllChildren(DecisionTable.class).stream().filter(d -> decisionTableName.equals(nameOfTable(d).orElse(""))).findFirst().orElseThrow(IllegalStateException::new);
-            return dt;
-        }
-
-        public static Optional<String> nameOfTable(DecisionTable sourceDT) {
-            if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
-                return Optional.of(sourceDT.getOutputLabel());
-            } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
-                return Optional.of(((NamedElement) sourceDT.getParent()).getName());
-            } else if (sourceDT.getParent() instanceof FunctionDefinition && sourceDT.getParent().getParent() instanceof NamedElement) { // DT is decision logic of BKM.
-                return Optional.of(((NamedElement) sourceDT.getParent().getParent()).getName());
-            }
-            return Optional.empty();
+            return DTListenerTest.locateDTbyId(((DMNResultImpl) event.getResult()).getModel(), event.getDecisionTableId());
         }
 
         public List<String> getMatchedAnns() {
