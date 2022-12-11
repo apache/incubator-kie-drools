@@ -91,16 +91,16 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
-    public static void fireBeforeEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, DMNResult result) {
+    public static void fireBeforeEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, String dtId, DMNResult result) {
         if( eventManager.hasListeners() ) {
-            BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl(nodeName, dtName, result);
+            BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl(nodeName, dtName, dtId, result);
             notifyListeners(eventManager, l -> l.beforeEvaluateDecisionTable(event));
         }
     }
 
-    public static void fireAfterEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, DMNResult result, List<Integer> matches, List<Integer> fired ) {
+    public static void fireAfterEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired ) {
         if( eventManager.hasListeners() ) {
-            AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl(nodeName, dtName, result, matches, fired);
+            AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl(nodeName, dtName, dtId, result, matches, fired);
             notifyListeners(eventManager, l -> l.afterEvaluateDecisionTable(event));
         }
     }

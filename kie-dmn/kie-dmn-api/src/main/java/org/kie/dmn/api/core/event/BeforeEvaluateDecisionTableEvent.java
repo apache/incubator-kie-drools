@@ -20,4 +20,8 @@ public interface BeforeEvaluateDecisionTableEvent extends DMNEvent {
     String getNodeName();
 
     String getDecisionTableName();
+    
+    default String getDecisionTableId() {
+        return null;
+    }
 }

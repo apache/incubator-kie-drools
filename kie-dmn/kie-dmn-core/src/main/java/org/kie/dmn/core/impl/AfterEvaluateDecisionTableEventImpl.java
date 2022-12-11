@@ -27,13 +27,15 @@ public class AfterEvaluateDecisionTableEventImpl
 
     private final String        nodeName;
     private final String        dtName;
+    private final String        dtId;
     private final DMNResult     result;
     private final List<Integer> matches;
     private final List<Integer> fired;
 
-    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResult result, List<Integer> matches, List<Integer> fired) {
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired) {
         this.nodeName = nodeName;
         this.dtName = dtName;
+        this.dtId = dtId;
         this.result = result;
         this.matches = matches;
         this.fired = fired;
@@ -47,6 +49,11 @@ public class AfterEvaluateDecisionTableEventImpl
     @Override
     public String getDecisionTableName() {
         return dtName;
+    }
+
+    @Override
+    public String getDecisionTableId() {
+        return dtId;
     }
 
     @Override

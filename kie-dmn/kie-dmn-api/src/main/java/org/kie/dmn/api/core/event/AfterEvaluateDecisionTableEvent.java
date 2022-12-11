@@ -23,6 +23,10 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
     String getNodeName();
 
     String getDecisionTableName();
+    
+    default String getDecisionTableId() {
+        return null;
+    }
 
     List<Integer> getMatches();
 

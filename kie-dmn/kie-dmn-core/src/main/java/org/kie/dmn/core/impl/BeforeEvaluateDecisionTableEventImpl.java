@@ -24,11 +24,13 @@ public class BeforeEvaluateDecisionTableEventImpl
 
     private final String nodeName;
     private final String dtName;
+    private final String dtId;
     private final DMNResult result;
 
-    public BeforeEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResult result) {
+    public BeforeEvaluateDecisionTableEventImpl(String nodeName, String dtName, String dtId, DMNResult result) {
         this.nodeName = nodeName;
         this.dtName = dtName;
+        this.dtId = dtId;
         this.result = result;
     }
 
@@ -40,6 +42,11 @@ public class BeforeEvaluateDecisionTableEventImpl
     @Override
     public String getDecisionTableName() {
         return dtName;
+    }
+
+    @Override
+    public String getDecisionTableId() {
+        return dtId;
     }
 
     @Override

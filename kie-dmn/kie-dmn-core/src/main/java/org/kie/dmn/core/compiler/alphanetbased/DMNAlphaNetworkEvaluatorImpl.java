@@ -51,18 +51,21 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
     private Results results;
     private final DMNFEELHelper feel;
     private final String decisionTableName;
+    private final String decisionTableId;
     private final FeelDecisionTable feelDecisionTable;
     private final DMNBaseNode node;
 
     public DMNAlphaNetworkEvaluatorImpl(DMNAlphaNetworkEvaluator compiledNetwork,
                                         DMNFEELHelper feel,
                                         String decisionTableName,
+                                        String decisionTableId,
                                         FeelDecisionTable feelDecisionTable,
                                         DMNBaseNode node,
                                         Results results) {
         this.feel = feel;
         this.decisionTableName = decisionTableName;
         this.feelDecisionTable = feelDecisionTable;
+        this.decisionTableId = decisionTableId;
         this.node = node;
         this.compiledNetwork = compiledNetwork;
         this.results = results;
@@ -70,7 +73,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnResult) {
-        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult);
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, decisionTableId, dmnResult);
 
         EvaluationContext evalCtx = createEvaluationContext(results.getEvents(), eventManager, dmnResult);
         evalCtx.enterFrame();
@@ -105,7 +108,7 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
             throw e;
         } finally {
             evalCtx.exitFrame();
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult,
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, decisionTableId, dmnResult,
                                                                        (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
         }
     }

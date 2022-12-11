@@ -754,6 +754,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         dti.setCompiledParameterNames(compiledParameterNames);
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
         DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator(node, feelInstance, dtf);
+        dtee.setDtNodeId(dt.getId());
         return dtee;
     }
 
