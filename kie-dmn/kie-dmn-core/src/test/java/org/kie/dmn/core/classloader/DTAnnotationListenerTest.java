@@ -48,24 +48,22 @@ public class DTAnnotationListenerTest {
     public static final Logger LOG = LoggerFactory.getLogger(DTAnnotationListenerTest.class);
 
     public static class DTAnnotationListener extends DefaultDMNRuntimeEventListener {
-        private List<String> matchedAnns = new ArrayList<>();
-        private List<String> selectedAnns = new ArrayList<>();
+        private List<AfterEvaluateDecisionTableEvent> events = new ArrayList<>();
 
         @Override
         public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+            events.add(event);
+        }
+
+        public static DecisionTable locateDTfromEvent(AfterEvaluateDecisionTableEvent event) {
             DMNModel dmnModel = ((DMNResultImpl) event.getResult()).getModel();
             String decisionTableName = event.getDecisionTableName();
             DRGElement drge = dmnModel.getDefinitions().getDrgElement().stream().filter(e -> e.getName().equals(event.getNodeName())).findFirst().orElseThrow(IllegalStateException::new);
             DecisionTable dt = drge.findAllChildren(DecisionTable.class).stream().filter(d -> decisionTableName.equals(nameOfTable(d).orElse(""))).findFirst().orElseThrow(IllegalStateException::new);
-            for (Integer m : event.getMatches()) {
-                matchedAnns.add(dt.getRule().get(m - 1).getAnnotationEntry().stream().map(RuleAnnotation::getText).collect(Collectors.joining(", ")));
-            }
-            for (Integer s : event.getSelected()) {
-                selectedAnns.add(dt.getRule().get(s - 1).getAnnotationEntry().stream().map(RuleAnnotation::getText).collect(Collectors.joining(", ")));
-            }
+            return dt;
         }
 
-        public Optional<String> nameOfTable(DecisionTable sourceDT) {
+        public static Optional<String> nameOfTable(DecisionTable sourceDT) {
             if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
                 return Optional.of(sourceDT.getOutputLabel());
             } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
@@ -77,10 +75,24 @@ public class DTAnnotationListenerTest {
         }
 
         public List<String> getMatchedAnns() {
+            List<String> matchedAnns = new ArrayList<>();
+            for (AfterEvaluateDecisionTableEvent event : events) {
+                DecisionTable dt = locateDTfromEvent(event);
+                for (Integer m : event.getMatches()) {
+                    matchedAnns.add(dt.getRule().get(m - 1).getAnnotationEntry().stream().map(RuleAnnotation::getText).collect(Collectors.joining(", ")));
+                }
+            }
             return matchedAnns;
         }
 
         public List<String> getSelectedAnns() {
+            List<String> selectedAnns = new ArrayList<>();
+            for (AfterEvaluateDecisionTableEvent event : events) {
+                for (Integer s : event.getSelected()) {
+                    DecisionTable dt = locateDTfromEvent(event);
+                    selectedAnns.add(dt.getRule().get(s - 1).getAnnotationEntry().stream().map(RuleAnnotation::getText).collect(Collectors.joining(", ")));
+                }
+            }
             return selectedAnns;
         }
     }
