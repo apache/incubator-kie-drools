@@ -254,6 +254,10 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return tupleMemoryEnabled;
     }
 
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }
+
     /**
      * Returns the next node
      * @return

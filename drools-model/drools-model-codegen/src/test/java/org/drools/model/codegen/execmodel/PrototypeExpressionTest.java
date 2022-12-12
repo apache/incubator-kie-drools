@@ -26,7 +26,7 @@ import static org.drools.model.PrototypeExpression.fixedValue;
 import static org.drools.model.PrototypeExpression.prototypeField;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 
-public class SegmentPrototypeExpressionTest {
+public class PrototypeExpressionTest {
 
     @Test
     public void testExpression() {

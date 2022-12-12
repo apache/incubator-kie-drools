@@ -27,13 +27,9 @@ import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.SegmentMemory.BetaMemoryPrototype;
-import org.drools.core.reteoo.SegmentMemory.MemoryPrototype;
-import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -63,13 +59,6 @@ public class PhreakJoinNodeTest {
 
         sinkNode = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
 
-        SegmentPrototype proto1 = new SegmentPrototype(joinNode, joinNode);
-        proto1.setNodesInSegment(new LeftTupleNode[]{joinNode});
-        proto1.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
-        SegmentPrototype proto2 = new SegmentPrototype(sinkNode, sinkNode);
-        proto2.setNodesInSegment(new LeftTupleNode[]{sinkNode});
-        proto2.setMemories(new MemoryPrototype[]{new BetaMemoryPrototype(0, null)});
-
         joinNode.addTupleSink( sinkNode );
 
         wm = (InternalWorkingMemory) KnowledgeBaseFactory.newKnowledgeBase(buildContext.getRuleBase()).newKieSession();
@@ -78,10 +67,10 @@ public class PhreakJoinNodeTest {
         
         bm0 =(BetaMemory)  wm.getNodeMemory( sinkNode );
         
-        smem = proto1.newSegmentMemory(wm);
+        smem = new SegmentMemory( joinNode ) ;
         bm.setSegmentMemory( smem );
         
-        smem0 = proto2.newSegmentMemory(wm);
+        smem0 = new SegmentMemory( sinkNode ) ;
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 

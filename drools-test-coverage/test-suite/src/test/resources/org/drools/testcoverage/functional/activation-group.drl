@@ -109,7 +109,6 @@ rule "defaultSalienceWithRecursion2"
     when
 	String(this == "defaultSalienceWithRecursion") or String(this == "defaultSalienceWithRecursionCall")
     then
-    insert("defaultSalienceWithRecursionCall");
 end
 
 rule "defaultSalienceWithRecursion3"

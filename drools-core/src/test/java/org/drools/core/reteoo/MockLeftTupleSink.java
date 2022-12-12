@@ -110,6 +110,9 @@ public class MockLeftTupleSink extends LeftTupleSource
         return false;
     }
 
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+    }
+
     public void networkUpdated(UpdateContext updateContext) {
     }
 

@@ -185,6 +185,10 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         return tupleMemoryEnabled;
     }
 
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }
+
     /**
      * Returns the next node
      * @return

@@ -20,7 +20,6 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.RuleBase;
 import org.kie.api.runtime.KieSession;
 
@@ -68,9 +67,9 @@ public class ReteMemoryChecker {
             }
         }
 
-        NetworkNode[] sinks = node.getSinks();
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
-            for (NetworkNode sink : sinks) {
+            for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
                     checkNodeMemory( wm, (BaseNode) sink );
                 }
