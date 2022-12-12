@@ -51,7 +51,7 @@ public class EvalConditionNode extends LeftTupleSource
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
-    private Map<RuleKey, RuleComponent> componentsMap = new HashMap<>();
+    private Map<Rule, RuleComponent> componentsMap = new HashMap<>();
 
     // ------------------------------------------------------------
     // Constructors
@@ -138,6 +138,10 @@ public class EvalConditionNode extends LeftTupleSource
 
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
+    }
+
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
 
     /**
@@ -275,39 +279,17 @@ public class EvalConditionNode extends LeftTupleSource
         }
     }
 
-
-    public static class RuleKey {
-        Rule rule;
-        int subRuleindex;
-
-        public RuleKey(Rule rule, int subRuleindex) {
-            this.rule = rule;
-            this.subRuleindex = subRuleindex;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            RuleKey ruleKey = (RuleKey) o;
-            return subRuleindex == ruleKey.subRuleindex && rule.equals(ruleKey.rule);
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * (31 + rule.hashCode()) + subRuleindex;
-        }
-    }
-
     @Override
     public void addAssociation( BuildContext context, Rule rule ) {
         super.addAssociation(context, rule);
-        componentsMap.put(new RuleKey(rule, context.getSubRuleIndex()), context.peekRuleComponent());
+        componentsMap.put(rule, context.peekRuleComponent());
     }
 
     @Override
-    public boolean removeAssociation( Rule rule, RuleRemovalContext context ) {
-        boolean result = super.removeAssociation(rule, context);
+    public boolean removeAssociation( Rule rule ) {
+        boolean result = super.removeAssociation(rule);
         if (!isAssociatedWith( rule )) {
-            componentsMap.remove( new RuleKey(rule, context.getSubRuleIndex()) );
+            componentsMap.remove( rule );
         }
         return result;
     }

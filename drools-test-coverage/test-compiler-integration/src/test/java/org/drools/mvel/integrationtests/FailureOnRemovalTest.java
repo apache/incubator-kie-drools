@@ -99,7 +99,6 @@ public class FailureOnRemovalTest {
     private Collection<KiePackage> compileRule(String name) throws DroolsParserException,
                                                                  IOException {
         String drl = getDrl( name );
-        System.out.println(drl);
         return KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl).getKiePackages();
     }
 

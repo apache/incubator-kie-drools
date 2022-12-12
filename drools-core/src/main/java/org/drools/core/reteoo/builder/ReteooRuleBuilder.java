@@ -108,10 +108,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, List<PathEndNode> impacted, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
+    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
 
         // the list of terminal nodes
-        final List<TerminalNode> termNodes = new ArrayList<>();
+        final List<TerminalNode> nodes = new ArrayList<>();
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs( LogicTransformer.getInstance(), kBase.getGlobals() );
@@ -121,7 +121,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( kBase, workingMemories );
             context.setRule( rule );
-            context.setSubRuleIndex( i );
 
             // if running in STREAM mode, calculate temporal distance for events
             if (EventProcessingOption.STREAM.equals( kBase.getConfiguration().getEventProcessingMode() )) {
@@ -138,20 +137,19 @@ public class ReteooRuleBuilder implements RuleBuilder {
             }
 
             // adds subrule
-            context.setSubRuleIndex(i);
-            addSubRule( context, subrules[i], rule, impacted );
-            // adds the terminal node to the list of terminal nodes
+            final TerminalNode node = this.addSubRule( context, subrules[i], i, rule );
 
-            termNodes.addAll(context.getTerminals());
+            // adds the terminal node to the list of terminal nodes
+            nodes.add( node );
         }
 
-        return termNodes;
+        return nodes;
     }
 
-    private void addSubRule(final BuildContext context,
-                            final GroupElement subrule,
-                            final RuleImpl rule,
-                            final List<PathEndNode> impacted) throws InvalidPatternException {
+    private TerminalNode addSubRule( final BuildContext context,
+                                     final GroupElement subrule,
+                                     final int subruleIndex,
+                                     final RuleImpl rule ) throws InvalidPatternException {
         context.setSubRule(subrule);
 
         // gets the appropriate builder
@@ -168,64 +166,42 @@ public class ReteooRuleBuilder implements RuleBuilder {
                        this.utils,
                        subrule );
 
-        TerminalNode terminal;
-        if (!context.isTerminated()) {
-            terminal = buildTerminal(context, subrule, rule, utils);
-        } else {
-            // from a non-conditional NamedConsequence. Conditionals do not generate subrules
-            terminal = (TerminalNode) context.getLastNode();
+        if (context.isTerminated()) {
+            context.setTerminated(false);
+            return ((TerminalNode) context.getLastNode());
         }
 
-        attachTerminalNode(context, terminal, impacted);
-
-    }
-
-    public static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
-        return buildTerminalNodeForConsequence(context, subrule, context.getSubRuleIndex(), null, rule.getTimer(), utils);
-    }
-
-    public static TerminalNode buildTerminalNodeForConsequence(BuildContext context, GroupElement subrule, int subRuleIndex,
-                                                               NamedConsequence namedConsequence, Timer timer, BuildUtils utils) {
-        RuleImpl rule = context.getRule();
-        if  (timer != null ) {
-            ReteooComponentBuilder builder = utils.getBuilderFor( Timer.class );
-            builder.build(context, utils, rule.getTimer());
+        if  ( rule.getTimer() != null ) {
+            builder = this.utils.getBuilderFor( Timer.class );
+            builder.build( context, this.utils, rule.getTimer() );
         }
 
         ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
-
-        if (namedConsequence != null) {
-            context.setConsequenceName(namedConsequence.getConsequenceName());
-        }
         TerminalNode terminal = factory.createActivationListener( context.getNextNodeId(),
                                                                   context.getTupleSource(),
                                                                   rule,
                                                                   subrule,
-                                                                  subRuleIndex,
+                                                                  subruleIndex,
                                                                   context );
-        context.setConsequenceName( null );
+
+        BaseNode baseTerminalNode = (BaseNode) terminal;
+        baseTerminalNode.networkUpdated(new UpdateContext());
+        baseTerminalNode.attach(context);
+
+        setPathEndNodes(context);
+
+        AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getRuleBase() );
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add((BaseNode) terminal);
+        context.getNodes().add( baseTerminalNode );
+
+        // assigns partition IDs to the new nodes
+        //assignPartitionId(context);
 
         return terminal;
     }
 
-    public static void attachTerminalNode(BuildContext context, TerminalNode terminalNode, List<PathEndNode> impacted) {
-        context.getTerminals().add(terminalNode);
-        context.setTerminated(true);
-
-        BaseNode baseTerminalNode = (BaseNode) terminalNode;
-        context.getNodes().add(baseTerminalNode);
-        baseTerminalNode.networkUpdated(new UpdateContext());
-        baseTerminalNode.attach(context);
-
-        setPathEndNodes(context, terminalNode);
-
-        impacted.addAll(AddRemoveRule.addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase()));
-    }
-
-    private static void setPathEndNodes(BuildContext context, TerminalNode terminalNode) {
+    private void setPathEndNodes(BuildContext context) {
         // Store the paths in reverse order, from the outermost (the main path) to the innermost subnetwork paths
         PathEndNode[] pathEndNodes = context.getPathEndNodes().toArray(new PathEndNode[context.getPathEndNodes().size()]);
         for ( int i = 0; i < pathEndNodes.length; i++ ) {
@@ -240,8 +216,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
                 node.setPathEndNodes( pathEndNodes );
             }
         }
-
-        terminalNode.visitLeftTupleNodes(n -> n.getAssociatedTerminals().put(terminalNode.getId(), terminalNode));
     }
 
     /**

@@ -31,6 +31,8 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     boolean isLeftTupleMemoryEnabled();
 
+    void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled);
+    
     LeftTuple createPeer(LeftTuple original);
     
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,

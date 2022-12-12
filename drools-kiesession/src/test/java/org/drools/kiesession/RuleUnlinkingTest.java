@@ -26,11 +26,8 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.phreak.BuildtimeSegmentUtilities;
-import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.phreak.RuntimeSegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -159,14 +156,12 @@ public class RuleUnlinkingTest {
         liaNode.addAssociation( rule1 );
         liaNode.addAssociation( rule2 );
         liaNode.addAssociation( rule3 );
-
         n1.addAssociation( rule1 );
         n1.addAssociation( rule2 );
         n1.addAssociation( rule3 );
         n2.addAssociation( rule1 );
         n2.addAssociation( rule2 );
         n2.addAssociation( rule3 );
-
         n3.addAssociation( rule1 );
         n3.addAssociation( rule2 );
         n3.addAssociation( rule3 );
@@ -179,13 +174,8 @@ public class RuleUnlinkingTest {
         n6.addAssociation( rule3 );
         n7.addAssociation( rule3 );
         n8.addAssociation( rule3 );
-
-        // assumes no subnetworks
-        for (TerminalNode tn : new TerminalNode[] {rtn1, rtn2, rtn3}) {
-            tn.setPathEndNodes( new PathEndNode[] {tn});
-            tn.resetPathMemSpec(null);
-            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
-        }
+        
+        
         
     }
 
@@ -213,6 +203,7 @@ public class RuleUnlinkingTest {
     public void testSegmentNodeReferencesToSegments() {
         setUp( JOIN_NODE );
 
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
@@ -307,6 +298,7 @@ public class RuleUnlinkingTest {
     public void testRuleSegmentLinking() {
         setUp( JOIN_NODE );
 
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;
@@ -318,7 +310,7 @@ public class RuleUnlinkingTest {
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 
-        RuntimeSegmentUtilities.getOrCreateSegmentMemory(liaNode, wm);
+        SegmentUtilities.getOrCreateSegmentMemory( liaNode, wm );
         liaNode.assertObject( f1, context, wm );
         n1.assertObject( f1, context, wm );
         n3.assertObject( f1, context, wm );
@@ -366,20 +358,13 @@ public class RuleUnlinkingTest {
         assertThat(rtn1Rs.isRuleLinked()).isFalse();
         assertThat(rtn2Rs.isRuleLinked()).isFalse();
         assertThat(rtn3Rs.isRuleLinked()).isFalse();
-
-        // assumes no subnetworks
-        for (TerminalNode tn : new TerminalNode[] {rtn1, rtn2, rtn3}) {
-            tn.setPathEndNodes( new PathEndNode[] {tn});
-            tn.resetPathMemSpec(null);
-            BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
-        }
     }
 
     private static BetaMemory createSegmentMemory(BetaNode node,
                                                   InternalWorkingMemory wm) {
         BetaMemory betaMemory = (BetaMemory) wm.getNodeMemory( node );
         if ( betaMemory.getSegmentMemory() == null ) {
-            RuntimeSegmentUtilities.getOrCreateSegmentMemory(node, wm);
+            SegmentUtilities.getOrCreateSegmentMemory( node, wm );
         }
         return betaMemory;
 

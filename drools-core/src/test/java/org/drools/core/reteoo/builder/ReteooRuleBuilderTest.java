@@ -19,7 +19,6 @@ package org.drools.core.reteoo.builder;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
@@ -90,8 +88,7 @@ public class ReteooRuleBuilderTest {
 
         rule.setConsequence( consequence );
 
-        List<PathEndNode> endNodes = new ArrayList<>();
-        final List terminals = this.builder.addRule( rule, this.rulebase, endNodes, Collections.emptyList() );
+        final List terminals = this.builder.addRule( rule, this.rulebase, Collections.emptyList() );
 
         assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 

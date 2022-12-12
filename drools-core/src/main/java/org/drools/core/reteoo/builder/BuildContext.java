@@ -33,7 +33,6 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
@@ -50,8 +49,6 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
  * A build context for Reteoo Builder
  */
 public class BuildContext {
-
-    private List<TerminalNode> terminals = new ArrayList<>();
 
     // tuple source to attach next node to
     private LeftTupleSource tupleSource;
@@ -81,8 +78,6 @@ public class BuildContext {
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
-
-    private int                              subRuleIndex;
 
     private final List<PathEndNode>          pathEndNodes = new ArrayList<>();
 
@@ -119,10 +114,6 @@ public class BuildContext {
         this.currentEntryPoint = EntryPointId.DEFAULT;
         this.attachPQN = true;
         this.emptyForAllBetaConstraints = false;
-    }
-
-    public List<TerminalNode> getTerminals() {
-        return terminals;
     }
 
     public boolean isEmptyForAllBetaConstraints() {
@@ -448,13 +439,4 @@ public class BuildContext {
     public void setConsequenceName( String consequenceName ) {
         this.consequenceName = consequenceName;
     }
-
-    public int getSubRuleIndex() {
-        return subRuleIndex;
-    }
-
-    public void setSubRuleIndex(int subRuleIndex) {
-        this.subRuleIndex = subRuleIndex;
-    }
-
 }

@@ -17,11 +17,8 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.PropagationContext;
@@ -48,11 +45,6 @@ public class MockRightTupleSink
         return 0;
     }
 
-    @Override
-    public int getPosInSegment() {
-        throw new UnsupportedOperationException("This method should not be called");
-    }
-
     public RuleBasePartitionId getPartitionId() {
         return null;
     }
@@ -69,6 +61,18 @@ public class MockRightTupleSink
         
     }
 
+    public int getAssociationsSize() {
+        return 0;
+    }
+
+    public int getAssociatedRuleSize() {
+        return 0;
+    }
+
+    public int getAssociationsSize(Rule rule) {
+        return 0;
+    }
+
     @Override public Rule[] getAssociatedRules() {
         return new Rule[0];
     }
@@ -83,15 +87,5 @@ public class MockRightTupleSink
 
     public boolean thisNodeEquals(final Object object) {
         return false;
-    }
-
-    @Override
-    public Map<Integer, TerminalNode> getAssociatedTerminals() {
-        return null;
-    }
-
-    @Override
-    public NetworkNode[] getSinks() {
-        return new NetworkNode[0];
     }
 }

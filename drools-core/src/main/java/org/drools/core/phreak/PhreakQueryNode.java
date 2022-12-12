@@ -92,7 +92,7 @@ public class PhreakQueryNode {
 
             SegmentMemory qsmem = qmem.getQuerySegmentMemory();
             LeftInputAdapterNode lian = (LeftInputAdapterNode) qsmem.getRootNode();
-            LiaNodeMemory lmem = (LiaNodeMemory) qsmem.getNodeMemories().get(0);
+            LiaNodeMemory lmem = (LiaNodeMemory) qsmem.getNodeMemories().getFirst();
             if (dquery.isOpen()) {
                 LeftTuple childLeftTuple = fh.getFirstLeftTuple(); // there is only one, all other LTs are peers
                 LeftInputAdapterNode.doUpdateObject(childLeftTuple, childLeftTuple.getPropagationContext(), reteEvaluator, lian, false, lmem, qmem.getQuerySegmentMemory());

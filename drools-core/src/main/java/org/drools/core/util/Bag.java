@@ -17,10 +17,8 @@
 package org.drools.core.util;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Bag<T> implements Collection<T>, Serializable {
 
@@ -31,6 +29,10 @@ public class Bag<T> implements Collection<T>, Serializable {
     @Override
     public int size() {
         return size;
+    }
+
+    public int getKeySize() {
+        return map.size();
     }
 
     public int sizeFor(T t) {

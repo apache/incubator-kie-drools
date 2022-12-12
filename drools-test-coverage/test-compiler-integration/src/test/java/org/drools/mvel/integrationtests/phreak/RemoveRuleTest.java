@@ -378,22 +378,6 @@ public class RemoveRuleTest {
     }
 
     @Test
-    public void testAlphaTerminalNodesDontShareWithLian() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", " A(1;)\n");
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;) B(1;) C(1;)\n") );
-
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
-
-        RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
-        RuleTerminalNode rtn2 = getRtn("org.kie.r2", kbase1);
-        PathMemory pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
-        PathMemory pmem2 = ( PathMemory ) wm.getNodeMemory(rtn2);
-
-        assertThat(pmem1.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(pmem2.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-    }
-
-    @Test
     public void testPopulatedSharedToRtn() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
@@ -486,7 +470,16 @@ public class RemoveRuleTest {
         kbase1.removeRule("org.kie", "r1");
         list.clear();
 
-        update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
+        wm.update( fh1, fh1.getObject() );
+        wm.update( fh2, fh2.getObject() );
+        wm.update( fh3, fh3.getObject() );
+        wm.update( fh4, fh4.getObject() );
+        wm.update( fh5, fh5.getObject() );
+        wm.update( fh6, fh6.getObject() );
+        wm.update( fh7, fh7.getObject() );
+        wm.update( fh8, fh8.getObject() );
+        wm.update( fh9, fh9.getObject() );
+        wm.update( fh10, fh10.getObject() );
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(3);
@@ -523,7 +516,16 @@ public class RemoveRuleTest {
         kbase1.removeRule("org.kie", "r2");
         list.clear();
 
-        update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
+        wm.update( fh1, fh1.getObject() );
+        wm.update( fh2, fh2.getObject() );
+        wm.update( fh3, fh3.getObject() );
+        wm.update( fh4, fh4.getObject() );
+        wm.update( fh5, fh5.getObject() );
+        wm.update( fh6, fh6.getObject() );
+        wm.update( fh7, fh7.getObject() );
+        wm.update( fh8, fh8.getObject() );
+        wm.update( fh9, fh9.getObject() );
+        wm.update( fh10, fh10.getObject() );
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(3);
@@ -549,88 +551,30 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
-        RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
-        PathMemory pmem1 = wm.getNodeMemory(rtn1);
-
-        assertThat(pmem1.getSegmentMemories().length).isEqualTo(1);
-        assertSegmentMemory(pmem1, 0, 127, 127, 127);
 
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
-
-        list.clear();
-        update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
-        wm.fireAllRules();
-        assertThat(list.size()).isEqualTo(4);
-
-        RuleTerminalNode rtn2 = getRtn("org.kie.r1", kbase1);
-        PathMemory pmem2 = wm.getNodeMemory(rtn2);
-
-        assertThat(pmem1.getSegmentMemories().length).isEqualTo(2);
-        assertSegmentMemory(pmem1, 0, 15, 15, 15);
-        assertSegmentMemory(pmem1, 1, 7, 7, 7);
-
-        assertThat(pmem2.getSegmentMemories().length).isEqualTo(2);
-        assertSegmentMemory(pmem2, 0, 15, 15, 15);
-        assertSegmentMemory(pmem2, 1, 7, 7, 7);
-
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
-        list.clear();
-        update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(5);
-
-        RuleTerminalNode rtn3 = getRtn("org.kie.r3", kbase1);
-        PathMemory pmem3 = wm.getNodeMemory(rtn3);
-
-        assertThat(pmem1.getSegmentMemories().length).isEqualTo(3);
-        assertSegmentMemory(pmem1, 0, 1, 1, 1);
-        assertSegmentMemory(pmem1, 1, 7, 7, 7);
-        assertSegmentMemory(pmem1, 2, 7, 7, 7);
-
-        assertThat(pmem2.getSegmentMemories().length).isEqualTo(3);
-        assertSegmentMemory(pmem2, 0, 1, 1, 1);
-        assertSegmentMemory(pmem2, 1, 7, 7, 7);
-        assertSegmentMemory(pmem2, 2, 7, 7, 7);
-
-        assertThat(pmem3.getSegmentMemories().length).isEqualTo(2);
-        assertSegmentMemory(pmem3, 0, 1, 1, 1);
-        assertSegmentMemory(pmem3, 1, 63, 63, 63);
 
 
         kbase1.removeRule("org.kie", "r3");
         list.clear();
 
-        update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
+        wm.update( fh1, fh1.getObject() );
+        wm.update( fh2, fh2.getObject() );
+        wm.update( fh3, fh3.getObject() );
+        wm.update( fh4, fh4.getObject() );
+        wm.update( fh5, fh5.getObject() );
+        wm.update( fh6, fh6.getObject() );
+        wm.update( fh7, fh7.getObject() );
+        wm.update( fh8, fh8.getObject() );
+        wm.update( fh9, fh9.getObject() );
+        wm.update( fh10, fh10.getObject() );
+
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(4);
-
-        assertThat(pmem1.getSegmentMemories().length).isEqualTo(2);
-        assertSegmentMemory(pmem1, 0, 15, 15, 15);
-        assertSegmentMemory(pmem1, 1, 7, 7, 7);
-
-        assertThat(pmem2.getSegmentMemories().length).isEqualTo(2);
-        assertSegmentMemory(pmem2, 0, 15, 15, 15);
-        assertSegmentMemory(pmem2, 1, 7, 7, 7);
-    }
-
-    private void assertSegmentMemory(PathMemory pmem, int segmentPos, int linkedMask, int dirtyMask, int allMask) {
-        assertThat(pmem.getSegmentMemories()[segmentPos].getLinkedNodeMask()).isEqualTo(linkedMask);
-        assertThat(pmem.getSegmentMemories()[segmentPos].getDirtyNodeMask()).isEqualTo(dirtyMask);
-        assertThat(pmem.getSegmentMemories()[segmentPos].getAllLinkedMaskTest()).isEqualTo(allMask);
-    }
-
-    private static void update10Facts(InternalWorkingMemory wm, InternalFactHandle fh1, InternalFactHandle fh2, InternalFactHandle fh3, InternalFactHandle fh4, InternalFactHandle fh5, InternalFactHandle fh6, InternalFactHandle fh7, InternalFactHandle fh8, InternalFactHandle fh9, InternalFactHandle fh10) {
-        wm.update(fh1, fh1.getObject());
-        wm.update(fh2, fh2.getObject());
-        wm.update(fh3, fh3.getObject());
-        wm.update(fh4, fh4.getObject());
-        wm.update(fh5, fh5.getObject());
-        wm.update(fh6, fh6.getObject());
-        wm.update(fh7, fh7.getObject());
-        wm.update(fh8, fh8.getObject());
-        wm.update(fh9, fh9.getObject());
-        wm.update(fh10, fh10.getObject());
     }
 
     @Test
@@ -649,8 +593,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(wm.getNodeMemory(rtn2).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
         assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
@@ -666,11 +610,11 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(wm.getNodeMemory(rtn2).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
     @Test
@@ -718,8 +662,11 @@ public class RemoveRuleTest {
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(8);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = wm.getNodeMemory(rtn5);
-        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2);
+        PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
+        smems = pm5.getSegmentMemories();
+        assertThat(smems.length).isEqualTo(2);
+        assertThat(smems[0]).isNull();
+        assertThat(smems[1]).isNull();
     }
 
     private RuleTerminalNode getRtn(String ruleName, InternalKnowledgeBase kbase) {
@@ -735,18 +682,6 @@ public class RemoveRuleTest {
         str += "import " + X.class.getCanonicalName() + "\n";
         str += "import " + E.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
-
-        str += "rule " + ruleName + "  when \n";
-        str += rule;
-        str += "then \n";
-        str += " list.add( kcontext.getMatch() );\n";
-        str += "end \n";
-
-        return str;
-    }
-
-    private String addRule(String ruleName, String rule) {
-        String str = "";
 
         str += "rule " + ruleName + "  when \n";
         str += rule;

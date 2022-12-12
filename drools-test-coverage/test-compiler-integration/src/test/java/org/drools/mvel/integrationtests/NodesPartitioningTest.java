@@ -91,9 +91,9 @@ public class NodesPartitioningTest {
 
     private void traverse(BaseNode node ) {
         checkNode(node);
-        NetworkNode[] sinks = node.getSinks();
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
-            for (NetworkNode sink : sinks) {
+            for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
                     traverse((BaseNode)sink);
                 }
