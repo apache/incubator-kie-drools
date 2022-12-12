@@ -176,7 +176,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         attachTerminalNode(context, terminal);
     }
 
-    public static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
+    private static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
         return buildTerminalNodeForConsequence(context, subrule, context.getSubRuleIndex(), null, rule.getTimer(), utils);
     }
 
@@ -207,7 +207,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         return terminal;
     }
 
-    public static void attachTerminalNode(BuildContext context, TerminalNode terminalNode) {
+    private static void attachTerminalNode(BuildContext context, TerminalNode terminalNode) {
         context.getTerminals().add(terminalNode);
         context.setTerminated(true);
 
