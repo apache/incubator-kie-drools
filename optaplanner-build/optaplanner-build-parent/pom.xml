@@ -71,7 +71,7 @@
     <jacoco.agent.argLine/>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- Latest release to be used by api-compatibility-check to check backwards compatibility of the API. -->
-    <revapi.oldOptaplannerVersion>8.13.0.Final</revapi.oldOptaplannerVersion>
+    <revapi.oldOptaplannerVersion>8.29.0.Final</revapi.oldOptaplannerVersion>
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
 
@@ -324,12 +324,12 @@
         <plugin>
           <groupId>org.revapi</groupId>
           <artifactId>revapi-maven-plugin</artifactId>
-          <version>0.9.5</version>
+          <version>0.14.7</version>
           <dependencies>
             <dependency>
               <groupId>org.revapi</groupId>
               <artifactId>revapi-java</artifactId>
-              <version>0.14.3</version>
+              <version>0.28.0</version>
             </dependency>
           </dependencies>
           <configuration>
