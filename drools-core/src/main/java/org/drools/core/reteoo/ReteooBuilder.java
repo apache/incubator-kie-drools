@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +39,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.WindowDeclaration;
@@ -104,8 +103,8 @@ public class ReteooBuilder
      *            The rule to add.
      * @throws InvalidPatternException
      */
-    public synchronized void addRule(final RuleImpl rule, List<PathEndNode> endNodes, Collection<InternalWorkingMemory> workingMemories) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, endNodes, workingMemories );
+    public synchronized void addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, workingMemories );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -156,7 +155,6 @@ public class ReteooBuilder
     }
 
     public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved, Collection<InternalWorkingMemory> workingMemories) {
-        List<PathEndNode> endNodes = new ArrayList<>();
         for (Rule r : rulesToBeRemoved) {
             RuleImpl rule = (RuleImpl) r;
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
@@ -173,7 +171,7 @@ public class ReteooBuilder
             }
 
             for ( TerminalNode node : rulesTerminalNodes ) {
-                removeTerminalNode( context, node, endNodes, workingMemories );
+                removeTerminalNode( context, node, workingMemories );
             }
 
             if ( rule.isQuery() ) {
@@ -186,11 +184,11 @@ public class ReteooBuilder
         }
     }
 
-    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, List<PathEndNode> endNodes, Collection<InternalWorkingMemory> workingMemories)  {
+    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, Collection<InternalWorkingMemory> workingMemories)  {
         context.setSubRuleIndex(tn.getSubruleIndex());
-        endNodes.addAll(AddRemoveRule.removeRule( tn, workingMemories, kBase ));
+        PhreakBuilder.get().removeRule( tn, workingMemories, kBase );
 
-        tn.visitLeftTupleNodes(n -> n.getAssociatedTerminals().remove(tn.getId()));
+        tn.visitLeftTupleNodes(n -> n.removeAssociatedTerminal(tn));
 
         BaseNode node = (BaseNode) tn;
         removeNodeAssociation(node, context.getRule(), new HashSet<>(), context);

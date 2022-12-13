@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
@@ -31,7 +32,6 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -48,8 +48,8 @@ import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
@@ -407,7 +407,7 @@ public class PhreakTimerNode {
             needEvaluation &= filter != null;
 
             for (final PathMemory pmem : timerJobCtx.getPathMemories()) {
-                if (pmem.getPathEndNode().getAssociatedTerminals().size() == 0) {
+                if (pmem.getPathEndNode().getAssociatedTerminalsSize() == 0) {
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }

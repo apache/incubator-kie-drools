@@ -106,7 +106,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     @Override
     public PathMemSpec getPathMemSpec(TerminalNode removingTN) {
         if (pathMemSpec == null) {
-            pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
+            pathMemSpec = calculatePathMemSpec( null, removingTN );
         }
         return pathMemSpec;
     }
@@ -120,7 +120,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             n.setSegmentPrototypes(null);
             n.setEagerSegmentPrototypes(null);}
         );
-        pathMemSpec = calculatePathMemSpec( null, removingTN );
+        pathMemSpec = removingTN == null ? null : calculatePathMemSpec( null, removingTN );
     }
 
     public RuleImpl getRule() {

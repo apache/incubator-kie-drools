@@ -46,6 +46,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.rule.Match;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 
 @RunWith(Parameterized.class)
 public class RemoveRuleTest {
@@ -386,11 +387,13 @@ public class RemoveRuleTest {
 
         RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
         RuleTerminalNode rtn2 = getRtn("org.kie.r2", kbase1);
-        PathMemory pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
-        PathMemory pmem2 = ( PathMemory ) wm.getNodeMemory(rtn2);
+        PathMemory pmem1 = wm.getNodeMemory(rtn1);
+        PathMemory pmem2 = wm.getNodeMemory(rtn2);
 
-        assertThat(pmem1.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(pmem2.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        if (isEagerSegmentCreation()) {
+            assertThat(pmem1.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+            assertThat(pmem2.getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        }
     }
 
     @Test
@@ -615,9 +618,11 @@ public class RemoveRuleTest {
     }
 
     private void assertSegmentMemory(PathMemory pmem, int segmentPos, int linkedMask, int dirtyMask, int allMask) {
-        assertThat(pmem.getSegmentMemories()[segmentPos].getLinkedNodeMask()).isEqualTo(linkedMask);
-        assertThat(pmem.getSegmentMemories()[segmentPos].getDirtyNodeMask()).isEqualTo(dirtyMask);
-        assertThat(pmem.getSegmentMemories()[segmentPos].getAllLinkedMaskTest()).isEqualTo(allMask);
+        if (isEagerSegmentCreation()) {
+            assertThat(pmem.getSegmentMemories()[segmentPos].getLinkedNodeMask()).isEqualTo(linkedMask);
+            assertThat(pmem.getSegmentMemories()[segmentPos].getDirtyNodeMask()).isEqualTo(dirtyMask);
+            assertThat(pmem.getSegmentMemories()[segmentPos].getAllLinkedMaskTest()).isEqualTo(allMask);
+        }
     }
 
     private static void update10Facts(InternalWorkingMemory wm, InternalFactHandle fh1, InternalFactHandle fh2, InternalFactHandle fh3, InternalFactHandle fh4, InternalFactHandle fh5, InternalFactHandle fh6, InternalFactHandle fh7, InternalFactHandle fh8, InternalFactHandle fh9, InternalFactHandle fh10) {
@@ -649,8 +654,8 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(wm.getNodeMemory(rtn2).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
         assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
@@ -666,11 +671,11 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
 
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
-        assertThat(wm.getNodeMemory(rtn2).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn2).getSegmentMemories().length).isEqualTo(1);
 
         kbase1.removeRule("org.kie", "r2");
-        assertThat(wm.getNodeMemory(rtn1).getPathEndNode().getSegmentPrototypes().length).isEqualTo(1);
+        assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
     @Test
@@ -719,7 +724,10 @@ public class RemoveRuleTest {
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = wm.getNodeMemory(rtn5);
-        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2);
+
+        if (isEagerSegmentCreation()) {
+            assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2);
+        }
     }
 
     private RuleTerminalNode getRtn(String ruleName, InternalKnowledgeBase kbase) {

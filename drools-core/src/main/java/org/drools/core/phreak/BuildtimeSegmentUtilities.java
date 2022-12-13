@@ -145,39 +145,39 @@ public class BuildtimeSegmentUtilities {
             } else {
                 switch (node.getType()) {
                     case NodeTypeEnums.LeftInputAdapterNode:
-                        allLinkedTestMask = processLiaNode((LeftInputAdapterNode) node, smem, memories, nodes, nodePosMask, allLinkedTestMask);
+                        allLinkedTestMask = processLiaNode((LeftInputAdapterNode) node, memories, nodes, nodePosMask, allLinkedTestMask);
                         break;
                     case NodeTypeEnums.ConditionalBranchNode:
-                        processConditionalBranchNode((ConditionalBranchNode) node, smem, memories, nodes);
+                        processConditionalBranchNode((ConditionalBranchNode) node, memories, nodes);
                         updateNodeBit = false;
                         break;
                     case NodeTypeEnums.FromNode:
-                        processFromNode((FromNode) node, smem, memories, nodes);
+                        processFromNode((FromNode) node, memories, nodes);
                         break;
                     case NodeTypeEnums.EvalConditionNode:
-                        processEvalFromNode((EvalConditionNode) node, smem, memories, nodes);
+                        processEvalFromNode((EvalConditionNode) node, memories, nodes);
                         break;
                     case NodeTypeEnums.ReactiveFromNode:
-                        processReactiveFromNode((ReactiveFromNode) node, smem, memories, nodes, nodePosMask);
+                        processReactiveFromNode((ReactiveFromNode) node, memories, nodes, nodePosMask);
                         break;
                     case NodeTypeEnums.TimerConditionNode:
-                        processTimerNode((TimerNode) node, smem, memories, nodes, nodePosMask);
+                        processTimerNode((TimerNode) node, memories, nodes, nodePosMask);
                         break;
                     case NodeTypeEnums.AsyncSendNode:
-                        processAsyncSendNode((AsyncSendNode) node, smem, memories, nodes);
+                        processAsyncSendNode((AsyncSendNode) node, memories, nodes);
                         break;
                     case NodeTypeEnums.AsyncReceiveNode:
-                        processAsyncReceiveNode((AsyncReceiveNode) node, smem, memories, nodes, nodePosMask);
+                        processAsyncReceiveNode((AsyncReceiveNode) node, memories, nodes, nodePosMask);
                         break;
                     case NodeTypeEnums.QueryElementNode:
-                        updateNodeBit = processQueryNode((QueryElementNode) node, segmentRoot, smem, memories, nodes, nodePosMask);
+                        updateNodeBit = processQueryNode((QueryElementNode) node, memories, nodes, nodePosMask);
                         break;
                     case NodeTypeEnums.RightInputAdapterNode:
-                        processRightInputAdapterNode((RightInputAdapterNode) node, smem, memories, nodes);
+                        processRightInputAdapterNode((RightInputAdapterNode) node, memories, nodes);
                         break;
                     case NodeTypeEnums.RuleTerminalNode:
                     case NodeTypeEnums.QueryTerminalNode:
-                        processTerminalNode((TerminalNode) node, smem, memories, nodes);
+                        processTerminalNode((TerminalNode) node, memories, nodes);
                         break;
                 }
             }
@@ -239,7 +239,7 @@ public class BuildtimeSegmentUtilities {
         return nextNodePosMask > 0 ? nextNodePosMask : nodePosMask;
     }
 
-    private static boolean processQueryNode(QueryElementNode queryNode, LeftTupleNode segmentRoot, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
+    private static boolean processQueryNode(QueryElementNode queryNode, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
         QueryMemoryPrototype queryNodeMem = new QueryMemoryPrototype(nodePosMask, queryNode);
         memories.add(queryNodeMem);
         nodes.add(queryNode);
@@ -247,63 +247,61 @@ public class BuildtimeSegmentUtilities {
         return ! queryNode.getQueryElement().isAbductive();
     }
 
-    private static void processAsyncSendNode(AsyncSendNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processAsyncSendNode(AsyncSendNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         AsyncSendMemoryPrototype mem = new AsyncSendMemoryPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processAsyncReceiveNode(AsyncReceiveNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes,
-                                                long nodePosMask) {
+    private static void processAsyncReceiveNode(AsyncReceiveNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
         AsyncReceiveMemoryPrototype mem = new AsyncReceiveMemoryPrototype(nodePosMask);
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processConditionalBranchNode(ConditionalBranchNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processConditionalBranchNode(ConditionalBranchNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         ConditionalBranchMemoryPrototype mem = new ConditionalBranchMemoryPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processRightInputAdapterNode(RightInputAdapterNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processRightInputAdapterNode(RightInputAdapterNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         RightInputAdapterPrototype mem = new RightInputAdapterPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processTerminalNode(TerminalNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processTerminalNode(TerminalNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         TerminalPrototype mem = new TerminalPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processFromNode(FromNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processFromNode(FromNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         FromMemoryPrototype mem = new FromMemoryPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processEvalFromNode(EvalConditionNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
+    private static void processEvalFromNode(EvalConditionNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes) {
         EvalMemoryPrototype mem = new EvalMemoryPrototype();
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processReactiveFromNode(ReactiveFromNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes,
-                                                long nodePosMask) {
+    private static void processReactiveFromNode(ReactiveFromNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
         ReactiveFromMemoryPrototype mem = new ReactiveFromMemoryPrototype(nodePosMask);
         memories.add(mem);
         nodes.add(tupleSource);
     }
 
-    private static void processTimerNode(TimerNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
+    private static void processTimerNode(TimerNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
         TimerMemoryPrototype tnMem = new TimerMemoryPrototype(nodePosMask);
         memories.add(tnMem);
         nodes.add(tupleSource);
     }
 
-    private static long processLiaNode(LeftInputAdapterNode tupleSource, SegmentPrototype smem, List<MemoryPrototype> memories, List<LeftTupleNode> nodes,
+    private static long processLiaNode(LeftInputAdapterNode tupleSource, List<MemoryPrototype> memories, List<LeftTupleNode> nodes,
                                        long nodePosMask, long allLinkedTestMask) {
         LiaMemoryPrototype liaMemory = new LiaMemoryPrototype(nodePosMask);
         memories.add(liaMemory);
@@ -348,7 +346,7 @@ public class BuildtimeSegmentUtilities {
         return allLinkedTestMask;
     }
 
-    private static boolean canBeDisabled(BetaNode betaNode) {
+    public static boolean canBeDisabled(BetaNode betaNode) {
         // non empty not nodes and accumulates can never be disabled and thus don't need checking
         return (!(NodeTypeEnums.NotNode == betaNode.getType() && !((NotNode) betaNode).isEmptyBetaConstraints()) &&
                 NodeTypeEnums.AccumulateNode != betaNode.getType() && !betaNode.isRightInputPassive());
@@ -407,13 +405,13 @@ public class BuildtimeSegmentUtilities {
     }
 
     public static boolean sinkNotExclusivelyAssociatedWithTerminal( TerminalNode removingTN, LeftTupleNode sink ) {
-        return sink.getAssociatedTerminals().size() > 1 || !sink.getAssociatedTerminals().containsKey(removingTN.getId());
+        return sink.getAssociatedTerminalsSize() > 1 || !sink.hasAssociatedTerminal(removingTN);
     }
 
-    private static final int NOT_NODE_BIT               = 1 << 0;
-    private static final int JOIN_NODE_BIT              = 1 << 1;
-    private static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
-    private static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;
+    public static final int NOT_NODE_BIT               = 1 << 0;
+    public static final int JOIN_NODE_BIT              = 1 << 1;
+    public static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
+    public static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;
 
     public static int updateNodeTypesMask(NetworkNode node, int mask) {
         if (node != null) {

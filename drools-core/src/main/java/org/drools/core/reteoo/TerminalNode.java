@@ -16,15 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import java.util.function.Consumer;
+
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * A markup interface for terminal nodes
@@ -33,8 +32,6 @@ public interface TerminalNode
     extends
     NetworkNode, Sink, PathEndNode, MemoryFactory<PathMemory> {
 
-    void resetPathMemSpec(TerminalNode removingTN);
-    
     LeftTupleSource getLeftTupleSource();
     
     LeftTupleSource unwrapTupleSource();

@@ -19,18 +19,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
 
@@ -45,11 +43,6 @@ public class MockRightTupleSink
                                   ReteEvaluator reteEvaluator) {
         this.retracted.add( new Object[]{rightTuple, context, reteEvaluator} );
 
-    }
-
-    @Override
-    public int getPosInSegment() {
-        return 0;
     }
 
     public List getRetracted() {
@@ -88,8 +81,21 @@ public class MockRightTupleSink
     }
 
     @Override
-    public Map<Integer, TerminalNode> getAssociatedTerminals() {
-        return null;
+    public void addAssociatedTerminal(TerminalNode terminalNode) {
+    }
+
+    @Override
+    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    }
+
+    @Override
+    public int getAssociatedTerminalsSize() {
+        return 0;
+    }
+
+    @Override
+    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+        return false;
     }
 
     public ObjectTypeNode.Id getRightInputOtnId() {

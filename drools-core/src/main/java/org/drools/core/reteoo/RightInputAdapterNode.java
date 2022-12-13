@@ -454,11 +454,16 @@ public class RightInputAdapterNode extends ObjectSource
 
         List<PathEndNode> remainingPathNodes = new ArrayList<>();
         for (PathEndNode pathEndNode : pathEndNodes) {
-            if (pathEndNode.getAssociatedTerminals().size() > 0) {
+            if (pathEndNode.getAssociatedTerminalsSize() > 0) {
                 remainingPathNodes.add(pathEndNode);
             }
         }
         pathEndNodes = remainingPathNodes.toArray( new PathEndNode[remainingPathNodes.size()] );
         return result;
+    }
+
+    @Override
+    public void resetPathMemSpec(TerminalNode removingTN) {
+        pathMemSpec = removingTN == null ? null : calculatePathMemSpec(null, removingTN);
     }
 }
