@@ -130,11 +130,15 @@ pipeline {
                         githubscm.createBranch(localBranch)
                         // update version.org.optaplanner property in kie-benchmarks
                         maven.mvnSetVersionProperty('version.org.optaplanner', getNextMinorSnapshotVersion(getProjectVersion()))
-                        // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
-                        sh "git checkout ${targetBranch}"
-                        mergeAndPush(prLink, targetBranch)
-                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsID())
+                        if (githubscm.isThereAnyChanges()) {
+                            // Add changed files, commit, open and merge PR
+                            prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
+                            sh "git checkout ${targetBranch}"
+                            mergeAndPush(prLink, targetBranch)
+                            githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsID())
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
                     }
                 }
             }
