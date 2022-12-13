@@ -57,8 +57,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     private LeftTupleSource   tupleSource;
 
-    private LeftTupleSource   startTupleSource;
-
     private BitMask declaredMask = EmptyBitMask.get();
     private BitMask inferredMask = EmptyBitMask.get();
     private BitMask negativeMask = EmptyBitMask.get();
@@ -144,20 +142,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return this.requiredDeclarations;
     }
 
-    public LeftTupleSource getStartTupleSource() {
-        if (startTupleSource == null) {
-            LeftTupleSource current = getLeftTupleSource();
-            while (current.getLeftTupleSource() != null) {
-                current = current.getLeftTupleSource();
-            }
-            if (current.getType() != NodeTypeEnums.LeftInputAdapterNode) {
-                throw new RuntimeException("Defensive: The start node of a terminal node must be a left input adapter node");
-            }
-            startTupleSource = current;
-        }
-
-        return startTupleSource;
-    }
     public void nullPathMemSpec() {
         pathMemSpec = null;
     }
@@ -396,12 +380,8 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public void visitLeftTupleNodes(Consumer<LeftTupleNode> func) {
-        for(PathEndNode endNode : getPathEndNodes()) {
-            for(int i = endNode.getPathNodes().length-1; i >= 0; i--) {
-                LeftTupleNode node = endNode.getPathNodes()[i];
-                if (endNode.getStartTupleSource() == node && node.getType() != NodeTypeEnums.LeftInputAdapterNode) {
-                    break;
-                }
+        for (PathEndNode endNode : getPathEndNodes()) {
+            for (LeftTupleNode node : endNode.getPathNodes()) {
                 func.accept(node);
             }
         }
