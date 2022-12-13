@@ -135,11 +135,12 @@ public class CompilationFailuresTest extends BaseModelTest {
 
 
     @Test
-    public void testModifyOnFactInScope() {
-        // DROOLS-5242
+    public void modify_factInScope_java() {
+        // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "rule R1 when\n" +
+                "rule R1\n" +
+                "when\n" +
                 "  $p : Person(name == \"Mario\")\n" +
                 "then\n" +
                 "  modify($p) { $p.setName(\"Mark\") }\n" +
@@ -147,9 +148,89 @@ public class CompilationFailuresTest extends BaseModelTest {
 
         Results results = getCompilationResults(drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
 
-        // RHS error : line = 1 with STANDARD_FROM_DRL (RuleDescr)
-        assertThat(results.getMessages().get(0).getLine()).isEqualTo(1);
+    @Test
+    public void modify_factInScope_mvel() {
+        // DROOLS-5242, DROOLS-7195
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1\n" +
+                "dialect 'mvel'\n" +
+                "when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.setName(\"Mark\") }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
+
+    @Test
+    public void modify_factInScope_nestedPropertySetter_java() {
+        // DROOLS-5242, DROOLS-7195
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1\n" +
+                "when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.address.setCity(\"London\") }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
+
+    @Test
+    public void modify_factInScope_nestedPropertySetter_mvel() {
+        // DROOLS-5242, DROOLS-7195
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1\n" +
+                "dialect 'mvel'\n" +
+                "when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.address.setCity(\"London\") }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
+
+    @Test
+    public void modify_factInScope_nestedPropertyAssign_java() {
+        // DROOLS-5242, DROOLS-7195
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1\n" +
+                "when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.address.city = \"London\" }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
+
+    @Test
+    public void modify_factInScope_nestedPropertyAssign_mvel() {
+        // DROOLS-5242, DROOLS-7195
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R1\n" +
+                "dialect 'mvel'\n" +
+                "when\n" +
+                "  $p : Person(name == \"Mario\")\n" +
+                "then\n" +
+                "  modify($p) { $p.address.city = \"London\" }\n" +
+                "end";
+
+        Results results = getCompilationResults(drl);
+        assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
     @Test

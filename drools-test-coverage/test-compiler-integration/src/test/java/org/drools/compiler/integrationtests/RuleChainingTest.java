@@ -68,13 +68,11 @@ public class RuleChainingTest {
                 "    dialect \"mvel\"\n" +
                 "    when\n" +
                 "    then\n" +
-                "        with( s0 = new Some() ) {\n" +
-                "            field = 0\n" +
-                "        }\n" +
+                "        Some s0 = new Some();\n" +
+                "        s0.field = 0;\n" +
                 "        insertLogical(s0);\n" +
-                "        with( s1 = new Some() ) {\n" +
-                "            field = 1\n" +
-                "        }\n" +
+                "        Some s1 = new Some();\n" +
+                "        s1.field = 1;\n" +
                 "        insertLogical(s1);\n" +
                 "end\n" +
                 "\n" +
