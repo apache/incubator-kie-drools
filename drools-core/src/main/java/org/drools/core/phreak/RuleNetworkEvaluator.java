@@ -63,16 +63,16 @@ import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
-import static org.drools.core.phreak.RuntimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.reteoo.BetaNode.getBetaMemory;
 
 public class RuleNetworkEvaluator {
@@ -514,7 +514,7 @@ public class RuleNetworkEvaluator {
                 } else {
                     // lia is in shared segment, so point to next node
                     node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-                    nodeMem = smem.getNodeMemories().get(0).getNext(); // skip the liaNode memory
+                    nodeMem = smem.getNodeMemories().get(1); // skip the liaNode memory
                     bit = 2;
                 }
 

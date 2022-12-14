@@ -19,6 +19,7 @@ package org.drools.model.codegen.execmodel;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Collection;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -26,6 +27,8 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.ArrayCreationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -38,6 +41,8 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
 import org.drools.model.codegen.project.template.TemplatedGenerator;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
@@ -46,6 +51,8 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.model.codegen.execmodel.JavaParserCompiler.getPrettyPrinter;
 
 public class RuleUnitWriter {
+
+    private static final String RULE_UNIT_VAR = "ruleUnit";
 
     private static final String TEMPLATE_RULE_UNITS_FOLDER = "/class-templates/ruleunits/";
 
@@ -113,6 +120,9 @@ public class RuleUnitWriter {
         parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$ClockType$"))
                 .ifPresent(e -> e.replace(clockConfigExpression(ruleUnitDescr.getClockType())));
 
+        parsedClass.findFirst(NameExpr.class, e -> e.getNameAsString().equals("$KieBaseOptions$"))
+        .ifPresent(e -> e.replace(kieBaseOptionsExpression(ruleUnitDescr)));
+
         return getPrettyPrinter().print(cu);
     }
 
@@ -145,9 +155,9 @@ public class RuleUnitWriter {
             String propertyName = m.getName();
 
             if (m.isDataSource() && m.setter() != null) { // if writable and DataSource is null create and set a new one
-                Expression nullCheck = new BinaryExpr(new MethodCallExpr(new NameExpr("ruleUnit"), methodName), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS);
+                Expression nullCheck = new BinaryExpr(new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName), new NullLiteralExpr(), BinaryExpr.Operator.EQUALS);
                 Expression createDataSourceExpr = createDataSourceMethodCallExpr(m.getBoxedVarType());
-                Expression dataSourceSetter = new MethodCallExpr(new NameExpr("ruleUnit"), m.setter(), new NodeList<>(createDataSourceExpr));
+                Expression dataSourceSetter = new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), m.setter(), new NodeList<>(createDataSourceExpr));
                 methodBlock.addStatement(new IfStmt(nullCheck, new BlockStmt().addStatement(dataSourceSetter), null));
             }
 
@@ -155,7 +165,7 @@ public class RuleUnitWriter {
 
                 //  ruleUnit.$method())
                 Expression fieldAccessor =
-                        new MethodCallExpr(new NameExpr("ruleUnit"), methodName);
+                        new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName);
 
                 // .subscribe( new EntryPointDataProcessor(runtime.getEntryPoint()) )
 
@@ -170,7 +180,7 @@ public class RuleUnitWriter {
 
             MethodCallExpr setGlobalCall = new MethodCallExpr(new NameExpr("evaluator"), "setGlobal");
             setGlobalCall.addArgument(new StringLiteralExpr(propertyName));
-            setGlobalCall.addArgument(new MethodCallExpr(new NameExpr("ruleUnit"), methodName));
+            setGlobalCall.addArgument(new MethodCallExpr(new NameExpr(RULE_UNIT_VAR), methodName));
             methodBlock.addStatement(setGlobalCall);
         }
 
@@ -198,8 +208,32 @@ public class RuleUnitWriter {
     }
 
     private Expression clockConfigExpression(ClockTypeOption clockType) {
-        Expression replacement =
-                (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
-        return replacement;
+        return (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
+    }
+
+    private Expression kieBaseOptionsExpression(RuleUnitDescription description) {
+        Collection<KieBaseOption> kieBaseOptions = description.getKieBaseOptions();
+        ArrayCreationExpr arrayCreationExpr = new ArrayCreationExpr();
+        arrayCreationExpr.setElementType(KieBaseOption.class.getCanonicalName());
+
+        NodeList<Expression> optionExpressionList = new NodeList<>();
+        for (KieBaseOption kieBaseOption : kieBaseOptions) {
+            if (kieBaseOption instanceof EventProcessingOption) {
+                optionExpressionList.addLast(eventProcessingOptionExpression((EventProcessingOption) kieBaseOption));
+            }
+            // Add any KieBaseOptions if available
+        }
+
+        ArrayInitializerExpr arrayInitializerExpr = new ArrayInitializerExpr(optionExpressionList);
+        arrayCreationExpr.setInitializer(arrayInitializerExpr);
+        return arrayCreationExpr;
+    }
+
+    private Expression eventProcessingOptionExpression(EventProcessingOption eventProcessingOption) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(EventProcessingOption.class.getCanonicalName());
+        sb.append(".");
+        sb.append(eventProcessingOption.getMode().toUpperCase());
+        return parseExpression(sb.toString());
     }
 }

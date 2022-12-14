@@ -496,6 +496,10 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
         return delegate.createSegmentFromPrototype(reteEvaluator, smem);
     }
 
+    public boolean hasSegmentPrototypes() {
+        return delegate.hasSegmentPrototypes();
+    }
+
     @Override
     public SegmentPrototype getSegmentPrototype(LeftTupleNode node) {
         return delegate.getSegmentPrototype(node);

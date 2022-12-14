@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.32.0-SNAPSHOT</version>
+        <version>8.33.0-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Integration Test</name>
@@ -50,6 +50,7 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-drl-quarkus-deployment</artifactId>
+            <type>pom</type>
             <scope>test</scope>
             <exclusions>
                 <exclusion>

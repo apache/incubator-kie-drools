@@ -16,11 +16,8 @@
 
 package org.drools.mvelcompiler;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,40 +31,24 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
-import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvel.parser.printer.PrintUtil;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
- * This phase transforms modify and with statements in valid Java code
+ * This phase transforms modify statements in valid Java code
  *
  * It's used both in the MVEL Compiler and also to preprocess Drools' Java consequences that
- * use modify and with blocks.
+ * use modify blocks.
  */
 public class PreprocessPhase {
-
-    private final boolean failOnEmptyRootScope;
-
-    public PreprocessPhase() {
-        this(false);
-    }
-
-    public PreprocessPhase(boolean failOnEmptyRootScope) {
-        this.failOnEmptyRootScope = failOnEmptyRootScope;
-    }
 
     interface PreprocessPhaseResult {
 
@@ -112,8 +93,6 @@ public class PreprocessPhase {
 
         if (statement instanceof ModifyStatement) {
             return modifyPreprocessor((ModifyStatement) statement);
-        } else if (statement instanceof WithStatement) {
-            return withPreprocessor((WithStatement) statement);
         } else {
             return new StatementResult();
         }
@@ -137,71 +116,6 @@ public class PreprocessPhase {
         modifyStatement.replace(new BlockStmt(statements));
 
         return result;
-    }
-
-    private PreprocessPhaseResult withPreprocessor(WithStatement withStatement) {
-        PreprocessPhaseResult result = new StatementResult();
-
-        Deque<Statement> allNewStatements = new ArrayDeque<>();
-
-        Optional<Expression> initScope = addTypeToInitialization(withStatement, allNewStatements);
-        final Expression scope = initScope.orElse(withStatement.getWithObject());
-
-        withStatement
-                .findAll(AssignExpr.class)
-                .replaceAll(assignExpr -> assignToFieldAccess(result, scope, assignExpr));
-
-        // Do not use findAll as we should only process top level expressions
-        withStatement
-                .getExpressions()
-                .replaceAll(e -> addScopeToMethodCallExpr(result, scope, e));
-
-        NodeList<Statement> bodyStatements = wrapToExpressionStmt(withStatement.getExpressions());
-
-        allNewStatements.addAll(bodyStatements);
-
-        // delete modify statement and add the new statements to its children
-        Node parentNode = withStatement.getParentNode()
-                .orElseThrow(() -> new MvelCompilerException("A parent node is expected here"));
-
-        // We need to replace the with statement with the statements without nesting the new statements inside
-        // a BlockStmt otherwise other statements might reference the newly created instance
-        // See RuleChainingTest.testRuleChainingWithLogicalInserts
-        if(parentNode instanceof BlockStmt) {
-            BlockStmt parentBlock = (BlockStmt) parentNode;
-
-            Iterator<Statement> newStatementsReversed = allNewStatements.descendingIterator();
-            while(newStatementsReversed.hasNext()) {
-                parentBlock.getStatements().addAfter(newStatementsReversed.next(), withStatement);
-            }
-
-            withStatement.remove();
-        } else {
-            throw new MvelCompilerException("Expecting a BlockStmt as a parent");
-        }
-
-
-        return result;
-    }
-
-    private Optional<Expression> addTypeToInitialization(WithStatement withStatement, Deque<Statement> allNewStatements) {
-        if (withStatement.getWithObject().isAssignExpr()) {
-            AssignExpr assignExpr = withStatement.getWithObject().asAssignExpr();
-            Expression assignExprValue = assignExpr.getValue();
-            Expression assignExprTarget = assignExpr.getTarget();
-
-            if (assignExprValue.isObjectCreationExpr() && assignExprTarget instanceof DrlNameExpr) {
-                ObjectCreationExpr constructor = assignExprValue.asObjectCreationExpr();
-                ClassOrInterfaceType ctorType = constructor.getType();
-
-                String targetVariableName = ((DrlNameExpr) assignExprTarget).getNameAsString();
-                VariableDeclarationExpr variableDeclarationExpr = new VariableDeclarationExpr(ctorType, targetVariableName);
-                AssignExpr withTypeAssignmentExpr = new AssignExpr(variableDeclarationExpr, assignExprValue, assignExpr.getOperator());
-                allNewStatements.add(new ExpressionStmt(withTypeAssignmentExpr));
-                return of(new DrlNameExpr(targetVariableName));
-            }
-        }
-        return empty();
     }
 
     private NodeList<Statement> wrapToExpressionStmt(NodeList<Statement> expressions) {
@@ -233,50 +147,88 @@ public class PreprocessPhase {
                     }
 
                     return new ExpressionStmt(mcExpr);
-                } else if (rootExpr instanceof DrlNameExpr && !isSameDrlName(rootExpr, scope)) {
+                } else if (rootExpr instanceof DrlNameExpr) {
+                    throwExceptionIfSameDrlName(rootExpr, scope);
                     // Unknown name. Assume a property of the fact
-                    DrlNameExpr originalFieldAccess = (DrlNameExpr) rootExpr;
-                    String propertyName = originalFieldAccess.getName().asString();
                     result.addUsedBinding(printNode(scope));
-                    FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
-                    rootExpr.getParentNode().filter(MethodCallExpr.class::isInstance)
-                            .map(MethodCallExpr.class::cast)
-                            .ifPresent(mce -> mce.setScope(fieldAccessWithScope));
+                    replaceRootExprWithFieldAccess(scope, (DrlNameExpr) rootExpr);
                 }
             }
         }
         return e;
     }
 
-    private boolean isSameDrlName(Expression rootExpr, Expression scope) {
-        return rootExpr instanceof DrlNameExpr && scope instanceof DrlNameExpr &&
-               ((DrlNameExpr) rootExpr).getName().equals(((DrlNameExpr) scope).getName());
+    private void throwExceptionIfSameDrlName(Expression target, Expression scope) {
+        if (isSameDrlName(target, scope)) {
+            throw new MvelCompilerException("Invalid modify statement: " + PrintUtil.printNode(target));
+        }
     }
 
-    private Expression findRootScope(MethodCallExpr mcExpr) {
-        Optional<Expression> opt = mcExpr.getScope();
-        if (!opt.isPresent()) {
-            return mcExpr;
-        } else {
-            Expression scope = opt.get();
-            if (scope.isMethodCallExpr()) {
-                return findRootScope(scope.asMethodCallExpr());
+    private boolean isSameDrlName(Expression target, Expression scope) {
+        return target instanceof DrlNameExpr && scope instanceof DrlNameExpr &&
+               ((DrlNameExpr) target).getName().equals(((DrlNameExpr) scope).getName());
+    }
+
+    private Expression findRootScope(Expression expr) {
+        Expression scope;
+        if (expr.isMethodCallExpr()) {
+            MethodCallExpr mcExpr = expr.asMethodCallExpr();
+            Optional<Expression> opt = mcExpr.getScope();
+            if (!opt.isPresent()) {
+                return mcExpr; // return MethodCallExpr if no scope
+            } else {
+                scope = opt.get();
+                return findRootScope(scope);
             }
+        } else if (expr.isFieldAccessExpr()) {
+            FieldAccessExpr faExpr = expr.asFieldAccessExpr();
+            scope = faExpr.getScope(); // FieldAccessExpr must have a scope
+            return findRootScope(scope);
+        } else {
+            scope = expr;
         }
-        if (failOnEmptyRootScope) {
-            throw new MvelCompilerException("Invalid modify statement: " + PrintUtil.printNode(mcExpr));
-        }
-        return opt.get();
+
+        return scope;
     }
 
     private AssignExpr assignToFieldAccess(PreprocessPhaseResult result, Expression scope, AssignExpr assignExpr) {
-        DrlNameExpr originalFieldAccess = (DrlNameExpr) assignExpr.getTarget();
-        String propertyName = originalFieldAccess.getName().asString();
         result.addUsedBinding(printNode(scope));
+        Expression target = assignExpr.getTarget();
 
+        if (target instanceof DrlNameExpr) { // e.g. age = 10
+            return propertyNameToFieldAccess(scope, assignExpr, (DrlNameExpr) target);
+        } else if (target.isFieldAccessExpr()) { // e.g. address.city = 10
+            Expression rootScope = findRootScope(target);
+            throwExceptionIfSameDrlName(rootScope, scope);
+            replaceRootExprWithFieldAccess(scope, (DrlNameExpr) rootScope);
+            return assignExpr;
+        } else {
+            throw new MvelCompilerException("Unexpected target: " + target.getClass() + ", assignExpr: " + PrintUtil.printNode(assignExpr));
+        }
+    }
+
+    private void replaceRootExprWithFieldAccess(Expression scope, DrlNameExpr rootExpr) {
+        String propertyName = rootExpr.getName().asString();
+        FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
+        Optional<Node> optRootParent = rootExpr.getParentNode();
+        if (optRootParent.isPresent()) {
+            Node rootParent = optRootParent.get();
+            if (rootParent instanceof FieldAccessExpr) {
+                ((FieldAccessExpr)rootParent).setScope(fieldAccessWithScope);
+            } else if (rootParent instanceof MethodCallExpr) {
+                ((MethodCallExpr)rootParent).setScope(fieldAccessWithScope);
+            } else {
+                throw new MvelCompilerException(String.format("Unexpected rootParent: %s, rootExpr: %s", rootParent.getClass(), PrintUtil.printNode(rootExpr)));
+            }
+        } else {
+            throw new MvelCompilerException(String.format("rootExpr doesn't have a parent: %s, rootExpr: %s", rootExpr.getClass(), PrintUtil.printNode(rootExpr)));
+        }
+    }
+
+    private AssignExpr propertyNameToFieldAccess(Expression scope, AssignExpr assignExpr, DrlNameExpr originalFieldAccess) {
+        String propertyName = originalFieldAccess.getName().asString();
         FieldAccessExpr fieldAccessWithScope = new FieldAccessExpr(scope, propertyName);
         assignExpr.setTarget(fieldAccessWithScope);
-
         return assignExpr;
     }
 

@@ -72,12 +72,12 @@ KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultij
 createSetupBranchJob()
 
 // Nightly jobs
-setupDeployJob(JobType.NIGHTLY)
-setupSpecificBuildChainNightlyJob('native')
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 
+// Environment nightlies
+setupSpecificBuildChainNightlyJob('native')
 setupSpecificBuildChainNightlyJob('quarkus-main')
 setupSpecificBuildChainNightlyJob('quarkus-branch')
-
 setupSpecificBuildChainNightlyJob('mandrel')
 setupSpecificBuildChainNightlyJob('mandrel-lts')
 setupSpecificBuildChainNightlyJob('quarkus-lts')

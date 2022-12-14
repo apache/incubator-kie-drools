@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-core-bom</artifactId>
-    <version>8.32.0-SNAPSHOT</version>
+    <version>8.33.0-SNAPSHOT</version>
     <relativePath>../kie-core-bom/pom.xml</relativePath>
   </parent>
 
@@ -571,6 +571,12 @@
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-deployment</artifactId>
         <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-drl-quarkus-deployment</artifactId>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -993,7 +999,6 @@
         <artifactId>kie-drl-kiesession-local-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 

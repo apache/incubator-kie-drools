@@ -54,7 +54,6 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -70,8 +69,8 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
@@ -89,8 +88,9 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 import static org.drools.util.BitMaskUtil.isSet;
+import static org.drools.util.ClassUtils.convertClassToResourcePath;
 
 public class KnowledgeBaseImpl implements RuleBase {
 
@@ -124,7 +124,7 @@ public class KnowledgeBaseImpl implements RuleBase {
     /** The root Rete-OO for this <code>RuleBase</code>. */
     private transient Rete rete;
     private ReteooBuilder reteooBuilder;
-    private final transient Map<Integer, SegmentPrototype> segmentProtos = new HashMap<>();
+    private final transient Map<Integer, SegmentPrototype> segmentProtos = isEagerSegmentCreation() ? new HashMap<>() : new ConcurrentHashMap<>();
 
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
@@ -893,6 +893,10 @@ public class KnowledgeBaseImpl implements RuleBase {
         return this.reteooBuilder.getMemoryIdsGenerator().getLastId() + 1;
     }
 
+    public boolean hasSegmentPrototypes() {
+        return !segmentProtos.isEmpty();
+    }
+
     public void registerSegmentPrototype(LeftTupleNode tupleSource, SegmentPrototype smem) {
         segmentProtos.put(tupleSource.getId(), smem);
     }
@@ -1012,12 +1016,11 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories ) {
-        List<PathEndNode> endNodes = new ArrayList<>();
         for (Rule r : rules) {
             RuleImpl rule = (RuleImpl) r;
             checkMultithreadedEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
-            this.reteooBuilder.addRule(rule, endNodes, workingMemories);
+            this.reteooBuilder.addRule(rule, workingMemories);
         }
     }
 

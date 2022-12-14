@@ -17,15 +17,13 @@
 package org.drools.core.reteoo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 
 public class MockObjectSink
@@ -38,11 +36,6 @@ public class MockObjectSink
 
     private ObjectSinkNode previousObjectSinkNode;
     private ObjectSinkNode nextObjectSinkNode;
-
-    @Override
-    public int getPosInSegment() {
-        throw new UnsupportedOperationException("This method should not be called");
-    }
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
@@ -159,8 +152,21 @@ public class MockObjectSink
     }
 
     @Override
-    public Map<Integer, TerminalNode> getAssociatedTerminals() {
-        return null;
+    public void addAssociatedTerminal(TerminalNode terminalNode) {
+    }
+
+    @Override
+    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+    }
+
+    @Override
+    public int getAssociatedTerminalsSize() {
+        return 0;
+    }
+
+    @Override
+    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+        return false;
     }
 
     public ObjectTypeNode.Id getRightInputOtnId() {

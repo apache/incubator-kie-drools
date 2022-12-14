@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.impl.domain.Person;
 
 public class UpdateTestUnit implements RuleUnitData {
     private final List<String> results = new ArrayList<>();
