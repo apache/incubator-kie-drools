@@ -26,7 +26,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ast.expr.ModifyStatement;
-import org.drools.mvel.parser.ast.expr.WithStatement;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 
@@ -56,13 +55,7 @@ public class MvelCompiler {
                 .flatMap(this::transformStatementWithPreprocessing)
                 .collect(toList());
 
-        List<String> withUsedBindings = mvelExpression.findAll(WithStatement.class)
-                .stream()
-                .flatMap(this::transformStatementWithPreprocessing)
-                .collect(toList());
-
         allUsedBindings.addAll(modifyUsedBindings);
-        allUsedBindings.addAll(withUsedBindings);
 
         // Entry point of the compiler
         TypedExpression compiledRoot = mvelExpression.accept(statementVisitor, null);

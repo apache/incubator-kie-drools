@@ -774,29 +774,6 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
-    public void testWithSemiColon() {
-        test("{ with( $l = new ArrayList()) { $l.add(2); }; }",
-             "{ java.util.ArrayList $l = new java.util.ArrayList(); $l.add(2); }",
-             result -> assertThat(allUsedBindings(result)).isEmpty());
-    }
-
-    @Test
-    public void testWithWithAssignment() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ with($p = new Person()) { age = $p.age+1 }; }",
-             "{ org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); }",
-             result -> assertThat(allUsedBindings(result)).isEmpty());
-    }
-
-    @Test
-    public void testWithInIf() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ if (true) { with($p = new Person()) { age = $p.age+1 }; } }",
-             "{ if (true) { org.drools.Person $p = new org.drools.Person(); $p.setAge($p.getAge() + 1); } }",
-             result -> assertThat(allUsedBindings(result)).isEmpty());
-    }
-
-    @Test
     public void testAddCastToMapGet() {
         test(ctx -> ctx.addDeclaration("$map", Map.class),
              " { Map pMap = map.get( \"whatever\" ); }",
@@ -841,30 +818,6 @@ public class MvelCompilerTest implements CompilerTest {
                      "  } " +
                      "}",
              result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$p"));
-    }
-
-    @Test
-    public void testWithOrdering() {
-        test(ctx -> ctx.addDeclaration("$p", Person.class),
-             "{ " +
-                     "        with( s0 = new Person() ) {\n" +
-                     "            age = 0\n" +
-                     "        }\n" +
-                     "        insertLogical(s0);\n" +
-                     "        with( s1 = new Person() ) {\n" +
-                     "            age = 1\n" +
-                     "        }\n" +
-                     "        insertLogical(s1);\n " +
-                     "     }",
-
-             "{ " +
-                     "org.drools.Person s0 = new org.drools.Person(); " +
-                     "s0.setAge(0); " +
-                     "insertLogical(s0);\n" +
-                     "org.drools.Person s1 = new org.drools.Person(); " +
-                     "s1.setAge(1);\n" +
-                     "insertLogical(s1);\n" +
-                     "}");
     }
 
     @Test
