@@ -22,7 +22,14 @@ import java.util.List;
 import org.drools.ruleunits.api.DataSource;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.conf.Clock;
+import org.drools.ruleunits.api.conf.ClockType;
+import org.drools.ruleunits.api.conf.EventProcessing;
+import org.drools.ruleunits.api.conf.EventProcessingType;
+import org.drools.ruleunits.impl.domain.SimpleFact;
 
+@EventProcessing(EventProcessingType.STREAM)
+@Clock(ClockType.PSEUDO)
 public class TestRuleUnit implements RuleUnitData {
 
     private final Integer[] numbersArray;

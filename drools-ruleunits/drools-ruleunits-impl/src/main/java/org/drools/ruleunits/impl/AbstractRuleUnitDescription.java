@@ -16,12 +16,17 @@
 package org.drools.ruleunits.impl;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.drools.ruleunits.api.conf.EventProcessingType;
 import org.drools.ruleunits.api.conf.RuleUnitConfig;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
@@ -88,6 +93,18 @@ public abstract class AbstractRuleUnitDescription implements RuleUnitDescription
     @Override
     public ClockTypeOption getClockType() {
         return (config.getDefaultedClockType() == org.drools.ruleunits.api.conf.ClockType.PSEUDO) ? ClockTypeOption.PSEUDO : ClockTypeOption.REALTIME;
+    }
+
+    @Override
+    public Collection<KieBaseOption> getKieBaseOptions() {
+        List<KieBaseOption> kieBaseOptions = new ArrayList<>();
+
+        EventProcessingOption eventProcessingOption = (config.getDefaultedEventProcessingType() == EventProcessingType.CLOUD) ? EventProcessingOption.CLOUD : EventProcessingOption.STREAM;
+        kieBaseOptions.add(eventProcessingOption);
+
+        // Add any KieBaseOptions if available
+
+        return kieBaseOptions;
     }
 
     @Override

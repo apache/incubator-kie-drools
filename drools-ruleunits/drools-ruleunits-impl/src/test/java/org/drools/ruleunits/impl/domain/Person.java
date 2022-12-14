@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ruleunits.impl;
+package org.drools.ruleunits.impl.domain;
 
-public class SimpleFact {
+public class Person {
 
-    private final String stringValue;
+    private String name;
 
-    public SimpleFact(final String stringValue) {
-        this.stringValue = stringValue;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
 
-    public String getStringValue() {
-        return stringValue;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }
