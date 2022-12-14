@@ -416,7 +416,7 @@ public abstract class BetaNode extends LeftTupleSource
         LeftTupleSource startTupleSource = (( RightInputAdapterNode ) getRightInput()).getStartTupleSource();
 
         // Iterate find start
-        while (lt.getIndex() != startTupleSource.getPathIndex()) {
+        while (lt.getIndex() != startTupleSource.getPathIndex()-1) { // -1 as it needs the split node, not the start of the branch
             lt = lt.getLeftParent();
         }
 

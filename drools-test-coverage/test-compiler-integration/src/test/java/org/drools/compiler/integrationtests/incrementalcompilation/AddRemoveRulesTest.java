@@ -831,7 +831,7 @@ public class AddRemoveRulesTest {
                 " list.add('R2'); \n" +
                 "end";
 
-        AddRemoveTestCases.insertFactsRemoveFire(base, rule1, rule2, null, TestUtil.getDefaultFacts());
+        AddRemoveTestCases. insertFactsRemoveFire(base, rule1, rule2, null, TestUtil.getDefaultFacts());
     }
 
     @Test
@@ -1638,7 +1638,7 @@ public class AddRemoveRulesTest {
         additionalGlobals.put("globalInt", new AtomicInteger(0));
 
         AddRemoveTestCases.runAllTestCases(base, rule1, rule2, rule1Name, rule2Name, additionalGlobals,1, 2, "1");
-//        AddRemoveTestCases.runAllTestCases(base, rule2, rule1, rule2Name, rule1Name, additionalGlobals,1, 2, "1");
+        AddRemoveTestCases.runAllTestCases(base, rule2, rule1, rule2Name, rule1Name, additionalGlobals,1, 2, "1");
     }
 
     @Test

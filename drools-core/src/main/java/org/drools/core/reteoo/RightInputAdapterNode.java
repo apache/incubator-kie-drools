@@ -47,13 +47,15 @@ import org.kie.api.definition.rule.Rule;
 public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
-    PathEndNode,
-    MemoryFactory<RiaPathMemory> {
+    PathEndNode {
 
     private static final long serialVersionUID = 510l;
 
     private LeftTupleSource   tupleSource;
-    
+
+    /**
+     * This is first node inside of the subnetwork. The split, with two outs, would be the parent node.
+     */
     private LeftTupleSource   startTupleSource;
 
     private boolean           tupleMemoryEnabled;
@@ -126,6 +128,17 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     @Override
+    public void setPathMemSpec(PathMemSpec pathMemSpec) {
+        this.pathMemSpec = pathMemSpec;
+    }
+
+    @Override
+    public void resetPathMemSpec(TerminalNode removingTN) {
+        nullPathMemSpec();
+        pathMemSpec = getPathMemSpec(removingTN);
+    }
+
+    @Override
     public void setSegmentPrototypes(SegmentPrototype[] smems) {
         this.segmentPrototypes = smems;
     }
@@ -175,7 +188,7 @@ public class RightInputAdapterNode extends ObjectSource
      * Creates and return the node memory
      */    
     public RiaPathMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return (RiaPathMemory) AbstractTerminalNode.initPathMemory( this, new RiaPathMemory(this, reteEvaluator) );
+        return (RiaPathMemory) AbstractTerminalNode.initPathMemory( this, new RiaPathMemory(this, reteEvaluator), null );
     }
     
     public SubnetworkTuple createPeer(LeftTuple original) {
@@ -462,8 +475,4 @@ public class RightInputAdapterNode extends ObjectSource
         return result;
     }
 
-    @Override
-    public void resetPathMemSpec(TerminalNode removingTN) {
-        pathMemSpec = removingTN == null ? null : calculatePathMemSpec(null, removingTN);
-    }
 }

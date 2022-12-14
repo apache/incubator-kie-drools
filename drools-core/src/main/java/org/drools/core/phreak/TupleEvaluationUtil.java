@@ -115,11 +115,11 @@ public class TupleEvaluationUtil {
         if ( sm.getRootNode().getType() == NodeTypeEnums.LeftInputAdapterNode && sm.getTipNode().getType() != NodeTypeEnums.LeftInputAdapterNode) {
             // The segment is the first and it has the lian shared with other nodes, the lian must be skipped, so adjust the bit and sink
             node =  sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
-            mem = sm.getNodeMemories().get(1);
+            mem = sm.getNodeMemories()[1];
             bit = 2; // adjust bit to point to next node
         } else {
             node =  sm.getRootNode();
-            mem = sm.getNodeMemories().get(0);
+            mem = sm.getNodeMemories()[0];
         }
 
         PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ?

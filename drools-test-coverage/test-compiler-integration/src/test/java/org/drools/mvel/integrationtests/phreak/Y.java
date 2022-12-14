@@ -17,27 +17,27 @@ package org.drools.mvel.integrationtests.phreak;
 
 import org.kie.api.definition.type.Position;
 
-public class E {
+public class Y {
 
     @Position(0)
     Object object;
 
-    public E(Object object) {
+    public Y(Object object) {
         super();
         this.object = object;
     }
 
-    public static E e(Object object) {
-        return new E( object );
+    public static Y y(Object object) {
+        return new Y(object );
     }
 
-    public static E[] e(Object... objects) {
-        E[] es = new E[objects.length];
+    public static Y[] y(Object... objects) {
+        Y[] bs = new Y[objects.length];
         int i = 0;
         for ( Object object : objects ) {
-            es[i++] = new E( object );
+            bs[i++] = new Y(object );
         }
-        return es;
+        return bs;
     }        
 
     public Object getObject() {
@@ -61,7 +61,7 @@ public class E {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        E other = (E) obj;
+        Y other = (Y) obj;
         if ( object == null ) {
             if ( other.object != null ) return false;
         } else if ( !object.equals( other.object ) ) return false;
@@ -70,7 +70,7 @@ public class E {
 
     @Override
     public String toString() {
-        return "E [" + object + "]";
+        return "Y [" + object + "]";
     }
 
 }

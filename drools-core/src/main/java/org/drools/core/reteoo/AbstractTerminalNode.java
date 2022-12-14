@@ -57,6 +57,8 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     private LeftTupleSource   tupleSource;
 
+    private LeftTupleSource   startTupleSource;
+
     private BitMask declaredMask = EmptyBitMask.get();
     private BitMask inferredMask = EmptyBitMask.get();
     private BitMask negativeMask = EmptyBitMask.get();
@@ -92,6 +94,12 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
         this.allDeclarations = decls.values().toArray( new Declaration[decls.size()] );
         initDeclarations(decls, context);
+
+        LeftTupleSource current = getLeftTupleSource();
+        while (current.getLeftTupleSource() != null) {
+            current = current.getLeftTupleSource();
+        }
+        startTupleSource = current;
     }
 
     abstract void initDeclarations(Map<String, Declaration> decls, BuildContext context);
@@ -102,9 +110,14 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     @Override
+    public void setPathMemSpec(PathMemSpec pathMemSpec) {
+        this.pathMemSpec = pathMemSpec;
+    }
+
+    @Override
     public PathMemSpec getPathMemSpec(TerminalNode removingTN) {
         if (pathMemSpec == null) {
-            pathMemSpec = calculatePathMemSpec( null, removingTN );
+            pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
         }
         return pathMemSpec;
     }
@@ -118,7 +131,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             n.setSegmentPrototypes(null);
             n.setEagerSegmentPrototypes(null);}
         );
-        pathMemSpec = removingTN == null ? null : calculatePathMemSpec( null, removingTN );
+        pathMemSpec = calculatePathMemSpec( startTupleSource, removingTN );
     }
 
     public RuleImpl getRule() {
@@ -140,6 +153,10 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }
+
+    public LeftTupleSource getStartTupleSource() {
+        return startTupleSource;
     }
 
     public void nullPathMemSpec() {
@@ -227,13 +244,13 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public PathMemory createMemory(RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
-        return initPathMemory( this, new PathMemory(this, reteEvaluator) );
+        return initPathMemory( this, new PathMemory(this, reteEvaluator), null );
     }
 
-    public static PathMemory initPathMemory( PathEndNode pathEndNode, PathMemory pmem ) {
+    public static PathMemory initPathMemory( PathEndNode pathEndNode, PathMemory pmem, TerminalNode removingTN ) {
         PathMemSpec pathMemSpec = pathEndNode.getPathMemSpec();
         pmem.setAllLinkedMaskTest(pathMemSpec.allLinkedTestMask );
-        pmem.setSegmentMemories( new SegmentMemory[pathEndNode.getPathMemSpec().smemCount()] ); // this must initially be null, so it can be used for the initialised check.
+        pmem.setSegmentMemories( new SegmentMemory[pathEndNode.getPathMemSpec().smemCount()] );
         return pmem;
     }
 
@@ -380,9 +397,13 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public void visitLeftTupleNodes(Consumer<LeftTupleNode> func) {
-        for (PathEndNode endNode : getPathEndNodes()) {
-            for (LeftTupleNode node : endNode.getPathNodes()) {
+        for(PathEndNode endNode : getPathEndNodes()) {
+            for(int i = endNode.getPathNodes().length-1; i >= 0; i--) {
+                LeftTupleNode node = endNode.getPathNodes()[i];
                 func.accept(node);
+                if (endNode.getStartTupleSource() == node) {
+                    break;
+                }
             }
         }
     }

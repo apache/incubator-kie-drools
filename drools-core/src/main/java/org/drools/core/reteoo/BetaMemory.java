@@ -118,8 +118,8 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return nodePosMaskBit;
     }
 
-    public void setNodePosMaskBit(long segmentPos) {
-        this.nodePosMaskBit = segmentPos;
+    public void setNodePosMaskBit(long nodePosMaskBit) {
+        this.nodePosMaskBit = nodePosMaskBit;
     }
 
     public int getCounter() {

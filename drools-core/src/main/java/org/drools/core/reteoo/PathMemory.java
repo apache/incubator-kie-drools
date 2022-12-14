@@ -76,6 +76,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return linkedSegmentMask;
     }
 
+    public void setLinkedSegmentMask(long mask) {
+        this.linkedSegmentMask = mask;
+    }
+
     public long getAllLinkedMaskTest() {
         return allLinkedMaskTest;
     }
@@ -175,7 +179,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void unlinkedSegment(long mask, ReteEvaluator reteEvaluator) {
         boolean linkedRule =  isRuleLinked();
-        linkedSegmentMask ^= mask;
+        linkedSegmentMask &= ~mask;
         if (isLogTraceEnabled) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }

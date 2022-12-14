@@ -27,11 +27,11 @@ public class X {
         this.object = object;
     }
 
-    public static X b(Object object) {
+    public static X x(Object object) {
         return new X(object );
     }
 
-    public static X[] b(Object... objects) {
+    public static X[] x(Object... objects) {
         X[] bs = new X[objects.length];
         int i = 0;
         for ( Object object : objects ) {

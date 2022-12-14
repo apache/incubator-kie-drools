@@ -43,6 +43,7 @@ public class AddRuleTest {
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     public AddRuleTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        System.setProperty("drools.useEagerSegmentCreation", "true");
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -53,6 +54,7 @@ public class AddRuleTest {
 
     @Test
     public void testMemoriesCCEWhenAddRemoveAddRule() {
+        //System.setProperty("drools.useEagerSegmentCreation", "false");
         // JBRULES-3656
         final String rule1 = "import " + AddRuleTest.class.getCanonicalName() + ".*\n" +
                 "import java.util.Date\n" +

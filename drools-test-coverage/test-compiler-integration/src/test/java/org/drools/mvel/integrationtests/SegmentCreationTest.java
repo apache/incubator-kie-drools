@@ -15,6 +15,7 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -462,7 +464,7 @@ public class SegmentCreationTest {
 
         PathMemory pmemr2 = wm.getNodeMemory(rtn2);
         assertThat(pmemr2.getAllLinkedMaskTest()).isEqualTo(1);
-        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(2);
+        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(0);
         assertThat(pmemr2.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmemr2.isRuleLinked()).isFalse();
 
@@ -474,7 +476,7 @@ public class SegmentCreationTest {
         BetaMemory cNodeBm = ( BetaMemory ) wm.getNodeMemory( cNode );
         SegmentMemory cNodeSmem = cNodeBm.getSegmentMemory();
 
-        assertThat(cNodeSmem.getAllLinkedMaskTest()).isEqualTo(1);
+        assertThat(cNodeSmem.getAllLinkedMaskTest()).isEqualTo(0);
         assertThat(cNodeSmem.getLinkedNodeMask()).isEqualTo(1);
 
         wm.insert(new LinkingTest.X());
@@ -488,11 +490,35 @@ public class SegmentCreationTest {
         wm.delete(cFh); // retract C does not unlink the rule
         wm.flushPropagations();
 
-        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(3); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(1); // b segment never unlinks, as it has no impact on path unlinking anyway
         assertThat(pmemr2.isRuleLinked()).isTrue();
 
-        assertThat(pmemr3.getLinkedSegmentMask()).isEqualTo(3); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertThat(pmemr3.getLinkedSegmentMask()).isEqualTo(1); // b segment never unlinks, as it has no impact on path unlinking anyway
         assertThat(pmemr3.isRuleLinked()).isTrue();
+    }
+
+    @Test @Ignore
+    // TODO the conditional branch node is broken for node sharing, it's dropping the 3rd rules [t1] rtn
+    // This is because is probably because the network buider, that handles candidate node for sharing isn't being applied branch logic.
+    public void testShorterBranchInMultipleSegments() throws Exception {
+        KieBase kbase = buildKnowledgeBase( "  X() $a : A() \n", // r0
+                                            "  X()  $a : A() \n" +
+                                            "   if ( $a != null ) do[t1] \n" +
+                                            "   B() \n", // r1
+                                            "  X() $a : A() \n"+
+                                            "   if ( $a != null ) do[t1] \n" +
+                                            "   B() \n" +
+                                            "   C() \n" // r2
+                                          );
+
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
+        List<String> list = new ArrayList<>();
+        wm.setGlobal("list", list);
+
+        wm.insert(new LinkingTest.X());
+        wm.insert(new LinkingTest.A());
+        wm.fireAllRules();
+        assertThat(list).contains("t1-rule1", "t1-rule2"); // r1
     }
 
     private KieBase buildKnowledgeBase(String... rules) {
@@ -506,16 +532,19 @@ public class SegmentCreationTest {
 
         int i = 0;
         for ( String lhs : rules) {
-            str += "rule rule" + (i++) +"  when \n";
+            String ruleName = "rule" + i++;
+            str += "rule " + ruleName +"  when \n";
             str +=  lhs;
             str += "then \n";
+            str +=   "if (list!=null) list.add(\"main-" + ruleName + "\");";
             str += "then[t1] \n";
-            str += "end \n";            
+            str +=   "if (list!=null) list.add(\"t1-" + ruleName + "\");";
+            str += "end \n";
         }
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         return kbase;
-    }      
+    }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((RuleBase)kbase).getRete().getObjectTypeNodes();

@@ -32,6 +32,7 @@ import org.drools.impact.analysis.integrationtests.RuleExecutionHelper;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.internal.ImpactAnalysisKieModule;
 import org.drools.impact.analysis.parser.internal.ImpactAnalysisProject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -46,7 +47,7 @@ import org.kie.api.runtime.KieSession;
  */
 public class ExampleUsageTest {
 
-    @Test
+    @Test @Ignore
     public void testExampleUsage() throws IOException {
 
         KieServices ks = KieServices.Factory.get();

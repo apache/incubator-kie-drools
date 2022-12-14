@@ -45,11 +45,12 @@ public final class TestUtil {
         for (final String drl : drls) {
             final KnowledgeBuilder kBuilder;
             if (reuseKieBaseWhenAddingRules) {
-                kBuilder = createKnowledgeBuilder(session.getKieBase(), drl);
+                // packages are added live to the target kbase, no need to re-add them again.
+                createKnowledgeBuilder(session.getKieBase(), drl);
             } else {
                 kBuilder = createKnowledgeBuilder(null, drl);
+                ((InternalKnowledgeBase)session.getKieBase()).addPackages(kBuilder.getKnowledgePackages());
             }
-            ((InternalKnowledgeBase)session.getKieBase()).addPackages(kBuilder.getKnowledgePackages());
         }
     }
 

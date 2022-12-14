@@ -18,15 +18,18 @@ package org.drools.core.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.core.common.MemoryFactory;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 
-public interface PathEndNode extends LeftTupleSinkNode {
+public interface PathEndNode extends LeftTupleSinkNode, MemoryFactory<PathMemory> {
     LeftTupleNode[] getPathNodes();
 
     void nullPathMemSpec();
+
+    LeftTupleSource getStartTupleSource();
 
     boolean hasPathNode(LeftTupleNode node);
 
@@ -47,11 +50,18 @@ public interface PathEndNode extends LeftTupleSinkNode {
 
     void resetPathMemSpec(TerminalNode removingTN);
 
+    void setPathMemSpec(PathMemSpec pathMemSpec);
+
     class PathMemSpec implements Serializable {
-        final long allLinkedTestMask;
-        final int smemCount;
+        long allLinkedTestMask;
+        int smemCount;
 
         public PathMemSpec( long allLinkedTestMask, int smemCount ) {
+            this.allLinkedTestMask = allLinkedTestMask;
+            this.smemCount = smemCount;
+        }
+
+        public void update( long allLinkedTestMask, int smemCount ) {
             this.allLinkedTestMask = allLinkedTestMask;
             this.smemCount = smemCount;
         }
@@ -110,7 +120,7 @@ public interface PathEndNode extends LeftTupleSinkNode {
                 counter++;
             }
 
-            if ( tupleSource == startTupleSource ) {
+            if ( tupleSource == startTupleSource.getLeftTupleSource() ) {
                 // stop tracking if we move outside of a subnetwork boundary (if one is set)
                 subnetworkBoundaryCrossed = true;
                 updateAllLinkedTest = false;
@@ -124,7 +134,7 @@ public interface PathEndNode extends LeftTupleSinkNode {
         return new PathMemSpec(allLinkedTestMask, counter);
     }
 
-    static boolean hasConditionalBranchNode(LeftTupleSource tupleSource) {
+    static boolean hasConditionalBranchNode(LeftTupleNode tupleSource) {
         while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
             if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
                 return true;

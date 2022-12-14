@@ -19,6 +19,8 @@ package org.drools.core.common;
 import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
 
+import java.util.Map;
+
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
  * for exposing information events.
@@ -43,7 +45,10 @@ public interface NetworkNode {
 
     void addAssociatedTerminal(TerminalNode terminalNode);
     void removeAssociatedTerminal(TerminalNode terminalNode);
+
     int getAssociatedTerminalsSize();
+    //Map<Integer, TerminalNode> getAssociatedTerminals();
+
     boolean hasAssociatedTerminal(NetworkNode terminalNode);
 
     NetworkNode[] getSinks();

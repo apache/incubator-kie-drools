@@ -513,6 +513,11 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     }
 
     @Override
+    public Map<Integer, SegmentPrototype> getSegmentPrototypes() {
+        return delegate.getSegmentPrototypes();
+    }
+
+    @Override
     public TypeDeclaration getExactTypeDeclaration(Class<?> clazz) {
         return delegate.getExactTypeDeclaration(clazz);
     }

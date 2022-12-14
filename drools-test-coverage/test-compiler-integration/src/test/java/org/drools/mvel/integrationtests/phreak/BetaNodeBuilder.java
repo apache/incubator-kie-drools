@@ -15,6 +15,7 @@
 
 package org.drools.mvel.integrationtests.phreak;
 
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
@@ -25,7 +26,6 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
@@ -83,6 +83,10 @@ public class BetaNodeBuilder {
     }
 
     public BetaNode build() {
+        return build(null, null);
+    }
+
+    public BetaNode build(LeftTupleSource leftInput, ObjectSource rightInput) {
         NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
 
         EntryPointNode epn = buildContext.getRuleBase().getRete().getEntryPointNodes().values().iterator().next();
@@ -92,12 +96,16 @@ public class BetaNodeBuilder {
                                                           new ClassObjectType(leftType),
                                                           buildContext);
 
-        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextNodeId(), otn, buildContext, false);
+        if (leftInput == null) {
+            leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextNodeId(), otn, buildContext, false);
+        }
 
-        ObjectSource rightInput = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
-                                                               epn,
-                                                               new ClassObjectType(rightType),
-                                                               buildContext);
+        if (rightInput == null) {
+            rightInput = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
+                                                      epn,
+                                                      new ClassObjectType(rightType),
+                                                      buildContext);
+        }
 
         ReteTesterHelper reteTesterHelper = new ReteTesterHelper();
 
@@ -124,11 +132,11 @@ public class BetaNodeBuilder {
 
         switch (nodeType) {
             case NodeTypeEnums.JoinNode:
-                return new JoinNode(0, leftInput, rightInput, betaConstraints, buildContext);
+                return new JoinNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.NotNode:
-                return new NotNode(0, leftInput, rightInput, betaConstraints, buildContext);
+                return new NotNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.ExistsNode:
-                return new ExistsNode(0, leftInput, rightInput, betaConstraints, buildContext);
+                return new ExistsNode(buildContext.getNextNodeId(), leftInput, rightInput, betaConstraints, buildContext);
         }
         throw new IllegalStateException("Unable to build Node");
     }
