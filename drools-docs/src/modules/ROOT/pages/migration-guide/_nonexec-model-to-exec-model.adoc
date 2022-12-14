@@ -80,7 +80,7 @@ then
 end
 ----
 
-`non-executable model` coerces `10` to `Long`, so it doesn't throw an Exception. However, `executable model` throws a build error.
+`non-executable model` coerces `10` to `Long`, so it doesn't throw an Exception. However, the `executable model` throws a build error.
 ----
 The method setWrapperLong(Long) in the type Fact is not applicable for the arguments (int)
 ----
