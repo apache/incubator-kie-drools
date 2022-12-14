@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiPredicate;
 
 import org.drools.core.ClockType;
 import org.drools.core.facttemplates.Event;
@@ -28,6 +29,7 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.drools.model.ConstraintOperator;
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
@@ -1122,5 +1124,56 @@ public class FactTemplateTest {
 
         ksession.fireAllRules();
         assertThat(result.getValue()).isEqualTo("fired");
+    }
+
+    @Test
+    public void testListContains() {
+        // DROOLS-7259
+
+        ConstraintOperator listContainsOp = new ConstraintOperator() {
+            @Override
+            public <T, V> BiPredicate<T, V> asPredicate() {
+                return (t,v) -> t instanceof Collection && ((Collection) t).contains(v);
+            }
+
+            @Override
+            public String toString() {
+                return "LIST_CONTAINS";
+            }
+        };
+
+        Prototype prototype = prototype( "org.X" );
+        PrototypeVariable prototypeV = variable(prototype);
+
+        Rule rule = rule( "alpha" )
+                .build(
+                        protoPattern(prototypeV)
+                                .expr( "ids", listContainsOp, 1 ),
+                        on(prototypeV).execute((drools, p) ->
+                                drools.insert(new Result("Found"))
+                        )
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Fact fact1 = createMapBasedFact(prototype);
+        fact1.set( "name", "fact1" );
+        fact1.set( "ids", Arrays.asList(2, 4) );
+        ksession.insert(fact1);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+
+        Fact fact2 = createMapBasedFact(prototype);
+        fact2.set( "name", "fact2" );
+        fact2.set( "ids", Arrays.asList(1, 3, 5) );
+        ksession.insert(fact2);
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).contains(new Result("Found"));
     }
 }
