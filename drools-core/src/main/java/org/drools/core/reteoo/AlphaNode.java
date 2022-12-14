@@ -16,19 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 
@@ -251,11 +249,6 @@ public class AlphaNode extends ObjectSource
             return 0;
         }
 
-        @Override
-        public int getPosInSegment() {
-            throw new UnsupportedOperationException("This method should NEVER EVER be called");
-        }
-
         public RuleBasePartitionId getPartitionId() {
             return this.sink.getPartitionId();
         }
@@ -286,8 +279,23 @@ public class AlphaNode extends ObjectSource
         }
 
         @Override
-        public Map<Integer, TerminalNode> getAssociatedTerminals() {
-            return sink.getAssociatedTerminals();
+        public void addAssociatedTerminal(TerminalNode terminalNode) {
+            sink.addAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+            sink.removeAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public int getAssociatedTerminalsSize() {
+            return sink.getAssociatedTerminalsSize();
+        }
+
+        @Override
+        public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+            return sink.hasAssociatedTerminal(terminalNode);
         }
 
         @Override

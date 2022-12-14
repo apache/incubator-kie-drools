@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
@@ -379,7 +380,7 @@ public class AddRuleTest {
     public void testPopulatedMultipleShares() throws Exception {
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n" );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
-        List list = new ArrayList();
+        List<Match> list = new ArrayList<>();
         wm.setGlobal("list", list);
 
         wm.insert(new A(1));
@@ -400,15 +401,12 @@ public class AddRuleTest {
 
         kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
-
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(5);
 
-        assertThat(((Match) list.get(0)).getRule().getName()).isEqualTo("r1");
-        assertThat(((Match) list.get(1)).getRule().getName()).isEqualTo("r1");
-        assertThat(((Match) list.get(2)).getRule().getName()).isEqualTo("r2");
-        assertThat(((Match) list.get(3)).getRule().getName()).isEqualTo("r2");
-        assertThat(((Match) list.get(4)).getRule().getName()).isEqualTo("r3"); // only one A3
+        assertThat(list.stream().filter(m -> m.getRule().getName().equals("r1")).count()).isEqualTo(2);
+        assertThat(list.stream().filter(m -> m.getRule().getName().equals("r2")).count()).isEqualTo(2);
+        assertThat(list.stream().filter(m -> m.getRule().getName().equals("r3")).count()).isEqualTo(1);
     }
 
     @Test
@@ -456,9 +454,17 @@ public class AddRuleTest {
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(8);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
-        assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
-        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+        if (PhreakBuilder.isEagerSegmentCreation()) {
+            PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
+            assertThat(pm5.getSegmentMemories()).isEqualTo(new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
+            assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+        } else {
+            PathMemory pm5 = wm.getNodeMemory(rtn5);
+            smems = pm5.getSegmentMemories();
+            assertThat(smems.length).isEqualTo(2);
+            assertThat(smems[0]).isNull();
+            assertThat(smems[1]).isNull();
+        }
     }
 
 
@@ -527,9 +533,17 @@ public class AddRuleTest {
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
-        assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
-        assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+        if (PhreakBuilder.isEagerSegmentCreation()) {
+            PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
+            assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
+            assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+        } else {
+            PathMemory pm5 = wm.getNodeMemory(rtn5);
+            smems = pm5.getSegmentMemories();
+            assertThat(smems.length).isEqualTo(2);
+            assertThat(smems[0]).isNull();
+            assertThat(smems[1]).isNull();
+        }
     }
 
     @Test

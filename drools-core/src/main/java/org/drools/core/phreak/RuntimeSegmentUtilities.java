@@ -51,25 +51,24 @@ public class RuntimeSegmentUtilities {
         }
 
         // find segment root
-        LeftTupleNode segmentRoot  = BuildtimeSegmentUtilities.findSegmentRoot(node);
+        LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(node);
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
-        if (NodeTypeEnums.isBetaNode(segmentRoot) && ( (BetaNode) segmentRoot ).isRightInputIsRiaNode()) {
-            createRiaSegmentMemory( (BetaNode) segmentRoot, reteEvaluator );
+        if ( smem != null ) {
+            if (NodeTypeEnums.isBetaNode(segmentRoot) && ((BetaNode) segmentRoot).isRightInputIsRiaNode()) {
+                createRiaSegmentMemory((BetaNode) segmentRoot, reteEvaluator);
+            }
+            return smem;
         }
-        return smem;
-    }
 
-    public static long nextNodePosMask(long nodePosMask) {
-        // prevent overflow of segment and path memories masks when a segment has 64 or more nodes or a path has 64 or more segments
-        // in this extreme case all the items after the 64th will be all mapped by the same bit and then the linking of one of them
-        // will be enough to consider all those item linked
-        long nextNodePosMask = nodePosMask << 1;
-        return nextNodePosMask > 0 ? nextNodePosMask : nodePosMask;
+        return LazyPhreakBuilder.createSegmentMemory(reteEvaluator, segmentRoot);
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleNode segmentRoot) {
         SegmentPrototype proto = reteEvaluator.getKnowledgeBase().getSegmentPrototype(segmentRoot);
+        if (proto == null || proto.getNodesInSegment() == null) {
+            return null;
+        }
 
         LeftTupleNode lastNode = proto.getNodesInSegment()[proto.getNodesInSegment().length-1];
         SegmentMemory smem = null;
@@ -95,7 +94,6 @@ public class RuntimeSegmentUtilities {
 
         updateRiaAndTerminalMemory(smem, proto, reteEvaluator);
 
-
         return smem;
     }
 
@@ -109,7 +107,7 @@ public class RuntimeSegmentUtilities {
         return querySmem;
     }
 
-    private static RightInputAdapterNode createRiaSegmentMemory( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
+    static RightInputAdapterNode createRiaSegmentMemory( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
 
         LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
@@ -131,7 +129,9 @@ public class RuntimeSegmentUtilities {
               return; // this can happen when multiple threads are trying to initialize the segment
         }
         for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
-            SegmentMemory childSmem = createChildSegment(reteEvaluator, sink);
+            SegmentMemory childSmem = PhreakBuilder.isEagerSegmentCreation() ?
+                    createChildSegment(reteEvaluator, sink) :
+                    LazyPhreakBuilder.createChildSegment(reteEvaluator, sink);
             smem.add(childSmem);
         }
     }
@@ -152,7 +152,7 @@ public class RuntimeSegmentUtilities {
      * This is because the rianode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
      */
-    public static void updateRiaAndTerminalMemory(SegmentMemory smem,
+    private static void updateRiaAndTerminalMemory(SegmentMemory smem,
                                                  SegmentPrototype proto,
                                                  ReteEvaluator reteEvaluator) {
         for (PathEndNode pathEndNode : proto.getPathEndNodes()) {

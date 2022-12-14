@@ -27,7 +27,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleBuilder;
@@ -108,7 +108,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @return a List<BaseNode> of terminal nodes for the rule             
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, List<PathEndNode> impacted, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
+    public List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories ) throws InvalidPatternException {
 
         // the list of terminal nodes
         final List<TerminalNode> termNodes = new ArrayList<>();
@@ -139,7 +139,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
             // adds subrule
             context.setSubRuleIndex(i);
-            addSubRule( context, subrules[i], rule, impacted );
+            addSubRule( context, subrules[i], rule );
             // adds the terminal node to the list of terminal nodes
 
             termNodes.addAll(context.getTerminals());
@@ -148,10 +148,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         return termNodes;
     }
 
-    private void addSubRule(final BuildContext context,
-                            final GroupElement subrule,
-                            final RuleImpl rule,
-                            final List<PathEndNode> impacted) throws InvalidPatternException {
+    private void addSubRule(BuildContext context, GroupElement subrule, RuleImpl rule) throws InvalidPatternException {
         context.setSubRule(subrule);
 
         // gets the appropriate builder
@@ -176,11 +173,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
             terminal = (TerminalNode) context.getLastNode();
         }
 
-        attachTerminalNode(context, terminal, impacted);
-
+        attachTerminalNode(context, terminal);
     }
 
-    public static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
+    private static TerminalNode buildTerminal(BuildContext context, GroupElement subrule, RuleImpl rule, BuildUtils utils) {
         return buildTerminalNodeForConsequence(context, subrule, context.getSubRuleIndex(), null, rule.getTimer(), utils);
     }
 
@@ -211,7 +207,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         return terminal;
     }
 
-    public static void attachTerminalNode(BuildContext context, TerminalNode terminalNode, List<PathEndNode> impacted) {
+    private static void attachTerminalNode(BuildContext context, TerminalNode terminalNode) {
         context.getTerminals().add(terminalNode);
         context.setTerminated(true);
 
@@ -222,7 +218,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context, terminalNode);
 
-        impacted.addAll(AddRemoveRule.addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase()));
+        PhreakBuilder.get().addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase());
     }
 
     private static void setPathEndNodes(BuildContext context, TerminalNode terminalNode) {
@@ -241,7 +237,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
             }
         }
 
-        terminalNode.visitLeftTupleNodes(n -> n.getAssociatedTerminals().put(terminalNode.getId(), terminalNode));
+        terminalNode.visitLeftTupleNodes(n -> n.addAssociatedTerminal(terminalNode));
     }
 
     /**

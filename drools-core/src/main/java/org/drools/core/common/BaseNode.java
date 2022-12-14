@@ -42,14 +42,13 @@ public abstract class BaseNode
 
     protected int                        id;
 
-    protected int                        posInSegment;
     protected int                        memoryId = -1;
 
     protected RuleBasePartitionId        partitionId;
     protected boolean                    partitionsEnabled;
     protected Set<Rule>                  associations;
 
-    protected Map<Integer, TerminalNode> associatedTerminals;
+    private Map<Integer, TerminalNode> associatedTerminals;
 
     private   boolean                    streamMode;
 
@@ -85,15 +84,6 @@ public abstract class BaseNode
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    @Override
-    public int getPosInSegment() {
-        return posInSegment;
-    }
-
-    public void setPosInSegment(int posInSegment) {
-        this.posInSegment = posInSegment;
     }
 
     public int getMemoryId() {
@@ -213,8 +203,20 @@ public abstract class BaseNode
         return this.associations.contains( rule );
     }
 
-    public Map<Integer, TerminalNode> getAssociatedTerminals() {
-        return this.associatedTerminals;
+    public void addAssociatedTerminal(TerminalNode terminalNode) {
+        associatedTerminals.put(terminalNode.getId(), terminalNode);
+    }
+
+    public void removeAssociatedTerminal(TerminalNode terminalNode) {
+        associatedTerminals.remove(terminalNode.getId());
+    }
+
+    public int getAssociatedTerminalsSize() {
+        return associatedTerminals.size();
+    }
+
+    public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+        return associatedTerminals.containsKey(terminalNode.getId());
     }
 
     @Override

@@ -90,7 +90,7 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
     public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
         ActivationsManager activationsManager = reteEvaluator.getActivationsManager();
         leftTuple.setPropagationContext( context );
-        TerminalNode rtn = ( TerminalNode ) leftTuple.getTupleSink();
+        TerminalNode rtn = leftTuple.getTupleSink();
         PhreakRuleTerminalNode.doLeftDelete( activationsManager, getRuleAgendaItem( reteEvaluator, activationsManager, rtn, false ).getRuleExecutor(), leftTuple );
     }
 

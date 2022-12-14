@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DoubleBetaConstraints;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.ReteEvaluator;
@@ -43,8 +45,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -53,8 +53,8 @@ import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.RuleNetworkEvaluator.doUpdatesReorderChildLeftTuple;
+import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public abstract class BetaNode extends LeftTupleSource

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.model.codegen.execmodel.domain.Address;
+import org.drools.model.codegen.execmodel.domain.Counter;
 import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.ValueHolder;
@@ -1583,5 +1584,135 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.fireAllRules();
 
         assertThat(holder.getWrapperBooleanValue()).isTrue();
+    }
+
+    public void assign_nestedProperty() {
+        // DROOLS-7195
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person()\n" +
+                "then\n" +
+                "  $p.address.city = \"Tokyo\";\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        p.setAddress(new Address("London"));
+        ksession.insert(p);
+        ksession.fireAllRules();
+
+        assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
+    }
+
+    @Test
+    public void assign_nestedPropertyInModify() {
+        // DROOLS-7195
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person(name == \"John\")\n" +
+                "then\n" +
+                "  modify($p) {" +
+                "    address.city = \"Tokyo\";\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        p.setAddress(new Address("London"));
+        ksession.insert(p);
+        ksession.fireAllRules();
+
+        assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
+    }
+
+    @Test
+    public void setter_nestedPropertyInModify() {
+        // DROOLS-7195
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person(name == \"John\")\n" +
+                "then\n" +
+                "  modify($p) {" +
+                "    address.setCity(\"Tokyo\");\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        p.setAddress(new Address("London"));
+        ksession.insert(p);
+        ksession.fireAllRules();
+
+        assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
+    }
+
+    @Test
+    public void assign_deepNestedPropertyInModify() {
+        // DROOLS-7195
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person(name == \"John\")\n" +
+                "then\n" +
+                "  modify($p) {" +
+                "    address.visitorCounter.value = 1;\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person = new Person("John");
+        Address address = new Address("London");
+        Counter counter = new Counter();
+        counter.setValue(0);
+        address.setVisitorCounter(counter);
+        person.setAddress(address);
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(person.getAddress().getVisitorCounter().getValue()).isEqualTo(1);
+    }
+
+    @Test
+    public void setter_deepNestedPropertyInModify() {
+        // DROOLS-7195
+        String str = "package com.example.reproducer\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person(name == \"John\")\n" +
+                "then\n" +
+                "  modify($p) {" +
+                "    address.visitorCounter.setValue(1);\n" +
+                "  }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person = new Person("John");
+        Address address = new Address("London");
+        Counter counter = new Counter();
+        counter.setValue(0);
+        address.setVisitorCounter(counter);
+        person.setAddress(address);
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertThat(person.getAddress().getVisitorCounter().getValue()).isEqualTo(1);
     }
 }

@@ -126,6 +126,8 @@ public interface RuleBase {
 
     SegmentPrototype getSegmentPrototype(LeftTupleNode node);
 
+    boolean hasSegmentPrototypes();
+
     void processAllTypesDeclaration( Collection<InternalKnowledgePackage> pkgs );
 
     void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;

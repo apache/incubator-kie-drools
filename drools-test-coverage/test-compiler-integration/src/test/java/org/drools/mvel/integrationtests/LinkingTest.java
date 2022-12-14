@@ -507,7 +507,7 @@ public class LinkingTest {
 
         wm.insert(  new A() );
 
-        PathMemory pmem =  ( PathMemory ) wm.getNodeMemory(rtn);
+        PathMemory pmem = wm.getNodeMemory(rtn);
         assertThat(pmem.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(7); // D is in the exists segment
 

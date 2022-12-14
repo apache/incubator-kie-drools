@@ -26,7 +26,7 @@ import org.drools.core.rule.WindowDeclaration;
 
 public interface RuleBuilder {
 
-    List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase,  List<PathEndNode> endNodes, Collection<InternalWorkingMemory> workingMemories );
+    List<TerminalNode> addRule( RuleImpl rule, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories );
 
     void addEntryPoint( String id, RuleBase kBase, Collection<InternalWorkingMemory> workingMemories );
 

@@ -125,7 +125,7 @@ public class AsyncReceiveNode extends LeftTupleSource
             memory.setNodeDirtyWithoutNotify();
 
             for (final PathMemory pmem : memory.getSegmentMemory().getPathMemories()) {
-                if (pmem.getPathEndNode().getAssociatedTerminals().size() == 0) {
+                if (pmem.getPathEndNode().getAssociatedTerminalsSize() == 0) {
                     // if the corresponding rule has been removed avoid to link and notify this pmem
                     continue;
                 }

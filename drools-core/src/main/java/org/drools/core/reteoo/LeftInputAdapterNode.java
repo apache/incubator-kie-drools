@@ -16,19 +16,19 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.TupleSets;
@@ -38,8 +38,6 @@ import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.consequence.Activation;
-import org.drools.core.base.ObjectType;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -47,12 +45,12 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.phreak.AddRemoveRule.createLeftTupleTupleSets;
-import static org.drools.core.phreak.AddRemoveRule.findPathToFlush;
-import static org.drools.core.phreak.AddRemoveRule.findPathsToFlushFromRia;
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
-import static org.drools.core.phreak.AddRemoveRule.forceFlushPath;
+import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
+import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
+import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia;
+import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
+import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
@@ -636,11 +634,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             throw new UnsupportedOperationException();
         }
 
-        @Override
-        public int getPosInSegment() {
-            throw new UnsupportedOperationException("This method should not be called");
-        }
-
         public short getType() {
             return NodeTypeEnums.LeftInputAdapterNode;
         }
@@ -659,8 +652,23 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         @Override
-        public Map<Integer, TerminalNode> getAssociatedTerminals() {
-            return sink.getAssociatedTerminals();
+        public void addAssociatedTerminal(TerminalNode terminalNode) {
+            sink.addAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public void removeAssociatedTerminal(TerminalNode terminalNode) {
+            sink.removeAssociatedTerminal(terminalNode);
+        }
+
+        @Override
+        public int getAssociatedTerminalsSize() {
+            return sink.getAssociatedTerminalsSize();
+        }
+
+        @Override
+        public boolean hasAssociatedTerminal(NetworkNode terminalNode) {
+            return sink.hasAssociatedTerminal(terminalNode);
         }
     }
 

@@ -18,13 +18,13 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.common.PropagationContext;
 
-import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.RuleNetworkEvaluator.doExistentialUpdatesReorderChildLeftTuple;
+import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;

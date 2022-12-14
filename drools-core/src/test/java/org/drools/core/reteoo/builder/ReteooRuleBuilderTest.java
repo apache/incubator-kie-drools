@@ -90,8 +90,7 @@ public class ReteooRuleBuilderTest {
 
         rule.setConsequence( consequence );
 
-        List<PathEndNode> endNodes = new ArrayList<>();
-        final List terminals = this.builder.addRule( rule, this.rulebase, endNodes, Collections.emptyList() );
+        final List terminals = this.builder.addRule( rule, this.rulebase, Collections.emptyList() );
 
         assertThat(terminals.size()).as("Rule must have a single terminal node").isEqualTo(1);
 
