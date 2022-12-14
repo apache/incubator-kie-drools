@@ -65,3 +65,30 @@ then
   }
 end
 ----
+
+=== Invalid coercion
+For example, Java allows coercion from `int` to `long`. However, Java doesn't allow coercion from `int` to `Long`. If you have the rule to call the `setWrapperLong` method which accepts `Long`.
+
+[source]
+----
+rule Rule1
+dialect "mvel"
+when
+  $f : Fact()
+then
+  $f.setWrapperLong(10);
+end
+----
+
+`non-executable model` coerces `10` to `Long`, so it doesn't throw an Exception. However, the `executable model` throws a build error.
+----
+The method setWrapperLong(Long) in the type Fact is not applicable for the arguments (int)
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  $f.setWrapperLong(10L);
+end
+----
