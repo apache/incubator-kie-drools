@@ -35,6 +35,7 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "(-10) + (-5)", BigDecimal.valueOf( -15 ) , null},
                 { "(-10) + \"(-5)\"", null, null},
                 { "(-10) + (\"-5\")", null, null}, { "10-5", BigDecimal.valueOf( 5 ) , null},
+                { "10-5", BigDecimal.valueOf( 5 ) , null},
                 { "10-\"5\"", null, null},
                 { "-10 - -5", BigDecimal.valueOf( -5 ) , null},
                 { "-10 - \"-5\"", null, null},
