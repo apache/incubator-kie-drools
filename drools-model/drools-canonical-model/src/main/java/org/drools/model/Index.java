@@ -27,7 +27,7 @@ public interface Index<A, V> {
         ALPHA, BETA;
     }
 
-    enum ConstraintType {
+    enum ConstraintType implements ConstraintOperator {
         EQUAL,
         NOT_EQUAL,
         GREATER_THAN,
@@ -72,6 +72,7 @@ public interface Index<A, V> {
             }
         }
 
+        @Override
         public <T, V> BiPredicate<T, V> asPredicate() {
             switch (this) {
                 case EQUAL:

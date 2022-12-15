@@ -77,11 +77,11 @@ public class PrototypeDSL {
     }
 
     public interface PrototypePatternDef extends PatternDSL.PatternDef<PrototypeFact> {
-        PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, Object value);
-        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right);
+        PrototypePatternDef expr(String fieldName, ConstraintOperator operator, Object value);
+        PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right);
 
-        PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName);
-        PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right);
+        PrototypePatternDef expr(String fieldName, ConstraintOperator operator, PrototypeVariable other, String otherFieldName);
+        PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeVariable other, PrototypeExpression right);
 
         PrototypePatternDef expr(TemporalPredicate temporalPredicate, PrototypeVariable other);
 
@@ -114,20 +114,21 @@ public class PrototypeDSL {
         }
 
         @Override
-        public PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, Object value) {
-            return expr(fieldName2PrototypeExpression(fieldName), constraintType, PrototypeExpression.fixedValue(value));
+        public PrototypePatternDef expr(String fieldName, ConstraintOperator operator, Object value) {
+            return expr(fieldName2PrototypeExpression(fieldName), operator, PrototypeExpression.fixedValue(value));
         }
 
         @Override
-        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeExpression right) {
+        public PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right) {
             Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor;
             AlphaIndex alphaIndex = null;
-            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue) {
+            if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
                 String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
+                Index.ConstraintType constraintType = (Index.ConstraintType) operator;
                 if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
                     leftExtractor = prototypeFact -> prototypeFact.has(fieldName);
-                    constraintType = Index.ConstraintType.EQUAL;
+                    operator = Index.ConstraintType.EQUAL;
                 } else {
                     Prototype.Field field = prototype.getField(fieldName);
                     Object value = ((PrototypeExpression.FixedValue) right).getValue();
@@ -148,8 +149,8 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
-            expr("expr:" + left + ":" + constraintType + ":" + right,
-                    asPredicate1(leftExtractor, constraintType, right.asFunction(prototype)),
+            expr("expr:" + left + ":" + operator + ":" + right,
+                    asPredicate1(leftExtractor, operator, right.asFunction(prototype)),
                     alphaIndex,
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
@@ -157,12 +158,12 @@ public class PrototypeDSL {
         }
 
         @Override
-        public PrototypePatternDef expr(String fieldName, Index.ConstraintType constraintType, PrototypeVariable other, String otherFieldName) {
-            return expr(fieldName2PrototypeExpression(fieldName), constraintType, other, fieldName2PrototypeExpression(otherFieldName));
+        public PrototypePatternDef expr(String fieldName, ConstraintOperator operator, PrototypeVariable other, String otherFieldName) {
+            return expr(fieldName2PrototypeExpression(fieldName), operator, other, fieldName2PrototypeExpression(otherFieldName));
         }
 
         @Override
-        public PrototypePatternDef expr(PrototypeExpression left, Index.ConstraintType constraintType, PrototypeVariable other, PrototypeExpression right) {
+        public PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeVariable other, PrototypeExpression right) {
             Prototype prototype = getPrototype();
             Prototype otherPrototype = other.getPrototype();
 
@@ -170,8 +171,8 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
-            expr("expr:" + left + ":" + constraintType + ":" + right,
-                    other, asPredicate2(left.asFunction(prototype), constraintType, right.asFunction(otherPrototype)),
+            expr("expr:" + left + ":" + operator + ":" + right,
+                    other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
@@ -185,19 +186,19 @@ public class PrototypeDSL {
             return this;
         }
 
-        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> right) {
+        private Predicate1<PrototypeFact> asPredicate1(Function1<PrototypeFact, Object> left, ConstraintOperator operator, Function1<PrototypeFact, Object> right) {
             return p -> {
                 Object leftValue = left.apply(p);
                 Object rightValue = right.apply(p);
-                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
+                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
             };
         }
 
-        private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, Index.ConstraintType constraintType, Function1<PrototypeFact, Object> otherExtractor) {
+        private Predicate2<PrototypeFact, PrototypeFact> asPredicate2(Function1<PrototypeFact, Object> extractor, ConstraintOperator operator, Function1<PrototypeFact, Object> otherExtractor) {
             return (p1, p2) -> {
                 Object leftValue = extractor.apply(p1);
                 Object rightValue = otherExtractor.apply(p2);
-                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && constraintType.asPredicate().test(leftValue, rightValue);
+                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
             };
         }
 
