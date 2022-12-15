@@ -47,6 +47,15 @@ public abstract class WorkItemBuilder {
         return node;
     }
 
+    /**
+     * Implementations should use this method to validate if provided function arguments are suitable
+     * In case they are not they might throw an exception to interrupt build procedure or print an informative log
+     * 
+     * @param functionArgs the arguments to validate
+     */
+    protected void validateArgs(JsonNode functionArgs) {
+    }
+
     protected WorkItemNodeFactory<?> buildWorkItem(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             ParserContext parserContext,
             String inputVar,
