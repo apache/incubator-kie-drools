@@ -8,14 +8,17 @@
 * https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
-import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.model.JenkinsFolder
+import org.kie.jenkins.jobdsl.model.JobType
+import org.kie.jenkins.jobdsl.utils.EnvUtils
+import org.kie.jenkins.jobdsl.utils.JobParamsUtils
 import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 
-Map getMultijobPRConfig(Folder jobFolder) {
+Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     return [
         parallel: true,
         buildchain: true,
@@ -28,15 +31,12 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                     // No parallel build for native
-                    BUILD_MVN_OPTS_CURRENT: !(jobFolder.isNative() || jobFolder.isMandrel() || jobFolder.isMandrelLTS()) ? '-T 1C' : '',
+                    BUILD_MVN_OPTS_CURRENT: EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'native') ? '' : '-T 1C',
                 ]
             ], [
                 id: 'kogito-apps',
                 dependsOn: 'kogito-runtimes',
                 repository: 'kogito-apps',
-                env : [
-                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() || jobFolder.isMandrelLTS() ? '360' : '210',
-                ]
             ], [
                 id: 'kogito-quarkus-examples',
                 repository: 'kogito-examples',
@@ -64,32 +64,31 @@ Map getMultijobPRConfig(Folder jobFolder) {
 }
 
 // PR checks
-KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
-setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
+KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+setupDeployJob(JobType.PULL_REQUEST, 'kogito-bdd')
 
 // Init branch
 createSetupBranchJob()
 
 // Nightly jobs
 setupSonarCloudJob()
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, Folder.NIGHTLY, true)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
 
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_NATIVE)
-
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN)
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_BRANCH)
-
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_MANDREL)
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_MANDREL_LTS)
-setupSpecificBuildChainNightlyJob(Folder.NIGHTLY_QUARKUS_LTS)
+// Environment nightlies
+setupSpecificBuildChainNightlyJob('native')
+setupSpecificBuildChainNightlyJob('quarkus-main')
+setupSpecificBuildChainNightlyJob('quarkus-branch')
+setupSpecificBuildChainNightlyJob('mandrel')
+setupSpecificBuildChainNightlyJob('mandrel-lts')
+setupSpecificBuildChainNightlyJob('quarkus-lts')
 
 // Jobs with integration branch
-setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_MAIN, true)
-setupSpecificNightlyJob(Folder.NIGHTLY_QUARKUS_LTS, true)
+setupSpecificNightlyJob('quarkus-main', true)
+setupSpecificNightlyJob('quarkus-lts', true)
 
 // Release jobs
-setupDeployJob(Folder.RELEASE)
-setupPromoteJob(Folder.RELEASE)
+setupDeployJob(JobType.RELEASE)
+setupPromoteJob(JobType.RELEASE)
 
 // Tools job
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
@@ -102,10 +101,9 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupSpecificNightlyJob(Folder specificNightlyFolder, boolean useIntegrationBranch = false) {
-    String envName = specificNightlyFolder.environment.toName()
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, "kogito-runtimes${useIntegrationBranch ? '-integration-branch' : ''}", specificNightlyFolder, "${jenkins_path}/Jenkinsfile.specific_nightly", "Kogito Runtimes Nightly ${envName}")
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+void setupSpecificNightlyJob(String envName, boolean useIntegrationBranch = false) {
+    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, "kogito-runtimes${useIntegrationBranch ? '-integration-branch' : ''}", JobType.NIGHTLY, envName, "${jenkins_path}/Jenkinsfile.specific_nightly", "Kogito Runtimes Nightly ${envName}")
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : '@midnight' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -121,14 +119,13 @@ void setupSpecificNightlyJob(Folder specificNightlyFolder, boolean useIntegratio
     }
 }
 
-void setupSpecificBuildChainNightlyJob(Folder specificNightlyFolder) {
-    String envName = specificNightlyFolder.environment.toName()
-    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, specificNightlyFolder, true, envName)
+void setupSpecificBuildChainNightlyJob(String envName) {
+    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true)
 }
 
 void setupSonarCloudJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-runtimes', Folder.NIGHTLY_SONARCLOUD, "${jenkins_path}/Jenkinsfile.sonarcloud", 'Kogito Runtimes Daily Sonar')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-runtimes', JobType.NIGHTLY, 'sonarcloud', "${jenkins_path}/Jenkinsfile.sonarcloud", 'Kogito Runtimes Daily Sonar')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.triggers = [ cron : 'H 20 * * 1-5' ]
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -143,8 +140,8 @@ void setupSonarCloudJob() {
 }
 
 void createSetupBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-runtimes', Folder.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Runtimes Setup branch')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Runtimes Setup branch')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'kogito-runtimes',
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -172,10 +169,10 @@ void createSetupBranchJob() {
     }
 }
 
-void setupDeployJob(Folder jobFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-runtimes-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Runtimes Deploy')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    if (jobFolder.isPullRequest()) {
+void setupDeployJob(JobType jobType, String envName = '') {
+    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-runtimes-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Runtimes Deploy')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    if (jobType == JobType.PULL_REQUEST) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
@@ -185,7 +182,7 @@ void setupDeployJob(Folder jobFolder) {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
     ])
-    if (jobFolder.isPullRequest()) {
+    if (jobType == JobType.PULL_REQUEST) {
         jobParams.env.putAll([
             MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
             MAVEN_DEPLOY_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
@@ -203,7 +200,7 @@ void setupDeployJob(Folder jobFolder) {
             MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
             MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
         ])
-        if (jobFolder.isRelease()) {
+        if (jobType == JobType.RELEASE) {
             jobParams.env.putAll([
                 NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
                 NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
@@ -217,7 +214,7 @@ void setupDeployJob(Folder jobFolder) {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobFolder.isPullRequest()) {
+            if (jobType == JobType.PULL_REQUEST) {
                 // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
                 stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
             }
@@ -235,9 +232,9 @@ void setupDeployJob(Folder jobFolder) {
     }
 }
 
-void setupPromoteJob(Folder jobFolder) {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-runtimes-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Runtimes Promote')
-    KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+void setupPromoteJob(JobType jobType) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-runtimes-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Runtimes Promote')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'kogito-runtimes',
         PROPERTIES_FILE_NAME: 'deployment.properties',
