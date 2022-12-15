@@ -15,7 +15,7 @@ import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
 @org.springframework.stereotype.Component
 public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
 
-    private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL() );
+    private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL(), $KieBaseOptions$ );
 
     private static final SessionConfiguration sessionConfiguration = ruleBase.getSessionConfiguration();
 
