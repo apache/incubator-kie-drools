@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.jackson.utils;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class JsonObjectUtils {
         } else if (value instanceof Boolean) {
             return BooleanNode.valueOf((Boolean) value);
         } else if (value instanceof String) {
-            return new TextNode((String) value);
+            return fromString((String) value);
         } else if (value instanceof Short) {
             return new ShortNode((Short) value);
         } else if (value instanceof Integer) {
@@ -77,6 +78,18 @@ public class JsonObjectUtils {
         } else {
             return ObjectMapperFactory.listenerAware().convertValue(value, JsonNode.class);
         }
+    }
+
+    public static JsonNode fromString(String value) {
+        String trimmedValue = value.trim();
+        if (trimmedValue.startsWith("{") && trimmedValue.endsWith("}")) {
+            try {
+                return ObjectMapperFactory.listenerAware().readTree(trimmedValue);
+            } catch (IOException ex) {
+                // ignore and return test node
+            }
+        }
+        return new TextNode(value);
     }
 
     public static Object toJavaValue(JsonNode jsonNode) {
