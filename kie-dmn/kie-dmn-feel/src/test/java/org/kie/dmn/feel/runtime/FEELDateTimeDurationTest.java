@@ -188,6 +188,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P10Y11M\" ) / 2.5", ComparablePeriod.parse("P4Y4M"), null },
                 { "duration( \"P10Y11M\" ) / -2.5", ComparablePeriod.parse("-P4Y4M"), null },
                 { "duration( \"P10Y11M\" ) / 0", null, null },
+                { "duration( \"P10DT10H10M\" ) / 2.5", Duration.parse("P4DT4H4M"), null },
 
                 {"time(\"10:30:00\") instance of time", Boolean.TRUE, null},
                 {"time(\"10:30:00\") instance of date", Boolean.FALSE, null},
