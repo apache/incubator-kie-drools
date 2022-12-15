@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.utils;
+package org.kie.kogito.quarkus.common.deployment;
 
-public class AsyncChannelInfo {
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
+
+import io.quarkus.builder.item.MultiBuildItem;
+
+/**
+ * {@link MultiBuildItem} for {@link KogitoBuildContext} attributes.
+ */
+public final class KogitoBuildContextAttributeBuildItem extends MultiBuildItem {
+
     private final String name;
-    private final boolean isPublish;
+    private final Object value;
 
-    public AsyncChannelInfo(String name, boolean isPublish) {
-        super();
+    public KogitoBuildContextAttributeBuildItem(String name, Object value) {
         this.name = name;
-        this.isPublish = isPublish;
+        this.value = value;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isPublish() {
-        return isPublish;
-    }
-
-    @Override
-    public String toString() {
-        return "AsyncChannelInfo [name=" + name + ", isPublish=" + isPublish + "]";
+    public Object getValue() {
+        return value;
     }
 }

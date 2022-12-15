@@ -61,6 +61,16 @@
         <artifactId>quarkus-openapi-generator-deployment</artifactId>
         <version>${version.io.quarkiverse.openapi.generator}</version>
       </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.asyncapi</groupId>
+        <artifactId>quarkus-asyncapi</artifactId>
+        <version>${version.io.quarkiverse.asyncapi}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.asyncapi</groupId>
+        <artifactId>quarkus-asyncapi-deployment</artifactId>
+        <version>${version.io.quarkiverse.asyncapi}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

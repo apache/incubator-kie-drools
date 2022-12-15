@@ -16,12 +16,8 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.io.IOException;
-import java.net.URI;
 import java.time.Duration;
-import java.time.OffsetDateTime;
-import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,17 +28,14 @@ import org.kie.kogito.workflows.services.JavaSerializationMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.cloudevents.CloudEvent;
-import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.*;
 
 @QuarkusIntegrationTest
 class EventFlowIT {
@@ -94,28 +87,7 @@ class EventFlowIT {
         waitForFinish(flowName, id, Duration.ofSeconds(5));
     }
 
-    private String startProcess(String flowName) {
-        String id = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
-                .post("/" + flowName)
-                .then()
-                .statusCode(201)
-                .extract().path("id");
-
-        given()
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON)
-                .get("/" + flowName + "/{id}", id)
-                .then()
-                .statusCode(200);
-        return id;
-
-    }
-
     private void sendEvents(String id, String... eventTypes) throws IOException {
-
         for (String eventType : eventTypes) {
             given()
                     .contentType(ContentType.JSON)
@@ -125,17 +97,6 @@ class EventFlowIT {
                     .then()
                     .statusCode(202);
         }
-    }
-
-    private void waitForFinish(String flowName, String id, Duration duration) {
-        await("dead").atMost(duration)
-                .with().pollInterval(1, SECONDS)
-                .untilAsserted(() -> given()
-                        .contentType(ContentType.JSON)
-                        .accept(ContentType.JSON)
-                        .get("/" + flowName + "/{id}", id)
-                        .then()
-                        .statusCode(404));
     }
 
     private void doIt(String flowName, String... eventTypes) throws IOException {
@@ -148,16 +109,4 @@ class EventFlowIT {
         CloudEventMarshaller<byte[]> marshaller = marshallers.getOrDefault(type, defaultMarshaller);
         return marshaller.marshall(buildCloudEvent(id, type, marshaller));
     }
-
-    private CloudEvent buildCloudEvent(String id, String type, CloudEventMarshaller<byte[]> marshaller) {
-        return CloudEventBuilder.v1()
-                .withId(UUID.randomUUID().toString())
-                .withSource(URI.create(""))
-                .withType(type)
-                .withTime(OffsetDateTime.now())
-                .withExtension("kogitoprocrefid", id)
-                .withData(marshaller.cloudEventDataFactory().apply(Collections.singletonMap(type, "This has been injected by the event")))
-                .build();
-    }
-
 }

@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.utils;
+package org.kie.kogito.serverless.workflow.asyncapi;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class AsyncInfoResolverHolder {
+public class CachedAsyncInfoResolver implements AsyncInfoResolver {
 
-    private static Optional<AsyncInfoResolver> instance = Optional.empty();
+    private final Map<String, Optional<AsyncInfo>> asyncInfos = new ConcurrentHashMap<>();
 
-    public static Optional<AsyncInfoResolver> get() {
-        return instance;
+    private final AsyncInfoConverter converter;
+
+    public CachedAsyncInfoResolver(AsyncInfoConverter converter) {
+        this.converter = converter;
     }
 
-    public static void set(AsyncInfoResolver resolver) {
-        instance = Optional.of(resolver);
-    }
-
-    private AsyncInfoResolverHolder() {
+    @Override
+    public Optional<AsyncInfo> getAsyncInfo(String id) {
+        return asyncInfos.computeIfAbsent(id, converter);
     }
 }

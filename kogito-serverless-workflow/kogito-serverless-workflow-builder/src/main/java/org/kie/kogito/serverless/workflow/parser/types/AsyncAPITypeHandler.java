@@ -20,15 +20,14 @@ import java.util.Optional;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
+import org.kie.kogito.serverless.workflow.asyncapi.AsyncChannelInfo;
+import org.kie.kogito.serverless.workflow.asyncapi.AsyncInfo;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationId;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.VariableInfo;
 import org.kie.kogito.serverless.workflow.parser.handlers.NodeFactoryUtils;
 import org.kie.kogito.serverless.workflow.suppliers.ProduceEventActionSupplier;
-import org.kie.kogito.serverless.workflow.utils.AsyncChannelInfo;
-import org.kie.kogito.serverless.workflow.utils.AsyncInfo;
-import org.kie.kogito.serverless.workflow.utils.AsyncInfoResolverHolder;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -51,7 +50,7 @@ public class AsyncAPITypeHandler implements FunctionTypeHandler {
             RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, FunctionDefinition functionDef,
             FunctionRef functionRef, VariableInfo varInfo) {
         WorkflowOperationId operationId = context.operationIdFactory().from(workflow, functionDef, Optional.of(context));
-        return AsyncInfoResolverHolder.get().flatMap(resolver -> resolver.getAsyncInfo(operationId.getFileName()))
+        return context.getAsyncInfoResolver().getAsyncInfo(operationId.getFileName())
                 .flatMap(asyncAPI -> buildNode(workflow, context, embeddedSubProcess, functionDef, functionRef, varInfo, asyncAPI, operationId.getOperation()))
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find an async api with operation " + operationId.getOperation()));
     }

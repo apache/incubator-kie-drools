@@ -70,7 +70,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi-deployment</artifactId>
     </dependency>
-     
+     <dependency>
+      <groupId>io.quarkiverse.asyncapi</groupId>
+      <artifactId>quarkus-asyncapi-deployment</artifactId>
+    </dependency>
      <dependency>
        <groupId>io.quarkus</groupId>
        <artifactId>quarkus-grpc-deployment</artifactId>
