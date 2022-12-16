@@ -57,7 +57,7 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "-10 / -5", BigDecimal.valueOf( 2 ) , null},
                 { "(-10) / (-5)", BigDecimal.valueOf( 2 ) , null},
                 { "(10 + 20) / (-5 * 3)", BigDecimal.valueOf( -2 ) , null},
-                { "(10 + 20) / 0", null , null},
+                { "(10 + 20) / 0", null , FEELEvent.Severity.ERROR},
                 { "10 ** 5", BigDecimal.valueOf( 100000 ) , null},
                 { "10 ** -5", new BigDecimal( "0.00001" ) , null},
                 { "(5+2) ** 5", BigDecimal.valueOf( 16807 ) , null},

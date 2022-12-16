@@ -59,6 +59,8 @@ public final class Msg {
     public static final Message1 MALFORMED_AT_LITERAL = new Message1("Malformed at-literal: %s");
     public static final Message1 CANNOT_INVOKE = new Message1("Not an invocable: '%s'");
     public static final Message1 DUPLICATE_KEY_CTX = new Message1("Duplicate key '%s' not allowed in context definition");
+    public static final Message0 DIVISION_BY_ZERO = new Message0("Division by zero! The divisor argument is 0.");
+    public static final Message1 GENERAL_ARITHMETIC_EXCEPTION = new Message1("Arithmetic exception thrown: '%s'");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);

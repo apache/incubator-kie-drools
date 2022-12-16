@@ -34,11 +34,14 @@ import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 public class InfixOpNode
         extends BaseNode {
@@ -361,6 +364,7 @@ public class InfixOpNode
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
             final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(right);
             if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
+                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
                 return null;
             } else {
                 return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
@@ -384,6 +388,7 @@ public class InfixOpNode
             return op.apply( l, r );
         } catch ( ArithmeticException e ) {
             // happens in cases like division by 0
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.GENERAL_ARITHMETIC_EXCEPTION, e.getMessage())));
             return null;
         }
     }
