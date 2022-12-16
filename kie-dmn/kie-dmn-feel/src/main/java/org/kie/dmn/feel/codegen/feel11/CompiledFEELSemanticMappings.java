@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
