@@ -34,7 +34,7 @@ public abstract class WorkItemFunctionNamespace extends WorkItemBuilder implemen
             RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             FunctionRef functionRef,
             VariableInfo varInfo) {
-        validateArgs(functionRef.getArguments());
+        validateArgs(functionRef);
         return addFunctionArgs(workflow,
                 fillWorkItemHandler(workflow, context, buildWorkItem(embeddedSubProcess, context, varInfo.getInputVar(), varInfo.getOutputVar()), functionRef).name(functionRef.getRefName()),
                 functionRef);

@@ -31,7 +31,7 @@ public abstract class WorkItemTypeHandler extends WorkItemBuilder implements Fun
     @Override
     public NodeFactory<?, ?> getActionNode(Workflow workflow, ParserContext context, RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, FunctionDefinition functionDef, FunctionRef functionRef,
             VariableInfo varInfo) {
-        validateArgs(functionRef.getArguments());
+        validateArgs(functionRef);
         return addFunctionArgs(workflow,
                 fillWorkItemHandler(workflow, context, buildWorkItem(embeddedSubProcess, context, varInfo.getInputVar(), varInfo.getOutputVar()).name(functionDef.getName()), functionDef),
                 functionRef);
