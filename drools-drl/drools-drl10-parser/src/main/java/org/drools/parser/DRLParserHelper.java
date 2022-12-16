@@ -3,7 +3,6 @@ package org.drools.parser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -12,11 +11,14 @@ import org.drools.drl.ast.descr.PackageDescr;
 
 public class DRLParserHelper {
 
-    public static PackageDescr parse(String drl) {
-        return parseTree2PackageDescr(createParseTree(drl));
+    private DRLParserHelper() {
     }
 
-    public static ParseTree createParseTree(String drl) {
+    public static PackageDescr parse(String drl) {
+        return compilationUnitContext2PackageDescr(createParseTree(drl));
+    }
+
+    public static DRLParser.CompilationUnitContext createParseTree(String drl) {
         return createDrlParser(drl).compilationUnit();
     }
 
@@ -24,28 +26,31 @@ public class DRLParserHelper {
         CharStream inputStream = CharStreams.fromString(drl);
         DRLLexer drlLexer = new DRLLexer(inputStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(drlLexer);
-        DRLParser drlParser = new DRLParser(commonTokenStream);
-        return drlParser;
+        return new DRLParser(commonTokenStream);
     }
 
-    public static PackageDescr parseTree2PackageDescr(ParseTree parseTree) {
+    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx) {
         DRLVisitorImpl visitor = new DRLVisitorImpl();
-        visitor.visit(parseTree);
-        return visitor.getPackageDescr();
+        Object descr = visitor.visit(ctx);
+        if (descr instanceof PackageDescr) {
+            return (PackageDescr) descr;
+        } else {
+            throw new DRLParserException("CompilationUnitContext should produce PackageDescr. descr = " + descr.getClass());
+        }
     }
-
 
     public static Integer computeTokenIndex(DRLParser parser, int row, int col) {
         for (int i = 0; i < parser.getInputStream().size(); i++) {
             Token token = parser.getInputStream().get(i);
             int start = token.getCharPositionInLine();
             int stop = token.getCharPositionInLine() + token.getText().length();
-            if (token.getLine() > row)
+            if (token.getLine() > row) {
                 return token.getTokenIndex() - 1;
-            else if (token.getLine() == row && start >= col)
+            } else if (token.getLine() == row && start >= col) {
                 return token.getTokenIndex() == 0 ? 0 : token.getTokenIndex() - 1;
-            else if (token.getLine() == row && start < col && stop >= col)
+            } else if (token.getLine() == row && start < col && stop >= col) {
                 return token.getTokenIndex();
+            }
         }
         return null;
     }

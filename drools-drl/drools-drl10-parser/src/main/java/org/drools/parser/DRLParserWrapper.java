@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.parser.DRLParserHelper.compilationUnitContext2PackageDescr;
 
 public class DRLParserWrapper {
 
@@ -15,20 +16,17 @@ public class DRLParserWrapper {
 
     private final List<DRLParserError> errors = new ArrayList<>();
 
-    public DRLParserWrapper() {
-    }
-
     public PackageDescr parse(String drl) {
         DRLParser drlParser = DRLParserHelper.createDrlParser(drl);
         DRLErrorListener errorListener = new DRLErrorListener();
         drlParser.addErrorListener(errorListener);
 
-        ParseTree parseTree = drlParser.compilationUnit();
+        DRLParser.CompilationUnitContext cxt = drlParser.compilationUnit();
 
         errors.addAll(errorListener.getErrors());
 
         try {
-            return DRLParserHelper.parseTree2PackageDescr(parseTree);
+            return compilationUnitContext2PackageDescr(cxt);
         } catch (Exception e) {
             LOGGER.error("Exception while creating PackageDescr", e);
             errors.add(new DRLParserError(e));
