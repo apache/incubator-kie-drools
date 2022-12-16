@@ -32,8 +32,6 @@ import java.security.cert.CertificateException;
 import javax.crypto.SecretKey;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.drools.core.util.KeyStoreConstants.KEY_CERTIFICATE_TYPE;
 import static org.drools.core.util.KeyStoreConstants.KEY_PASSWORD_TYPE;
@@ -61,8 +59,6 @@ import static org.drools.core.util.KeyStoreConstants.PROP_PWD_KS_URL;
  * drools.serialization.public.keyStorePwd = <password>
  */
 public class KeyStoreHelper {
-
-    private final Logger logger = LoggerFactory.getLogger(KeyStoreHelper.class);
 
     private static final String SHA512WITH_RSA = "SHA512withRSA";
     private static final String MD5WITH_RSA = "MD5withRSA";
@@ -237,26 +233,19 @@ public class KeyStoreHelper {
         Signature sig = Signature.getInstance( SHA512WITH_RSA );
         sig.initVerify( cert.getPublicKey() );
         sig.update( data );
-        boolean result = false;
         try {
-            result = sig.verify(signature); // IBM JDK 1.8 returns false without SignatureException
+            return sig.verify( signature );
         } catch (SignatureException e) {
-            logger.warn("Exception while verifying signature", e);
-        }
-        return result || verifyWithFallbackAlgorithmIfAllowed(cert, data, signature);
-    }
-
-    private boolean verifyWithFallbackAlgorithmIfAllowed(Certificate cert, byte[] data, byte[] signature) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        if (allowVerifyOldSignAlgo) {
-            // Fallback for old sign algorithm
-            Signature sig = Signature.getInstance(MD5WITH_RSA);
-            sig.initVerify(cert.getPublicKey());
-            sig.update(data);
-            return sig.verify(signature);
-        } else {
-            logger.warn("Failed to verify signature. If you call this method for data signed by old Drools version," +
-                                " set system property \"" + KeyStoreConstants.PROP_VERIFY_OLD_SIGN + "\" to true");
-            return false;
+            if (allowVerifyOldSignAlgo) {
+                // Fallback for old sign algorithm
+                sig = Signature.getInstance(MD5WITH_RSA);
+                sig.initVerify(cert.getPublicKey());
+                sig.update(data);
+                return sig.verify(signature);
+            } else {
+                throw new RuntimeException("Failed to verify signature. If you call this method for data signed by old Drools version," +
+                                                   " set system property \"" + KeyStoreConstants.PROP_VERIFY_OLD_SIGN + "\" to true" , e);
+            }
         }
     }
 
