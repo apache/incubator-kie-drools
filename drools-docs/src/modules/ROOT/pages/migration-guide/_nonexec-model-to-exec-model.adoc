@@ -150,7 +150,7 @@ end
 Unknown field adBlueRequired on TEngine
 ----
 
-In this case, the rule can be fixed by specifying the subtype with `#` operator. For example,
+In this case, the rule can be fixed by specifying the subtype with the `#` operator. For example,
 ----
 	when
 		$v : DieselCar(motor#DieselEngine.adBlueRequired == true)
