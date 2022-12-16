@@ -144,7 +144,7 @@ rule Rule1
 end
 ----
 
-`non-executable model` can dynamically resolve that `mortor` is `DieselEngine` so the rule works. However, `executable model` resolves  `mortor` to `TEngine`, so a build error is thrown.
+`non-executable model` can dynamically resolve that `motor` is `DieselEngine` so the rule works. However, the `executable model` resolves  `motor` to `TEngine`, so a build error is thrown.
 
 ----
 Unknown field adBlueRequired on TEngine
