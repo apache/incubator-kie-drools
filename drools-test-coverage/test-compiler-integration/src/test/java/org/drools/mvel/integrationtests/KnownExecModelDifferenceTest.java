@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,13 +11,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
 import org.drools.mvel.integrationtests.facts.VarargsFact;
+import org.drools.mvel.integrationtests.facts.vehicles.DieselCar;
+import org.drools.mvel.integrationtests.facts.vehicles.ElectricCar;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -55,14 +57,14 @@ public class KnownExecModelDifferenceTest {
         // DROOLS-7196
         // Java doesn't coerce int to Long
         String str = "package com.example.reproducer\n" +
-                     "import " + VarargsFact.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $f : VarargsFact()\n" +
-                     "then\n" +
-                     "  $f.setOneWrapperValue(10);\n" +
-                     "end";
+                "import " + VarargsFact.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $f : VarargsFact()\n" +
+                "then\n" +
+                "  $f.setOneWrapperValue(10);\n" +
+                "end";
 
         if (kieBaseTestConfiguration.isExecutableModel()) {
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
@@ -70,7 +72,6 @@ public class KnownExecModelDifferenceTest {
         } else {
             KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
             KieSession ksession = kbase.newKieSession();
-
             VarargsFact fact = new VarargsFact();
             ksession.insert(fact);
             ksession.fireAllRules();
@@ -84,14 +85,14 @@ public class KnownExecModelDifferenceTest {
         // DROOLS-7196
         // Java coerces int to long
         String str = "package com.example.reproducer\n" +
-                     "import " + VarargsFact.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $f : VarargsFact()\n" +
-                     "then\n" +
-                     "  $f.setOnePrimitiveValue(10);\n" +
-                     "end";
+                "import " + VarargsFact.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $f : VarargsFact()\n" +
+                "then\n" +
+                "  $f.setOnePrimitiveValue(10);\n" +
+                "end";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
@@ -108,14 +109,14 @@ public class KnownExecModelDifferenceTest {
         // DROOLS-7196
         // Java doesn't coerce int to Long. Same for varargs
         String str = "package com.example.reproducer\n" +
-                     "import " + VarargsFact.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $f : VarargsFact()\n" +
-                     "then\n" +
-                     "  $f.setWrapperValues(10, 20);\n" +
-                     "end";
+                "import " + VarargsFact.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $f : VarargsFact()\n" +
+                "then\n" +
+                "  $f.setWrapperValues(10, 20);\n" +
+                "end";
 
         if (kieBaseTestConfiguration.isExecutableModel()) {
             KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
@@ -137,14 +138,14 @@ public class KnownExecModelDifferenceTest {
         // DROOLS-7196
         // Java coerces int to long. Same for varargs
         String str = "package com.example.reproducer\n" +
-                     "import " + VarargsFact.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $f : VarargsFact()\n" +
-                     "then\n" +
-                     "  $f.setPrimitiveValues(10, 20);\n" +
-                     "end";
+                "import " + VarargsFact.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $f : VarargsFact()\n" +
+                "then\n" +
+                "  $f.setPrimitiveValues(10, 20);\n" +
+                "end";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
@@ -154,5 +155,58 @@ public class KnownExecModelDifferenceTest {
         ksession.fireAllRules();
 
         assertThat(fact.getValueList()).containsExactly(10L, 20L); // Coerced with both cases
+    }
+
+    @Test
+    public void property_subClassMethod_genericsReturnType() {
+        // DROOLS-7197
+        String str = "package com.example.reproducer\n" +
+                "import " + DieselCar.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $v : DieselCar(motor.adBlueRequired == true)\n" +
+                "then\n" +
+                "  $v.score = 5;\n" +
+                "end";
+
+        if (kieBaseTestConfiguration.isExecutableModel()) {
+            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+            assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue(); // Fail with exec-model
+        } else {
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+            KieSession ksession = kbase.newKieSession();
+
+            DieselCar dieselCar = new DieselCar("ABC", "Model 1.6", 85, true);
+
+            ksession.insert(dieselCar);
+            ksession.fireAllRules();
+
+            assertThat(dieselCar.getScore()).isEqualTo(5);
+        }
+    }
+
+    @Test
+    public void property_subClassMethod_explicitReturnType() {
+        // DROOLS-7197
+        String str = "package com.example.reproducer\n" +
+                "import " + ElectricCar.class.getCanonicalName() + ";\n" +
+                "rule R\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $v : ElectricCar(engine.batterySize > 70)\n" +
+                "then\n" +
+                "  $v.score = 5;\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+
+        ElectricCar electricCar = new ElectricCar("XYZ", "Model 3", 200, 90);
+
+        ksession.insert(electricCar);
+        ksession.fireAllRules();
+
+        assertThat(electricCar.getScore()).isEqualTo(5); // works for both cases
     }
 }

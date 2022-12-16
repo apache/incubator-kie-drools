@@ -92,3 +92,66 @@ then
   $f.setWrapperLong(10L);
 end
 ----
+
+=== Generics return type resolution
+Assuming you have classes below:
+
+.parent class
+[source,java]
+----
+public abstract class Vehicle<TEngine extends Engine> {
+        // ...
+
+	public abstract TEngine getEngine();
+
+	public TEngine getMotor() {
+		return getEngine();
+	}
+----
+
+.sub class
+[source,java]
+----
+public class DieselCar extends Vehicle<DieselEngine> {
+	private final DieselEngine engine;
+
+	public DieselCar(String maker, String model, int kw, boolean adBlueRequired) {
+		super(maker, model);
+		this.engine = new DieselEngine(kw, adBlueRequired);
+	}
+
+	@Override
+	public DieselEngine getEngine() {
+		return engine;
+	}
+}
+----
+
+[source,java]
+----
+public class DieselEngine extends Engine {
+
+	private final boolean adBlueRequired;
+----
+
+.rule
+----
+rule Rule1
+	when
+		$v : DieselCar(motor.adBlueRequired == true)
+	then
+		// do something
+end
+----
+
+`non-executable model` can dynamically resolve that `motor` is `DieselEngine` so the rule works. However, the `executable model` resolves  `motor` to `TEngine`, so a build error is thrown.
+
+----
+Unknown field adBlueRequired on TEngine
+----
+
+In this case, the rule can be fixed by specifying the subtype with the `#` operator. For example,
+----
+	when
+		$v : DieselCar(motor#DieselEngine.adBlueRequired == true)
+----
