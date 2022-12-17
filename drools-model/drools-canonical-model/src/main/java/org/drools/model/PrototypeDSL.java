@@ -126,20 +126,15 @@ public class PrototypeDSL {
             if (left instanceof PrototypeExpression.PrototypeFieldValue && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType) {
                 String fieldName = ((PrototypeExpression.PrototypeFieldValue) left).getFieldName();
                 Index.ConstraintType constraintType = (Index.ConstraintType) operator;
-                if (constraintType == Index.ConstraintType.EXISTS_PROTOTYPE_FIELD) {
-                    leftExtractor = prototypeFact -> prototypeFact.has(fieldName);
-                    operator = Index.ConstraintType.EQUAL;
-                } else {
-                    Prototype.Field field = prototype.getField(fieldName);
-                    Object value = ((PrototypeExpression.FixedValue) right).getValue();
+                Prototype.Field field = prototype.getField(fieldName);
+                Object value = ((PrototypeExpression.FixedValue) right).getValue();
 
-                    leftExtractor = getFieldValueExtractor(prototype, fieldName);
-                    int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
+                leftExtractor = getFieldValueExtractor(prototype, fieldName);
+                int fieldIndex = field != null ? prototype.getFieldIndex(fieldName) : Math.abs(fieldName.hashCode());
 
-                    Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
-                    if (fieldClass != null) {
-                        alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, leftExtractor, value);
-                    }
+                Class<Object> fieldClass = (Class<Object>) (field != null && field.isTyped() ? field.getType() : value != null ? value.getClass() : null);
+                if (fieldClass != null) {
+                    alphaIndex = alphaIndexedBy(fieldClass, constraintType, fieldIndex, leftExtractor, value);
                 }
             } else {
                 leftExtractor = left.asFunction(prototype);

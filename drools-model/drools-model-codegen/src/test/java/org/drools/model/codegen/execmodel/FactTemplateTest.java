@@ -34,6 +34,7 @@ import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Model;
 import org.drools.model.Prototype;
+import org.drools.model.PrototypeFact;
 import org.drools.model.PrototypeVariable;
 import org.drools.model.Query;
 import org.drools.model.Rule;
@@ -74,11 +75,36 @@ import static org.drools.model.PrototypeDSL.prototype;
 import static org.drools.model.PrototypeDSL.variable;
 import static org.drools.model.PrototypeExpression.fixedValue;
 import static org.drools.model.PrototypeExpression.prototypeField;
+import static org.drools.model.PrototypeExpression.thisPrototype;
 import static org.drools.model.codegen.execmodel.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedEvent;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 
 public class FactTemplateTest {
+
+    private static final ConstraintOperator listContainsOp = new ConstraintOperator() {
+        @Override
+        public <T, V> BiPredicate<T, V> asPredicate() {
+            return (t,v) -> t instanceof Collection && ((Collection) t).contains(v);
+        }
+
+        @Override
+        public String toString() {
+            return "LIST_CONTAINS";
+        }
+    };
+
+    private static final ConstraintOperator existsFieldOp = new ConstraintOperator() {
+        @Override
+        public <T, V> BiPredicate<T, V> asPredicate() {
+            return (t,v) -> ((PrototypeFact) t).has((String) v);
+        }
+
+        @Override
+        public String toString() {
+            return "EXISTS_FIELD";
+        }
+    };
 
     @Test
     public void testAlphaWithPropertyReactivity() {
@@ -170,7 +196,7 @@ public class FactTemplateTest {
         Rule rule = rule( "alpha" )
                 .build(
                         protoPattern(testV)
-                                .expr( prototypeField("fieldA"), Index.ConstraintType.EXISTS_PROTOTYPE_FIELD, fixedValue(true) ),
+                                .expr( thisPrototype(), existsFieldOp, fixedValue("fieldA") ),
                         on(testV).execute((drools, x) ->
                             drools.insert(new Result("Found"))
                         )
@@ -561,7 +587,7 @@ public class FactTemplateTest {
         Rule rule = rule( "alpha" )
                 .build(
                         not( protoPattern(markV)
-                                .expr( "name", Index.ConstraintType.EXISTS_PROTOTYPE_FIELD, true ) ),
+                                .expr( thisPrototype(), existsFieldOp, fixedValue("name") ) ),
                         execute(drools ->
                                 drools.insert(new Result("Found"))
                         )
@@ -1129,19 +1155,6 @@ public class FactTemplateTest {
     @Test
     public void testListContains() {
         // DROOLS-7259
-
-        ConstraintOperator listContainsOp = new ConstraintOperator() {
-            @Override
-            public <T, V> BiPredicate<T, V> asPredicate() {
-                return (t,v) -> t instanceof Collection && ((Collection) t).contains(v);
-            }
-
-            @Override
-            public String toString() {
-                return "LIST_CONTAINS";
-            }
-        };
-
         Prototype prototype = prototype( "org.X" );
         PrototypeVariable prototypeV = variable(prototype);
 

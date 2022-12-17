@@ -36,6 +36,10 @@ public interface PrototypeExpression {
         return new FixedValue(value);
     }
 
+    static PrototypeExpression thisPrototype() {
+        return ThisPrototype.INSTANCE;
+    }
+
     static PrototypeExpression prototypeField(String fieldName) {
         return new PrototypeFieldValue(fieldName);
     }
@@ -87,6 +91,25 @@ public interface PrototypeExpression {
         }
 
         @Override
+        public Collection<String> getImpactedFields() {
+            return Collections.emptyList();
+        }
+    }
+
+    enum ThisPrototype implements PrototypeExpression {
+
+        INSTANCE;
+
+        @Override
+        public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
+            return p -> p;
+        }
+
+        @Override
+        public String toString() {
+            return "ThisPrototypeFieldValue";
+        }
+
         public Collection<String> getImpactedFields() {
             return Collections.emptyList();
         }
