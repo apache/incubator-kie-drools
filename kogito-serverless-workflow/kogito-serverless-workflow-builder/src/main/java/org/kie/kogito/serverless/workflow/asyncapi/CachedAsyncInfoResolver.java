@@ -23,14 +23,14 @@ public class CachedAsyncInfoResolver implements AsyncInfoResolver {
 
     private final Map<String, Optional<AsyncInfo>> asyncInfos = new ConcurrentHashMap<>();
 
-    private final AsyncInfoConverter converter;
+    private final Optional<AsyncInfoConverter> converter;
 
     public CachedAsyncInfoResolver(AsyncInfoConverter converter) {
-        this.converter = converter;
+        this.converter = Optional.ofNullable(converter);
     }
 
     @Override
     public Optional<AsyncInfo> getAsyncInfo(String id) {
-        return asyncInfos.computeIfAbsent(id, converter);
+        return converter.flatMap(c -> asyncInfos.computeIfAbsent(id, c));
     }
 }
