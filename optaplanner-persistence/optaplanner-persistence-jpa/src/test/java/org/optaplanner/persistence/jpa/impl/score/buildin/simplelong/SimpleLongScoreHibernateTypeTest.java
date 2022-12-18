@@ -9,26 +9,29 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class SimpleLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(SimpleLongScore.ZERO),
+        persistAndMerge(new SimpleLongScoreHibernateTypeTestJpaEntity(SimpleLongScore.ZERO),
                 SimpleLongScore.of(-10L),
                 SimpleLongScore.ofUninitialized(-7, -10L));
     }
 
     @Entity
     @TypeDef(defaultForType = SimpleLongScore.class, typeClass = SimpleLongScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleLongScore> {
+    static class SimpleLongScoreHibernateTypeTestJpaEntity extends AbstractTestJpaEntity<SimpleLongScore> {
 
         @Columns(columns = { @Column(name = "initScore"), @Column(name = "score") })
         protected SimpleLongScore score;
 
-        private TestJpaEntity() {
+        SimpleLongScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(SimpleLongScore score) {
+        public SimpleLongScoreHibernateTypeTestJpaEntity(SimpleLongScore score) {
             this.score = score;
         }
 

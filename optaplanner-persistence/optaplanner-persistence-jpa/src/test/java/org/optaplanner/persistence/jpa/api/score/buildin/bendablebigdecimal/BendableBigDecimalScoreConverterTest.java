@@ -9,11 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class BendableBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(BendableBigDecimalScore.zero(3, 2)), null,
+        persistAndMerge(new BendableBigDecimalScoreConverterTestJpaEntity(BendableBigDecimalScore.zero(3, 2)), null,
                 BendableBigDecimalScore.of(
                         new BigDecimal[] { new BigDecimal("10000.00001"), new BigDecimal("2000.00020"),
                                 new BigDecimal("300.00300") },
@@ -25,15 +28,15 @@ class BendableBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
     }
 
     @Entity
-    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableBigDecimalScore> {
+    static class BendableBigDecimalScoreConverterTestJpaEntity extends AbstractTestJpaEntity<BendableBigDecimalScore> {
 
         @Convert(converter = BendableBigDecimalScoreConverter.class)
         protected BendableBigDecimalScore score;
 
-        private TestJpaEntity() {
+        BendableBigDecimalScoreConverterTestJpaEntity() {
         }
 
-        public TestJpaEntity(BendableBigDecimalScore score) {
+        public BendableBigDecimalScoreConverterTestJpaEntity(BendableBigDecimalScore score) {
             this.score = score;
         }
 

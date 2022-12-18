@@ -7,25 +7,28 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class BendableLongScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(BendableLongScore.zero(3, 2)), null,
+        persistAndMerge(new BendaleLongScoreConverterTestJpaEntity(BendableLongScore.zero(3, 2)), null,
                 BendableLongScore.of(new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }),
                 BendableLongScore.ofUninitialized(-7, new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }));
     }
 
     @Entity
-    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
+    static class BendaleLongScoreConverterTestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
 
         @Convert(converter = BendableLongScoreConverter.class)
         protected BendableLongScore score;
 
-        private TestJpaEntity() {
+        BendaleLongScoreConverterTestJpaEntity() {
         }
 
-        public TestJpaEntity(BendableLongScore score) {
+        public BendaleLongScoreConverterTestJpaEntity(BendableLongScore score) {
             this.score = score;
         }
 

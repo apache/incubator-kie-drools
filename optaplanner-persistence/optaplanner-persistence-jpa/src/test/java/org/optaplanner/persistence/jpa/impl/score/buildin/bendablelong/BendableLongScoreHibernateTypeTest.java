@@ -10,11 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class BendableLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(BendableLongScore.zero(3, 2)),
+        persistAndMerge(new BendableLongScoreHibernateTypeTestJpaEntity(BendableLongScore.zero(3, 2)),
                 BendableLongScore.of(new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }),
                 BendableLongScore.ofUninitialized(-7, new long[] { 10000L, 2000L, 300L }, new long[] { 40L, 5L }));
     }
@@ -22,17 +25,17 @@ class BendableLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
     @Entity
     @TypeDef(defaultForType = BendableLongScore.class, typeClass = BendableLongScoreHibernateType.class, parameters = {
             @Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2") })
-    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
+    static class BendableLongScoreHibernateTypeTestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
 
         @Columns(columns = { @Column(name = "initScore"),
                 @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
                 @Column(name = "soft0Score"), @Column(name = "soft1Score") })
         protected BendableLongScore score;
 
-        private TestJpaEntity() {
+        BendableLongScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(BendableLongScore score) {
+        public BendableLongScoreHibernateTypeTestJpaEntity(BendableLongScore score) {
             this.score = score;
         }
 

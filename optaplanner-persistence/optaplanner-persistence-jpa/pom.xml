@@ -31,18 +31,6 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core-impl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <!-- TODO: remove once the kie-test-util switches to jakarta.transaction:jakarta.transaction-api. -->
-        <exclusion>
-          <groupId>org.jboss.spec.javax.transaction</groupId>
-          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
     <dependency>
@@ -109,72 +97,36 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.narayana.jta</groupId>
-      <artifactId>narayana-jta</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-orm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-narayana-jta</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>h2</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <properties>
-        <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-        <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
-        <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-        <maven.jdbc.db.name/>
-        <maven.jdbc.db.port/>
-        <maven.jdbc.db.server/>
-        <maven.jdbc.driver.jar/>
-        <maven.jdbc.username/>
-        <maven.jdbc.password/>
-        <!-- Relative path in H2 JDBC URL must be explicit.
-             See http://www.h2database.com/javadoc/org/h2/api/ErrorCode.html#c90011. -->
-        <maven.jdbc.url>jdbc:h2:tcp://localhost/./target/persistence-test</maven.jdbc.url>
-        <maven.jdbc.schema>public</maven.jdbc.schema>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>postgresql</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.postgresql</groupId>
-          <artifactId>postgresql</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-
-      <properties>
-        <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQL95Dialect</maven.hibernate.dialect>
-        <maven.datasource.classname>org.postgresql.xa.PGXADataSource</maven.datasource.classname>
-        <maven.jdbc.driver.class>org.postgresql.Driver</maven.jdbc.driver.class>
-        <maven.jdbc.db.name>postgres</maven.jdbc.db.name>
-        <maven.jdbc.db.port>5432</maven.jdbc.db.port>
-        <maven.jdbc.db.server/>
-        <maven.jdbc.username>postgres</maven.jdbc.username>
-        <maven.jdbc.password>postgres</maven.jdbc.password>
-        <maven.jdbc.url>jdbc:postgresql://localhost:5432/postgres</maven.jdbc.url>
-        <maven.jdbc.schema>public</maven.jdbc.schema>
-      </properties>
-    </profile>
-  </profiles>
 
   <build>
     <testResources>
@@ -182,21 +134,8 @@
         <directory>src/test/resources</directory>
         <filtering>false</filtering>
       </testResource>
-      <testResource>
-        <directory>src/test/filtered-resources</directory>
-        <filtering>true</filtering>
-      </testResource>
     </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <additionalClasspathElements>
-            <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
-          </additionalClasspathElements>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

@@ -11,18 +11,22 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(HardSoftBigDecimalScore.ZERO),
+        persistAndMerge(new HardSoftBigDecimalScoreHibernateTypeTestJpaEntity(HardSoftBigDecimalScore.ZERO),
                 HardSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")),
                 HardSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
     }
 
     @Entity
     @TypeDef(defaultForType = HardSoftBigDecimalScore.class, typeClass = HardSoftBigDecimalScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardSoftBigDecimalScore> {
+    static class HardSoftBigDecimalScoreHibernateTypeTestJpaEntity
+            extends AbstractTestJpaEntity<HardSoftBigDecimalScore> {
 
         @Columns(columns = {
                 @Column(name = "initScore"),
@@ -30,10 +34,10 @@ class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
                 @Column(name = "softScore", precision = 10, scale = 5) })
         protected HardSoftBigDecimalScore score;
 
-        private TestJpaEntity() {
+        HardSoftBigDecimalScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(HardSoftBigDecimalScore score) {
+        public HardSoftBigDecimalScoreHibernateTypeTestJpaEntity(HardSoftBigDecimalScore score) {
             this.score = score;
         }
 

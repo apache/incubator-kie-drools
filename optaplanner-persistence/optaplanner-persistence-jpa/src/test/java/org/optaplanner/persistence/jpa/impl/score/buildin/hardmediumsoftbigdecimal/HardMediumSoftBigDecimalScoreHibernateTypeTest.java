@@ -11,11 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(HardMediumSoftBigDecimalScore.ZERO),
+        persistAndMerge(new HardMediumSoftBigDecimalScoreHibernateTypeTestJpaEntity(HardMediumSoftBigDecimalScore.ZERO),
                 HardMediumSoftBigDecimalScore.of(new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
                         new BigDecimal("-2.20000")),
                 HardMediumSoftBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000"), new BigDecimal("-4.32100"),
@@ -24,7 +27,8 @@ class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTes
 
     @Entity
     @TypeDef(defaultForType = HardMediumSoftBigDecimalScore.class, typeClass = HardMediumSoftBigDecimalScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftBigDecimalScore> {
+    static class HardMediumSoftBigDecimalScoreHibernateTypeTestJpaEntity
+            extends AbstractTestJpaEntity<HardMediumSoftBigDecimalScore> {
 
         @Columns(columns = {
                 @Column(name = "initScore"),
@@ -33,10 +37,10 @@ class HardMediumSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTes
                 @Column(name = "softScore", precision = 10, scale = 5) })
         protected HardMediumSoftBigDecimalScore score;
 
-        private TestJpaEntity() {
+        HardMediumSoftBigDecimalScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(HardMediumSoftBigDecimalScore score) {
+        public HardMediumSoftBigDecimalScoreHibernateTypeTestJpaEntity(HardMediumSoftBigDecimalScore score) {
             this.score = score;
         }
 

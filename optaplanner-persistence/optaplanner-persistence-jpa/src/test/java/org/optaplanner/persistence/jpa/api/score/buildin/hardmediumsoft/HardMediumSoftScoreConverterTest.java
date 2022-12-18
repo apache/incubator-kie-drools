@@ -7,25 +7,28 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class HardMediumSoftScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(HardMediumSoftScore.ZERO), null,
+        persistAndMerge(new HardMediumSoftScoreConverterTestJpaEntity(HardMediumSoftScore.ZERO), null,
                 HardMediumSoftScore.of(-100, -20, -3),
                 HardMediumSoftScore.ofUninitialized(-7, -100, -20, -3));
     }
 
     @Entity
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftScore> {
+    static class HardMediumSoftScoreConverterTestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftScore> {
 
         @Convert(converter = HardMediumSoftScoreConverter.class)
         protected HardMediumSoftScore score;
 
-        private TestJpaEntity() {
+        HardMediumSoftScoreConverterTestJpaEntity() {
         }
 
-        public TestJpaEntity(HardMediumSoftScore score) {
+        public HardMediumSoftScoreConverterTestJpaEntity(HardMediumSoftScore score) {
             this.score = score;
         }
 

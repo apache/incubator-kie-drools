@@ -12,11 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(BendableBigDecimalScore.zero(3, 2)),
+        persistAndMerge(new BendableBigDecimalScoreHibernateTypeTestJpaEntity(BendableBigDecimalScore.zero(3, 2)),
                 BendableBigDecimalScore.of(
                         new BigDecimal[] { new BigDecimal("10000.00001"), new BigDecimal("2000.00020"),
                                 new BigDecimal("300.00300") },
@@ -31,7 +34,7 @@ class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
     @TypeDef(defaultForType = BendableBigDecimalScore.class, typeClass = BendableBigDecimalScoreHibernateType.class,
             parameters = {
                     @Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2") })
-    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableBigDecimalScore> {
+    static class BendableBigDecimalScoreHibernateTypeTestJpaEntity extends AbstractTestJpaEntity<BendableBigDecimalScore> {
 
         @Columns(columns = {
                 @Column(name = "initScore"),
@@ -42,10 +45,10 @@ class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreJpaTest {
                 @Column(name = "soft1Score", precision = 10, scale = 5) })
         protected BendableBigDecimalScore score;
 
-        private TestJpaEntity() {
+        BendableBigDecimalScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(BendableBigDecimalScore score) {
+        public BendableBigDecimalScoreHibernateTypeTestJpaEntity(BendableBigDecimalScore score) {
             this.score = score;
         }
 

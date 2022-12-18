@@ -9,27 +9,31 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class HardMediumSoftLongScoreHibernateTypeTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(HardMediumSoftLongScore.ZERO),
+        persistAndMerge(new HardMediumSoftLongScoreHibernateTypeTestJpaEntity(HardMediumSoftLongScore.ZERO),
                 HardMediumSoftLongScore.of(-100L, -20L, -3L),
                 HardMediumSoftLongScore.ofUninitialized(-7, -100L, -20L, -3L));
     }
 
     @Entity
     @TypeDef(defaultForType = HardMediumSoftLongScore.class, typeClass = HardMediumSoftLongScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardMediumSoftLongScore> {
+    static class HardMediumSoftLongScoreHibernateTypeTestJpaEntity
+            extends AbstractTestJpaEntity<HardMediumSoftLongScore> {
 
         @Columns(columns = { @Column(name = "initScore"),
                 @Column(name = "hardScore"), @Column(name = "mediumScore"), @Column(name = "softScore") })
         protected HardMediumSoftLongScore score;
 
-        private TestJpaEntity() {
+        HardMediumSoftLongScoreHibernateTypeTestJpaEntity() {
         }
 
-        public TestJpaEntity(HardMediumSoftLongScore score) {
+        public HardMediumSoftLongScoreHibernateTypeTestJpaEntity(HardMediumSoftLongScore score) {
             this.score = score;
         }
 

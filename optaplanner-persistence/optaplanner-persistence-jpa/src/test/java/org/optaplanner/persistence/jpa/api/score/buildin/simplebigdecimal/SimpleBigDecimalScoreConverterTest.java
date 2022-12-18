@@ -9,25 +9,28 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.AbstractScoreJpaTest;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class SimpleBigDecimalScoreConverterTest extends AbstractScoreJpaTest {
 
     @Test
     void persistAndMerge() {
-        persistAndMerge(new TestJpaEntity(SimpleBigDecimalScore.ZERO), null,
+        persistAndMerge(new SimpleBigDecimalScoreConverterTestJpaEntity(SimpleBigDecimalScore.ZERO), null,
                 SimpleBigDecimalScore.of(new BigDecimal("-10.01000")),
                 SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-10.01000")));
     }
 
     @Entity
-    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleBigDecimalScore> {
+    static class SimpleBigDecimalScoreConverterTestJpaEntity extends AbstractTestJpaEntity<SimpleBigDecimalScore> {
 
         @Convert(converter = SimpleBigDecimalScoreConverter.class)
         protected SimpleBigDecimalScore score;
 
-        private TestJpaEntity() {
+        SimpleBigDecimalScoreConverterTestJpaEntity() {
         }
 
-        public TestJpaEntity(SimpleBigDecimalScore score) {
+        public SimpleBigDecimalScoreConverterTestJpaEntity(SimpleBigDecimalScore score) {
             this.score = score;
         }
 
