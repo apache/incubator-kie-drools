@@ -17,6 +17,9 @@ import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreJaxbAdapterTest {
 
+    private static final String JAVAX_XML_BIND_CONTEXT_FACTORY_PROPERTY = "javax.xml.bind.context.factory";
+    private static final String JAKARTA_XML_BIND_CONTEXT_FACTORY_PROPERTY = "jakarta.xml.bind.JAXBContextFactory";
+
     // ************************************************************************
     // Helper methods
     // ************************************************************************
@@ -65,8 +68,8 @@ public abstract class AbstractScoreJaxbAdapterTest {
     protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void assertSerializeAndDeserializeJson(
             Score_ expectedScore,
             W input) {
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
-
+        final String xmlBindContextFactoryProperty = getJaxbContextFactoryProperty();
+        System.setProperty(xmlBindContextFactoryProperty, "org.eclipse.persistence.jaxb.JAXBContextFactory");
         String jsonString;
         W output;
         try {
@@ -86,10 +89,10 @@ public abstract class AbstractScoreJaxbAdapterTest {
 
             StringReader reader = new StringReader(jsonString);
             output = (W) unmarshaller.unmarshal(reader);
-
-            System.clearProperty("javax.xml.bind.context.factory");
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
+        } finally {
+            System.clearProperty(xmlBindContextFactoryProperty);
         }
         assertThat(output.getScore()).isEqualTo(expectedScore);
         String regex;
@@ -110,6 +113,19 @@ public abstract class AbstractScoreJaxbAdapterTest {
             fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
                     "Actual string: %s", regex, jsonString));
         }
+    }
+
+    private static boolean isJakarta() {
+        try {
+            Class.forName("jakarta.xml.bind.JAXBContext", false, AbstractScoreJaxbAdapterTest.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException classNotFoundException) {
+            return false;
+        }
+    }
+
+    private static String getJaxbContextFactoryProperty() {
+        return isJakarta() ? JAKARTA_XML_BIND_CONTEXT_FACTORY_PROPERTY : JAVAX_XML_BIND_CONTEXT_FACTORY_PROPERTY;
     }
 
     public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {
