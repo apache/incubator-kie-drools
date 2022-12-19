@@ -32,19 +32,21 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.Output;
 import net.thisptr.jackson.jq.Scope;
-import net.thisptr.jackson.jq.Versions;
+import net.thisptr.jackson.jq.Version;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 public class JqExpression implements Expression {
 
     private final Supplier<Scope> scope;
     private final String expr;
+    private final Version version;
     private JsonQuery query;
-    private Exception validationError;
+    private JsonQueryException validationError;
 
-    public JqExpression(Supplier<Scope> scope, String expr) {
+    public JqExpression(Supplier<Scope> scope, String expr, Version version) {
         this.expr = expr;
         this.scope = scope;
+        this.version = version;
     }
 
     private interface TypedOutput extends Output {
@@ -158,7 +160,12 @@ public class JqExpression implements Expression {
 
     private void compile() throws JsonQueryException {
         if (this.query == null) {
-            this.query = JsonQuery.compile(expr, Versions.JQ_1_6);
+            try {
+                this.query = JsonQuery.compile(expr, version);
+            } catch (JsonQueryException ex) {
+                validationError = ex;
+                throw ex;
+            }
         }
     }
 
@@ -166,11 +173,9 @@ public class JqExpression implements Expression {
     public boolean isValid() {
         try {
             compile();
-            return true;
-        } catch (JsonQueryException e) {
-            validationError = e;
-            return false;
+        } catch (JsonQueryException ex) {
         }
+        return validationError == null;
     }
 
     @Override

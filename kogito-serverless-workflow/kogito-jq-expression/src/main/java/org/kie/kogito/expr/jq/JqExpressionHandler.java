@@ -51,7 +51,7 @@ public class JqExpressionHandler extends CachedExpressionHandler {
 
     @Override
     public Expression buildExpression(String expr) {
-        return new JqExpression(scopeSupplier, expr);
+        return new JqExpression(scopeSupplier, expr, Versions.JQ_1_6);
     }
 
     @Override

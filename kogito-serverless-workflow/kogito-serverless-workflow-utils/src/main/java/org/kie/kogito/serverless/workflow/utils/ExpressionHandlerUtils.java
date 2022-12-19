@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import org.jbpm.ruleflow.core.Metadata;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -95,16 +95,47 @@ public class ExpressionHandlerUtils {
     }
 
     public static void assign(JsonNode context, JsonNode target, JsonNode value, String expr) {
+        JsonNode merged = MergeUtils.merge(value, target);
         if (context.isObject()) {
-            Optional<String> varName = fallbackVarToName(expr);
-            if (varName.isPresent()) {
-                JsonObjectUtils.addToNode(varName.get(), MergeUtils.merge(value, target), (ObjectNode) context);
+            ObjectNode root = (ObjectNode) context;
+            StringBuilder sb = new StringBuilder();
+            List<String> properties = new ArrayList<>();
+            for (int i = expr.length() - 1; i >= 0; i--) {
+                char c = expr.charAt(i);
+                if (Character.isJavaIdentifierPart(c)) {
+                    sb.insert(0, expr.charAt(i));
+                } else if (c == '.') {
+                    if (sb.length() == 0) {
+                        break;
+                    }
+                    properties.add(0, sb.toString());
+                    sb = new StringBuilder();
+                } else {
+                    if (sb.length() > 0) {
+                        properties.add(0, sb.toString());
+                    }
+                    break;
+                }
+            }
+            if (!properties.isEmpty()) {
+                int size = properties.size() - 1;
+                for (int i = 0; i < size; i++) {
+                    root = addObjectNode(root, properties.get(i));
+                }
+                root.set(properties.get(size), merged);
             }
         }
     }
 
-    public static Optional<String> fallbackVarToName(String expr) {
-        int indexOf = expr.lastIndexOf('.');
-        return indexOf < 0 ? Optional.empty() : Optional.of(expr.substring(indexOf + 1));
+    private static ObjectNode addObjectNode(ObjectNode target, String propName) {
+        if (target.has(propName)) {
+            JsonNode childNode = target.get(propName);
+            if (childNode.isObject()) {
+                return (ObjectNode) childNode;
+            }
+        }
+        ObjectNode newNode = target.objectNode();
+        target.set(propName, newNode);
+        return newNode;
     }
 }

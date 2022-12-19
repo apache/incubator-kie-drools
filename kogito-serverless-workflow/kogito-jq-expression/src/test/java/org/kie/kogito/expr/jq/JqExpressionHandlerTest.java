@@ -177,6 +177,22 @@ class JqExpressionHandlerTest {
     }
 
     @Test
+    void testAssignComplexObjectUnderGivenProperty() {
+        Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyObject.nestedString");
+        assertThat(parsedExpression.isValid()).isTrue();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode toBeInserted = objectMapper.createObjectNode();
+        toBeInserted.put("bar", "value1");
+        ObjectNode targetNode = getObjectNode();
+        parsedExpression.assign(targetNode, toBeInserted, getContext());
+        assertThat(targetNode.has("bar")).as("Property 'bar' should not be in root.").isFalse();
+        assertThat(targetNode.has("propertyObject")).as("Property 'propertyObject' is missing in root.").isTrue();
+        assertThat(targetNode.get("propertyObject").has("nestedString")).as("Property 'propertyObject' should contain 'nestedString'.").isTrue();
+        assertThat(targetNode.get("propertyObject").get("nestedString").has("bar")).as("Property 'nestedString' should contain 'bar'.").isTrue();
+        assertThat(targetNode.get("propertyObject").get("nestedString").get("bar").asText()).as("Unexpected value under 'propertyObject'->'bar' property.").isEqualTo("value1");
+    }
+
+    @Test
     void testAssignArrayUnderGivenProperty() {
         Expression parsedExpression = ExpressionHandlerFactory.get("jq", ".propertyString");
         assertThat(parsedExpression.isValid()).isTrue();
