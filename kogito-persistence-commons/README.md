@@ -13,6 +13,6 @@ It is composed by three modules:
 
 The consumer has to 
 
-1) Inject the `StorageService` bean where needed, and the implementation will be selected using the property `kogito.persistence.type`. 
+1) Inject the `StorageService` bean where needed, and the implementation will be selected using the property `kogito.apps.persistence.type`. 
 2) Create one module for each supported storage type, add the custom marshallers (for infinispan) or the custom codecs (for mongo for example). See [here](../data-index/data-index-storage/data-index-storage-infinispan/src/main/java/org/kie/kogito/index/infinispan/protostream/ProtostreamProducer.java)  for an example.
 3) For protobuf, provide a `ProtostreamProducer` as shown [here](../data-index/data-index-storage/data-index-storage-protobuf/src/main/java/org/kie/kogito/index/protobuf/ProtostreamProducer.java) .

@@ -24,8 +24,10 @@ import io.quarkus.arc.properties.IfBuildProperty;
 
 import graphql.language.StringValue;
 
+import static org.kie.kogito.persistence.api.factory.Constants.PERSISTENCE_TYPE_PROPERTY;
+
 @ApplicationScoped
-@IfBuildProperty(name = "kogito.persistence.type", stringValue = "postgresql")
+@IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = "postgresql")
 public class PostgreSqlDateTimeCoercing extends DefaultDateTimeCoercing implements DateTimeCoercing {
 
     @Override

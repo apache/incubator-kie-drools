@@ -22,5 +22,5 @@ public class Constants {
 
     }
 
-    public static final String PERSISTENCE_TYPE_PROPERTY = "kogito.persistence.type";
+    public static final String PERSISTENCE_TYPE_PROPERTY = "kogito.apps.persistence.type";
 }

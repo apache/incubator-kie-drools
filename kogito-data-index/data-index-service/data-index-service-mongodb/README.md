@@ -2,7 +2,7 @@ To use MongoDB as storage for data index service in Quarkus dev mode:
 1. MongoDB application properties in the `application.properties` of data index service:
     ```
         # Set data index to use MongoDB for storage
-        kogito.persistence.type=mongodb
+        kogito.apps.persistence.type=mongodb
         # MongoDB server address
         quarkus.mongodb.connection-string=mongodb://localhost:27017
         # MongoDB database name for data index 
