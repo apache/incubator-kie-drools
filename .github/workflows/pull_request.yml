@@ -2,17 +2,6 @@
 name: Build Chain
 
 on:
-  push:
-    branches:
-      - main
-      - 8.*
-    paths-ignore:
-      - 'LICENSE*'
-      - '.gitignore'
-      - '**.md'
-      - '**.adoc'
-      - '*.txt'
-      - '.ci/**'
   pull_request:
     types: [opened, synchronize, reopened, labeled]
     branches:
