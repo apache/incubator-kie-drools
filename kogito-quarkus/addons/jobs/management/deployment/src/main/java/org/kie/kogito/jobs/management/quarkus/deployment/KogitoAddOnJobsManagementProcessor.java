@@ -16,17 +16,17 @@
 package org.kie.kogito.jobs.management.quarkus.deployment;
 
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class KogitoAddOnJobsManagementProcessor extends RequireCapabilityKogitoAddOnProcessor {
+class KogitoAddOnJobsManagementProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     private static final String FEATURE = "kogito-addon-jobs-management-extension";
 
     KogitoAddOnJobsManagementProcessor() {
-        super(KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
     }
 
     @BuildStep

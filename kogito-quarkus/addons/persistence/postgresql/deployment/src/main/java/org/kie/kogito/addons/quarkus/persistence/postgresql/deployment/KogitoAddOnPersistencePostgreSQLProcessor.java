@@ -16,7 +16,7 @@
 package org.kie.kogito.addons.quarkus.persistence.postgresql.deployment;
 
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -24,12 +24,12 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourcePatternsBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
-class KogitoAddOnPersistencePostgreSQLProcessor extends RequireCapabilityKogitoAddOnProcessor {
+class KogitoAddOnPersistencePostgreSQLProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     private static final String FEATURE = "kogito-addon-persistence-postgresql-extension";
 
     KogitoAddOnPersistencePostgreSQLProcessor() {
-        super(KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
     }
 
     @BuildStep

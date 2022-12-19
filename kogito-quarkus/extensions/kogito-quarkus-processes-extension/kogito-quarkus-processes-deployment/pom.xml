@@ -12,35 +12,14 @@
   <artifactId>kogito-quarkus-processes-deployment</artifactId>
   <name>Kogito :: Quarkus Processes Extension :: Deployment</name>
 
-  <properties>
-    <data-index-ephemeral.image>quay.io/kiegroup/kogito-data-index-ephemeral:{placeholder}</data-index-ephemeral.image>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-common-deployment</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-extension-spi</artifactId>
+      <artifactId>kogito-quarkus-workflow-common-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-processes</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-devservices-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-    </dependency>
-    <!-- codegen dependencies -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen-processes</artifactId>
     </dependency>
     <!-- test -->
     <dependency>
@@ -63,20 +42,8 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-codegen-processes</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -92,19 +59,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>productized</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <properties>
-        <data-index-ephemeral.image>registry.redhat.io/openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8:1.25</data-index-ephemeral.image>
-      </properties>
-    </profile>
-  </profiles>
 
 </project>

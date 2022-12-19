@@ -37,6 +37,7 @@ import io.quarkus.kubernetes.spi.KubernetesDeploymentTargetBuildItem;
 import io.quarkus.kubernetes.spi.KubernetesResourceMetadataBuildItem;
 
 import static io.quarkus.kubernetes.spi.KubernetesDeploymentTargetBuildItem.mergeList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Processor to generate cloud event metadata from BPMN/SW models
@@ -58,13 +59,14 @@ public class KogitoProcessKnativeEventingProcessor {
      * @param metadataProducer outcome of this build step, it contains the information about cloudevents that should be used by later steps to generate Kogito Knative files
      */
     @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasProcessExtension.class)
-    void buildMetadata(KogitoProcessContainerGeneratorBuildItem processContainerBuildItem,
+    void buildMetadata(List<KogitoProcessContainerGeneratorBuildItem> processContainerBuildItem,
             List<KogitoCloudEventsBuildItem> extendedCloudEventsBuildItems,
             List<KubernetesDeploymentTargetBuildItem> allDeploymentTargets,
             List<KubernetesResourceMetadataBuildItem> kubernetesMetaBuildItems,
             BuildProducer<KogitoKnativeResourcesMetadataBuildItem> metadataProducer) {
         if (processContainerBuildItem != null) {
-            final Set<CloudEventMeta> cloudEvents = new HashSet<>(this.getCloudEventMetaBuilder().build(processContainerBuildItem.getProcessContainerGenerators()));
+            final Set<CloudEventMeta> cloudEvents =
+                    new HashSet<>(this.getCloudEventMetaBuilder().build(processContainerBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream()).collect(toSet())));
             extendedCloudEventsBuildItems.forEach(buildItem -> cloudEvents.addAll(buildItem.getCloudEvents()));
             if (!cloudEvents.isEmpty()) {
                 selectDeploymentTarget(allDeploymentTargets, kubernetesMetaBuildItems).map(target -> new KogitoKnativeResourcesMetadataBuildItem(cloudEvents, target))

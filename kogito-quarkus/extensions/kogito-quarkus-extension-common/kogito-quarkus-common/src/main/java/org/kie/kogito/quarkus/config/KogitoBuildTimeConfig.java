@@ -50,21 +50,4 @@ public class KogitoBuildTimeConfig {
     @ConfigItem(name = "addon.messaging.outgoing.defaultName", defaultValue = "kogito_outgoing_stream")
     public String outgoingChannelDefaultName;
 
-    /**
-     * Strategy to resolve a Process version to use
-     */
-    @ConfigItem(name = "workflow.version-strategy", defaultValue = "workflow")
-    public String versionStrategy;
-
-    /**
-     * Persistence build time configuration
-     */
-    @ConfigItem
-    public KogitoPersistenceBuildTimeConfig persistence;
-
-    /**
-     * Serverless Workflow build time configuration
-     */
-    @ConfigItem
-    public KogitoServerlessWorkflowBuildTimeConfig sw;
 }

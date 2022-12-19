@@ -36,6 +36,7 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.kubernetes.spi.KubernetesDeploymentTargetBuildItem;
 import io.quarkus.kubernetes.spi.KubernetesResourceMetadataBuildItem;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,7 +68,7 @@ class KogitoProcessKnativeEventingProcessorTest {
         final KogitoProcessKnativeEventingProcessor processor = new KogitoProcessKnativeEventingProcessor();
         final MockKogitoKnativeMetadataProducer metadata = new MockKogitoKnativeMetadataProducer();
 
-        processor.buildMetadata(containerGeneratorBuildItem, Collections.emptyList(), null, null, metadata);
+        processor.buildMetadata(singletonList(containerGeneratorBuildItem), Collections.emptyList(), null, null, metadata);
         // not produced
         assertNull(metadata.getItem());
     }
@@ -79,16 +80,16 @@ class KogitoProcessKnativeEventingProcessorTest {
         final KogitoProcessKnativeEventingProcessor processor = mock(KogitoProcessKnativeEventingProcessor.class);
         final MockKogitoKnativeMetadataProducer metadata = new MockKogitoKnativeMetadataProducer();
         final KubernetesResourceMetadataBuildItem kubernetesResourceMetadataBuildItem = new KubernetesResourceMetadataBuildItem("kubernetes", "apps", "v1", "Deployment", "name");
-        final List<KubernetesResourceMetadataBuildItem> kubernetesMetaBuildItems = Collections.singletonList(kubernetesResourceMetadataBuildItem);
-        final List<KogitoCloudEventsBuildItem> extendedCloudEventsBuildItems = Collections.singletonList(new KogitoCloudEventsBuildItem(Set.of(EXTENDED_CLOUD_EVENT1, EXTENDED_CLOUD_EVENT2)));
+        final List<KubernetesResourceMetadataBuildItem> kubernetesMetaBuildItems = singletonList(kubernetesResourceMetadataBuildItem);
+        final List<KogitoCloudEventsBuildItem> extendedCloudEventsBuildItems = singletonList(new KogitoCloudEventsBuildItem(Set.of(EXTENDED_CLOUD_EVENT1, EXTENDED_CLOUD_EVENT2)));
 
-        doCallRealMethod().when(processor).buildMetadata(containerGeneratorBuildItem, extendedCloudEventsBuildItems, null, kubernetesMetaBuildItems, metadata);
+        doCallRealMethod().when(processor).buildMetadata(singletonList(containerGeneratorBuildItem), extendedCloudEventsBuildItems, null, kubernetesMetaBuildItems, metadata);
         when(processor.selectDeploymentTarget(null, kubernetesMetaBuildItems)).thenCallRealMethod();
         when(processor.getCloudEventMetaBuilder()).thenReturn(mockedCEBuilder);
         when(mockedCEBuilder.build(containerGeneratorBuildItem.getProcessContainerGenerators()))
                 .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", triggerMetadata)));
 
-        processor.buildMetadata(containerGeneratorBuildItem, extendedCloudEventsBuildItems, null, kubernetesMetaBuildItems, metadata);
+        processor.buildMetadata(singletonList(containerGeneratorBuildItem), extendedCloudEventsBuildItems, null, kubernetesMetaBuildItems, metadata);
 
         assertNotNull(metadata.getItem());
         Set<CloudEventMeta> cloudEvents = metadata.getItem().getCloudEvents();
@@ -103,17 +104,17 @@ class KogitoProcessKnativeEventingProcessorTest {
         final KogitoProcessKnativeEventingProcessor processor = mock(KogitoProcessKnativeEventingProcessor.class);
         final MockKogitoKnativeMetadataProducer metadata = new MockKogitoKnativeMetadataProducer();
         final KubernetesResourceMetadataBuildItem kubernetesResourceMetadataBuildItem = new KubernetesResourceMetadataBuildItem("kubernetes", "apps", "v1", "Deployment", "name");
-        final List<KubernetesResourceMetadataBuildItem> kubernetesMetaBuildItems = Collections.singletonList(kubernetesResourceMetadataBuildItem);
-        final List<KubernetesDeploymentTargetBuildItem> deploymentTargets = Collections.singletonList(new KubernetesDeploymentTargetBuildItem("kubernetes", "Deployment", "apps", "v1"));
-        final List<KogitoCloudEventsBuildItem> extendedCloudEventsBuildItems = Collections.singletonList(new KogitoCloudEventsBuildItem(Set.of(EXTENDED_CLOUD_EVENT1, EXTENDED_CLOUD_EVENT2)));
+        final List<KubernetesResourceMetadataBuildItem> kubernetesMetaBuildItems = singletonList(kubernetesResourceMetadataBuildItem);
+        final List<KubernetesDeploymentTargetBuildItem> deploymentTargets = singletonList(new KubernetesDeploymentTargetBuildItem("kubernetes", "Deployment", "apps", "v1"));
+        final List<KogitoCloudEventsBuildItem> extendedCloudEventsBuildItems = singletonList(new KogitoCloudEventsBuildItem(Set.of(EXTENDED_CLOUD_EVENT1, EXTENDED_CLOUD_EVENT2)));
 
-        doCallRealMethod().when(processor).buildMetadata(containerGeneratorBuildItem, extendedCloudEventsBuildItems, deploymentTargets, kubernetesMetaBuildItems, metadata);
+        doCallRealMethod().when(processor).buildMetadata(singletonList(containerGeneratorBuildItem), extendedCloudEventsBuildItems, deploymentTargets, kubernetesMetaBuildItems, metadata);
         when(processor.selectDeploymentTarget(deploymentTargets, kubernetesMetaBuildItems)).thenCallRealMethod();
         when(processor.getCloudEventMetaBuilder()).thenReturn(mockedCEBuilder);
         when(mockedCEBuilder.build(containerGeneratorBuildItem.getProcessContainerGenerators()))
                 .thenReturn(Collections.singleton(new ProcessCloudEventMeta("123", triggerMetadata)));
 
-        processor.buildMetadata(containerGeneratorBuildItem, extendedCloudEventsBuildItems, deploymentTargets, kubernetesMetaBuildItems, metadata);
+        processor.buildMetadata(singletonList(containerGeneratorBuildItem), extendedCloudEventsBuildItems, deploymentTargets, kubernetesMetaBuildItems, metadata);
 
         assertNotNull(metadata.getItem());
         Set<CloudEventMeta> cloudEvents = metadata.getItem().getCloudEvents();

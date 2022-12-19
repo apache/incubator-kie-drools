@@ -16,11 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-processes</artifactId>
+      <artifactId>kogito-quarkus-workflow-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -49,6 +49,7 @@ import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.jobs.knative.eventing.quarkus.deployment.KogitoAddOnJobsKnativeEventingProcessor.FEATURE;
 import static org.mockito.ArgumentMatchers.any;
@@ -92,7 +93,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
         KogitoProcessContainerGeneratorBuildItem kogitoProcessContainerGeneratorBuildItem = new KogitoProcessContainerGeneratorBuildItem(containerGenerators);
 
         KogitoAddOnJobsKnativeEventingProcessor processor = new KogitoAddOnJobsKnativeEventingProcessor();
-        processor.buildCloudEventsMetadata(kogitoProcessContainerGeneratorBuildItem, buildItemProducer);
+        processor.buildCloudEventsMetadata(singletonList(kogitoProcessContainerGeneratorBuildItem), buildItemProducer);
         verify(buildItemProducer).produce(cloudEventsBuildItemCaptor.capture());
         KogitoCloudEventsBuildItem kogitoCloudEventsBuildItem = cloudEventsBuildItemCaptor.getValue();
         assertThat(kogitoCloudEventsBuildItem).isNotNull();
@@ -115,7 +116,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
         KogitoProcessContainerGeneratorBuildItem kogitoProcessContainerGeneratorBuildItem = new KogitoProcessContainerGeneratorBuildItem(containerGenerators);
 
         KogitoAddOnJobsKnativeEventingProcessor processor = new KogitoAddOnJobsKnativeEventingProcessor();
-        processor.buildCloudEventsMetadata(kogitoProcessContainerGeneratorBuildItem, buildItemProducer);
+        processor.buildCloudEventsMetadata(singletonList(kogitoProcessContainerGeneratorBuildItem), buildItemProducer);
         verify(buildItemProducer, never()).produce(any());
     }
 

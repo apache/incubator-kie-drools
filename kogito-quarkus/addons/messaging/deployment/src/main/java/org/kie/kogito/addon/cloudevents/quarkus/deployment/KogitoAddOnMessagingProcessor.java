@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -61,15 +62,15 @@ public class KogitoAddOnMessagingProcessor extends AnyEngineKogitoAddOnProcessor
     }
 
     @BuildStep
-    KogitoAddonsPostGeneratedSourcesBuildItem generate(Optional<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<KogitoMessagingMetadataBuildItem> metadataProducer,
+    KogitoAddonsPostGeneratedSourcesBuildItem generate(List<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<KogitoMessagingMetadataBuildItem> metadataProducer,
             KogitoBuildContextBuildItem kogitoContext) {
 
         Collection<ChannelInfo> channelsInfo = ChannelMappingStrategy.getChannelMapping();
         Map<DotName, EventGenerator> generators = new HashMap<>();
         Map<String, EventGenerator> channels = new HashMap<>();
 
-        processBuildItem.ifPresent(kogitoProcessContainerGeneratorBuildItem -> kogitoProcessContainerGeneratorBuildItem.getProcessContainerGenerators()
-                .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, channels, kogitoContext.getKogitoBuildContext()))));
+        processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
+                .forEach(containerGenerator -> containerGenerator.getProcesses().forEach(process -> collect(process, channelsInfo, generators, channels, kogitoContext.getKogitoBuildContext())));
 
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
         metadataProducer.produce(new KogitoMessagingMetadataBuildItem(generators));

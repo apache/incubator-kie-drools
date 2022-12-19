@@ -19,7 +19,7 @@ import org.kie.kogito.addon.source.files.SourceFilesProviderProducer;
 import org.kie.kogito.addon.source.files.SourceFilesRecorder;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -28,12 +28,12 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class KogitoAddOnSourceFilesProcessor extends RequireCapabilityKogitoAddOnProcessor {
+class KogitoAddOnSourceFilesProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     private static final String FEATURE = "kogito-addon-source-files-extension";
 
     KogitoAddOnSourceFilesProcessor() {
-        super(KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
     }
 
     @BuildStep

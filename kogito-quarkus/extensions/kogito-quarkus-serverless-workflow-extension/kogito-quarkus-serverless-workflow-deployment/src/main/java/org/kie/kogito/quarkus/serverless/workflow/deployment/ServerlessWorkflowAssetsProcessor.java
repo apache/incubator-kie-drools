@@ -27,6 +27,13 @@ import org.drools.codegen.common.GeneratedFile;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.kie.kogito.event.process.NodeInstanceEventBody;
+import org.kie.kogito.event.process.ProcessDataEvent;
+import org.kie.kogito.event.process.ProcessErrorEventBody;
+import org.kie.kogito.event.process.ProcessInstanceDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceEventBody;
+import org.kie.kogito.event.process.VariableInstanceDataEvent;
+import org.kie.kogito.event.process.VariableInstanceEventBody;
 import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
@@ -35,6 +42,7 @@ import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
+import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
 import org.kie.kogito.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
@@ -47,6 +55,7 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.smallrye.openapi.deployment.spi.AddToOpenAPIDefinitionBuildItem;
@@ -55,13 +64,14 @@ import io.serverlessworkflow.api.Workflow;
 /**
  * Main class of the Kogito Serverless Workflow extension
  */
-public class ServerlessWorkflowAssetsProcessor {
+public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
 
     // Injecting Instance<WorkflowOpenApiHandlerGenerator> does not work here
     private static WorkflowHandlerGenerator[] generators = { WorkflowOpenApiHandlerGenerator.instance, WorkflowRPCHandlerGenerator.instance };
 
     @BuildStep
-    FeatureBuildItem featureBuildItem() {
+    @Override
+    public FeatureBuildItem featureBuildItem() {
         return new FeatureBuildItem("kogito-serverless-workflow");
     }
 
@@ -111,5 +121,17 @@ public class ServerlessWorkflowAssetsProcessor {
                 .map(Paths::get);
 
         return WorkflowCodeGenUtils.getWorkflows(workflowFiles);
+    }
+
+    @BuildStep
+    public ReflectiveClassBuildItem eventsApiReflection() {
+        return new ReflectiveClassBuildItem(true, true,
+                NodeInstanceEventBody.class.getName(),
+                ProcessDataEvent.class.getName(),
+                ProcessErrorEventBody.class.getName(),
+                ProcessInstanceDataEvent.class.getName(),
+                ProcessInstanceEventBody.class.getName(),
+                VariableInstanceDataEvent.class.getName(),
+                VariableInstanceEventBody.class.getName());
     }
 }

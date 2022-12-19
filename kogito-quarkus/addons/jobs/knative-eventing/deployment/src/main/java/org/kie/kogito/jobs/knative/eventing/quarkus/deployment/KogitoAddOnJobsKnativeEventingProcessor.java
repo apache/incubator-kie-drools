@@ -33,7 +33,7 @@ import org.kie.kogito.jobs.api.event.CreateProcessInstanceJobRequestEvent;
 import org.kie.kogito.jobs.api.event.JobCloudEvent;
 import org.kie.kogito.jobs.api.event.ProcessInstanceContextJobCloudEvent;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
-import org.kie.kogito.quarkus.addons.common.deployment.RequireCapabilityKogitoAddOnProcessor;
+import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.extensions.spi.deployment.HasProcessExtension;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 
@@ -43,12 +43,12 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
-public class KogitoAddOnJobsKnativeEventingProcessor extends RequireCapabilityKogitoAddOnProcessor {
+public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     static final String FEATURE = "kogito-addon-jobs-knative-eventing-extension";
 
     KogitoAddOnJobsKnativeEventingProcessor() {
-        super(KogitoCapability.PROCESSES);
+        super(KogitoCapability.PROCESSES, KogitoCapability.SERVERLESS_WORKFLOW);
     }
 
     @BuildStep
@@ -69,10 +69,10 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends RequireCapabilityKo
     }
 
     @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasProcessExtension.class)
-    public void buildCloudEventsMetadata(KogitoProcessContainerGeneratorBuildItem processContainerBuildItem,
+    public void buildCloudEventsMetadata(List<KogitoProcessContainerGeneratorBuildItem> processContainerBuildItem,
             BuildProducer<KogitoCloudEventsBuildItem> cloudEventsBuildItemProducer) {
         final Set<CloudEventMeta> cloudEvents = new LinkedHashSet<>();
-        List<KogitoWorkflowProcess> processes = processContainerBuildItem.getProcessContainerGenerators().stream()
+        List<KogitoWorkflowProcess> processes = processContainerBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
                 .flatMap(processContainerGenerator -> processContainerGenerator.getProcesses().stream())
                 .map(ProcessGenerator::getProcessExecutable)
                 .map(ProcessExecutableModelGenerator::process)

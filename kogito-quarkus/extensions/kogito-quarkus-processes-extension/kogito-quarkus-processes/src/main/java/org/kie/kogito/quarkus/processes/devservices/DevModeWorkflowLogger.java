@@ -20,6 +20,7 @@ import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.slf4j.Logger;
@@ -38,8 +39,8 @@ public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
     @Override
     public void afterProcessStarted(ProcessStartedEvent event) {
         if (event.getProcessInstance().getState() != 2) {
-            LOGGER.info("Workflow '{}' ({}) was started, now '{}'", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId(), getStatus(
-                    event.getProcessInstance().getState()));
+            LOGGER.info("Workflow '{}' ({}) was started, now '{}'", event.getProcessInstance().getProcessId(), ((KogitoProcessInstance) event.getProcessInstance()).getStringId(),
+                    ProcessMeta.fromState(event.getProcessInstance().getState()));
         }
     }
 
@@ -58,23 +59,6 @@ public class DevModeWorkflowLogger extends DefaultKogitoProcessEventListener {
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         LOGGER.info("Variable '{}' changed value from: '{}', to: '{}'", event.getVariableId(), event.getOldValue(), event.getNewValue());
-    }
-
-    private static String getStatus(int status) {
-        switch (status) {
-            case 0:
-                return "PENDING";
-            case 1:
-                return "ACTIVE";
-            case 2:
-                return "COMPLETED";
-            case 3:
-                return "ABORTED";
-            case 4:
-                return "SUSPENDED";
-            default:
-                return "UNKNOWN " + status;
-        }
     }
 
 }

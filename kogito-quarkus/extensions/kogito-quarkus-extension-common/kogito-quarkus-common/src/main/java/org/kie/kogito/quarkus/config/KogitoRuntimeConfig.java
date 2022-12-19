@@ -32,18 +32,6 @@ public class KogitoRuntimeConfig {
     public Optional<String> serviceUrl;
 
     /**
-     * Persistence runtime configuration
-     */
-    @ConfigItem
-    public KogitoPersistenceRuntimeConfig persistence;
-
-    /**
-     * grpc runtime configuration
-     */
-    @ConfigItem
-    public KogitoRPCRuntimeConfig grpc;
-
-    /**
      * Eventing runtime configuration
      */
     @ConfigItem(name = "quarkus.events")

@@ -32,11 +32,19 @@ public class KogitoAddOnProcessorTest {
     @Test
     void verifyRequiredCapabilitiesWhenNotPresent() {
         final RequireEngineAddonProcessor requireEngineAddonProcessor = new RequireEngineAddonProcessor();
+        final Capabilities capabilities = new Capabilities(Collections.emptySet());
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> requireEngineAddonProcessor.verifyCapabilities(capabilities));
+        assertTrue(exception.getMessage().contains(KogitoCapability.DECISIONS.getCapability()));
+        assertTrue(exception.getMessage().contains(KogitoCapability.PREDICTIONS.getCapability()));
+    }
+
+    @Test
+    void verifyAtLeastOneRequiredCapabilitiesWhenNotPresent() {
+        final RequireOneEngineAddonProcessor requireEngineAddonProcessor = new RequireOneEngineAddonProcessor();
         final IllegalStateException exception =
                 assertThrows(IllegalStateException.class,
                         () -> requireEngineAddonProcessor.verifyCapabilities(new Capabilities(Collections.emptySet())));
-        assertTrue(exception.getMessage().contains(KogitoCapability.DECISIONS.getCapability()));
-        assertTrue(exception.getMessage().contains(KogitoCapability.PREDICTIONS.getCapability()));
+        assertTrue(exception.getMessage().contains(KogitoCapability.SERVERLESS_WORKFLOW.getCapability()));
     }
 
     @Test
@@ -58,6 +66,14 @@ public class KogitoAddOnProcessorTest {
         final Set<String> capabilities = new HashSet<>();
         capabilities.add(KogitoCapability.DECISIONS.getCapability());
         capabilities.add(KogitoCapability.PREDICTIONS.getCapability());
+        assertDoesNotThrow(() -> requireEngineAddonProcessor.verifyCapabilities(new Capabilities(capabilities)));
+    }
+
+    @Test
+    void verifyOneRequiredCapabilitiesWhenPresent() {
+        final RequireOneEngineAddonProcessor requireEngineAddonProcessor = new RequireOneEngineAddonProcessor();
+        final Set<String> capabilities = new HashSet<>();
+        capabilities.add(KogitoCapability.SERVERLESS_WORKFLOW.getCapability());
         assertDoesNotThrow(() -> requireEngineAddonProcessor.verifyCapabilities(new Capabilities(capabilities)));
     }
 

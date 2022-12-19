@@ -63,7 +63,7 @@ public class ProcessMeta extends KogitoProcessExtension {
         return meta;
     }
 
-    private static String fromState(int state) {
+    public static String fromState(int state) {
         switch (state) {
             case STATE_ABORTED:
                 return "Aborted";

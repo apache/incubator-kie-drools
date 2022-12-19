@@ -31,6 +31,7 @@
     <module>kogito-quarkus-extension</module>
     <module>kogito-quarkus-extension-spi</module>
     <module>kogito-quarkus-extension-common</module>
+    <module>kogito-quarkus-workflow-extension-common</module>
     <module>kogito-quarkus-processes-extension</module>
     <module>kogito-quarkus-serverless-workflow-extension</module>
   </modules>

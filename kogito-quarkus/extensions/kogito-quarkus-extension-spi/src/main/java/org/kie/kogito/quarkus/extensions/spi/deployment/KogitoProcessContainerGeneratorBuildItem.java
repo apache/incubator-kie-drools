@@ -19,9 +19,9 @@ import java.util.Set;
 
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
 
-import io.quarkus.builder.item.SimpleBuildItem;
+import io.quarkus.builder.item.MultiBuildItem;
 
-public final class KogitoProcessContainerGeneratorBuildItem extends SimpleBuildItem {
+public final class KogitoProcessContainerGeneratorBuildItem extends MultiBuildItem {
 
     private final Set<ProcessContainerGenerator> processContainerGenerators;
 
