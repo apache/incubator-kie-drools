@@ -52,7 +52,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-common-deployment</artifactId>
+      <artifactId>kogito-quarkus-workflow-common-deployment</artifactId>
     </dependency>
 
     <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.

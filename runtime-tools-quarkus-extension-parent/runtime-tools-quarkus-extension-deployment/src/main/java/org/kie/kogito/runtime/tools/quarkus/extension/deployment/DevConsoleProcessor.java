@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.kie.kogito.quarkus.addons.common.deployment.TrustyServiceAvailableBuildItem;
-import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
+import org.kie.kogito.quarkus.workflow.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.config.DevConsoleRuntimeConfig;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.user.UserInfoSupplier;
 

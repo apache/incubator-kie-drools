@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.kie.kogito.quarkus.common.deployment.KogitoDataIndexServiceAvailableBuildItem;
+import org.kie.kogito.quarkus.workflow.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.swf.tools.dataindex.config.DevConsoleRuntimeConfig;
 
 import io.quarkus.deployment.IsDevelopment;
