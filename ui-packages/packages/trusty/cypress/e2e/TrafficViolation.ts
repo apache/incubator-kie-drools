@@ -25,8 +25,8 @@ describe('Traffic Violation', () => {
         'Content-Type': 'application/json'
       },
       body: {
-        Driver: { State: 'aa', City: 'bb', Age: '25', Points: '13' },
-        Violation: { Type: 'speed', 'Actual Speed': '105', 'Speed Limit': '80' }
+        Driver: { State: 'aa', City: 'bb', Age: 25, Points: 13 },
+        Violation: { Type: 'speed', 'Actual Speed': 105, 'Speed Limit': 80 }
       }
     }).then(response => {
       // response.body is automatically serialized into JSON
