@@ -375,8 +375,8 @@ public class InfixOpNode
     }
 
     public static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
-        BigDecimal l = EvalHelper.getBigDecimalOrNull( left );
-        BigDecimal r = EvalHelper.getBigDecimalOrNull( right );
+        BigDecimal l = left instanceof String ? null : EvalHelper.getBigDecimalOrNull( left );
+        BigDecimal r = right instanceof String ? null : EvalHelper.getBigDecimalOrNull( right );
         if ( l == null || r == null ) {
             return null;
         }
