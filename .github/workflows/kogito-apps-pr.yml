@@ -47,7 +47,7 @@ jobs:
           starting-project: kiegroup/kogito-apps
           github-token: "${{ secrets.GITHUB_TOKEN }}"
         env:
-          BUILD_MVN_OPTS: "-DskipUI"
+          BUILD_MVN_OPTS: '-DskipUI -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral'
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
