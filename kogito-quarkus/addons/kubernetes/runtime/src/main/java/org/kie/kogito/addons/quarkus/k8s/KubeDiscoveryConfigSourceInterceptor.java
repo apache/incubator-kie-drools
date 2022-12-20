@@ -16,10 +16,7 @@
 package org.kie.kogito.addons.quarkus.k8s;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,36 +30,23 @@ public class KubeDiscoveryConfigSourceInterceptor implements ConfigSourceInterce
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
     private transient KubernetesClient client;
-    private Map<String, String> cache = new ConcurrentHashMap<>();
 
-    private KubeResourceDiscovery kResource;
+    private final transient KubeDiscoveryConfigCache kubeDiscoveryConfigCache;
 
     public KubeDiscoveryConfigSourceInterceptor() {
         logger.debug("Configuring k8s client...");
         this.client = new DefaultKubernetesClient();
-        this.kResource = new KubeResourceDiscovery(client);
+        this.kubeDiscoveryConfigCache = new KubeDiscoveryConfigCache(new KubeResourceDiscovery(client));
     }
 
     @Override
     public ConfigValue getValue(ConfigSourceInterceptorContext context, String s) {
         ConfigValue configValue = context.proceed(s);
-        try {
-            if (isValidURI(configValue)) {
-                String cachedValue = cache.computeIfAbsent(configValue.getName(), k -> kResource
-                        .query(new KubeURI(configValue.getValue())).orElse(null));
-                if (cachedValue != null) {
-                    return configValue.withValue(cachedValue);
-                }
-            }
-        } catch (RuntimeException e) {
-            logger.error("Service Discovery has failed", e);
+        if (configValue == null) {
+            return null;
         }
-        return configValue;
-    }
-
-    private boolean isValidURI(ConfigValue value) {
-        return value != null && value.getValue() != null && !value.getValue().isBlank() && KubeConstants.SUPPORTED_PROTOCOLS
-                .stream()
-                .anyMatch(value.getValue()::startsWith);
+        return kubeDiscoveryConfigCache.get(configValue.getName(), configValue.getValue())
+                .map(configValue::withValue)
+                .orElse(configValue);
     }
 }
