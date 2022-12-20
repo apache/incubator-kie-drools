@@ -73,7 +73,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
         try {
-            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), node.getName(), result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result );
             Map<String, Object> contextValues = result.getContext().getAll();
 
             List<Object> params = new ArrayList<>(ins.size());
@@ -103,7 +103,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             LOG.debug("failed evaluate", e);
             throw new RuntimeException(e);
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
     
