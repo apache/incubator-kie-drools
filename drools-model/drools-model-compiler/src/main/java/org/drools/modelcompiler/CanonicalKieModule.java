@@ -897,4 +897,9 @@ public class CanonicalKieModule implements InternalKieModule {
     public ReleaseId getReleaseId() {
         return internalKieModule.getReleaseId();
     }
+
+    @Override
+    public boolean isVerifiable() {
+        return false;
+    }
 }
