@@ -1,55 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>kogito-quarkus-bom</artifactId>
+    <artifactId>kogito-addons-quarkus-parent</artifactId>
     <groupId>org.kie.kogito</groupId>
     <version>2.0.0-SNAPSHOT</version>
-    <relativePath>../bom/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-addons-quarkus-parent</artifactId>
-  <name>Kogito :: Add-Ons :: Quarkus</name>
-  <description>Parent Module for Kogito Quarkus Add-Ons. All add-ons are Quarkus Extensions.</description>
-  <packaging>pom</packaging>
-
+  <artifactId>kogito-addons-quarkus-camel-parent</artifactId>
+  <name>Kogito :: Add-Ons :: Quarkus :: Camel :: Parent</name>
+  <description>Kogito Quarkus Camel Integration with Serverless Workflow</description>
   <modules>
-    <module>messaging</module>
-    <module>common</module>
-    <module>rest-exception-handler</module>
-    <module>persistence</module>
-    <module>process-svg</module>
-    <module>process-management</module>
-    <module>source-files</module>
-    <module>knative</module>
-    <module>kubernetes</module>
-    <module>events</module>
-    <module>marshallers</module>
-    <module>camel</module>
+    <module>deployment</module>
+    <module>runtime</module>
+    <module>integration-tests</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>explainability</module>
-        <module>jobs</module>
-        <module>mail</module>
-        <module>monitoring</module>
-        <module>task-notification</module>
-        <module>tracing-decision</module>
-        <module>task-management</module>
-      </modules>
-    </profile>
-  </profiles>
-
+  <packaging>pom</packaging>
   <build>
     <pluginManagement>
       <plugins>
@@ -60,7 +28,6 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.surefire.plugin}</version>
           <configuration>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -71,7 +38,6 @@
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
           <configuration>
             <systemPropertyVariables>
               <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -83,6 +49,11 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${version.compiler.plugin}</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -1,0 +1,12 @@
+name: Kogito Addons Quarkus Camel
+description: Add-on for Kogito Serverless Workflow to execute embedded Camel Routes as workflow functions.
+metadata:
+  keywords:
+    - kogito
+    - camel
+    - serverless
+    - workflow
+#  guide: ...
+  categories:
+    - "integration"
+  status: "preview"

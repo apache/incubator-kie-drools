@@ -1,0 +1,32 @@
+{
+  "id": "camelCustomFunction",
+  "version": "1.0.0",
+  "name": "Custom Camel example",
+  "start": "start",
+  "specVersion": "0.8",
+  "functions": [
+    {
+      "name": "callSoap",
+      "type": "custom",
+      "operation": "camel:direct:numberToWords"
+    }
+  ],
+  "states": [
+    {
+      "name": "start",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "callSoap",
+            "arguments": "${ . }"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .words = .response[0] | del(.response) }"
+      },
+      "end": true
+    }
+  ]
+}

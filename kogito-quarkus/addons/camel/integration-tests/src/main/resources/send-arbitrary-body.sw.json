@@ -1,0 +1,28 @@
+{
+  "specVersion": "0.8",
+  "id": "send_arbitrary_body",
+  "version": "1.0.0",
+  "start": "sendToLog",
+  "functions": [
+    {
+      "name": "logRoute",
+      "type": "custom",
+      "operation": "camel:direct:logRouteReplaceHeader"
+    }
+  ],
+  "states": [
+    {
+      "name": "sendToLog",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "logRoute",
+            "arguments": "${ . }"
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}
