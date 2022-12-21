@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.service.DataIndexServiceException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,8 +48,11 @@ import io.vertx.ext.web.client.WebClientOptions;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.ABORT_PROCESS_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_JOB_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_NODE_INSTANCE_PATH;
@@ -92,14 +97,14 @@ public class KogitoRuntimeClientTest {
 
     private KogitoRuntimeClientImpl client;
 
+    @Mock
     private WebClient webClientMock;
+
+    @Mock
     private HttpRequest httpRequestMock;
 
     @BeforeEach
     public void setup() {
-        webClientMock = mock(WebClient.class);
-        httpRequestMock = mock(HttpRequest.class);
-
         client = spy(new KogitoRuntimeClientImpl(vertx, identityMock));
         client.gatewayTargetUrl = Optional.empty();
         client.serviceWebClientMap.put(SERVICE_URL, webClientMock);
@@ -324,6 +329,56 @@ public class KogitoRuntimeClientTest {
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         checkResponseHandling(handlerCaptor.getValue());
+    }
+
+    @Test
+    public void testSendOk() throws Exception {
+        AsyncResult result = mock(AsyncResult.class);
+        when(result.succeeded()).thenReturn(true);
+        HttpResponse response = mock(HttpResponse.class);
+        when(result.result()).thenReturn(response);
+        when(response.statusCode()).thenReturn(200);
+        when(response.bodyAsString()).thenReturn("OK");
+
+        CompletableFuture future = new CompletableFuture();
+
+        client.send(null, null, future, result);
+
+        assertEquals("OK", future.get());
+    }
+
+    @Test
+    public void testSendNotFound() throws Exception {
+        AsyncResult result = mock(AsyncResult.class);
+        when(result.succeeded()).thenReturn(true);
+        HttpResponse response = mock(HttpResponse.class);
+        when(result.result()).thenReturn(response);
+        when(response.statusCode()).thenReturn(404);
+
+        CompletableFuture future = new CompletableFuture();
+
+        client.send(null, null, future, result);
+
+        assertNull(future.get());
+    }
+
+    @Test
+    public void testSendException() throws Exception {
+        AsyncResult result = mock(AsyncResult.class);
+        when(result.succeeded()).thenReturn(false);
+        when(result.cause()).thenReturn(new RuntimeException());
+
+        CompletableFuture future = new CompletableFuture();
+
+        client.send("error", null, future, result);
+
+        try {
+            future.get();
+            fail("Future should have failed");
+        } catch (Exception ex) {
+            assertEquals("org.kie.kogito.index.service.DataIndexServiceException: FAILED: error", ex.getMessage());
+            assertThat(ex.getCause()).isInstanceOf(DataIndexServiceException.class);
+        }
     }
 
     @Test

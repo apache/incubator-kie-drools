@@ -343,18 +343,22 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
 
         webClient.get(requestURI)
                 .putHeader("Authorization", getAuthHeader())
-                .send(res -> {
-                    if (res.succeeded() && (res.result().statusCode() == 200)) {
-                        if (type != null) {
-                            future.complete(res.result().bodyAsJson(type));
-                        } else {
-                            future.complete(res.result().bodyAsString());
-                        }
-                    } else {
-                        future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result()), res.cause()));
-                    }
-                });
+                .send(res -> send(logMessage, type, future, res));
         return future;
+    }
+
+    protected void send(String logMessage, Class type, CompletableFuture future, AsyncResult<HttpResponse<Buffer>> res) {
+        if (res.succeeded() && res.result().statusCode() == 200) {
+            if (type != null) {
+                future.complete(res.result().bodyAsJson(type));
+            } else {
+                future.complete(res.result().bodyAsString());
+            }
+        } else if (res.succeeded() && res.result().statusCode() == 404) {
+            future.complete(null);
+        } else {
+            future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result()), res.cause()));
+        }
     }
 
     private String getErrorMessage(String logMessage, HttpResponse<Buffer> result) {
