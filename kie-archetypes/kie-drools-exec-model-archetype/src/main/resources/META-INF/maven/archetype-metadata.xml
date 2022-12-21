@@ -29,7 +29,7 @@
         <include>**/*.xml</include>
       </includes>
     </fileSet>
-    <fileSet filtered="true" packaged="false" encoding="UTF-8"> <!-- to have .drl file processed with mvn ${} macros but to avoid it being sub-directory java packaged. -->
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
       <directory>src/main/resources</directory>
       <includes>
         <include>**/*.drl</include>
