@@ -25,6 +25,7 @@
 
     <logger name="org.kie" level="warn"/>
     <logger name="org.drools" level="warn"/>
+    <logger name="org.drools.compiler.kie.builder.impl" level="info"/>
 
 <!--     <logger name="org.drools.core.management" level="debug"/> -->
 <!--    <logger name="org.drools.modelcompiler.builder" level="debug"/>-->

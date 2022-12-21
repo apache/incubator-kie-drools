@@ -242,4 +242,8 @@ public interface InternalKieModule extends KieModule, Serializable {
     final class LocalLogger {
         private static final Logger logger = LoggerFactory.getLogger(InternalKieModule.class);
     }
+
+    default boolean isVerifiable() {
+        return true;
+    }
 }
