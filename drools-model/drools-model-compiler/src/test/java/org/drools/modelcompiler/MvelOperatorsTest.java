@@ -18,6 +18,7 @@ package org.drools.modelcompiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -591,5 +592,88 @@ public class MvelOperatorsTest extends BaseModelTest {
 
         Results results = createKieBuilder( str ).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
+    }
+
+    @Test
+    public void contains_map_objectType_listValue() {
+        String str =
+                "import " + MapHolder.class.getCanonicalName() + "\n" +
+                     "rule R when\n" +
+                     "    MapHolder( objectValueMap[\"key\"] contains \"test\" )" +
+                     "then\n" +
+                     "end ";
+
+        KieSession ksession = getKieSession(str); // fails with non-exec-model and exec-model
+
+        List<String> list = new ArrayList<>();
+        list.add("test");
+        MapHolder holder = new MapHolder();
+        holder.getObjectValueMap().put("key", list);
+        ksession.insert(holder);
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    @Test
+    public void contains_map_objectType_listValue_cast() {
+        String str =
+                "import " + MapHolder.class.getCanonicalName() + "\n" +
+                     "rule R when\n" +
+                     "    MapHolder( ((java.util.List) objectValueMap[\"key\"]) contains \"test\" )" +
+                     "then\n" +
+                     "end ";
+
+        KieSession ksession = getKieSession(str); // cast makes the rule buildable
+
+        List<String> list = new ArrayList<>();
+        list.add("test");
+        MapHolder holder = new MapHolder();
+        holder.getObjectValueMap().put("key", list);
+        ksession.insert(holder);
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    @Test
+    public void contains_map_listType_listValue() {
+        String str =
+                "import " + MapHolder.class.getCanonicalName() + "\n" +
+                     "rule R when\n" +
+                     "    MapHolder( listValueMap[\"key\"] contains \"test\" )" +
+                     "then\n" +
+                     "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        list.add("test");
+        MapHolder holder = new MapHolder();
+        holder.getListValueMap().put("key", list);
+        ksession.insert(holder);
+        int fired = ksession.fireAllRules();
+        assertThat(fired).isEqualTo(1);
+    }
+
+    public static class MapHolder {
+
+        private Map<String, Object> objectValueMap = new HashMap<>();
+        private Map<String, List> listValueMap = new HashMap<>();
+
+        public Map<String, Object> getObjectValueMap() {
+            return objectValueMap;
+        }
+
+        public void setObjectValueMap(Map<String, Object> objectValueMap) {
+            this.objectValueMap = objectValueMap;
+        }
+
+        public Map<String, List> getListValueMap() {
+            return listValueMap;
+        }
+
+        public void setListValueMap(Map<String, List> listValueMap) {
+            this.listValueMap = listValueMap;
+        }
+
     }
 }
