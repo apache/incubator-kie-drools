@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -33,7 +32,6 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.predicate.ResponsePredicate;
 
-@ApplicationScoped
 public class DataIndexEventPublisher implements EventPublisher {
 
     public static final String KOGITO_DATA_INDEX = "kogito.data-index.url";
