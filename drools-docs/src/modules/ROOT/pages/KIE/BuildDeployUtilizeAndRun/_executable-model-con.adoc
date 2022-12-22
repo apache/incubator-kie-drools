@@ -6,6 +6,11 @@ Rule assets in {PRODUCT} are built from executable rule models by default with t
 
 If you do not use the `kie-maven-plugin` plugin or if the required `drools-model-compiler` dependency is missing from your project, then rule assets are built without executable models. Therefore, to generate the executable model during build time, ensure that the `kie-maven-plugin` plugin and `drools-model-compiler` dependency are added in your project `pom.xml` file.
 
+[NOTE]
+====
+Starting from {PRODUCT} 8.33, if your project has `drools-engine` or `drools-ruleunits-engine` dependency, you don't need to explicitly add `drools-model-compiler` to generate the executable model with `kie-maven-plugin`.
+====
+
 Executable rule models provide the following specific advantages for your projects:
 
 * *Compile time:* Traditionally, a packaged {PRODUCT} project (KJAR) contains a list of DRL files and other {PRODUCT} artifacts that define the rule base together with some pre-generated classes implementing the constraints and the consequences. Those DRL files must be parsed and compiled when the KJAR is downloaded from the Maven repository and installed in a KIE container. This process can be slow, especially for large rule sets. With an executable model, you can package within the project KJAR the Java classes that implement the executable model of the project rule base and re-create the KIE container and its KIE bases out of it in a much faster way. In Maven projects, you use the `kie-maven-plugin` plugin to automatically generate the executable model sources from the DRL files during the compilation process.
