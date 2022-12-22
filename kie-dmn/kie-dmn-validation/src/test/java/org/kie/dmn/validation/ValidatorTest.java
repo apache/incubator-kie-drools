@@ -243,9 +243,29 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testVARIABLE_LEADING_TRAILING_SPACES() {
         List<DMNMessage> validate = validator.validate( getReader( "VARIABLE_LEADING_TRAILING_SPACES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).hasSize(1);
-        assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_NAME))).isTrue();
-        assertThat(validate.get(0).getSourceId()).isEqualTo("_dd662d27-7896-42cb-9d14-bd74203bdbec");
+        assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).isNotEmpty();
+        assertThat(validate).anySatisfy(p -> {
+            assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            assertThat(p.getSourceId()).isEqualTo("_dd662d27-7896-42cb-9d14-bd74203bdbec");
+        });
+        assertThat(validate).anySatisfy(p -> {
+            assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            assertThat(p.getSourceId()).isEqualTo("_1f54fd51-6805-4280-b576-607450f85edd");
+        });
+    }
+    
+    @Test
+    public void testNAME_NOT_NORMALIZED() {
+        List<DMNMessage> validate = validator.validate( getReader( "NAME_NOT_NORMALIZED.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).isNotEmpty();
+        assertThat(validate).anySatisfy(p -> {
+            assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            assertThat(p.getSourceId()).isEqualTo("_7E95B3C8-9276-46EA-87D4-22FDE87DC039");
+        });
+        assertThat(validate).anySatisfy(p -> {
+            assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            assertThat(p.getSourceId()).isEqualTo("_07210027-8B43-4DA0-8C0D-69D3E695D23D");
+        });
     }
 
     @Test
