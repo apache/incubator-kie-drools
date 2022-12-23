@@ -18,24 +18,28 @@ package org.drools.ruleunits.impl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.CanonicalModelKieProject;
 import org.drools.ruleunits.api.RuleUnit;
+import org.drools.ruleunits.api.RuleUnitData;
 import org.drools.ruleunits.api.RuleUnitProvider;
 import org.drools.ruleunits.api.conf.RuleConfig;
 import org.drools.ruleunits.impl.conf.RuleConfigImpl;
-import org.drools.ruleunits.api.RuleUnitData;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.io.Resource;
@@ -85,7 +89,7 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     static InternalKieModule createRuleUnitKieModule(Class<?> unitClass, boolean useExecModel) {
         KieServices ks = KieServices.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        for (Resource drlResource : drlResourcesForUnitClass(ks, unitClass)) {
+        for (Resource drlResource : ruleResourcesForUnitClass(ks, unitClass)) {
             kfs.write(drlResource);
         }
         return (InternalKieModule) ks.newKieBuilder( kfs )
@@ -98,24 +102,41 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
                 new KieModuleKieProject(kieModule, kieModule.getModuleClassLoader());
     }
 
-    private static Collection<Resource> drlResourcesForUnitClass(KieServices ks, Class<?> unitClass) {
+    private static Collection<Resource> ruleResourcesForUnitClass(KieServices ks, Class<?> unitClass) {
         String unitStatement = "unit " + unitClass.getSimpleName();
         Collection<Resource> resources = new HashSet<>();
         try {
-            Enumeration<URL> urlEnumeration = unitClass.getClassLoader().getResources( unitClass.getPackageName().replace('.', '/') );
+            Enumeration<URL> urlEnumeration = unitClass.getClassLoader().getResources(unitClass.getPackageName().replace('.', '/'));
             while (urlEnumeration.hasMoreElements()) {
                 String path = urlEnumeration.nextElement().getPath();
-                Stream.of( new File(path).listFiles() )
-                        .filter( f -> f.getPath().endsWith(".drl") )
-                        .filter( f -> readFileAsString(f).contains(unitStatement) )
-                        .peek( f -> LOGGER.debug("Found " + f.getPath() + " in " + unitClass.getSimpleName() + " unit") )
-                        .map( ks.getResources()::newFileSystemResource )
-                        .forEach( resources::add );
+                Optional.ofNullable(new File(path).listFiles())
+                        .stream()
+                        .flatMap(Arrays::stream)
+                        .filter(f -> doesDrlContainUnit(f, unitStatement) || doesXlsContainUnit(f, unitClass.getSimpleName()))
+                        .map(ks.getResources()::newFileSystemResource)
+                        .forEach(resource -> {
+                            LOGGER.debug("Found {} in {} unit", resource.getSourcePath(), unitClass.getSimpleName());
+                            resources.add(resource);
+                        });
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuleUnitGenerationException("Exception while creating KieModule", e);
         }
         return resources;
+    }
+
+    private static boolean doesDrlContainUnit(File file, String unitStatement) {
+        return file.getName().endsWith(".drl") && readFileAsString(file).contains(unitStatement);
+    }
+
+    private static boolean doesXlsContainUnit(File file, String unitName) {
+        if (file.getName().endsWith(".drl.xls") || file.getName().endsWith(".drl.xlsx")) {
+            PropertiesSheetListener propertiesSheetListener = new PropertiesSheetListener();
+            InputType.XLS.createParser(propertiesSheetListener).parseFile(file);
+            List<String> unitValues = propertiesSheetListener.getProperties().getProperty("unit");
+            return unitValues != null && unitValues.stream().anyMatch(value -> value.trim().equals(unitName));
+        }
+        return false;
     }
 
     @Override
