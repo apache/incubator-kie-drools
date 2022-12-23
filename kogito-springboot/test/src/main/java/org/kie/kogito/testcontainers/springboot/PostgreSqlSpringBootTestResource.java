@@ -25,13 +25,15 @@ import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL
 
 /**
  * PostgreSQL spring boot resource that works within the test lifecycle.
- *
  */
 public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoPostgreSqlContainer> {
 
     public static final String SPRING_DATASOURCE_URL = "spring.datasource.url";
     public static final String SPRING_DATASOURCE_USERNAME = "spring.datasource.username";
     public static final String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
+    public static final String SPRING_FLYWAY_URL = "spring.flyway.url";
+    public static final String SPRING_FLYWAY_USERNAME = "spring.flyway.user";
+    public static final String SPRING_FLYWAY_PASSWORD = "spring.flyway.password";
 
     public PostgreSqlSpringBootTestResource() {
         super(new KogitoPostgreSqlContainer());
@@ -44,6 +46,9 @@ public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestR
         properties.put(SPRING_DATASOURCE_URL, getTestResource().getJdbcUrl());
         properties.put(SPRING_DATASOURCE_USERNAME, getTestResource().getUsername());
         properties.put(SPRING_DATASOURCE_PASSWORD, getTestResource().getPassword());
+        properties.put(SPRING_FLYWAY_URL, getTestResource().getJdbcUrl());
+        properties.put(SPRING_FLYWAY_USERNAME, getTestResource().getUsername());
+        properties.put(SPRING_FLYWAY_PASSWORD, getTestResource().getPassword());
         return properties;
     }
 
