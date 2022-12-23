@@ -76,6 +76,20 @@ then
     }
 end
 
+rule NAME_NOT_TRIMMED
+when
+    $ne : NamedElement( name != null, name str[startsWith] " " || name str[endsWith] " " )
+then
+    reporter.report( DMNMessage.Severity.WARN, $ne , Msg.NAME_NOT_TRIMMED, $ne.getName(), $ne.getClass().getSimpleName(), $ne.getId() );
+end
+
+rule NAME_NOT_NORMALIZED
+when
+    $ne : NamedElement( name != null, name contains "  " )
+then
+    reporter.report( DMNMessage.Severity.WARN, $ne , Msg.NAME_NOT_NORMALIZED, $ne.getName(), $ne.getClass().getSimpleName(), $ne.getId() );
+end
+
 rule VARIABLE_LEADING_TRAILING_SPACES
 when
   $ce1 : InformationItem( name != null,
