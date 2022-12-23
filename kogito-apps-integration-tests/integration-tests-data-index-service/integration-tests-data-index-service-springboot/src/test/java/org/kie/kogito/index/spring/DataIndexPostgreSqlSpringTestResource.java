@@ -35,8 +35,6 @@ public class DataIndexPostgreSqlSpringTestResource extends ConditionalSpringBoot
         Map<String, String> properties = new HashMap<>();
         properties.put(KOGITO_DATA_INDEX_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
         properties.putAll(getTestResource().getProperties());
-        properties.put("spring.flyway.enabled", "true");
-        properties.put("spring.flyway.baseline-on-migrate", "true");
         return properties;
     }
 
