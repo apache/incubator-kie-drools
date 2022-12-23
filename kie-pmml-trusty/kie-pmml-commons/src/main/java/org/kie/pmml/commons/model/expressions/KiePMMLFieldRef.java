@@ -30,14 +30,14 @@ import static org.kie.pmml.commons.model.expressions.ExpressionsUtils.getFromPos
 public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 4576394527423997787L;
-    private String mapMissingTo;
+    private Object mapMissingTo;
 
-    public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
+    public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, Object mapMissingTo) {
         super(name, extensions);
         this.mapMissingTo = mapMissingTo;
     }
 
-    public String getMapMissingTo() {
+    public Object getMapMissingTo() {
         return mapMissingTo;
     }
 
