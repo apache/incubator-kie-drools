@@ -38,7 +38,7 @@
     <version.org.openrewrite.recipe>1.13.1</version.org.openrewrite.recipe>
     <version.org.slf4j>1.7.36</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.springframework>5.3.24</version.org.springframework>
-    <version.org.springframework.boot>2.7.6</version.org.springframework.boot>
+    <version.org.springframework.boot>2.7.7</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
