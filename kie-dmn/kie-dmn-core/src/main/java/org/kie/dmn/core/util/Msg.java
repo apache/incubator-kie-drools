@@ -41,6 +41,8 @@ public final class Msg {
     public static final Message2 UNKNOWN_FEEL_TYPE_REF_ON_NODE                       = new Message2( DMNMessageType.TYPE_REF_NOT_FOUND, "Type reference '%s' is not a valid FEEL type reference on node '%s'" );
     public static final Message1 UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE                  = new Message1( DMNMessageType.TYPE_REF_NOT_FOUND, "Unknown output type for decision table on node '%s'" );
     public static final Message2 INVALID_NAME                                        = new Message2( DMNMessageType.INVALID_NAME, "Invalid name '%s': %s" );
+    public static final Message3 NAME_NOT_NORMALIZED                                 = new Message3( DMNMessageType.INVALID_NAME, "Name '%s' contains whitespace which is not normalized for element %s with id '%s'" );
+    public static final Message3 NAME_NOT_TRIMMED                                    = new Message3( DMNMessageType.INVALID_NAME, "Name '%s' is not trimmed for element %s with id '%s'" );
     public static final Message1 INVALID_SYNTAX                                      = new Message1( DMNMessageType.INVALID_SYNTAX, "%s: invalid syntax" );
     public static final Message2 INVALID_SYNTAX2                                     = new Message2( DMNMessageType.INVALID_SYNTAX, "%s: %s" );
     public static final Message1 MISSING_EXPRESSION_FOR_BKM                          = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Business Knowledge Model node '%s'" );
