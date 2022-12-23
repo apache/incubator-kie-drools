@@ -249,9 +249,29 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testVARIABLE_LEADING_TRAILING_SPACES() {
         List<DMNMessage> validate = validator.validate( getReader( "VARIABLE_LEADING_TRAILING_SPACES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
-        assertThat( validate.get(0).getSourceId(), is("_dd662d27-7896-42cb-9d14-bd74203bdbec") );
+        Assertions.assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).isNotEmpty();
+        Assertions.assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_dd662d27-7896-42cb-9d14-bd74203bdbec");
+        });
+        Assertions.assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_1f54fd51-6805-4280-b576-607450f85edd");
+        });
+    }
+    
+    @Test
+    public void testNAME_NOT_NORMALIZED() {
+        List<DMNMessage> validate = validator.validate( getReader( "NAME_NOT_NORMALIZED.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        Assertions.assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).isNotEmpty();
+        Assertions.assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_7E95B3C8-9276-46EA-87D4-22FDE87DC039");
+        });
+        Assertions. assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_07210027-8B43-4DA0-8C0D-69D3E695D23D");
+        });
     }
 
     @Test
