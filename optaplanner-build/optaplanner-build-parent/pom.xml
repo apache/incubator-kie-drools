@@ -54,7 +54,7 @@
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
     <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
-    <version.versions.plugin>2.14.1</version.versions.plugin>
+    <version.versions.plugin>2.14.2</version.versions.plugin>
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
