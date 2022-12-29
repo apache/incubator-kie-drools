@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
+import org.xml.sax.SAXParseException;
 
 class GenericJaxbIOTest {
 
@@ -61,7 +62,8 @@ class GenericJaxbIOTest {
                 + "<dummyJaxbClass>&xxe;</dummyJaxbClass>";
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(() -> xmlIO.readOverridingNamespace(new StringReader(maliciousXml)))
-                .withStackTraceContaining("External Entity: Failed to read external document");
+                .withRootCauseExactlyInstanceOf(SAXParseException.class)
+                .withStackTraceContaining("accessExternalDTD");
     }
 
     @XmlRootElement

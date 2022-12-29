@@ -41,6 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
+import org.xml.sax.SAXParseException;
 
 class SolverConfigTest {
 
@@ -117,7 +118,7 @@ class SolverConfigTest {
         StringReader stringReader = new StringReader(solverConfigXml);
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(() -> solverConfigIO.read(stringReader))
-                .withMessageContaining("Invalid content was found")
+                .withRootCauseExactlyInstanceOf(SAXParseException.class)
                 .withMessageContaining("Node: variableName");
     }
 

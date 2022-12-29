@@ -19,6 +19,7 @@ import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
+import org.xml.sax.SAXParseException;
 
 class PlannerBenchmarkConfigTest {
 
@@ -77,7 +78,7 @@ class PlannerBenchmarkConfigTest {
         StringReader stringReader = new StringReader(benchmarkConfigXml);
         assertThatExceptionOfType(OptaPlannerXmlSerializationException.class)
                 .isThrownBy(() -> xmlIO.read(stringReader))
-                .withMessageContaining("Invalid content was found")
+                .withRootCauseExactlyInstanceOf(SAXParseException.class)
                 .withMessageContaining("solutionKlazz");
     }
 
