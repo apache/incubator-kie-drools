@@ -45,6 +45,24 @@ public class AppPaths {
     private final Path resourcesPath;
     private final Path outputTarget;
 
+    /**
+     * Augmentation Mode from Quarkus. The app is deployed at "target/quarkus-app/dev/app" and behaves as an "exploded" jar.
+     * Every resource is in this root path, so all the generated code must also be generated in this very same path.
+     *
+     * @param targetPath The path as defined by the Quarkus deployment model
+     * @see <a href=""https://quarkus.io/guides/maven-tooling#remote-development-mode>Remote Development Mode</a>
+     * @return the app path
+     */
+    public static AppPaths fromMutableJar(Path targetPath) {
+        // we force GRADLE as the build tool since our resources' directory doesn't need a prefix.
+        return new AppPaths(Collections.singleton(targetPath),
+                Collections.singleton(targetPath),
+                false,
+                BuildTool.GRADLE,
+                "",
+                targetPath);
+    }
+
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
         return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main", outputTarget);
     }
@@ -118,7 +136,7 @@ public class AppPaths {
      * @param resourcesBasePath "main" or "test"
      */
     private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
-                     String resourcesBasePath, Path outputTarget) {
+            String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
