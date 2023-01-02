@@ -23,8 +23,9 @@ import io.javaoperatorsdk.operator.api.reconciler.ErrorStatusUpdateControl;
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext;
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer;
 import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
+import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator;
 import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
-import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependentResourceConfig;
+import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 
 @ControllerConfiguration(name = "optaplanner-solver")
@@ -49,15 +50,12 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
         triggerAuthenticationDependentResource = new TriggerAuthenticationDependentResource(kubernetesClient);
         scaledObjectDependentResource = new ScaledObjectDependentResource(kubernetesClient);
 
-        // The two dependent resource of the same type need to be differentiated by a label.
-        inputQueueDependentResource.configureWith(
-                new KubernetesDependentResourceConfig().setLabelSelector(getQueueSelector(MessageAddress.INPUT)));
-        outputQueueDependentResource.configureWith(
-                new KubernetesDependentResourceConfig().setLabelSelector(getQueueSelector(MessageAddress.OUTPUT)));
-    }
-
-    private String getQueueSelector(MessageAddress messageAddress) {
-        return ArtemisQueueDependentResource.MESSAGE_ADDRESS_LABEL + "=" + messageAddress.getName();
+        inputQueueDependentResource.setResourceDiscriminator(new ResourceIDMatcherDiscriminator<>(
+                optaPlannerSolver -> new ResourceID(optaPlannerSolver.getInputMessageAddressName(),
+                        optaPlannerSolver.getMetadata().getNamespace())));
+        outputQueueDependentResource.setResourceDiscriminator(new ResourceIDMatcherDiscriminator<>(
+                optaPlannerSolver -> new ResourceID(optaPlannerSolver.getOutputMessageAddressName(),
+                        optaPlannerSolver.getMetadata().getNamespace())));
     }
 
     @Override
@@ -80,21 +78,21 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
             triggerAuthenticationDependentResource.reconcile(solver, context);
             scaledObjectDependentResource.reconcile(solver, context);
 
-            if (scaledObjectDependentResource.getSecondaryResource(solver).isEmpty() ||
-                    triggerAuthenticationDependentResource.getSecondaryResource(solver).isEmpty()) {
+            if (scaledObjectDependentResource.getSecondaryResource(solver, context).isEmpty() ||
+                    triggerAuthenticationDependentResource.getSecondaryResource(solver, context).isEmpty()) {
                 isReady = false;
             }
         }
 
-        Optional<ArtemisQueue> inputQueue = inputQueueDependentResource.getSecondaryResource(solver);
-        Optional<ArtemisQueue> outputQueue = outputQueueDependentResource.getSecondaryResource(solver);
+        Optional<ArtemisQueue> inputQueue = inputQueueDependentResource.getSecondaryResource(solver, context);
+        Optional<ArtemisQueue> outputQueue = outputQueueDependentResource.getSecondaryResource(solver, context);
         if (inputQueue.isEmpty() || outputQueue.isEmpty()) {
             isReady = false;
         }
 
         if (inputQueue.isPresent() && outputQueue.isPresent()) {
             configMapDependentResource.reconcile(solver, context);
-            if (configMapDependentResource.getSecondaryResource(solver).isEmpty()) {
+            if (configMapDependentResource.getSecondaryResource(solver, context).isEmpty()) {
                 isReady = false;
             }
         }

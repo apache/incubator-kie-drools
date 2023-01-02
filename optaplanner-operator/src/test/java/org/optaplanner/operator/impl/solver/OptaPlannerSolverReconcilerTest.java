@@ -122,6 +122,7 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
 
         final OptaPlannerSolver solver = new OptaPlannerSolver();
         solver.getMetadata().setName(solverName);
+        solver.getMetadata().setNamespace(namespace);
         solver.setSpec(new OptaPlannerSolverSpec());
         solver.getSpec().setTemplate(createPodTemplateSpec("solver-project-image"));
         solver.getSpec().setAmqBroker(amqBroker);
