@@ -671,6 +671,13 @@ public abstract class BetaNode extends LeftTupleSource
         return rightInferredMask;
     }
 
+    void disablePropertyReactivity() {
+        rightInferredMask = AllSetBitMask.get();
+        if (NodeTypeEnums.isBetaNode(leftInput)) {
+            ((BetaNode)leftInput).disablePropertyReactivity();
+        }
+    }
+
     public BitMask getRightNegativeMask() {
         return rightNegativeMask;
     }
