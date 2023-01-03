@@ -220,7 +220,8 @@ public final class ReflectionHelper {
                 throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
                         + annotationClass.getSimpleName() + " annotation must have a primitive boolean return type ("
                         + getterMethod.getReturnType() + ") or use another prefix in its methodName ("
-                        + methodName + ").");
+                        + methodName + ").\n"
+                        + "Maybe use '" + PROPERTY_ACCESSOR_PREFIX_GET + "' instead of '" + PROPERTY_ACCESSOR_PREFIX_IS + "'?");
             }
         } else {
             throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
