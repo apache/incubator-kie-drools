@@ -281,8 +281,8 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     protected void initInferredMask(LeftTupleSource leftInput) {
         LeftTupleSource unwrappedLeft = unwrapLeftInput(leftInput);
         if ( unwrappedLeft.getType() == NodeTypeEnums.LeftInputAdapterNode && ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource();
-            leftInferredMask = alphaNode.updateMask( leftDeclaredMask );
+            ObjectSource objectSource = ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource();
+            leftInferredMask = objectSource.updateMask( leftDeclaredMask );
         } else {
             leftInferredMask = leftDeclaredMask;
         }
