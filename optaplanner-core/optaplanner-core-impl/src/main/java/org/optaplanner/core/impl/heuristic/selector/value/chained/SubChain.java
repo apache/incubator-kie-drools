@@ -1,11 +1,10 @@
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  * A subList out of a single chain.
@@ -47,9 +46,7 @@ public class SubChain {
     }
 
     public SubChain reverse() {
-        List<Object> reversedEntityList = new ArrayList<>(entityList);
-        Collections.reverse(reversedEntityList);
-        return new SubChain(reversedEntityList);
+        return new SubChain(CollectionUtils.copy(entityList, true));
     }
 
     public SubChain subChain(int fromIndex, int toIndex) {

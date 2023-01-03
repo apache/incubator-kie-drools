@@ -1,9 +1,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,6 +14,7 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  * This {@link Move} is not cacheable.
@@ -154,19 +154,14 @@ public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        List<Object> entities = new ArrayList<>(
-                leftSubChain.getSize() + rightSubChain.getSize());
-        entities.addAll(leftSubChain.getEntityList());
-        entities.addAll(rightSubChain.getEntityList());
-        return entities;
+        return CollectionUtils.concat(leftSubChain.getEntityList(), rightSubChain.getEntityList());
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<>(2);
-        values.add(variableDescriptor.getValue(leftSubChain.getFirstEntity()));
-        values.add(variableDescriptor.getValue(rightSubChain.getFirstEntity()));
-        return values;
+        return Arrays.asList(
+                variableDescriptor.getValue(leftSubChain.getFirstEntity()),
+                variableDescriptor.getValue(rightSubChain.getFirstEntity()));
     }
 
     @Override

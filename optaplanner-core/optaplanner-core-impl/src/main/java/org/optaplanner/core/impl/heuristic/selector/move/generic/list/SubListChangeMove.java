@@ -1,8 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +11,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  *
@@ -96,30 +95,24 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
         List<Object> sourceList = variableDescriptor.getListVariable(sourceEntity);
         List<Object> subList = sourceList.subList(sourceIndex, sourceIndex + length);
-        List<Object> subListCopy = new ArrayList<>(subList);
-        if (reversing) {
-            Collections.reverse(subListCopy);
-        }
-        planningValues = subListCopy;
+        planningValues = CollectionUtils.copy(subList, reversing);
 
         if (sourceEntity == destinationEntity) {
             int fromIndex = Math.min(sourceIndex, destinationIndex);
             int toIndex = Math.max(sourceIndex, destinationIndex) + length;
             innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
             subList.clear();
-            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
+            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, planningValues);
             innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
         } else {
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
-                    sourceEntity, sourceIndex, sourceIndex + length);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + length);
             subList.clear();
-            innerScoreDirector.afterListVariableChanged(variableDescriptor,
-                    sourceEntity, sourceIndex, sourceIndex);
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
-                    destinationEntity, destinationIndex, destinationIndex);
-            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
-            innerScoreDirector.afterListVariableChanged(variableDescriptor,
-                    destinationEntity, destinationIndex, destinationIndex + length);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, destinationEntity, destinationIndex,
+                    destinationIndex);
+            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, planningValues);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, destinationEntity, destinationIndex,
+                    destinationIndex + length);
         }
     }
 

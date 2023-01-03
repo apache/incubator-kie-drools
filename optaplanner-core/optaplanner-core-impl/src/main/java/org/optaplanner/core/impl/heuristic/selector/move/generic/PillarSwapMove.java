@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  * This {@link Move} is not cacheable.
@@ -129,11 +130,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        List<Object> entities = new ArrayList<>(
-                leftPillar.size() + rightPillar.size());
-        entities.addAll(leftPillar);
-        entities.addAll(rightPillar);
-        return entities;
+        return CollectionUtils.concat(leftPillar, rightPillar);
     }
 
     @Override

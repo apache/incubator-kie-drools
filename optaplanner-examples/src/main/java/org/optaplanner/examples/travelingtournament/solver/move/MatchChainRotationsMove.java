@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.util.CollectionUtils;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
@@ -66,10 +67,7 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        List<Match> entities = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
-        entities.addAll(firstMatchList);
-        entities.addAll(secondMatchList);
-        return entities;
+        return CollectionUtils.concat(firstMatchList, secondMatchList);
     }
 
     @Override

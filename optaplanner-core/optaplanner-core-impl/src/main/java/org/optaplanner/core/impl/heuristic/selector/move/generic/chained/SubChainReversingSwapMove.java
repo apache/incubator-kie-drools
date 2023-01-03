@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  * This {@link Move} is not cacheable.
@@ -141,11 +142,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        List<Object> entities = new ArrayList<>(
-                leftSubChain.getSize() + rightSubChain.getSize());
-        entities.addAll(leftSubChain.getEntityList());
-        entities.addAll(rightSubChain.getEntityList());
-        return entities;
+        return CollectionUtils.concat(leftSubChain.getEntityList(), rightSubChain.getEntityList());
     }
 
     @Override

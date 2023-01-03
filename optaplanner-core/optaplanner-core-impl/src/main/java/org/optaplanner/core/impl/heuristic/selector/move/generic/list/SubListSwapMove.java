@@ -1,20 +1,17 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  *
@@ -29,8 +26,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final int rightFromIndex;
     private final int leftToIndex;
 
-    private Collection<Object> leftPlanningValues;
-    private Collection<Object> rightPlanningValues;
+    private List<Object> leftPlanningValueList;
+    private List<Object> rightPlanningValueList;
 
     public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, int leftFromIndex, int leftToIndex,
@@ -106,15 +103,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         List<Object> rightList = variableDescriptor.getListVariable(rightEntity);
         List<Object> leftSubListView = subList(leftSubList);
         List<Object> rightSubListView = subList(rightSubList);
-        List<Object> leftSubListCopy = new ArrayList<>(leftSubListView);
-        List<Object> rightSubListCopy = new ArrayList<>(rightSubListView);
-        if (reversing) {
-            Collections.reverse(leftSubListCopy);
-            Collections.reverse(rightSubListCopy);
-        }
-
-        leftPlanningValues = leftSubListCopy;
-        rightPlanningValues = rightSubListCopy;
+        leftPlanningValueList = CollectionUtils.copy(leftSubListView, reversing);
+        rightPlanningValueList = CollectionUtils.copy(rightSubListView, reversing);
 
         if (leftEntity == rightEntity) {
             int fromIndex = Math.min(leftFromIndex, rightFromIndex);
@@ -125,8 +115,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
             innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
             rightSubListView.clear();
             subList(leftSubList).clear();
-            leftList.addAll(leftFromIndex, rightSubListCopy);
-            rightList.addAll(leftSubListDestinationIndex, leftSubListCopy);
+            leftList.addAll(leftFromIndex, rightPlanningValueList);
+            rightList.addAll(leftSubListDestinationIndex, leftPlanningValueList);
             innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
         } else {
             innerScoreDirector.beforeListVariableChanged(variableDescriptor,
@@ -135,8 +125,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
                     rightEntity, rightFromIndex, rightFromIndex + rightSubListLength);
             rightSubListView.clear();
             leftSubListView.clear();
-            leftList.addAll(leftFromIndex, rightSubListCopy);
-            rightList.addAll(rightFromIndex, leftSubListCopy);
+            leftList.addAll(leftFromIndex, rightPlanningValueList);
+            rightList.addAll(rightFromIndex, leftPlanningValueList);
             innerScoreDirector.afterListVariableChanged(variableDescriptor,
                     leftEntity, leftFromIndex, leftFromIndex + rightSubListLength);
             innerScoreDirector.afterListVariableChanged(variableDescriptor,
@@ -173,7 +163,7 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<Object> getPlanningValues() {
-        return Stream.concat(leftPlanningValues.stream(), rightPlanningValues.stream()).collect(Collectors.toList());
+        return CollectionUtils.concat(leftPlanningValueList, rightPlanningValueList);
     }
 
     private List<Object> subList(SubList subList) {
