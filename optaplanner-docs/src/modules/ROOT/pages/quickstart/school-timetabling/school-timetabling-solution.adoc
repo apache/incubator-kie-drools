@@ -30,10 +30,10 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 @PlanningSolution
 public class TimeTable {
 
-    @ValueRangeProvider(id = "timeslotRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<Timeslot> timeslotList;
-    @ValueRangeProvider(id = "roomRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<Room> roomList;
     @PlanningEntityCollectionProperty
@@ -97,7 +97,7 @@ However, this class is also the output of the solution:
 The `timeslotList` field is a value range provider.
 It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
 The `timeslotList` field has an `@ValueRangeProvider` annotation to connect the `@PlanningVariable` with the `@ValueRangeProvider`,
-by matching the value of the `id` property with the value of the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
+by matching the type of the planning variable with the type returned by the xref:planner-configuration/planner-configuration.adoc#planningValueRangeProvider[value range provider].
 
 Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
 

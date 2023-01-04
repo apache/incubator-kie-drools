@@ -22,7 +22,7 @@ public class LeadingExam extends Exam {
     }
 
     @Override
-    @PlanningVariable(valueRangeProviderRefs = { "periodRange" })
+    @PlanningVariable
     public Period getPeriod() {
         return period;
     }

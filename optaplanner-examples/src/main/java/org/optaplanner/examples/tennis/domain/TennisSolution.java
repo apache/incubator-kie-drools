@@ -28,7 +28,7 @@ public class TennisSolution extends AbstractPersistable {
         super(id);
     }
 
-    @ValueRangeProvider(id = "teamRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;

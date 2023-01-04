@@ -85,8 +85,7 @@ public class Allocation extends AbstractPersistable implements Labeled {
         this.successorAllocationList = successorAllocationList;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {
-            "executionModeRange" }, strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class)
+    @PlanningVariable(strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class)
     public ExecutionMode getExecutionMode() {
         return executionMode;
     }
@@ -95,7 +94,7 @@ public class Allocation extends AbstractPersistable implements Labeled {
         this.executionMode = executionMode;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "delayRange" }, strengthComparatorClass = DelayStrengthComparator.class)
+    @PlanningVariable(strengthComparatorClass = DelayStrengthComparator.class)
     public Integer getDelay() {
         return delay;
     }
@@ -160,13 +159,13 @@ public class Allocation extends AbstractPersistable implements Labeled {
     // Ranges
     // ************************************************************************
 
-    @ValueRangeProvider(id = "executionModeRange")
+    @ValueRangeProvider
     @JsonIgnore
     public List<ExecutionMode> getExecutionModeRange() {
         return job.getExecutionModeList();
     }
 
-    @ValueRangeProvider(id = "delayRange")
+    @ValueRangeProvider
     @JsonIgnore
     public CountableValueRange<Integer> getDelayRange() {
         return ValueRangeFactory.createIntValueRange(0, 500);

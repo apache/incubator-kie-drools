@@ -29,7 +29,7 @@ public class TravelingTournament extends AbstractPersistable {
         super(id);
     }
 
-    @ValueRangeProvider(id = "dayRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;

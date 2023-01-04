@@ -37,7 +37,7 @@ public class Queen extends AbstractPersistable {
         this.column = column;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "rowRange" }, strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     public Row getRow() {
         return row;
     }

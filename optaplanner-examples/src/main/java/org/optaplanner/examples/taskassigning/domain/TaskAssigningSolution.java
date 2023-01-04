@@ -19,7 +19,7 @@ public class TaskAssigningSolution extends AbstractPersistable {
     private List<TaskType> taskTypeList;
     @ProblemFactCollectionProperty
     private List<Customer> customerList;
-    @ValueRangeProvider(id = "taskRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<Task> taskList;
 

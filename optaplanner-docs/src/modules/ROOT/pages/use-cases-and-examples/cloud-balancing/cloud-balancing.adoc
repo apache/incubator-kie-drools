@@ -148,7 +148,7 @@ public class CloudProcess ... {
 
     ... // getters
 
-    @PlanningVariable(valueRangeProviderRefs = { "computerRange" })
+    @PlanningVariable
     public CloudComputer getComputer() {
         return computer;
     }
@@ -169,7 +169,7 @@ public class CloudProcess ... {
 
 * OptaPlanner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
 
-* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on `CloudBalance.getComputerList()`.
+* The ``@PlanningVariable`` automatically matches with the ``@ValueRangeProvider`` on `CloudBalance.getComputerList()`.
 
 [NOTE]
 ====
@@ -214,7 +214,7 @@ public class CloudBalance ... {
 
     private HardSoftScore score;
 
-    @ValueRangeProvider(id = "computerRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<CloudComputer> getComputerList() {
         return computerList;

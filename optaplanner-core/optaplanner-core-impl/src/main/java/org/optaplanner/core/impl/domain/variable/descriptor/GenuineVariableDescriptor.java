@@ -1,13 +1,17 @@
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -57,17 +61,27 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
     protected abstract void processPropertyAnnotations(DescriptorPolicy descriptorPolicy);
 
     protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
+        MemberAccessor[] valueRangeProviderMemberAccessors;
         if (valueRangeProviderRefs == null || valueRangeProviderRefs.length == 0) {
-            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a @" + PlanningVariable.class.getSimpleName()
-                    + " annotated property (" + variableMemberAccessor.getName()
-                    + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
+            valueRangeProviderMemberAccessors = findAnonymousValueRangeMemberAccessors(descriptorPolicy);
+            if (valueRangeProviderMemberAccessors.length == 0) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableMemberAccessor.getName()
+                        + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs)
+                        + ") and no matching anonymous value range providers were found.");
+            }
+        } else {
+            valueRangeProviderMemberAccessors = Arrays.stream(valueRangeProviderRefs)
+                    .map(ref -> findValueRangeMemberAccessor(descriptorPolicy, ref))
+                    .toArray(MemberAccessor[]::new);
         }
-        List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(valueRangeProviderRefs.length);
-        boolean addNullInValueRange = isNullable() && valueRangeProviderRefs.length == 1;
-        for (String valueRangeProviderRef : valueRangeProviderRefs) {
+        List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList =
+                new ArrayList<>(valueRangeProviderMemberAccessors.length);
+        boolean addNullInValueRange = isNullable() && valueRangeProviderMemberAccessors.length == 1;
+        for (MemberAccessor valueRangeProviderMemberAccessor : valueRangeProviderMemberAccessors) {
             valueRangeDescriptorList
-                    .add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
+                    .add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderMemberAccessor, addNullInValueRange));
         }
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
@@ -76,14 +90,53 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         }
     }
 
-    private ValueRangeDescriptor<Solution_> buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
-            String valueRangeProviderRef, boolean addNullInValueRange) {
+    private MemberAccessor[] findAnonymousValueRangeMemberAccessors(DescriptorPolicy descriptorPolicy) {
+        boolean supportsValueRangeProviderFromEntity = !this.isListVariable();
+        Stream<MemberAccessor> applicableValueRangeProviderAccessors =
+                supportsValueRangeProviderFromEntity ? Stream.concat(
+                        descriptorPolicy.getAnonymousFromEntityValueRangeProviderSet().stream(),
+                        descriptorPolicy.getAnonymousFromSolutionValueRangeProviderSet().stream())
+                        : descriptorPolicy.getAnonymousFromSolutionValueRangeProviderSet().stream();
+        return applicableValueRangeProviderAccessors
+                .filter(valueRangeProviderAccessor -> {
+                    /*
+                     * For basic variable, the type is the type of the variable.
+                     * For list variable, the type is List<X>, and we need to know X.
+                     */
+                    Class<?> variableType =
+                            isListVariable() ? (Class<?>) ((ParameterizedType) variableMemberAccessor.getGenericType())
+                                    .getActualTypeArguments()[0] : variableMemberAccessor.getType();
+                    // We expect either ValueRange, Collection or an array.
+                    Type valueRangeType = valueRangeProviderAccessor.getGenericType();
+                    if (valueRangeType instanceof ParameterizedType) {
+                        ParameterizedType parameterizedValueRangeType = (ParameterizedType) valueRangeType;
+                        Class<?> rawType = (Class<?>) parameterizedValueRangeType.getRawType();
+                        if (!ValueRange.class.isAssignableFrom(rawType) && !Collection.class.isAssignableFrom(rawType)) {
+                            return false;
+                        }
+                        Type[] generics = parameterizedValueRangeType.getActualTypeArguments();
+                        if (generics.length != 1) {
+                            return false;
+                        }
+                        Class<?> valueRangeGenericType = (Class<?>) generics[0];
+                        return variableType.isAssignableFrom(valueRangeGenericType);
+                    } else {
+                        Class<?> clz = (Class<?>) valueRangeType;
+                        if (clz.isArray()) {
+                            Class<?> componentType = clz.getComponentType();
+                            return variableType.isAssignableFrom(componentType);
+                        }
+                        return false;
+                    }
+                })
+                .toArray(MemberAccessor[]::new);
+    }
+
+    private MemberAccessor findValueRangeMemberAccessor(DescriptorPolicy descriptorPolicy, String valueRangeProviderRef) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
-            MemberAccessor memberAccessor = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
-            return new FromSolutionPropertyValueRangeDescriptor<>(this, addNullInValueRange, memberAccessor);
+            return descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
-            MemberAccessor memberAccessor = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
-            return new FromEntityPropertyValueRangeDescriptor<>(this, addNullInValueRange, memberAccessor);
+            return descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
         } else {
             Collection<String> providerIds = descriptorPolicy.getValueRangeProviderIds();
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -103,9 +156,19 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         }
     }
 
-    protected void processStrength(
-            DescriptorPolicy descriptorPolicy,
-            Class<? extends Comparator> strengthComparatorClass,
+    private ValueRangeDescriptor<Solution_> buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
+            MemberAccessor valueRangeProviderMemberAccessor, boolean addNullInValueRange) {
+        if (descriptorPolicy.isFromSolutionValueRangeProvider(valueRangeProviderMemberAccessor)) {
+            return new FromSolutionPropertyValueRangeDescriptor<>(this, addNullInValueRange, valueRangeProviderMemberAccessor);
+        } else if (descriptorPolicy.isFromEntityValueRangeProvider(valueRangeProviderMemberAccessor)) {
+            return new FromEntityPropertyValueRangeDescriptor<>(this, addNullInValueRange, valueRangeProviderMemberAccessor);
+        } else {
+            throw new IllegalStateException("Impossible state: member accessor (" + valueRangeProviderMemberAccessor
+                    + ") is not a value range provider.");
+        }
+    }
+
+    protected void processStrength(Class<? extends Comparator> strengthComparatorClass,
             Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass) {
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;

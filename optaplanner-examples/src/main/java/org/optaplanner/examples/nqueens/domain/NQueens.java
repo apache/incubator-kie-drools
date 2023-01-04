@@ -46,7 +46,7 @@ public class NQueens extends AbstractPersistable {
         this.columnList = columnList;
     }
 
-    @ValueRangeProvider(id = "rowRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Row> getRowList() {
         return rowList;

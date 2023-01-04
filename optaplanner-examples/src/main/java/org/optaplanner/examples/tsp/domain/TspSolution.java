@@ -80,7 +80,7 @@ public class TspSolution extends AbstractPersistable {
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "visitRange")
+    @ValueRangeProvider
     public List<Visit> getVisitList() {
         return visitList;
     }
@@ -102,7 +102,7 @@ public class TspSolution extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    @ValueRangeProvider(id = "domicileRange")
+    @ValueRangeProvider
     @JsonIgnore
     public List<Domicile> getDomicileRange() {
         return Collections.singletonList(domicile);

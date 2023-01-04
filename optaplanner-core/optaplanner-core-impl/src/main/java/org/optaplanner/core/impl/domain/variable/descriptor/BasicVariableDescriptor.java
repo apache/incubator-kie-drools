@@ -26,14 +26,14 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
     @Override
     protected void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variableMemberAccessor.getAnnotation(PlanningVariable.class);
-        processNullable(descriptorPolicy, planningVariableAnnotation);
-        processChained(descriptorPolicy, planningVariableAnnotation);
+        processNullable(planningVariableAnnotation);
+        processChained(planningVariableAnnotation);
         processValueRangeRefs(descriptorPolicy, planningVariableAnnotation.valueRangeProviderRefs());
-        processStrength(descriptorPolicy, planningVariableAnnotation.strengthComparatorClass(),
+        processStrength(planningVariableAnnotation.strengthComparatorClass(),
                 planningVariableAnnotation.strengthWeightFactoryClass());
     }
 
-    private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
+    private void processNullable(PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variableMemberAccessor.getType().isPrimitive()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -44,7 +44,7 @@ public class BasicVariableDescriptor<Solution_> extends GenuineVariableDescripto
         }
     }
 
-    private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
+    private void processChained(PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.graphType() == PlanningVariableGraphType.CHAINED;
         if (!chained) {
             return;

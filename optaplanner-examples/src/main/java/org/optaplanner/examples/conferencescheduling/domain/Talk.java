@@ -40,10 +40,10 @@ public class Talk extends AbstractPersistable {
     @PlanningPin
     private boolean pinnedByUser = false;
 
-    @PlanningVariable(valueRangeProviderRefs = "timeslotRange")
+    @PlanningVariable
     private Timeslot timeslot;
 
-    @PlanningVariable(valueRangeProviderRefs = "roomRange")
+    @PlanningVariable
     private Room room;
 
     public Talk() {
@@ -313,12 +313,12 @@ public class Talk extends AbstractPersistable {
         return code;
     }
 
-    @ValueRangeProvider(id = "timeslotRange")
+    @ValueRangeProvider
     public Set<Timeslot> getTimeslotRange() {
         return talkType.getCompatibleTimeslotSet();
     }
 
-    @ValueRangeProvider(id = "roomRange")
+    @ValueRangeProvider
     public Set<Room> getRoomRange() {
         return talkType.getCompatibleRoomSet();
     }

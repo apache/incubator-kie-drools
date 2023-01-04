@@ -463,7 +463,7 @@ For example, a ``Queen``'s `row` property is a genuine planning variable.
 Note that even though a ``Queen``'s `row` property changes to another `Row` during planning, no `Row` instance itself is changed.
 Normally planning variables are genuine, but advanced cases can also have xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadows].
 
-A genuine planning variable getter needs to be annotated with the `@PlanningVariable` annotation, which needs a non-empty `valueRangeProviderRefs` property.
+A genuine planning variable getter needs to be annotated with the `@PlanningVariable` annotation, optionally with a non-empty `valueRangeProviderRefs` property.
 
 [source,java,options="nowrap"]
 ----
@@ -473,7 +473,7 @@ public class Queen {
 
     private Row row;
 
-    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
+    @PlanningVariable
     public Row getRow() {
         return row;
     }
@@ -485,8 +485,9 @@ public class Queen {
 }
 ----
 
-The `valueRangeProviderRefs` property defines what are the possible planning values for this planning variable.
+The optional `valueRangeProviderRefs` property defines what are the possible planning values for this planning variable.
 It references one or more ``@ValueRangeProvider`` ``id``'s.
+If none are provided, OptaPlanner will attempt to auto-detect matching ``@ValueRangeProvider``s.
 
 [NOTE]
 ====
@@ -502,11 +503,16 @@ It is ignored on parent classes or subclasses without that annotation.
 public class Queen {
     ...
 
-    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
+    @PlanningVariable
     private Row row;
 
 }
 ----
+
+[NOTE]
+====
+For more advanced planning variables used to model precedence relationships, see xref:#planningListVariable[planning list variable] and xref:#chainedPlanningVariable[chained planning variable].
+====
 
 
 [[nullablePlanningVariable]]
@@ -605,7 +611,7 @@ This set can be a countable (for example row ``1``, ``2``, `3` or ``4``) or unco
 ===== Overview
 
 The value range of a planning variable is defined with the `@ValueRangeProvider` annotation.
-A `@ValueRangeProvider` annotation always has a property ``id``, which is referenced by the ``@PlanningVariable``'s property ``valueRangeProviderRefs``.
+A `@ValueRangeProvider` may carry a property ``id``, which is referenced by the ``@PlanningVariable``'s property ``valueRangeProviderRefs``.
 
 This annotation can be located on two types of methods:
 
@@ -625,7 +631,6 @@ The return type of that method can be three types:
 * Array: The value range is defined by an array of its possible values.
 * ``ValueRange``: The value range is defined by its bounds. This is less common.
 
-
 [[valueRangeProviderOnSolution]]
 ===== `ValueRangeProvider` on the solution
 
@@ -637,7 +642,7 @@ Any value from that `Collection` is a possible planning value for this planning 
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
+    @PlanningVariable
     public Row getRow() {
         return row;
     }
@@ -649,7 +654,7 @@ Any value from that `Collection` is a possible planning value for this planning 
 public class NQueens {
     ...
 
-    @ValueRangeProvider(id = "rowRange")
+    @ValueRangeProvider
     public List<Row> getRowList() {
         return rowList;
     }
@@ -670,7 +675,7 @@ That `Collection` (or ``ValueRange``) must not contain the value ``null``, not e
 public class NQueens {
     ...
 
-    @ValueRangeProvider(id = "rowRange")
+    @ValueRangeProvider
     private List<Row> rowList;
 
 }
@@ -685,12 +690,12 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = { "departmentRoomRange" })
+    @PlanningVariable
     public Room getRoom() {
         return room;
     }
 
-    @ValueRangeProvider(id = "departmentRoomRange")
+    @ValueRangeProvider
     public List<Room> getPossibleRoomList() {
         return getCourse().getTeacher().getDepartment().getRoomList();
     }
@@ -728,6 +733,123 @@ A `ValueRangeProvider` on the planning entity is not compatible with a <<plannin
 ====
 
 
+[[referencingValueRangeProviders]]
+===== Referencing ``ValueRangeProvider``s
+
+There are two ways how to match a planning variable to a value range provider.
+The simplest way is to have value range provider auto-detected.
+Another way is to explicitly reference the value range provider.
+
+[[anonymousValueRangeProviders]]
+====== Anonymous ``ValueRangeProvider``s
+
+We already described the first approach.
+By not providing any `valueRangeProviderRefs` on the `@PlanningVariable` annotation,
+OptaPlanner will go over every ``@ValueRangeProvider``-annotated method or field which does not have an ``id`` property set,
+and will match planning variables with value ranges where their types match.
+
+In the following example,
+the planning variable ``car`` will be matched to the value range returned by ``getCompanyCarList()``,
+as they both use the ``Car`` type.
+It will not match ``getPersonalCarList()``,
+because that value range provider is not anonymous; it specifies an ``id``.
+
+[source,java,options="nowrap"]
+----
+    @PlanningVariable
+    public Car getCar() {
+        return car;
+    }
+
+    @ValueRangeProvider
+    public List<Car> getCompanyCarList() {
+        return companyCarList;
+    }
+
+    @ValueRangeProvider(id = "personalCarRange")
+    public List<Car> getPersonalCarList() {
+        return personalCarList;
+    }
+----
+
+Automatic matching also accounts for polymorphism.
+In the following example,
+the planning variable ``car`` will be matched to ``getCompanyCarList()`` and ``getPersonalCarList()``,
+as both ``CompanyCar`` and ``PersonalCar`` are ``Car``s.
+It will not match ``getAirplanes()``,
+as an ``Airplane`` is not a ``Car``.
+
+[source,java,options="nowrap"]
+----
+    @PlanningVariable
+    public Car getCar() {
+        return car;
+    }
+
+    @ValueRangeProvider
+    public List<CompanyCar> getCompanyCarList() {
+        return companyCarList;
+    }
+
+    @ValueRangeProvider
+    public List<PersonalCar> getPersonalCarList() {
+        return personalCarList;
+    }
+
+    @ValueRangeProvider
+    public List<Airplane> getAirplanes() {
+        return airplaneList;
+    }
+----
+
+[[referencingValueRangeProviders]]
+====== Explicitly referenced ``ValueRangeProvider``s
+
+In more complicated cases where auto-detection is not sufficient or where clarity is preferred over simplicity,
+value range providers can also be referenced explicitly.
+
+In the following example,
+the ``car`` planning variable will only be matched to value range provided by methods ``getCompanyCarList()``.
+
+[source,java,options="nowrap"]
+----
+    @PlanningVariable(valueRangeProviderRefs = {"companyCarRange"})
+    public Car getCar() {
+        return car;
+    }
+
+    @ValueRangeProvider(id = "companyCarRange")
+    public List<CompanyCar> getCompanyCarList() {
+        return companyCarList;
+    }
+
+    @ValueRangeProvider(id = "personalCarRange")
+    public List<PersonalCar> getPersonalCarList() {
+        return personalCarList;
+    }
+----
+
+Explicitly referenced value range providers can also be combined, for example:
+
+[source,java,options="nowrap"]
+----
+    @PlanningVariable(valueRangeProviderRefs = { "companyCarRange", "personalCarRange" })
+    public Car getCar() {
+        return car;
+    }
+
+    @ValueRangeProvider(id = "companyCarRange")
+    public List<CompanyCar> getCompanyCarList() {
+        return companyCarList;
+    }
+
+    @ValueRangeProvider(id = "personalCarRange")
+    public List<PersonalCar> getPersonalCarList() {
+        return personalCarList;
+    }
+----
+
+
 [[valueRangeFactory]]
 ===== `ValueRangeFactory`
 
@@ -735,7 +857,7 @@ Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableVa
 
 [source,java,options="nowrap"]
 ----
-    @ValueRangeProvider(id = "delayRange")
+    @ValueRangeProvider
     public CountableValueRange<Integer> getDelayRange() {
         return ValueRangeFactory.createIntValueRange(0, 5000);
     }
@@ -748,7 +870,7 @@ Furthermore, an `incrementUnit` can be specified, for example if you have to buy
 
 [source,java,options="nowrap"]
 ----
-    @ValueRangeProvider(id = "stockAmountRange")
+    @ValueRangeProvider
     public CountableValueRange<Integer> getStockAmountRange() {
          // Range: 0, 200, 400, 600, ..., 9999600, 9999800, 10000000
         return ValueRangeFactory.createIntValueRange(0, 10000000, 200);
@@ -769,33 +891,6 @@ The `ValueRangeFactory` has creation methods for several value class types:
 * ``BigInteger``: An arbitrary-precision integer range.
 * ``BigDecimal``: A decimal point range. By default, the increment unit is the lowest non-zero value in the scale of the bounds.
 * `Temporal` (such as ``LocalDate``, ``LocalDateTime``, ...): A time range.
-
-
-[[combineValueRangeProviders]]
-===== Combine `ValueRangeProviders`
-
-Value range providers can be combined, for example:
-
-[source,java,options="nowrap"]
-----
-    @PlanningVariable(valueRangeProviderRefs = { "companyCarRange", "personalCarRange" })
-    public Car getCar() {
-        return car;
-    }
-----
-
-[source,java,options="nowrap"]
-----
-    @ValueRangeProvider(id = "companyCarRange")
-    public List<CompanyCar> getCompanyCarList() {
-        return companyCarList;
-    }
-
-    @ValueRangeProvider(id = "personalCarRange")
-    public List<PersonalCar> getPersonalCarList() {
-        return personalCarList;
-    }
-----
 
 
 [[planningValueStrength]]
@@ -867,7 +962,7 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 
 
 [[planningListVariable]]
-==== Planning list variable (VRP, Task assigning, ...)
+=== Planning list variable (VRP, Task assigning, ...)
 
 Use the planning list variable to model problems where the goal is to distribute a number of workload elements among limited resources in a specific order.
 This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable,chained planning variable>>.
@@ -904,7 +999,7 @@ class Vehicle {
     int capacity;
     Depot depot;
 
-    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    @PlanningListVariable
     List<Customer> customers = new ArrayList<>();
 }
 ----
@@ -920,7 +1015,7 @@ No planning value may appear in multiple entities.
 
 
 [[chainedPlanningVariable]]
-==== Chained planning variable (TSP, VRP, ...)
+=== Chained planning variable (TSP, VRP, ...)
 
 Chained planning variable is one way to implement the xref:design-patterns/design-patterns.adoc#chainedThroughTimePattern[Chained Through Time pattern].
 This pattern is used for some use cases, such as TSP and vehicle routing.
@@ -1002,8 +1097,7 @@ public class Visit ... implements Standstill {
 
     public City getCity() {...}
 
-    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED,
-        valueRangeProviderRefs = { "domicileRange", "visitRange" })
+    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -1270,7 +1364,7 @@ For example, on the cloud balancing example:
 public class CloudBalance {
 
     // Auto discovered as @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = "computerRange") // Not (yet) auto discovered
+    @ValueRangeProvider
     private List<CloudComputer> computerList;
 
     // Auto discovered as @PlanningEntityCollectionProperty

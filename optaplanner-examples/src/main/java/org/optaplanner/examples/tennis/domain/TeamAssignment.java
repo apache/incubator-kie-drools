@@ -49,7 +49,7 @@ public class TeamAssignment extends AbstractPersistable {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "teamRange" })
+    @PlanningVariable
     public Team getTeam() {
         return team;
     }

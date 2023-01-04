@@ -21,10 +21,10 @@ public class MeetingSchedule extends AbstractPersistable {
     private List<Meeting> meetingList;
     @ProblemFactCollectionProperty
     private List<Day> dayList;
-    @ValueRangeProvider(id = "timeGrainRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<TimeGrain> timeGrainList;
-    @ValueRangeProvider(id = "roomRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<Room> roomList;
     @ProblemFactCollectionProperty

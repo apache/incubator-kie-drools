@@ -101,7 +101,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.roomEquipmentList = roomEquipmentList;
     }
 
-    @ValueRangeProvider(id = "bedRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Bed> getBedList() {
         return bedList;

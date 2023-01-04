@@ -28,7 +28,7 @@ public class FlightCrewSolution extends AbstractPersistable {
     private List<Airport> airportList;
 
     @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = "employeeRange")
+    @ValueRangeProvider
     private List<Employee> employeeList;
 
     @ProblemFactCollectionProperty

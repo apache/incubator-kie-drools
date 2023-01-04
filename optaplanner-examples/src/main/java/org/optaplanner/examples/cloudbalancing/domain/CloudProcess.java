@@ -55,8 +55,7 @@ public class CloudProcess
         this.requiredNetworkBandwidth = requiredNetworkBandwidth;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {
-            "computerRange" }, strengthComparatorClass = CloudComputerStrengthComparator.class)
+    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
     public CloudComputer getComputer() {
         return computer;
     }

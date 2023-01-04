@@ -47,7 +47,7 @@ public class NurseRoster extends AbstractPersistable {
     private List<ContractLine> contractLineList;
     @ProblemFactCollectionProperty
     private List<PatternContractLine> patternContractLineList;
-    @ValueRangeProvider(id = "employeeRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     private List<Employee> employeeList;
     @ProblemFactCollectionProperty

@@ -66,8 +66,7 @@ public class Lecture extends AbstractPersistable implements Labeled {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {
-            "periodRange" }, strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
+    @PlanningVariable(strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
     public Period getPeriod() {
         return period;
     }
@@ -76,7 +75,7 @@ public class Lecture extends AbstractPersistable implements Labeled {
         this.period = period;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "roomRange" }, strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }

@@ -148,9 +148,9 @@ public class Lesson {
     private String teacher;
     private String studentGroup;
 
-    @PlanningVariable(valueRangeProviderRefs = "timeslotRange")
+    @PlanningVariable
     private Timeslot timeslot;
-    @PlanningVariable(valueRangeProviderRefs = "roomRange")
+    @PlanningVariable
     private Room room;
 
     public Lesson() {
@@ -210,8 +210,8 @@ because it contains one or more planning variables.
 The `timeslot` field has an `@PlanningVariable` annotation,
 so OptaPlanner knows that it can change its value.
 In order to find potential `Timeslot` instances to assign to this field,
-OptaPlanner uses the `valueRangeProviderRefs` property to connect to a value range provider
-(explained later) that provides a `List<Timeslot>` to pick from.
+OptaPlanner uses the variable type to connect to a xref:planner-configuration/planner-configuration.adoc#planningValueRangeProvider[value range provider]
+that provides a `List<Timeslot>` to pick from.
 
 The `room` field also has an `@PlanningVariable` annotation, for the same reasons.
 

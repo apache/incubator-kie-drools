@@ -63,7 +63,7 @@ public class Examination extends AbstractPersistable {
         this.topicList = topicList;
     }
 
-    @ValueRangeProvider(id = "periodRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
@@ -73,7 +73,7 @@ public class Examination extends AbstractPersistable {
         this.periodList = periodList;
     }
 
-    @ValueRangeProvider(id = "roomRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;

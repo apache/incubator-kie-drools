@@ -17,7 +17,7 @@ public class FlightAssignment extends AbstractPersistable implements Comparable<
     private int indexInFlight;
     private Skill requiredSkill;
 
-    @PlanningVariable(valueRangeProviderRefs = { "employeeRange" })
+    @PlanningVariable
     private Employee employee;
 
     public FlightAssignment() {

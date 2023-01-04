@@ -91,7 +91,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.timeslotList = timeslotList;
     }
 
-    @ValueRangeProvider(id = "periodRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
@@ -101,7 +101,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.periodList = periodList;
     }
 
-    @ValueRangeProvider(id = "roomRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;

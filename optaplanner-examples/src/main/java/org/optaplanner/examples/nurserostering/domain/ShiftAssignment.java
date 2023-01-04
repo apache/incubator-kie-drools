@@ -34,7 +34,7 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
     }
 
     // Planning variables: changes during planning, between score calculations.
-    @PlanningVariable(valueRangeProviderRefs = { "employeeRange" }, strengthComparatorClass = EmployeeStrengthComparator.class)
+    @PlanningVariable(strengthComparatorClass = EmployeeStrengthComparator.class)
     private Employee employee;
 
     public Shift getShift() {

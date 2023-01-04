@@ -51,7 +51,7 @@ public class MeetingAssignment extends AbstractPersistable {
         this.pinned = pinned;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "timeGrainRange" })
+    @PlanningVariable
     public TimeGrain getStartingTimeGrain() {
         return startingTimeGrain;
     }
@@ -60,7 +60,7 @@ public class MeetingAssignment extends AbstractPersistable {
         this.startingTimeGrain = startingTimeGrain;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "roomRange" })
+    @PlanningVariable
     public Room getRoom() {
         return room;
     }

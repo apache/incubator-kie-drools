@@ -52,7 +52,7 @@ public class MrProcessAssignment extends AbstractPersistable {
         this.originalMachine = originalMachine;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "machineRange" })
+    @PlanningVariable
     public MrMachine getMachine() {
         return machine;
     }

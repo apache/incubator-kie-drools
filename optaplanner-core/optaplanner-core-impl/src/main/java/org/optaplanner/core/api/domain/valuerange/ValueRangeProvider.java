@@ -25,9 +25,10 @@ public @interface ValueRangeProvider {
     /**
      * Used by {@link PlanningVariable#valueRangeProviderRefs()}
      * to map a {@link PlanningVariable} to a {@link ValueRangeProvider}.
+     * If not provided, an attempt will be made to find a matching {@link PlanningVariable} without a ref.
      *
-     * @return never null, must be unique across a {@link SolverFactory}
+     * @return if provided, must be unique across a {@link SolverFactory}
      */
-    String id();
+    String id() default "";
 
 }

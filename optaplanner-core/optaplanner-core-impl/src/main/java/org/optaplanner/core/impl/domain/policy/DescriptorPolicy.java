@@ -3,8 +3,10 @@ package org.optaplanner.core.impl.domain.policy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -14,14 +16,25 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
 public class DescriptorPolicy {
     private Map<String, SolutionCloner> generatedSolutionClonerMap = new LinkedHashMap<>();
-    private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
-    private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
+    private final Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
+    private final Set<MemberAccessor> anonymousFromSolutionValueRangeProviderSet = new LinkedHashSet<>();
+    private final Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
+    private final Set<MemberAccessor> anonymousFromEntityValueRangeProviderSet = new LinkedHashSet<>();
     private DomainAccessType domainAccessType = DomainAccessType.REFLECTION;
     private MemberAccessorFactory memberAccessorFactory;
 
     public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
-        fromSolutionValueRangeProviderMap.put(id, memberAccessor);
+        if (id == null) {
+            anonymousFromSolutionValueRangeProviderSet.add(memberAccessor);
+        } else {
+            fromSolutionValueRangeProviderMap.put(id, memberAccessor);
+        }
+    }
+
+    public boolean isFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
+        return fromSolutionValueRangeProviderMap.containsValue(memberAccessor)
+                || anonymousFromSolutionValueRangeProviderSet.contains(memberAccessor);
     }
 
     public boolean hasFromSolutionValueRangeProvider(String id) {
@@ -32,13 +45,30 @@ public class DescriptorPolicy {
         return fromSolutionValueRangeProviderMap.get(id);
     }
 
+    public Set<MemberAccessor> getAnonymousFromSolutionValueRangeProviderSet() {
+        return anonymousFromSolutionValueRangeProviderSet;
+    }
+
     public void addFromEntityValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
-        fromEntityValueRangeProviderMap.put(id, memberAccessor);
+        if (id == null) {
+            anonymousFromEntityValueRangeProviderSet.add(memberAccessor);
+        } else {
+            fromEntityValueRangeProviderMap.put(id, memberAccessor);
+        }
+    }
+
+    public boolean isFromEntityValueRangeProvider(MemberAccessor memberAccessor) {
+        return fromEntityValueRangeProviderMap.containsValue(memberAccessor)
+                || anonymousFromEntityValueRangeProviderSet.contains(memberAccessor);
     }
 
     public boolean hasFromEntityValueRangeProvider(String id) {
         return fromEntityValueRangeProviderMap.containsKey(id);
+    }
+
+    public Set<MemberAccessor> getAnonymousFromEntityValueRangeProviderSet() {
+        return anonymousFromEntityValueRangeProviderSet;
     }
 
     /**
@@ -79,8 +109,7 @@ public class DescriptorPolicy {
         ValueRangeProvider annotation = memberAccessor.getAnnotation(ValueRangeProvider.class);
         String id = annotation.id();
         if (id == null || id.isEmpty()) {
-            throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotated member (" + memberAccessor + ")'s id (" + id + ") must not be empty.");
+            return null;
         }
         validateUniqueValueRangeProviderId(id, memberAccessor);
         return id;

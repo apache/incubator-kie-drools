@@ -37,7 +37,7 @@ public abstract class Exam extends AbstractPersistable implements Labeled {
         this.topic = topic;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "roomRange" }, strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }

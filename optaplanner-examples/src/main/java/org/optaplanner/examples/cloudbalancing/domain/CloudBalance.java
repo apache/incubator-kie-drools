@@ -28,7 +28,7 @@ public class CloudBalance extends AbstractPersistable {
         this.processList = processList;
     }
 
-    @ValueRangeProvider(id = "computerRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<CloudComputer> getComputerList() {
         return computerList;

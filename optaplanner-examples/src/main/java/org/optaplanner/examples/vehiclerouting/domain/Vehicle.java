@@ -19,7 +19,7 @@ public class Vehicle extends AbstractPersistable {
     protected int capacity;
     protected Depot depot;
 
-    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    @PlanningListVariable
     protected List<Customer> customers = new ArrayList<>();
 
     public Vehicle() {

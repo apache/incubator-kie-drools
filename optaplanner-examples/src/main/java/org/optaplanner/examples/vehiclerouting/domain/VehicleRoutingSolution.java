@@ -87,7 +87,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
     }
 
     @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = "customerRange")
+    @ValueRangeProvider
     public List<Customer> getCustomerList() {
         return customerList;
     }

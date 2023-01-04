@@ -75,7 +75,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.locationList = locationList;
     }
 
-    @ValueRangeProvider(id = "machineRange")
+    @ValueRangeProvider
     @ProblemFactCollectionProperty
     public List<MrMachine> getMachineList() {
         return machineList;

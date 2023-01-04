@@ -169,7 +169,7 @@ The planning entity side has a genuine list variable:
 @PlanningEntity
 public class Vehicle {
 
-    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    @PlanningListVariable
     public List<Customer> getCustomers() {
         return customers;
     }
@@ -216,7 +216,7 @@ The planning entity side has a genuine list variable:
 @PlanningEntity
 public class Vehicle {
 
-    @PlanningListVariable(valueRangeProviderRefs = "customerRange")
+    @PlanningListVariable
     public List<Customer> getCustomers() {
         return customers;
     }

@@ -1,6 +1,19 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.33.0.Final]]
+=== OptaPlanner 8.33.0.Final
+
+==== Value range auto-detection
+
+In most cases, links between planning variables and value ranges can now be auto-detected.
+Therefore, ``@ValueRangeProvider`` no longer needs to provide an ``id`` property.
+Likewise, planning variables no longer need to reference value range providers via ``valueRangeProviderRefs`` property.
+
+No code changes or configuration changes are required.
+Users who prefer clarity over brevity may continue to explicitly reference their value range providers.
+
+
 [[releaseNotes-8.32.0.Final]]
 === OptaPlanner 8.32.0.Final
 

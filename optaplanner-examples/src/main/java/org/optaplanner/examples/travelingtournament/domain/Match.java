@@ -37,7 +37,7 @@ public class Match extends AbstractPersistable {
         this.awayTeam = awayTeam;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = { "dayRange" })
+    @PlanningVariable
     public Day getDay() {
         return day;
     }
