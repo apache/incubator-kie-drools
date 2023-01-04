@@ -94,51 +94,28 @@ describe('Job reschedule modal tests', () => {
       'JobsRescheduleModal'
     );
     expect(wrapper).toMatchSnapshot();
-    wrapper
-      .find('#Time-now')
-      .first()
-      .simulate('click');
+    wrapper.find('#Time-now').first().simulate('click');
     const value: any = '2020-08-27T03:35:50.147Z';
     await act(async () => {
-      wrapper
-        .find('DateTimePicker')
-        .props()
-        ['onChange'](value);
+      wrapper.find('DateTimePicker').props()['onChange'](value);
     });
     const date = new Date('2020-08-27T03:35:50.147Z');
     expect(wrapper.find('DateTimePicker').props()['value']).toEqual(date);
     const event: any = { target: { value: '303300' } };
     await act(async () => {
-      wrapper
-        .find('#repeat-interval-input')
-        .first()
-        .props()
-        ['onChange'](event);
+      wrapper.find('#repeat-interval-input').first().props()['onChange'](event);
     });
     expect(
-      wrapper
-        .find('#repeat-interval-input')
-        .first()
-        .props()['isDisabled']
+      wrapper.find('#repeat-interval-input').first().props()['isDisabled']
     ).toEqual(false);
     await act(async () => {
-      wrapper
-        .find('#repeat-limit-input')
-        .first()
-        .props()
-        ['onChange'](event);
+      wrapper.find('#repeat-limit-input').first().props()['onChange'](event);
     });
     expect(
-      wrapper
-        .find('#repeat-limit-input')
-        .first()
-        .props()['isDisabled']
+      wrapper.find('#repeat-limit-input').first().props()['isDisabled']
     ).toEqual(false);
     await act(async () => {
-      wrapper
-        .find('#apply-button')
-        .at(0)
-        .simulate('click');
+      wrapper.find('#apply-button').at(0).simulate('click');
     });
     expect(props.handleJobReschedule).toHaveBeenCalled();
     wrapper.update();

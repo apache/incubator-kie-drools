@@ -109,7 +109,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           extra={
             <InlineEdit
               ref={inlineEditRef}
-              setBusinessKey={bk => gatewayApi.setBusinessKey(bk)}
+              setBusinessKey={(bk) => gatewayApi.setBusinessKey(bk)}
               getBusinessKey={getBusinessKey}
             />
           }

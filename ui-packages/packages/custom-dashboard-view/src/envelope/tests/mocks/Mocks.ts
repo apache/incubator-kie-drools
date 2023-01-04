@@ -108,10 +108,11 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
-  CustomDashboardViewEnvelopeApi,
-  CustomDashboardViewChannelApi
->;
+export const MockedEnvelopeBusController =
+  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+    CustomDashboardViewEnvelopeApi,
+    CustomDashboardViewChannelApi
+  >;
 
 export const MockedCustomDashboardViewEnvelopeViewApi = jest.fn<
   CustomDashboardViewEnvelopeViewApi,

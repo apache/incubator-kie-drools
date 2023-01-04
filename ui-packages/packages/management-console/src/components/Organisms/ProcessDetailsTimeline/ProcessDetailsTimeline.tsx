@@ -71,9 +71,8 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
   const [modalContent, setModalContent] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
-    false
-  );
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] =
+    useState<boolean>(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<any>({});
   const ignoredNodeTypes = ['Join', 'Split', 'EndNode'];
@@ -87,7 +86,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
     }
   };
 
-  const onDropdownSelect = id => {
+  const onDropdownSelect = (id) => {
     const tempKebabArray = [...kebabOpenArray];
     const index = tempKebabArray.indexOf(id);
     tempKebabArray.splice(index, 1);
@@ -161,7 +160,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
 
   const renderJobActions = (id, options) => {
     if (jobsResponse.data.Jobs.length > 0) {
-      return jobsResponse.data.Jobs.map(job => {
+      return jobsResponse.data.Jobs.map((job) => {
         if (
           id === job.nodeInstanceId &&
           editableJobStatus.includes(job.status)
@@ -343,7 +342,7 @@ const ProcessDetailsTimeline: React.FC<IOwnProps & OUIAProps> = ({
           onSelect={() => onDropdownSelect('timeline-kebab-toggle-' + index)}
           toggle={
             <KebabToggle
-              onToggle={isOpen =>
+              onToggle={(isOpen) =>
                 onKebabToggle(isOpen, 'timeline-kebab-toggle-' + index)
               }
               id={'timeline-kebab-toggle-' + index}

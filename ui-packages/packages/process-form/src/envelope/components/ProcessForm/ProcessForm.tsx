@@ -43,7 +43,7 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>(null);
 
-  const formAction:FormAction[] = [
+  const formAction: FormAction[] = [
     {
       name: 'Start'
     }

@@ -40,7 +40,7 @@ export function init(args: {
 
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<FormDisplayerEnvelopeViewApi>();
-    return new Promise<() => FormDisplayerEnvelopeViewApi>(res => {
+    return new Promise<() => FormDisplayerEnvelopeViewApi>((res) => {
       ReactDOM.render(
         <FormDisplayerEnvelopeView
           ref={ref}
@@ -54,7 +54,7 @@ export function init(args: {
 
   const context: FormDisplayerEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => {
+    create: (apiFactoryArgs) => {
       return new FormDisplayerEnvelopeApiImpl(apiFactoryArgs);
     }
   });

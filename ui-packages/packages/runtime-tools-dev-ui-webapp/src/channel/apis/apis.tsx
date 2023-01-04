@@ -103,20 +103,20 @@ export const handleJobReschedule = async (
 export const getSvg = async (data: ProcessInstance): Promise<any> => {
   return axios
     .get(`/svg/processes/${data.processId}/instances/${data.id}`)
-    .then(res => {
+    .then((res) => {
       return { svg: res.data };
     })
-    .catch(async error => {
+    .catch(async (error) => {
       /* istanbul ignore else*/
       if (data.serviceUrl) {
         return axios
           .get(
             `${data.serviceUrl}/svg/processes/${data.processId}/instances/${data.id}`
           )
-          .then(res => {
+          .then((res) => {
             return { svg: res.data };
           })
-          .catch(err => {
+          .catch((err) => {
             /* istanbul ignore else*/
             if (err.response && err.response.status !== 404) {
               return { error: err.message };
@@ -138,7 +138,7 @@ export const handleProcessSkip = async (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -154,7 +154,7 @@ export const handleProcessRetry = async (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -170,7 +170,7 @@ export const handleProcessAbort = (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -200,7 +200,7 @@ export const handleProcessMultipleAction = async (
         .then(() => {
           successProcessInstances.push(processInstance);
         })
-        .catch(error => {
+        .catch((error) => {
           processInstance.errorMessage = error.message;
           failedProcessInstances.push(processInstance);
         });
@@ -217,10 +217,10 @@ export const getTriggerableNodes = async (
       .get(
         `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/nodes`
       )
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -238,7 +238,7 @@ export const handleNodeTrigger = async (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -252,10 +252,10 @@ export const handleProcessVariableUpdate = (
   return new Promise((resolve, reject) => {
     axios
       .put(`${processInstance.endpoint}/${processInstance.id}`, updatedJson)
-      .then(response => {
+      .then((response) => {
         resolve(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error.message);
       });
   });
@@ -273,7 +273,7 @@ export const handleNodeInstanceCancel = async (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -291,7 +291,7 @@ export const handleNodeInstanceRetrigger = (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(JSON.stringify(error.message));
       });
   });
@@ -305,10 +305,10 @@ export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
           names: formFilter.join(';')
         }
       })
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -316,10 +316,10 @@ export const getFormContent = (formName: string): Promise<Form> => {
   return new Promise((resolve, reject) => {
     axios
       .get(`/forms/${formName}`)
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -330,10 +330,10 @@ export const saveFormContent = (
   return new Promise((resolve, reject) => {
     axios
       .post(`/forms/${formName}`, content)
-      .then(result => {
+      .then((result) => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -343,15 +343,15 @@ export const getProcessDefinitionList = (
 ): Promise<ProcessDefinition[]> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
-      .then(response => {
+      .then((response) => {
         const processDefinitionObjs = [];
         const paths = response.paths;
         const regexPattern = /^\/[A-Za-z0-9_]+\/schema/;
         Object.getOwnPropertyNames(paths)
-          .filter(path => regexPattern.test(path.toString()))
-          .forEach(url => {
+          .filter((path) => regexPattern.test(path.toString()))
+          .forEach((url) => {
             let processArray = url.split('/');
-            processArray = processArray.filter(name => name.length !== 0);
+            processArray = processArray.filter((name) => name.length !== 0);
             /* istanbul ignore else*/
             if (
               Object.prototype.hasOwnProperty.call(
@@ -364,7 +364,7 @@ export const getProcessDefinitionList = (
           });
         resolve(createProcessDefinitionList(processDefinitionObjs, devUIUrl));
       })
-      .catch(err => reject(err));
+      .catch((err) => reject(err));
   });
 };
 
@@ -374,13 +374,13 @@ export const getProcessSchema = (
   return new Promise((resolve, reject) => {
     axios
       .get(`${processDefinitionData.endpoint}/schema`)
-      .then(response => {
+      .then((response) => {
         /* istanbul ignore else*/
         if (response.status === 200) {
           resolve(response.data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -401,10 +401,10 @@ export const startProcessInstance = (
           'Content-Type': 'application/json'
         }
       })
-      .then(response => {
+      .then((response) => {
         resolve(response.data.id);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -428,23 +428,32 @@ export const startWorkflowCloudEvent = (
           'ce-id': 'xyzabcdefgh'
         }
       })
-      .then(response => {
+      .then((response) => {
         resolve(kogitoBusinessKey);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
 };
 
-export const startWorkflowRest = (data: Record<string, any>, endpoint: string, businessKey: string): Promise<string> => {
-  const requestURL = `${endpoint}${businessKey.length > 0 ? `?businessKey=${businessKey}` : ''}`;
+export const startWorkflowRest = (
+  data: Record<string, any>,
+  endpoint: string,
+  businessKey: string
+): Promise<string> => {
+  const requestURL = `${endpoint}${
+    businessKey.length > 0 ? `?businessKey=${businessKey}` : ''
+  }`;
   return new Promise((resolve, reject) => {
-    axios.post(requestURL, { workflowdata: data }).then((response: any) => {
-      resolve(response.data.id)
-    }).catch((err) => reject(err))
-  })
-}
+    axios
+      .post(requestURL, { workflowdata: data })
+      .then((response: any) => {
+        resolve(response.data.id);
+      })
+      .catch((err) => reject(err));
+  });
+};
 
 export const getCustomDashboard = (
   customDashboardFilter: string[]
@@ -456,10 +465,10 @@ export const getCustomDashboard = (
           names: customDashboardFilter.join(';')
         }
       })
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -467,22 +476,28 @@ export const getCustomDashboardContent = (name: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     axios
       .get(`/customDashboard/${name}`)
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
-export const getCustomWorkflowSchema = (devUIUrl: string, openApiPath: string, workflowName: string): Promise<Record<string, any>> => {
+export const getCustomWorkflowSchema = (
+  devUIUrl: string,
+  openApiPath: string,
+  workflowName: string
+): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`).then((response: any) => {
-      const schema = response.components.schemas[workflowName];
-      if (schema) {
-        resolve(schema);
-      } else {
-        resolve(null);
-      }
-    }).catch((err) => reject(err))
-  })
-}
+    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
+      .then((response: any) => {
+        const schema = response.components.schemas[workflowName];
+        if (schema) {
+          resolve(schema);
+        } else {
+          resolve(null);
+        }
+      })
+      .catch((err) => reject(err));
+  });
+};

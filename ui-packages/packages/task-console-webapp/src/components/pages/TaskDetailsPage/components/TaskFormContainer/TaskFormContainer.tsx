@@ -46,8 +46,8 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         doSubmit(phase?: string, payload?: any): Promise<any> {
           return gatewayApi
             .doSubmit(userTask, phase, payload)
-            .then(result => onSubmitSuccess(phase))
-            .catch(error => {
+            .then((result) => onSubmitSuccess(phase))
+            .catch((error) => {
               const message = error.response
                 ? error.response.data
                 : error.message;

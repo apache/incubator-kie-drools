@@ -38,25 +38,28 @@ export type Props = {
 
 export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
   (props, forwardedRef) => {
-    const pollInit = useCallback((
-      // eslint-disable-next-line
-      envelopeServer: EnvelopeServer<
-        FormDisplayerChannelApi,
-        FormDisplayerEnvelopeApi
-      >
-    ) => {
-      return envelopeServer.envelopeApi.requests.formDisplayer__init(
-        {
-          origin: envelopeServer.origin,
-          envelopeServerId: envelopeServer.id
-        },
-        {
-          form: props.formContent,
-          data: props.data ?? {},
-          context: props.context ?? {}
-        }
-      );
-    }, []);
+    const pollInit = useCallback(
+      (
+        // eslint-disable-next-line
+        envelopeServer: EnvelopeServer<
+          FormDisplayerChannelApi,
+          FormDisplayerEnvelopeApi
+        >
+      ) => {
+        return envelopeServer.envelopeApi.requests.formDisplayer__init(
+          {
+            origin: envelopeServer.origin,
+            envelopeServerId: envelopeServer.id
+          },
+          {
+            form: props.formContent,
+            data: props.data ?? {},
+            context: props.context ?? {}
+          }
+        );
+      },
+      []
+    );
 
     const refDelegate = useCallback(
       (
@@ -65,12 +68,12 @@ export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
           FormDisplayerEnvelopeApi
         >
       ): FormDisplayerApi => ({
-        startSubmit: context => {
+        startSubmit: (context) => {
           return envelopeServer.envelopeApi.requests.formDisplayer__startSubmit(
             context
           );
         },
-        notifySubmitResult: response => {
+        notifySubmitResult: (response) => {
           envelopeServer.envelopeApi.notifications.formDisplayer__notifySubmitResponse(
             response
           );
@@ -87,7 +90,7 @@ export const EmbeddedFormDisplayer = React.forwardRef<FormDisplayerApi, Props>(
     const EmbeddedEnvelope = useMemo(() => {
       return EmbeddedEnvelopeFactory({
         api: {
-          notifyOnOpenForm: opened => {
+          notifyOnOpenForm: (opened) => {
             if (props.onOpenForm) {
               props.onOpenForm(opened);
             }

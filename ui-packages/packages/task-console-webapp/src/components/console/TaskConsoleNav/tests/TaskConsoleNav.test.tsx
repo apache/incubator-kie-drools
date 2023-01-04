@@ -30,7 +30,7 @@ describe('TaskConsoleNav tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const taskInboxNav = wrapper.findWhere(
-      nested => nested.key() === 'task-inbox-nav'
+      (nested) => nested.key() === 'task-inbox-nav'
     );
 
     expect(taskInboxNav.exists()).toBeTruthy();
@@ -47,7 +47,7 @@ describe('TaskConsoleNav tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const taskInboxNav = wrapper.findWhere(
-      nested => nested.key() === 'task-inbox-nav'
+      (nested) => nested.key() === 'task-inbox-nav'
     );
 
     expect(taskInboxNav.exists()).toBeTruthy();

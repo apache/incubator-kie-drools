@@ -34,7 +34,7 @@ jest.mock('@patternfly/react-icons', () =>
 
 jest.mock('@patternfly/react-core', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-core'), {
-    Tooltip: props => {
+    Tooltip: (props) => {
       return <>{props.children} </>;
     }
   })
@@ -115,11 +115,8 @@ describe('Process details page milestones panel', () => {
   it('test assertions', () => {
     const wrapper = mount(<ProcessDetailsMilestonesPanel {...props2} />);
     expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper
-        .find('p')
-        .at(2)
-        .text()
-    ).toEqual('Milestone 3: Order delivered Available');
+    expect(wrapper.find('p').at(2).text()).toEqual(
+      'Milestone 3: Order delivered Available'
+    );
   });
 });

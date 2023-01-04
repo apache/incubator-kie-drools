@@ -109,14 +109,14 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
   const getPicker = useGetColumnPickerAttributesQuery({
     variables: { columnPickerType: domainName }
   });
-  const onAddColumnFilters = _columnFilter => {
+  const onAddColumnFilters = (_columnFilter) => {
     setColumnFilters(_columnFilter);
     setLimit(_columnFilter.length);
   };
   const domainArg =
     !getQuery.loading &&
     getQuery.data &&
-    getQuery.data.__type.fields.find(item => {
+    getQuery.data.__type.fields.find((item) => {
       if (item.name === domainName) {
         return item;
       }
@@ -143,7 +143,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
   !getPicker.loading &&
     getPicker.data &&
     getPicker.data.__type &&
-    getPicker.data.__type.fields.filter(i => {
+    getPicker.data.__type.fields.filter((i) => {
       if (i.type.kind === 'SCALAR') {
         tempArray.push(i);
       } else {
@@ -152,18 +152,18 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
     });
   data = tempArray.concat(data);
   const fields: any = [];
-  data.filter(field => {
+  data.filter((field) => {
     if (field.type.fields !== null) {
       const obj = {};
       obj[`${field.name}`] = field.type.fields;
       fields.push(obj);
     }
   });
-  fields.map(obj => {
+  fields.map((obj) => {
     let value: any = Object.values(obj);
     const key = Object.keys(obj);
     value = value.flat();
-    value.filter(item => {
+    value.filter((item) => {
       /* istanbul ignore else */
       if (item.type.kind !== 'OBJECT') {
         const tempObj = {};
@@ -184,7 +184,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
       setFinalFilters(rememberedFilters);
       setFilterChips(rememberedChips);
     } else {
-      setParameters(prev => [...defaultParams, ...prev]);
+      setParameters((prev) => [...defaultParams, ...prev]);
       setSelected(selections);
     }
   }, [columnPickerType, selections.length > 0]);
@@ -197,10 +197,10 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
 
   const onDeleteChip = (type = '', id = '') => {
     if (type) {
-      setFilterChips(prev => prev.filter(item => item !== id));
+      setFilterChips((prev) => prev.filter((item) => item !== id));
       const chipText = id.split(':');
       let removeString = chipText[0].split('/');
-      removeString = removeString.map(stringEle => stringEle.trim());
+      removeString = removeString.map((stringEle) => stringEle.trim());
       let tempObj = finalFilters;
       tempObj = deleteKey(tempObj, removeString);
       const FinalObj = clearEmpties(tempObj);
@@ -254,7 +254,7 @@ const DomainExplorer: React.FC<IOwnProps & OUIAProps> = ({
           const respKeys = Object.keys(resp)[0];
           const tableContent = resp[respKeys];
           const finalResp = [];
-          tableContent.map(content => {
+          tableContent.map((content) => {
             const finalObject = validateResponse(content, parameters);
             finalResp.push(finalObject);
           });

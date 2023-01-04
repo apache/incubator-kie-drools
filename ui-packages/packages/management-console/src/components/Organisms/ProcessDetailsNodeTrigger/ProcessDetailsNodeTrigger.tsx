@@ -116,7 +116,7 @@ const ProcessDetailsNodeTrigger: React.FC<IOwnProps & OUIAProps> = ({
           `The node ${selectedNode.name} was triggered successfully`
         );
       },
-      errorMessage => {
+      (errorMessage) => {
         setTitleType('failure');
         setModalContent(
           `The node ${selectedNode.name} trigger failed. ErrorMessage : ${errorMessage}`

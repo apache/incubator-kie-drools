@@ -24,7 +24,8 @@ import {
 import { SortBy, JobsManagementChannelApi, JobsManagementDriver } from '../api';
 
 export default class JobsManagementEnvelopeViewDriver
-  implements JobsManagementDriver {
+  implements JobsManagementDriver
+{
   constructor(
     private readonly channelApi: MessageBusClientApi<JobsManagementChannelApi>
   ) {}

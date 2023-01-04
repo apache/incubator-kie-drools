@@ -377,7 +377,7 @@ describe('test utility of svg panel', () => {
       statusText: 'OK'
     });
     const svgResults = await Queries.getSVG(data);
-    Queries.getSVG(data).then(value => {
+    Queries.getSVG(data).then((value) => {
       expect(svgResults.svg).toEqual(svgResponse.ProcessInstances[0].diagram);
     });
   });
@@ -391,10 +391,10 @@ describe('test utility of svg panel', () => {
     };
     client.query.mockRejectedValue(errorResponse404);
     Queries.getSVG(data)
-      .then(value => {
+      .then((value) => {
         result = value;
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(errorResponse404.message).toEqual(reason.error);
       });
     expect(null).toEqual(result);

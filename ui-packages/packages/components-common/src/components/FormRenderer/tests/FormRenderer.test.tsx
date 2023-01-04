@@ -101,7 +101,7 @@ describe('FormRenderer test', () => {
     const wrapper = mount(<FormRenderer {...props} />);
     expect(wrapper).toMatchSnapshot();
 
-    const form = wrapper.findWhere(node => node.type() === AutoForm);
+    const form = wrapper.findWhere((node) => node.type() === AutoForm);
 
     expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeFalsy();
@@ -122,7 +122,7 @@ describe('FormRenderer test', () => {
 
     const wrapper = mount(<FormRenderer {...props} />);
 
-    const form = wrapper.findWhere(node => node.type() === AutoForm);
+    const form = wrapper.findWhere((node) => node.type() === AutoForm);
 
     expect(form.exists()).toBeTruthy();
     expect(form.props().disabled).toBeTruthy();
@@ -137,7 +137,7 @@ describe('FormRenderer test', () => {
     const wrapper = mount(<FormRenderer {...props} />);
     expect(wrapper).toMatchSnapshot();
 
-    const form = wrapper.findWhere(node => node.type() === AutoForm);
+    const form = wrapper.findWhere((node) => node.type() === AutoForm);
     expect(form.exists()).toBeTruthy();
     expect(form.props()['disabled']).toBeFalsy();
     const footer = wrapper.find(FormFooter);

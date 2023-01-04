@@ -29,11 +29,13 @@ interface ProcessDefinitionListProps {
   singularProcessLabel: string;
 }
 
-const ProcessDefinitionListContainer: React.FC<ProcessDefinitionListProps &
-  OUIAProps> = ({ singularProcessLabel, ouiaId, ouiaSafe }) => {
+const ProcessDefinitionListContainer: React.FC<
+  ProcessDefinitionListProps & OUIAProps
+> = ({ singularProcessLabel, ouiaId, ouiaSafe }) => {
   const history = useHistory();
   const appContext = useDevUIAppContext();
-  const gatewayApi: ProcessDefinitionListGatewayApi = useProcessDefinitionListGatewayApi();
+  const gatewayApi: ProcessDefinitionListGatewayApi =
+    useProcessDefinitionListGatewayApi();
 
   useEffect(() => {
     const onOpenProcess = {

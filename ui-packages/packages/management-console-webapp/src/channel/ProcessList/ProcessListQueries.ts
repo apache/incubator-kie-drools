@@ -57,10 +57,10 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
           },
           fetchPolicy: 'network-only'
         })
-        .then(value => {
+        .then((value) => {
           resolve(value.data.ProcessInstances);
         })
-        .catch(reason => reject(reason));
+        .catch((reason) => reject(reason));
     });
   }
 
@@ -75,10 +75,10 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
             rootProcessInstanceId
           }
         })
-        .then(value => {
+        .then((value) => {
           resolve(value.data.ProcessInstances);
         })
-        .catch(reason => reject(reason));
+        .catch((reason) => reject(reason));
     });
   }
 }

@@ -441,11 +441,7 @@ describe('ProcessListPage component tests', () => {
       wrapper = wrapper.update().find('ProcessListPage');
     });
     await act(async () => {
-      wrapper
-        .find(EmptyState)
-        .find(Button)
-        .find('button')
-        .simulate('click');
+      wrapper.find(EmptyState).find(Button).find('button').simulate('click');
     });
     expect(
       wrapper
@@ -483,10 +479,7 @@ describe('ProcessListPage component tests', () => {
     expect(loadmore).toMatchSnapshot();
 
     await act(async () => {
-      wrapper
-        .find(LoadMore)
-        .props()
-        ['getMoreItems'](0, 20);
+      wrapper.find(LoadMore).props()['getMoreItems'](0, 20);
     });
     wrapper = wrapper.update();
     expect(

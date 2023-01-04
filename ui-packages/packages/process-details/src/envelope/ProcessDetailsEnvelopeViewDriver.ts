@@ -27,7 +27,8 @@ import {
 } from '@kogito-apps/management-console-shared';
 
 export default class ProcessDetailsEnvelopeViewDriver
-  implements ProcessDetailsDriver {
+  implements ProcessDetailsDriver
+{
   constructor(
     private readonly channelApi: MessageBusClientApi<ProcessDetailsChannelApi>
   ) {}

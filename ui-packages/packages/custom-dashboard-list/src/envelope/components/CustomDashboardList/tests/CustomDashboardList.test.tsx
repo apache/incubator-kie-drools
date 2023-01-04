@@ -66,11 +66,7 @@ describe('customDashboard list tests', () => {
     // switches to gallery view
     await act(async () => {
       wrapper = mount(<CustomDashboardList {...props} />);
-      wrapper
-        .find(ToggleGroupItem)
-        .at(1)
-        .find('button')
-        .simulate('click');
+      wrapper.find(ToggleGroupItem).at(1).find('button').simulate('click');
     });
     await wait(0);
     await act(async () => {
@@ -80,11 +76,7 @@ describe('customDashboard list tests', () => {
 
     // switches to table view
     await act(async () => {
-      wrapper
-        .find(ToggleGroupItem)
-        .at(0)
-        .find('button')
-        .simulate('click');
+      wrapper.find(ToggleGroupItem).at(0).find('button').simulate('click');
     });
     await wait(0);
     await act(async () => {

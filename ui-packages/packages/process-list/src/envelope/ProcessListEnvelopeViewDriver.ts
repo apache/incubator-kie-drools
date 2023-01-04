@@ -28,7 +28,8 @@ import {
 } from '../api';
 
 export default class ProcessListEnvelopeViewDriver
-  implements ProcessListDriver {
+  implements ProcessListDriver
+{
   constructor(
     private readonly channelApi: MessageBusClientApi<ProcessListChannelApi>
   ) {}

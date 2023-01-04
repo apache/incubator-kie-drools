@@ -29,66 +29,79 @@ interface WorkflowFormContainerProps {
   onSubmitError: (details?: string) => void;
   onResetForm: () => void;
 }
-const WorkflowFormContainer: React.FC<WorkflowFormContainerProps &
-  OUIAProps> = ({
-    workflowDefinitionData,
-    onSubmitSuccess,
-    onSubmitError,
-    onResetForm,
-    ouiaId,
-    ouiaSafe
-  }) => {
-    const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
-    
-    return (
-      <EmbeddedWorkflowForm
-        {...componentOuiaProps(ouiaId, 'workflow-form-container', ouiaSafe)}
-        driver={{
-          async getCustomWorkflowSchema(): Promise<Record<string, any>> {
-            return gatewayApi.getCustomWorkflowSchema(workflowDefinitionData.workflowName);
-          },
-          async startWorkflowCloudEvent(formData: any): Promise<void> {
-            return gatewayApi
-              .startWorkflowCloudEvent(formData)
-              .then((id: string) => {
-                onSubmitSuccess(`A workflow with business key ${id} was triggered successfully.`);
-              })
-              .catch(error => {
-                console.error(error?.response);
-                const message =
-                  error?.response?.data?.message +
-                  ' ' +
-                  error?.response?.data?.cause ||
-                  error?.message ||
-                  'Unknown error. More details in the developer tools console.';
-                onSubmitError(message);
-              });
-          },
-          async resetBusinessKey() {
-            onResetForm();
-          },
-          async startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<void> {
-            return gatewayApi.startWorkflowRest(data, endpoint).then((id: string) => {
-              onSubmitSuccess(`A workflow with id ${id} was triggered successfully.`)
-            }).catch((error) => {
+const WorkflowFormContainer: React.FC<
+  WorkflowFormContainerProps & OUIAProps
+> = ({
+  workflowDefinitionData,
+  onSubmitSuccess,
+  onSubmitError,
+  onResetForm,
+  ouiaId,
+  ouiaSafe
+}) => {
+  const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
+
+  return (
+    <EmbeddedWorkflowForm
+      {...componentOuiaProps(ouiaId, 'workflow-form-container', ouiaSafe)}
+      driver={{
+        async getCustomWorkflowSchema(): Promise<Record<string, any>> {
+          return gatewayApi.getCustomWorkflowSchema(
+            workflowDefinitionData.workflowName
+          );
+        },
+        async startWorkflowCloudEvent(formData: any): Promise<void> {
+          return gatewayApi
+            .startWorkflowCloudEvent(formData)
+            .then((id: string) => {
+              onSubmitSuccess(
+                `A workflow with business key ${id} was triggered successfully.`
+              );
+            })
+            .catch((error) => {
               console.error(error?.response);
               const message =
                 error?.response?.data?.message +
-                ' ' +
-                error?.response?.data?.cause ||
+                  ' ' +
+                  error?.response?.data?.cause ||
                 error?.message ||
                 'Unknown error. More details in the developer tools console.';
               onSubmitError(message);
             });
-          }
-        }}
-        targetOrigin={'*'}
-        workflowDefinition={{
-          workflowName: workflowDefinitionData.workflowName,
-          endpoint: workflowDefinitionData.endpoint
-        }}
-      />
-    );
-  };
+        },
+        async resetBusinessKey() {
+          onResetForm();
+        },
+        async startWorkflowRest(
+          data: Record<string, any>,
+          endpoint: string
+        ): Promise<void> {
+          return gatewayApi
+            .startWorkflowRest(data, endpoint)
+            .then((id: string) => {
+              onSubmitSuccess(
+                `A workflow with id ${id} was triggered successfully.`
+              );
+            })
+            .catch((error) => {
+              console.error(error?.response);
+              const message =
+                error?.response?.data?.message +
+                  ' ' +
+                  error?.response?.data?.cause ||
+                error?.message ||
+                'Unknown error. More details in the developer tools console.';
+              onSubmitError(message);
+            });
+        }
+      }}
+      targetOrigin={'*'}
+      workflowDefinition={{
+        workflowName: workflowDefinitionData.workflowName,
+        endpoint: workflowDefinitionData.endpoint
+      }}
+    />
+  );
+};
 
 export default WorkflowFormContainer;

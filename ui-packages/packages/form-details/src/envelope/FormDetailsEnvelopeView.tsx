@@ -35,10 +35,8 @@ export const FormDetailsEnvelopeView = React.forwardRef<
   FormDetailsEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
   const [formData, setFormData] = useState<FormInfo>(null);
   useImperativeHandle(
     forwardedRef,

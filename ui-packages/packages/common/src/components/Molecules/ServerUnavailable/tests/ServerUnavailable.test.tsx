@@ -38,10 +38,7 @@ describe('ServerUnavailable component tests', () => {
   });
   it('onNav toggle test', () => {
     const wrapper = shallow(<ServerUnavailable {...props} />);
-    wrapper
-      .find('Page')
-      .props()
-      ['header']['props']['onNavToggle']();
+    wrapper.find('Page').props()['header']['props']['onNavToggle']();
     expect(
       wrapper.find('Page').props()['header']['props']['isNavOpen']
     ).toBeFalsy();

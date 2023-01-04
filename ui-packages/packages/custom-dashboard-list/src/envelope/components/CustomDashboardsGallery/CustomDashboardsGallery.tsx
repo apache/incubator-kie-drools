@@ -32,14 +32,9 @@ export interface CustomDashboardGalleryProps {
   isLoading: boolean;
 }
 
-const CustomDashboardsGallery: React.FC<CustomDashboardGalleryProps &
-  OUIAProps> = ({
-  driver,
-  customDashboardsDatas,
-  isLoading,
-  ouiaId,
-  ouiaSafe
-}) => {
+const CustomDashboardsGallery: React.FC<
+  CustomDashboardGalleryProps & OUIAProps
+> = ({ driver, customDashboardsDatas, isLoading, ouiaId, ouiaSafe }) => {
   if (isLoading) {
     return (
       <Bullseye>

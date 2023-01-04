@@ -122,11 +122,6 @@ describe('ProcessDetails component tests', () => {
   });
   it('should find a paragraph', () => {
     const wrapper = shallow(<ProcessDetails {...props2} />);
-    expect(
-      wrapper
-        .find('Text')
-        .at(1)
-        .prop('component')
-    ).toBe('p');
+    expect(wrapper.find('Text').at(1).prop('component')).toBe('p');
   });
 });

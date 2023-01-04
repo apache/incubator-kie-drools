@@ -176,7 +176,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
             key="11"
             exact
             path="/TaskDetails/:taskId"
-            render={routeProps => <TaskDetailsPage {...routeProps} />}
+            render={(routeProps) => <TaskDetailsPage {...routeProps} />}
           />
         )
       },
@@ -212,7 +212,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
           <Route
             key="14"
             path="/NoData"
-            render={_props => (
+            render={(_props) => (
               <NoData
                 {..._props}
                 defaultPath={defaultPath}
@@ -228,7 +228,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
           <Route
             key="15"
             path="*"
-            render={_props => (
+            render={(_props) => (
               <PageNotFound
                 {..._props}
                 defaultPath={defaultPath}
@@ -242,7 +242,9 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
     [isProcessEnabled, isTracingEnabled]
   );
 
-  return <Switch>{routes.filter(r => r.enabled()).map(r => r.node)}</Switch>;
+  return (
+    <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>
+  );
 };
 
 export default DevUIRoutes;

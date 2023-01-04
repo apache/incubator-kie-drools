@@ -41,24 +41,18 @@ const getTaskInboxToolbarWrapper = () => {
 };
 
 const selectTaskState = (wrapper, taskState: string) => {
-  wrapper
-    .find(Select)
-    .find('button')
-    .simulate('click');
+  wrapper.find(Select).find('button').simulate('click');
 
   wrapper = wrapper.update();
 
   wrapper
     .find(Select)
     .find(SelectOption)
-    .findWhere(node => node.props().value === taskState)
+    .findWhere((node) => node.props().value === taskState)
     .find('input')
     .simulate('change');
 
-  wrapper
-    .find(Select)
-    .find('button')
-    .simulate('click');
+  wrapper.find(Select).find('button').simulate('click');
 
   wrapper = wrapper.update();
 
@@ -71,14 +65,8 @@ const writeTaskName = async (wrapper, taskName: string) => {
       target: {}
     } as FormEvent<HTMLInputElement>;
 
-    wrapper
-      .find(TextInputBase)
-      .props()
-      ['onChange']('', event);
-    wrapper
-      .find(TextInputBase)
-      .props()
-      ['onChange'](taskName, event);
+    wrapper.find(TextInputBase).props()['onChange']('', event);
+    wrapper.find(TextInputBase).props()['onChange'](taskName, event);
 
     await wait();
   });
@@ -88,11 +76,8 @@ const writeTaskName = async (wrapper, taskName: string) => {
   return wrapper;
 };
 
-const callApplyFilter = wrapper => {
-  wrapper
-    .find('#apply-filter')
-    .find('button')
-    .simulate('click');
+const callApplyFilter = (wrapper) => {
+  wrapper.find('#apply-filter').find('button').simulate('click');
 };
 
 describe('TaskInboxToolbar test', () => {
@@ -196,7 +181,7 @@ describe('TaskInboxToolbar test', () => {
     wrapper = wrapper.update();
 
     const reset = wrapper
-      .findWhere(node => node.text() === 'Reset to default')
+      .findWhere((node) => node.text() === 'Reset to default')
       .find('button')
       .first();
 
@@ -265,10 +250,7 @@ describe('TaskInboxToolbar test', () => {
   it('Refresh clicked', () => {
     const wrapper = getTaskInboxToolbarWrapper();
 
-    wrapper
-      .find('#refresh')
-      .find('button')
-      .simulate('click');
+    wrapper.find('#refresh').find('button').simulate('click');
 
     expect(refresh).toHaveBeenCalled();
   });

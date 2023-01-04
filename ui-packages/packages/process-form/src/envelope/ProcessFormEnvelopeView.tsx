@@ -33,13 +33,10 @@ export const ProcessFormEnvelopeView = React.forwardRef<
   ProcessFormEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
-  const [processDefinition, setProcessDefinition] = useState<
-    ProcessDefinition
-  >();
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
+  const [processDefinition, setProcessDefinition] =
+    useState<ProcessDefinition>();
   useImperativeHandle(
     forwardedRef,
     () => ({

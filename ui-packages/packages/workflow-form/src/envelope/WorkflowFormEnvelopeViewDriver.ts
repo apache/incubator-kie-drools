@@ -23,10 +23,12 @@ import { WorkflowFormChannelApi, WorkflowFormDriver } from '../api';
 export class WorkflowFormEnvelopeViewDriver implements WorkflowFormDriver {
   constructor(
     private readonly channelApi: MessageBusClientApi<WorkflowFormChannelApi>
-  ) { }
+  ) {}
 
   startWorkflowCloudEvent(formData: any): Promise<void> {
-    return this.channelApi.requests.workflowForm__startWorkflowCloudEvent(formData);
+    return this.channelApi.requests.workflowForm__startWorkflowCloudEvent(
+      formData
+    );
   }
   resetBusinessKey(): Promise<void> {
     return this.channelApi.requests.workflowForm__resetBusinessKey();
@@ -34,7 +36,13 @@ export class WorkflowFormEnvelopeViewDriver implements WorkflowFormDriver {
   getCustomWorkflowSchema(): Promise<Record<string, any>> {
     return this.channelApi.requests.workflowForm__getCustomWorkflowSchema();
   }
-  startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<void> {
-    return this.channelApi.requests.workflowForm__startWorkflowRest(data, endpoint);
+  startWorkflowRest(
+    data: Record<string, any>,
+    endpoint: string
+  ): Promise<void> {
+    return this.channelApi.requests.workflowForm__startWorkflowRest(
+      data,
+      endpoint
+    );
   }
 }

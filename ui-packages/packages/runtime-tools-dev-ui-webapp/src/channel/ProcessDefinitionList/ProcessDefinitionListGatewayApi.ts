@@ -35,7 +35,8 @@ export interface UnSubscribeHandler {
 }
 
 export class ProcessDefinitionListGatewayApiImpl
-  implements ProcessDefinitionListGatewayApi {
+  implements ProcessDefinitionListGatewayApi
+{
   private readonly listeners: OnOpenProcessFormListener[] = [];
   private readonly devUIUrl: string;
   private readonly openApiPath: string;
@@ -56,7 +57,7 @@ export class ProcessDefinitionListGatewayApiImpl
   }
 
   openProcessForm(processDefinition: ProcessDefinition): Promise<void> {
-    this.listeners.forEach(listener => listener.onOpen(processDefinition));
+    this.listeners.forEach((listener) => listener.onOpen(processDefinition));
     return Promise.resolve();
   }
 

@@ -40,7 +40,8 @@ export interface UnSubscribeHandler {
 }
 
 export class CustomDashboardListGatewayApiImpl
-  implements CustomDashboardListGatewayApi {
+  implements CustomDashboardListGatewayApi
+{
   private _CustomDashboardFilter: CustomDashboardFilter = {
     customDashboardNames: []
   };
@@ -62,7 +63,7 @@ export class CustomDashboardListGatewayApiImpl
   }
 
   openDashboard = (customDashboardInfo: CustomDashboardInfo): Promise<void> => {
-    this.listeners.forEach(listener => listener.onOpen(customDashboardInfo));
+    this.listeners.forEach((listener) => listener.onOpen(customDashboardInfo));
     return Promise.resolve();
   };
 

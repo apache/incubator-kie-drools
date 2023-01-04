@@ -346,7 +346,7 @@ describe('TaskDetailsPage tests', () => {
     await act(async () => {
       const button = wrapper
         .find(Button)
-        .findWhere(node => node.props().id === 'view-details');
+        .findWhere((node) => node.props().id === 'view-details');
 
       button.props().onClick();
     });
@@ -362,10 +362,7 @@ describe('TaskDetailsPage tests', () => {
 
     // close details drawer
     await act(async () => {
-      detailsPanel
-        .find(DrawerCloseButton)
-        .find('button')
-        .simulate('click');
+      detailsPanel.find(DrawerCloseButton).find('button').simulate('click');
     });
     wrapper = wrapper.update();
   });

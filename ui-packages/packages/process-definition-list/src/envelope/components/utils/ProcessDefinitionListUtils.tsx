@@ -10,7 +10,7 @@ export const getColumn = (
   return {
     label: columnLabel,
     path: columnPath,
-    bodyCellTransformer: value => <span>{value}</span>
+    bodyCellTransformer: (value) => <span>{value}</span>
   };
 };
 

@@ -43,12 +43,9 @@ interface LocationProps {
   filters?: filterType;
 }
 
-const ProcessListPage: React.FC<OUIAProps &
-  RouteComponentProps<MatchProps, StaticContext, LocationProps>> = ({
-  ouiaId,
-  ouiaSafe,
-  ...props
-}) => {
+const ProcessListPage: React.FC<
+  OUIAProps & RouteComponentProps<MatchProps, StaticContext, LocationProps>
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   const defaultOrderBy: GraphQL.ProcessInstanceOrderBy = {
     lastUpdate: GraphQL.OrderBy.Asc
   };
@@ -86,16 +83,13 @@ const ProcessListPage: React.FC<OUIAProps &
   const [selectableInstances, setSelectableInstances] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sortBy, setSortBy] = useState<ISortBy>({});
-  const [orderBy, setOrderBy] = useState<GraphQL.ProcessInstanceOrderBy>(
-    defaultOrderBy
-  );
-  const [
-    getProcessInstances,
-    { loading, data, error }
-  ] = GraphQL.useGetProcessInstancesLazyQuery({
-    fetchPolicy: 'network-only',
-    notifyOnNetworkStatusChange: true
-  });
+  const [orderBy, setOrderBy] =
+    useState<GraphQL.ProcessInstanceOrderBy>(defaultOrderBy);
+  const [getProcessInstances, { loading, data, error }] =
+    GraphQL.useGetProcessInstancesLazyQuery({
+      fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true
+    });
   useEffect(() => {
     window.history.pushState(null, '');
     getProcessInstances({
@@ -160,7 +154,7 @@ const ProcessListPage: React.FC<OUIAProps &
 
   const formatSearchWords = (searchWords: string[]) => {
     const tempSearchWordsArray = [];
-    searchWords.forEach(word => {
+    searchWords.forEach((word) => {
       tempSearchWordsArray.push({ businessKey: { like: word } });
     });
     return tempSearchWordsArray;
@@ -209,7 +203,7 @@ const ProcessListPage: React.FC<OUIAProps &
   const countSelectableInstances = (process, index) => {
     expanded[index] = false;
     if (process.serviceUrl && process.addons.includes('process-management')) {
-      setSelectableInstances(prev => prev + 1);
+      setSelectableInstances((prev) => prev + 1);
     }
   };
 

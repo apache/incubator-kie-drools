@@ -224,10 +224,7 @@ describe('Jobs management page tests', () => {
     expect(wrapper).toMatchSnapshot();
     wrapper.update();
     await act(async () => {
-      wrapper
-        .find('#refresh-button')
-        .first()
-        .simulate('click');
+      wrapper.find('#refresh-button').first().simulate('click');
     });
   });
 
@@ -271,20 +268,14 @@ describe('Jobs management page tests', () => {
       wrapper.find('MockedJobsPanelDetailsModal').props()['isModalOpen']
     ).toEqual(true);
     await act(async () => {
-      wrapper
-        .find('JobsRescheduleModal')
-        .props()
-        ['handleModalToggle']();
+      wrapper.find('JobsRescheduleModal').props()['handleModalToggle']();
     });
     wrapper = wrapper.update();
     expect(wrapper.find('JobsRescheduleModal').props()['isModalOpen']).toEqual(
       true
     );
     await act(async () => {
-      wrapper
-        .find('JobsCancelModal')
-        .props()
-        ['handleModalToggle']();
+      wrapper.find('JobsCancelModal').props()['handleModalToggle']();
     });
     wrapper = wrapper.update();
     expect(wrapper.find('JobsCancelModal').props()['isModalOpen']).toEqual(
@@ -337,10 +328,7 @@ describe('Jobs management page tests', () => {
       wrapper = wrapper.update().find('JobsManagementPage');
     });
     await act(async () => {
-      wrapper
-        .find('JobsManagementFilters')
-        .props()
-        ['setChips']([]);
+      wrapper.find('JobsManagementFilters').props()['setChips']([]);
     });
     wrapper = wrapper.update();
     const emptyState = wrapper.find('EmptyState');
@@ -374,10 +362,7 @@ describe('Jobs management page tests', () => {
     const tempJobs = wrapper.find('JobsManagementTable').props()['data'];
     expect(tempJobs[Object.keys(tempJobs)[0]].length).toEqual(10);
     await act(async () => {
-      wrapper
-        .find('LoadMore')
-        .props()
-        ['getMoreItems'](0, 10);
+      wrapper.find('LoadMore').props()['getMoreItems'](0, 10);
     });
     wrapper = wrapper.update();
     expect(wrapper.find('LoadMore').props()['isLoadingMore']).toEqual(true);
@@ -398,19 +383,12 @@ describe('Jobs management page tests', () => {
     const tempJobs = wrapper.find('JobsManagementTable').props()['data'];
     expect(tempJobs[Object.keys(tempJobs)[0]].length).toEqual(10);
     await act(async () => {
-      wrapper
-        .find('LoadMore')
-        .props()
-        ['getMoreItems'](0, 10);
+      wrapper.find('LoadMore').props()['getMoreItems'](0, 10);
     });
     wrapper = wrapper.update();
     expect(wrapper.find('LoadMore').props()['isLoadingMore']).toEqual(true);
     await act(async () => {
-      wrapper
-        .find('LoadMore')
-        .find('button')
-        .first()
-        .simulate('click');
+      wrapper.find('LoadMore').find('button').first().simulate('click');
     });
     wrapper = wrapper.update();
     expect(mocks5[0].request.variables.offset).toEqual(0);
@@ -429,10 +407,7 @@ describe('Jobs management page tests', () => {
       wrapper = wrapper.update().find('JobsManagementPage');
     });
     await act(async () => {
-      wrapper
-        .find('Toolbar')
-        .props()
-        ['clearAllFilters']();
+      wrapper.find('Toolbar').props()['clearAllFilters']();
     });
     wrapper = wrapper.update();
     const defaultChip: string[] = ['SCHEDULED'];

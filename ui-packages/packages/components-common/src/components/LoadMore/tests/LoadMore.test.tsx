@@ -42,71 +42,37 @@ describe('LoadMore component tests with isLoading false', () => {
   it('select dropdown options tests', async () => {
     let wrapper = mount(<LoadMore {...props} />);
     await act(async () => {
-      wrapper
-        .find(DropdownToggle)
-        .find('button')
-        .at(1)
-        .simulate('click');
+      wrapper.find(DropdownToggle).find('button').at(1).simulate('click');
     });
     wrapper = wrapper.update();
     // length of dropdown is 4(10,20,50,100)
     expect(wrapper.find(DropdownItem).length).toBe(4);
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(1).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     // change selection to 20
-    expect(
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .find(CheckIcon)
-    ).toBeDefined();
+    expect(wrapper.find(DropdownItem).at(1).find(CheckIcon)).toBeDefined();
 
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(2)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(2).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     // change selection to 50
-    expect(
-      wrapper
-        .find(DropdownItem)
-        .at(2)
-        .find(CheckIcon)
-    ).toBeDefined();
+    expect(wrapper.find(DropdownItem).at(2).find(CheckIcon)).toBeDefined();
 
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(3)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(3).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     // change selection to 100
-    expect(
-      wrapper
-        .find(DropdownItem)
-        .at(3)
-        .find(CheckIcon)
-    ).toBeDefined();
+    expect(wrapper.find(DropdownItem).at(3).find(CheckIcon)).toBeDefined();
   });
 
   it('click loadmore button', async () => {
     const wrapper = mount(<LoadMore {...props} />);
     await act(async () => {
-      wrapper
-        .find(DropdownToggleAction)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownToggleAction).find('button').simulate('click');
     });
     expect(props.getMoreItems).toHaveBeenCalled();
     expect(props.setLoadMoreClicked).toHaveBeenCalled();

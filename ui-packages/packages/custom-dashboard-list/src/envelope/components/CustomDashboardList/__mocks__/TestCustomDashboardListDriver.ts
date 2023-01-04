@@ -21,7 +21,8 @@ import {
 } from '../../../../api';
 
 export default class TestCustomDashboardListDriver
-  implements CustomDashboardListDriver {
+  implements CustomDashboardListDriver
+{
   private readonly customDashboardInfos: CustomDashboardInfo[];
   constructor(customDashboardInfos: CustomDashboardInfo[]) {
     this.customDashboardInfos = customDashboardInfos;

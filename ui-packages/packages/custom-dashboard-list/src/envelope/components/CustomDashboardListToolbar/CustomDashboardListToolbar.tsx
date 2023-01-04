@@ -42,8 +42,9 @@ enum Category {
   CUSTOM_DASHBOARD_NAME = 'Custom Dashboard name'
 }
 
-const CustomDashboardListToolbar: React.FC<CustomDashboardListToolbarProps &
-  OUIAProps> = ({
+const CustomDashboardListToolbar: React.FC<
+  CustomDashboardListToolbarProps & OUIAProps
+> = ({
   applyFilter,
   filterDashboardNames,
   setFilterDashboardNames,

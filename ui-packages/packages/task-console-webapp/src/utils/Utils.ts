@@ -77,10 +77,12 @@ export const trimTaskEndpoint = (userTask: UserTaskInstance): string => {
 
 export const getAllTaskStates = (): string[] => {
   if (window.KOGITO_TASK_STATES_LIST) {
-    return window.KOGITO_TASK_STATES_LIST.split(',').map(state => state.trim());
+    return window.KOGITO_TASK_STATES_LIST.split(',').map((state) =>
+      state.trim()
+    );
   }
   if (process.env.KOGITO_TASK_STATES_LIST) {
-    return process.env.KOGITO_TASK_STATES_LIST.split(',').map(state =>
+    return process.env.KOGITO_TASK_STATES_LIST.split(',').map((state) =>
       state.trim()
     );
   }
@@ -89,12 +91,12 @@ export const getAllTaskStates = (): string[] => {
 
 export const getActiveTaskStates = (): string[] => {
   if (window.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    return window.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map(state =>
+    return window.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map((state) =>
       state.trim()
     );
   }
   if (process.env.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    return process.env.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map(state =>
+    return process.env.KOGITO_TASK_ACTIVE_STATES_LIST.split(',').map((state) =>
       state.trim()
     );
   }

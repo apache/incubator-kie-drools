@@ -57,7 +57,7 @@ export const getLoadedSecurityContext = (): UserContext => {
 export const checkAuthServerHealth = () => {
   return new Promise<void>((resolve, reject) => {
     fetch(window['KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL'])
-      .then(response => {
+      .then((response) => {
         /* istanbul ignore else */
         if (response.status === 200) {
           resolve();
@@ -85,7 +85,7 @@ export const initializeKeycloak = (
     .init({
       onLoad: 'login-required'
     })
-    .then(authenticated => {
+    .then((authenticated) => {
       /* istanbul ignore else */
       if (authenticated) {
         currentSecurityContext = new KeycloakUserContext({
@@ -112,7 +112,7 @@ export const loadSecurityContext = (
         .then(() => {
           return initializeKeycloak(onloadSuccess);
         })
-        .catch(error => {
+        .catch((error) => {
           onLoadFailure();
         });
     }
@@ -149,7 +149,7 @@ export const updateKeycloakToken = (): Promise<void> => {
         ctx.setToken(keycloak.token);
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -167,7 +167,7 @@ export const setBearerToken = (
         config.headers.Authorization = 'Bearer ' + keycloak.token;
         resolve(config);
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -180,8 +180,8 @@ export const appRenderWithAxiosInterceptorConfig = async (
   }, onLoadFailure);
   if (isAuthEnabled()) {
     axios.interceptors.response.use(
-      response => response,
-      error => {
+      (response) => response,
+      (error) => {
         /* istanbul ignore else */
         if (error.response.status === 401) {
           // if token expired - log the user out
@@ -191,8 +191,8 @@ export const appRenderWithAxiosInterceptorConfig = async (
       }
     );
     axios.interceptors.request.use(
-      config => setBearerToken(config),
-      error => {
+      (config) => setBearerToken(config),
+      (error) => {
         /* tslint:disable:no-floating-promises */
         Promise.reject(error);
         /* tslint:enable:no-floating-promises */

@@ -83,7 +83,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({
     );
 
   const loadWorkflowList = useCallback(() => {
-    gatewayApi.query(0, 1000).then(list => {
+    gatewayApi.query(0, 1000).then((list) => {
       setSelectedWorkflow(list[0]);
       setWorkflowList(list);
     });
@@ -93,7 +93,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({
     const intervaId = setInterval(() => {
       if (!hasWorkflow) {
         initialLoad();
-        gatewayApi.query(0, 1).then(list => {
+        gatewayApi.query(0, 1).then((list) => {
           if (list.length > 0) {
             setHasWorkflow(true);
             loadWorkflowList();
@@ -160,7 +160,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({
                           variant={SelectVariant.single}
                           onSelect={(event, v) => {
                             setSelectedWorkflow(
-                              workflowList.find(p => p.id === v)
+                              workflowList.find((p) => p.id === v)
                             );
                             setOpenProcessSelect(false);
                           }}

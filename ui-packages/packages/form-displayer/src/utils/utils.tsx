@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const sourceHandler = source => {
+export const sourceHandler = (source) => {
   const reactReg = /import React, {[^}]*}.*(?='react').*/gim;
   const patternflyReg = /import {[^}]*}.*(?='@patternfly\/react-core').*/gim;
   const regexvalueReact = new RegExp(reactReg);

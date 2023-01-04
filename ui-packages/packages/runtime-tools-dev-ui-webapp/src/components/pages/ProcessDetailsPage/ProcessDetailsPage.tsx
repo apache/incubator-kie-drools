@@ -39,12 +39,9 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
-  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+const ProcessDetailsPage: React.FC<
+  RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId('process-details');
   });
@@ -74,18 +71,22 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
       response = await gatewayApi.processDetailsQuery(processId);
       setProcessInstance(response);
     } catch (error) {
-      responseError=error; 
+      responseError = error;
       setFetchError(error);
     } finally {
       setIsLoading(false);
       /* istanbul ignore else */
-      if (responseError.length === 0 && fetchError.length === 0 && Object.keys(response).length === 0) {
+      if (
+        responseError.length === 0 &&
+        fetchError.length === 0 &&
+        Object.keys(response).length === 0
+      ) {
         let prevPath;
         /* istanbul ignore else */
         if (currentPage) {
           currentPage = Object.assign({}, currentPage, props.location.state);
           const tempPath = currentPage.prev.split('/');
-          prevPath = tempPath.filter(item => item);
+          prevPath = tempPath.filter((item) => item);
         }
         history.push({
           pathname: '/NoData',

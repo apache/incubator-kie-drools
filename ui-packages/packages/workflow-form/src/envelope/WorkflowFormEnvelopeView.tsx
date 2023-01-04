@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react';
 import { Bullseye } from '@patternfly/react-core';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import {
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
 import { WorkflowDefinition, WorkflowFormChannelApi } from '../api';
 import WorkflowForm from './components/WorkflowForm/WorkflowForm';
 import CustomWorkflowForm from './components/CustomWorkflowForm/CustomWorkflowForm';
 import { WorkflowFormEnvelopeViewDriver } from './WorkflowFormEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
-
 
 export interface WorkflowFormEnvelopeViewApi {
   initialize: (workflowDefinitionData: WorkflowDefinition) => void;
@@ -40,17 +42,16 @@ export const WorkflowFormEnvelopeView = React.forwardRef<
   WorkflowFormEnvelopeViewApi,
   Props & OUIAProps
 >(({ channelApi, ouiaId }, forwardedRef) => {
-
-  const [workflowDefinition, setWorkflowDefinition] = useState<
-    WorkflowDefinition
-  >();
+  const [workflowDefinition, setWorkflowDefinition] =
+    useState<WorkflowDefinition>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [driver] = useState<WorkflowFormEnvelopeViewDriver>(new WorkflowFormEnvelopeViewDriver(channelApi));
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
-  const [workflowSchema, setWorkflowSchema] = useState<Record<string, any>>(null);
+  const [driver] = useState<WorkflowFormEnvelopeViewDriver>(
+    new WorkflowFormEnvelopeViewDriver(channelApi)
+  );
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
+  const [workflowSchema, setWorkflowSchema] =
+    useState<Record<string, any>>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -74,12 +75,14 @@ export const WorkflowFormEnvelopeView = React.forwardRef<
     if (!isEnvelopeConnectedToChannel) {
       setIsLoading(true);
     }
-    driver.getCustomWorkflowSchema().then((schema: Record<string, any>) => {
-      setWorkflowSchema(schema);
-    }).finally(() => {
-      setIsLoading(false);
-    })
-
+    driver
+      .getCustomWorkflowSchema()
+      .then((schema: Record<string, any>) => {
+        setWorkflowSchema(schema);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [isEnvelopeConnectedToChannel]);
 
   if (isLoading) {
@@ -87,7 +90,8 @@ export const WorkflowFormEnvelopeView = React.forwardRef<
       <Bullseye
         {...componentOuiaProps(
           /* istanbul ignore next */
-          (ouiaId ? ouiaId : 'workflow-form-envelope-view') + '-loading-spinner',
+          (ouiaId ? ouiaId : 'workflow-form-envelope-view') +
+            '-loading-spinner',
           'workflow-form',
           true
         )}
@@ -98,18 +102,17 @@ export const WorkflowFormEnvelopeView = React.forwardRef<
   }
 
   if (workflowSchema !== null) {
-    return <CustomWorkflowForm
-      customFormSchema={workflowSchema}
-      driver={driver}
-      workflowDefinition={workflowDefinition}
-    />
+    return (
+      <CustomWorkflowForm
+        customFormSchema={workflowSchema}
+        driver={driver}
+        workflowDefinition={workflowDefinition}
+      />
+    );
   }
 
   return (
-    <WorkflowForm
-      workflowDefinition={workflowDefinition}
-      driver={driver}
-    />
+    <WorkflowForm workflowDefinition={workflowDefinition} driver={driver} />
   );
 });
 

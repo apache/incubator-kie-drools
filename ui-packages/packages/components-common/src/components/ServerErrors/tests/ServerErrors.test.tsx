@@ -49,7 +49,7 @@ describe('ServerErrors component tests', () => {
 
     const backButton = wrapper
       .find(Button)
-      .findWhere(button => button.text() === 'Go back')
+      .findWhere((button) => button.text() === 'Go back')
       .first();
 
     expect(backButton.exists()).toBeTruthy();
@@ -62,19 +62,13 @@ describe('ServerErrors component tests', () => {
   it('display error button click ', () => {
     let wrapper = mount(<ServerErrors {...props} />).find('ServerErrors');
 
-    wrapper
-      .find('#display-error')
-      .first()
-      .simulate('click');
+    wrapper.find('#display-error').first().simulate('click');
 
     wrapper = wrapper.update();
 
-    expect(
-      wrapper
-        .find('#content-0')
-        .find('pre')
-        .props()['children']
-    ).toEqual('"some error"');
+    expect(wrapper.find('#content-0').find('pre').props()['children']).toEqual(
+      '"some error"'
+    );
   });
 
   it('snapshot testing with small variant ', () => {
@@ -86,10 +80,7 @@ describe('ServerErrors component tests', () => {
   it('display error button click with small variant ', () => {
     let wrapper = mount(<ServerErrors {...props2} />).find('ServerErrors');
 
-    wrapper
-      .find('#display-error')
-      .first()
-      .simulate('click');
+    wrapper.find('#display-error').first().simulate('click');
 
     wrapper = wrapper.update();
 

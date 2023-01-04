@@ -100,9 +100,8 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
   const [modalContent, setModalContent] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedProcessInstance, setSelectedProcessInstance] = useState<
-    GraphQL.ProcessInstance
-  >(null);
+  const [selectedProcessInstance, setSelectedProcessInstance] =
+    useState<GraphQL.ProcessInstance>(null);
   const currentPage = { prev: location.pathname };
   window.localStorage.setItem('state', JSON.stringify(currentPage));
 
@@ -323,7 +322,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
             instance.isSelected = false;
             setSelectedInstances(
               selectedInstances.filter(
-                selectedInstance => selectedInstance.id !== instance.id
+                (selectedInstance) => selectedInstance.id !== instance.id
               )
             );
           } else {
@@ -346,7 +345,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
       const processInstance =
         !loading &&
         !_.isEmpty(initData) &&
-        initData.ProcessInstances.find(instance => instance.id === pair.id);
+        initData.ProcessInstances.find((instance) => instance.id === pair.id);
       !_.isEmpty(processInstance['childProcessInstances']) &&
         processInstance['childProcessInstances'].forEach(
           (
@@ -357,7 +356,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
           ) => {
             if (childInstance.isSelected) {
               const index = selectedInstances.findIndex(
-                selectedInstance => selectedInstance.id === childInstance.id
+                (selectedInstance) => selectedInstance.id === childInstance.id
               );
               if (index !== -1) {
                 selectedInstances.splice(index, 1);
@@ -371,12 +370,12 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
           (instance: GraphQL.ProcessInstance & { isOpen?: boolean }) => {
             if (processInstance.id === instance.id) {
               instance.isOpen = false;
-              instance.childProcessInstances.forEach(child => {
+              instance.childProcessInstances.forEach((child) => {
                 if (
                   child.serviceUrl &&
                   child.addons.includes('process-management')
                 ) {
-                  setSelectableInstances(prev => prev - 1);
+                  setSelectableInstances((prev) => prev - 1);
                 }
               });
             }
@@ -386,7 +385,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
       const processInstance =
         !loading &&
         !_.isEmpty(initData) &&
-        initData.ProcessInstances.find(instance => instance.id === pair.id);
+        initData.ProcessInstances.find((instance) => instance.id === pair.id);
       !loading &&
         !_.isEmpty(initData) &&
         initData.ProcessInstances.forEach(
@@ -477,7 +476,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
                   expand={{
                     rowIndex: pairIndex,
                     isExpanded: expanded[pairIndex],
-                    onToggle: event => onToggle(pairIndex, pair)
+                    onToggle: (event) => onToggle(pairIndex, pair)
                   }}
                   {...componentOuiaProps(
                     columns[0].toLocaleLowerCase(),

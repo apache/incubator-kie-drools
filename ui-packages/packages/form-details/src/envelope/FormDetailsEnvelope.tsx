@@ -56,7 +56,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<FormDetailsEnvelopeViewApi>();
-    return new Promise<() => FormDetailsEnvelopeViewApi>(res => {
+    return new Promise<() => FormDetailsEnvelopeViewApi>((res) => {
       args.container.className = 'kogito-form-details-container';
       ReactDOM.render(
         <FormDetailsEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
@@ -68,6 +68,6 @@ export function init(args: {
 
   const context: FormDetailsEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new FormDetailsEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new FormDetailsEnvelopeApiImpl(apiFactoryArgs)
   });
 }

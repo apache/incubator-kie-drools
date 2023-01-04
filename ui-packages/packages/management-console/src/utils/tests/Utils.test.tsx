@@ -819,8 +819,7 @@ describe('uitility function testing', () => {
     const setSvgError = jest.fn();
     it('handle api to get svg', async () => {
       mockedAxios.get.mockResolvedValue({
-        data:
-          '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>',
+        data: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>',
         status: 200,
         statusText: 'OK'
       });
@@ -839,8 +838,7 @@ describe('uitility function testing', () => {
       mockedAxios.get.mockImplementationOnce(() =>
         Promise.reject({
           error: mockedAxios.get.mockResolvedValue({
-            data:
-              '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>',
+            data: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></g></g></svg>',
             status: 200,
             statusText: 'OK'
           })
@@ -891,9 +889,8 @@ describe('uitility function testing', () => {
         errorMessage: '404 error'
       }
     ];
-    const testResultWithError = formatForBulkListProcessInstance(
-      testProcessInstance
-    );
+    const testResultWithError =
+      formatForBulkListProcessInstance(testProcessInstance);
     expect(testResultWithError).toEqual([
       {
         id: testProcessInstance[0].id,

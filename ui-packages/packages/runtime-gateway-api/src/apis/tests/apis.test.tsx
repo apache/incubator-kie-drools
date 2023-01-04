@@ -271,10 +271,10 @@ describe('job cancel tests', () => {
     };
     client.mutate.mockResolvedValue({});
     await jobCancel(job, client)
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual(expectedResult);
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(reason).toEqual(expectedResult);
       });
   });
@@ -287,10 +287,10 @@ describe('job cancel tests', () => {
     };
     client.mutate.mockRejectedValue({ message: '404 error' });
     await jobCancel(job, client)
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual(expectedResult);
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(reason).toEqual(expectedResult);
       });
   });
@@ -347,10 +347,10 @@ describe('job cancel tests', () => {
       scheduleDate,
       client
     )
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual({ modalTitle, modalContent });
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(reason).toEqual({ modalTitle, modalContent });
       });
 
@@ -386,10 +386,10 @@ describe('job cancel tests', () => {
       scheduleDate,
       client
     )
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual({ modalTitle, modalContent });
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(reason).toEqual({ modalTitle, modalContent });
       });
   });
@@ -418,7 +418,7 @@ describe('handle skip test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual('success');
@@ -430,7 +430,7 @@ describe('handle skip test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual('404 error');
@@ -460,7 +460,7 @@ describe('handle retry test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual('success');
@@ -472,7 +472,7 @@ describe('handle retry test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual("Cannot read property 'id' of undefined");
@@ -501,7 +501,7 @@ describe('handle abort test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual('success');
@@ -513,7 +513,7 @@ describe('handle abort test', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual('404 error');
@@ -537,58 +537,64 @@ describe('multiple action in process list', () => {
   });
   it('multiple skip test', async () => {
     client.mutate.mockResolvedValue({ data: 'success' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.SKIP,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.SKIP,
+        client
+      );
     expect(result.successProcessInstances.length).toEqual(1);
   });
   it('multiple skip test', async () => {
     client.mutate.mockRejectedValue({ message: '404 error' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.SKIP,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.SKIP,
+        client
+      );
     expect(result.failedProcessInstances[0].errorMessage).toEqual('404 error');
   });
 
   it('multiple retry test', async () => {
     client.mutate.mockResolvedValue({ data: 'success' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.RETRY,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.RETRY,
+        client
+      );
     expect(result.successProcessInstances.length).toEqual(1);
   });
   it('multiple retry test', async () => {
     client.mutate.mockRejectedValue({ message: '404 error' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.RETRY,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.RETRY,
+        client
+      );
     expect(result.failedProcessInstances[0].errorMessage).toEqual('404 error');
   });
 
   it('multiple abort test', async () => {
     client.mutate.mockResolvedValue({ data: 'success' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.ABORT,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.ABORT,
+        client
+      );
     expect(result.successProcessInstances.length).toEqual(1);
   });
   it('multiple abort test', async () => {
     client.mutate.mockRejectedValue({ message: '404 error' });
-    const result: BulkProcessInstanceActionResponse = await handleProcessMultipleAction(
-      processInstances,
-      OperationType.ABORT,
-      client
-    );
+    const result: BulkProcessInstanceActionResponse =
+      await handleProcessMultipleAction(
+        processInstances,
+        OperationType.ABORT,
+        client
+      );
     expect(result.failedProcessInstances[0].errorMessage).toEqual('404 error');
   });
 });
@@ -627,10 +633,10 @@ describe('test utilities of process variables', () => {
       JSON.parse(updatedProcessInstances[0].variables),
       client
     )
-      .then(data => {
+      .then((data) => {
         result = data;
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result).toEqual(JSON.parse(processInstances[0].variables));
@@ -688,10 +694,10 @@ describe('retrieve list of triggerable nodes test', () => {
     });
     let result = null;
     await getTriggerableNodes(processInstance, client)
-      .then(nodes => {
+      .then((nodes) => {
         result = nodes;
       })
-      .catch(error => {
+      .catch((error) => {
         result = error;
       });
     expect(result).toEqual(nodeDefinitions);
@@ -700,10 +706,10 @@ describe('retrieve list of triggerable nodes test', () => {
     client.query.mockRejectedValue({ message: '403 error' });
     let result = null;
     await getTriggerableNodes(processInstance, client)
-      .then(nodes => {
+      .then((nodes) => {
         result = nodes;
       })
-      .catch(error => {
+      .catch((error) => {
         result = error.message;
       });
     expect(result.message).toEqual('403 error');
@@ -739,7 +745,7 @@ describe('handle node trigger click tests', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('success');
@@ -752,7 +758,7 @@ describe('handle node trigger click tests', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('error');
@@ -789,7 +795,7 @@ describe('handle node instance trigger click tests', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('success');
@@ -802,7 +808,7 @@ describe('handle node instance trigger click tests', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('error');
@@ -839,7 +845,7 @@ describe('handle node instance cancel', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('success');
@@ -852,7 +858,7 @@ describe('handle node instance cancel', () => {
       .then(() => {
         result = 'success';
       })
-      .catch(error => {
+      .catch((error) => {
         result = 'error';
       });
     expect(result).toEqual('error');
@@ -1000,18 +1006,18 @@ describe('process details tests', () => {
   it('test getProcessDetails method with success response', () => {
     client.query.mockResolvedValue(mGraphQLResponseProcess);
     getProcessDetails(id, client)
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual(mGraphQLResponseProcess.data.ProcessInstances[0]);
       })
-      .catch(error => {});
+      .catch((error) => {});
   });
   it('test getProcessDetails method with failure response', () => {
     getProcessDetails(id, client)
-      .then(value => {
+      .then((value) => {
         //do nothing
       })
-      .catch(error => {
-        expect(error['graphQLErrors'][0]['message']).toEqual("error");
+      .catch((error) => {
+        expect(error['graphQLErrors'][0]['message']).toEqual('error');
       });
   });
   it('test getTriggerableNodes method with success response', () => {
@@ -1019,16 +1025,16 @@ describe('process details tests', () => {
       mGraphQLResponseProcess.data.ProcessInstances[0]
     );
     getTriggerableNodes(processInstance, client)
-      .then(value => {
+      .then((value) => {
         expect(value).toEqual(
           mGraphQLResponseProcess.data.ProcessInstances[0].nodeDefinitions
         );
       })
-      .catch(error => {});
+      .catch((error) => {});
   });
   it('test getJobs method with success response', () => {
     client.query.mockResolvedValue(mGraphQLResponse);
-    getJobs(id, client).then(value => {
+    getJobs(id, client).then((value) => {
       expect(value).toEqual(mGraphQLResponse.data.Jobs);
     });
   });
@@ -1163,7 +1169,7 @@ describe('get svg tests', () => {
       status: 200,
       statusText: 'OK'
     });
-    getSVG(data, client).then(value => {
+    getSVG(data, client).then((value) => {
       expect(value.svg).toEqual(svgResponse.ProcessInstances[0].diagram);
     });
   });
@@ -1177,10 +1183,10 @@ describe('get svg tests', () => {
     };
     client.query.mockRejectedValue(errorResponse404);
     getSVG(data, client)
-      .then(value => {
+      .then((value) => {
         result = value;
       })
-      .catch(reason => {
+      .catch((reason) => {
         expect(errorResponse404.message).toEqual(reason.error);
       });
     expect(null).toEqual(result);

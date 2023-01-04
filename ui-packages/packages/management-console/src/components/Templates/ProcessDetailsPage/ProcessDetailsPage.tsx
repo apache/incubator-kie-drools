@@ -64,12 +64,9 @@ enum TitleType {
   FAILURE = 'failure'
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
-  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+const ProcessDetailsPage: React.FC<
+  RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   const id = props.match.params.instanceID;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>('');
@@ -361,10 +358,10 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
     if (currentPage) {
       currentPage = Object.assign({}, currentPage, props.location.state);
       const tempPath = currentPage.prev.split('/');
-      prevPath = tempPath.filter(item => item);
+      prevPath = tempPath.filter((item) => item);
       BreadCrumb.push(...prevPath);
       let sum = '';
-      BreadCrumbRoute = BreadCrumb.map(elem => (sum = sum + `/${elem}`));
+      BreadCrumbRoute = BreadCrumb.map((elem) => (sum = sum + `/${elem}`));
     }
     if (result.length === 0) {
       return (

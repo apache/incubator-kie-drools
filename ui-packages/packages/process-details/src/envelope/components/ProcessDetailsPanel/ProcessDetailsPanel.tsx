@@ -158,7 +158,7 @@ const ProcessDetailsPanel: React.FC<IOwnProps & OUIAProps> = ({
 
           {processInstance.childProcessInstances.length !== 0 && (
             <FormGroup label="Sub Processes" fieldId="child">
-              {processInstance.childProcessInstances.map(child => (
+              {processInstance.childProcessInstances.map((child) => (
                 <div key={child.id}>
                   <Button
                     variant="link"

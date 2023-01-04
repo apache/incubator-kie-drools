@@ -70,7 +70,7 @@ const getCellData = (dataObj: Record<string, unknown>, path: string) => {
 const getColumns = (data: any[], columns: DataTableColumn[]) => {
   if (data) {
     return columns
-      ? filter(columns, column => !isEmpty(column.path)).map(column => {
+      ? filter(columns, (column) => !isEmpty(column.path)).map((column) => {
           return {
             title: column.label,
             data: column.path,
@@ -90,11 +90,11 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
             transforms: column.isSortable ? [sortable] : undefined
           } as ICell;
         })
-      : filter(keys(sample(data)), key => key !== '__typename').map(
-          key => ({ title: key, data: `$.${key}` } as ICell)
+      : filter(keys(sample(data)), (key) => key !== '__typename').map(
+          (key) => ({ title: key, data: `$.${key}` } as ICell)
         );
   } else if (columns) {
-    return filter(columns, column => !isEmpty(column.path)).map(column => {
+    return filter(columns, (column) => !isEmpty(column.path)).map((column) => {
       return {
         title: column.label,
         data: column.path
@@ -107,7 +107,7 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
 const getRows = (data: any[], columns: ICell[]) => {
   let rowList: IRow[] = [];
   if (data) {
-    rowList = data.map(rowData => {
+    rowList = data.map((rowData) => {
       return {
         cells: reduce(
           columns,

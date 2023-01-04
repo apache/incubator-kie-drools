@@ -34,12 +34,9 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
-  OUIAProps> = ({ ...props }) => {
+const ProcessDetailsPage: React.FC<
+  RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps
+> = ({ ...props }) => {
   const processId = props.match.params.instanceID;
   useEffect(() => {
     return ouiaPageTypeAndObjectId('process-instances', processId);
@@ -78,7 +75,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
         if (currentPage) {
           currentPage = Object.assign({}, currentPage, props.location.state);
           const tempPath = currentPage.prev.split('/');
-          prevPath = tempPath.filter(item => item);
+          prevPath = tempPath.filter((item) => item);
         }
         history.push({
           pathname: '/NoData',

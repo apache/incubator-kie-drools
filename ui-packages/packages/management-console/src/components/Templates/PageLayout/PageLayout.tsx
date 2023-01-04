@@ -63,7 +63,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
   const availableDomains =
     !getQuery.loading && getQuery.data && getQuery.data.__type.fields.slice(2);
   const domains = [];
-  availableDomains && availableDomains.map(item => domains.push(item.name));
+  availableDomains && availableDomains.map((item) => domains.push(item.name));
   return (
     <React.Fragment>
       <KogitoPageLayout
@@ -92,7 +92,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
           <Route
             exact
             path="/DomainExplorer/:domainName"
-            render={_props => (
+            render={(_props) => (
               <DomainExplorerPage
                 {..._props}
                 domains={domains}
@@ -103,7 +103,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
           <Route exact path="/JobsManagement" component={JobsManagementPage} />
           <Route
             path="/NoData"
-            render={_props => (
+            render={(_props) => (
               <NoData
                 {..._props}
                 defaultPath="/ProcessInstances"
@@ -113,7 +113,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({ ...props }) => {
           />
           <Route
             path="*"
-            render={_props => (
+            render={(_props) => (
               <PageNotFound
                 {..._props}
                 defaultPath="/ProcessInstances"

@@ -105,7 +105,7 @@ export const FormEditor = React.forwardRef<
       }
       editor.addCommand(
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
-        function() {
+        function () {
           onSaveForm();
         }
       );

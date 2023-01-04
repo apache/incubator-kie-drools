@@ -79,7 +79,7 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
   }, [activeFilter]);
 
   const createStatusMenuItems = () => {
-    return allStates.map(state => <SelectOption key={state} value={state} />);
+    return allStates.map((state) => <SelectOption key={state} value={state} />);
   };
 
   const doResetFilter = () => {

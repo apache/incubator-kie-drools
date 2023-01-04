@@ -186,13 +186,13 @@ describe('EmptyTaskForm Test', () => {
     expect(buttons).toHaveLength(2);
 
     const completeButton = wrapper.findWhere(
-      node => node.key() === 'submit-complete'
+      (node) => node.key() === 'submit-complete'
     );
     completeButton.props().onClick();
     expect(doSubmit).toHaveBeenLastCalledWith('complete');
 
     const releaseButton = wrapper.findWhere(
-      node => node.key() === 'submit-release'
+      (node) => node.key() === 'submit-release'
     );
     releaseButton.props().onClick();
     expect(doSubmit).toHaveBeenLastCalledWith('release');

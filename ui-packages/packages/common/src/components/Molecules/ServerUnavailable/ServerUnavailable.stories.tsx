@@ -7,7 +7,7 @@ import KogitoAppContext from '../../../environment/context/KogitoAppContext';
 export default {
   title: 'Server unavailable',
   decorators: [
-    Story => {
+    (Story) => {
       return (
         <KogitoAppContext.Provider
           value={{

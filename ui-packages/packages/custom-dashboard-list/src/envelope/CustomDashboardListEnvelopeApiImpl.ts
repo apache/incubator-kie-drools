@@ -27,7 +27,8 @@ import { CustomDashboardListEnvelopeContext } from './CustomDashboardListEnvelop
  * Implementation of the CustomDashboardListEnvelopeApi
  */
 export class CustomDashboardListEnvelopeApiImpl
-  implements CustomDashboardListEnvelopeApi {
+  implements CustomDashboardListEnvelopeApi
+{
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<

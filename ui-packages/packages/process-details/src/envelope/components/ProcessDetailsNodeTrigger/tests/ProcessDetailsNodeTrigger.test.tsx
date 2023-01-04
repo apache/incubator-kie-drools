@@ -121,18 +121,12 @@ describe('Process details node trigger component tests', () => {
   it('select a node test ', async () => {
     let wrapper = await getNodeTriggerWrapper();
     await act(async () => {
-      wrapper
-        .find(DropdownToggle)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownToggle).find('button').simulate('click');
     });
     wrapper = wrapper.update();
 
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .simulate('click');
+      wrapper.find(DropdownItem).at(1).simulate('click');
     });
     wrapper = wrapper.update();
     // snapshot with data displayed
@@ -158,12 +152,7 @@ describe('Process details node trigger component tests', () => {
     ).toBeTruthy();
     // Node id displayed
     expect(
-      wrapper
-        .find(FlexItem)
-        .find('h6')
-        .at(2)
-        .children()
-        .contains('Node id : ')
+      wrapper.find(FlexItem).find('h6').at(2).children().contains('Node id : ')
     ).toBeTruthy();
   });
 
@@ -192,25 +181,16 @@ describe('Process details node trigger component tests', () => {
     });
 
     await act(async () => {
-      wrapper
-        .find(DropdownToggle)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownToggle).find('button').simulate('click');
     });
     wrapper = wrapper.update();
 
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .simulate('click');
+      wrapper.find(DropdownItem).at(1).simulate('click');
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find('#trigger')
-        .find('button')
-        .simulate('click');
+      wrapper.find('#trigger').find('button').simulate('click');
     });
     wrapper = wrapper.update();
     wrapper = wrapper.find('MockedProcessDetailsErrorModal');

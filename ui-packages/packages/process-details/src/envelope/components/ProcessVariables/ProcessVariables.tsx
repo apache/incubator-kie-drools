@@ -53,7 +53,7 @@ const ProcessVariables: React.FC<ProcessVariablesProps & OUIAProps> = ({
   updateJson,
   processInstance
 }) => {
-  const handleVariablesChange = e => {
+  const handleVariablesChange = (e) => {
     setUpdateJson({ ...updateJson, ...e.updated_src });
     setDisplayLabel(true);
   };

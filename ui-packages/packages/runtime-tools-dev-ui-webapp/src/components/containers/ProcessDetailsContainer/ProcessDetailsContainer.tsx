@@ -30,8 +30,9 @@ interface ProcessDetailsContainerProps {
   diagramPreviewSize?: DiagramPreviewSize;
 }
 
-const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
-  OUIAProps> = ({
+const ProcessDetailsContainer: React.FC<
+  ProcessDetailsContainerProps & OUIAProps
+> = ({
   processInstance,
   omittedProcessTimelineEvents,
   diagramPreviewSize,

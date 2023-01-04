@@ -54,7 +54,7 @@ const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAProps>(
       [formApiRef]
     );
 
-    const bridge = new JSONSchemaBridge(formSchema, formModel => {
+    const bridge = new JSONSchemaBridge(formSchema, (formModel) => {
       // Converting back all the JS Dates into String before validating the model
       const newModel = ModelConversionTool.convertDateToString(
         formModel,
@@ -73,13 +73,13 @@ const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAProps>(
     return (
       <React.Fragment>
         <AutoForm
-          ref={ref => setFormApiRef(ref)}
+          ref={(ref) => setFormApiRef(ref)}
           placeholder
           model={formData}
           disabled={readOnly}
           schema={bridge}
           showInlineError={true}
-          onSubmit={data => onSubmit(data)}
+          onSubmit={(data) => onSubmit(data)}
           {...componentOuiaProps(ouiaId, 'form-renderer', ouiaSafe)}
         >
           <ErrorsField />

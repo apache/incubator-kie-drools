@@ -78,16 +78,14 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const defaultStatus: GraphQL.JobStatus[] = [GraphQL.JobStatus.Scheduled];
   const [initData, setInitData] = useState<GraphQL.GetJobsWithFiltersQuery>({});
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
-    false
-  );
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] =
+    useState<boolean>(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<JSX.Element>(null);
   const [modalContent, setModalContent] = useState<string>('');
   const [selectedJob, setSelectedJob] = useState<any>({});
-  const [selectedStatus, setSelectedStatus] = useState<GraphQL.JobStatus[]>(
-    defaultStatus
-  );
+  const [selectedStatus, setSelectedStatus] =
+    useState<GraphQL.JobStatus[]>(defaultStatus);
   const [chips, setChips] = useState<GraphQL.JobStatus[]>(defaultStatus);
   const [values, setValues] = useState<GraphQL.JobStatus[]>(defaultStatus);
   const [orderBy, setOrderBy] = useState<GraphQL.JobOrderBy>(defaultOrderBy);
@@ -102,15 +100,14 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [selectedJobInstances, setSelectedJobInstances] = useState<
     GraphQL.Job[]
   >([]);
-  const [jobOperationResults, setJobOperationResults] = useState<
-    IOperationResults
-  >({
-    CANCEL: {
-      successItems: [],
-      failedItems: [],
-      ignoredItems: []
-    }
-  });
+  const [jobOperationResults, setJobOperationResults] =
+    useState<IOperationResults>({
+      CANCEL: {
+        successItems: [],
+        failedItems: [],
+        ignoredItems: []
+      }
+    });
   const [isRefreshed, setIsRefreshed] = useState<boolean>(false);
   const { loading, data, error, refetch } = GraphQL.useGetJobsWithFiltersQuery({
     fetchPolicy: 'network-only',
@@ -140,7 +137,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         perform: async () => {
           setIsActionPerformed(true);
           const ignoredJobs = [];
-          const remainingInstances = selectedJobInstances.filter(job => {
+          const remainingInstances = selectedJobInstances.filter((job) => {
             if (
               job.status === GraphQL.JobStatus.Canceled ||
               job.status === GraphQL.JobStatus.Executed
@@ -209,7 +206,7 @@ const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     setIsKebabOpen(!isKebabOpen);
   };
 
-  const jobManagementKebabToggle = isOpen => {
+  const jobManagementKebabToggle = (isOpen) => {
     setIsKebabOpen(isOpen);
   };
 

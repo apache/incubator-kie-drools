@@ -30,7 +30,12 @@ const WorkflowFormContextProvider: React.FC<IOwnProps> = ({ children }) => {
   const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
   return (
     <WorkflowFormContext.Provider
-      value={new WorkflowFormGatewayApiImpl(runtimeToolsApi.getDevUIUrl(), runtimeToolsApi.getOpenApiPath())}
+      value={
+        new WorkflowFormGatewayApiImpl(
+          runtimeToolsApi.getDevUIUrl(),
+          runtimeToolsApi.getOpenApiPath()
+        )
+      }
     >
       {children}
     </WorkflowFormContext.Provider>

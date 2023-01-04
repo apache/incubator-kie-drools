@@ -41,12 +41,9 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessesPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
-  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+const ProcessesPage: React.FC<
+  RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   const apiContext = useDevUIAppContext();
 
   const [activeTabKey, setActiveTabKey] = useState<ReactText>(0);

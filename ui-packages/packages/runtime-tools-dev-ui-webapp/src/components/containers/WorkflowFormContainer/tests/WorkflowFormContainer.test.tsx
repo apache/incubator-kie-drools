@@ -32,13 +32,15 @@ jest.mock('@patternfly/react-code-editor', () =>
   })
 );
 
-const MockedWorkflowFormGatewayApi = jest.fn<WorkflowFormGatewayApi, []>(() => ({
-  startWorkflowCloudEvent: jest.fn(),
-  setBusinessKey: jest.fn(),
-  getBusinessKey: jest.fn(),
-  getCustomWorkflowSchema: jest.fn(),
-  startWorkflowRest: jest.fn()
-}));
+const MockedWorkflowFormGatewayApi = jest.fn<WorkflowFormGatewayApi, []>(
+  () => ({
+    startWorkflowCloudEvent: jest.fn(),
+    setBusinessKey: jest.fn(),
+    getBusinessKey: jest.fn(),
+    getCustomWorkflowSchema: jest.fn(),
+    startWorkflowRest: jest.fn()
+  })
+);
 
 let gatewayApi;
 
@@ -48,7 +50,7 @@ jest
 
 const getWrapper = () => {
   return mount(<WorkflowFormContainer {...props} />);
-}
+};
 
 const props = {
   workflowDefinitionData: {
@@ -61,11 +63,10 @@ const props = {
 };
 
 describe('WorkflowFormContainer tests', () => {
-
   beforeEach(() => {
     jest.clearAllMocks();
     gatewayApi = new MockedWorkflowFormGatewayApi();
-  })
+  });
 
   it('Snapshot', () => {
     const wrapper = getWrapper();
@@ -79,70 +80,84 @@ describe('WorkflowFormContainer tests', () => {
   });
 
   it('test get custom workflow schema', () => {
-    const getCustomWorkflowSchemaSpy = jest.spyOn(gatewayApi, 'getCustomWorkflowSchema');
+    const getCustomWorkflowSchemaSpy = jest.spyOn(
+      gatewayApi,
+      'getCustomWorkflowSchema'
+    );
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
     const workflowName = 'expression';
     forwardRef.props().driver['getCustomWorkflowSchema'](workflowName);
     expect(getCustomWorkflowSchemaSpy).toHaveBeenCalled();
-  })
+  });
 
-  it('test start workflow rest - success', ()=>{
-    gatewayApi.startWorkflowRest = jest.fn().mockImplementation(()=> Promise.resolve('1234'));
+  it('test start workflow rest - success', () => {
+    gatewayApi.startWorkflowRest = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve('1234'));
     const startWorkflowRestSpy = jest.spyOn(gatewayApi, 'startWorkflowRest');
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
 
     forwardRef.props().driver['startWorkflowRest']();
     expect(startWorkflowRestSpy).toHaveBeenCalled();
-  })
+  });
 
-  it('test start workflow rest - failure', ()=>{
-    gatewayApi.startWorkflowRest = jest.fn().mockImplementation(()=> Promise.reject({response:{
-      data:{
-        message:"error",
-        cause:"error cause"
-      }
-    }}));
+  it('test start workflow rest - failure', () => {
+    gatewayApi.startWorkflowRest = jest.fn().mockImplementation(() =>
+      Promise.reject({
+        response: {
+          data: {
+            message: 'error',
+            cause: 'error cause'
+          }
+        }
+      })
+    );
     const startWorkflowRestSpy = jest.spyOn(gatewayApi, 'startWorkflowRest');
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
 
     forwardRef.props().driver['startWorkflowRest']();
     expect(startWorkflowRestSpy).toHaveBeenCalled();
-  })
+  });
 
-  it('test start workflow cloud event - success', ()=>{
-    gatewayApi.startWorkflowCloudEvent = jest.fn().mockImplementation(()=> Promise.resolve('1234'));
+  it('test start workflow cloud event - success', () => {
+    gatewayApi.startWorkflowCloudEvent = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve('1234'));
     const startWorkflowSpy = jest.spyOn(gatewayApi, 'startWorkflowCloudEvent');
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
 
     forwardRef.props().driver['startWorkflowCloudEvent']();
     expect(startWorkflowSpy).toHaveBeenCalled();
-  })
+  });
 
-  it('test start workflow cloud event - failure', ()=>{
-    gatewayApi.startWorkflowCloudEvent = jest.fn().mockImplementation(()=> Promise.reject({response:{
-      data:{
-        message:"error",
-        cause:"error cause"
-      }
-    }}));
+  it('test start workflow cloud event - failure', () => {
+    gatewayApi.startWorkflowCloudEvent = jest.fn().mockImplementation(() =>
+      Promise.reject({
+        response: {
+          data: {
+            message: 'error',
+            cause: 'error cause'
+          }
+        }
+      })
+    );
     const startWorkflowSpy = jest.spyOn(gatewayApi, 'startWorkflowCloudEvent');
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
 
     forwardRef.props().driver['startWorkflowCloudEvent']();
     expect(startWorkflowSpy).toHaveBeenCalled();
-  })
+  });
 
-  it('test reset businesskey', ()=>{
+  it('test reset businesskey', () => {
     const wrapper = getWrapper();
     const forwardRef = wrapper.childAt(0);
 
     forwardRef.props().driver['resetBusinessKey']();
     expect(props.onResetForm).toHaveBeenCalled();
-  })
-
+  });
 });

@@ -70,10 +70,7 @@ describe('Jobs management filters component tests', () => {
     const type = 'Status';
     const id = GraphQL.JobStatus.Scheduled;
     await act(async () => {
-      wrapper
-        .find('ToolbarFilter')
-        .props()
-        ['deleteChip'](type, id);
+      wrapper.find('ToolbarFilter').props()['deleteChip'](type, id);
     });
     wrapper = wrapper.update();
     expect(
@@ -94,10 +91,7 @@ describe('Jobs management filters component tests', () => {
         </ToolbarContent>
       </Toolbar>
     );
-    wrapper
-      .find('#apply-filter')
-      .first()
-      .simulate('click');
+    wrapper.find('#apply-filter').first().simulate('click');
     wrapper = wrapper.update();
     expect(props.setChips).toHaveBeenCalled();
     expect(props.setValues).toHaveBeenCalled();
@@ -108,26 +102,15 @@ describe('Jobs management filters component tests', () => {
   it('test select component props', async () => {
     let wrapper = mount(<TestWrapper />);
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .first()
-        .props()
-        ['onToggle']();
+      wrapper.find('#status-select').first().props()['onToggle']();
     });
     wrapper = wrapper.update();
-    expect(
-      wrapper
-        .find('#status-select')
-        .first()
-        .props()['isOpen']
-    ).toEqual(true);
+    expect(wrapper.find('#status-select').first().props()['isOpen']).toEqual(
+      true
+    );
     const event: any = { target: { id: 'pf-random-id-2-SCHEDULED' } };
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .first()
-        .props()
-        ['onSelect'](event);
+      wrapper.find('#status-select').first().props()['onSelect'](event);
     });
     wrapper = wrapper.update();
     expect(
@@ -138,11 +121,7 @@ describe('Jobs management filters component tests', () => {
     let wrapper = mount(<TestWrapper />);
     const event2: any = { target: { id: 'pf-random-id-2-EXECUTED' } };
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .first()
-        .props()
-        ['onSelect'](event2);
+      wrapper.find('#status-select').first().props()['onSelect'](event2);
     });
     wrapper = wrapper.update();
     expect(
@@ -156,11 +135,7 @@ describe('Jobs management filters component tests', () => {
     let wrapper = mount(<TestWrapper />);
     const event2: any = { target: { id: 'pf-random-id-2-SCHEDULED' } };
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .first()
-        .props()
-        ['onSelect'](event2);
+      wrapper.find('#status-select').first().props()['onSelect'](event2);
     });
     wrapper = wrapper.update();
     expect(

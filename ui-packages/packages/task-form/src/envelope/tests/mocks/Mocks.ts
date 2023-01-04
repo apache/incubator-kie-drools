@@ -146,10 +146,11 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
-  TaskFormEnvelopeApi,
-  TaskFormChannelApi
->;
+export const MockedEnvelopeBusController =
+  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+    TaskFormEnvelopeApi,
+    TaskFormChannelApi
+  >;
 
 export const MockedTaskFormEnvelopeViewApi = jest.fn<
   TaskFormEnvelopeViewApi,

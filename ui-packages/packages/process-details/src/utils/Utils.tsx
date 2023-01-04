@@ -117,7 +117,7 @@ export const handleNodeInstanceRetrigger = (
     .then(() => {
       onRetriggerSuccess();
     })
-    .catch(error => {
+    .catch((error) => {
       onRetriggerFailure(JSON.stringify(error.message));
     });
 };
@@ -134,7 +134,7 @@ export const handleNodeInstanceCancel = (
     .then(() => {
       onCancelSuccess();
     })
-    .catch(error => {
+    .catch((error) => {
       onCancelFailure(JSON.stringify(error.message));
     });
 };

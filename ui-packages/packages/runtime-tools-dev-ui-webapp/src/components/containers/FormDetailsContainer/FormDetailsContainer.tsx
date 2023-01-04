@@ -40,14 +40,14 @@ const FormDetailsContainer: React.FC<FormDetailsContainerProps & OUIAProps> = ({
     <EmbeddedFormDetails
       {...componentOuiaProps(ouiaId, 'form-details-container', ouiaSafe)}
       driver={{
-        getFormContent: function(formName: string): Promise<Form> {
+        getFormContent: function (formName: string): Promise<Form> {
           return gatewayApi.getFormContent(formName);
         },
         saveFormContent(formName: string, content: FormContent): void {
           gatewayApi
             .saveFormContent(formName, content)
-            .then(value => onSuccess())
-            .catch(error => {
+            .then((value) => onSuccess())
+            .catch((error) => {
               const message = error.response
                 ? error.response.data
                 : error.message;

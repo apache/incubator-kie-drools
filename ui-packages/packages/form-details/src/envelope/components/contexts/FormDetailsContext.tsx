@@ -35,7 +35,7 @@ export class FormDetailsContextImpl implements FormDetailsContext {
 
   updateContent(formContent: Form): void {
     if (formContent) {
-      this.updateContentListeners.forEach(listener =>
+      this.updateContentListeners.forEach((listener) =>
         listener.onUpdateContent(formContent)
       );
     }
@@ -55,9 +55,8 @@ export class FormDetailsContextImpl implements FormDetailsContext {
   }
 }
 
-const RuntimeToolsFormDetailsContext = React.createContext<FormDetailsContext>(
-  null
-);
+const RuntimeToolsFormDetailsContext =
+  React.createContext<FormDetailsContext>(null);
 
 export default RuntimeToolsFormDetailsContext;
 

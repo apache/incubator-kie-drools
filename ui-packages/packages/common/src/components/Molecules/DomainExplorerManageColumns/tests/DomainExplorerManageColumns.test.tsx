@@ -213,21 +213,10 @@ describe('Domain Explorer Manage columns component', () => {
     const wrapper = mount(<DomainExplorerManageColumns {...props} />);
     wrapper.update();
     wrapper.setProps({});
-    wrapper
-      .find('#manage-columns-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#manage-columns-button').first().simulate('click');
     act(() => {
-      wrapper
-        .find('DataListToggle')
-        .first()
-        .props()
-        .onClick(event2);
-      wrapper
-        .find('DataListToggle')
-        .at(2)
-        .props()
-        .onClick(event2);
+      wrapper.find('DataListToggle').first().props().onClick(event2);
+      wrapper.find('DataListToggle').at(2).props().onClick(event2);
     });
   });
   it('Test Apply columns button', async () => {
@@ -319,14 +308,8 @@ describe('Domain Explorer Manage columns component', () => {
   });
   it('Simulate save button', () => {
     const wrapper = mount(<DomainExplorerManageColumns {...props} />);
-    wrapper
-      .find('#manage-columns-button')
-      .first()
-      .simulate('click');
-    wrapper
-      .find('#save-columns')
-      .first()
-      .simulate('click');
+    wrapper.find('#manage-columns-button').first().simulate('click');
+    wrapper.find('#save-columns').first().simulate('click');
     expect(wrapper.find('DataList')).toBeTruthy();
     expect(wrapper.find('Dropdown')).toBeTruthy();
   });
@@ -557,10 +540,7 @@ describe('Domain Explorer Manage columns component', () => {
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = mount(<DomainExplorerManageColumns {...props} />);
     // below function triggers made to test handleSelectClick('all')
-    wrapper
-      .find('#manage-columns-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#manage-columns-button').first().simulate('click');
     act(() => {
       wrapper
         .find('#selectAll-dropdown')
@@ -572,11 +552,7 @@ describe('Domain Explorer Manage columns component', () => {
         .first()
         .props()
         ['toggle']['props'].onToggle();
-      wrapper
-        .find('#selectAll-dropdown')
-        .first()
-        .props()
-        ['onSelect'](event);
+      wrapper.find('#selectAll-dropdown').first().props()['onSelect'](event);
     });
     expect(wrapper.find('#selectAll-dropdown')).toBeTruthy();
     expect(wrapper.find('DropdownItem')).toBeTruthy();
@@ -604,10 +580,7 @@ describe('Domain Explorer Manage columns component', () => {
       <DomainExplorerManageColumns {...{ ...props, selected }} />
     );
     // opens modal on click
-    wrapper
-      .find('#manage-columns-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#manage-columns-button').first().simulate('click');
     // tests checkbox on the select all/none dropdown present on the Modal
     act(() => {
       wrapper
@@ -622,11 +595,7 @@ describe('Domain Explorer Manage columns component', () => {
         .props()
         ['toggle']['props'].onToggle();
       // triggers select function on select all/none dropdown
-      wrapper
-        .find('#selectAll-dropdown')
-        .first()
-        .props()
-        .onSelect(event);
+      wrapper.find('#selectAll-dropdown').first().props().onSelect(event);
       // triggers click on dropdown's first item
       wrapper
         .find('#selectAll-dropdown')
@@ -654,10 +623,7 @@ describe('Domain Explorer Manage columns component', () => {
     };
     client.query.mockReturnValueOnce(mGraphQLResponse);
     const wrapper = mount(<DomainExplorerManageColumns {...props} />);
-    wrapper
-      .find('#manage-columns-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#manage-columns-button').first().simulate('click');
     expect(wrapper.find('#selectAll-dropdown')).toBeTruthy();
   });
 });

@@ -33,17 +33,14 @@ export const ProcessListEnvelopeView = React.forwardRef<
   ProcessListEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
-  const [processInitialState, setProcessInitialState] = useState<
-    ProcessListInitArgs
-  >({} as ProcessListInitArgs);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
+  const [processInitialState, setProcessInitialState] =
+    useState<ProcessListInitArgs>({} as ProcessListInitArgs);
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: initialState => {
+      initialize: (initialState) => {
         setEnvelopeConnectedToChannel(false);
         setProcessInitialState(initialState);
         setEnvelopeConnectedToChannel(true);

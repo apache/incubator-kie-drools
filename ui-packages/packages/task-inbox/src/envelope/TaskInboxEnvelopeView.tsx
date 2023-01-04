@@ -44,10 +44,8 @@ export const TaskInboxEnvelopeView = React.forwardRef<
   TaskInboxEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
   const [initialState, setInitialState] = useState<TaskInboxState>();
   const [allTaskStates, setAllTaskStates] = useState<string[]>(
     getDefaultTaskStates()
@@ -70,7 +68,7 @@ export const TaskInboxEnvelopeView = React.forwardRef<
 
         setEnvelopeConnectedToChannel(true);
       },
-      notify: userName => {
+      notify: (userName) => {
         if (!_.isEmpty(userName)) {
           setCurrentUser(userName);
         }

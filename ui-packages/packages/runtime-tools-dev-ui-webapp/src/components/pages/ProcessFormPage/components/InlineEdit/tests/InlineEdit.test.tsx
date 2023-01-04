@@ -25,10 +25,7 @@ describe('inline edit tests', () => {
   it('enter text and confirm', async () => {
     let wrapper = mount(<InlineEdit {...props} />);
     await act(async () => {
-      wrapper
-        .find(Button)
-        .at(0)
-        .simulate('click');
+      wrapper.find(Button).at(0).simulate('click');
     });
     wrapper = wrapper.update();
     await act(async () => {
@@ -36,10 +33,7 @@ describe('inline edit tests', () => {
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find(Button)
-        .at(1)
-        .simulate('click');
+      wrapper.find(Button).at(1).simulate('click');
     });
     wrapper = wrapper.update();
   });

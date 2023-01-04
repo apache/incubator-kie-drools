@@ -72,7 +72,8 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
       return false;
     }
 
-    const testUserSystem: TestUserContext = context.userContext as TestUserContext;
+    const testUserSystem: TestUserContext =
+      context.userContext as TestUserContext;
     const userManager: TestUserManager = testUserSystem.getUserManager();
     const user = userManager.getUser(newUserId);
 
@@ -98,7 +99,7 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
 
   const checkEmptyArray = (newGroups: string): boolean => {
     return (
-      newGroups.split(',').filter(group => group && group.trim().length > 0)
+      newGroups.split(',').filter((group) => group && group.trim().length > 0)
         .length > 0
     );
   };
@@ -120,12 +121,13 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
     const isUserIdValidated = validateUserId(userId);
     const areGroupsValidated = validateGroups(groups);
     if (isUserIdValidated && areGroupsValidated) {
-      const testUserSystem: TestUserContext = context.userContext as TestUserContext;
+      const testUserSystem: TestUserContext =
+        context.userContext as TestUserContext;
 
       const userGroups = groups
         .split(',')
-        .map(group => group.trim())
-        .filter(group => group.length > 0);
+        .map((group) => group.trim())
+        .filter((group) => group.length > 0);
 
       testUserSystem.getUserManager().addUser(userId, userGroups);
 
@@ -216,7 +218,7 @@ const AddTestUser: React.FC<IOwnProps & OUIAProps> = ({
                 label="Log in with user after adding it"
                 id="login"
                 isChecked={login}
-                onChange={checked => setLogin(checked)}
+                onChange={(checked) => setLogin(checked)}
               />
             </FormGroup>
             <ActionGroup>

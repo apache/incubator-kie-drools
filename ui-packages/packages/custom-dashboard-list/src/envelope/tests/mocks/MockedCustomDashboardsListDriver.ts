@@ -33,7 +33,8 @@ export const customDashboardInfos: CustomDashboardInfo[] = [
   }
 ];
 export class MockedCustomDashboardListDriver
-  implements CustomDashboardListDriver {
+  implements CustomDashboardListDriver
+{
   applyFilter(customDashboardFilter: CustomDashboardFilter): Promise<void> {
     return Promise.resolve();
   }

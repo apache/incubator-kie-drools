@@ -17,8 +17,9 @@
 import { WorkflowFormChannelApi, WorkflowFormDriver } from '../api';
 
 export class EmbeddedWorkflowFormChannelApiImpl
-  implements WorkflowFormChannelApi {
-  constructor(private readonly driver: WorkflowFormDriver) { }
+  implements WorkflowFormChannelApi
+{
+  constructor(private readonly driver: WorkflowFormDriver) {}
 
   workflowForm__startWorkflowCloudEvent(formData: any): Promise<void> {
     return this.driver.startWorkflowCloudEvent(formData);
@@ -32,7 +33,10 @@ export class EmbeddedWorkflowFormChannelApiImpl
     return this.driver.getCustomWorkflowSchema();
   }
 
-  workflowForm__startWorkflowRest(data: Record<string, any>, endpoint: string): Promise<void> {
+  workflowForm__startWorkflowRest(
+    data: Record<string, any>,
+    endpoint: string
+  ): Promise<void> {
     return this.driver.startWorkflowRest(data, endpoint);
   }
 }

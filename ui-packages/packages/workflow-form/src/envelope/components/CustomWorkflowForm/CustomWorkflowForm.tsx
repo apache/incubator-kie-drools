@@ -16,55 +16,59 @@
 
 import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { ActionType, FormRendererApi, FormAction, FormRenderer } from '@kogito-apps/components-common';
+import {
+  ActionType,
+  FormRendererApi,
+  FormAction,
+  FormRenderer
+} from '@kogito-apps/components-common';
 import { WorkflowFormDriver } from '../../../api/WorkflowFormDriver';
 import { WorkflowDefinition } from '../../../api';
 
 export interface CustomWorkflowFormProps {
-    customFormSchema: Record<string, any>;
-    driver: WorkflowFormDriver
-    workflowDefinition: WorkflowDefinition
+  customFormSchema: Record<string, any>;
+  driver: WorkflowFormDriver;
+  workflowDefinition: WorkflowDefinition;
 }
 const CustomWorkflowForm: React.FC<CustomWorkflowFormProps & OUIAProps> = ({
-    workflowDefinition,
-    customFormSchema,
-    driver,
-    ouiaId,
-    ouiaSafe
+  workflowDefinition,
+  customFormSchema,
+  driver,
+  ouiaId,
+  ouiaSafe
 }) => {
-    const formRendererApi = React.useRef<FormRendererApi>();
+  const formRendererApi = React.useRef<FormRendererApi>();
 
-    const formAction: FormAction[] = [
-        {
-            name: 'Start'
-        },
-        {
-            name: 'Reset',
-            execute: () => {
-                formRendererApi?.current?.doReset()
-            },
-            actionType: ActionType.RESET
-        }
-    ];
-
-    const startWorkflow = (data: Record<string, any>): void => {
-        driver.startWorkflowRest(data, workflowDefinition.endpoint).then(() => {
-            formRendererApi?.current?.doReset();
-        })
-
+  const formAction: FormAction[] = [
+    {
+      name: 'Start'
+    },
+    {
+      name: 'Reset',
+      execute: () => {
+        formRendererApi?.current?.doReset();
+      },
+      actionType: ActionType.RESET
     }
+  ];
 
-    return (
-        <div {...componentOuiaProps(ouiaId, 'custom-workflow-form', ouiaSafe)}>
-            <FormRenderer
-                formSchema={customFormSchema}
-                readOnly={false}
-                onSubmit={startWorkflow}
-                formActions={formAction}
-                ref={formRendererApi}
-            />
-        </div>
-    );
+  const startWorkflow = (data: Record<string, any>): void => {
+    driver.startWorkflowRest(data, workflowDefinition.endpoint).then(() => {
+      formRendererApi?.current?.doReset();
+    });
+  };
+
+  return (
+    <div {...componentOuiaProps(ouiaId, 'custom-workflow-form', ouiaSafe)}>
+      <FormRenderer
+        formSchema={customFormSchema}
+        readOnly={false}
+        onSubmit={startWorkflow}
+        formActions={formAction}
+        ref={formRendererApi}
+      />
+    </div>
+  );
 };
 
 export default CustomWorkflowForm;

@@ -44,16 +44,9 @@ export interface CustomTaskFormDisplayerProps {
   driver: TaskFormDriver;
 }
 
-const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps &
-  OUIAProps> = ({
-  userTask,
-  customForm,
-  schema,
-  user,
-  driver,
-  ouiaId,
-  ouiaSafe
-}) => {
+const CustomTaskFormDisplayer: React.FC<
+  CustomTaskFormDisplayerProps & OUIAProps
+> = ({ userTask, customForm, schema, user, driver, ouiaId, ouiaSafe }) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>();
   const [formUUID] = useState<string>(uuidv4());
   const [formData] = useState(generateFormData(userTask));
@@ -82,7 +75,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps &
 
   useEffect(() => {
     if (schema.phases) {
-      const actions = schema.phases.map(phase => {
+      const actions = schema.phases.map((phase) => {
         return {
           name: phase,
           execute: () => {
@@ -93,8 +86,8 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps &
                   phase: phase
                 }
               })
-              .then(formOutput => doSubmit(phase, formOutput))
-              .catch(error =>
+              .then((formOutput) => doSubmit(phase, formOutput))
+              .catch((error) =>
                 console.log(`Couldn't submit form due to: ${error}`)
               );
           }
@@ -137,7 +130,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps &
             formContent={customForm}
             data={formData}
             context={buildTaskFormContext(userTask, schema, user)}
-            onOpenForm={opened => setFormOpened(opened)}
+            onOpenForm={(opened) => setFormOpened(opened)}
             ref={formDisplayerApiRef}
           />
         </StackItem>

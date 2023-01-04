@@ -53,10 +53,7 @@ describe('ProcessDefinition list toolbar tests', () => {
           }
         } as any);
     });
-    wrapper
-      .find('#apply-filter')
-      .find('button')
-      .simulate('click');
+    wrapper.find('#apply-filter').find('button').simulate('click');
     expect(applyFilter).toHaveBeenCalled();
   });
 
@@ -71,10 +68,7 @@ describe('ProcessDefinition list toolbar tests', () => {
       />
     );
     act(() => {
-      wrapper
-        .find('Toolbar')
-        .props()
-        ['clearAllFilters']();
+      wrapper.find('Toolbar').props()['clearAllFilters']();
     });
     expect(applyFilter).toHaveBeenCalled();
   });
@@ -90,10 +84,7 @@ describe('ProcessDefinition list toolbar tests', () => {
       />
     );
     act(() => {
-      wrapper
-        .find(Tooltip)
-        .find(Button)
-        .simulate('click');
+      wrapper.find(Tooltip).find(Button).simulate('click');
     });
     expect(applyFilter).toHaveBeenCalled();
   });
@@ -119,10 +110,7 @@ describe('ProcessDefinition list toolbar tests', () => {
           }
         } as any);
     });
-    wrapper
-      .find('#apply-filter')
-      .find('button')
-      .simulate('click');
+    wrapper.find('#apply-filter').find('button').simulate('click');
     expect(applyFilter).toHaveBeenCalled();
   });
 

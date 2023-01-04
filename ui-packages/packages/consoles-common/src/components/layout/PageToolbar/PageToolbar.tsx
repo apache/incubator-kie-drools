@@ -54,7 +54,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
     setmodalToggle(!modalToggle);
   };
 
-  const onDropdownToggle = _isDropdownOpen => {
+  const onDropdownToggle = (_isDropdownOpen) => {
     setDropdownOpen(_isDropdownOpen);
   };
 
@@ -74,7 +74,8 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
 
   const handleLogout = () => {
     if (supportsLogout(context.userContext)) {
-      const logout: LogoutUserContext = context.userContext as LogoutUserContext;
+      const logout: LogoutUserContext =
+        context.userContext as LogoutUserContext;
       logout.logout();
     }
   };

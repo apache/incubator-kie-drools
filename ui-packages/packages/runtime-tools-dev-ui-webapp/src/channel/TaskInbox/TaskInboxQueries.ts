@@ -52,7 +52,7 @@ export class GraphQLTaskInboxQueries implements TaskInboxQueries {
           },
           fetchPolicy: 'network-only'
         })
-        .then(value => {
+        .then((value) => {
           if (
             value.data.UserTaskInstances &&
             value.data.UserTaskInstances.length > 0
@@ -62,7 +62,7 @@ export class GraphQLTaskInboxQueries implements TaskInboxQueries {
           }
           resolve(undefined);
         })
-        .catch(reason => reject(reason));
+        .catch((reason) => reject(reason));
     });
   }
 
@@ -85,10 +85,10 @@ export class GraphQLTaskInboxQueries implements TaskInboxQueries {
           },
           fetchPolicy: 'network-only'
         })
-        .then(value => {
+        .then((value) => {
           resolve(value.data.UserTaskInstances);
         })
-        .catch(reason => reject(reason));
+        .catch((reason) => reject(reason));
     });
   }
 }

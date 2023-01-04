@@ -78,7 +78,7 @@ const data = [
   }
 ];
 
-const stateColumnTransformer = value => {
+const stateColumnTransformer = (value) => {
   if (!value) {
     return null;
   }

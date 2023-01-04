@@ -43,11 +43,16 @@ describe('WorkflowFormEnvelopeViewDriver tests', () => {
     };
     driver.startWorkflowCloudEvent(formJSON);
 
-    expect(requests.workflowForm__startWorkflowCloudEvent).toHaveBeenCalledWith(formJSON);
+    expect(requests.workflowForm__startWorkflowCloudEvent).toHaveBeenCalledWith(
+      formJSON
+    );
   });
 
-  it('start custom workflow',()=>{
-    driver.startWorkflowRest({name:"John"}, 'http://localhost:8080/test');
-    expect(requests.workflowForm__startWorkflowRest).toHaveBeenCalledWith({name:"John"}, 'http://localhost:8080/test');
-  })
+  it('start custom workflow', () => {
+    driver.startWorkflowRest({ name: 'John' }, 'http://localhost:8080/test');
+    expect(requests.workflowForm__startWorkflowRest).toHaveBeenCalledWith(
+      { name: 'John' },
+      'http://localhost:8080/test'
+    );
+  });
 });

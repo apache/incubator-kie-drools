@@ -78,11 +78,7 @@ describe('job actions kebab tests', () => {
   it('dropdown open/close tests and details click', async () => {
     let wrapper = mount(<JobActionsKebab {...props} />);
     await act(async () => {
-      wrapper
-        .find(Dropdown)
-        .find(KebabToggle)
-        .find('button')
-        .simulate('click');
+      wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     expect(
@@ -95,11 +91,7 @@ describe('job actions kebab tests', () => {
     ).toBeTruthy();
     expect(wrapper.find(Dropdown).prop('isOpen')).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(0)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(0).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     expect(wrapper.find(Dropdown).prop('isOpen')).toBeFalsy();
@@ -125,11 +117,7 @@ describe('job actions kebab tests', () => {
         .contains('Reschedule')
     ).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(1).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     expect(wrapper.find('JobsRescheduleModal').props()['isModalOpen']).toEqual(
@@ -157,10 +145,7 @@ describe('job actions kebab tests', () => {
         .contains('Reschedule')
     ).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find('#reschedule-option')
-        .at(0)
-        .simulate('click');
+      wrapper.find('#reschedule-option').at(0).simulate('click');
     });
     wrapper = wrapper.update();
     expect(wrapper.find('JobsRescheduleModal').props()['isModalOpen']).toEqual(
@@ -194,11 +179,7 @@ describe('job actions kebab tests', () => {
           .contains('Cancel')
       ).toBeTruthy();
       await act(async () => {
-        wrapper
-          .find(DropdownItem)
-          .at(2)
-          .find('button')
-          .simulate('click');
+        wrapper.find(DropdownItem).at(2).find('button').simulate('click');
       });
       wrapper = wrapper.update();
       expect(wrapper.find('JobsCancelModal').props()['isModalOpen']).toEqual(
@@ -234,11 +215,7 @@ describe('job actions kebab tests', () => {
           .contains('Cancel')
       ).toBeTruthy();
       await act(async () => {
-        wrapper
-          .find(DropdownItem)
-          .at(2)
-          .find('button')
-          .simulate('click');
+        wrapper.find(DropdownItem).at(2).find('button').simulate('click');
       });
       wrapper = wrapper.update();
       expect(wrapper.find('JobsCancelModal').props()['isModalOpen']).toEqual(

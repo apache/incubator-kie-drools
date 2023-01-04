@@ -26,8 +26,9 @@ interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
 }
 
-const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps &
-  OUIAProps> = ({ processInstance, ouiaId, ouiaSafe }) => {
+const ProcessDetailsContainer: React.FC<
+  ProcessDetailsContainerProps & OUIAProps
+> = ({ processInstance, ouiaId, ouiaSafe }) => {
   const history = useHistory();
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   useEffect(() => {

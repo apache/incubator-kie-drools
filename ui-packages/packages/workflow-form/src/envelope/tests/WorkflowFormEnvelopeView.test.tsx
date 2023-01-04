@@ -17,13 +17,15 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
-import { MockedMessageBusClientApi, workflowForm__getCustomWorkflowSchema, workflowSchema } from './mocks/Mocks';
+import {
+  MockedMessageBusClientApi,
+  workflowForm__getCustomWorkflowSchema,
+  workflowSchema
+} from './mocks/Mocks';
 import WorkflowFormEnvelopeView, {
   WorkflowFormEnvelopeViewApi
 } from '../WorkflowFormEnvelopeView';
-import {
-  KogitoSpinner
-} from '@kogito-apps/components-common';
+import { KogitoSpinner } from '@kogito-apps/components-common';
 import CustomWorkflowForm from '../components/CustomWorkflowForm/CustomWorkflowForm';
 import WorkflowForm from '../components/WorkflowForm/WorkflowForm';
 
@@ -88,7 +90,6 @@ describe('WorkflowFormEnvelopeView tests', () => {
     const workflowForm = wrapper.find(WorkflowForm);
     expect(workflowForm.exists()).toBeTruthy();
     expect(workflowForm.props().driver).not.toBeNull();
-
   });
 
   it('Custom Workflow Form', async () => {
@@ -119,6 +120,5 @@ describe('WorkflowFormEnvelopeView tests', () => {
     const customWorkflowForm = wrapper.find(CustomWorkflowForm);
     expect(customWorkflowForm.exists()).toBeTruthy();
     expect(customWorkflowForm.props().driver).not.toBeNull();
-
   });
 });

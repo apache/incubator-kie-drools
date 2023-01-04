@@ -116,7 +116,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     }
   };
 
-  columns.map(column => {
+  columns.map((column) => {
     column['props'] = { className: 'pf-u-text-align-center' };
     checkNotEmpty() && column.title !== 'Id'
       ? (column['transforms'] = [sortable])
@@ -190,7 +190,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     setIsActionPerformed(false);
     const copyOfRows = [...rows];
     if (rowId === -1) {
-      copyOfRows.forEach(row => {
+      copyOfRows.forEach((row) => {
         row.selected = isSelected;
         return row;
       });
@@ -204,7 +204,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
       if (copyOfRows[rowId]) {
         copyOfRows[rowId].selected = isSelected;
         const row = [...jobs].filter(
-          job => job.id === copyOfRows[rowId].rowKey
+          (job) => job.id === copyOfRows[rowId].rowKey
         );
         const rowData = _.find(selectedJobInstances, [
           'id',
@@ -216,7 +216,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
           const copyOfSelectedJobInstances = [...selectedJobInstances];
           _.remove(
             copyOfSelectedJobInstances,
-            job => job.id === copyOfRows[rowId].rowKey
+            (job) => job.id === copyOfRows[rowId].rowKey
           );
           setSelectedJobInstances(copyOfSelectedJobInstances);
         }
@@ -228,7 +228,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
   const tableContent = (jobs): void => {
     !isLoading &&
       !_.isEmpty(jobs) &&
-      jobs.map(job => {
+      jobs.map((job) => {
         const retrievedValue = getValues(
           _.pick(job, [
             'id',
@@ -280,25 +280,25 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
         ];
         setRows(tempRows);
       } else {
-        setRows(prev => [...prev, ...jobRow]);
+        setRows((prev) => [...prev, ...jobRow]);
       }
     }
   };
 
   const handleJobDetails = (id): void => {
-    const job = jobs.find(job => job.id === id);
+    const job = jobs.find((job) => job.id === id);
     setSelectedJob(job);
     handleDetailsToggle();
   };
 
   const handleJobReschedule = (id): void => {
-    const job = jobs.find(job => job.id === id);
+    const job = jobs.find((job) => job.id === id);
     setSelectedJob(job);
     handleRescheduleToggle();
   };
 
   const handleCancelAction = async (id): Promise<void> => {
-    const job: any = jobs.find(job => job.id === id);
+    const job: any = jobs.find((job) => job.id === id);
     const cancelResponse = await driver.cancelJob(job);
     const title: JSX.Element = setTitle(
       cancelResponse.modalTitle,
@@ -309,7 +309,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     handleCancelModalToggle();
   };
 
-  const dynamicActions = rowData => {
+  const dynamicActions = (rowData) => {
     if (rowData.type === 'Editable') {
       return [
         {
@@ -358,7 +358,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
   useEffect(() => {
     /* istanbul ignore else*/
     if (isActionPerformed) {
-      const updatedRows = rows.filter(row => {
+      const updatedRows = rows.filter((row) => {
         row.selected = false;
         return row;
       });

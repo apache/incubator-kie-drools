@@ -56,7 +56,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TaskInboxEnvelopeViewApi>();
-    return new Promise<() => TaskInboxEnvelopeViewApi>(res => {
+    return new Promise<() => TaskInboxEnvelopeViewApi>((res) => {
       ReactDOM.render(
         <TaskInboxEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
         args.container,
@@ -67,6 +67,6 @@ export function init(args: {
 
   const context: TaskInboxEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new TaskInboxEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new TaskInboxEnvelopeApiImpl(apiFactoryArgs)
   });
 }

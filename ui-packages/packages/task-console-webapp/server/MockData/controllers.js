@@ -50,11 +50,11 @@ module.exports = controller = {
       `......ProcessId:${req.params.processId} --piId:${req.params.processId} --taskId:${req.params.taskId}`
     );
 
-    const processId = restData.process.filter(data => {
+    const processId = restData.process.filter((data) => {
       return data.processId === req.params.processId;
     });
 
-    const task = graphQL.UserTaskInstances.find(userTask => {
+    const task = graphQL.UserTaskInstances.find((userTask) => {
       return userTask.id === req.params.taskId;
     });
 
@@ -77,7 +77,7 @@ module.exports = controller = {
       `......ProcessId:${req.params.processId} --piId:${req.params.processInstanceId} --taskId:${req.params.taskId}`
     );
 
-    const task = graphQL.UserTaskInstances.find(userTask => {
+    const task = graphQL.UserTaskInstances.find((userTask) => {
       return userTask.id === req.params.taskId;
     });
 

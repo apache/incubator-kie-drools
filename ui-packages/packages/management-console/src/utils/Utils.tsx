@@ -217,7 +217,7 @@ export const handleNodeInstanceRetrigger = (
     .then(() => {
       onRetriggerSuccess();
     })
-    .catch(error => {
+    .catch((error) => {
       onRetriggerFailure(JSON.stringify(error.message));
     });
 };
@@ -235,7 +235,7 @@ export const handleNodeInstanceCancel = (
     .then(() => {
       onCancelSuccess();
     })
-    .catch(error => {
+    .catch((error) => {
       onCancelFailure(JSON.stringify(error.message));
     });
 };
@@ -257,7 +257,7 @@ export const performMultipleAction = async (
         () => {
           successInstances.push(instance);
         },
-        errorMessage => {
+        (errorMessage) => {
           instance.errorMessage = errorMessage;
           failedInstances.push(instance);
         }
@@ -268,7 +268,7 @@ export const performMultipleAction = async (
         () => {
           successInstances.push(instance);
         },
-        errorMessage => {
+        (errorMessage) => {
           instance.errorMessage = errorMessage;
           failedInstances.push(instance);
         }
@@ -279,7 +279,7 @@ export const performMultipleAction = async (
         () => {
           successInstances.push(instance);
         },
-        errorMessage => {
+        (errorMessage) => {
           instance.errorMessage = errorMessage;
           failedInstances.push(instance);
         }
@@ -318,7 +318,7 @@ export const handleVariableUpdate = async (
   try {
     await axios
       .put(`${processInstance.endpoint}/${processInstance.id}`, updateJson)
-      .then(res => {
+      .then((res) => {
         setUpdateJson(res.data);
         setDisplayLabel(false);
         setDisplaySuccess(true);
@@ -354,7 +354,7 @@ export const handleJobReschedule = async (
     };
   }
   try {
-    await axios.patch(`${job.endpoint}/${job.id}`, parameter).then(res => {
+    await axios.patch(`${job.endpoint}/${job.id}`, parameter).then((res) => {
       setRescheduleClicked(!rescheduleClicked);
       refetch();
     });
@@ -443,21 +443,21 @@ export const getSvg = async (data, setSvg, setSvgError): Promise<void> => {
     .get(
       `/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
     )
-    .then(res => {
+    .then((res) => {
       const temp = <SVG src={res.data} />;
       setSvg(temp);
     })
-    .catch(async error => {
+    .catch(async (error) => {
       if (data.ProcessInstances[0].serviceUrl) {
         axios
           .get(
             `${data.ProcessInstances[0].serviceUrl}/svg/processes/${data.ProcessInstances[0].processId}/instances/${data.ProcessInstances[0].id}`
           )
-          .then(res => {
+          .then((res) => {
             const temp = <SVG src={res.data} />;
             setSvg(temp);
           })
-          .catch(err => {
+          .catch((err) => {
             if (err.response && err.response.status !== 404) {
               setSvgError(err.message);
             }

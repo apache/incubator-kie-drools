@@ -23,7 +23,8 @@ import {
  * Implementation of the CustomDashboardViewChannelApiImpl delegating to a CustomDashboardViewDriver
  */
 export class CustomDashboardViewChannelApiImpl
-  implements CustomDashboardViewChannelApi {
+  implements CustomDashboardViewChannelApi
+{
   constructor(private readonly driver: CustomDashboardViewDriver) {}
 
   customDashboardView__getCustomDashboardView(name: string): Promise<string> {

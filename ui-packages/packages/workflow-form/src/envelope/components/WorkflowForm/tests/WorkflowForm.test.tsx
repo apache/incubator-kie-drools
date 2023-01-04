@@ -80,10 +80,7 @@ describe('WorkflowForm Test', () => {
     };
 
     await act(async () => {
-      workflowForm
-        .find('Button[variant="primary"]')
-        .props()
-        .onClick(formData);
+      workflowForm.find('Button[variant="primary"]').props().onClick(formData);
       wait();
     });
     expect(driver.startWorkflowCloudEvent).toHaveBeenCalled();

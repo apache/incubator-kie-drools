@@ -67,7 +67,7 @@ const JobsPanel: React.FC<JobsPanelProps & OUIAProps> = ({
 
   const createRows = (jobsArray: Job[]): IRow[] => {
     const jobRows = [];
-    jobsArray.forEach(job => {
+    jobsArray.forEach((job) => {
       jobRows.push({
         cells: [
           {

@@ -129,9 +129,8 @@ describe('uitility function testing', () => {
     const testProcessInstance = [
       { ...ProcessInstances[0], errorMessage: '404 error' }
     ];
-    const testResultWithError = formatForBulkListProcessInstance(
-      testProcessInstance
-    );
+    const testResultWithError =
+      formatForBulkListProcessInstance(testProcessInstance);
     expect(testResultWithError).toEqual([
       {
         id: testProcessInstance[0].id,

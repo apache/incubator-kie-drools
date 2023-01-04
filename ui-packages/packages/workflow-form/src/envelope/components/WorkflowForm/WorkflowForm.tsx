@@ -66,12 +66,14 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
           labelIcon={
             <Popover
               id="workflow-form-type-help"
-              bodyContent={<div>The type of the cloud event to be triggered.</div>}
+              bodyContent={
+                <div>The type of the cloud event to be triggered.</div>
+              }
             >
               <button
                 type="button"
                 aria-label="More info for type field"
-                onClick={e => e.preventDefault()}
+                onClick={(e) => e.preventDefault()}
                 className="pf-c-form__group-label-help"
               >
                 <HelpIcon noVerticalAlign />
@@ -102,7 +104,7 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
               <button
                 type="button"
                 aria-label="More info for data field"
-                onClick={e => e.preventDefault()}
+                onClick={(e) => e.preventDefault()}
                 className="pf-c-form__group-label-help"
               >
                 <HelpIcon noVerticalAlign />

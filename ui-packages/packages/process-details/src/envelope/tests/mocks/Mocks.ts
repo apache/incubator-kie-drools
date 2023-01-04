@@ -213,10 +213,11 @@ export const MockedEnvelopeBusControllerDefinition = jest.fn<
   receive: jest.fn()
 }));
 
-export const MockedEnvelopeBusController = new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
-  ProcessDetailsEnvelopeApi,
-  ProcessDetailsChannelApi
->;
+export const MockedEnvelopeBusController =
+  new MockedEnvelopeBusControllerDefinition() as EnvelopeBusController<
+    ProcessDetailsEnvelopeApi,
+    ProcessDetailsChannelApi
+  >;
 
 export const MockedProcessDetailsEnvelopeViewApi = jest.fn<
   ProcessDetailsEnvelopeViewApi,

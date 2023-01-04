@@ -21,10 +21,12 @@ interface IOwnProps {
 
 export type LocationProps = H.LocationState & { prev?: string };
 
-const PageNotFound: React.FC<IOwnProps &
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  RouteComponentProps<{}, StaticContext, LocationProps> &
-  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+const PageNotFound: React.FC<
+  IOwnProps &
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    RouteComponentProps<{}, StaticContext, LocationProps> &
+    OUIAProps
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -33,7 +35,7 @@ const PageNotFound: React.FC<IOwnProps &
   }
 
   const tempPath = prevPath.split('/');
-  prevPath = tempPath.filter(item => item);
+  prevPath = tempPath.filter((item) => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {

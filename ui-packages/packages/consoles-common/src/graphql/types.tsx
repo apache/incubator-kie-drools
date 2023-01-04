@@ -24,10 +24,12 @@ export namespace GraphQL {
   export type Exact<T extends { [key: string]: unknown }> = {
     [K in keyof T]: T[K];
   };
-  export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-    { [SubKey in K]?: Maybe<T[SubKey]> };
-  export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-    { [SubKey in K]: Maybe<T[SubKey]> };
+  export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+    [SubKey in K]?: Maybe<T[SubKey]>;
+  };
+  export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+    [SubKey in K]: Maybe<T[SubKey]>;
+  };
   const defaultOptions = {};
   /** All built-in and custom scalars, mapped to their actual values */
   export type Scalars = {
@@ -1851,10 +1853,11 @@ export namespace GraphQL {
   export type GetColumnPickerAttributesLazyQueryHookResult = ReturnType<
     typeof useGetColumnPickerAttributesLazyQuery
   >;
-  export type GetColumnPickerAttributesQueryResult = ApolloReactCommon.QueryResult<
-    GetColumnPickerAttributesQuery,
-    GetColumnPickerAttributesQueryVariables
-  >;
+  export type GetColumnPickerAttributesQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetColumnPickerAttributesQuery,
+      GetColumnPickerAttributesQueryVariables
+    >;
   export const GetQueryTypesDocument = gql`
     query getQueryTypes {
       __schema {
@@ -2068,10 +2071,11 @@ export namespace GraphQL {
   export type GetInputFieldsFromQueryLazyQueryHookResult = ReturnType<
     typeof useGetInputFieldsFromQueryLazyQuery
   >;
-  export type GetInputFieldsFromQueryQueryResult = ApolloReactCommon.QueryResult<
-    GetInputFieldsFromQueryQuery,
-    GetInputFieldsFromQueryQueryVariables
-  >;
+  export type GetInputFieldsFromQueryQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetInputFieldsFromQueryQuery,
+      GetInputFieldsFromQueryQueryVariables
+    >;
   export const GetInputFieldsFromTypeDocument = gql`
     query getInputFieldsFromType($type: String!) {
       __type(name: $type) {
@@ -2470,10 +2474,11 @@ export namespace GraphQL {
   export type GetJobsByProcessInstanceIdLazyQueryHookResult = ReturnType<
     typeof useGetJobsByProcessInstanceIdLazyQuery
   >;
-  export type GetJobsByProcessInstanceIdQueryResult = ApolloReactCommon.QueryResult<
-    GetJobsByProcessInstanceIdQuery,
-    GetJobsByProcessInstanceIdQueryVariables
-  >;
+  export type GetJobsByProcessInstanceIdQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >;
   export const GetJobsWithFiltersDocument = gql`
     query getJobsWithFilters(
       $values: [JobStatus]
@@ -2563,10 +2568,11 @@ export namespace GraphQL {
       ProcessInstanceAbort(id: $processId)
     }
   `;
-  export type AbortProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
-    AbortProcessInstanceMutation,
-    AbortProcessInstanceMutationVariables
-  >;
+  export type AbortProcessInstanceMutationFn =
+    ApolloReactCommon.MutationFunction<
+      AbortProcessInstanceMutation,
+      AbortProcessInstanceMutationVariables
+    >;
 
   /**
    * __useAbortProcessInstanceMutation__
@@ -2600,22 +2606,23 @@ export namespace GraphQL {
   export type AbortProcessInstanceMutationHookResult = ReturnType<
     typeof useAbortProcessInstanceMutation
   >;
-  export type AbortProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
-    AbortProcessInstanceMutation
-  >;
-  export type AbortProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    AbortProcessInstanceMutation,
-    AbortProcessInstanceMutationVariables
-  >;
+  export type AbortProcessInstanceMutationResult =
+    ApolloReactCommon.MutationResult<AbortProcessInstanceMutation>;
+  export type AbortProcessInstanceMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      AbortProcessInstanceMutation,
+      AbortProcessInstanceMutationVariables
+    >;
   export const SkipProcessInstanceDocument = gql`
     mutation skipProcessInstance($processId: String) {
       ProcessInstanceSkip(id: $processId)
     }
   `;
-  export type SkipProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
-    SkipProcessInstanceMutation,
-    SkipProcessInstanceMutationVariables
-  >;
+  export type SkipProcessInstanceMutationFn =
+    ApolloReactCommon.MutationFunction<
+      SkipProcessInstanceMutation,
+      SkipProcessInstanceMutationVariables
+    >;
 
   /**
    * __useSkipProcessInstanceMutation__
@@ -2649,22 +2656,23 @@ export namespace GraphQL {
   export type SkipProcessInstanceMutationHookResult = ReturnType<
     typeof useSkipProcessInstanceMutation
   >;
-  export type SkipProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
-    SkipProcessInstanceMutation
-  >;
-  export type SkipProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    SkipProcessInstanceMutation,
-    SkipProcessInstanceMutationVariables
-  >;
+  export type SkipProcessInstanceMutationResult =
+    ApolloReactCommon.MutationResult<SkipProcessInstanceMutation>;
+  export type SkipProcessInstanceMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      SkipProcessInstanceMutation,
+      SkipProcessInstanceMutationVariables
+    >;
   export const RetryProcessInstanceDocument = gql`
     mutation retryProcessInstance($processId: String) {
       ProcessInstanceRetry(id: $processId)
     }
   `;
-  export type RetryProcessInstanceMutationFn = ApolloReactCommon.MutationFunction<
-    RetryProcessInstanceMutation,
-    RetryProcessInstanceMutationVariables
-  >;
+  export type RetryProcessInstanceMutationFn =
+    ApolloReactCommon.MutationFunction<
+      RetryProcessInstanceMutation,
+      RetryProcessInstanceMutationVariables
+    >;
 
   /**
    * __useRetryProcessInstanceMutation__
@@ -2698,13 +2706,13 @@ export namespace GraphQL {
   export type RetryProcessInstanceMutationHookResult = ReturnType<
     typeof useRetryProcessInstanceMutation
   >;
-  export type RetryProcessInstanceMutationResult = ApolloReactCommon.MutationResult<
-    RetryProcessInstanceMutation
-  >;
-  export type RetryProcessInstanceMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    RetryProcessInstanceMutation,
-    RetryProcessInstanceMutationVariables
-  >;
+  export type RetryProcessInstanceMutationResult =
+    ApolloReactCommon.MutationResult<RetryProcessInstanceMutation>;
+  export type RetryProcessInstanceMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      RetryProcessInstanceMutation,
+      RetryProcessInstanceMutationVariables
+    >;
   export const GetProcessInstanceSvgDocument = gql`
     query getProcessInstanceSVG($processId: String) {
       ProcessInstances(where: { id: { equal: $processId } }) {
@@ -2823,10 +2831,11 @@ export namespace GraphQL {
   export type GetProcessInstanceNodeDefinitionsLazyQueryHookResult = ReturnType<
     typeof useGetProcessInstanceNodeDefinitionsLazyQuery
   >;
-  export type GetProcessInstanceNodeDefinitionsQueryResult = ApolloReactCommon.QueryResult<
-    GetProcessInstanceNodeDefinitionsQuery,
-    GetProcessInstanceNodeDefinitionsQueryVariables
-  >;
+  export type GetProcessInstanceNodeDefinitionsQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetProcessInstanceNodeDefinitionsQuery,
+      GetProcessInstanceNodeDefinitionsQueryVariables
+    >;
   export const HandleNodeTriggerDocument = gql`
     mutation handleNodeTrigger($processId: String, $nodeId: String) {
       NodeInstanceTrigger(id: $processId, nodeId: $nodeId)
@@ -2870,13 +2879,13 @@ export namespace GraphQL {
   export type HandleNodeTriggerMutationHookResult = ReturnType<
     typeof useHandleNodeTriggerMutation
   >;
-  export type HandleNodeTriggerMutationResult = ApolloReactCommon.MutationResult<
-    HandleNodeTriggerMutation
-  >;
-  export type HandleNodeTriggerMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    HandleNodeTriggerMutation,
-    HandleNodeTriggerMutationVariables
-  >;
+  export type HandleNodeTriggerMutationResult =
+    ApolloReactCommon.MutationResult<HandleNodeTriggerMutation>;
+  export type HandleNodeTriggerMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      HandleNodeTriggerMutation,
+      HandleNodeTriggerMutationVariables
+    >;
   export const HandleNodeInstanceCancelDocument = gql`
     mutation handleNodeInstanceCancel(
       $processId: String
@@ -2885,10 +2894,11 @@ export namespace GraphQL {
       NodeInstanceCancel(id: $processId, nodeInstanceId: $nodeInstanceId)
     }
   `;
-  export type HandleNodeInstanceCancelMutationFn = ApolloReactCommon.MutationFunction<
-    HandleNodeInstanceCancelMutation,
-    HandleNodeInstanceCancelMutationVariables
-  >;
+  export type HandleNodeInstanceCancelMutationFn =
+    ApolloReactCommon.MutationFunction<
+      HandleNodeInstanceCancelMutation,
+      HandleNodeInstanceCancelMutationVariables
+    >;
 
   /**
    * __useHandleNodeInstanceCancelMutation__
@@ -2923,13 +2933,13 @@ export namespace GraphQL {
   export type HandleNodeInstanceCancelMutationHookResult = ReturnType<
     typeof useHandleNodeInstanceCancelMutation
   >;
-  export type HandleNodeInstanceCancelMutationResult = ApolloReactCommon.MutationResult<
-    HandleNodeInstanceCancelMutation
-  >;
-  export type HandleNodeInstanceCancelMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    HandleNodeInstanceCancelMutation,
-    HandleNodeInstanceCancelMutationVariables
-  >;
+  export type HandleNodeInstanceCancelMutationResult =
+    ApolloReactCommon.MutationResult<HandleNodeInstanceCancelMutation>;
+  export type HandleNodeInstanceCancelMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      HandleNodeInstanceCancelMutation,
+      HandleNodeInstanceCancelMutationVariables
+    >;
   export const HandleNodeInstanceRetriggerDocument = gql`
     mutation handleNodeInstanceRetrigger(
       $processId: String
@@ -2938,10 +2948,11 @@ export namespace GraphQL {
       NodeInstanceRetrigger(id: $processId, nodeInstanceId: $nodeInstanceId)
     }
   `;
-  export type HandleNodeInstanceRetriggerMutationFn = ApolloReactCommon.MutationFunction<
-    HandleNodeInstanceRetriggerMutation,
-    HandleNodeInstanceRetriggerMutationVariables
-  >;
+  export type HandleNodeInstanceRetriggerMutationFn =
+    ApolloReactCommon.MutationFunction<
+      HandleNodeInstanceRetriggerMutation,
+      HandleNodeInstanceRetriggerMutationVariables
+    >;
 
   /**
    * __useHandleNodeInstanceRetriggerMutation__
@@ -2976,13 +2987,13 @@ export namespace GraphQL {
   export type HandleNodeInstanceRetriggerMutationHookResult = ReturnType<
     typeof useHandleNodeInstanceRetriggerMutation
   >;
-  export type HandleNodeInstanceRetriggerMutationResult = ApolloReactCommon.MutationResult<
-    HandleNodeInstanceRetriggerMutation
-  >;
-  export type HandleNodeInstanceRetriggerMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    HandleNodeInstanceRetriggerMutation,
-    HandleNodeInstanceRetriggerMutationVariables
-  >;
+  export type HandleNodeInstanceRetriggerMutationResult =
+    ApolloReactCommon.MutationResult<HandleNodeInstanceRetriggerMutation>;
+  export type HandleNodeInstanceRetriggerMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      HandleNodeInstanceRetriggerMutation,
+      HandleNodeInstanceRetriggerMutationVariables
+    >;
   export const HandleProcessVariableUpdateDocument = gql`
     mutation handleProcessVariableUpdate(
       $processId: String
@@ -2994,10 +3005,11 @@ export namespace GraphQL {
       )
     }
   `;
-  export type HandleProcessVariableUpdateMutationFn = ApolloReactCommon.MutationFunction<
-    HandleProcessVariableUpdateMutation,
-    HandleProcessVariableUpdateMutationVariables
-  >;
+  export type HandleProcessVariableUpdateMutationFn =
+    ApolloReactCommon.MutationFunction<
+      HandleProcessVariableUpdateMutation,
+      HandleProcessVariableUpdateMutationVariables
+    >;
 
   /**
    * __useHandleProcessVariableUpdateMutation__
@@ -3032,13 +3044,13 @@ export namespace GraphQL {
   export type HandleProcessVariableUpdateMutationHookResult = ReturnType<
     typeof useHandleProcessVariableUpdateMutation
   >;
-  export type HandleProcessVariableUpdateMutationResult = ApolloReactCommon.MutationResult<
-    HandleProcessVariableUpdateMutation
-  >;
-  export type HandleProcessVariableUpdateMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    HandleProcessVariableUpdateMutation,
-    HandleProcessVariableUpdateMutationVariables
-  >;
+  export type HandleProcessVariableUpdateMutationResult =
+    ApolloReactCommon.MutationResult<HandleProcessVariableUpdateMutation>;
+  export type HandleProcessVariableUpdateMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      HandleProcessVariableUpdateMutation,
+      HandleProcessVariableUpdateMutationVariables
+    >;
   export const JobCancelDocument = gql`
     mutation jobCancel($jobId: String) {
       JobCancel(id: $jobId)
@@ -3081,9 +3093,8 @@ export namespace GraphQL {
   export type JobCancelMutationHookResult = ReturnType<
     typeof useJobCancelMutation
   >;
-  export type JobCancelMutationResult = ApolloReactCommon.MutationResult<
-    JobCancelMutation
-  >;
+  export type JobCancelMutationResult =
+    ApolloReactCommon.MutationResult<JobCancelMutation>;
   export type JobCancelMutationOptions = ApolloReactCommon.BaseMutationOptions<
     JobCancelMutation,
     JobCancelMutationVariables
@@ -3093,10 +3104,11 @@ export namespace GraphQL {
       JobReschedule(id: $jobId, data: $data)
     }
   `;
-  export type HandleJobRescheduleMutationFn = ApolloReactCommon.MutationFunction<
-    HandleJobRescheduleMutation,
-    HandleJobRescheduleMutationVariables
-  >;
+  export type HandleJobRescheduleMutationFn =
+    ApolloReactCommon.MutationFunction<
+      HandleJobRescheduleMutation,
+      HandleJobRescheduleMutationVariables
+    >;
 
   /**
    * __useHandleJobRescheduleMutation__
@@ -3131,11 +3143,11 @@ export namespace GraphQL {
   export type HandleJobRescheduleMutationHookResult = ReturnType<
     typeof useHandleJobRescheduleMutation
   >;
-  export type HandleJobRescheduleMutationResult = ApolloReactCommon.MutationResult<
-    HandleJobRescheduleMutation
-  >;
-  export type HandleJobRescheduleMutationOptions = ApolloReactCommon.BaseMutationOptions<
-    HandleJobRescheduleMutation,
-    HandleJobRescheduleMutationVariables
-  >;
+  export type HandleJobRescheduleMutationResult =
+    ApolloReactCommon.MutationResult<HandleJobRescheduleMutation>;
+  export type HandleJobRescheduleMutationOptions =
+    ApolloReactCommon.BaseMutationOptions<
+      HandleJobRescheduleMutation,
+      HandleJobRescheduleMutationVariables
+    >;
 }

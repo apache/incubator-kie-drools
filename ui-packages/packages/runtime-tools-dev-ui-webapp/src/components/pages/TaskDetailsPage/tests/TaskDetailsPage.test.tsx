@@ -339,7 +339,7 @@ describe('TaskDetailsPage tests', () => {
     await act(async () => {
       const button = wrapper
         .find(Button)
-        .findWhere(node => node.props().id === 'view-details');
+        .findWhere((node) => node.props().id === 'view-details');
 
       button.props().onClick();
     });

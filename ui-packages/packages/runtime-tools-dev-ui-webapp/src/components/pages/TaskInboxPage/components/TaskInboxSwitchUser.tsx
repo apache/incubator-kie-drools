@@ -28,7 +28,7 @@ const TaskInboxSwitchUser: React.FC<IOwnProps & OUIAProps> = ({
 
   const dropdownItems = (): JSX.Element[] => {
     const userIds = [];
-    allUsers.forEach(userObj => {
+    allUsers.forEach((userObj) => {
       userIds.push(<DropdownItem key={userObj.id}>{userObj.id}</DropdownItem>);
     });
     return userIds;

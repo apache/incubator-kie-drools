@@ -35,11 +35,6 @@ describe('Process details error modal tests', () => {
       'ProcessDetailsErrorModal'
     );
     expect(wrapper).toMatchSnapshot();
-    expect(
-      wrapper
-        .find('Text')
-        .children()
-        .text()
-    ).toEqual('404-not found');
+    expect(wrapper.find('Text').children().text()).toEqual('404-not found');
   });
 });

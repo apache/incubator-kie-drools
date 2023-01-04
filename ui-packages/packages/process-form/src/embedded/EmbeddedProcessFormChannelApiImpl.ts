@@ -21,7 +21,8 @@ import {
 } from '../api';
 
 export class EmbeddedProcessFormChannelApiImpl
-  implements ProcessFormChannelApi {
+  implements ProcessFormChannelApi
+{
   constructor(private readonly driver: ProcessFormDriver) {}
 
   processForm__getProcessFormSchema(

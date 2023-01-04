@@ -33,12 +33,9 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessListPage: React.FC<RouteComponentProps<
-  MatchProps,
-  StaticContext,
-  H.LocationState
-> &
-  OUIAProps> = props => {
+const ProcessListPage: React.FC<
+  RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps
+> = (props) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId('process-instances');
   });

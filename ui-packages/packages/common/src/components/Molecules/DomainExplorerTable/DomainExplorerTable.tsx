@@ -96,7 +96,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
   const currentPage = { prev: location.pathname };
   window.localStorage.setItem('state', JSON.stringify(currentPage));
 
-  const stateIcon = state => {
+  const stateIcon = (state) => {
     switch (state) {
       case ProcessInstanceState.Active:
         return (
@@ -149,7 +149,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
     }
   };
 
-  const getKeys = object => {
+  const getKeys = (object) => {
     const iter = (data, k = '') => {
       for (const i in data) {
         const rest = k.length ? ' / ' + i : i;
@@ -189,7 +189,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
     return { tempKeys, tempValue };
   };
 
-  const getChildKeys = object => {
+  const getChildKeys = (object) => {
     const iter = (data, k = '') => {
       for (const i in data) {
         const rest = k.length ? ' / ' + i : i;
@@ -277,7 +277,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
     const tempKeys = [];
     let tempValue = [];
     iter(object);
-    tempValue = tempValue.filter(value => value !== null);
+    tempValue = tempValue.filter((value) => value !== null);
     return { tempKeys, tempValue };
   };
   const tableContent = columnFilters;
@@ -288,7 +288,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const initLoad = () => {
     if (columnFilters.length > 0) {
-      columnFilters.map(item => {
+      columnFilters.map((item) => {
         let metaArray = [];
         const metaKeys = [];
         const metaValues = [];
@@ -307,7 +307,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
           cells: tempParents.tempValue,
           rowKey: Math.random().toString()
         });
-        metaArray.map(data => {
+        metaArray.map((data) => {
           const tempMeta = getChildKeys(data);
           metaKeys.push(tempMeta.tempKeys);
           metaValues.push({
@@ -351,7 +351,7 @@ const DomainExplorerTable: React.FC<IOwnProps & OUIAProps> = ({
       finalKeys && setColumns([...finalKeys]);
     }
     if (offset > 0) {
-      setRows(prev => [...prev, ...values]);
+      setRows((prev) => [...prev, ...values]);
     } else {
       setRows([...values]);
     }

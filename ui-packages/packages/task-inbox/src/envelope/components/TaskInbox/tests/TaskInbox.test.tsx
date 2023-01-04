@@ -243,7 +243,7 @@ describe('TaskInbox tests', () => {
   it('TaskInbox with error', async () => {
     const driver = getTaskInboxDriver(15);
 
-    driverQueryMock.mockImplementation(args => {
+    driverQueryMock.mockImplementation((args) => {
       throw new Error('error');
     });
     let wrapper;
@@ -285,10 +285,7 @@ describe('TaskInbox tests', () => {
 
     // sort by state
     await act(async () => {
-      wrapper
-        .find(DataTable)
-        .props()
-        ['onSorting'](3, 'asc');
+      wrapper.find(DataTable).props()['onSorting'](3, 'asc');
 
       wait();
     });

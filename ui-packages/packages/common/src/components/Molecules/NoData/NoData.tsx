@@ -32,7 +32,7 @@ const NoData: React.FC<IOwnProps & OUIAProps> = ({
   }
 
   const tempPath = prevPath.split('/');
-  prevPath = tempPath.filter(item => item);
+  prevPath = tempPath.filter((item) => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {

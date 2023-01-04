@@ -42,21 +42,21 @@ export const performMultipleCancel = async (
             },
             fetchPolicy: 'no-cache'
           })
-          .then(value => {
+          .then((value) => {
             resolve({ successJob: job });
           })
-          .catch(reason => {
+          .catch((reason) => {
             job.errorMessage = JSON.stringify(reason.message);
             reject({ failedJob: job });
           });
       })
     );
   }
-  return Promise.all(multipleCancel.map(mc => mc.catch(error => error))).then(
-    result => {
-      return Promise.resolve(result);
-    }
-  );
+  return Promise.all(
+    multipleCancel.map((mc) => mc.catch((error) => error))
+  ).then((result) => {
+    return Promise.resolve(result);
+  });
 };
 
 //Rest Api to Cancel a Job
@@ -75,12 +75,12 @@ export const jobCancel = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         modalTitle = 'success';
         modalContent = `The job: ${job.id} is canceled successfully`;
         resolve({ modalTitle, modalContent });
       })
-      .catch(reason => {
+      .catch((reason) => {
         modalTitle = 'failure';
         modalContent = `The job: ${job.id} failed to cancel. Error message: ${reason.message}`;
         reject({ modalTitle, modalContent });
@@ -121,12 +121,12 @@ export const handleJobReschedule = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         modalTitle = 'success';
         modalContent = `Reschedule of job: ${job.id} is successful`;
         resolve({ modalTitle, modalContent });
       })
-      .catch(reason => {
+      .catch((reason) => {
         modalTitle = 'failure';
         modalContent = `Reschedule of job ${job.id} failed. Message: ${reason.message}`;
         reject({ modalTitle, modalContent });
@@ -148,10 +148,10 @@ export const handleProcessSkip = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve(value.data);
       })
-      .catch(reason => reject(reason));
+      .catch((reason) => reject(reason));
   });
 };
 
@@ -169,10 +169,10 @@ export const handleProcessRetry = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve(value.data);
       })
-      .catch(reason => reject(reason));
+      .catch((reason) => reject(reason));
   });
 };
 
@@ -190,10 +190,10 @@ export const handleProcessAbort = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve(value.data);
       })
-      .catch(reason => reject(reason));
+      .catch((reason) => reject(reason));
   });
 };
 
@@ -227,7 +227,7 @@ export const handleProcessMultipleAction = async (
         .then(() => {
           successProcessInstances.push(processInstance);
         })
-        .catch(error => {
+        .catch((error) => {
           processInstance.errorMessage = error.message;
           failedProcessInstances.push(processInstance);
         });
@@ -252,10 +252,10 @@ export const handleNodeTrigger = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve(value.data);
       })
-      .catch(reason => reject(reason));
+      .catch((reason) => reject(reason));
   });
 };
 
@@ -275,10 +275,10 @@ export const handleProcessVariableUpdate = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve(JSON.parse(value.data.ProcessInstanceUpdateVariables));
       })
-      .catch(reason => reject(reason));
+      .catch((reason) => reject(reason));
   });
 };
 
@@ -297,10 +297,10 @@ export const handleNodeInstanceCancel = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve();
       })
-      .catch(reason => reject(JSON.stringify(reason.message)));
+      .catch((reason) => reject(JSON.stringify(reason.message)));
   });
 };
 
@@ -319,10 +319,10 @@ export const handleNodeInstanceRetrigger = async (
         },
         fetchPolicy: 'no-cache'
       })
-      .then(value => {
+      .then((value) => {
         resolve();
       })
-      .catch(reason => reject(JSON.stringify(reason.message)));
+      .catch((reason) => reject(JSON.stringify(reason.message)));
   });
 };
 
@@ -338,10 +338,10 @@ export const getSVG = async (
       },
       fetchPolicy: 'network-only'
     })
-    .then(value => {
+    .then((value) => {
       return { svg: value.data.ProcessInstances[0].diagram };
     })
-    .catch(reason => {
+    .catch((reason) => {
       return { error: reason.message };
     });
 };
@@ -359,11 +359,11 @@ export const getProcessDetails = async (
         },
         fetchPolicy: 'network-only'
       })
-      .then(value => {
+      .then((value) => {
         resolve(value.data.ProcessInstances[0]);
       })
-      .catch(error => {
-        reject(error['graphQLErrors'][0]['message'])
+      .catch((error) => {
+        reject(error['graphQLErrors'][0]['message']);
       });
   });
 };
@@ -380,10 +380,10 @@ export const getJobs = async (
       },
       fetchPolicy: 'network-only'
     })
-    .then(value => {
+    .then((value) => {
       return value.data.Jobs;
     })
-    .catch(error => {
+    .catch((error) => {
       return error;
     });
 };
@@ -400,10 +400,10 @@ export const getTriggerableNodes = async (
       },
       fetchPolicy: 'no-cache'
     })
-    .then(value => {
+    .then((value) => {
       return value.data.ProcessInstances[0].nodeDefinitions;
     })
-    .catch(reason => {
+    .catch((reason) => {
       return reason;
     });
 };

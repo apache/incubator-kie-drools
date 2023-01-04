@@ -59,7 +59,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<CustomDashboardViewEnvelopeViewApi>();
-    return new Promise<() => CustomDashboardViewEnvelopeViewApi>(res => {
+    return new Promise<() => CustomDashboardViewEnvelopeViewApi>((res) => {
       ReactDOM.render(
         <CustomDashboardViewEnvelopeView
           ref={ref}
@@ -73,7 +73,7 @@ export function init(args: {
 
   const context: CustomDashboardViewEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs =>
+    create: (apiFactoryArgs) =>
       new CustomDashboardViewEnvelopeApiImpl(apiFactoryArgs)
   });
 }

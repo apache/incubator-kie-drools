@@ -174,9 +174,6 @@ describe('PageLayout tests', () => {
     });
     expect(wrapper.find('PageLayout')).toMatchSnapshot();
     wrapper = wrapper.update();
-    wrapper
-      .find('KogitoPageLayout')
-      .props()
-      ['BrandClick']();
+    wrapper.find('KogitoPageLayout').props()['BrandClick']();
   });
 });

@@ -1481,10 +1481,11 @@ export namespace GraphQL {
   export type GetColumnPickerAttributesLazyQueryHookResult = ReturnType<
     typeof useGetColumnPickerAttributesLazyQuery
   >;
-  export type GetColumnPickerAttributesQueryResult = ApolloReactCommon.QueryResult<
-    GetColumnPickerAttributesQuery,
-    GetColumnPickerAttributesQueryVariables
-  >;
+  export type GetColumnPickerAttributesQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetColumnPickerAttributesQuery,
+      GetColumnPickerAttributesQueryVariables
+    >;
   export const GetQueryTypesDocument = gql`
     query getQueryTypes {
       __schema {
@@ -1692,10 +1693,11 @@ export namespace GraphQL {
   export type GetInputFieldsFromQueryLazyQueryHookResult = ReturnType<
     typeof useGetInputFieldsFromQueryLazyQuery
   >;
-  export type GetInputFieldsFromQueryQueryResult = ApolloReactCommon.QueryResult<
-    GetInputFieldsFromQueryQuery,
-    GetInputFieldsFromQueryQueryVariables
-  >;
+  export type GetInputFieldsFromQueryQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetInputFieldsFromQueryQuery,
+      GetInputFieldsFromQueryQueryVariables
+    >;
   export const GetInputFieldsFromTypeDocument = gql`
     query getInputFieldsFromType($type: String!) {
       __type(name: $type) {
@@ -2084,10 +2086,11 @@ export namespace GraphQL {
   export type GetJobsByProcessInstanceIdLazyQueryHookResult = ReturnType<
     typeof useGetJobsByProcessInstanceIdLazyQuery
   >;
-  export type GetJobsByProcessInstanceIdQueryResult = ApolloReactCommon.QueryResult<
-    GetJobsByProcessInstanceIdQuery,
-    GetJobsByProcessInstanceIdQueryVariables
-  >;
+  export type GetJobsByProcessInstanceIdQueryResult =
+    ApolloReactCommon.QueryResult<
+      GetJobsByProcessInstanceIdQuery,
+      GetJobsByProcessInstanceIdQueryVariables
+    >;
   export const GetJobsWithFiltersDocument = gql`
     query getJobsWithFilters(
       $values: [JobStatus]

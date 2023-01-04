@@ -43,7 +43,7 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     if (formSchema.phases) {
-      const actions = formSchema.phases.map(phase => {
+      const actions = formSchema.phases.map((phase) => {
         return {
           name: phase,
           execute: () => {

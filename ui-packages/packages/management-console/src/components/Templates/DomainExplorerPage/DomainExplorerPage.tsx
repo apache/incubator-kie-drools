@@ -32,9 +32,11 @@ export type LocationProps = H.LocationState & {
   filterChips?: string[];
 };
 
-const DomainExplorerPage: React.FC<IOwnProps &
-  RouteComponentProps<MatchProps, StaticContext, LocationProps> &
-  OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+const DomainExplorerPage: React.FC<
+  IOwnProps &
+    RouteComponentProps<MatchProps, StaticContext, LocationProps> &
+    OUIAProps
+> = ({ ouiaId, ouiaSafe, ...props }) => {
   const rememberedParams =
     (props.location.state && props.location.state.parameters) || [];
   const rememberedSelections =
@@ -45,7 +47,7 @@ const DomainExplorerPage: React.FC<IOwnProps &
     (props.location.state && props.location.state.filterChips) || [];
   const domainName = props.match.params.domainName;
   let BreadCrumb = props.location.pathname.split('/');
-  BreadCrumb = BreadCrumb.filter(item => {
+  BreadCrumb = BreadCrumb.filter((item) => {
     if (item !== '') {
       return item;
     }

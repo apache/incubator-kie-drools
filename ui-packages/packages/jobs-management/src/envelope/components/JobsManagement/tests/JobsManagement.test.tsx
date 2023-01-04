@@ -102,10 +102,7 @@ describe('JobsManagement component tests', () => {
       wrapper = wrapper.update().find('JobsManagement');
     });
     await act(async () => {
-      wrapper
-        .find('LoadMore')
-        .props()
-        ['getMoreItems']();
+      wrapper.find('LoadMore').props()['getMoreItems']();
     });
     expect(props.driver.initialLoad).toHaveBeenCalledWith(
       selectedStatus,
@@ -120,10 +117,7 @@ describe('JobsManagement component tests', () => {
     const selectedStatus = [JobStatus.Scheduled];
     const orderBy = { lastUpdate: OrderBy.ASC };
     await act(async () => {
-      wrapper
-        .find('MockedJobsManagementToolbar')
-        .props()
-        ['onRefresh']();
+      wrapper.find('MockedJobsManagementToolbar').props()['onRefresh']();
     });
     expect(props.driver.initialLoad).toHaveBeenCalledWith(
       selectedStatus,
@@ -135,10 +129,7 @@ describe('JobsManagement component tests', () => {
   it('Test ResetToDefault method', async () => {
     const wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     await act(async () => {
-      wrapper
-        .find('MockedJobsManagementToolbar')
-        .props()
-        ['onResetToDefault']();
+      wrapper.find('MockedJobsManagementToolbar').props()['onResetToDefault']();
     });
     expect(
       wrapper.find('MockedJobsManagementToolbar').props()['selectedStatus']

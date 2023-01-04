@@ -54,7 +54,7 @@ export class FormsListGatewayApiImpl implements FormsListGatewayApi {
   }
 
   openForm = (formData: FormInfo): Promise<void> => {
-    this.listeners.forEach(listener => listener.onOpen(formData));
+    this.listeners.forEach((listener) => listener.onOpen(formData));
     return Promise.resolve();
   };
 

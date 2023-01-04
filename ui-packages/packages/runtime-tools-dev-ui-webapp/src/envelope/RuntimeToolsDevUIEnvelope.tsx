@@ -56,9 +56,8 @@ export class RuntimeToolsDevUIEnvelope {
   }
 
   private renderView(container: HTMLElement) {
-    const runtimeToolsDevUIEnvelopeViewRef = React.createRef<
-      RuntimeToolsDevUIEnvelopeViewApi
-    >();
+    const runtimeToolsDevUIEnvelopeViewRef =
+      React.createRef<RuntimeToolsDevUIEnvelopeViewApi>();
 
     const app = () => {
       return (
@@ -70,7 +69,7 @@ export class RuntimeToolsDevUIEnvelope {
       );
     };
 
-    return new Promise<() => RuntimeToolsDevUIEnvelopeViewApi>(res => {
+    return new Promise<() => RuntimeToolsDevUIEnvelopeViewApi>((res) => {
       setTimeout(() => {
         ReactDOM.render(app(), container, () => {
           res(() => runtimeToolsDevUIEnvelopeViewRef.current!);

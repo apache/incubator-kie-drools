@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { getCustomWorkflowSchema, startWorkflowCloudEvent, startWorkflowRest } from '../../apis';
+import {
+  getCustomWorkflowSchema,
+  startWorkflowCloudEvent,
+  startWorkflowRest
+} from '../../apis';
 import {
   WorkflowFormGatewayApi,
   WorkflowFormGatewayApiImpl
@@ -51,11 +55,22 @@ describe('WorkflowFormListGatewayApi tests', () => {
   it('get custom workflow schema', async () => {
     const workflowName = 'expression';
     await gatewayApi.getCustomWorkflowSchema(workflowName);
-    expect(getCustomWorkflowSchema).toHaveBeenCalledWith("baseUrl", "/q/dev", "expression");
+    expect(getCustomWorkflowSchema).toHaveBeenCalledWith(
+      'baseUrl',
+      '/q/dev',
+      'expression'
+    );
   });
 
   it('start workflow rest', async () => {
-    await gatewayApi.startWorkflowRest({ name: 'John' }, 'http://localhost:8080/test');
-    expect(startWorkflowRest).toHaveBeenCalledWith({ name: 'John' }, 'http://localhost:8080/test',"");
+    await gatewayApi.startWorkflowRest(
+      { name: 'John' },
+      'http://localhost:8080/test'
+    );
+    expect(startWorkflowRest).toHaveBeenCalledWith(
+      { name: 'John' },
+      'http://localhost:8080/test',
+      ''
+    );
   });
 });

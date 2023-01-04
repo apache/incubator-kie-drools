@@ -69,7 +69,7 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
 
   openTask(task: UserTaskInstance): Promise<void> {
     this.activeTask = task;
-    this.listeners.forEach(listener => listener.onOpen(task));
+    this.listeners.forEach((listener) => listener.onOpen(task));
     return Promise.resolve();
   }
 
@@ -100,11 +100,11 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
           this._taskInboxState.filters,
           this._taskInboxState.sortBy
         )
-        .then(value => {
+        .then((value) => {
           this._taskInboxState.currentPage = { offset, limit };
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });

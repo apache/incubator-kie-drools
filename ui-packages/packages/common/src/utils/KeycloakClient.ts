@@ -74,8 +74,8 @@ export const appRenderWithAxiosInterceptorConfig = (
   });
   if (isAuthEnabled()) {
     axios.interceptors.response.use(
-      response => response,
-      error => {
+      (response) => response,
+      (error) => {
         if (error.response && error.config && error.response.status === 401) {
           loadSecurityContext(() => {
             /* tslint:disable:no-string-literal */
@@ -89,7 +89,7 @@ export const appRenderWithAxiosInterceptorConfig = (
       }
     );
     axios.interceptors.request.use(
-      config => {
+      (config) => {
         if (currentSecurityContext) {
           const t = getToken();
           /* tslint:disable:no-string-literal */
@@ -98,7 +98,7 @@ export const appRenderWithAxiosInterceptorConfig = (
           return config;
         }
       },
-      error => {
+      (error) => {
         /* tslint:disable:no-floating-promises */
         Promise.reject(error);
         /* tslint:enable:no-floating-promises */

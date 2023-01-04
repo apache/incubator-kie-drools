@@ -34,7 +34,7 @@ describe('KogitoAppContextProvider tests', () => {
     const wrapper = mount(
       <KogitoAppContextProvider userContext={new TestUserContextImpl()}>
         <KogitoAppContext.Consumer>
-          {ctx => <MockedComponent context={ctx} />}
+          {(ctx) => <MockedComponent context={ctx} />}
         </KogitoAppContext.Consumer>
       </KogitoAppContextProvider>
     );

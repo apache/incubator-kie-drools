@@ -111,9 +111,8 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   const [titleType, setTitleType] = useState<string>('');
   const [operationType, setOperationType] = useState<OperationType>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] = useState<boolean>(
-    false
-  );
+  const [isCheckboxDropdownOpen, setisCheckboxDropdownOpen] =
+    useState<boolean>(false);
   const [operationResults, setOperationResults] = useState<IOperationResults>({
     ABORT: {
       successItems: [],
@@ -169,7 +168,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               remainingInstances,
               OperationType.ABORT
             )
-            .then(result => {
+            .then((result) => {
               onShowMessage(
                 'Abort operation',
                 result.successProcessInstances,
@@ -177,8 +176,8 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
                 ignoredItems,
                 OperationType.ABORT
               );
-              processInstances.forEach(instance => {
-                result.successProcessInstances.forEach(successInstances => {
+              processInstances.forEach((instance) => {
+                result.successProcessInstances.forEach((successInstances) => {
                   if (successInstances.id === instance.id) {
                     instance.state = ProcessInstanceState.Aborted;
                   }
@@ -212,7 +211,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           );
           await driver
             .handleProcessMultipleAction(remainingInstances, OperationType.SKIP)
-            .then(result => {
+            .then((result) => {
               onShowMessage(
                 'Skip operation',
                 result.successProcessInstances,
@@ -236,7 +235,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       functions: {
         perform: async () => {
           const ignoredItems = [];
-          const remainingInstances = selectedInstances.filter(instance => {
+          const remainingInstances = selectedInstances.filter((instance) => {
             if (instance['state'] !== ProcessInstanceState.Error) {
               ignoredItems.push(instance);
             } else {
@@ -248,7 +247,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               remainingInstances,
               OperationType.RETRY
             )
-            .then(result => {
+            .then((result) => {
               onShowMessage(
                 'Retry operation',
                 result.successProcessInstances,
@@ -303,7 +302,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   const onSelect = (event, selection): void => {
     if (processStates.includes(selection)) {
       const newProcessStates = [...processStates].filter(
-        state => state !== selection
+        (state) => state !== selection
       );
       setProcessStates(newProcessStates);
     } else {

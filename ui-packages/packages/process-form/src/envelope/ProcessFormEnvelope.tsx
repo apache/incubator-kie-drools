@@ -58,7 +58,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<ProcessFormEnvelopeViewApi>();
-    return new Promise<() => ProcessFormEnvelopeViewApi>(res => {
+    return new Promise<() => ProcessFormEnvelopeViewApi>((res) => {
       args.container.className = 'kogito-process-form-container';
       ReactDOM.render(
         <ProcessFormEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
@@ -70,6 +70,6 @@ export function init(args: {
 
   const context: ProcessFormEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new ProcessFormEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new ProcessFormEnvelopeApiImpl(apiFactoryArgs)
   });
 }

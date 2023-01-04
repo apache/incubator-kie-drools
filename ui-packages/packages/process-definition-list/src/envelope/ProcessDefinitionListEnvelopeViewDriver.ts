@@ -25,11 +25,10 @@ import {
  * Implementation of ProcessDefinitionListDriver that delegates calls to the channel Api
  */
 export default class ProcessDefinitionListEnvelopeViewDriver
-  implements ProcessDefinitionListDriver {
+  implements ProcessDefinitionListDriver
+{
   constructor(
-    private readonly channelApi: MessageBusClientApi<
-      ProcessDefinitionListChannelApi
-    >
+    private readonly channelApi: MessageBusClientApi<ProcessDefinitionListChannelApi>
   ) {}
   setProcessDefinitionFilter(filter: string[]): Promise<void> {
     return this.channelApi.requests.processDefinitionList__setProcessDefinitionFilter(

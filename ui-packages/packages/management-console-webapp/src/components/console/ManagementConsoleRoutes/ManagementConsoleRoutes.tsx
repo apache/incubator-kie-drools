@@ -36,7 +36,7 @@ const ManagementConsoleRoutes: React.FC = () => {
       <Route exact path="/Process/:instanceID" component={ProcessDetailsPage} />
       <Route
         path="/NoData"
-        render={_props => (
+        render={(_props) => (
           <NoData
             {..._props}
             defaultPath="/JobsManagement"
@@ -46,7 +46,7 @@ const ManagementConsoleRoutes: React.FC = () => {
       />
       <Route
         path="*"
-        render={_props => (
+        render={(_props) => (
           <PageNotFound
             {..._props}
             defaultPath="/JobsManagement"

@@ -90,9 +90,8 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   const [modalContent, setModalContent] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
-    false
-  );
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] =
+    useState<boolean>(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const [selectedJob, setSelectedJob] = useState<any>({});
   const ignoredNodeTypes = ['Join', 'Split', 'EndNode'];
@@ -107,7 +106,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     }
   };
 
-  const onDropdownSelect = id => {
+  const onDropdownSelect = (id) => {
     const tempKebabArray = [...kebabOpenArray];
     const index = tempKebabArray.indexOf(id);
     tempKebabArray.splice(index, 1);
@@ -171,7 +170,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
 
   const renderJobActions = (id, options) => {
     if (jobs.length > 0) {
-      return jobs.map(job => {
+      return jobs.map((job) => {
         if (
           id === job.nodeInstanceId &&
           editableJobStatus.includes(job.status)
@@ -357,7 +356,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onSelect={() => onDropdownSelect('timeline-kebab-toggle-' + index)}
           toggle={
             <KebabToggle
-              onToggle={isOpen =>
+              onToggle={(isOpen) =>
                 onKebabToggle(isOpen, 'timeline-kebab-toggle-' + index)
               }
               id={'timeline-kebab-toggle-' + index}
@@ -450,7 +449,8 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           {data.nodes &&
             data.nodes
               .filter(
-                content => !omittedProcessTimelineEvents?.includes(content.name)
+                (content) =>
+                  !omittedProcessTimelineEvents?.includes(content.name)
               )
               .sort(compareNodes)
               .map((content, idx) => {

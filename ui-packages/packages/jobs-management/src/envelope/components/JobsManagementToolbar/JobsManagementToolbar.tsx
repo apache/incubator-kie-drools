@@ -61,8 +61,9 @@ interface JobsManagementToolbarProps {
   setDisplayTable: (displayTable: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
 }
-const JobsManagementToolbar: React.FC<JobsManagementToolbarProps &
-  OUIAProps> = ({
+const JobsManagementToolbar: React.FC<
+  JobsManagementToolbarProps & OUIAProps
+> = ({
   chips,
   driver,
   doQueryJobs,
@@ -109,11 +110,11 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps &
 
   const onDelete = (type: string = '', id: string = ''): void => {
     const chipsCopy = [...chips];
-    const tempChips = chipsCopy.filter(item => item !== id);
+    const tempChips = chipsCopy.filter((item) => item !== id);
     setSelectedJobInstances([]);
     let selectedStatusCopy = [...selectedStatus];
     setChips(tempChips);
-    selectedStatusCopy = selectedStatusCopy.filter(item => item !== id);
+    selectedStatusCopy = selectedStatusCopy.filter((item) => item !== id);
     setSelectedStatus(selectedStatusCopy);
     if (tempChips.length > 0) {
       setIsLoading(true);
@@ -129,7 +130,7 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps &
     let selectedStatusCopy = [...selectedStatus];
     if (selectedStatus.includes(selectionText)) {
       selectedStatusCopy = selectedStatusCopy.filter(
-        item => item !== selectionText
+        (item) => item !== selectionText
       );
       setSelectedStatus(selectedStatusCopy);
     } else {

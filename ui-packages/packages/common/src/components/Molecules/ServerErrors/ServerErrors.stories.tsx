@@ -6,7 +6,7 @@ export default {
   title: 'Server errors'
 };
 
-export const defaultView = args => {
+export const defaultView = (args) => {
   return (
     <BrowserRouter>
       <ServerErrors {...args} />

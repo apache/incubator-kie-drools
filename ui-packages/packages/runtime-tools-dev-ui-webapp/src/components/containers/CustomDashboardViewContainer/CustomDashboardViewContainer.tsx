@@ -24,9 +24,11 @@ interface CustomDashboardViewContainerContainerProps {
   dashboardName: string;
 }
 
-const CustomDashboardViewContainer: React.FC<CustomDashboardViewContainerContainerProps &
-  OUIAProps> = ({ dashboardName, ouiaId, ouiaSafe }) => {
-  const gatewayApi: CustomDashboardViewGatewayApi = useCustomDashboardViewGatewayApi();
+const CustomDashboardViewContainer: React.FC<
+  CustomDashboardViewContainerContainerProps & OUIAProps
+> = ({ dashboardName, ouiaId, ouiaSafe }) => {
+  const gatewayApi: CustomDashboardViewGatewayApi =
+    useCustomDashboardViewGatewayApi();
 
   return (
     <EmbeddedCustomDashboardView

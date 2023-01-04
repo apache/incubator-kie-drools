@@ -29,24 +29,24 @@ export const workflowForm__getCustomWorkflowSchema = jest.fn();
 export const workflowForm__startWorkflowRest = jest.fn();
 
 export const workflowSchema = {
-  title: "Expression",
-  description: "Schema for expression test",
-  type: "object",
+  title: 'Expression',
+  description: 'Schema for expression test',
+  type: 'object',
   properties: {
     numbers: {
-      description: "The array of numbers to be operated with",
-      type: "array",
+      description: 'The array of numbers to be operated with',
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          x: { "type": "number" },
-          y: { "type": "number" }
+          x: { type: 'number' },
+          y: { type: 'number' }
         }
       }
     }
   },
-  "required": ["numbers"]
-}
+  required: ['numbers']
+};
 export const MockedApiRequests = jest.fn<
   Pick<WorkflowFormChannelApi, RequestPropertyNames<WorkflowFormChannelApi>>,
   []

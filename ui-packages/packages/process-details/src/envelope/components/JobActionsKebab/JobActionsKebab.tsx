@@ -47,9 +47,8 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [rescheduleError, setRescheduleError] = useState<string>('');
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
-    false
-  );
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] =
+    useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<JSX.Element>(null);
   const [modalContent, setModalContent] = useState<string>('');
   const RescheduleJobs: string[] = ['SCHEDULED', 'ERROR'];

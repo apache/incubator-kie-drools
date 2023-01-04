@@ -67,7 +67,7 @@ const userTaskInstance: UserTaskInstance = {
 };
 
 const getFormGroup = (wrapper: ReactWrapper, fieldId: string): ReactWrapper => {
-  return wrapper.findWhere(element => element.prop('fieldId') === fieldId);
+  return wrapper.findWhere((element) => element.prop('fieldId') === fieldId);
 };
 
 Date.now = jest.fn(() => 1601881200000); // UTC 2020-10-05 07:00:00
@@ -168,17 +168,11 @@ describe('TaskDetails testing', () => {
     const potentialUsers = getFormGroup(wrapper, 'potential_users');
     expect(potentialGroups.exists()).toBeTruthy();
     expect(
-      potentialGroups
-        .find('p')
-        .children()
-        .contains('group1, group2')
+      potentialGroups.find('p').children().contains('group1, group2')
     ).toBeTruthy();
     expect(potentialUsers.exists()).toBeTruthy();
     expect(
-      potentialUsers
-        .find('p')
-        .children()
-        .contains('john, mary')
+      potentialUsers.find('p').children().contains('john, mary')
     ).toBeTruthy();
   });
 });

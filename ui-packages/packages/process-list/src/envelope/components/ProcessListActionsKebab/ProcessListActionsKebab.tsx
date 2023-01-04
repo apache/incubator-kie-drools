@@ -29,8 +29,9 @@ interface ProcessListActionsKebabProps {
   onAbortClick: (processInstance: ProcessInstance) => Promise<void>;
 }
 
-const ProcessListActionsKebab: React.FC<ProcessListActionsKebabProps &
-  OUIAProps> = ({
+const ProcessListActionsKebab: React.FC<
+  ProcessListActionsKebabProps & OUIAProps
+> = ({
   processInstance,
   onSkipClick,
   onRetryClick,

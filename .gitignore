@@ -26,6 +26,7 @@ package-lock.json
 .project
 .settings
 .vscode
+!.husky
 
 # Cypress - runtime artifacts and undesired dirs
 **/cypress/screenshots

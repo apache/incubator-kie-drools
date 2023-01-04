@@ -26,11 +26,10 @@ import {
  * Implementation of CustomDashboardListDriver that delegates calls to the channel Api
  */
 export default class CustomDashboardListEnvelopeViewDriver
-  implements CustomDashboardListDriver {
+  implements CustomDashboardListDriver
+{
   constructor(
-    private readonly channelApi: MessageBusClientApi<
-      CustomDashboardListChannelApi
-    >
+    private readonly channelApi: MessageBusClientApi<CustomDashboardListChannelApi>
   ) {}
 
   getCustomDashboardFilter(): Promise<CustomDashboardFilter> {

@@ -281,7 +281,8 @@ describe('Tests for keycloak client functions', () => {
     expect(KeycloakClient.getLoadedSecurityContext()).toHaveProperty(
       'getCurrentUser'
     );
-    const context = KeycloakClient.getLoadedSecurityContext() as KeycloakUserContext;
+    const context =
+      KeycloakClient.getLoadedSecurityContext() as KeycloakUserContext;
     expect(context.getCurrentUser().id).toEqual('Dev User');
     expect(context.getCurrentUser().groups).toHaveLength(0);
     expect(context.getCurrentUser().groups).toEqual([]);

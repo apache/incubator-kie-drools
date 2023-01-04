@@ -496,8 +496,7 @@ const mocks3 = [
 ];
 
 const res = {
-  data:
-    '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></svg>'
+  data: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="300" viewBox="0 0 1748 632"></svg>'
 };
 const svgElement: JSX.Element = (
   <InlineSVG cacheRequests={true} src={res.data} uniquifyIDs={false} />
@@ -550,11 +549,7 @@ describe('Process Details Page component tests', () => {
       });
       const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
       await act(async () => {
-        wrapper
-          .find(Button)
-          .find('#abort-button')
-          .first()
-          .simulate('click');
+        wrapper.find(Button).find('#abort-button').first().simulate('click');
       });
       wrapper.update();
       expect(handleAbortSpy).toHaveBeenCalled();
@@ -575,11 +570,7 @@ describe('Process Details Page component tests', () => {
       });
       const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
       await act(async () => {
-        wrapper
-          .find(Button)
-          .find('#abort-button')
-          .first()
-          .simulate('click');
+        wrapper.find(Button).find('#abort-button').first().simulate('click');
       });
       wrapper.update();
       expect(handleAbortSpy).toHaveBeenCalled();
@@ -652,28 +643,14 @@ describe('Process Details Page component tests', () => {
       wrapper = wrapper.update().find('ProcessDetailsPage');
     });
     const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
-    wrapper
-      .find('#refresh-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#refresh-button').first().simulate('click');
     await act(async () => {
-      wrapper
-        .find('#save-button')
-        .first()
-        .simulate('click');
+      wrapper.find('#save-button').first().simulate('click');
     });
     act(() => {
-      wrapper
-        .find('Modal')
-        .at(0)
-        .props()
-        ['onClose']();
+      wrapper.find('Modal').at(0).props()['onClose']();
     });
-    wrapper
-      .find('Modal')
-      .at(1)
-      .props()
-      ['onClose']();
+    wrapper.find('Modal').at(1).props()['onClose']();
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: location
@@ -701,15 +678,9 @@ describe('Process Details Page component tests', () => {
       wrapper = wrapper.update().find('ProcessDetailsPage');
     });
     const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
-    wrapper
-      .find('#refresh-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#refresh-button').first().simulate('click');
     await act(async () => {
-      wrapper
-        .find('#save-button')
-        .first()
-        .simulate('click');
+      wrapper.find('#save-button').first().simulate('click');
     });
     Object.defineProperty(window, 'location', {
       configurable: true,

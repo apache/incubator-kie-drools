@@ -22,9 +22,10 @@ export interface RuntimeToolsDevUIEnvelopeContextType {
   channelApi: MessageBusClientApi<RuntimeToolsDevUIChannelApi>;
 }
 
-export const RuntimeToolsDevUIEnvelopeContext = React.createContext<
-  RuntimeToolsDevUIEnvelopeContextType
->({} as RuntimeToolsDevUIEnvelopeContextType);
+export const RuntimeToolsDevUIEnvelopeContext =
+  React.createContext<RuntimeToolsDevUIEnvelopeContextType>(
+    {} as RuntimeToolsDevUIEnvelopeContextType
+  );
 
 export function useRuntimeToolsDevUIEnvelopeContext() {
   return useContext(

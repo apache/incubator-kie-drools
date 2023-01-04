@@ -97,20 +97,20 @@ export const handleJobReschedule = async (
 export const getSvg = async (data: ProcessInstance): Promise<any> => {
   return axios
     .get(`/svg/processes/${data.processId}/instances/${data.id}`)
-    .then(res => {
+    .then((res) => {
       return { svg: res.data };
     })
-    .catch(async error => {
+    .catch(async (error) => {
       /* istanbul ignore else*/
       if (data.serviceUrl) {
         return axios
           .get(
             `${data.serviceUrl}/svg/processes/${data.processId}/instances/${data.id}`
           )
-          .then(res => {
+          .then((res) => {
             return { svg: res.data };
           })
-          .catch(err => {
+          .catch((err) => {
             /* istanbul ignore else*/
             if (err.response && err.response.status !== 404) {
               return { error: err.message };
@@ -132,7 +132,7 @@ export const handleProcessSkip = async (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -148,7 +148,7 @@ export const handleProcessRetry = async (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -164,7 +164,7 @@ export const handleProcessAbort = (
       .then(() => {
         resolve();
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 };
 
@@ -194,7 +194,7 @@ export const handleProcessMultipleAction = async (
         .then(() => {
           successProcessInstances.push(processInstance);
         })
-        .catch(error => {
+        .catch((error) => {
           processInstance.errorMessage = error.message;
           failedProcessInstances.push(processInstance);
         });
@@ -211,10 +211,10 @@ export const getTriggerableNodes = async (
       .get(
         `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/nodes`
       )
-      .then(result => {
+      .then((result) => {
         resolve(result.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -232,7 +232,7 @@ export const handleNodeTrigger = async (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -246,10 +246,10 @@ export const handleProcessVariableUpdate = (
   return new Promise((resolve, reject) => {
     axios
       .put(`${processInstance.endpoint}/${processInstance.id}`, updatedJson)
-      .then(response => {
+      .then((response) => {
         resolve(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error.message);
       });
   });
@@ -267,7 +267,7 @@ export const handleNodeInstanceCancel = async (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -285,7 +285,7 @@ export const handleNodeInstanceRetrigger = (
       .then(() => {
         resolve();
       })
-      .catch(error => {
+      .catch((error) => {
         reject(JSON.stringify(error.message));
       });
   });

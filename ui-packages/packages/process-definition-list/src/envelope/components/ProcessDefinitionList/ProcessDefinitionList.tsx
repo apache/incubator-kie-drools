@@ -37,8 +37,9 @@ export interface ProcessDefinitionListProps {
   singularProcessLabel: string;
 }
 
-const ProcessDefinitionList: React.FC<ProcessDefinitionListProps &
-  OUIAProps> = ({
+const ProcessDefinitionList: React.FC<
+  ProcessDefinitionListProps & OUIAProps
+> = ({
   isEnvelopeConnectedToChannel,
   driver,
   singularProcessLabel,
@@ -77,7 +78,7 @@ const ProcessDefinitionList: React.FC<ProcessDefinitionListProps &
   const columns: DataTableColumn[] = [
     getColumn('processName', `${singularProcessLabel} Name`),
     getColumn('endpoint', 'Endpoint'),
-    getActionColumn(processDefinition => {
+    getActionColumn((processDefinition) => {
       driver.openProcessForm(processDefinition);
     }, singularProcessLabel)
   ];
@@ -90,7 +91,7 @@ const ProcessDefinitionList: React.FC<ProcessDefinitionListProps &
     if (filterProcessNames.length === 0) {
       return processDefinitionList;
     }
-    return processDefinitionList.filter(pd =>
+    return processDefinitionList.filter((pd) =>
       filterProcessNames.includes(pd.processName)
     );
   };

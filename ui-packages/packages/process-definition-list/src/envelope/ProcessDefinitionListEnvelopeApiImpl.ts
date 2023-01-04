@@ -28,7 +28,8 @@ import { ProcessDefinitionListEnvelopeContext } from './ProcessDefinitionListEnv
  * Implementation of the ProcessDefinitionListEnvelopeApi
  */
 export class ProcessDefinitionListEnvelopeApiImpl
-  implements ProcessDefinitionListEnvelopeApi {
+  implements ProcessDefinitionListEnvelopeApi
+{
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<

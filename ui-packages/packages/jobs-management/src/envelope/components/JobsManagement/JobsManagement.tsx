@@ -61,9 +61,8 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
     lastUpdate: OrderBy.ASC
   };
   const [chips, setChips] = useState(defaultChip);
-  const [selectedStatus, setSelectedStatus] = useState<JobStatus[]>(
-    defaultStatus
-  );
+  const [selectedStatus, setSelectedStatus] =
+    useState<JobStatus[]>(defaultStatus);
   const [selectedJobInstances, setSelectedJobInstances] = useState([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [displayTable, setDisplayTable] = useState(true);
@@ -80,20 +79,18 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState<boolean>(false);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(
-    false
-  );
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] =
+    useState<boolean>(false);
   const [rescheduleError, setRescheduleError] = useState<string>('');
   const [selectedJob, setSelectedJob] = useState<any>({});
-  const [jobOperationResults, setJobOperationResults] = useState<
-    IOperationResults
-  >({
-    CANCEL: {
-      successItems: [],
-      failedItems: [],
-      ignoredItems: []
-    }
-  });
+  const [jobOperationResults, setJobOperationResults] =
+    useState<IOperationResults>({
+      CANCEL: {
+        successItems: [],
+        failedItems: [],
+        ignoredItems: []
+      }
+    });
 
   const onRefresh = async (): Promise<void> => {
     setIsLoading(true);
@@ -198,7 +195,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
       functions: {
         perform: async () => {
           const ignoredJobs = [];
-          const remainingInstances = selectedJobInstances.filter(job => {
+          const remainingInstances = selectedJobInstances.filter((job) => {
             if (
               job.status === JobStatus.Canceled ||
               job.status === JobStatus.Executed

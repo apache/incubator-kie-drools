@@ -154,10 +154,7 @@ describe('Jobs management table component tests', () => {
     ).find('JobsManagementTable');
     //deselect 1 row
     await act(async () => {
-      wrapperWithSelectedInstances
-        .find(SelectColumn)
-        .at(2)
-        .simulate('change');
+      wrapperWithSelectedInstances.find(SelectColumn).at(2).simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
     //select all rows
@@ -175,10 +172,7 @@ describe('Jobs management table component tests', () => {
     ).find('JobsManagementTable');
     //deselect all rows
     await act(async () => {
-      wrapperWithAllSelected
-        .find(SelectColumn)
-        .at(0)
-        .simulate('change');
+      wrapperWithAllSelected.find(SelectColumn).at(0).simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
   });
@@ -194,10 +188,7 @@ describe('Jobs management table component tests', () => {
     const index = 1;
     const direction = 'asc';
     await act(async () => {
-      wrapper
-        .find('Table')
-        .props()
-        ['onSort'](event, index, direction);
+      wrapper.find('Table').props()['onSort'](event, index, direction);
     });
     wrapper = wrapper.update();
     expect(props.setSortBy).toBeTruthy();
@@ -227,11 +218,7 @@ describe('Jobs management table component tests', () => {
         .contains('Details')
     ).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(0)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(0).find('button').simulate('click');
     });
     expect(props.handleDetailsToggle).toHaveBeenCalled();
   });
@@ -267,11 +254,7 @@ describe('Jobs management table component tests', () => {
         .contains('Cancel')
     ).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(2)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(2).find('button').simulate('click');
     });
     expect(jobCancelSpy).toHaveBeenCalled();
   });
@@ -301,11 +284,7 @@ describe('Jobs management table component tests', () => {
         .contains('Reschedule')
     ).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(DropdownItem)
-        .at(1)
-        .find('button')
-        .simulate('click');
+      wrapper.find(DropdownItem).at(1).find('button').simulate('click');
     });
     expect(props.handleRescheduleToggle).toHaveBeenCalled();
   });

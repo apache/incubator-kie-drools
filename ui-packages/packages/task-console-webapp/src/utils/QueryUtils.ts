@@ -20,7 +20,7 @@ import { SortBy, QueryFilter } from '@kogito-apps/task-inbox';
 
 const createSearchTextArray = (taskNames: string[]) => {
   const formattedTextArray = [];
-  taskNames.forEach(word => {
+  taskNames.forEach((word) => {
     formattedTextArray.push({
       referenceName: {
         like: `*${word}*`

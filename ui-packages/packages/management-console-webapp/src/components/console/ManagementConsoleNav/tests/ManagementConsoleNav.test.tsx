@@ -30,7 +30,7 @@ describe('ManagementConsoleNav tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const managementConsoleNav = wrapper.findWhere(
-      nested => nested.key() === 'process-instances-nav'
+      (nested) => nested.key() === 'process-instances-nav'
     );
 
     expect(managementConsoleNav.exists()).toBeTruthy();
@@ -47,7 +47,7 @@ describe('ManagementConsoleNav tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const managementConsoleNav = wrapper.findWhere(
-      nested => nested.key() === 'jobs-management-nav'
+      (nested) => nested.key() === 'jobs-management-nav'
     );
 
     expect(managementConsoleNav.exists()).toBeTruthy();

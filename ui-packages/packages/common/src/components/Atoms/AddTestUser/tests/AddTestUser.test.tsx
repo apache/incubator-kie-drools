@@ -40,11 +40,11 @@ jest.mock('@patternfly/react-core', () =>
 );
 
 const findFormInput = (wrapper, id: string) => {
-  return wrapper.findWhere(element => element.prop('id') === id);
+  return wrapper.findWhere((element) => element.prop('id') === id);
 };
 
 const findFormGroup = (wrapper, id: string) => {
-  return wrapper.findWhere(element => element.prop('fieldId') === id);
+  return wrapper.findWhere((element) => element.prop('fieldId') === id);
 };
 
 describe('AddTestUser tests', () => {
@@ -98,7 +98,7 @@ describe('AddTestUser tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const cancelButton = wrapper.findWhere(
-      element => element.prop('id') === 'cancel-add-test-user'
+      (element) => element.prop('id') === 'cancel-add-test-user'
     );
 
     expect(cancelButton.exists()).toBeTruthy();
@@ -120,7 +120,7 @@ describe('AddTestUser tests', () => {
     expect(wrapper).toMatchSnapshot();
 
     const addButton = wrapper.findWhere(
-      element => element.prop('id') === 'add-test-user'
+      (element) => element.prop('id') === 'add-test-user'
     );
 
     expect(addButton.exists()).toBeTruthy();
@@ -189,7 +189,7 @@ describe('AddTestUser tests', () => {
     expect(groups.prop('validated')).toStrictEqual('success');
 
     const addButton = wrapper.findWhere(
-      element => element.prop('id') === 'add-test-user'
+      (element) => element.prop('id') === 'add-test-user'
     );
 
     act(() => {

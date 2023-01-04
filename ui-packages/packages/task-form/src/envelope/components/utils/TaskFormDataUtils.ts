@@ -80,7 +80,7 @@ function checkAssignmentForAllOf(
 ): boolean {
   const allOf: any[] = property['allOf'];
 
-  const assignment = allOf.find(value => value[assignmentExpr]);
+  const assignment = allOf.find((value) => value[assignmentExpr]);
   if (assignment) {
     const index = allOf.indexOf(assignment);
     allOf.splice(index, 1);

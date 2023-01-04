@@ -17,7 +17,8 @@
 import { ProcessDefinition, ProcessDefinitionListDriver } from '../../../api';
 
 export class MockedProcessDefinitionListDriver
-  implements ProcessDefinitionListDriver {
+  implements ProcessDefinitionListDriver
+{
   setProcessDefinitionFilter(filter: any) {
     return Promise.resolve();
   }

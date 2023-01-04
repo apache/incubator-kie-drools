@@ -90,9 +90,8 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   );
   const [error, setError] = useState<string>(undefined);
   const [filters, setFilters] = useState<ProcessInstanceFilter>(defaultFilters);
-  const [processStates, setProcessStates] = useState<ProcessInstanceState[]>(
-    defaultStatusFilter
-  );
+  const [processStates, setProcessStates] =
+    useState<ProcessInstanceState[]>(defaultStatusFilter);
   const [expanded, setExpanded] = React.useState<{ [key: number]: boolean }>(
     {}
   );
@@ -135,7 +134,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         processInstance.serviceUrl &&
         processInstance.addons.includes('process-management')
       ) {
-        setSelectableInstances(prev => prev + 1);
+        setSelectableInstances((prev) => prev + 1);
       }
     });
   };

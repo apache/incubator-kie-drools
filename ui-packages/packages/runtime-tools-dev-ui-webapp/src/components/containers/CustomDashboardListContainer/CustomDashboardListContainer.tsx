@@ -26,7 +26,8 @@ import { useHistory } from 'react-router-dom';
 
 const CustomDashboardListContainer: React.FC<OUIAProps> = () => {
   const history = useHistory();
-  const gatewayApi: CustomDashboardListGatewayApi = useCustomDashboardListGatewayApi();
+  const gatewayApi: CustomDashboardListGatewayApi =
+    useCustomDashboardListGatewayApi();
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenCustomDashboardListen({

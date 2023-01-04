@@ -27,7 +27,7 @@ const DomainExplorerListDomains: React.FC<OUIAProps> = ({
 
   availableDomains =
     availableDomains &&
-    availableDomains.filter(item => {
+    availableDomains.filter((item) => {
       /* istanbul ignore else */
       if (item.name !== 'Jobs') {
         return item;

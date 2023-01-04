@@ -343,12 +343,7 @@ describe('Domain Explorer Table Component', () => {
       wrapper = wrapper.update().find('DomainExplorerTable');
     });
     wrapper.update();
-    expect(
-      wrapper
-        .find('h5')
-        .first()
-        .text()
-    ).toEqual('No results found');
+    expect(wrapper.find('h5').first().text()).toEqual('No results found');
   });
   it('check null value for process instance attributes', async () => {
     const isLoadingMore = false;
@@ -473,11 +468,7 @@ describe('Domain Explorer Table Component', () => {
     });
     wrapper.update();
     const event = {} as any;
-    wrapper
-      .find('button')
-      .at(0)
-      .props()
-      ['onClick'](event);
+    wrapper.find('button').at(0).props()['onClick'](event);
   });
   it('check sort functionality', async () => {
     const isLoadingMore = false;

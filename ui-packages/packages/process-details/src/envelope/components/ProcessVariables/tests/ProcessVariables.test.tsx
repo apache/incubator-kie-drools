@@ -59,7 +59,7 @@ const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
 jest.mock('react-json-view', () =>
-  jest.fn(_props => <MockedComponent {..._props} />)
+  jest.fn((_props) => <MockedComponent {..._props} />)
 );
 jest.mock('@patternfly/react-icons', () =>
   Object.assign({}, jest.requireActual('@patternfly/react-icons'), {
@@ -126,11 +126,7 @@ describe('ProcessVariables component tests', () => {
         }
       }
     };
-    wrapper
-      .find('mockConstructor')
-      .first()
-      .props()
-      ['onEdit'](obj);
+    wrapper.find('mockConstructor').first().props()['onEdit'](obj);
     expect(props2.setUpdateJson).toHaveBeenCalled();
     expect(props2.setDisplayLabel).toHaveBeenCalled();
   });

@@ -25,12 +25,8 @@ interface IOwnProps {
 }
 
 const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
-  const {
-    isProcessEnabled,
-    isTracingEnabled,
-    customLabels,
-    availablePages
-  } = useDevUIAppContext();
+  const { isProcessEnabled, isTracingEnabled, customLabels, availablePages } =
+    useDevUIAppContext();
 
   return (
     <Nav aria-label="Nav" theme="dark">

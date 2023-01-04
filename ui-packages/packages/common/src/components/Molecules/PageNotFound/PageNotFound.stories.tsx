@@ -5,7 +5,7 @@ export default {
   title: 'Page not found'
 };
 
-export const defaultView = args => {
+export const defaultView = (args) => {
   return <PageNotFound {...args} />;
 };
 

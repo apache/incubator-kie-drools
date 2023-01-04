@@ -85,9 +85,8 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [offset, setOffset] = useState<number>(0);
   const [error, setError] = useState<any>(undefined);
-  const [showEmptyFiltersError, setShowEmptyFiltersError] = useState<boolean>(
-    false
-  );
+  const [showEmptyFiltersError, setShowEmptyFiltersError] =
+    useState<boolean>(false);
 
   const [tasks, setTasks] = useState<UserTaskInstance[]>([]);
 
@@ -104,7 +103,7 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
 
   const getTableSortBy = () => {
     return {
-      index: columns.findIndex(column => column.path === sortBy.property),
+      index: columns.findIndex((column) => column.path === sortBy.property),
       direction: sortBy.direction
     };
   };

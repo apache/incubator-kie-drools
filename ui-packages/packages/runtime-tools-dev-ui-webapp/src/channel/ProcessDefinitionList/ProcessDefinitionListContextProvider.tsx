@@ -26,9 +26,9 @@ interface ProcessDefinitionListContextProviderProps {
   children;
 }
 
-const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({
-  children
-}) => {
+const ProcessDefinitionListContextProvider: React.FC<
+  ProcessDefinitionListContextProviderProps
+> = ({ children }) => {
   const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
   return (
     <ProcessDefinitionListContext.Provider

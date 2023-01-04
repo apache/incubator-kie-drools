@@ -79,7 +79,7 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
           TaskInboxEnvelopeApi
         >
       ): TaskInboxApi => ({
-        taskInbox__notify: userName =>
+        taskInbox__notify: (userName) =>
           envelopeServer.envelopeApi.requests.taskInbox__notify(userName)
       }),
       []

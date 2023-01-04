@@ -58,7 +58,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<TaskFormEnvelopeViewApi>();
-    return new Promise<() => TaskFormEnvelopeViewApi>(res => {
+    return new Promise<() => TaskFormEnvelopeViewApi>((res) => {
       args.container.className = 'kogito-task-form-container';
       ReactDOM.render(
         <TaskFormEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
@@ -70,6 +70,6 @@ export function init(args: {
 
   const context: TaskFormEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new TaskFormEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new TaskFormEnvelopeApiImpl(apiFactoryArgs)
   });
 }

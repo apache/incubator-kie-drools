@@ -43,7 +43,7 @@ export const getDateColumn = (
   return {
     label: columnLabel,
     path: columnPath,
-    bodyCellTransformer: value => (
+    bodyCellTransformer: (value) => (
       <Moment fromNow>{new Date(`${value}`)}</Moment>
     ),
     isSortable: true

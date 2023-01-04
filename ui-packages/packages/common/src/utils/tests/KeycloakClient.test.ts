@@ -99,7 +99,8 @@ describe('Tests for keycloak client functions', () => {
       KeycloakUserContext
     );
 
-    const context = KeycloakClient.getLoadedSecurityContext() as KeycloakUserContext;
+    const context =
+      KeycloakClient.getLoadedSecurityContext() as KeycloakUserContext;
     expect(context.getCurrentUser().id).toEqual('jdoe');
     expect(context.getCurrentUser().groups).toHaveLength(1);
     expect(context.getCurrentUser().groups).toContain('role1');

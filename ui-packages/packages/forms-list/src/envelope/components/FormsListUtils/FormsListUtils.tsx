@@ -20,7 +20,7 @@ import { DataTableColumn } from '@kogito-apps/components-common';
 import { FormInfo } from '../../../api/FormsListEnvelopeApi';
 import { Label } from '@patternfly/react-core';
 
-export const getFormTypeLabel = value => {
+export const getFormTypeLabel = (value) => {
   switch (value) {
     case 'HTML':
       return <Label variant="outline">HTML</Label>;
@@ -56,7 +56,7 @@ export const getDateColumn = (
   return {
     label: columnLabel,
     path: columnPath,
-    bodyCellTransformer: value => (
+    bodyCellTransformer: (value) => (
       <Moment fromNow>{new Date(`${value}`)}</Moment>
     ),
     isSortable: true
@@ -67,7 +67,7 @@ export const getFormTypeColumn = (): DataTableColumn => {
   return {
     label: 'Type',
     path: 'type',
-    bodyCellTransformer: cellValue => getFormTypeLabel(cellValue),
+    bodyCellTransformer: (cellValue) => getFormTypeLabel(cellValue),
     isSortable: true
   };
 };

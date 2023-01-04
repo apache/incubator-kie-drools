@@ -31,10 +31,10 @@ describe('CustomDashboardViewEnvelopeView tests', () => {
 
   it('Snapshot', async () => {
     const channelApi = new MockedMessageBusClientApi();
-    (channelApi.requests
-      .customDashboardView__getCustomDashboardView as jest.Mock).mockResolvedValue(
-      'its a yml file'
-    );
+    (
+      channelApi.requests
+        .customDashboardView__getCustomDashboardView as jest.Mock
+    ).mockResolvedValue('its a yml file');
     const forwardRef = React.createRef<CustomDashboardViewEnvelopeViewApi>();
 
     let wrapper;

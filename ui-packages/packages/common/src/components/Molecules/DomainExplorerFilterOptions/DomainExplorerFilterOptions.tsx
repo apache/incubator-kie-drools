@@ -100,7 +100,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     setInitData2(getQueryTypes.data);
   }, [getQueryTypes.data]);
 
-  const onFieldToggle = _isExpanded => {
+  const onFieldToggle = (_isExpanded) => {
     setIsExpanded(_isExpanded);
   };
 
@@ -110,13 +110,13 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     }
   });
 
-  const onToggle = _isOpen => {
+  const onToggle = (_isOpen) => {
     setIsFilterDropdownOpen(_isOpen);
   };
-  const checkType = innerText => {
+  const checkType = (innerText) => {
     const typeName =
       getTypes.data.__type &&
-      getTypes.data.__type.inputFields.find(item => {
+      getTypes.data.__type.inputFields.find((item) => {
         if (item.name === innerText) {
           return item;
         }
@@ -140,7 +140,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       }
     }
   };
-  const onSelect = event => {
+  const onSelect = (event) => {
     setSelectTypes(event.target.innerText);
     setIsFilterDropdownOpen(false);
     checkType(event.target.innerText);
@@ -153,20 +153,20 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       <SelectOption key={index} value={data.name} />
     ));
 
-  const textBoxChange = value => {
+  const textBoxChange = (value) => {
     setTextValue(value);
   };
 
-  const textGroupChange = value => {
+  const textGroupChange = (value) => {
     setInputArray(value);
   };
 
-  const onSelectBoolean = event => {
+  const onSelectBoolean = (event) => {
     setCurrentBoolean(event.target.innerText);
     setIsOpen(!isOpen);
   };
 
-  const onToggleBoolean = _isOpen => {
+  const onToggleBoolean = (_isOpen) => {
     setIsOpen(_isOpen);
   };
 
@@ -179,18 +179,18 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     </DropdownItem>
   ];
 
-  const fetchSchema = option => {
+  const fetchSchema = (option) => {
     const filteredItem =
       !getQueryTypes.loading &&
       getQueryTypes.data.__schema &&
-      getQueryTypes.data.__schema.queryType.find(item => {
+      getQueryTypes.data.__schema.queryType.find((item) => {
         if (item.name === option.type.name) {
           return item;
         }
       });
     const fieldName = [];
     filteredItem &&
-      filteredItem.inputFields.map(item => fieldName.push(item.name));
+      filteredItem.inputFields.map((item) => fieldName.push(item.name));
     if (
       fieldName.length > 2 &&
       enumArgTypes.join('|') !== fieldName.join('|')
@@ -204,7 +204,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     let nestedTitles = '';
     childItems =
       !getQueryTypes.loading &&
-      _data.map(group => {
+      _data.map((group) => {
         const label = title + ' / ' + attr.join();
         const childEle = (
           <SelectGroup
@@ -215,7 +215,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
           >
             {group.inputFields !== null &&
               group.inputFields
-                .filter(item => {
+                .filter((item) => {
                   if (!scalarArgs.includes(item.type.name)) {
                     const tempData = [];
                     const schemaObj = fetchSchema(item);
@@ -229,7 +229,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
                     return item;
                   }
                 })
-                .map(item => {
+                .map((item) => {
                   return (
                     <SelectOption
                       key={'kie-filter-item-' + group.name + title + item.name}
@@ -250,7 +250,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     !getSchema.loading &&
       getSchema.data.__type &&
       getSchema.data.__type.inputFields
-        .filter(group => {
+        .filter((group) => {
           if (
             group.type.kind !== 'LIST' &&
             group.type.name !== filterArgument
@@ -261,7 +261,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
         .map((group, index) => {
           let groupItem;
           let rootItem;
-          group.type.inputFields.filter(item => {
+          group.type.inputFields.filter((item) => {
             if (!nonArgs.includes(item.type.name)) {
               groupItem = group;
             } else {
@@ -287,7 +287,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
               >
                 {groupItem.type.inputFields &&
                   groupItem.type.inputFields
-                    .filter(item => {
+                    .filter((item) => {
                       if (!scalarArgs.includes(item.type.name)) {
                         const tempData = [];
                         const schemaObj = fetchSchema(item);
@@ -348,13 +348,13 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
       const str = lastEle.charAt(0).toUpperCase() + lastEle.slice(1);
       arg = str + 'Argument';
     }
-    const argType = initData2.__schema.queryType.find(type => {
+    const argType = initData2.__schema.queryType.find((type) => {
       if (type.name === arg) {
         return type;
       }
     });
 
-    const argField = argType.inputFields.find(data => {
+    const argField = argType.inputFields.find((data) => {
       if (data.name === innerText) {
         return data;
       }
@@ -372,34 +372,35 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     setSelectTypes('');
     setIsExpanded(false);
   };
-  const onChange = event => {
+  const onChange = (event) => {
     const innerText = event.target.innerText;
     setSelected(innerText);
-    const parent = event.nativeEvent.target.parentElement.parentElement.getAttribute(
-      'value'
-    );
+    const parent =
+      event.nativeEvent.target.parentElement.parentElement.getAttribute(
+        'value'
+      );
     getOperators(innerText, parent);
   };
 
-  const onStateToggle = _isOpen => {
+  const onStateToggle = (_isOpen) => {
     setStateToggle(_isOpen);
   };
 
-  const onStateSelect = event => {
+  const onStateSelect = (event) => {
     const selection = event.target.innerText;
     setSelectedState(selection);
     setStateToggle(!stateToggle);
   };
 
-  const onMultiStateToggle = _isOpen => {
+  const onMultiStateToggle = (_isOpen) => {
     setMultiStateToggle(_isOpen);
   };
 
   const onMultiStateSelect = (event, selection) => {
     if (multiState.includes(selection)) {
-      setMultiState(prev => prev.filter(item => item !== selection));
+      setMultiState((prev) => prev.filter((item) => item !== selection));
     } else {
-      setMultiState(prev => [...prev, selection]);
+      setMultiState((prev) => [...prev, selection]);
     }
   };
 
@@ -409,12 +410,12 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     const lastEle = tempParents.slice(-1)[0];
     const str = lastEle.charAt(0).toUpperCase() + lastEle.slice(1);
     const arg = str + 'Argument';
-    const argType = getQueryTypes.data.__schema.queryType.find(type => {
+    const argType = getQueryTypes.data.__schema.queryType.find((type) => {
       if (type.name === arg) {
         return type;
       }
     });
-    const argField = argType.inputFields.find(data => {
+    const argField = argType.inputFields.find((data) => {
       if (data.name === innerText) {
         return data;
       }
@@ -495,7 +496,7 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
 
   const checkChipArray = (chipSelections, chipText) => {
     let value = '';
-    filterChips.forEach(item => {
+    filterChips.forEach((item) => {
       const tempItem = item.split(':');
       if (tempItem[0] === chipSelections) {
         value = item;
@@ -503,15 +504,15 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     });
     if (value.length > 0) {
       const index = filterChips.indexOf(value);
-      setFilterChips(prev => {
+      setFilterChips((prev) => {
         prev.splice(index, 1);
         return [...prev, chipText];
       });
     } else {
-      setFilterChips(prev => [...prev, chipText]);
+      setFilterChips((prev) => [...prev, chipText]);
     }
   };
-  const valueToValidate = scalarType => {
+  const valueToValidate = (scalarType) => {
     switch (scalarType) {
       case 'Boolean':
         return currentBoolean;
@@ -531,7 +532,9 @@ const DomainExplorerFilterOptions: React.FC<IOwnProps & OUIAProps> = ({
     let parentString = '';
     let chipText = '';
     typeParent &&
-      typeParent.map(parent => (parentString = parentString + ' / ' + parent));
+      typeParent.map(
+        (parent) => (parentString = parentString + ' / ' + parent)
+      );
     parentString = parentString.substring(3);
     if (scalarType === 'ArrayString') {
       chipText = validateChip(parentString, selected, selectTypes, inputArray);

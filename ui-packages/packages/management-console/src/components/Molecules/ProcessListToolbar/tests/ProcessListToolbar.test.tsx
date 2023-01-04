@@ -168,10 +168,7 @@ describe('ProcessListToolbar component tests', () => {
 
   it('clearAll tests', () => {
     const wrapper = shallow(<ProcessListToolbar {...props} />);
-    wrapper
-      .find('#data-toolbar-with-filter')
-      .props()
-      ['clearAllFilters']();
+    wrapper.find('#data-toolbar-with-filter').props()['clearAllFilters']();
     expect(props.setSearchWord).toHaveBeenCalledTimes(1);
     expect(props.setStatusArray.mock.calls).toEqual([[['ACTIVE']]]);
     expect(props.setFilters.mock.calls).toEqual([
@@ -215,26 +212,15 @@ describe('ProcessListToolbar component tests', () => {
     ).find('ProcessListToolbar');
     expect(wrapper.find('#status-select').exists()).toBeTruthy();
     await act(async () => {
-      wrapper
-        .find(Select)
-        .find('button')
-        .simulate('click');
+      wrapper.find(Select).find('button').simulate('click');
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find(SelectOption)
-        .at(1)
-        .find('input')
-        .simulate('change');
+      wrapper.find(SelectOption).at(1).find('input').simulate('change');
     });
     expect(props.setStatusArray.mock.calls[0][0]).toEqual(['ACTIVE', 'ERROR']);
     await act(async () => {
-      wrapper
-        .find(SelectOption)
-        .at(4)
-        .find('input')
-        .simulate('change');
+      wrapper.find(SelectOption).at(4).find('input').simulate('change');
     });
     expect(props.setStatusArray.mock.calls[1][0]).toEqual([
       'ACTIVE',
@@ -287,10 +273,7 @@ describe('ProcessListToolbar component tests', () => {
 
   it('onStatusToggle click', () => {
     const wrapper = shallow(<ProcessListToolbar {...props} />);
-    wrapper
-      .find('#status-select')
-      .props()
-      ['onToggle'](true);
+    wrapper.find('#status-select').props()['onToggle'](true);
     wrapper.update();
     expect(wrapper.find('SelectOption').length).toEqual(5);
   });
@@ -569,10 +552,7 @@ describe('ProcessListToolbar component tests', () => {
     const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
-    wrapper
-      .find('MockedProcessListModal')
-      .props()
-      ['resetSelected']();
+    wrapper.find('MockedProcessListModal').props()['resetSelected']();
     expect(props.setSelectedInstances).toHaveBeenCalled();
     expect(props.setIsAllChecked).toHaveBeenCalled();
   });

@@ -16,10 +16,7 @@ describe('KeycloakUnavailablePage test', () => {
       reload: jest.fn()
     };
     const wrapper = mount(<KeyCloakUnavailablePage />);
-    wrapper
-      .find(Button)
-      .find('button')
-      .simulate('click');
+    wrapper.find(Button).find('button').simulate('click');
     expect(window.location.reload).toHaveBeenCalled();
     jest.restoreAllMocks();
     window.location = location;

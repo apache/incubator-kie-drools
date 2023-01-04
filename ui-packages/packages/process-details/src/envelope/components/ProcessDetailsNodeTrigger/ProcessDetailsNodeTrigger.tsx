@@ -47,8 +47,9 @@ interface ProcessDetailsNodeTriggerProps {
   driver: ProcessDetailsDriver;
 }
 
-const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps &
-  OUIAProps> = ({ processInstanceData, driver, ouiaId, ouiaSafe }) => {
+const ProcessDetailsNodeTrigger: React.FC<
+  ProcessDetailsNodeTriggerProps & OUIAProps
+> = ({ processInstanceData, driver, ouiaId, ouiaSafe }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -66,7 +67,7 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps &
           setIsError(false);
           setNodes(nodeInstances);
         })
-        .catch(error => {
+        .catch((error) => {
           setIsError(true);
           setModalTitle('Node trigger Error');
           setModalContent(
@@ -125,7 +126,7 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps &
           `The node ${selectedNode.name} was triggered successfully`
         );
       })
-      .catch(error => {
+      .catch((error) => {
         setTitleType('failure');
         setModalContent(
           `The node ${selectedNode.name} trigger failed. ErrorMessage : ${error.message}`

@@ -40,9 +40,9 @@ jest.mock('apollo-client');
 
 describe('TaskConsole tests', () => {
   it('Snapshot', () => {
-    const client = (jest.fn().mockImplementation() as unknown) as ApolloClient<
-      any
-    >;
+    const client = jest
+      .fn()
+      .mockImplementation() as unknown as ApolloClient<any>;
     const testContext = new TestUserContext();
     const props = {
       apolloClient: client,

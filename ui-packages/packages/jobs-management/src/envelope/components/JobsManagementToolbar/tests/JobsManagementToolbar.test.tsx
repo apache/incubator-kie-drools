@@ -101,10 +101,7 @@ describe('Jobs Management toolbar tests', () => {
       'JobsManagementToolbar'
     );
     await act(async () => {
-      wrapper
-        .find('#refresh-button')
-        .at(0)
-        .simulate('click');
+      wrapper.find('#refresh-button').at(0).simulate('click');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalledWith([]);
   });
@@ -114,10 +111,7 @@ describe('Jobs Management toolbar tests', () => {
       'JobsManagementToolbar'
     );
     await act(async () => {
-      wrapper
-        .find('#apply-filter')
-        .at(0)
-        .simulate('click');
+      wrapper.find('#apply-filter').at(0).simulate('click');
     });
     expect(props.setChips).toHaveBeenCalled();
   });
@@ -167,19 +161,11 @@ describe('Jobs Management toolbar tests', () => {
       }
     };
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .at(0)
-        .props()
-        ['onToggle']();
+      wrapper.find('#status-select').at(0).props()['onToggle']();
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .at(0)
-        .props()
-        ['onSelect'](event);
+      wrapper.find('#status-select').at(0).props()['onSelect'](event);
     });
     wrapper = wrapper.update();
     expect(props.setSelectedStatus).toHaveBeenCalled();
@@ -195,19 +181,11 @@ describe('Jobs Management toolbar tests', () => {
       }
     };
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .at(0)
-        .props()
-        ['onToggle']();
+      wrapper.find('#status-select').at(0).props()['onToggle']();
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find('#status-select')
-        .at(0)
-        .props()
-        ['onSelect'](event);
+      wrapper.find('#status-select').at(0).props()['onSelect'](event);
     });
     wrapper = wrapper.update();
     expect(props.setSelectedStatus).toHaveBeenCalled();
@@ -221,11 +199,7 @@ describe('Jobs Management toolbar tests', () => {
       target: {}
     };
     await act(async () => {
-      wrapper
-        .find('Dropdown')
-        .at(0)
-        .props()
-        ['onSelect'](event);
+      wrapper.find('Dropdown').at(0).props()['onSelect'](event);
     });
   });
 
@@ -234,11 +208,7 @@ describe('Jobs Management toolbar tests', () => {
       'JobsManagementToolbar'
     );
     await act(async () => {
-      wrapper
-        .find('KebabToggle')
-        .at(0)
-        .props()
-        ['onToggle']();
+      wrapper.find('KebabToggle').at(0).props()['onToggle']();
     });
   });
 });

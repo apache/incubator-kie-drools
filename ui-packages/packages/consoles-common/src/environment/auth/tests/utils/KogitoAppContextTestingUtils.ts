@@ -39,9 +39,8 @@ const newContext = (authEnabled: boolean): KogitoAppContext.AppContext => {
   return new KogitoAppContext.AppContextImpl(testUserSystem);
 };
 
-export let testKogitoAppContext: KogitoAppContext.AppContext = newContext(
-  false
-);
+export let testKogitoAppContext: KogitoAppContext.AppContext =
+  newContext(false);
 
 jest.spyOn(KogitoAppContext, 'useKogitoAppContext').mockImplementation(() => {
   return testKogitoAppContext;

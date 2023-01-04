@@ -74,7 +74,7 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
   }
 
   openProcess = (process: ProcessInstance): Promise<void> => {
-    this.listeners.forEach(listener => listener.onOpen(process));
+    this.listeners.forEach((listener) => listener.onOpen(process));
     return Promise.resolve();
   };
 
@@ -133,10 +133,10 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
           this._ProcessListState.filters,
           this._ProcessListState.sortBy
         )
-        .then(value => {
+        .then((value) => {
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });
@@ -148,10 +148,10 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
     return new Promise<ProcessInstance[]>((resolve, reject) => {
       this.queries
         .getChildProcessInstances(rootProcessInstanceId)
-        .then(value => {
+        .then((value) => {
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });

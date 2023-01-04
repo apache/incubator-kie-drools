@@ -26,7 +26,8 @@ import {
  * Implementation of FormDetailsDriver that delegates calls to the channel Api
  */
 export default class FormDetailsEnvelopeViewDriver
-  implements FormDetailsDriver {
+  implements FormDetailsDriver
+{
   constructor(
     protected readonly channelApi: MessageBusClientApi<FormDetailsChannelApi>
   ) {}

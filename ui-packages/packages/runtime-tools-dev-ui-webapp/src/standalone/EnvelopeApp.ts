@@ -33,7 +33,7 @@ const initEnvelope = () => {
       window.parent.postMessage(message, targetOrigin!, _)
   };
   const apiImplFactory = {
-    create: args => new RuntimeToolsDevUIEnvelopeApiImpl(args)
+    create: (args) => new RuntimeToolsDevUIEnvelopeApiImpl(args)
   };
 
   const envelope = new Envelope<

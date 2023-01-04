@@ -87,29 +87,31 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
     const selection = target.name;
     const selectionArray = target.name
       .split('/')
-      .map(item => item.charAt(0).toLowerCase() + item.slice(1));
+      .map((item) => item.charAt(0).toLowerCase() + item.slice(1));
     setEnableRefresh(false);
     if (selected.includes(selection)) {
-      setSelected(prevState => prevState.filter(item => item !== selection));
+      setSelected((prevState) =>
+        prevState.filter((item) => item !== selection)
+      );
       const objValue = selectionArray.pop();
       const rest = filterColumnSelection(selectionArray, objValue);
-      setParameters(prevState =>
-        prevState.filter(obj => {
+      setParameters((prevState) =>
+        prevState.filter((obj) => {
           if (!_.isEqual(obj, rest)) {
             return obj;
           }
         })
       );
     } else {
-      setSelected(prevState => [...prevState, selection]);
+      setSelected((prevState) => [...prevState, selection]);
       const objValue = selectionArray.pop();
       const rest = filterColumnSelection(selectionArray, objValue);
-      setParameters(prevState => [...prevState, rest]);
+      setParameters((prevState) => [...prevState, rest]);
     }
   };
 
   const tempExpanded = [];
-  const toggle = id => {
+  const toggle = (id) => {
     const index = expanded.indexOf(id);
     const newExpanded =
       index >= 0
@@ -122,11 +124,11 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
     setExpanded(newExpanded);
   };
 
-  const fetchSchema = option => {
+  const fetchSchema = (option) => {
     return (
       !getQueryTypes.loading &&
       getQueryTypes.data.__schema &&
-      getQueryTypes.data.__schema.queryType.find(item => {
+      getQueryTypes.data.__schema.queryType.find((item) => {
         if (item.name === option.type.name) {
           return item;
         }
@@ -168,7 +170,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
               />
             </DataListItemRow>
             {group.fields
-              .filter(item => {
+              .filter((item) => {
                 if (!nullTypes.includes(item.type.name)) {
                   const tempData = [];
                   const n = fetchSchema(item);
@@ -218,7 +220,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
     finalResult.push(childItems);
   };
 
-  const selectionItems = _data => {
+  const selectionItems = (_data) => {
     !getPicker.loading &&
       _data
         .filter((group, index) => {
@@ -282,7 +284,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
               </DataListItemRow>
               {group.type.fields &&
                 group.type.fields
-                  .filter(item => {
+                  .filter((item) => {
                     if (!nullTypes.includes(item.type.name)) {
                       const tempData = [];
                       const _v = fetchSchema(item);
@@ -344,7 +346,7 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
     const someChecked = anySelected ? null : false;
     const isChecked = allSelected ? true : someChecked;
 
-    const onDropDownToggle = isOpen => {
+    const onDropDownToggle = (isOpen) => {
       setIsDropDownOpen(isOpen);
     };
 
@@ -359,11 +361,13 @@ const DomainExplorerManageColumns: React.FC<IOwnProps & OUIAProps> = ({
 
     const handleSelectClickAll = () => {
       setSelected(allSelections);
-      const selectionArray = allSelections.map(ele =>
-        ele.split('/').map(item => item.charAt(0).toLowerCase() + item.slice(1))
+      const selectionArray = allSelections.map((ele) =>
+        ele
+          .split('/')
+          .map((item) => item.charAt(0).toLowerCase() + item.slice(1))
       );
       const finalObj = [];
-      selectionArray.forEach(arr => {
+      selectionArray.forEach((arr) => {
         const objValue = arr.pop();
         const rest = filterColumnSelection(arr, objValue);
         finalObj.push(rest);

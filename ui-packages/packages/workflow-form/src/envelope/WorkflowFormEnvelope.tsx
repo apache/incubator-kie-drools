@@ -58,7 +58,7 @@ export function init(args: {
    */
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<WorkflowFormEnvelopeViewApi>();
-    return new Promise<() => WorkflowFormEnvelopeViewApi>(res => {
+    return new Promise<() => WorkflowFormEnvelopeViewApi>((res) => {
       args.container.className = 'kogito-workflow-form-container';
       ReactDOM.render(
         <WorkflowFormEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
@@ -70,6 +70,6 @@ export function init(args: {
 
   const context: WorkflowFormEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new WorkflowFormEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new WorkflowFormEnvelopeApiImpl(apiFactoryArgs)
   });
 }

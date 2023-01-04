@@ -75,7 +75,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   const [rows, setRows] = useState<IRow[]>([]);
   useEffect(() => {
     if (isActionPerformed) {
-      const updatedRows = rows.filter(row => {
+      const updatedRows = rows.filter((row) => {
         row.selected = false;
         return row;
       });
@@ -101,7 +101,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
       return false;
     }
   };
-  columns.forEach(column => {
+  columns.forEach((column) => {
     column['props'] = { className: 'pf-u-text-align-center' };
     if (checkNotEmpty() && column.title !== 'Id') {
       column['transforms'] = [sortable];
@@ -109,13 +109,13 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   });
 
   const handleJobDetails = (id): void => {
-    const job = data.Jobs.find(job => job.id === id);
+    const job = data.Jobs.find((job) => job.id === id);
     setSelectedJob(job);
     handleDetailsToggle();
   };
 
   const handleJobReschedule = (id): void => {
-    const job = data.Jobs.find(job => job.id === id);
+    const job = data.Jobs.find((job) => job.id === id);
     setSelectedJob(job);
     handleRescheduleToggle();
   };
@@ -123,12 +123,12 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   const refetch = React.useContext(refetchContext);
 
   const handleCancelAction = async (id): Promise<void> => {
-    const job = data.Jobs.find(job => job.id === id);
+    const job = data.Jobs.find((job) => job.id === id);
     await jobCancel(job, setModalTitle, setModalContent, refetch);
     handleCancelModalToggle();
   };
 
-  const dynamicActions = rowData => {
+  const dynamicActions = (rowData) => {
     if (rowData.type === 'Editable') {
       return [
         {
@@ -224,7 +224,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
   const tableContent = (): void => {
     !loading &&
       !_.isEmpty(data) &&
-      data.Jobs.map(job => {
+      data.Jobs.map((job) => {
         const retrievedValue = getValues(
           _.pick(job, [
             'id',
@@ -276,7 +276,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
         ];
         setRows(tempRows);
       } else {
-        setRows(prev => [...prev, ...jobRow]);
+        setRows((prev) => [...prev, ...jobRow]);
       }
     }
   };
@@ -285,7 +285,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
     setIsActionPerformed(false);
     const copyOfRows = [...rows];
     if (rowId === -1) {
-      copyOfRows.forEach(row => {
+      copyOfRows.forEach((row) => {
         row.selected = isSelected;
         return row;
       });
@@ -299,7 +299,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
       if (copyOfRows[rowId]) {
         copyOfRows[rowId].selected = isSelected;
         const row = [...data.Jobs].filter(
-          job => job.id === copyOfRows[rowId].rowKey
+          (job) => job.id === copyOfRows[rowId].rowKey
         );
         const rowData = _.find(selectedJobInstances, [
           'id',
@@ -311,7 +311,7 @@ const JobsManagementTable: React.FC<IOwnProps & OUIAProps> = ({
           const copyOfSelectedJobInstances = [...selectedJobInstances];
           _.remove(
             copyOfSelectedJobInstances,
-            job => job.id === copyOfRows[rowId].rowKey
+            (job) => job.id === copyOfRows[rowId].rowKey
           );
           setSelectedJobInstances(copyOfSelectedJobInstances);
         }

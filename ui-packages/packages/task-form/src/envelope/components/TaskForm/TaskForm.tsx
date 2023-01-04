@@ -53,9 +53,8 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
   const [formData, setFormData] = useState<any>(null);
   const [formState, setFormState] = useState<State>(State.READY);
   const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
-  const [taskFormAssignments, setTaskFormAssignments] = useState<
-    TaskDataAssignments
-  >();
+  const [taskFormAssignments, setTaskFormAssignments] =
+    useState<TaskDataAssignments>();
 
   useEffect(() => {
     const parsedSchema = parseTaskSchema(schema);
@@ -94,7 +93,7 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
 
         const payload = {};
 
-        taskFormAssignments.outputs.forEach(output => {
+        taskFormAssignments.outputs.forEach((output) => {
           if (has(data, output)) {
             set(payload, output, get(data, output));
           }
@@ -138,7 +137,7 @@ const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
           userTask={userTask}
           enabled={formState == State.READY}
           formSchema={taskFormSchema}
-          submit={phase => doSubmit(phase, {})}
+          submit={(phase) => doSubmit(phase, {})}
         />
       );
     }

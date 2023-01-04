@@ -49,7 +49,7 @@ const EmptyTaskForm: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const buildFormActions = () => {
-    return formSchema.phases.map(phase => {
+    return formSchema.phases.map((phase) => {
       return {
         name: phase,
         execute: () => {

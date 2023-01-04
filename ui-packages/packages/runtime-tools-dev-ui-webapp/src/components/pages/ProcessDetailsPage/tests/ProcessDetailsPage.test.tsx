@@ -168,12 +168,12 @@ describe('WebApp - ProcessDetailsPage tests', () => {
           singularProcessLabel: 'Workflow',
           pluralProcessLabel: 'Workflows'
         },
-        diagramPreviewSize:{
+        diagramPreviewSize: {
           width: 600,
           height: 600
         },
-        isStunnerEnabled:false,
-        isWorkflow:jest.fn()
+        isStunnerEnabled: false,
+        isWorkflow: jest.fn()
       };
     });
 

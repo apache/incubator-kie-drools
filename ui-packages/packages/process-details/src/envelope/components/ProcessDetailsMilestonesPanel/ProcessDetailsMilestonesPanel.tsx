@@ -39,7 +39,7 @@ const ProcessDetailsMilestonesPanel: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe,
   milestones
 }) => {
-  const handleStatus = status => {
+  const handleStatus = (status) => {
     switch (status) {
       case 'AVAILABLE':
         return <Label icon={<InfoCircleIcon />}>Available</Label>;

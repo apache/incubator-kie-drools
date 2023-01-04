@@ -50,15 +50,12 @@ export const TaskFormEnvelopeView = React.forwardRef<
   Props & OUIAProps
 >(({ channelApi, ouiaId, ouiaSafe }, forwardedRef) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
   const [userTask, setUserTask] = useState<UserTaskInstance>();
   const [user, setUser] = useState<User>();
-  const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>(
-    null
-  );
+  const [taskFormSchema, setTaskFormSchema] =
+    useState<Record<string, any>>(null);
   const [customForm, setCustomForm] = useState<CustomForm>(null);
 
   const [driver] = useState<TaskFormEnvelopeViewDriver>(
@@ -88,27 +85,27 @@ export const TaskFormEnvelopeView = React.forwardRef<
       setIsLoading(true);
     }
 
-    const customFormPromise: Promise<void> = new Promise<void>(resolve => {
+    const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
       driver
         .getCustomForm()
-        .then(customForm => {
+        .then((customForm) => {
           setCustomForm(customForm);
           resolve();
         })
-        .catch(error => resolve());
+        .catch((error) => resolve());
     });
 
-    const schemaPromise: Promise<void> = new Promise<void>(resolve => {
+    const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
       driver
         .getTaskFormSchema()
-        .then(schema => {
+        .then((schema) => {
           setTaskFormSchema(schema);
           resolve();
         })
-        .catch(error => resolve());
+        .catch((error) => resolve());
     });
 
-    Promise.all([customFormPromise, schemaPromise]).then(values => {
+    Promise.all([customFormPromise, schemaPromise]).then((values) => {
       setIsLoading(false);
     });
   }, [isEnvelopeConnectedToChannel]);

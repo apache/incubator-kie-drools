@@ -60,9 +60,11 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
     let selectionText = event.target.id;
     selectionText = selectionText.split('pf-random-id-')[1].split('-')[1];
     if (selectedStatus.includes(selectionText)) {
-      setSelectedStatus(prev => prev.filter(item => item !== selectionText));
+      setSelectedStatus((prev) =>
+        prev.filter((item) => item !== selectionText)
+      );
     } else {
-      setSelectedStatus(prev => [...prev, selectionText]);
+      setSelectedStatus((prev) => [...prev, selectionText]);
     }
   };
 
@@ -75,13 +77,13 @@ const JobsManagementFilters: React.FC<IOwnProps & OUIAProps> = ({
 
   const onDelete = (type: string = '', id: string = ''): void => {
     const chipsCopy = [...chips];
-    const tempChips = chipsCopy.filter(item => item !== id);
+    const tempChips = chipsCopy.filter((item) => item !== id);
     setOffset(0);
     setSelectedJobInstances([]);
-    setChips(prev => prev.filter(item => item !== id));
-    setSelectedStatus(prev => prev.filter(item => item !== id));
+    setChips((prev) => prev.filter((item) => item !== id));
+    setSelectedStatus((prev) => prev.filter((item) => item !== id));
     if (tempChips.length > 0) {
-      setValues(prev => prev.filter(item => item !== id));
+      setValues((prev) => prev.filter((item) => item !== id));
     } else {
       setDisplayTable(false);
     }

@@ -57,7 +57,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   public readonly customLabels: CustomLabels;
   public readonly omittedProcessTimelineEvents: string[];
   public readonly diagramPreviewSize?: DiagramPreviewSize;
-  public readonly isStunnerEnabled:boolean;
+  public readonly isStunnerEnabled: boolean;
 
   constructor(
     users,
@@ -103,10 +103,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   switchUser(userId: string): void {
-    const switchedUser = this.users.find(user => user.id === userId);
+    const switchedUser = this.users.find((user) => user.id === userId);
     if (switchedUser) {
       this.currentUser = switchedUser;
-      this.userListeners.forEach(listener =>
+      this.userListeners.forEach((listener) =>
         listener.onUserChange(switchedUser)
       );
     }

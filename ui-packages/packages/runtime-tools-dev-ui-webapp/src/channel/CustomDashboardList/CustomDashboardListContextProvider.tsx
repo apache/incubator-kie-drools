@@ -22,9 +22,9 @@ interface CustomDashboardListContextProviderProps {
   children;
 }
 
-const CustomDashboardListContextProvider: React.FC<CustomDashboardListContextProviderProps> = ({
-  children
-}) => {
+const CustomDashboardListContextProvider: React.FC<
+  CustomDashboardListContextProviderProps
+> = ({ children }) => {
   return (
     <CustomDashboardListContext.Provider
       value={new CustomDashboardListGatewayApiImpl()}

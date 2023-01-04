@@ -60,11 +60,7 @@ describe('form details tests', () => {
     });
     wrapper = wrapper.update();
     await act(async () => {
-      wrapper
-        .find('TabButton')
-        .at(1)
-        .find('button')
-        .simulate('click');
+      wrapper.find('TabButton').at(1).find('button').simulate('click');
     });
     await act(async () => {
       wrapper = wrapper.update();

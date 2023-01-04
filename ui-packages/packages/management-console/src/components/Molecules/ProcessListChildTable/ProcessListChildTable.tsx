@@ -87,7 +87,7 @@ const ProcessListChildTable: React.FC<IOwnProps & OUIAProps> = ({
     if (!loading && data) {
       const clonedInitData = JSON.parse(JSON.stringify(initData));
       !_.isEmpty(clonedInitData) &&
-        clonedInitData.ProcessInstances.forEach(processInstanceData => {
+        clonedInitData.ProcessInstances.forEach((processInstanceData) => {
           if (processInstanceData.id === parentProcessId) {
             data.ProcessInstances.forEach(
               (
@@ -113,7 +113,7 @@ const ProcessListChildTable: React.FC<IOwnProps & OUIAProps> = ({
             instance.serviceUrl &&
             instance.addons.includes('process-management')
           ) {
-            setSelectableInstances(prev => prev + 1);
+            setSelectableInstances((prev) => prev + 1);
           }
         }
       );
@@ -126,7 +126,7 @@ const ProcessListChildTable: React.FC<IOwnProps & OUIAProps> = ({
     const processInstance =
       !_.isEmpty(initData) &&
       initData.ProcessInstances.find(
-        processInstanceData => processInstanceData.id === parentProcessId
+        (processInstanceData) => processInstanceData.id === parentProcessId
       );
     if (
       !_.isEmpty(processInstance) &&
@@ -243,15 +243,15 @@ const ProcessListChildTable: React.FC<IOwnProps & OUIAProps> = ({
 
   const checkBoxSelect = (processInstance: GraphQL.ProcessInstance): void => {
     const clonedInitData = { ...initData };
-    clonedInitData.ProcessInstances.forEach(instance => {
+    clonedInitData.ProcessInstances.forEach((instance) => {
       if (instance.id === parentProcessId) {
-        instance['childProcessInstances'].forEach(childInstance => {
+        instance['childProcessInstances'].forEach((childInstance) => {
           if (childInstance.id === processInstance.id) {
             if (childInstance.isSelected) {
               childInstance.isSelected = false;
               setSelectedInstances(
                 selectedInstances.filter(
-                  selectedInstance => selectedInstance.id !== childInstance.id
+                  (selectedInstance) => selectedInstance.id !== childInstance.id
                 )
               );
             } else {

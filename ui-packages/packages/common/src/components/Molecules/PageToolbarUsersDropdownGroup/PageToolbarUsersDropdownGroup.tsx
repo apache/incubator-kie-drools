@@ -40,7 +40,8 @@ const PageToolbarUsersDropdownGroup: React.FC<IOwnProps & OUIAProps> = ({
     return null;
   }
 
-  const testUserSystem: TestUserContext = context.userContext as TestUserContext;
+  const testUserSystem: TestUserContext =
+    context.userContext as TestUserContext;
 
   const users = testUserSystem.getUserManager().listAllUsers();
 

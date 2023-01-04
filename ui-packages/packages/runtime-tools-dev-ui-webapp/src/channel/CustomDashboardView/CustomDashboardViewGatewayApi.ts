@@ -23,7 +23,8 @@ export interface CustomDashboardViewGatewayApi {
 }
 
 export class CustomDashboardViewGatewayApiImpl
-  implements CustomDashboardViewGatewayApi {
+  implements CustomDashboardViewGatewayApi
+{
   constructor() {}
   getCustomDashboardContent(name: string): Promise<string> {
     return getCustomDashboardContent(name);

@@ -71,7 +71,7 @@ app.get('/:processId/:taskName/schema', controller.getTaskDefinitionForm);
 const taskDetailsError = ['5cead49f-7649-410a-89ff-840cc52adf52'];
 
 function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const checkStatesFilters = (userTaskInstance, states) => {
@@ -98,7 +98,7 @@ const checkTaskNameFilters = (userTaskInstance, names) => {
 const resolvers = {
   Query: {
     UserTaskInstances: async (parent, args) => {
-      let result = data.UserTaskInstances.filter(datum => {
+      let result = data.UserTaskInstances.filter((datum) => {
         console.log('args', args);
 
         if (args['where'].and) {
@@ -137,8 +137,8 @@ const resolvers = {
       if (args['orderBy']) {
         result = _.orderBy(
           result,
-          _.keys(args['orderBy']).map(key => key),
-          _.values(args['orderBy']).map(value => value.toLowerCase())
+          _.keys(args['orderBy']).map((key) => key),
+          _.values(args['orderBy']).map((value) => value.toLowerCase())
         );
       }
       await timeout(2000);
@@ -155,7 +155,7 @@ const resolvers = {
       return result;
     },
     ProcessInstances: async (parent, args) => {
-      const result = data.ProcessInstances.filter(datum => {
+      const result = data.ProcessInstances.filter((datum) => {
         if (args['where'].id && args['where'].id.equal) {
           return datum.id === args['where'].id.equal;
         } else {

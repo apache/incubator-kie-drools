@@ -324,10 +324,7 @@ describe('Domain Explorer component', () => {
       wrapper = wrapper.update().find('DomainExplorer');
     });
     await act(async () => {
-      wrapper
-        .find('Toolbar')
-        .props()
-        ['clearAllFilters']();
+      wrapper.find('Toolbar').props()['clearAllFilters']();
     });
     expect(wrapper).toMatchSnapshot();
     expect(useGetColumnPickerAttributesQuery).toBeCalledWith({

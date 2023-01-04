@@ -36,7 +36,7 @@ EditorEnvelope.initCustom<
       window.parent.postMessage(message, targetOrigin!, _)
   },
   apiImplFactory: {
-    create: args =>
+    create: (args) =>
       new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
         args,
         new ServerlessWorkflowDiagramEditorFactory({

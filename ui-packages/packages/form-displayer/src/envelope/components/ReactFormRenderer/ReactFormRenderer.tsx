@@ -68,12 +68,8 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
 
         container.appendChild(formContainer);
 
-        const {
-          reactElements,
-          patternflyElements,
-          formName,
-          trimmedSource
-        } = sourceHandler(source);
+        const { reactElements, patternflyElements, formName, trimmedSource } =
+          sourceHandler(source);
 
         const content = `
         const {${reactElements}} = React;
@@ -97,9 +93,8 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({
           ]
         }).code;
 
-        const scriptElement: HTMLScriptElement = document.createElement(
-          'script'
-        );
+        const scriptElement: HTMLScriptElement =
+          document.createElement('script');
         scriptElement.type = 'module';
         scriptElement.text = reactCode;
         container.appendChild(scriptElement);

@@ -41,8 +41,9 @@ enum Category {
   PROCESS_NAME = 'Process name'
 }
 
-const ProcessDefinitionListToolbar: React.FC<ProcessDefinitionListToolbarProps &
-  OUIAProps> = ({
+const ProcessDefinitionListToolbar: React.FC<
+  ProcessDefinitionListToolbarProps & OUIAProps
+> = ({
   applyFilter,
   filterProcessNames,
   setFilterProcessNames,

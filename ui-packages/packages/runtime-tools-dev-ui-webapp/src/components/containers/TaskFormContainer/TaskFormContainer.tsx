@@ -48,11 +48,11 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
           return new Promise<any>((resolve, reject) => {
             gatewayApi
               .doSubmit(userTask, phase, payload)
-              .then(response => {
+              .then((response) => {
                 onSubmitSuccess(phase);
                 resolve(response);
               })
-              .catch(error => {
+              .catch((error) => {
                 const message = error.response
                   ? error.response.data
                   : error.message;

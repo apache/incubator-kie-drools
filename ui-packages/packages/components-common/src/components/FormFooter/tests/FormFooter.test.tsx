@@ -151,17 +151,17 @@ describe('Form Footer test', () => {
     const wrapper = mount(<FormFooter {...props} />);
 
     const releaseButton = wrapper.findWhere(
-      node => node.key() === 'submit-Release'
+      (node) => node.key() === 'submit-Release'
     );
     releaseButton.props().onClick();
 
     expect(releaseAction.execute).toBeCalledTimes(1);
 
     const completeButton = wrapper.findWhere(
-      node => node.key() === 'submit-Complete'
+      (node) => node.key() === 'submit-Complete'
     );
     completeButton.props().onClick();
-    
+
     expect(completeAction.execute).toBeCalledTimes(1);
     expect(props.onSubmitForm).toHaveBeenCalled();
   });

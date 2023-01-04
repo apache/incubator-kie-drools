@@ -39,10 +39,7 @@ describe('TaskInboxSwitchUser tests', () => {
 
     const event: any = { target: { innerHTML: 'admin' } };
     act(() => {
-      wrapper
-        .find('Dropdown')
-        .props()
-        ['onSelect'](event);
+      wrapper.find('Dropdown').props()['onSelect'](event);
     });
     wrapper.update();
     expect(
@@ -62,10 +59,7 @@ describe('TaskInboxSwitchUser tests', () => {
     );
 
     act(() => {
-      wrapper
-        .find('DropdownToggle')
-        .props()
-        ['onToggle']();
+      wrapper.find('DropdownToggle').props()['onToggle']();
     });
   });
 });

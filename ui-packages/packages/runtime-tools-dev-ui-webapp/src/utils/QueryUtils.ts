@@ -21,7 +21,7 @@ import { ProcessInstanceFilter } from '@kogito-apps/process-list';
 
 const createSearchTextArray = (taskNames: string[]) => {
   const formattedTextArray = [];
-  taskNames.forEach(word => {
+  taskNames.forEach((word) => {
     formattedTextArray.push({
       referenceName: {
         like: `*${word}*`
@@ -96,7 +96,7 @@ export const getOrderByObject = (sortBy: SortBy) => {
 
 const formatSearchWords = (searchWords: string[]) => {
   const tempSearchWordsArray = [];
-  searchWords.forEach(word => {
+  searchWords.forEach((word) => {
     tempSearchWordsArray.push({ businessKey: { like: word } });
   });
   return tempSearchWordsArray;

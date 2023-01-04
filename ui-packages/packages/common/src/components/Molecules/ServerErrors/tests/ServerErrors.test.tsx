@@ -35,10 +35,7 @@ describe('ServerErrors component tests', () => {
         <ServerErrors {...props} />
       </BrowserRouter>
     ).find('ServerErrors');
-    wrapper
-      .find('#goback-button')
-      .first()
-      .simulate('click');
+    wrapper.find('#goback-button').first().simulate('click');
     expect(window.location.pathname).toEqual('/');
   });
 
@@ -49,17 +46,11 @@ describe('ServerErrors component tests', () => {
         <ServerErrors {...props} />
       </BrowserRouter>
     );
-    wrapper
-      .find('#display-error')
-      .first()
-      .simulate('click');
+    wrapper.find('#display-error').first().simulate('click');
     wrapper.update();
-    expect(
-      wrapper
-        .find('#content-0')
-        .find('pre')
-        .props()['children']
-    ).toEqual('"some error"');
+    expect(wrapper.find('#content-0').find('pre').props()['children']).toEqual(
+      '"some error"'
+    );
   });
   it('snapshot testing with small variant ', () => {
     const wrapper = mount(
@@ -77,10 +68,7 @@ describe('ServerErrors component tests', () => {
         <ServerErrors {...props2} />
       </BrowserRouter>
     );
-    wrapper
-      .find('#display-error')
-      .first()
-      .simulate('click');
+    wrapper.find('#display-error').first().simulate('click');
     expect(wrapper.find('pre').props()['children']).toEqual('"error occured"');
   });
 });

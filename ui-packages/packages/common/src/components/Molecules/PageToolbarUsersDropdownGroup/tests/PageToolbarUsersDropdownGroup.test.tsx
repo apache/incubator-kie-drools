@@ -39,7 +39,7 @@ jest.mock('@patternfly/react-core', () =>
 
 const getDropdownItem = (wrapper, userId: string) => {
   return wrapper.findWhere(
-    element =>
+    (element) =>
       element.key() === `kogito-user-management-group-test-user__${userId}`
   );
 };
@@ -83,7 +83,7 @@ describe('PageToolbarUsersDropdownGroup tests', () => {
     expect(getDropdownItem(wrapper, TEST_USERS[2].id).exists()).toBeTruthy();
 
     const addNewUser = wrapper.findWhere(
-      element => element.key() === 'kogito-user-management-group-add'
+      (element) => element.key() === 'kogito-user-management-group-add'
     );
 
     expect(addNewUser.exists()).toBeTruthy();

@@ -205,11 +205,7 @@ describe('ProcessListPage tests', () => {
       </BrowserRouter>
     ).find('ProcessListTable');
     await act(async () => {
-      wrapper
-        .find('CollapseColumn')
-        .at(0)
-        .find(Button)
-        .simulate('click');
+      wrapper.find('CollapseColumn').at(0).find(Button).simulate('click');
     });
     const ProcessListChildTable = wrapper
       .update()

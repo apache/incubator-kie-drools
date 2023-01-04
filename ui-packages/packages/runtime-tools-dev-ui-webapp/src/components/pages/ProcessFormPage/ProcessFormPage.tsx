@@ -109,7 +109,7 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           title={`Start ${processDefinition.processName}`}
           extra={
             <InlineEdit
-              setBusinessKey={bk => gatewayApi.setBusinessKey(bk)}
+              setBusinessKey={(bk) => gatewayApi.setBusinessKey(bk)}
               getBusinessKey={() => gatewayApi.getBusinessKey()}
             />
           }

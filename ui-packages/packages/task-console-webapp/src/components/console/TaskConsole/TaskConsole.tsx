@@ -39,7 +39,7 @@ const TaskConsole: React.FC<Props> = ({
   userContext,
   children
 }) => {
-  const renderPage = routeProps => {
+  const renderPage = (routeProps) => {
     return (
       <PageLayout
         BrandSrc={taskConsoleLogo}

@@ -47,10 +47,8 @@ export const FormDisplayerEnvelopeView = React.forwardRef<
   const [content, setContent] = useState<Form>();
   const [data, setData] = useState<any>();
   const [context, setContext] = useState<Record<string, any>>();
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
 
   const formDisplayerApiRef = useRef<EmbeddedFormApi>();
 

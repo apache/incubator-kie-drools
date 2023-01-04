@@ -100,10 +100,10 @@ export class JobsManagementGatewayApiImpl implements JobsManagementGatewayApi {
           this._JobsManagementState.filters,
           this._JobsManagementState.orderBy
         )
-        .then(value => {
+        .then((value) => {
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });

@@ -6,7 +6,7 @@ export default {
   component: NoData
 };
 
-export const defaultView = args => {
+export const defaultView = (args) => {
   return <NoData {...args} />;
 };
 defaultView.args = {

@@ -33,10 +33,8 @@ export const JobsManagementEnvelopeView = React.forwardRef<
   JobsManagementEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
   useImperativeHandle(
     forwardedRef,
     () => ({

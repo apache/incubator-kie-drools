@@ -261,9 +261,8 @@ describe('ProcessDetailsGatewayApi tests', () => {
       onOpen: jest.fn()
     };
 
-    const unsubscribe = gatewayApi.onOpenProcessInstanceDetailsListener(
-      listener
-    );
+    const unsubscribe =
+      gatewayApi.onOpenProcessInstanceDetailsListener(listener);
 
     gatewayApi.openProcessInstanceDetails('testId');
 

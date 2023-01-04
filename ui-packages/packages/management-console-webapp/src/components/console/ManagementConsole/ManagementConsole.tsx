@@ -41,7 +41,7 @@ const ManagementConsole: React.FC<IOwnProps> = ({
   userContext,
   children
 }) => {
-  const renderPage = routeProps => {
+  const renderPage = (routeProps) => {
     return (
       <PageLayout
         BrandSrc={managementConsoleLogo}

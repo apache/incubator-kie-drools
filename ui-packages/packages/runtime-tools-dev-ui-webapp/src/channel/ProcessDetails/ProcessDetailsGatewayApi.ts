@@ -146,10 +146,10 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return new Promise<any>((resolve, reject) => {
       this.queries
         .getProcessDetails(id)
-        .then(value => {
+        .then((value) => {
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });
@@ -159,10 +159,10 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return new Promise<any>((resolve, reject) => {
       this.queries
         .getJobs(id)
-        .then(value => {
+        .then((value) => {
           resolve(value);
         })
-        .catch(reason => {
+        .catch((reason) => {
           reject(reason);
         });
     });
@@ -170,7 +170,7 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
 
   openProcessInstanceDetails(id: string): Promise<void> {
     this._ProcessDetailsState = { id: id };
-    this.listeners.forEach(listener => listener.onOpen(id));
+    this.listeners.forEach((listener) => listener.onOpen(id));
     return Promise.resolve();
   }
 

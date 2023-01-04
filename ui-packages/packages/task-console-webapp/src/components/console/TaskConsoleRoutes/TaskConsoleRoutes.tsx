@@ -26,7 +26,7 @@ const TaskConsoleRoutes: React.FC = () => {
       <Route
         exact
         path="/TaskDetails/:taskId"
-        render={routeProps => <TaskDetailsPage {...routeProps} />}
+        render={(routeProps) => <TaskDetailsPage {...routeProps} />}
       />
     </Switch>
   );

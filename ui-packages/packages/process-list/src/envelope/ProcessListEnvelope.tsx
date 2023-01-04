@@ -51,7 +51,7 @@ export function init(args: {
 
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<ProcessListEnvelopeViewApi>();
-    return new Promise<() => ProcessListEnvelopeViewApi>(res => {
+    return new Promise<() => ProcessListEnvelopeViewApi>((res) => {
       ReactDOM.render(
         <ProcessListEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
         args.container,
@@ -62,6 +62,6 @@ export function init(args: {
 
   const context: ProcessListEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new ProcessListEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) => new ProcessListEnvelopeApiImpl(apiFactoryArgs)
   });
 }

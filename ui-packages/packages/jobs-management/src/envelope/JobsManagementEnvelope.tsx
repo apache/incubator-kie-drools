@@ -50,7 +50,7 @@ export function init(args: {
 
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<JobsManagementEnvelopeViewApi>();
-    return new Promise<() => JobsManagementEnvelopeViewApi>(res => {
+    return new Promise<() => JobsManagementEnvelopeViewApi>((res) => {
       ReactDOM.render(
         <JobsManagementEnvelopeView
           ref={ref}
@@ -64,6 +64,7 @@ export function init(args: {
 
   const context: JobsManagementEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: apiFactoryArgs => new JobsManagementEnvelopeApiImpl(apiFactoryArgs)
+    create: (apiFactoryArgs) =>
+      new JobsManagementEnvelopeApiImpl(apiFactoryArgs)
   });
 }

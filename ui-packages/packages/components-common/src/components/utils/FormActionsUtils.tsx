@@ -26,14 +26,14 @@ export enum ActionType {
 export interface FormAction {
   name: string;
   execute?(): void;
-  actionType?: ActionType
+  actionType?: ActionType;
 }
 
 interface FormButton {
   key: string;
   label: string;
   variant: 'primary' | 'secondary';
-  actionType: ActionType
+  actionType: ActionType;
   onClick: () => void;
 }
 
@@ -46,14 +46,16 @@ export const convertActionsToButton = (
     return null;
   }
 
-  const capitalize = label => {
+  const capitalize = (label) => {
     return label.charAt(0).toUpperCase() + label.slice(1);
   };
 
   const isPrimary = (label: string): boolean => {
     // Assuming that Complete will be the default act
     return (
-      label.toLowerCase() === 'complete' || label.toLowerCase()=== 'start' || (actions && actions.length === 1)
+      label.toLowerCase() === 'complete' ||
+      label.toLowerCase() === 'start' ||
+      (actions && actions.length === 1)
     );
   };
 
@@ -64,8 +66,10 @@ export const convertActionsToButton = (
     return 'secondary';
   };
 
-  const buttons: FormButton[] = actions.map(action => {
-    const actionType = action.actionType? action.actionType : ActionType.SUBMIT;
+  const buttons: FormButton[] = actions.map((action) => {
+    const actionType = action.actionType
+      ? action.actionType
+      : ActionType.SUBMIT;
     return {
       key: `submit-${action.name}`,
       label: capitalize(action.name),
@@ -88,7 +92,7 @@ export const convertActionsToButton = (
     return buttonA.label.localeCompare(buttonB.label);
   });
 
-  return buttons.map(button => {
+  return buttons.map((button) => {
     return (
       <Button
         type={button.actionType}

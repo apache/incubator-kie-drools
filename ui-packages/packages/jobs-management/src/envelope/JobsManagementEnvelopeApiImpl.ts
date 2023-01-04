@@ -23,7 +23,8 @@ import {
 } from '../api';
 import { JobsManagementEnvelopeContext } from './JobsManagementEnvelopeContext';
 export class JobsManagementEnvelopeApiImpl
-  implements JobsManagementEnvelopeApi {
+  implements JobsManagementEnvelopeApi
+{
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<

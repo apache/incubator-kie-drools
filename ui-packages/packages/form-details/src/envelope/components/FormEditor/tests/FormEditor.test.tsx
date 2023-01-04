@@ -104,14 +104,11 @@ describe('FormEditor test', () => {
       </FormDetailsContextProvider>
     );
     await act(async () => {
-      wrapper
-        .find('CodeEditor')
-        .props()
-        ['onEditorDidMount'](editor, monaco);
+      wrapper.find('CodeEditor').props()['onEditorDidMount'](editor, monaco);
     });
     wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
+    const childs = wrapper.find('CodeEditor').props()['customControls']
+      .props.children;
     childs[0].props.onClick();
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
@@ -156,8 +153,8 @@ describe('FormEditor test', () => {
         ['onEditorDidMount'](editorData, monaco);
     });
     wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
+    const childs = wrapper.find('CodeEditor').props()['customControls']
+      .props.children;
     childs[0].props.onClick();
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
@@ -178,14 +175,11 @@ describe('FormEditor test', () => {
       </FormDetailsContextProvider>
     );
     await act(async () => {
-      wrapper
-        .find('CodeEditor')
-        .props()
-        ['onEditorDidMount'](editor, monaco);
+      wrapper.find('CodeEditor').props()['onEditorDidMount'](editor, monaco);
     });
     wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
+    const childs = wrapper.find('CodeEditor').props()['customControls']
+      .props.children;
     childs[3].props.onClick();
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
@@ -206,14 +200,11 @@ describe('FormEditor test', () => {
       </FormDetailsContextProvider>
     );
     await act(async () => {
-      wrapper
-        .find('CodeEditor')
-        .props()
-        ['onEditorDidMount'](editor, monaco);
+      wrapper.find('CodeEditor').props()['onEditorDidMount'](editor, monaco);
     });
     wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
+    const childs = wrapper.find('CodeEditor').props()['customControls']
+      .props.children;
     childs[1].props.onClick();
     wrapper.update();
     expect(wrapper.find('CodeEditor').props()['code']).toEqual(
@@ -237,14 +228,11 @@ describe('FormEditor test', () => {
     );
 
     await act(async () => {
-      wrapper
-        .find('CodeEditor')
-        .props()
-        ['onEditorDidMount'](editor, monaco);
+      wrapper.find('CodeEditor').props()['onEditorDidMount'](editor, monaco);
     });
     wrapper.update();
-    const childs = wrapper.find('CodeEditor').props()['customControls'].props
-      .children;
+    const childs = wrapper.find('CodeEditor').props()['customControls']
+      .props.children;
     childs[2].props.onClick();
     wrapper.update();
     expect(wrapper.find('CodeEditor').props()['code']).toEqual(

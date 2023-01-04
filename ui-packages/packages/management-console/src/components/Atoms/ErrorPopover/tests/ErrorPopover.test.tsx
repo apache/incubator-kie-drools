@@ -54,20 +54,14 @@ describe('Errorpopover component tests', () => {
 
   it('Skip call success', () => {
     let wrapper = mount(<ErrorPopover {...props} />);
-    wrapper
-      .find(Popover)
-      .props()
-      ['footerContent'][0]['props']['onClick']();
+    wrapper.find(Popover).props()['footerContent'][0]['props']['onClick']();
     wrapper = wrapper.update();
     expect(props.onSkipClick).toHaveBeenCalled();
   });
 
   it('Retry call success', () => {
     let wrapper = mount(<ErrorPopover {...props} />);
-    wrapper
-      .find(Popover)
-      .props()
-      ['footerContent'][1]['props']['onClick']();
+    wrapper.find(Popover).props()['footerContent'][1]['props']['onClick']();
     wrapper = wrapper.update();
     expect(props.onRetryClick).toHaveBeenCalled();
   });

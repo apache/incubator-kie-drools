@@ -24,7 +24,8 @@ import {
 } from '../api';
 import { ProcessDetailsEnvelopeContext } from './ProcessDetailsEnvelopeContext';
 export class ProcessDetailsEnvelopeApiImpl
-  implements ProcessDetailsEnvelopeApi {
+  implements ProcessDetailsEnvelopeApi
+{
   private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<

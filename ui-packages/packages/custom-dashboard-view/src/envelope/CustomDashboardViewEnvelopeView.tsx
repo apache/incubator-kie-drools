@@ -33,10 +33,8 @@ export const CustomDashboardViewEnvelopeView = React.forwardRef<
   CustomDashboardViewEnvelopeViewApi,
   Props
 >((props, forwardedRef) => {
-  const [
-    isEnvelopeConnectedToChannel,
-    setEnvelopeConnectedToChannel
-  ] = useState<boolean>(false);
+  const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] =
+    useState<boolean>(false);
 
   const [customDashboardName, setCustomDashboardName] = useState<string>();
 

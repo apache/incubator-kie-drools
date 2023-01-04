@@ -43,7 +43,7 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
     expect(wrapper.find('DevUINav')).toMatchSnapshot();
 
     const DevUINavWrapper = wrapper.findWhere(
-      nested => nested.key() === 'processes-nav'
+      (nested) => nested.key() === 'processes-nav'
     );
 
     expect(DevUINavWrapper.exists()).toBeTruthy();
@@ -72,7 +72,7 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
     expect(wrapper.find('DevUINav')).toMatchSnapshot();
 
     const DevUINavWrapper = wrapper.findWhere(
-      nested => nested.key() === 'jobs-management-nav'
+      (nested) => nested.key() === 'jobs-management-nav'
     );
 
     expect(DevUINavWrapper.exists()).toBeTruthy();
@@ -101,7 +101,7 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
     expect(wrapper.find('DevUINav')).toMatchSnapshot();
 
     const DevUINavWrapper = wrapper.findWhere(
-      nested => nested.key() === 'forms-list-nav'
+      (nested) => nested.key() === 'forms-list-nav'
     );
 
     expect(DevUINavWrapper.exists()).toBeTruthy();
@@ -130,7 +130,7 @@ describe('DevUINav tests::Process and Tracing enabled', () => {
     expect(wrapper.find('DevUINav')).toMatchSnapshot();
 
     const DevUINavWrapper = wrapper.findWhere(
-      nested => nested.key() === 'audit-nav'
+      (nested) => nested.key() === 'audit-nav'
     );
 
     expect(DevUINavWrapper.exists()).toBeTruthy();

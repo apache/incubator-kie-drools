@@ -66,7 +66,7 @@ export interface TestUserManager {
 }
 
 export class TestUserManagerImpl implements TestUserManager {
-  private readonly system: string[] = TEST_USERS.map(user => user.id);
+  private readonly system: string[] = TEST_USERS.map((user) => user.id);
   private readonly users: User[] = [];
 
   constructor(storedUsers?: User[]) {
@@ -88,7 +88,7 @@ export class TestUserManagerImpl implements TestUserManager {
 
   getUser(userId: string): User | undefined {
     const allUsers = this.listAllUsers();
-    return allUsers.find(user => user.id === userId);
+    return allUsers.find((user) => user.id === userId);
   }
 
   listAllUsers(): User[] {

@@ -112,11 +112,7 @@ describe('ProcessListTable test', () => {
       <ProcessListTable {...{ ...props, expanded: { 0: true } }} />
     ).find('ProcessListTable');
     await act(async () => {
-      wrapper
-        .find('td')
-        .at(0)
-        .find(Button)
-        .simulate('click');
+      wrapper.find('td').at(0).find(Button).simulate('click');
     });
     wrapper = wrapper.update();
     expect(wrapper.find('MockedProcessListChildTable').exists()).toBeTruthy();
@@ -137,11 +133,7 @@ describe('ProcessListTable test', () => {
       </BrowserRouter>
     ).find('ProcessListTable');
     await act(async () => {
-      wrapper
-        .find('CollapseColumn')
-        .at(0)
-        .find(Button)
-        .simulate('click');
+      wrapper.find('CollapseColumn').at(0).find(Button).simulate('click');
     });
     const ProcessListChildTable = wrapper
       .update()

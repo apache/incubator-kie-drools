@@ -67,13 +67,13 @@ export const validateResponse = (obj, paramFields) => {
     const arr = [];
     if (obj[prop] === null) {
       const parentObj = {};
-      paramFields.map(params => {
+      paramFields.map((params) => {
         if (Object.prototype.hasOwnProperty.call(params, prop)) {
           arr.push(params);
         }
       });
       let valueObj = {};
-      arr.forEach(ele => {
+      arr.forEach((ele) => {
         valueObj = checkFunc(ele, valueObj);
       });
       parentObj[prop] = valueObj;
@@ -121,7 +121,7 @@ export const deleteKey = (testObj, pathArray) => {
   }, _obj);
   return _obj;
 };
-export const clearEmpties = obj => {
+export const clearEmpties = (obj) => {
   for (const key in obj) {
     if (!obj[key] || typeof obj[key] !== 'object') {
       continue;
@@ -150,10 +150,10 @@ export const constructObject = (obj, path, val) => {
 // function removes duplicate objects inside array
 export const removeDuplicates = (arr, comp) => {
   const unique = arr
-    .map(e => e[comp])
+    .map((e) => e[comp])
     .map((e, i, final) => final.indexOf(e) === i && i)
-    .filter(e => arr[e])
-    .map(e => arr[e]);
+    .filter((e) => arr[e])
+    .map((e) => arr[e]);
 
   return unique;
 };

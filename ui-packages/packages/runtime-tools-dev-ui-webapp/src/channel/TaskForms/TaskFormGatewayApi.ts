@@ -54,14 +54,14 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
             Accept: 'application/json'
           }
         })
-        .then(response => {
+        .then((response) => {
           if (response.status == 200) {
             resolve(response.data);
           } else {
             reject(response);
           }
         })
-        .catch(error => reject(error));
+        .catch((error) => reject(error));
     });
   }
 
@@ -75,14 +75,14 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
             Accept: 'application/json'
           }
         })
-        .then(responseObj => {
+        .then((responseObj) => {
           if (responseObj.status == 200) {
             resolve(responseObj.data);
           } else {
             reject(responseObj);
           }
         })
-        .catch(error => reject(error));
+        .catch((error) => reject(error));
     });
   }
 
@@ -97,14 +97,14 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
             Accept: 'application/json'
           }
         })
-        .then(responseObj => {
+        .then((responseObj) => {
           if (responseObj.status == 200) {
             resolve(responseObj.data);
           } else {
             reject(responseObj);
           }
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     });
   }
 }

@@ -25,7 +25,8 @@ import {
  * Implementation of the CustomDashboardListChannelApiImpl delegating to a CustomDashboardListDriver
  */
 export class CustomDashboardListChannelApiImpl
-  implements CustomDashboardListChannelApi {
+  implements CustomDashboardListChannelApi
+{
   constructor(private readonly driver: CustomDashboardListDriver) {}
 
   customDashboardList__getFilter(): Promise<CustomDashboardFilter> {

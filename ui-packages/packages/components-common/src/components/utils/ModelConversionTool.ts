@@ -19,14 +19,14 @@ export class ModelConversionTool {
     model: any,
     schema: Record<string, any>
   ): any => {
-    return doConvert(model, schema, value => value.toISOString());
+    return doConvert(model, schema, (value) => value.toISOString());
   };
 
   public static convertStringToDate = (
     model: any,
     schema: Record<string, any>
   ): any => {
-    return doConvert(model, schema, value => new Date(value));
+    return doConvert(model, schema, (value) => new Date(value));
   };
 }
 
@@ -93,7 +93,7 @@ function convertModel(
     return obj;
   }
 
-  Object.keys(model).forEach(propertyName => {
+  Object.keys(model).forEach((propertyName) => {
     const property = schema.properties[propertyName];
 
     const value = model[propertyName];
@@ -154,7 +154,7 @@ function lookupSchemaPropertyProps(property: any, ctx: ConversionContext) {
   if (property['allOf']) {
     const allOf: [] = property.allOf;
 
-    const refItem = allOf.find(item => item['$ref']);
+    const refItem = allOf.find((item) => item['$ref']);
     if (refItem) {
       return ctx.lookupDefinition(refItem['$ref']);
     }

@@ -50,7 +50,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
               gatewayApi.setBusinessKey('');
               onSubmitSuccess(id);
             })
-            .catch(error => {
+            .catch((error) => {
               const message = error.response
                 ? error.response.data
                 : error.message;
