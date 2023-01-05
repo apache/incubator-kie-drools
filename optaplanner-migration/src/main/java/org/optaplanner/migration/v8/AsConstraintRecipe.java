@@ -323,43 +323,7 @@ public class AsConstraintRecipe extends Recipe {
 
     public static JavaParser.Builder buildJavaParser() {
         return JavaParser.fromJavaVersion().classpath("optaplanner-core-impl");
-        // TODO Remove this workaround if https://github.com/openrewrite/rewrite/pull/2407 is merged and released
-        // WORKAROUND to run tests in IntelliJ:
-        // return JavaParser.fromJavaVersion().classpath(workaroundDependenciesFromClasspath("optaplanner-core-impl"));
     }
-
-    // TODO Remove this workaround if https://github.com/openrewrite/rewrite/pull/2407 is merged and released
-    //    static List<Path> workaroundDependenciesFromClasspath(String... artifactNames) {
-    //        List<URI> runtimeClasspath = new ClassGraph().getClasspathURIs();
-    //        List<Path> artifacts = new ArrayList<>(artifactNames.length);
-    //        List<String> missingArtifactNames = new ArrayList<>(artifactNames.length);
-    //        for (String artifactName : artifactNames) {
-    //            Pattern jarPattern = Pattern.compile(artifactName + "-.*?\\.jar$");
-    //            // In a multiproject IDE classpath, some classpath entries aren't jars
-    //            Pattern explodedPattern = Pattern.compile("/" + artifactName + "/");
-    //            boolean lacking = true;
-    //            for (URI cpEntry : runtimeClasspath) {
-    //                String cpEntryString = cpEntry.toString();
-    //                if (jarPattern.matcher(cpEntryString).find()
-    //                        || (explodedPattern.matcher(cpEntryString).find())
-    //                        && Paths.get(cpEntry).toFile().isDirectory()) {
-    //                    artifacts.add(Paths.get(cpEntry));
-    //                    lacking = false;
-    //                    break;
-    //                }
-    //            }
-    //            if (lacking) {
-    //                missingArtifactNames.add(artifactName);
-    //            }
-    //        }
-    //
-    //        if (!missingArtifactNames.isEmpty()) {
-    //            throw new IllegalArgumentException("Unable to find runtime dependencies beginning with: " +
-    //                    missingArtifactNames.stream().map(a -> "'" + a + "'").sorted().collect(joining(", ")));
-    //        }
-    //
-    //        return artifacts;
-    //    }
 
     private static class MatcherMeta {
         public MethodMatcher methodMatcher;
