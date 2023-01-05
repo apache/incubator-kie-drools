@@ -13,10 +13,6 @@
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.tennis.score.TennisConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/tennis/optional/score/tennisConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/tennis/optional/score/tennisConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 

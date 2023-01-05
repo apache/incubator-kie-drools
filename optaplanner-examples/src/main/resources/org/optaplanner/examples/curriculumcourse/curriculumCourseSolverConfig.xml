@@ -11,10 +11,6 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/curriculumcourse/optional/score/curriculumCourseConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/curriculumcourse/optional/score/curriculumCourseConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

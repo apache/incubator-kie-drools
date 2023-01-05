@@ -54,12 +54,4 @@
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>DRL (Drools)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/vehiclerouting/optional/score/vehicleRoutingConstraints.drl</scoreDrl>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>

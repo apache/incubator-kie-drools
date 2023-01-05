@@ -12,7 +12,6 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.taskassigning.score.TaskAssigningConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/taskassigning/optional/score/taskAssigningConstraints.drl</scoreDrl>-->
   </scoreDirectorFactory>
 
   <!--<termination>-->

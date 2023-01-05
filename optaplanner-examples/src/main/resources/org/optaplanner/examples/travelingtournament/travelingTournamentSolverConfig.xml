@@ -11,10 +11,6 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/travelingtournament/optional/score/travelingTournamentConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-    <!--<scoreDrl>org/optaplanner/examples/travelingtournament/optional/score/travelingTournamentConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

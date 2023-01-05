@@ -13,11 +13,7 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/examination/optional/score/examinationConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-    <!--<assertionScoreDirectorFactory>-->
-    <!--  <scoreDrl>org/optaplanner/examples/examination/optional/score/examinationConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

@@ -15,7 +15,6 @@
     <constraintProviderClass>org.optaplanner.examples.nqueens.score.NQueensConstraintProvider</constraintProviderClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/nqueens/optional/score/nQueensConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.nqueens.optional.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>-->

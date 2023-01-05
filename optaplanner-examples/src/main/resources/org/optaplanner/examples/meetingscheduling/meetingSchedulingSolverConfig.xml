@@ -11,10 +11,6 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.meetingscheduling.score.MeetingSchedulingConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/optional/score/meetingSchedulingConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/meetingscheduling/optional/score/meetingSchedulingConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory> -->
   </scoreDirectorFactory>
 
   <termination>

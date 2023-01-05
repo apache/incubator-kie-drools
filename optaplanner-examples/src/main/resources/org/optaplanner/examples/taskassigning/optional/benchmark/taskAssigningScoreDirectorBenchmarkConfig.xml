@@ -32,12 +32,4 @@
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>DRL (Drools)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/taskassigning/optional/score/taskAssigningConstraints.drl</scoreDrl>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>

@@ -56,12 +56,4 @@
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>DRL (Drools)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/cloudBalancingConstraints.drl</scoreDrl>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>

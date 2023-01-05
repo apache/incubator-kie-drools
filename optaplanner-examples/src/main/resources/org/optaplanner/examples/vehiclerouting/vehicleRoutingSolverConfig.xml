@@ -15,10 +15,6 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
     <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/vehiclerouting/optional/score/vehicleRoutingConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
-    <!--</assertionScoreDirectorFactory>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 

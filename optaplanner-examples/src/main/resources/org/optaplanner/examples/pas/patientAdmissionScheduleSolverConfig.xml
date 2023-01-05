@@ -11,10 +11,6 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.pas.score.PatientAdmissionScheduleConstraintProvider</constraintProviderClass>
-    <!--<scoreDrl>org/optaplanner/examples/pas/optional/score/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>org/optaplanner/examples/pas/optional/score/patientAdmissionScheduleConstraints.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>

@@ -12,7 +12,6 @@
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/machinereassignment/optional/score/machineReassignmentConstraints.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
       <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->

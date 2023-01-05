@@ -16,7 +16,6 @@
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator</easyScoreCalculatorClass>-->
     <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
-    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/cloudBalancingConstraints.drl</scoreDrl>-->
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     <!--<assertionScoreDirectorFactory>-->
       <!--<easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingMapBasedEasyScoreCalculator</easyScoreCalculatorClass>-->
