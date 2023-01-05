@@ -39,6 +39,15 @@ public class ListenerAwareTest {
     }
 
     @Test
+    void selfAssignment() {
+        ObjectNodeListenerAware node = (ObjectNodeListenerAware) ObjectMapperFactory.listenerAware().createObjectNode();
+        node.addKogitoObjectListener(listener);
+        node.set("name", node);
+        verify(listener).beforeValueChanged(node, "name", NullNode.instance, node);
+        verify(listener).afterValueChanged(node, "name", NullNode.instance, node);
+    }
+
+    @Test
     void testObjectNodeChange() {
         ObjectNodeListenerAware node = (ObjectNodeListenerAware) ObjectMapperFactory.listenerAware().createObjectNode();
         node.addKogitoObjectListener(listener);

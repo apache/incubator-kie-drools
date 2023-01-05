@@ -41,4 +41,16 @@ class ForEachRestIT {
                 .body("workflowdata.output", is(Arrays.asList(2, 3, 4, 5, 6)))
                 .body("workflowdata.response", nullValue());
     }
+
+    @Test
+    void testForEachSubflow() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"numbers\" : [1,2,3,4,5], \"constant\": 2}}").when()
+                .post("/foreach_parent")
+                .then()
+                .statusCode(201)
+                .body("workflowdata.products", is(Arrays.asList(2, 4, 6, 8, 10)));
+    }
 }

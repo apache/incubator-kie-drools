@@ -15,19 +15,25 @@
  */
 package org.kie.kogito.serverless.workflow.models;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.kogito.MapInput;
 import org.kie.kogito.MapInputId;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, MappableToModel<JsonNodeModelOutput> {
 
     private JsonNode workflowdata;
     private String id;
+    private Map<String, Object> additionalProperties = Collections.emptyMap();
 
     public JsonNodeModel() {
     }
@@ -44,7 +50,6 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
         this.id = id;
     }
 
-    @JsonAnyGetter
     public JsonNode getWorkflowdata() {
         return workflowdata;
     }
@@ -56,5 +61,39 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
     @Override
     public JsonNodeModelOutput toModel() {
         return new JsonNodeModelOutput(id, workflowdata);
+    }
+
+    @Override
+    public void update(Map<String, Object> params) {
+        Map<String, Object> copy = mutableMap(params);
+        update((String) copy.remove("id"), copy);
+    }
+
+    @Override
+    public void fromMap(String id, Map<String, Object> params) {
+        update(id, mutableMap(params));
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(SWFConstants.DEFAULT_WORKFLOW_VAR, workflowdata);
+        map.putAll(additionalProperties);
+        return map;
+    }
+
+    private void update(String id, Map<String, Object> params) {
+        this.id = id;
+        if (params.containsKey(SWFConstants.DEFAULT_WORKFLOW_VAR)) {
+            this.workflowdata = JsonObjectUtils.fromValue(params.remove(SWFConstants.DEFAULT_WORKFLOW_VAR)).deepCopy();
+            this.additionalProperties = params;
+        } else {
+            this.workflowdata = JsonObjectUtils.fromValue(params);
+            this.additionalProperties = Collections.emptyMap();
+        }
+    }
+
+    private static Map<String, Object> mutableMap(Map<String, Object> map) {
+        return map instanceof HashMap ? map : new HashMap<>(map);
     }
 }

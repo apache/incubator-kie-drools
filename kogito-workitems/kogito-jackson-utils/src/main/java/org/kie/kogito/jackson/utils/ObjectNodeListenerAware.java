@@ -18,7 +18,7 @@ package org.kie.kogito.jackson.utils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.kie.kogito.internal.process.event.KogitoObjectListener;
 import org.kie.kogito.internal.process.event.KogitoObjectListenerAware;
@@ -33,7 +33,7 @@ public class ObjectNodeListenerAware extends ObjectNode implements KogitoObjectL
 
     private static final long serialVersionUID = 1L;
 
-    private transient Collection<KogitoObjectListener> listeners = new CopyOnWriteArrayList<>();
+    private transient Collection<KogitoObjectListener> listeners = new CopyOnWriteArraySet<>();
 
     public ObjectNodeListenerAware(JsonNodeFactory nc) {
         super(nc);

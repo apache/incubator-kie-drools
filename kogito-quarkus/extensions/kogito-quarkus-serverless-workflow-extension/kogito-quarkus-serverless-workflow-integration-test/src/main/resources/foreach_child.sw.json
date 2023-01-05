@@ -1,0 +1,34 @@
+{
+    "id": "foreach_child",
+    "version": "1.0",
+    "specVersion": "0.8",
+    "name": "Foreach child Workflow",
+    "description": "Foreach child Workflow Test",
+    "start": "multiply",
+    "functions": [
+        {
+            "name": "multiply",
+            "type": "expression",
+            "operation": ".number*.constant"
+        }
+    ],
+    "states": [
+        {
+            "name": "multiply",
+            "type": "operation",
+            "actions": [
+                {
+                    "name": "multiplyAction",
+                    "functionRef": "multiply",
+                    "actionDataFilter": {
+             			"toStateData" : ".response"
+                     }
+                }
+            ],
+            "stateDataFilter": {
+        		"output": ".response"
+      		},
+            "end": true
+        }
+    ]
+}

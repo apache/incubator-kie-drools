@@ -1,0 +1,31 @@
+{
+  "id": "foreach_parent",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "For Each Parent",
+  "description": "For Each Parent Sample",
+  "start": "For Each",
+  "functions": [
+    {
+      "name": "printMessage",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "For Each",
+      "type": "foreach",
+      "mode": "sequential",
+      "inputCollection": ".numbers",
+      "iterationParam": "number",
+      "outputCollection": ".products",
+      "actions": [
+        {
+          "subFlowRef": "foreach_child"
+        }
+      ],
+      "end": true
+    }
+  ]
+}

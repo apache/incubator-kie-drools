@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.kie.kogito.internal.process.event.KogitoObjectListener;
 import org.kie.kogito.internal.process.event.KogitoObjectListenerAware;
@@ -34,7 +34,7 @@ public class ArrayNodeListenerAware extends ArrayNode implements KogitoObjectLis
 
     private static final long serialVersionUID = 1L;
 
-    private transient Collection<KogitoObjectListener> listeners = new CopyOnWriteArrayList<>();
+    private transient Collection<KogitoObjectListener> listeners = new CopyOnWriteArraySet<>();
 
     public ArrayNodeListenerAware(JsonNodeFactory nf) {
         super(nf);

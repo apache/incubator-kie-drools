@@ -146,6 +146,10 @@ public class ModelMetaData {
         return callSetter(targetVar, destField, new NameExpr(value));
     }
 
+    public MethodCallExpr callUpdateFromMap(String targetVar, String mapVar) {
+        return new MethodCallExpr(new NameExpr(targetVar), "update").addArgument(new NameExpr(mapVar));
+    }
+
     public MethodCallExpr callSetter(String targetVar, String destField, Expression value) {
         String name = variableScope.getTypes().get(destField).getSanitizedName();
         String type = variableScope.getType(destField);

@@ -30,6 +30,7 @@ import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.CharLiteralExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
@@ -137,9 +138,10 @@ public class ExpressionUtils {
         }
         if (objectClass != null) {
             // will generate TypeConverterRegistry.get().forType("JsonNode.class").apply("{\"dog\":\"perro\"}"))
-            return new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
-                    NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
-                    NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object)))));
+            return new CastExpr(StaticJavaParser.parseClassOrInterfaceType(object.getClass().getName()),
+                    new MethodCallExpr(new MethodCallExpr(new MethodCallExpr(new TypeExpr(StaticJavaParser.parseClassOrInterfaceType(TypeConverterRegistry.class.getName())), "get"), "forType",
+                            NodeList.nodeList(new StringLiteralExpr(objectClass.getName()))), "apply",
+                            NodeList.nodeList(new StringLiteralExpr().setString(TypeConverterRegistry.get().forTypeReverse(object).apply((object))))));
         } else {
             return new StringLiteralExpr().setString(object.toString());
         }

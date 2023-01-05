@@ -16,6 +16,7 @@
 package org.jbpm.process.instance.context.variable;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -58,5 +59,24 @@ public class VariableScopeListener implements KogitoObjectListener {
 
     private KogitoProcessEventSupport getProcessEventSupport() {
         return ((InternalProcessRuntime) processInstance.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(processInstance, tags, variableIdPrefix, variableInstanceIdPrefix);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VariableScopeListener other = (VariableScopeListener) obj;
+        return Objects.equals(processInstance, other.processInstance) && Objects.equals(tags, other.tags)
+                && Objects.equals(variableIdPrefix, other.variableIdPrefix)
+                && Objects.equals(variableInstanceIdPrefix, other.variableInstanceIdPrefix);
     }
 }
