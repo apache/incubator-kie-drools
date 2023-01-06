@@ -43,6 +43,7 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -225,7 +226,11 @@ public class ModelGenerator {
 
         BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
 
-        new ModelGeneratorVisitor(context, packageModel).visit(getExtendedLhs(packageDescr, ruleDescr));
+        Optional<AndDescr> optExtendedLhs = getExtendedLhs(context, packageDescr, ruleDescr, new HashSet<>());
+        if (!optExtendedLhs.isPresent()) {
+            return;
+        }
+        new ModelGeneratorVisitor(context, packageModel).visit(optExtendedLhs.get());
         if (context.hasCompilationError()) {
             return;
         }
@@ -272,17 +277,35 @@ public class ModelGenerator {
         packageModel.putRuleMethod(ruleUnitDescr != null ? ruleUnitDescr.getSimpleName() : DEFAULT_RULE_UNIT, ruleMethod, context.getRuleIndex());
     }
 
-    private static AndDescr getExtendedLhs(PackageDescr packageDescr, RuleDescr ruleDescr) {
-        if (ruleDescr.getParentName() == null) {
-            return ruleDescr.getLhs();
+    private static Optional<AndDescr> getExtendedLhs(RuleContext context, PackageDescr packageDescr, RuleDescr ruleDescr, Set<RuleDescr> ruleDescrSet) {
+        if (ruleDescrSet.contains(ruleDescr)) {
+            context.addCompilationError(new DescrBuildError(packageDescr, ruleDescr, null, "Circular dependency in rules hierarchy " + ruleDescr.getName()));
+            return Optional.empty();
         }
-        RuleDescr parent = packageDescr.getRules().stream()
-                .filter( r -> r.getName().equals( ruleDescr.getParentName() ) ).findFirst()
-                .orElseThrow( () -> new RuntimeException( "Rule " + ruleDescr.getName() + " extends an unknown rule " + ruleDescr.getParentName() ) );
+        ruleDescrSet.add(ruleDescr);
+
+        if (ruleDescr.getParentName() == null) {
+            return Optional.of(ruleDescr.getLhs());
+        }
+        Optional<RuleDescr> optParent = packageDescr.getRules().stream()
+                .filter( r -> r.getName().equals( ruleDescr.getParentName() ) ).findFirst();
+
+        if (!optParent.isPresent()) {
+            context.addCompilationError(new DescrBuildError(packageDescr, ruleDescr, null, "Rule " + ruleDescr.getName() + " extends an unknown rule " + ruleDescr.getParentName()));
+            return Optional.empty();
+        }
+
+        RuleDescr parentRuleDescr = optParent.get();
         AndDescr extendedLhs = new AndDescr();
-        getExtendedLhs(packageDescr, parent).getDescrs().forEach( extendedLhs::addDescr );
+        Optional<AndDescr> optParentExtendedLhs = getExtendedLhs(context, packageDescr, parentRuleDescr, ruleDescrSet);
+        if (!optParentExtendedLhs.isPresent()) {
+            // No need to add CompilationError because it should have been already added.
+            return Optional.empty();
+        }
+
+        optParentExtendedLhs.get().getDescrs().forEach(extendedLhs::addDescr);
         ruleDescr.getLhs().getDescrs().forEach( extendedLhs::addDescr );
-        return extendedLhs;
+        return Optional.of(extendedLhs);
     }
 
     /**
