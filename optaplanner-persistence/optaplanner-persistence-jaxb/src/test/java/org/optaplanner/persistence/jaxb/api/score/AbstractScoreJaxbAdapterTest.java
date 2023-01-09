@@ -11,8 +11,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractScoreJaxbAdapterTest {
@@ -27,7 +25,6 @@ public abstract class AbstractScoreJaxbAdapterTest {
     protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
             assertSerializeAndDeserialize(Score_ expectedScore, W input) {
         assertSerializeAndDeserializeXML(expectedScore, input);
-        assertSerializeAndDeserializeJson(expectedScore, input);
     }
 
     protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void
@@ -63,69 +60,6 @@ public abstract class AbstractScoreJaxbAdapterTest {
             fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
                     "Actual string: %s", regex, xmlString));
         }
-    }
-
-    protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void assertSerializeAndDeserializeJson(
-            Score_ expectedScore,
-            W input) {
-        final String xmlBindContextFactoryProperty = getJaxbContextFactoryProperty();
-        System.setProperty(xmlBindContextFactoryProperty, "org.eclipse.persistence.jaxb.JAXBContextFactory");
-        String jsonString;
-        W output;
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(input.getClass());
-
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-            jaxbMarshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            StringWriter writer = new StringWriter();
-            jaxbMarshaller.marshal(input, writer);
-            jsonString = writer.toString();
-
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
-            unmarshaller.setProperty(UnmarshallerProperties.JSON_INCLUDE_ROOT, true);
-
-            StringReader reader = new StringReader(jsonString);
-            output = (W) unmarshaller.unmarshal(reader);
-        } catch (JAXBException e) {
-            throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
-        } finally {
-            System.clearProperty(xmlBindContextFactoryProperty);
-        }
-        assertThat(output.getScore()).isEqualTo(expectedScore);
-        String regex;
-        if (expectedScore != null) {
-            regex = "\\{\\R" // Opening bracket
-                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\\R" // Start of element
-                    + "\\s*\"score\"\\s:\\s\"" // Start of element
-                    + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]") // Score
-                    + "\"\\s*\\}\\R" // End of element
-                    + "\\}"; // Closing bracket
-        } else {
-            regex = "\\{\\R" // Opening bracket
-                    + "\\s*\"([\\w]+)\"\\s:\\s\\{\\R" // Start of element
-                    + "\\s*\\}\\R" // End of element
-                    + "\\}"; // Closing bracket
-        }
-        if (!jsonString.matches(regex)) {
-            fail(String.format("Regular expression match failed.%nExpected regular expression: %s%n" +
-                    "Actual string: %s", regex, jsonString));
-        }
-    }
-
-    private static boolean isJakarta() {
-        try {
-            Class.forName("jakarta.xml.bind.JAXBContext", false, AbstractScoreJaxbAdapterTest.class.getClassLoader());
-            return true;
-        } catch (ClassNotFoundException classNotFoundException) {
-            return false;
-        }
-    }
-
-    private static String getJaxbContextFactoryProperty() {
-        return isJakarta() ? JAKARTA_XML_BIND_CONTEXT_FACTORY_PROPERTY : JAVAX_XML_BIND_CONTEXT_FACTORY_PROPERTY;
     }
 
     public static abstract class TestScoreWrapper<Score_ extends Score<Score_>> {

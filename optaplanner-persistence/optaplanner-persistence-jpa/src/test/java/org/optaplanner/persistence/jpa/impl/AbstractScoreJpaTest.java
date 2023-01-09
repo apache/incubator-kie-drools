@@ -9,12 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
 
 import org.optaplanner.core.api.score.Score;
 
@@ -23,17 +17,14 @@ public abstract class AbstractScoreJpaTest {
     @Inject
     EntityManagerFactory entityManagerFactory;
 
-    @Inject
-    TransactionManager transactionManager;
-
     protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> Long persistAndAssert(E jpaEntity) {
         try {
-            transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
+            // To avoid importing javax.transaction.*, which OpenRewrite fails to migrate.
+            em.getTransaction().begin();
             em.persist(jpaEntity);
-            transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException
-                | HeuristicMixedException e) {
+            em.getTransaction().commit();
+        } catch (Exception e) {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
@@ -57,16 +48,16 @@ public abstract class AbstractScoreJpaTest {
     protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> void findAssertAndChangeScore(
             Class<E> jpaEntityClass, Long id, Score_ oldScore, Score_ newScore) {
         try {
-            transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
+            // To avoid importing javax.transaction.*, which OpenRewrite fails to migrate.
+            em.getTransaction().begin();
             E jpaEntity = em.find(jpaEntityClass, id);
             em.persist(jpaEntity);
             assertThat(jpaEntity.getScore()).isEqualTo(oldScore);
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
-            transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException
-                | HeuristicMixedException e) {
+            em.getTransaction().commit();
+        } catch (Exception e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }
@@ -74,13 +65,13 @@ public abstract class AbstractScoreJpaTest {
     protected <Score_ extends Score<Score_>, E extends AbstractTestJpaEntity<Score_>> void findAndAssert(
             Class<E> jpaEntityClass, Long id, Score_ score) {
         try {
-            transactionManager.begin();
             EntityManager em = entityManagerFactory.createEntityManager();
+            // To avoid importing javax.transaction.*, which OpenRewrite fails to migrate.
+            em.getTransaction().begin();
             E jpaEntity = em.find(jpaEntityClass, id);
             assertThat(jpaEntity.getScore()).isEqualTo(score);
-            transactionManager.commit();
-        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException
-                | HeuristicRollbackException e) {
+            em.getTransaction().commit();
+        } catch (Exception e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }

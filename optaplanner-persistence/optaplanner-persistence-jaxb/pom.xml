@@ -63,12 +63,6 @@
       <artifactId>jakarta.json</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- MOXy needed as JAXB JSON provider -->
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.moxy</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

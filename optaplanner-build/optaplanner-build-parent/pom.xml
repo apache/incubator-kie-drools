@@ -44,17 +44,35 @@
     <!-- Plugins -->
     <!-- ************************************************************************ -->
 
-    <maven.min.version>3.8.1</maven.min.version>
-    <maven.compiler.release>11</maven.compiler.release>
-    <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
-    <maven.compiler.target>11</maven.compiler.target>
+    <!-- Plugin version properties -->
+
+    <version.asciidoctor.plugin>2.2.2</version.asciidoctor.plugin>
     <version.assembly.plugin>3.4.2</version.assembly.plugin>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
     <version.dependency.plugin>3.1.2</version.dependency.plugin>
+    <version.formatter.plugin>2.21.0</version.formatter.plugin>
+    <version.impsort.plugin>1.8.0</version.impsort.plugin>
+    <version.jacoco.plugin>0.8.8</version.jacoco.plugin>
+    <!--
+      Do not upgrade unless prepared to deal with JPMS issues.
+      If upgrading, ensure build still passes with the full profile (-Dfull).
+    -->
+    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
+    <version.pitest.plugin>1.10.4</version.pitest.plugin>
+    <version.revapi.plugin>0.15.0</version.revapi.plugin>
+    <version.sniffer.plugin>1.22</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
     <version.versions.plugin>2.14.2</version.versions.plugin>
+
+    <!-- Plugin configuration properties -->
+
+    <maven.min.version>3.8.1</maven.min.version>
+    <maven.compiler.release>11</maven.compiler.release>
+    <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
+    <maven.compiler.target>11</maven.compiler.target>
     <!-- This property needs to be defined in all modules that use the packaging 'jar'.
          It is used by different plugins to make sure the module/bundle names are consistent. -->
     <java.module.name/>
@@ -62,8 +80,6 @@
     <formatter.goal>format</formatter.goal>
     <!-- TODO name impsort should indicate it's related to formatting -->
     <impsort.goal>sort</impsort.goal>
-    <!-- Jacoco plugin configurations -->
-    <version.jacoco.plugin>0.8.8</version.jacoco.plugin>
     <!-- JaCoCo coverage data file location -->
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <jacoco.agent.argLine/>
@@ -316,7 +332,7 @@
         <plugin>
           <groupId>org.revapi</groupId>
           <artifactId>revapi-maven-plugin</artifactId>
-          <version>0.15.0</version>
+          <version>${version.revapi.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.revapi</groupId>
@@ -418,7 +434,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <version>2.2.2</version>
+          <version>${version.asciidoctor.plugin}</version>
           <dependencies>
             <dependency>
               <!-- Required to generate the PDF file -->
@@ -436,11 +452,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <!--
-            Do not upgrade unless prepared to deal with JPMS issues.
-            If upgrading, ensure build still passes with the full profile (-Dfull).
-          -->
-          <version>3.0.1</version>
+          <version>${version.javadoc.plugin}</version>
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
@@ -495,7 +507,7 @@
         <plugin>
           <groupId>net.revelc.code.formatter</groupId>
           <artifactId>formatter-maven-plugin</artifactId>
-          <version>2.21.0</version>
+          <version>${version.formatter.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.optaplanner</groupId>
@@ -519,7 +531,7 @@
         <plugin>
           <groupId>net.revelc.code</groupId>
           <artifactId>impsort-maven-plugin</artifactId>
-          <version>1.8.0</version>
+          <version>${version.impsort.plugin}</version>
           <configuration>
             <groups>java.,jakarta.,javax.,org.,com.</groups>
             <staticGroups>*</staticGroups>
@@ -538,7 +550,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.5.0</version>
+          <version>${version.jaxb2.plugin}</version>
           <executions>
             <execution>
               <id>schemagen</id>
@@ -566,7 +578,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.22</version>
+          <version>${version.sniffer.plugin}</version>
           <configuration>
             <signature>
               <groupId>net.sf.androidscents.signature</groupId>
@@ -691,7 +703,7 @@
             <plugin>
               <groupId>org.pitest</groupId>
               <artifactId>pitest-maven</artifactId>
-              <version>1.10.4</version>
+              <version>${version.pitest.plugin}</version>
             </plugin>
           </plugins>
         </pluginManagement>
