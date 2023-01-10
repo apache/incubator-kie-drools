@@ -147,7 +147,10 @@ public class Expressions {
     }
 
     private static MethodCallExpr arithmetic(String op, Expression left, Expression right) {
-        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op, new NodeList<>(left, right));
+        return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op)
+                .addArgument(left)
+                .addArgument(right)
+                .addArgument(FeelCtx.FEELCTX);
     }
 
     private static MethodCallExpr equality(String op, Expression left, Expression right) {

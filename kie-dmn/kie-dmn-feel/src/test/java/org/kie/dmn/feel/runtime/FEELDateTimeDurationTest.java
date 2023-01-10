@@ -187,7 +187,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2DT20H14M\" ) / duration( \"P2DT20H14M\" )", BigDecimal.valueOf(1) , null},
                 { "duration( \"P10Y11M\" ) / 2.5", ComparablePeriod.parse("P4Y4M"), null },
                 { "duration( \"P10Y11M\" ) / -2.5", ComparablePeriod.parse("-P4Y4M"), null },
-                { "duration( \"P10Y11M\" ) / 0", null, null },
+                { "duration( \"P10Y11M\" ) / 0", null, FEELEvent.Severity.ERROR },
                 { "duration( \"P10DT10H10M\" ) / 2.5", Duration.parse("P4DT4H4M"), null },
 
                 {"time(\"10:30:00\") instance of time", Boolean.TRUE, null},
