@@ -25,10 +25,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.function.BinaryOperator;
 
@@ -278,6 +277,9 @@ public class InfixOpNode
             return ((OffsetTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof OffsetTime ) {
             return ((OffsetTime) right).plus( (Duration) left);
+        } else if ( left instanceof Temporal && right instanceof Temporal ) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.ADDITION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else {
             return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
         }
@@ -287,18 +289,7 @@ public class InfixOpNode
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
-            if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
-                if( right instanceof LocalDateTime ) {
-                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof ZonedDateTime || right instanceof OffsetDateTime ) {
-                if( left instanceof LocalDateTime ) {
-                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof LocalDate && left instanceof LocalDate ) {
-                return Duration.ofDays( ChronoUnit.DAYS.between( (LocalDate) right, (LocalDate) left ) );
-            }
-            return Duration.between( (Temporal) right, (Temporal) left);
+            return subtractTemporals((Temporal) left, (Temporal) right, ctx);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
         } else if ( left instanceof Duration && right instanceof Duration ) {
@@ -435,5 +426,27 @@ public class InfixOpNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    private static Object subtractTemporals(Temporal left, Temporal right, final EvaluationContext ctx) {
+        // Based on the Table 57 in the spec, if it is only date, convert to date and time.
+        if (left instanceof LocalDate) {
+            left = ZonedDateTime.of((LocalDate) left, LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        }
+        if (right instanceof LocalDate) {
+            right = ZonedDateTime.of((LocalDate) right, LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        }
+        if (left instanceof ZonedDateTime || left instanceof OffsetDateTime) {
+            if (right instanceof LocalDateTime) {
+                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DATE_AND_TIME_TIMEZONE_NEEDED.getMask()));
+                return null;
+            }
+        } else if (right instanceof ZonedDateTime || right instanceof OffsetDateTime) {
+            if (left instanceof LocalDateTime) {
+                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DATE_AND_TIME_TIMEZONE_NEEDED.getMask()));
+                return null;
+            }
+        }
+        return Duration.between(right, left);
     }
 }
