@@ -105,7 +105,7 @@
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
-    <version.org.slf4j>1.7.30</version.org.slf4j>
+    <version.org.slf4j>1.7.36</version.org.slf4j>
 
     <version.maven>3.8.6</version.maven>
     <version.maven.plugin>3.6.0</version.maven.plugin>
