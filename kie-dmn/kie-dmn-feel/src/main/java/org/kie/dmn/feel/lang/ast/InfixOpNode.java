@@ -253,7 +253,8 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).plus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).plusDays( ((Duration) right).toDays() );
+            Duration rightDuration = getActualDaysDuration((Duration) right);
+            return ((LocalDate) left).plusDays( rightDuration.toDays() );
         } else if (left instanceof ChronoPeriod && right instanceof ZonedDateTime) {
             return ((ZonedDateTime) right).plus((ChronoPeriod) left);
         } else if (left instanceof ChronoPeriod && right instanceof OffsetDateTime) {
@@ -318,7 +319,8 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).minus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).minusDays( ((Duration) right).toDays() );
+            Duration rightDuration = getActualDaysDuration((Duration) right);
+            return ((LocalDate) left).minusDays( rightDuration.toDays() );
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
@@ -425,6 +427,23 @@ public class InfixOpNode
             return true;
         }
         return l || r;
+    }
+
+    /**
+     * Convert the given duration to rounded days duration; i.e. it round up the days to bigger (or smaller) one, avoid values less the 24 hours (or equivalent seconds)
+     * to be rounded to 0
+     * @param toAdapt
+     * @return
+     */
+    static Duration getActualDaysDuration(Duration toAdapt) {
+        Duration estimedDuration = Duration.ofDays(toAdapt.toDays());
+        long days = estimedDuration.toDays();
+        if (estimedDuration.compareTo(toAdapt) > 0) {
+            days -= 1;
+        } else if (estimedDuration.compareTo(toAdapt) < 0) {
+            days += 1;
+        }
+        return Duration.of(days, ChronoUnit.DAYS);
     }
 
     @Override
