@@ -70,8 +70,8 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     @Override
     protected void handleTransitions(RuleFlowNodeContainerFactory<?, ?> factory,
             Transition transition,
-            long sourceId) {
-        super.handleTransitions(factory, transition, sourceId);
+            NodeFactory<?, ?> sourceNode) {
+        super.handleTransitions(factory, transition, sourceNode);
         if (isDataBased()) {
             finalizeDataBasedSwitchState(factory);
         } else {
@@ -91,7 +91,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
             validateDefaultCondition(defaultCondition, state, workflow, parserContext);
             // Create the timer for controlling the eventTimeout and connect it with the exclusive split.
             NodeFactory<?, ?> eventTimeoutTimerNode = connect(splitNode, timerNode(factory.timerNode(parserContext.newId()), resolveEventTimeout(state, workflow)));
-            handleTransition(factory, defaultCondition.getTransition(), eventTimeoutTimerNode.getNode().getId(), Optional.of(new StateHandler.HandleTransitionCallBack() {
+            handleTransition(factory, defaultCondition.getTransition(), eventTimeoutTimerNode, Optional.of(new StateHandler.HandleTransitionCallBack() {
                 @Override
                 public void onEmptyTarget() {
                     // Connect the timer with a process finalization sequence that might produce events.
@@ -103,7 +103,13 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         for (EventCondition eventCondition : conditions) {
             NodeFactory<?, ?> outNode = connect(splitNode,
                     filterAndMergeNode(factory, eventCondition.getEventDataFilter(), (f, inputVar, outputVar) -> consumeEventNode(f, eventCondition.getEventRef(), inputVar, outputVar)));
-            handleTransition(factory, eventCondition.getTransition(), outNode.getNode().getId(), Optional.empty());
+            handleTransition(factory, eventCondition.getTransition(), outNode, Optional.of(new StateHandler.HandleTransitionCallBack() {
+                @Override
+                public void onEmptyTarget() {
+                    // Connect the timer with a process finalization sequence that might produce events.
+                    endIt(outNode.getNode().getId(), factory, eventCondition.getEnd());
+                }
+            }));
         }
     }
 
@@ -115,7 +121,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
         // set default connection
         if (defaultCondition != null) {
             validateDefaultCondition(defaultCondition, state, workflow, parserContext);
-            handleTransition(factory, defaultCondition.getTransition(), splitId, Optional.of(new StateHandler.HandleTransitionCallBack() {
+            handleTransition(factory, defaultCondition.getTransition(), startNode, Optional.of(new StateHandler.HandleTransitionCallBack() {
                 @Override
                 public void onStateTarget(StateHandler<?> targetState) {
                     targetHandlers.add(() -> startNode.metaData(XORSPLITDEFAULT, concatId(splitId, targetState.getIncomingNode(factory).getNode().getId())));
@@ -136,7 +142,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
         List<DataCondition> conditions = state.getDataConditions();
         for (DataCondition condition : conditions) {
-            handleTransition(factory, condition.getTransition(), splitId, Optional.of(new StateHandler.HandleTransitionCallBack() {
+            handleTransition(factory, condition.getTransition(), startNode, Optional.of(new StateHandler.HandleTransitionCallBack() {
                 @Override
                 public void onStateTarget(StateHandler<?> targetState) {
                     targetHandlers.add(() -> addConstraint(factory, startNode, targetState, condition));
@@ -188,12 +194,8 @@ public class SwitchHandler extends StateHandler<SwitchState> {
     }
 
     @Override
-    public void connect(RuleFlowNodeContainerFactory<?, ?> factory, long sourceId) {
-        factory.connection(sourceId, getNode().getNode().getId());
-    }
-
-    @Override
     public void handleConnections() {
+        super.handleConnections();
         targetHandlers.forEach(Runnable::run);
     }
 }

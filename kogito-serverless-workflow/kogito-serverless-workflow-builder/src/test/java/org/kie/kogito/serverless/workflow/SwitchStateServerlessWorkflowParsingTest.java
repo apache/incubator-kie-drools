@@ -50,22 +50,24 @@ class SwitchStateServerlessWorkflowParsingTest extends AbstractServerlessWorkflo
                 "org.kie.kogito.serverless",
                 RuleFlowProcess.PUBLIC_VISIBILITY);
 
-        assertHasNodesSize(process, 6);
+        assertHasNodesSize(process, 7);
         StartNode processStartNode = assertClassAndGetNode(process, 0, StartNode.class);
         EndNode processEndNode1 = assertClassAndGetNode(process, 1, EndNode.class);
         EndNode processEndNode2 = assertClassAndGetNode(process, 2, EndNode.class);
         Split splitNode = assertClassAndGetNode(process, 3, Split.class);
         assertExclusiveSplit(splitNode, "ChooseOnAge", 2);
-        assertConstraintIsDefault(splitNode, "4_6");
+        assertConstraintIsDefault(splitNode, "4_7");
         ActionNode approveTransitionActionNode = assertClassAndGetNode(process, 4, ActionNode.class);
         assertHasName(approveTransitionActionNode, "Approve");
         ActionNode denyTransitionActionNode = assertClassAndGetNode(process, 5, ActionNode.class);
         assertHasName(denyTransitionActionNode, "Deny");
+        Join joinNode = assertClassAndGetNode(process, 6, Join.class);
 
         assertIsConnected(processStartNode, splitNode);
         assertIsConnected(splitNode, approveTransitionActionNode);
         assertIsConnected(approveTransitionActionNode, processEndNode1);
-        assertIsConnected(splitNode, denyTransitionActionNode);
+        assertIsConnected(splitNode, joinNode);
+        assertIsConnected(joinNode, denyTransitionActionNode);
         assertIsConnected(denyTransitionActionNode, processEndNode2);
     }
 

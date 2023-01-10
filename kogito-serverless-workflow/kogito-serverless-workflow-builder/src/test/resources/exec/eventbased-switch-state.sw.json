@@ -19,6 +19,11 @@
       "name": "sendVisaApplicationEvent",
       "source": "visaapplication",
       "type": "kafka"
+    },
+    {
+      "name": "visaProhibitedEvent",
+      "source": "visaprohibited",
+      "type": "kafka"
     }
   ],
   "states": [
@@ -49,6 +54,10 @@
         {
           "eventRef": "visaDeniedEvent",
           "transition": "DeniedVisa"
+        },
+        {
+          "eventRef": "visaProhibitedEvent",
+          "end": true
         }
       ]
     },

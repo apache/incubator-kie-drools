@@ -10,6 +10,9 @@ events:
   - name: visaDeniedEvent
     source: visadenied
     type: kafka
+  - name: visaProhibitedEvent
+    source: visaprohibited
+    type: kafka
   - name: sendVisaApplicationEvent
     source: visaapplication
     type: kafka
@@ -30,6 +33,8 @@ states:
         transition: ApprovedVisa
       - eventRef: visaDeniedEvent
         transition: DeniedVisa
+      - eventRef: visaProhibitedEvent
+        end: true
   - name: ApprovedVisa
     type: inject
     data:

@@ -5,13 +5,6 @@
   "name": "For Each Parent",
   "description": "For Each Parent Sample",
   "start": "For Each",
-  "functions": [
-    {
-      "name": "printMessage",
-      "type": "custom",
-      "operation": "sysout"
-    }
-  ],
   "states": [
     {
       "name": "For Each",
