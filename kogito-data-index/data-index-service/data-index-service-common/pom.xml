@@ -23,6 +23,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>data-index-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>data-index-storage-protobuf</artifactId>
     </dependency>
     <dependency>
@@ -30,24 +34,8 @@
       <artifactId>persistence-commons-protobuf</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-vertx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-reactive-routes</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-vertx-graphql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.graphql-java</groupId>
-      <artifactId>graphql-java-extended-scalars</artifactId>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
@@ -64,10 +52,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>

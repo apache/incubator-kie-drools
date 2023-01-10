@@ -16,7 +16,9 @@
 
   <modules>
     <module>data-index-storage</module>
+    <module>data-index-common</module>
     <module>data-index-service</module>
+    <module>kogito-addons-quarkus-data-index</module>
   </modules>
 
 </project>

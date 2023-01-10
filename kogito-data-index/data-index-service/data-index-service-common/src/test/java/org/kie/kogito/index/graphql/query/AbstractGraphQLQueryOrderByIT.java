@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.graphql.GraphQLSchemaManager;
+import org.kie.kogito.index.graphql.GraphQLSchemaManagerImpl;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.restassured.http.ContentType;
@@ -43,7 +43,7 @@ import static org.hamcrest.CoreMatchers.isA;
 public abstract class AbstractGraphQLQueryOrderByIT {
 
     @Inject
-    public GraphQLSchemaManager manager;
+    public GraphQLSchemaManagerImpl manager;
 
     @Inject
     public ProtobufService protobufService;

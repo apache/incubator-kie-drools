@@ -152,6 +152,17 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-common</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-service-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -221,6 +232,28 @@
                 <artifactId>data-index-service-inmemory</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
+              <version>${project.version}</version>
+              <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>kogito-addons-quarkus-data-index-common-deployment</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.kie.kogito</groupId>
+              <artifactId>kogito-addons-quarkus-data-index-common-deployment</artifactId>
+              <version>${project.version}</version>
+              <classifier>sources</classifier>
             </dependency>
 
 

@@ -1,0 +1,26 @@
+<infinispan>
+  <cache-container shutdown-hook="DEFAULT">
+    {#let template=config:property('kogito.cache.domain.template')}
+      {#if template is null}
+    <local-cache name="{cache_name}">
+      {#else}
+    <local-cache name="{cache_name}" configuration="{template}">
+      {/if}
+    {/let}
+      <encoding media-type="application/x-protostream"/>
+      <indexing storage="filesystem" path="data-index-{cache_name}">
+        <indexed-entities>
+          <indexed-entity>org.kie.kogito.index.model.KogitoMetadata</indexed-entity>
+          <indexed-entity>org.kie.kogito.index.model.ProcessInstanceMeta</indexed-entity>
+          <indexed-entity>org.kie.kogito.index.model.UserTaskInstanceMeta</indexed-entity>
+          {#for index in indexed}
+          <indexed-entity>{index}</indexed-entity>
+          {/for}
+        </indexed-entities>
+      </indexing>
+      <persistence>
+        <file-store/>
+      </persistence>
+    </local-cache>
+  </cache-container>
+</infinispan>

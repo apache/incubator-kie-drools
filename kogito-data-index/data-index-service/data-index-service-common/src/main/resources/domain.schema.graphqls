@@ -1,0 +1,139 @@
+extend schema {
+    subscription: Subscription
+    mutation: Mutation
+}
+
+type Mutation {
+    ProcessInstanceAbort(id: String): String
+    ProcessInstanceRetry(id: String): String
+    ProcessInstanceSkip(id: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    NodeInstanceTrigger(id: String, nodeId: String): String
+    NodeInstanceRetrigger(id: String, nodeInstanceId: String): String
+    NodeInstanceCancel(id: String, nodeInstanceId: String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String, data: String): String
+    UserTaskInstanceUpdate(taskId: String, user: String, groups: [String],  description: String, priority: String,
+        actualOwner: String, adminGroups: [String!], adminUsers: [String!], excludedUsers: [String!],
+        potentialGroups: [String!], potentialUsers: [String!], inputParams: String): String
+    UserTaskInstanceCommentCreate(taskId: String, user: String, groups: [String], comment: String): String
+    UserTaskInstanceAttachmentCreate(taskId: String, user: String, groups: [String], name: String, uri: String): String
+    UserTaskInstanceCommentUpdate(user:String, groups:[String],commentId: String, comment: String): String
+    UserTaskInstanceCommentDelete(user:String, groups:[String],commentId: String): String
+    UserTaskInstanceAttachmentUpdate(user:String, groups:[String],attachmentId: String,  name: String, uri: String): String
+    UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String): String
+}
+
+extend type ProcessInstance {
+    nodeDefinitions: [Node!]
+    diagram: String
+    source: String
+}
+
+type Node {
+    id: String!
+    nodeDefinitionId: String!
+    name: String!
+    type: String!
+    uniqueId: String!
+}
+
+type KogitoMetadata {
+    lastUpdate: DateTime!
+    processInstances: [ProcessInstanceMeta]
+    userTasks: [UserTaskInstanceMeta]
+}
+
+input KogitoMetadataOrderBy {
+    lastUpdate: OrderBy
+}
+
+input KogitoMetadataArgument {
+    lastUpdate: DateArgument
+    processInstances: ProcessInstanceMetaArgument
+    userTasks: UserTaskInstanceMetaArgument
+}
+
+type ProcessInstanceMeta {
+    id: String!
+    processId: String!
+    processName: String
+    parentProcessInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    roles: [String!]
+    state: ProcessInstanceState!
+    endpoint: String!
+    serviceUrl: String
+    start: DateTime!
+    end: DateTime
+    lastUpdate: DateTime!
+    businessKey: String
+}
+
+input ProcessInstanceMetaArgument {
+    id: IdArgument
+    processId: StringArgument
+    processName: StringArgument
+    parentProcessInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    state: ProcessInstanceStateArgument
+    endpoint: StringArgument
+    roles: StringArrayArgument
+    start: DateArgument
+    end: DateArgument
+    businessKey: StringArgument
+}
+
+extend type UserTaskInstance {
+    schema(user: String, groups:[String]): String
+}
+
+type UserTaskInstanceMeta {
+    id: String!
+    description: String
+    name: String
+    priority: String
+    processInstanceId: String!
+    state: String!
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    completed: DateTime
+    started: DateTime!
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    referenceName: String
+    lastUpdate: DateTime!
+    comments: [Comment!]
+    attachments: [Attachment!]
+}
+
+input UserTaskInstanceMetaArgument {
+    state: StringArgument
+    id: IdArgument
+    description: StringArgument
+    name: StringArgument
+    priority: StringArgument
+    processInstanceId: IdArgument
+    actualOwner: StringArgument
+    potentialUsers: StringArrayArgument
+    potentialGroups: StringArrayArgument
+    excludedUsers: StringArrayArgument
+    adminGroups: StringArrayArgument
+    adminUsers: StringArrayArgument
+    completed: DateArgument
+    started: DateArgument
+    referenceName: StringArgument
+}
+
+type Subscription {
+    ProcessInstanceAdded: ProcessInstance!
+    ProcessInstanceUpdated: ProcessInstance!
+    UserTaskInstanceAdded: UserTaskInstance!
+    UserTaskInstanceUpdated: UserTaskInstance!
+    JobAdded: Job!
+    JobUpdated: Job!
+}

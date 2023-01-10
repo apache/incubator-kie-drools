@@ -30,7 +30,7 @@ import org.kie.kogito.event.process.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.process.UserTaskInstanceEventBody;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
-import org.kie.kogito.index.graphql.GraphQLSchemaManager;
+import org.kie.kogito.index.graphql.GraphQLSchemaManagerImpl;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
@@ -57,7 +57,7 @@ import static org.mockito.Mockito.verify;
 public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingIT {
 
     @Inject
-    public GraphQLSchemaManager manager;
+    public GraphQLSchemaManagerImpl manager;
 
     @Inject
     public ProtobufService protobufService;

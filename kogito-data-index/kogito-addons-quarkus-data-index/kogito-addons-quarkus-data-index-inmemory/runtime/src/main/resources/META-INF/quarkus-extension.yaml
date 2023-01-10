@@ -1,0 +1,9 @@
+name: Kogito Addons Quarkus Data Index In-memory
+description: Kogito Data Index In-memory Add-On
+metadata:
+  keywords:
+    - data-index
+    - kogito
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

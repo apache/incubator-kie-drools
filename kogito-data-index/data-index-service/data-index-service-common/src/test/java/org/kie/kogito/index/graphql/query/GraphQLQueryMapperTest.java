@@ -28,7 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.DefaultDateTimeCoercing;
 import org.kie.kogito.index.graphql.GraphQLScalarTypeProducer;
-import org.kie.kogito.index.graphql.GraphQLSchemaManager;
+import org.kie.kogito.index.graphql.GraphQLSchemaManagerImpl;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 import org.kie.kogito.persistence.api.query.FilterCondition;
 import org.mockito.InjectMocks;
@@ -58,7 +58,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 public class GraphQLQueryMapperTest {
 
     @InjectMocks
-    GraphQLSchemaManager manager;
+    GraphQLSchemaManagerImpl manager;
 
     @Mock
     DataIndexStorageService cacheService;

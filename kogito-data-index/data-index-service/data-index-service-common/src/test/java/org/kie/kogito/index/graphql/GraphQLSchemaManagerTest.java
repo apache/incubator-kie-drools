@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.kogito.index.graphql;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.mockito.Mockito;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 public class GraphQLSchemaManagerTest {
 
-    GraphQLSchemaManager schemaManager = new GraphQLSchemaManager();
+    GraphQLSchemaManagerImpl schemaManager = new GraphQLSchemaManagerImpl();
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
@@ -81,14 +82,14 @@ public class GraphQLSchemaManagerTest {
     }
 
     private DataFetchingEnvironment geJsonEnv(String processId, String endpoint) {
-        DataFetchingEnvironment env = mock(DataFetchingEnvironment.class);
-        when(env.getSource()).thenReturn(getProcessInstanceJson(processId, endpoint));
+        DataFetchingEnvironment env = Mockito.mock(DataFetchingEnvironment.class);
+        Mockito.when(env.getSource()).thenReturn(getProcessInstanceJson(processId, endpoint));
         return env;
     }
 
     private DataFetchingEnvironment getEnv(String processId, String endpoint) {
-        DataFetchingEnvironment env = mock(DataFetchingEnvironment.class);
-        when(env.getSource()).thenReturn(getProcessInstance(processId, endpoint));
+        DataFetchingEnvironment env = Mockito.mock(DataFetchingEnvironment.class);
+        Mockito.when(env.getSource()).thenReturn(getProcessInstance(processId, endpoint));
         return env;
     }
 

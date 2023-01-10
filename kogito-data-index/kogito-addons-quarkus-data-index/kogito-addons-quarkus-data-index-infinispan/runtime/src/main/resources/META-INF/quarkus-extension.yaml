@@ -1,0 +1,9 @@
+name: Kogito Addons Quarkus Data Index Infinispan
+description: Kogito Data Index Infinispan Add-On
+metadata:
+  keywords:
+    - data-index
+    - kogito
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"
