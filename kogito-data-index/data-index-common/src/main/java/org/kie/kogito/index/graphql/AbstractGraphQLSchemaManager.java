@@ -30,7 +30,6 @@ import javax.inject.Inject;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
-import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.persistence.api.Storage;
@@ -66,8 +65,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         schema = createSchema();
         GraphQLQueryParserRegistry.get().registerParsers(
                 (GraphQLInputObjectType) schema.getType("ProcessInstanceArgument"),
-                (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
-                (GraphQLInputObjectType) schema.getType("JobArgument"));
+                (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"));
     }
 
     protected TypeDefinitionRegistry loadSchemaDefinitionFile(String fileName) {
@@ -129,10 +127,6 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {
         return executeAdvancedQueryForCache(cacheService.getProcessInstancesCache(), env);
-    }
-
-    protected Collection<Job> getJobsValues(DataFetchingEnvironment env) {
-        return executeAdvancedQueryForCache(cacheService.getJobsCache(), env);
     }
 
     protected <T> List<T> executeAdvancedQueryForCache(Storage<String, T> cache, DataFetchingEnvironment env) {

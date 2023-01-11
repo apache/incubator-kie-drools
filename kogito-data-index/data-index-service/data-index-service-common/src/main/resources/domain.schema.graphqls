@@ -3,6 +3,10 @@ extend schema {
     mutation: Mutation
 }
 
+extend type Query {
+    Jobs(where: JobArgument, orderBy: JobOrderBy, pagination: Pagination):  [Job]
+}
+
 type Mutation {
     ProcessInstanceAbort(id: String): String
     ProcessInstanceRetry(id: String): String
@@ -136,4 +140,65 @@ type Subscription {
     UserTaskInstanceUpdated: UserTaskInstance!
     JobAdded: Job!
     JobUpdated: Job!
+}
+
+type Job {
+    id: String!
+    processId: String
+    processInstanceId: String
+    nodeInstanceId: String
+    rootProcessInstanceId: String
+    rootProcessId: String
+    status: JobStatus!
+    expirationTime: DateTime
+    priority: Int
+    callbackEndpoint: String
+    repeatInterval: Int
+    repeatLimit: Int
+    scheduledId: String
+    retries: Int
+    lastUpdate: DateTime
+    executionCounter: Int
+    endpoint: String
+}
+
+enum JobStatus {
+    ERROR,
+    EXECUTED,
+    SCHEDULED,
+    RETRY,
+    CANCELED
+}
+
+input JobStatusArgument {
+    equal: JobStatus
+    in: [JobStatus]
+}
+
+input JobArgument {
+    and: [JobArgument!]
+    or: [JobArgument!]
+    not: JobArgument
+    id: IdArgument
+    processId: StringArgument
+    processInstanceId: IdArgument
+    nodeInstanceId: IdArgument
+    rootProcessInstanceId: IdArgument
+    rootProcessId: StringArgument
+    status: JobStatusArgument
+    expirationTime: DateArgument
+    priority: NumericArgument
+    scheduledId: IdArgument
+    lastUpdate: DateArgument
+}
+
+input JobOrderBy {
+    processId: OrderBy
+    rootProcessId: OrderBy
+    status: OrderBy
+    expirationTime: OrderBy
+    priority: OrderBy
+    retries: OrderBy
+    lastUpdate: OrderBy
+    executionCounter: OrderBy
 }

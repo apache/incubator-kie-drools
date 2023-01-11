@@ -78,7 +78,9 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
     @PostConstruct
     public void setup() {
         super.setup();
-        GraphQLQueryParserRegistry.get().registerParsers((GraphQLInputObjectType) getGraphQLSchema().getType("KogitoMetadataArgument"));
+        GraphQLQueryParserRegistry.get().registerParsers(
+                (GraphQLInputObjectType) getGraphQLSchema().getType("KogitoMetadataArgument"),
+                (GraphQLInputObjectType) getGraphQLSchema().getType("JobArgument"));
     }
 
     @Override
@@ -307,6 +309,10 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                 env.getArgument(USER),
                 env.getArgument(GROUPS),
                 env.getArgument(ATTACHMENT_ID));
+    }
+
+    protected Collection<Job> getJobsValues(DataFetchingEnvironment env) {
+        return executeAdvancedQueryForCache(cacheService.getJobsCache(), env);
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
