@@ -101,6 +101,19 @@ public class RuleUnitProviderImplTest {
     }
 
     @Test
+    public void agendaGroup() {
+        try {
+            RuleUnitProvider.get().createRuleUnitInstance(new AgendaGroupUnit());
+            fail("Compilation should fail");
+        } catch (CompilationErrorsException e) {
+            assertThat(
+                    e.getErrorMessages().stream().map(Objects::toString)
+                            .anyMatch( s -> s.contains("Rule RuleInGroup belongs to unit AgendaGroupUnit and cannot have an agenda-group or a ruleflow-group"))
+            ).isTrue();
+        }
+    }
+
+    @Test
     public void addEventListeners() {
         TestAgendaEventListener testAgendaEventListener = new TestAgendaEventListener();
         TestRuleRuntimeEventListener testRuleRuntimeEventListener = new TestRuleRuntimeEventListener();

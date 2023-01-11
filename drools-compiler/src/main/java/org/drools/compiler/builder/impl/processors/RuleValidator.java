@@ -59,6 +59,15 @@ public class RuleValidator extends AbstractPackageCompilationPhase {
                 }
             }
             names.add(name);
+
+            if (rule.getUnit() != null &&
+                    (rule.getAttributes().get("agenda-group") != null || rule.getAttributes().get("ruleflow-group") != null)) {
+                this.results.add(new ParserError(rule.getResource(),
+                        "Rule " + rule.getName() + " belongs to unit " + rule.getUnit().getTarget() + " and cannot have an agenda-group or a ruleflow-group",
+                        rule.getLine(),
+                        rule.getColumn(),
+                        packageDescr.getNamespace()));
+            }
         }
     }
 
