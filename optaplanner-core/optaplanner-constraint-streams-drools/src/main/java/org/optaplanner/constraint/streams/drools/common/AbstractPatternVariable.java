@@ -8,8 +8,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,38 +34,29 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         implements PatternVariable<A, PatternVar_, Child_> {
 
     private final Variable<A> primaryVariable;
-    private final Supplier<PatternDSL.PatternDef<PatternVar_>> patternSupplier;
+    private final PatternDSL.PatternDef<PatternVar_> pattern;
     private final List<ViewItem<?>> prerequisiteExpressions;
     private final List<ViewItem<?>> dependentExpressions;
 
-    protected AbstractPatternVariable(Variable<A> aVariable, Supplier<PatternDSL.PatternDef<PatternVar_>> patternSupplier,
+    protected AbstractPatternVariable(Variable<A> aVariable, PatternDSL.PatternDef<PatternVar_> pattern,
             List<ViewItem<?>> prerequisiteExpressions, List<ViewItem<?>> dependentExpressions) {
         this.primaryVariable = aVariable;
-        this.patternSupplier = patternSupplier;
+        this.pattern = pattern;
         this.prerequisiteExpressions = prerequisiteExpressions;
         this.dependentExpressions = dependentExpressions;
     }
 
-    protected AbstractPatternVariable(AbstractPatternVariable<?, PatternVar_, ?> patternCreator,
-            Variable<A> boundVariable) {
+    protected AbstractPatternVariable(AbstractPatternVariable<?, PatternVar_, ?> patternCreator, Variable<A> boundVariable) {
         this.primaryVariable = boundVariable;
-        this.patternSupplier = patternCreator.getPatternSupplier();
+        this.pattern = patternCreator.getPattern();
         this.prerequisiteExpressions = patternCreator.getPrerequisiteExpressions();
         this.dependentExpressions = patternCreator.getDependentExpressions();
     }
 
     protected AbstractPatternVariable(AbstractPatternVariable<A, PatternVar_, ?> patternCreator,
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        this.primaryVariable = patternCreator.primaryVariable;
-        this.patternSupplier = () -> patternMutator.apply(patternCreator.patternSupplier.get());
-        this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
-        this.dependentExpressions = patternCreator.dependentExpressions;
-    }
-
-    protected AbstractPatternVariable(AbstractPatternVariable<A, PatternVar_, ?> patternCreator,
             ViewItem<?> dependentExpression) {
         this.primaryVariable = patternCreator.primaryVariable;
-        this.patternSupplier = patternCreator.patternSupplier;
+        this.pattern = patternCreator.pattern;
         this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
         this.dependentExpressions = Stream.concat(patternCreator.dependentExpressions.stream(), Stream.of(dependentExpression))
                 .collect(Collectors.toList());
@@ -78,8 +67,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         return primaryVariable;
     }
 
-    public Supplier<PatternDSL.PatternDef<PatternVar_>> getPatternSupplier() {
-        return patternSupplier;
+    public PatternDSL.PatternDef<PatternVar_> getPattern() {
+        return pattern;
     }
 
     @Override
@@ -102,28 +91,27 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
      */
     protected abstract A extract(PatternVar_ patternVar);
 
-    protected abstract Child_ create(UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator);
-
-    protected abstract Child_ create(ViewItem<?> dependentExpression);
-
     @Override
     public final Child_ filter(Predicate<A> predicate) {
-        return create(p -> p.expr("Filter using " + predicate, a -> predicate.test(extract(a))));
+        pattern.expr("Filter using " + predicate, a -> predicate.test(extract(a)));
+        return (Child_) this;
     }
 
     @Override
     public final <LeftJoinVar_> Child_ filter(BiPredicate<LeftJoinVar_, A> predicate,
             Variable<LeftJoinVar_> leftJoinVariable) {
-        return create(p -> p.expr("Filter using " + predicate, leftJoinVariable,
-                (a, leftJoinVar) -> predicate.test(leftJoinVar, extract(a))));
+        pattern.expr("Filter using " + predicate, leftJoinVariable,
+                (a, leftJoinVar) -> predicate.test(leftJoinVar, extract(a)));
+        return (Child_) this;
     }
 
     @Override
     public final <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(
             TriPredicate<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB) {
-        return create(p -> p.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB,
-                (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, extract(a))));
+        pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB,
+                (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, extract(a)));
+        return (Child_) this;
     }
 
     @Override
@@ -131,9 +119,10 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             QuadPredicate<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate,
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
             Variable<LeftJoinVarC_> leftJoinVariableC) {
-        return create(p -> p.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
-                (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> predicate.test(leftJoinVarA, leftJoinVarB,
-                        leftJoinVarC, extract(a))));
+        pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
+                (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> predicate.test(leftJoinVarA, leftJoinVarB, leftJoinVarC,
+                        extract(a)));
+        return (Child_) this;
     }
 
     @Override
@@ -144,11 +133,10 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
                 (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
-        return create(p -> {
-            BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
-                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
-        });
+        BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
+                createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
+        pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
+        return (Child_) this;
     }
 
     private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType, int mappingIndex,
@@ -172,11 +160,10 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_> predicate =
                 (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
-        return create(p -> {
-            BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
-                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
-        });
+        BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
+                createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
+        pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
+        return (Child_) this;
     }
 
     private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> createBetaIndex(
@@ -204,12 +191,11 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate4<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
                 (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
-        return create(p -> {
-            BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
-                    createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
-            return p.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
-                    leftJoinVarC, predicate, index);
-        });
+        BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
+                createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
+        pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
+                leftJoinVarC, predicate, index);
+        return (Child_) this;
     }
 
     private <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
@@ -228,22 +214,25 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
 
     @Override
     public final <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function<A, BoundVar_> bindingFunction) {
-        return create(p -> p.bind(boundVariable, a -> bindingFunction.apply(extract(a))));
+        pattern.bind(boundVariable, a -> bindingFunction.apply(extract(a)));
+        return (Child_) this;
     }
 
     @Override
     public final <BoundVar_, LeftJoinVar_> Child_ bind(Variable<BoundVar_> boundVariable,
             Variable<LeftJoinVar_> leftJoinVariable, BiFunction<A, LeftJoinVar_, BoundVar_> bindingFunction) {
-        return create(p -> p.bind(boundVariable, leftJoinVariable,
-                (a, leftJoinVar) -> bindingFunction.apply(extract(a), leftJoinVar)));
+        pattern.bind(boundVariable, leftJoinVariable,
+                (a, leftJoinVar) -> bindingFunction.apply(extract(a), leftJoinVar));
+        return (Child_) this;
     }
 
     @Override
     public final <BoundVar_, LeftJoinVarA_, LeftJoinVarB_> Child_ bind(Variable<BoundVar_> boundVariable,
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
             TriFunction<A, LeftJoinVarA_, LeftJoinVarB_, BoundVar_> bindingFunction) {
-        return create(p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB,
-                (a, leftJoinVarA, leftJoinVarB) -> bindingFunction.apply(extract(a), leftJoinVarA, leftJoinVarB)));
+        pattern.bind(boundVariable, leftJoinVariableA, leftJoinVariableB,
+                (a, leftJoinVarA, leftJoinVarB) -> bindingFunction.apply(extract(a), leftJoinVarA, leftJoinVarB));
+        return (Child_) this;
     }
 
     @Override
@@ -251,21 +240,17 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
             Variable<LeftJoinVarC_> leftJoinVariableC,
             QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction) {
-        return create(p -> p.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
+        pattern.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
                 (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> bindingFunction.apply(extract(a), leftJoinVarA,
-                        leftJoinVarB, leftJoinVarC)));
-    }
-
-    @Override
-    public final Child_ addDependentExpression(ViewItem<?> expression) {
-        return create(expression);
+                        leftJoinVarB, leftJoinVarC));
+        return (Child_) this;
     }
 
     @Override
     public final List<ViewItem<?>> build() {
         Stream<ViewItem<?>> prerequisites = prerequisiteExpressions.stream();
         Stream<ViewItem<?>> dependents = dependentExpressions.stream();
-        return Stream.concat(Stream.concat(prerequisites, Stream.of(patternSupplier.get())), dependents)
+        return Stream.concat(Stream.concat(prerequisites, Stream.of(pattern)), dependents)
                 .collect(Collectors.toList());
     }
 }

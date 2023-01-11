@@ -7,13 +7,11 @@ import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final Class<A> fromClass;
-    private final UniLeftHandSide<A> leftHandSide;
 
     public DroolsFromUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory, Class<A> fromClass,
             RetrievalSemantics retrievalSemantics) {
         super(constraintFactory, retrievalSemantics);
         this.fromClass = fromClass;
-        this.leftHandSide = new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
     }
 
     @Override
@@ -26,8 +24,8 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
     // ************************************************************************
 
     @Override
-    public UniLeftHandSide<A> getLeftHandSide() {
-        return leftHandSide;
+    public UniLeftHandSide<A> createLeftHandSide() {
+        return new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
     }
 
     // ************************************************************************

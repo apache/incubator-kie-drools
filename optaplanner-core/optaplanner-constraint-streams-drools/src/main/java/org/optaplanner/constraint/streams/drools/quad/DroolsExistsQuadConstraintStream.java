@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.quad;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.QuadLeftHandSide;
@@ -10,7 +11,7 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         extends DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
     private final DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
-    private final QuadLeftHandSide<A, B, C, D> leftHandSide;
+    private final Supplier<QuadLeftHandSide<A, B, C, D>> leftHandSide;
     private final String streamName;
 
     public <E> DroolsExistsQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -19,9 +20,9 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         Predicate<E> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
-        this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
     }
 
@@ -35,8 +36,8 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public QuadLeftHandSide<A, B, C, D> getLeftHandSide() {
-        return leftHandSide;
+    public QuadLeftHandSide<A, B, C, D> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

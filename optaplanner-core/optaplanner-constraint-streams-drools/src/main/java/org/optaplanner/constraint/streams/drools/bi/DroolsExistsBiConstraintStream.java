@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.bi;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
@@ -10,7 +11,7 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         extends DroolsAbstractBiConstraintStream<Solution_, A, B> {
 
     private final DroolsAbstractBiConstraintStream<Solution_, A, B> parent;
-    private final BiLeftHandSide<A, B> leftHandSide;
+    private final Supplier<BiLeftHandSide<A, B>> leftHandSide;
     private final String streamName;
 
     public <C> DroolsExistsBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -19,9 +20,9 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         Predicate<C> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
-        this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
     }
 
@@ -35,8 +36,8 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
     // ************************************************************************
 
     @Override
-    public BiLeftHandSide<A, B> getLeftHandSide() {
-        return leftHandSide;
+    public BiLeftHandSide<A, B> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

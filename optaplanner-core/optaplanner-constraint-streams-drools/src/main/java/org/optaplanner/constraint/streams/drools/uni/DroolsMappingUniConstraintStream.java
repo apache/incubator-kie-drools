@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.drools.uni;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.bi.DroolsAbstractBiConstraintStream;
@@ -14,30 +15,30 @@ import org.optaplanner.core.api.function.TriFunction;
 public final class DroolsMappingUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
-    private final UniLeftHandSide<NewA> leftHandSide;
+    private final Supplier<UniLeftHandSide<NewA>> leftHandSide;
 
     public <A> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andMap(mapping);
     }
 
     public <A, B> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andMap(mapping);
     }
 
     public <A, B, C> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andMap(mapping);
     }
 
     public <A, B, C, D> DroolsMappingUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadFunction<A, B, C, D, NewA> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andMap(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andMap(mapping);
     }
 
     @Override
@@ -50,8 +51,8 @@ public final class DroolsMappingUniConstraintStream<Solution_, NewA>
     // ************************************************************************
 
     @Override
-    public UniLeftHandSide<NewA> getLeftHandSide() {
-        return leftHandSide;
+    public UniLeftHandSide<NewA> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

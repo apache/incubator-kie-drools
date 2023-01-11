@@ -419,10 +419,6 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         return new UniLeftHandSide<>(newPatternVariableA, variableFactory);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate() {
-        return ruleContext.newRuleBuilder();
-    }
-
     public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntFunction<A> matchWeigher) {
         return ruleContext.newRuleBuilder(matchWeigher);
     }

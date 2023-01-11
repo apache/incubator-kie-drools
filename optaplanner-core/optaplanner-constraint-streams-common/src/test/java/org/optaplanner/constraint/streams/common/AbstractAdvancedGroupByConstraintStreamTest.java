@@ -19,7 +19,9 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.TestTemplate;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.stream.Joiners;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
@@ -553,8 +555,8 @@ public abstract class AbstractAdvancedGroupByConstraintStreamTest extends Abstra
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class,
-                        Joiners.equal(TestdataLavishEntity::getEntityGroup),
-                        Joiners.filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
+                        equal(TestdataLavishEntity::getEntityGroup),
+                        filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
                         .penalize(SimpleScore.ONE)
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
@@ -582,4 +584,32 @@ public abstract class AbstractAdvancedGroupByConstraintStreamTest extends Abstra
                 .asConstraint(TEST_CONSTRAINT_NAME))).doesNotThrowAnyException();
     }
 
+    @TestTemplate
+    void reusedStreamsInJoin() { // PLANNER-2884
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
+
+        ConstraintProvider cp = constraintFactory -> {
+            UniConstraintStream<TestdataLavishEntity> reusedStream = constraintFactory.forEach(TestdataLavishEntity.class)
+                    .filter(e -> e.getEntityGroup() != solution.getFirstEntityGroup());
+            return new Constraint[] {
+                    reusedStream.join(reusedStream, equal(TestdataLavishEntity::getEntityGroup))
+                            .penalize(SimpleScore.ONE)
+                            .asConstraint(TEST_CONSTRAINT_NAME)
+
+            };
+        };
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(TestdataLavishSolution.buildSolutionDescriptor(), cp);
+
+        TestdataLavishEntity entity1 = solution.getEntityList().get(1);
+        TestdataLavishEntity entity3 = solution.getEntityList().get(3);
+
+        // From scratch
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-1, entity1, entity1),
+                assertMatchWithScore(-1, entity1, entity3),
+                assertMatchWithScore(-1, entity3, entity1),
+                assertMatchWithScore(-1, entity3, entity3));
+    }
 }

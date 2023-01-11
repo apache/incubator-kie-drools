@@ -35,7 +35,8 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
-        extends DroolsAbstractConstraintStream<Solution_> implements InnerQuadConstraintStream<A, B, C, D> {
+        extends DroolsAbstractConstraintStream<Solution_, QuadLeftHandSide<A, B, C, D>>
+        implements InnerQuadConstraintStream<A, B, C, D> {
 
     public DroolsAbstractQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             RetrievalSemantics retrievalSemantics) {
@@ -269,7 +270,7 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <Score_ extends Score<Score_>> QuadConstraintBuilder<A, B, C, D, Score_> innerImpact(
             Score_ constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -285,14 +286,14 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <Score_ extends Score<Score_>> QuadConstraintBuilder<A, B, C, D, Score_> innerImpact(Score_ constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
     public <Score_ extends Score<Score_>> QuadConstraintBuilder<A, B, C, D, Score_> innerImpact(Score_ constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -305,7 +306,5 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     protected final QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
         return InnerQuadConstraintStream.createDefaultIndictedObjectsMapping();
     }
-
-    public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();
 
 }

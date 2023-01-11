@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.bi;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
@@ -8,12 +9,12 @@ import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
 public final class DroolsFlatteningBiConstraintStream<Solution_, A, NewB>
         extends DroolsAbstractBiConstraintStream<Solution_, A, NewB> {
 
-    private final BiLeftHandSide<A, NewB> leftHandSide;
+    private final Supplier<BiLeftHandSide<A, NewB>> leftHandSide;
 
     public <B> DroolsFlatteningBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, Function<B, Iterable<NewB>> biMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andFlattenLast(biMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(biMapping);
     }
 
     @Override
@@ -22,8 +23,8 @@ public final class DroolsFlatteningBiConstraintStream<Solution_, A, NewB>
     }
 
     @Override
-    public BiLeftHandSide<A, NewB> getLeftHandSide() {
-        return leftHandSide;
+    public BiLeftHandSide<A, NewB> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

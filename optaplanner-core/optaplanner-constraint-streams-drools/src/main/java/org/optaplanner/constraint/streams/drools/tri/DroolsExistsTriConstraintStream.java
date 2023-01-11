@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.tri;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.TriLeftHandSide;
@@ -10,7 +11,7 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         extends DroolsAbstractTriConstraintStream<Solution_, A, B, C> {
 
     private final DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent;
-    private final TriLeftHandSide<A, B, C> leftHandSide;
+    private final Supplier<TriLeftHandSide<A, B, C>> leftHandSide;
     private final String streamName;
 
     public <D> DroolsExistsTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -19,9 +20,9 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         Predicate<D> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
-        this.leftHandSide = shouldExist
-                ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
     }
 
@@ -35,8 +36,8 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
     // ************************************************************************
 
     @Override
-    public TriLeftHandSide<A, B, C> getLeftHandSide() {
-        return leftHandSide;
+    public TriLeftHandSide<A, B, C> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

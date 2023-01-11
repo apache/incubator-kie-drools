@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.uni;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
@@ -8,12 +9,12 @@ import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 public final class DroolsFlatteningUniConstraintStream<Solution_, NewA>
         extends DroolsAbstractUniConstraintStream<Solution_, NewA> {
 
-    private final UniLeftHandSide<NewA> leftHandSide;
+    private final Supplier<UniLeftHandSide<NewA>> leftHandSide;
 
     public <A> DroolsFlatteningUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, Iterable<NewA>> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = parent.getLeftHandSide().andFlattenLast(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(mapping);
     }
 
     @Override
@@ -26,8 +27,8 @@ public final class DroolsFlatteningUniConstraintStream<Solution_, NewA>
     // ************************************************************************
 
     @Override
-    public UniLeftHandSide<NewA> getLeftHandSide() {
-        return leftHandSide;
+    public UniLeftHandSide<NewA> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

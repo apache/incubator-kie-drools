@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.drools.uni;
 
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
@@ -8,13 +9,13 @@ import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsAbstractUniConstraintStream<Solution_, A> {
 
     private final DroolsAbstractUniConstraintStream<Solution_, A> parent;
-    private final UniLeftHandSide<A> leftHandSide;
+    private final Supplier<UniLeftHandSide<A>> leftHandSide;
 
     public DroolsFilterUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.leftHandSide = parent.getLeftHandSide().andFilter(predicate);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(predicate);
     }
 
     @Override
@@ -27,8 +28,8 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
     // ************************************************************************
 
     @Override
-    public UniLeftHandSide<A> getLeftHandSide() {
-        return leftHandSide;
+    public UniLeftHandSide<A> createLeftHandSide() {
+        return leftHandSide.get();
     }
 
     @Override

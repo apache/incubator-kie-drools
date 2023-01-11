@@ -39,7 +39,7 @@ import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
-        extends DroolsAbstractConstraintStream<Solution_>
+        extends DroolsAbstractConstraintStream<Solution_, BiLeftHandSide<A, B>>
         implements InnerBiConstraintStream<A, B> {
 
     public DroolsAbstractBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -279,7 +279,7 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
             ToIntBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -295,14 +295,14 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
             ToLongBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
     public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
             BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -315,7 +315,5 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
         return InnerBiConstraintStream.createDefaultIndictedObjectsMapping();
     }
-
-    public abstract BiLeftHandSide<A, B> getLeftHandSide();
 
 }

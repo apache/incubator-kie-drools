@@ -39,7 +39,8 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
-        extends DroolsAbstractConstraintStream<Solution_> implements InnerTriConstraintStream<A, B, C> {
+        extends DroolsAbstractConstraintStream<Solution_, TriLeftHandSide<A, B, C>>
+        implements InnerTriConstraintStream<A, B, C> {
 
     public DroolsAbstractTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             RetrievalSemantics retrievalSemantics) {
@@ -283,7 +284,7 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -299,14 +300,14 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     @Override
     public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
     public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -319,7 +320,5 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     protected final TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
         return InnerTriConstraintStream.createDefaultIndictedObjectsMapping();
     }
-
-    public abstract TriLeftHandSide<A, B, C> getLeftHandSide();
 
 }

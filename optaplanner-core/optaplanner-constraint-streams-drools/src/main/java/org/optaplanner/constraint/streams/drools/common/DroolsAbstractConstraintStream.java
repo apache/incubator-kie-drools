@@ -14,11 +14,11 @@ import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 
-public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
+public abstract class DroolsAbstractConstraintStream<Solution_, LHS_ extends AbstractLeftHandSide>
+        extends AbstractConstraintStream<Solution_> {
 
-    // TODO make private
     protected final DroolsConstraintFactory<Solution_> constraintFactory;
-    private final List<DroolsAbstractConstraintStream<Solution_>> childStreamList = new ArrayList<>(2);
+    private final List<DroolsAbstractConstraintStream<Solution_, ?>> childStreamList = new ArrayList<>(2);
 
     public DroolsAbstractConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             RetrievalSemantics retrievalSemantics) {
@@ -44,11 +44,11 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
                 resolvedIndictedObjectsMapping);
     }
 
-    public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
+    public void addChildStream(DroolsAbstractConstraintStream<Solution_, ?> childStream) {
         childStreamList.add(childStream);
     }
 
-    public Collection<DroolsAbstractConstraintStream<Solution_>> getChildStreams() {
+    public Collection<DroolsAbstractConstraintStream<Solution_, ?>> getChildStreams() {
         return Collections.unmodifiableList(childStreamList);
     }
 
@@ -56,4 +56,15 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     public DroolsConstraintFactory<Solution_> getConstraintFactory() {
         return constraintFactory;
     }
+
+    /**
+     * Some constructs in the Drools executable model may not be reused between different rules.
+     * They are, among others, variable instances and beta indexes.
+     * Therefore an instance of {@link AbstractLeftHandSide} must never be used to create more than one rule.
+     * Therefore every constraint stream re-creates the entire chain of left hand sides every time a new rule is built.
+     * It is then left up to Drools to node-share everything it can.
+     *
+     * @return never null, different instance on every call
+     */
+    public abstract LHS_ createLeftHandSide();
 }

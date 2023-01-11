@@ -35,7 +35,8 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintBuilder;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
-public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends DroolsAbstractConstraintStream<Solution_>
+public abstract class DroolsAbstractUniConstraintStream<Solution_, A>
+        extends DroolsAbstractConstraintStream<Solution_, UniLeftHandSide<A>>
         implements InnerUniConstraintStream<A> {
 
     public DroolsAbstractUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -286,7 +287,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
             ToIntFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -302,14 +303,14 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @Override
     public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
             ToLongFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
     public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
             Function<A, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        RuleBuilder<Solution_> ruleBuilder = createLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
@@ -322,7 +323,5 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
         return InnerUniConstraintStream.createDefaultIndictedObjectsMapping();
     }
-
-    public abstract UniLeftHandSide<A> getLeftHandSide();
 
 }
