@@ -18,6 +18,9 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -66,4 +69,91 @@ public class InfixOpNodeTest {
             assertThat(retrieved).isNull();
         });
     }
+
+    @Test
+    public void addLocalDateAndDuration() {
+        LocalDate left = LocalDate.of(2021, 1, 1);
+        Duration right = Duration.of(-1, ChronoUnit.HOURS);
+        LocalDate retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        right = Duration.of(-24, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        right = Duration.of(-25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30 ));
+        right = Duration.of(1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+
+        left = LocalDate.of(2021, 1, 2);
+        right = Duration.of(1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        right = Duration.of(24, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+        right = Duration.of(25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+
+        left = LocalDate.of(2021, 1, 3);
+        right = Duration.of(25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4 ));
+
+        left = LocalDate.of(2020, 12, 30);
+        right = Duration.of(-25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 28 ));
+
+        left = LocalDate.of(2020, 12, 31);
+        right = Duration.of(-1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.add(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30 ));
+    }
+
+    @Test
+    public void subLocalDateAndDuration() {
+        LocalDate left = LocalDate.of(2021, 1, 1);
+        Duration right = Duration.of(-1, ChronoUnit.HOURS);
+        LocalDate retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        right = Duration.of(-24, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        right = Duration.of(-25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        right = Duration.of(1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+
+        left = LocalDate.of(2021, 1, 2);
+        right = Duration.of(1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        right = Duration.of(24, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        right = Duration.of(25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+
+        left = LocalDate.of(2021, 1, 3);
+        right = Duration.of(25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+
+        left = LocalDate.of(2020, 12, 30);
+        right = Duration.of(-25, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+
+        left = LocalDate.of(2020, 12, 31);
+        right = Duration.of(-1, ChronoUnit.HOURS);
+        retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+    }
+
 }

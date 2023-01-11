@@ -253,7 +253,7 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).plus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).plusDays( ((Duration) right).toDays() );
+            return addLocalDateAndDuration((LocalDate) left, (Duration) right);
         } else if (left instanceof ChronoPeriod && right instanceof ZonedDateTime) {
             return ((ZonedDateTime) right).plus((ChronoPeriod) left);
         } else if (left instanceof ChronoPeriod && right instanceof OffsetDateTime) {
@@ -269,7 +269,7 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
             return ((LocalDateTime) right).plus( (Duration) left);
         } else if ( left instanceof Duration && right instanceof LocalDate ) {
-            return ((LocalDate) right).plusDays( ((Duration) left).toDays() );
+            return addLocalDateAndDuration((LocalDate) right, (Duration) left);
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof LocalTime ) {
@@ -318,7 +318,9 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).minus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).minusDays( ((Duration) right).toDays() );
+            LocalDateTime leftLDT = LocalDateTime.of((LocalDate) left, LocalTime.MIDNIGHT);
+            LocalDateTime evaluated = leftLDT.minus((Duration) right);
+            return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
@@ -425,6 +427,12 @@ public class InfixOpNode
             return true;
         }
         return l || r;
+    }
+
+    private static LocalDate addLocalDateAndDuration(LocalDate left, Duration right) {
+        LocalDateTime leftLDT = LocalDateTime.of( left, LocalTime.MIDNIGHT);
+        LocalDateTime evaluated = leftLDT.plus(right);
+        return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
     }
 
     @Override
