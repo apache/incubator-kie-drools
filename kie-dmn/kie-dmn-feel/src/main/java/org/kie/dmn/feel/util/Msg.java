@@ -61,8 +61,8 @@ public final class Msg {
     public static final Message1 DUPLICATE_KEY_CTX = new Message1("Duplicate key '%s' not allowed in context definition");
     public static final Message0 DIVISION_BY_ZERO = new Message0("Division by zero! The divisor argument is 0.");
     public static final Message1 GENERAL_ARITHMETIC_EXCEPTION = new Message1("Arithmetic exception thrown: '%s'");
-    public static final Message0 DATE_AND_TIME_TIMEZONE_NEEDED = new Message0("The action requires either both values to have a timezone or both not to have a timezone.");
-    public static final Message0 ADDITION_IS_UNDEFINED_FOR_PARAMETERS = new Message0("Based on the specification, addition operation is undefined for the specified parameter set.");
+    public static final Message2 DATE_AND_TIME_TIMEZONE_NEEDED = new Message2("The action requires either both parameters to have a timezone or both not to have a timezone. The parameter %s has a timezone, the other parameter %s doesn't have a timezone.");
+    public static final Message0 OPERATION_IS_UNDEFINED_FOR_PARAMETERS = new Message0("Based on the specification, the operation is undefined for the specified parameter set.");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);
