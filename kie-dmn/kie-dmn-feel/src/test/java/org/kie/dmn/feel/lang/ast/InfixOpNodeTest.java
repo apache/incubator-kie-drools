@@ -84,23 +84,23 @@ public class InfixOpNodeTest {
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30 ));
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
 
         left = LocalDate.of(2021, 1, 2);
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
         right = Duration.of(24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
 
         left = LocalDate.of(2021, 1, 3);
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 5 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4 ));
 
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
@@ -118,13 +118,13 @@ public class InfixOpNodeTest {
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
         LocalDate retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
         right = Duration.of(-24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
@@ -148,31 +148,12 @@ public class InfixOpNodeTest {
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
 
         left = LocalDate.of(2020, 12, 31);
         right = Duration.of(-1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
     }
 
-    @Test
-    public void getActualDaysDuration() {
-        Duration toTest = Duration.of(23, ChronoUnit.HOURS);
-        Duration retrieved = InfixOpNode.getActualDaysDuration(toTest);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.toDays()).isEqualTo(1);
-        toTest = Duration.of(25, ChronoUnit.HOURS);
-        retrieved = InfixOpNode.getActualDaysDuration(toTest);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.toDays()).isEqualTo(2);
-        toTest = Duration.of(-23, ChronoUnit.HOURS);
-        retrieved = InfixOpNode.getActualDaysDuration(toTest);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.toDays()).isEqualTo(-1);
-        toTest = Duration.of(-25, ChronoUnit.HOURS);
-        retrieved = InfixOpNode.getActualDaysDuration(toTest);
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.toDays()).isEqualTo(-2);
-    }
 }
