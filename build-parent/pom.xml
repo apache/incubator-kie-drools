@@ -169,7 +169,6 @@
     <spotbugs.failOnViolation>false</spotbugs.failOnViolation>
     <!-- replaces findbugs-maven-plugin -->
     <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
-    <version.org.jboss.maven.plugins.maven-jdocbook-plugin>2.3.9</version.org.jboss.maven.plugins.maven-jdocbook-plugin>
 
     <maven.min.version>3.8.1</maven.min.version>
     <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
@@ -190,7 +189,7 @@
     <version.org.postgresql>42.5.1</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.org.jboss.jandex>3.0.3</version.org.jboss.jandex>
+    <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
@@ -1255,9 +1254,9 @@
 
       <!-- used  by DMN test to ensure NI reflect-conf.json is correctly up-to-date -->
       <dependency>
-        <groupId>org.jboss</groupId>
+        <groupId>io.smallrye</groupId>
         <artifactId>jandex</artifactId>
-        <version>${version.org.jboss.jandex}</version>
+        <version>${version.io.smallrye.jandex}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse</groupId>
@@ -1452,6 +1451,8 @@
                       <exclude>log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
                       <exclude>javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
                       <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
+                      <exclude>org.jboss:jandex</exclude> <!-- Use io.smallrye:jandex instead -->
+                      <exclude>org.jboss.jandex:jandex-maven-plugin</exclude> <!-- Use io.smallrye:jandex-maven-plugin instead -->
                       <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
 
                       <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
@@ -1919,75 +1920,9 @@
           <version>1.0</version>
         </plugin>
         <plugin>
-          <groupId>org.jboss.jandex</groupId>
+          <groupId>io.smallrye</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
-          <version>${version.org.jboss.jandex}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.jboss.maven.plugins</groupId>
-          <artifactId>maven-jdocbook-plugin</artifactId>
-          <version>${version.org.jboss.maven.plugins.maven-jdocbook-plugin}</version>
-          <extensions>true</extensions>
-          <dependencies>
-            <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <artifactId>pressgang-xslt-ns</artifactId>
-              <version>3.1.3</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <artifactId>pressgang-jdocbook-style</artifactId>
-              <type>jdocbook-style</type>
-              <version>3.1.3</version>
-            </dependency>
-          </dependencies>
-
-          <configuration>
-            <sourceDocumentName>master.xml</sourceDocumentName>
-            <masterTranslation>en-US</masterTranslation>
-            <imageResource>
-              <directory>${basedir}/src/main/docbook/en-US</directory>
-              <includes>
-                <include>images/</include>
-              </includes>
-            </imageResource>
-            <formats>
-              <format>
-                <formatName>html_single</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/xhtml-single.xsl
-                </stylesheetResource>
-                <finalName>index.html</finalName>
-                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
-              </format>
-              <format>
-                <formatName>html</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/xhtml.xsl</stylesheetResource>
-                <finalName>index.html</finalName>
-                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
-              </format>
-              <format>
-                <formatName>pdf</formatName>
-                <stylesheetResource>classpath:/xslt/org/jboss/pressgang/pdf.xsl</stylesheetResource>
-                <finalName>${project.artifactId}.pdf</finalName>
-              </format>
-              <!--<format>-->
-              <!--<formatName>eclipse</formatName>-->
-              <!--<stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource>-->
-              <!--<finalName>${project.artifactId}.html</finalName>-->
-              <!--</format>-->
-            </formats>
-            <injections>
-              <injection>
-                <name>project.version</name>
-                <value>${project.version}</value>
-              </injection>
-            </injections>
-            <options>
-              <xmlTransformerType>saxon</xmlTransformerType>
-              <xincludeSupported>true</xincludeSupported>
-              <useRelativeImageUris>true</useRelativeImageUris>
-            </options>
-          </configuration>
+          <version>${version.io.smallrye.jandex}</version>
         </plugin>
         <plugin>
           <groupId>org.asciidoctor</groupId>
@@ -2019,14 +1954,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <!-- Entry needed to enable jdocbook unzipping -->
-              <groupId>org.jboss.maven.plugins</groupId>
-              <artifactId>maven-jdocbook-plugin</artifactId>
-              <version>${version.org.jboss.maven.plugins.maven-jdocbook-plugin}</version>
-            </dependency>
-          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -2235,11 +2162,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${version.jar.plugin}</version>
-      </plugin>
-      <plugin>
-        <!-- Entry needed to enable jdocbook packaging -->
-        <groupId>org.jboss.maven.plugins</groupId>
-        <artifactId>maven-jdocbook-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
