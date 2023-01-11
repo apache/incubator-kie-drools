@@ -18,8 +18,26 @@ package org.kie.kogito.jobs.service.api;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-@Schema(description = "Defines a job that can be managed by the jobs service.")
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import static org.kie.kogito.jobs.service.api.Job.CORRELATION_ID_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.ID_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.RECIPIENT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.RETRY_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.SCHEDULE_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Job.STATE_PROPERTY;
+
+@Schema(description = "Defines a job that can be managed by the jobs service.",
+        requiredProperties = { SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
+@JsonPropertyOrder({ ID_PROPERTY, CORRELATION_ID_PROPERTY, STATE_PROPERTY, SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
 public class Job {
+
+    static final String ID_PROPERTY = "id";
+    static final String CORRELATION_ID_PROPERTY = "correlationId";
+    static final String STATE_PROPERTY = "state";
+    static final String SCHEDULE_PROPERTY = "schedule";
+    static final String RETRY_PROPERTY = "retry";
+    static final String RECIPIENT_PROPERTY = "recipient";
 
     @Schema(description = "Available states for a Job.")
     public enum State {
@@ -32,17 +50,13 @@ public class Job {
     private String id;
     @Schema(description = "Logical user provided identifier of the job in the system.")
     private String correlationId;
-    @Schema(description = "The job state, this value is set and managed by the jobs service.")
     private State state;
-    @Schema(description = "This value represents the job triggering periodicity.", required = true)
     private Schedule schedule;
-    @Schema(description = "This value establishes the retries configuration in cases where job execution fails.")
     private Retry retry;
-    @Schema(description = "This value represents the entity that is called on the job execution, for example, an http resource, a kafka broker, or a knative sink, etc.", required = true)
     private Recipient<?> recipient;
 
     public Job() {
-        // marshalling constructor.
+        // Marshalling constructor.
     }
 
     public String getId() {
@@ -85,11 +99,11 @@ public class Job {
         this.retry = retry;
     }
 
-    public Recipient<?> getRecipient() {
+    public Recipient getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(Recipient<?> recipient) {
+    public void setRecipient(Recipient recipient) {
         this.recipient = recipient;
     }
 

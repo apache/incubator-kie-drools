@@ -16,31 +16,46 @@
 
 package org.kie.kogito.jobs.service.api.schedule.timer;
 
+import java.time.OffsetDateTime;
+
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.kie.kogito.jobs.service.api.Schedule;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
 
-@Schema(description = "Timer schedules establishes that a job must be executed at a given date time and can be repeated a configurable number of times.", allOf = { Schedule.class })
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import static org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule.DELAY_PROPERTY;
+import static org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule.DELAY_UNIT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule.REPEAT_COUNT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule.START_TIME_PROPERTY;
+
+@Schema(description = "Timer schedules establishes that a job must be executed at a given date time and can be repeated a configurable number of times.",
+        allOf = { Schedule.class })
+@JsonPropertyOrder({ START_TIME_PROPERTY, REPEAT_COUNT_PROPERTY, DELAY_PROPERTY, DELAY_UNIT_PROPERTY })
 public class TimerSchedule extends Schedule {
 
+    static final String START_TIME_PROPERTY = "startTime";
+    static final String REPEAT_COUNT_PROPERTY = "repeatCount";
+    static final String DELAY_PROPERTY = "delay";
+    static final String DELAY_UNIT_PROPERTY = "delayUnit";
+
     @Schema(description = "Initial fire time for the job in the ISO-8601 standard.", example = "2023-01-30T12:01:15+01:00")
-    private String startTime;
+    private OffsetDateTime startTime;
     @Schema(description = "Number of times that the job execution must be repeated.", defaultValue = "0")
     private Integer repeatCount = 0;
     @Schema(description = "Time delay between executions.", defaultValue = "0")
     private Long delay = 0L;
-    @Schema(description = "Time unit for the delay", defaultValue = "MILLIS")
     private TemporalUnit delayUnit = TemporalUnit.MILLIS;
 
     public TimerSchedule() {
-        // marshalling constructor.
+        // Marshalling constructor.
     }
 
-    public String getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(OffsetDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -90,7 +105,7 @@ public class TimerSchedule extends Schedule {
             this.schedule = schedule;
         }
 
-        public Builder startTime(String startTime) {
+        public Builder startTime(OffsetDateTime startTime) {
             schedule.setStartTime(startTime);
             return this;
         }

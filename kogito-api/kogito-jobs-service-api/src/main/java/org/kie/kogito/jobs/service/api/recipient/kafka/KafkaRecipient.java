@@ -22,19 +22,45 @@ import java.util.Map;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.kie.kogito.jobs.service.api.Recipient;
 
-@Schema(description = "Recipient definition that delivers a kafka message that contains the configured \"payload\".", allOf = { Recipient.class })
-public class KafkaRecipient extends Recipient<byte[]> {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-    @Schema(description = "A comma-separated list of host:port to use to establish the connection to the kafka cluster.", required = true)
+import static org.kie.kogito.jobs.service.api.recipient.kafka.KafkaRecipient.BOOTSTRAP_SERVERS_PROPERTY;
+import static org.kie.kogito.jobs.service.api.recipient.kafka.KafkaRecipient.HEADERS_PROPERTY;
+import static org.kie.kogito.jobs.service.api.recipient.kafka.KafkaRecipient.PAYLOAD_PROPERTY;
+import static org.kie.kogito.jobs.service.api.recipient.kafka.KafkaRecipient.TOPIC_NAME_PROPERTY;
+
+@Schema(description = "Recipient definition that delivers a kafka message that contains the configured \"payload\".",
+        allOf = { Recipient.class },
+        requiredProperties = { BOOTSTRAP_SERVERS_PROPERTY, TOPIC_NAME_PROPERTY, PAYLOAD_PROPERTY })
+@JsonPropertyOrder({ BOOTSTRAP_SERVERS_PROPERTY, TOPIC_NAME_PROPERTY, HEADERS_PROPERTY, PAYLOAD_PROPERTY })
+public class KafkaRecipient<T extends KafkaRecipientPayloadData<?>> extends Recipient<T> {
+
+    static final String BOOTSTRAP_SERVERS_PROPERTY = "bootstrapServers";
+    static final String TOPIC_NAME_PROPERTY = "topicName";
+    static final String HEADERS_PROPERTY = "headers";
+
+    @Schema(description = "A comma-separated list of host:port to use to establish the connection to the kafka cluster.")
     private String bootstrapServers;
-    @Schema(description = "Topic name for the message delivery.", required = true)
+    @Schema(description = "Topic name for the message delivery.")
     private String topicName;
     @Schema(description = "Headers to send with the kafka message.")
     private Map<String, String> headers;
+    @JsonProperty("payload")
+    private T payload;
 
     public KafkaRecipient() {
-        // marshalling constructor.
+        // Marshalling constructor.
         this.headers = new HashMap<>();
+    }
+
+    @Override
+    public T getPayload() {
+        return payload;
+    }
+
+    public void setPayload(T payload) {
+        this.payload = payload;
     }
 
     public String getBootstrapServers() {
@@ -61,7 +87,7 @@ public class KafkaRecipient extends Recipient<byte[]> {
         this.headers = headers != null ? headers : new HashMap<>();
     }
 
-    public KafkaRecipient addHeader(String name, String value) {
+    public KafkaRecipient<T> addHeader(String name, String value) {
         headers.put(name, value);
         return this;
     }
@@ -72,42 +98,58 @@ public class KafkaRecipient extends Recipient<byte[]> {
                 "bootstrapServers='" + bootstrapServers + '\'' +
                 ", topicName='" + topicName + '\'' +
                 ", headers=" + headers +
+                ", payload=" + payload +
                 "} " + super.toString();
     }
 
-    public static Builder builder() {
-        return new Builder(new KafkaRecipient());
+    public static BuilderSelector builder() {
+        return new BuilderSelector();
     }
 
-    public static class Builder {
+    public static class BuilderSelector {
 
-        private final KafkaRecipient recipient;
+        private BuilderSelector() {
 
-        private Builder(KafkaRecipient recipient) {
+        }
+
+        public Builder<KafkaRecipientStringPayloadData> forStringPayload() {
+            return new Builder<>(new KafkaRecipient<>());
+        }
+
+        public Builder<KafkaRecipientBinaryPayloadData> forBinaryPayload() {
+            return new Builder<>(new KafkaRecipient<>());
+        }
+    }
+
+    public static class Builder<P extends KafkaRecipientPayloadData<?>> {
+
+        private final KafkaRecipient<P> recipient;
+
+        private Builder(KafkaRecipient<P> recipient) {
             this.recipient = recipient;
         }
 
-        public Builder payload(byte[] payload) {
+        public Builder<P> payload(P payload) {
             recipient.setPayload(payload);
             return this;
         }
 
-        public Builder bootstrapServers(String bootstrapServers) {
+        public Builder<P> bootstrapServers(String bootstrapServers) {
             recipient.setBootstrapServers(bootstrapServers);
             return this;
         }
 
-        public Builder topicName(String topicName) {
+        public Builder<P> topicName(String topicName) {
             recipient.setTopicName(topicName);
             return this;
         }
 
-        public Builder header(String name, String value) {
+        public Builder<P> header(String name, String value) {
             recipient.addHeader(name, value);
             return this;
         }
 
-        public KafkaRecipient build() {
+        public KafkaRecipient<P> build() {
             return recipient;
         }
     }

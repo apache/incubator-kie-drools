@@ -18,22 +18,35 @@ package org.kie.kogito.jobs.service.api;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import static org.kie.kogito.jobs.service.api.Retry.DELAY_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Retry.DELAY_UNIT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Retry.DURATION_UNIT_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Retry.MAX_DURATION_PROPERTY;
+import static org.kie.kogito.jobs.service.api.Retry.MAX_RETRIES_PROPERTY;
+
 @Schema(description = "The retry configuration establishes the number of times a failing job execution must be retried before it’s considered as FAILED.")
+@JsonPropertyOrder({ MAX_RETRIES_PROPERTY, DELAY_PROPERTY, DELAY_UNIT_PROPERTY, MAX_DURATION_PROPERTY, DURATION_UNIT_PROPERTY })
 public class Retry {
+
+    static final String MAX_RETRIES_PROPERTY = "maxRetries";
+    static final String DELAY_PROPERTY = "delay";
+    static final String DELAY_UNIT_PROPERTY = "delayUnit";
+    static final String MAX_DURATION_PROPERTY = "maxDuration";
+    static final String DURATION_UNIT_PROPERTY = "durationUnit";
 
     @Schema(description = "Number of retries to execute in case of failures.", defaultValue = "3")
     private Integer maxRetries = 3;
     @Schema(description = "Time delay between the retries.", defaultValue = "0")
     private Long delay = 0L;
-    @Schema(description = "Time unit for the delay between retries.", defaultValue = "MILLIS")
     private TemporalUnit delayUnit = TemporalUnit.MILLIS;
     @Schema(description = "Maximum amount of time to continue retrying if no successful execution was produced.", defaultValue = "180000")
     private Long maxDuration = 180000L;
-    @Schema(description = "Time unit for the max duration time.", defaultValue = "MILLIS")
     private TemporalUnit durationUnit = TemporalUnit.MILLIS;
 
     public Retry() {
-        // marshalling constructor.
+        // Marshalling constructor.
     }
 
     public Integer getMaxRetries() {
@@ -120,7 +133,7 @@ public class Retry {
         }
 
         public Builder durationUnit(TemporalUnit durationUnit) {
-            retry.setDelayUnit(durationUnit);
+            retry.setDurationUnit(durationUnit);
             return this;
         }
 

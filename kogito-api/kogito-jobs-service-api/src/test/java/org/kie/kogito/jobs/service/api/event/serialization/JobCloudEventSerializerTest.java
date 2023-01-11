@@ -16,6 +16,7 @@
 
 package org.kie.kogito.jobs.service.api.event.serialization;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ import org.kie.kogito.jobs.service.api.Retry;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -87,7 +89,8 @@ class JobCloudEventSerializerTest {
                         .delayUnit(SCHEDULE_DELAY_UNIT)
                         .build())
                 .recipient(HttpRecipient.builder()
-                        .payload(RECIPIENT_PAYLOAD)
+                        .forBinaryPayload()
+                        .payload(HttpRecipientBinaryPayloadData.from(RECIPIENT_PAYLOAD))
                         .url(RECIPIENT_URL)
                         .method(RECIPIENT_METHOD)
                         .header(RECIPIENT_HEADER_1, RECIPIENT_HEADER_1_VALUE)
@@ -123,7 +126,7 @@ class JobCloudEventSerializerTest {
         assertThat(scheduleJsonNode).isNotNull();
         assertHasTotalFields(scheduleJsonNode, 5);
         assertHasFieldWithValue(scheduleJsonNode, "type", "timer");
-        assertHasFieldWithValue(scheduleJsonNode, "startTime", SCHEDULE_START_TIME);
+        assertHasFieldWithValue(scheduleJsonNode, "startTime", SCHEDULE_START_TIME.format(DateTimeFormatter.ISO_DATE_TIME));
         assertHasFieldWithValue(scheduleJsonNode, "repeatCount", String.valueOf(SCHEDULE_REPEAT_COUNT));
         assertHasFieldWithValue(scheduleJsonNode, "delay", String.valueOf(SCHEDULE_DELAY));
         assertHasFieldWithValue(scheduleJsonNode, "delayUnit", String.valueOf(SCHEDULE_DELAY_UNIT));
@@ -132,9 +135,12 @@ class JobCloudEventSerializerTest {
         assertThat(recipientJsonNode).isNotNull();
         assertHasTotalFields(recipientJsonNode, 6);
         assertHasFieldWithValue(recipientJsonNode, "type", "http");
-        assertHasFieldWithValue(recipientJsonNode, "payload", Base64.getEncoder().encodeToString(RECIPIENT_PAYLOAD));
         assertHasFieldWithValue(recipientJsonNode, "url", RECIPIENT_URL);
         assertHasFieldWithValue(recipientJsonNode, "method", RECIPIENT_METHOD);
+        JsonNode payloadJsonNode = recipientJsonNode.get("payload");
+        assertThat(payloadJsonNode).isNotNull();
+        assertHasFieldWithValue(payloadJsonNode, "type", "binary");
+        assertHasFieldWithValue(payloadJsonNode, "data", Base64.getEncoder().encodeToString(RECIPIENT_PAYLOAD));
 
         JsonNode headersJsonNode = recipientJsonNode.get("headers");
         assertThat(headersJsonNode).isNotNull();

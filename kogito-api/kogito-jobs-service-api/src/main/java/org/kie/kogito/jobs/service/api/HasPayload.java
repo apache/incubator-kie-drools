@@ -16,8 +16,10 @@
 
 package org.kie.kogito.jobs.service.api;
 
-public interface Descriptor<T> {
-    String getName();
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    Class<T> getType();
+public interface HasPayload<T extends PayloadData> {
+
+    @JsonIgnore
+    T getPayload();
 }

@@ -23,7 +23,7 @@ public class DeleteJobEvent extends JobCloudEvent<JobLookupId> {
     public static final String TYPE = "job.delete";
 
     public DeleteJobEvent() {
-        // marshalling constructor.
+        // Marshalling constructor.
         setType(TYPE);
     }
 

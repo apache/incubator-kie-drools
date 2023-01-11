@@ -19,10 +19,21 @@ package org.kie.kogito.jobs.service.api.schedule.cron;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.kie.kogito.jobs.service.api.Schedule;
 
-@Schema(description = "Cron schedules establishes that a job must be executed with a periodicity based on a unix like crontab expression.", allOf = { Schedule.class })
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import static org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule.EXPRESSION_PROPERTY;
+import static org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule.TIME_ZONE_PROPERTY;
+
+@Schema(description = "Cron schedules establishes that a job must be executed with a periodicity based on a unix like crontab expression.",
+        allOf = { Schedule.class },
+        requiredProperties = { EXPRESSION_PROPERTY })
+@JsonPropertyOrder({ EXPRESSION_PROPERTY, TIME_ZONE_PROPERTY })
 public class CronSchedule extends Schedule {
 
-    @Schema(description = "Cron expression for the job execution, for more information <a href=\"https://en.wikipedia.org/wiki/Cron#Overview\" target=\"_blank\">see</a>.", required = true)
+    static final String EXPRESSION_PROPERTY = "expression";
+    static final String TIME_ZONE_PROPERTY = "timeZone";
+
+    @Schema(description = "Cron expression for the job execution, for more information <a href=\"https://en.wikipedia.org/wiki/Cron#Overview\" target=\"_blank\">see</a>.")
     private String expression;
     @Schema(description = "Time zone for the cron programming, for example \"Europe/Madrid\". For more information <a href=\"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones\" target=\"_blank\">see</a>.")
     private String timeZone;
@@ -44,7 +55,7 @@ public class CronSchedule extends Schedule {
     }
 
     public CronSchedule() {
-        // marshalling constructor.
+        // Marshalling constructor.
     }
 
     @Override

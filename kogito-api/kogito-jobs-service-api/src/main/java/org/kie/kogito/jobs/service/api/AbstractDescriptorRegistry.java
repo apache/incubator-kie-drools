@@ -38,6 +38,12 @@ public abstract class AbstractDescriptorRegistry<T extends Descriptor> {
         return descriptors;
     }
 
+    public java.util.Optional<T> getDescriptor(Recipient<?> recipient) {
+        return getDescriptors().stream()
+                .filter(descr -> descr.getType().isInstance(recipient))
+                .findFirst();
+    }
+
     protected void loadDescriptors() {
         LOGGER.debug("Loading recipient descriptor registry");
         final ServiceLoader<T> loader = ServiceLoader.load(clazz);

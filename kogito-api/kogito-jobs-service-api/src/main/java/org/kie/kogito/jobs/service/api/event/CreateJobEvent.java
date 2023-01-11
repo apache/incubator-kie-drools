@@ -23,7 +23,7 @@ public class CreateJobEvent extends JobCloudEvent<Job> {
     public static final String TYPE = "job.create";
 
     public CreateJobEvent() {
-        // marshalling constructor.
+        // Marshalling constructor.
         setType(TYPE);
     }
 

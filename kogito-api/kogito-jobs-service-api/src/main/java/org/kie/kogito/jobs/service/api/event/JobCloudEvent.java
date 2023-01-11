@@ -26,6 +26,7 @@ import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -41,13 +42,14 @@ import static io.cloudevents.core.v1.CloudEventV1.SUBJECT;
 import static io.cloudevents.core.v1.CloudEventV1.TIME;
 import static io.cloudevents.core.v1.CloudEventV1.TYPE;
 
+@JsonPropertyOrder(value = { ID, SOURCE, TYPE, TIME, SUBJECT, SPECVERSION, DATACONTENTTYPE, DATASCHEMA })
 public abstract class JobCloudEvent<T> implements CloudEventAttributes {
 
     public static final SpecVersion SPEC_VERSION = SpecVersion.V1;
 
     @JsonDeserialize(using = SpecVersionDeserializer.class)
     @JsonSerialize(using = SpecVersionSerializer.class)
-    @JsonProperty("specversion")
+    @JsonProperty(SPECVERSION)
     private SpecVersion specVersion = SPEC_VERSION;
     private String id;
     private URI source;
@@ -55,17 +57,17 @@ public abstract class JobCloudEvent<T> implements CloudEventAttributes {
     private OffsetDateTime time;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String subject;
-    @JsonProperty("datacontenttype")
+    @JsonProperty(DATACONTENTTYPE)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String dataContentType;
-    @JsonProperty("dataschema")
+    @JsonProperty(DATASCHEMA)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private URI dataSchema;
 
     private T data;
 
     protected JobCloudEvent() {
-        // marshalling constructor.
+        // Marshalling constructor.
     }
 
     @Override
@@ -132,8 +134,9 @@ public abstract class JobCloudEvent<T> implements CloudEventAttributes {
                 return this.subject;
             case TIME:
                 return this.time;
+            default:
+                throw new IllegalArgumentException("Spec version v1 doesn't have attribute named " + attributeName);
         }
-        throw new IllegalArgumentException("Spec version v1 doesn't have attribute named " + attributeName);
     }
 
     @JsonIgnore

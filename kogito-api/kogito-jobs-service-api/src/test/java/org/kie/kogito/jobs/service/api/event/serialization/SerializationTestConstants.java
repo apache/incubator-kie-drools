@@ -32,7 +32,7 @@ public class SerializationTestConstants {
     static final String SUBJECT = "SUBJECT";
     static final String JOB_ID = "JOB_ID";
     static final String CORRELATION_ID = "CORRELATION_ID";
-    static final String SCHEDULE_START_TIME = "2023-01-30T22:01:15.001+01:00";
+    static final OffsetDateTime SCHEDULE_START_TIME = OffsetDateTime.parse("2023-01-30T22:01:15.001+01:00");
     static final int SCHEDULE_REPEAT_COUNT = 5;
     static final long SCHEDULE_DELAY = 2;
     static final TemporalUnit SCHEDULE_DELAY_UNIT = TemporalUnit.HOURS;
