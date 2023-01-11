@@ -19,7 +19,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>_9656D7A3-7601-4796-92B5-12C2BDF9556A</bpmn2:incoming>
       <bpmn2:outgoing>_2979CDBA-3294-475F-A591-35366184A719</bpmn2:outgoing>
-      <bpmn2:script>System.out.println("Hello")</bpmn2:script>
+      <bpmn2:script>System.out.println("Hello");</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:startEvent id="_6443F35B-4B51-4E8B-B257-3DDE509AAB78" name="Greet in English">
       <bpmn2:documentation><![CDATA[Prints the greeting in English]]></bpmn2:documentation>

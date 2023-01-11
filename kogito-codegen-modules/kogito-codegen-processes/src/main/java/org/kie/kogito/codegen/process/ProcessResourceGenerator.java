@@ -169,7 +169,6 @@ public class ProcessResourceGenerator {
                             .filter(e -> Objects.nonNull(e.getKey()))
                             .forEach(entry -> {
                                 String methodName = "signal_" + index.getAndIncrement();
-                                String outputType = modelfqcn + "Output";
                                 String signalName = entry.getKey();
                                 String signalType = entry.getValue();
 
@@ -181,7 +180,7 @@ public class ProcessResourceGenerator {
                                                 body.findAll(NameExpr.class, nameExpr -> "data".equals(nameExpr.getNameAsString())).forEach(name -> name.replace(new NullLiteralExpr()));
                                             }
                                             template.addMethod(methodName, Keyword.PUBLIC)
-                                                    .setType(outputType)
+                                                    .setType(cloned.getType())
                                                     // Remove data parameter ( payload ) if signalType is null 
                                                     .setParameters(signalType == null ? NodeList.nodeList(cloned.getParameter(0)) : cloned.getParameters())
                                                     .setBody(body)

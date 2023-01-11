@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.drools.io.FileSystemResource;
+import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.process.Process;
@@ -66,6 +67,22 @@ class ProcessResourceGeneratorTest {
         testOpenApiDocumentation(contextBuilder, fileName, expectedSummary, expectedDescription);
     }
 
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void testGenerateBoundarySignalEventOnTask(KogitoBuildContext.Builder contextBuilder) {
+        String fileName = "src/test/resources/signalevent/BoundarySignalEventOnTask.bpmn2";
+
+        ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
+
+        KogitoWorkflowProcess process = parseProcess(fileName);
+
+        String outputType = new ModelClassGenerator(contextBuilder.build(), process).simpleName() + "Output";
+
+        classDeclaration.getMethods().stream()
+                .filter(method -> isRestMethod(method) && method.getNameAsString().startsWith("signal_"))
+                .forEach(method -> assertMethodOutputModelType(method, outputType));
+    }
+
     void testOpenApiDocumentation(KogitoBuildContext.Builder contextBuilder, String fileName, String expectedSummary, String expectedDescription) {
         ClassOrInterfaceDeclaration classDeclaration = getResourceClassDeclaration(contextBuilder, fileName);
 
@@ -85,11 +102,20 @@ class ProcessResourceGeneratorTest {
     private CompilationUnit getCompilationUnit(KogitoBuildContext.Builder contextBuilder, KogitoWorkflowProcess process) {
         KogitoBuildContext context = createContext(contextBuilder);
 
-        String modelfqcn = "any.Model";
-        String processfqcn = "any.Process";
-        String appCanonicalName = "AnyApp";
+        ProcessExecutableModelGenerator execModelGen =
+                new ProcessExecutableModelGenerator(process, new ProcessToExecModelGenerator(context.getClassLoader()));
 
-        ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(context, process, modelfqcn, processfqcn, appCanonicalName);
+        KogitoWorkflowProcess workFlowProcess = execModelGen.process();
+
+        ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(
+                context,
+                workFlowProcess,
+                new ModelClassGenerator(context, workFlowProcess).className(),
+                execModelGen.className(),
+                context.getPackageName() + ".Application");
+
+        processResourceGenerator
+                .withSignals(execModelGen.generate().getSignals());
 
         return StaticJavaParser.parse(processResourceGenerator.generate());
     }
@@ -98,6 +124,11 @@ class ProcessResourceGeneratorTest {
         Optional<AnnotationExpr> annotation = method.getAnnotationByName("Operation");
         assertThat(annotation).isNotEmpty();
         assertThatAnnotationHasSummaryAndDescription(annotation.orElseThrow(), summary, description);
+    }
+
+    private void assertMethodOutputModelType(MethodDeclaration method, String outputType) {
+        assertThat(method.getType()).isNotNull();
+        assertThat(method.getType().asString()).isEqualTo(outputType);
     }
 
     private void assertThatAnnotationHasSummaryAndDescription(AnnotationExpr annotation, String summary, String description) {
