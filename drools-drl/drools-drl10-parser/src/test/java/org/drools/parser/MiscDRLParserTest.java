@@ -13,7 +13,6 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.drl.ast.descr.ExprConstraintDescr;
 import org.drools.drl.ast.descr.FromDescr;
 import org.drools.drl.ast.descr.FunctionDescr;
-import org.drools.drl.ast.descr.FunctionImportDescr;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.MVELExprDescr;
@@ -24,6 +23,7 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +49,8 @@ class MiscDRLParserTest {
         final StringBuilder sb = new StringBuilder();
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             for (String line; (line = br.readLine()) != null; ) {
-                sb.append(line + "\n");
+                sb.append(line);
+                sb.append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -183,16 +184,16 @@ class MiscDRLParserTest {
 
         assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         assertThat(pkg.getImports()).hasSize(1);
         assertThat(pkg.getGlobals()).hasSize(2);
 
-        final GlobalDescr foo = (GlobalDescr) pkg.getGlobals().get(0);
+        final GlobalDescr foo = pkg.getGlobals().get(0);
         assertThat(foo.getType()).isEqualTo("java.lang.String");
         assertThat(foo.getIdentifier()).isEqualTo("foo");
-        final GlobalDescr bar = (GlobalDescr) pkg.getGlobals().get(1);
+        final GlobalDescr bar = pkg.getGlobals().get(1);
         assertThat(bar.getType()).isEqualTo("java.lang.Integer");
         assertThat(bar.getIdentifier()).isEqualTo("bar");
     }
@@ -204,12 +205,12 @@ class MiscDRLParserTest {
 
         assertThat(pkg.getFunctionImports()).hasSize(2);
 
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(0)).getTarget()).isEqualTo("abd.def.x");
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(0)).getStartCharacter()).isNotSameAs(-1);
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(0)).getEndCharacter()).isNotSameAs(-1);
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(1)).getTarget()).isEqualTo("qed.wah.*");
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(1)).getStartCharacter()).isNotSameAs(-1);
-        assertThat(((FunctionImportDescr) pkg.getFunctionImports().get(1)).getEndCharacter()).isNotSameAs(-1);
+        assertThat(pkg.getFunctionImports().get(0).getTarget()).isEqualTo("abd.def.x");
+        assertThat(pkg.getFunctionImports().get(0).getStartCharacter()).isNotSameAs(-1);
+        assertThat(pkg.getFunctionImports().get(0).getEndCharacter()).isNotSameAs(-1);
+        assertThat(pkg.getFunctionImports().get(1).getTarget()).isEqualTo("qed.wah.*");
+        assertThat(pkg.getFunctionImports().get(1).getStartCharacter()).isNotSameAs(-1);
+        assertThat(pkg.getFunctionImports().get(1).getEndCharacter()).isNotSameAs(-1);
     }
 
     @Test
@@ -227,7 +228,7 @@ class MiscDRLParserTest {
 
         assertThat(parser.hasErrors()).as(parser.getErrorMessages().toString()).isFalse();
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("Invalid customer id");
 
         assertThat(rule.getLhs().getDescrs()).hasSize(2);
@@ -252,7 +253,7 @@ class MiscDRLParserTest {
         PackageDescr pkg = parser.parse(source);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("XYZ");
 
         PatternDescr number = (PatternDescr) ((NotDescr) rule.getLhs().getDescrs().get(1)).getDescrs().get(0);
@@ -269,10 +270,11 @@ class MiscDRLParserTest {
                 " System.err.println(\"Invalid customer id found!\"); \n" +
                 " o.addError(\"Invalid customer id\"); \n" +
                 "end \n";
+        System.out.println(source);
         PackageDescr pkg = parser.parse(source);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("XYZ");
 
         assertThat(parser.hasErrors()).isFalse();
@@ -295,7 +297,7 @@ class MiscDRLParserTest {
 
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("XYZ");
 
         assertThat(parser.hasErrors()).isFalse();
@@ -348,7 +350,7 @@ class MiscDRLParserTest {
         PackageDescr pkg = parser.parse(source);
 
         assertThat(pkg.getName()).isEqualTo("com.sample");
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("test");
         ExprConstraintDescr expr = (ExprConstraintDescr) ((PatternDescr) rule.getLhs().getDescrs().get(0)).getDescrs().get(0);
         assertThat(expr.getText()).isEqualTo("( text == null || text2 matches \"\" )");
@@ -360,7 +362,7 @@ class MiscDRLParserTest {
         PackageDescr pkg = parser.parse(source);
 
         assertThat(pkg.getName()).isEqualTo("com.sample");
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("test");
 
         assertThat(rule.getLhs().getDescrs()).hasSize(1);
@@ -377,7 +379,7 @@ class MiscDRLParserTest {
         String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
         PackageDescr pkg = parser.parse(source);
         assertThat(pkg.getName()).isEqualTo("com.sample");
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("test");
 
         assertThat(rule.getLhs().getDescrs()).hasSize(1);
@@ -392,7 +394,7 @@ class MiscDRLParserTest {
     void parse_dialectWithSingleQuotation() {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = parser.parse(source);
-        AttributeDescr attr = (AttributeDescr) pkg.getAttributes().get(0);
+        AttributeDescr attr = pkg.getAttributes().get(0);
         assertThat(attr.getName()).isEqualTo("dialect");
         assertThat(attr.getValue()).isEqualTo("mvel");
     }
@@ -409,7 +411,7 @@ class MiscDRLParserTest {
     @Test
     void parse_emptyRuleWithoutWhen() throws Exception {
         String source = readResource("empty_rule.drl"); // without WHEN
-        PackageDescr pkg = parser.parse(source);
+        parser.parse(source);
 
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isTrue();
 
@@ -435,7 +437,7 @@ class MiscDRLParserTest {
         String source = readResource("ternary_expression.drl");
         PackageDescr pkg = parser.parse(source);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final RuleDescr rule = pkg.getRules().get(0);
         assertThat(pkg.getRules()).hasSize(1);
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if (speed > speedLimit ? true : false;) pullEmOver();");
@@ -454,11 +456,11 @@ class MiscDRLParserTest {
         assertThat(pkg.getName()).isEqualTo("foo");
         assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final RuleDescr rule = pkg.getRules().get(0);
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("yourFunction(new String[] {\"a\",\"b\",\"c\"});");
 
-        final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get(0);
+        final FunctionDescr func = pkg.getFunctions().get(0);
 
         assertThat(func.getReturnType()).isEqualTo("String[]");
         assertThat(func.getParameterNames().get(0)).isEqualTo("args[]");
@@ -506,7 +508,7 @@ class MiscDRLParserTest {
         assertThat(rule).isNotNull();
 
         assertThat(rule.getName()).isEqualTo("rule1");
-        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("no-loop");
+        final AttributeDescr att = rule.getAttributes().get("no-loop");
         assertThat(att.getValue()).isEqualTo("false");
         assertThat(att.getName()).isEqualTo("no-loop");
     }
@@ -522,7 +524,7 @@ class MiscDRLParserTest {
         assertThat(rule).isNotNull();
 
         assertThat(rule.getName()).isEqualTo("rule1");
-        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("auto-focus");
+        final AttributeDescr att = rule.getAttributes().get("auto-focus");
         assertThat(att.getValue()).isEqualTo("true");
         assertThat(att.getName()).isEqualTo("auto-focus");
     }
@@ -538,7 +540,7 @@ class MiscDRLParserTest {
         assertThat(rule).isNotNull();
 
         assertThat(rule.getName()).isEqualTo("rule1");
-        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
+        final AttributeDescr att = rule.getAttributes().get("ruleflow-group");
         assertThat(att.getValue()).isEqualTo("a group");
         assertThat(att.getName()).isEqualTo("ruleflow-group");
     }
@@ -578,7 +580,7 @@ class MiscDRLParserTest {
     void parse_or() {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         PackageDescr pkg = parser.parse(text);
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
 
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -593,7 +595,7 @@ class MiscDRLParserTest {
     void parse_lhsWithStringQuotes() {
         final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
         PackageDescr pkg = parser.parse(text);
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
 
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -609,7 +611,7 @@ class MiscDRLParserTest {
     void parse_lhsWithStringQuotesEscapeChars() {
         final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
         PackageDescr pkg = parser.parse(text);
-        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(rule).isNotNull();
@@ -665,7 +667,7 @@ class MiscDRLParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(pkg.getRules()).hasSize(1);
-        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get(0);
+        final RuleDescr ruleDescr = pkg.getRules().get(0);
         assertThat(ruleDescr.getName()).isEqualTo("simple rule");
         assertThat(ruleDescr.getLhs()).isNotNull();
         assertThat(ruleDescr.getLhs().getDescrs()).hasSize(1);
@@ -782,5 +784,39 @@ class MiscDRLParserTest {
         assertThat(third.getObjectType()).isEqualTo("Baz");
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );");
+    }
+
+    @Test
+    void parse_multipleRestrictionsConstraint() throws Exception {
+        RuleDescr rule = parseAndGetFirstRuleFromFile("restrictions_test.drl");
+        assertThat(rule).isNotNull();
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("consequence();");
+        assertThat(rule.getName()).isEqualTo("simple_rule");
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
+
+        // The first pattern, with 2 restrictions on a single field (plus a
+        // connective)
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+        assertThat( pattern.getConstraint().getDescrs()).hasSize(1);
+
+        AndDescr and = (AndDescr) pattern.getConstraint();
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+
+        // the second col, with 2 fields, the first with 2 restrictions, the
+        // second field with one
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
+
+        and = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace( "type == \"sedan\" || == \"wagon\"");
+
+        // now the second field
+        fld = (ExprConstraintDescr) and.getDescrs().get( 1 );
+        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace( "age < 3");
     }
 }
