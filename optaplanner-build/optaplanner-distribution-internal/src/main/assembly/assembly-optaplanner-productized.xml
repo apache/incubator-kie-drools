@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 https://maven.apache.org/xsd/assembly-2.1.1.xsd">
+
+  <id>assembly-optaplanner-productized</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <fileSets>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../..</directory>
+      <includes>
+        <include>LICENSE.txt</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>unix</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory/>
+      <includes>
+        <include>**/*.sh</include>
+      </includes>
+      <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>dos</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory/>
+      <includes>
+        <include>**/*.bat</include>
+      </includes>
+    </fileSet>
+    <!-- Examples -->
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../../optaplanner-examples</directory>
+      <outputDirectory>examples/sources</outputDirectory>
+      <excludes>
+        <exclude>data/**/tmp-*.*</exclude>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.optaplanner:*:jar</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>examples/binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+    </dependencySet>
+  </dependencySets>
+</assembly>

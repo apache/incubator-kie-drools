@@ -125,7 +125,6 @@
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-migration</module>
     <module>optaplanner-examples</module>
-    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -140,6 +139,17 @@
         <module>optaplanner-docs</module>
         <module>build/optaplanner-javadoc</module>
         <module>build/optaplanner-distribution-internal</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>optaplanner-operator</module>
       </modules>
     </profile>
   </profiles>

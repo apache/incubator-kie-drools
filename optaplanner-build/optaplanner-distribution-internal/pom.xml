@@ -23,6 +23,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <assembly.descriptor>assembly-optaplanner.xml</assembly.descriptor>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -38,7 +42,7 @@
         </executions>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-optaplanner.xml</descriptor>
+            <descriptor>src/main/assembly/${assembly.descriptor}</descriptor>
           </descriptors>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
@@ -92,10 +96,6 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-test</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-operator</artifactId>
-    </dependency>
 
     <!-- Examples -->
     <dependency>
@@ -109,4 +109,31 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-operator</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <properties>
+        <assembly.descriptor>assembly-optaplanner-productized.xml</assembly.descriptor>
+      </properties>
+    </profile>
+  </profiles>
 </project>
