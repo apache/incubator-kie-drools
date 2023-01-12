@@ -47,12 +47,10 @@ public class DataIndexOracleResource implements TestResource {
         LOGGER.debug("Starting Oracle Quarkus test resource");
         properties.clear();
         Network network = Network.newNetwork();
-        oracle.withInitScript("data_index_oracle_create.sql");
         oracle.withNetwork(network);
         oracle.withNetworkAliases("oracle");
         oracle.withUsername("kogito");
         oracle.withPassword("kogito");
-        oracle.waitingFor(Wait.forListeningPort());
         oracle.start();
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");

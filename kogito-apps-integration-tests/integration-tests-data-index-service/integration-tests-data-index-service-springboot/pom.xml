@@ -125,23 +125,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>rename-oracle-file</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <sourceFile>${project.root.dir}/data-index/data-index-storage/data-index-storage-oracle/src/main/resources/data_index_create.sql</sourceFile>
-              <destinationFile>${project.basedir}/src/main/resources/data_index_oracle_create.sql</destinationFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
