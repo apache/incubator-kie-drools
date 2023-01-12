@@ -1646,7 +1646,6 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-pmml-api-dependencies</artifactId>
-        <type>pom</type>
         <version>${project.version}</version>
       </dependency>
       <dependency>
