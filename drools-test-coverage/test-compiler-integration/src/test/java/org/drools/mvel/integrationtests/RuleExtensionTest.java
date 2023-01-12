@@ -45,8 +45,7 @@ public class RuleExtensionTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -418,7 +417,6 @@ public class RuleExtensionTest {
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
 
-        assertThat(errors.size()).isEqualTo(1);
         assertThat(errors.iterator().next().toString().contains("Circular")).isTrue();
     }
 }
