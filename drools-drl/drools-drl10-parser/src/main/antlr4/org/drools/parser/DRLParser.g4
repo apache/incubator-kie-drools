@@ -77,8 +77,19 @@ andExpression : left=equalityExpression (BITAND right=equalityExpression)* ;
 equalityExpression : left=instanceOfExpression ( ( op=EQUAL | op=NOTEQUAL ) right=instanceOfExpression )* ;
 instanceOfExpression : left=inExpression ( 'instanceof' right=type )? ;
 inExpression : left=relationalExpression ( 'not'? 'in' LPAREN drlExpression (COMMA drlExpression)* RPAREN )? ;
-relationalExpression : drlExpression? ;
+relationalExpression : left=drlExpression (right=orRestriction)* ;
+orRestriction : left=andRestriction (OR right=andRestriction)* ;
+andRestriction : left=singleRestriction (AND right=singleRestriction)* ;
+singleRestriction : op=relationalOperator drlExpression ;
 
+relationalOperator
+    : EQUAL
+    | NOTEQUAL
+    | LE
+    | GE
+    | GT
+    | LT
+    ;
 
 /* function := FUNCTION type? ID parameters(typed) chunk_{_} */
 functiondef : DRL_FUNCTION typeTypeOrVoid? IDENTIFIER formalParameters block ;

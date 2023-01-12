@@ -244,6 +244,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public List<ExprConstraintDescr> visitConstraints(DRLParser.ConstraintsContext ctx) {
+        if (ctx == null) {
+            return new ArrayList<>();
+        }
         List<BaseDescr> descrList = visitDescrChildren(ctx);
         return descrList.stream()
                 .filter(ExprConstraintDescr.class::isInstance)
@@ -253,14 +256,9 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
 
     @Override
     public ExprConstraintDescr visitConstraint(DRLParser.ConstraintContext ctx) {
-        Object constraint = super.visitConstraint(ctx);
-        if (constraint != null) {
-            String constraintString = constraint.toString();
-            DRLParser.LabelContext label = ctx.label();
-            if (label != null) {
-                constraintString = label.getText() + constraintString;
-            }
-            ExprConstraintDescr constraintDescr = new ExprConstraintDescr(constraintString);
+        String constraint = visitConstraintChildren(ctx);
+        if (!constraint.isEmpty()) {
+            ExprConstraintDescr constraintDescr = new ExprConstraintDescr(constraint);
             constraintDescr.setType(ExprConstraintDescr.Type.NAMED);
             return constraintDescr;
         }
@@ -268,40 +266,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public String visitDrlExpression(DRLParser.DrlExpressionContext ctx) {
-        return ctx.children.stream()
-                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
-                .filter(Objects::nonNull)
-                .map(Object::toString)
-                .collect(Collectors.joining(" "));
-    }
-
-    @Override
-    public String visitDrlPrimary(DRLParser.DrlPrimaryContext ctx) {
-        return ctx.children.stream()
-                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
-                .filter(Objects::nonNull)
-                .map(Object::toString)
-                .collect(Collectors.joining(" "));
-    }
-
-    @Override
     public String visitDrlIdentifier(DRLParser.DrlIdentifierContext ctx) {
         return ctx.getText();
-    }
-
-    @Override
-    public String visitDrlLiteral(DRLParser.DrlLiteralContext ctx) {
-        ParseTree node = ctx;
-        while (true) {
-            if (node instanceof TerminalNode) {
-                return node.toString();
-            }
-            if (node.getChildCount() != 1) {
-                return super.visitDrlLiteral(ctx).toString();
-            }
-            node = node.getChild(0);
-        }
     }
 
     @Override
@@ -370,6 +336,34 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             }
         }
         return aggregator;
+    }
+
+    // leaves of constraint concatenate return Strings
+    private String visitConstraintChildren(RuleNode node) {
+        return ((ParserRuleContext) node).children.stream()
+                .map(c -> c instanceof TerminalNode ? c : c.accept(this))
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public Object visitChildren(RuleNode node) {
+        if (hasConstraintAsAncestor(node)) {
+            return visitConstraintChildren(node);
+        }
+        return super.visitChildren(node);
+    }
+
+    private boolean hasConstraintAsAncestor(RuleNode node) {
+        ParseTree parent = node.getParent();
+        if (parent instanceof DRLParser.ConstraintContext) {
+            return true;
+        } else if (parent == null) {
+            return false;
+        } else {
+            return hasConstraintAsAncestor((RuleNode) parent);
+        }
     }
 
     private Optional<BaseDescr> visitFirstDescrChild(RuleNode node) {
