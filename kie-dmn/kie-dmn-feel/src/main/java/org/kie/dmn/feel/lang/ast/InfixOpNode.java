@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
@@ -278,6 +278,9 @@ public class InfixOpNode
             return ((OffsetTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof OffsetTime ) {
             return ((OffsetTime) right).plus( (Duration) left);
+        } else if ( left instanceof Temporal && right instanceof Temporal ) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else {
             return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
         }
@@ -287,18 +290,7 @@ public class InfixOpNode
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
-            if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
-                if( right instanceof LocalDateTime ) {
-                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof ZonedDateTime || right instanceof OffsetDateTime ) {
-                if( left instanceof LocalDateTime ) {
-                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof LocalDate && left instanceof LocalDate ) {
-                return Duration.ofDays( ChronoUnit.DAYS.between( (LocalDate) right, (LocalDate) left ) );
-            }
-            return Duration.between( (Temporal) right, (Temporal) left);
+            return subtractTemporals((Temporal) left, (Temporal) right, ctx);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
         } else if ( left instanceof Duration && right instanceof Duration ) {
@@ -443,5 +435,58 @@ public class InfixOpNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    private static Object subtractTemporals(final Temporal left, final Temporal right, final EvaluationContext ctx) {
+        // Based on the Table 57 in the spec, if it is only date, convert to date and time.
+        final Temporal leftTemporal = getTemporalForSubtraction(left);
+        final Temporal rightTemporal = getTemporalForSubtraction(right);
+
+        if (isAllowedTemporalSubtractionBasedOnSpec(leftTemporal, rightTemporal, ctx)) {
+            return Duration.between(rightTemporal, leftTemporal);
+        } else {
+            return null;
+        }
+    }
+
+    private static Temporal getTemporalForSubtraction(final Temporal temporal) {
+        if (temporal instanceof LocalDate) {
+            return ZonedDateTime.of((LocalDate) temporal, LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        } else {
+            return temporal;
+        }
+    }
+
+    /**
+     * Checks if the subtraction is supported by the DMN specification based on the temporals specified as parameters.
+     *
+     * @param leftTemporal Left temporal parameter of the subtraction expression.
+     * @param rightTemporal Right temporal parameter of the subtraction expression.
+     * @param ctx Context that is used to notify about not allowed set of parameters.
+     * @return True, if the temporal parameters are valid for subtraction based on the DMN specification.
+     *         False, when subtraction is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>
+     *         - Subtraction of a datetime with timezone and a datetime without a timezone is not defined in the specification.
+     *         - Subtraction of a time and a datetime is not defined in the specification.
+     */
+    private static boolean isAllowedTemporalSubtractionBasedOnSpec(final Temporal leftTemporal, final Temporal rightTemporal, final EvaluationContext ctx) {
+        // Both datetimes have a timezone or both timezones don't have it. Cannot combine timezoned datetime and datetime without a timezone.
+        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof OffsetDateTime)
+                && (rightTemporal instanceof LocalDateTime))  {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "first", leftTemporal, "second", rightTemporal)));
+            return false;
+        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof OffsetDateTime)
+                && (leftTemporal instanceof LocalDateTime)) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "second", rightTemporal, "first", leftTemporal)));
+            return false;
+        }
+
+        // Cannot combine time and date (or datetime) based on the DMN specification.
+        if ((!leftTemporal.isSupported(ChronoUnit.DAYS) && rightTemporal.isSupported(ChronoUnit.DAYS))
+                || (!rightTemporal.isSupported(ChronoUnit.DAYS) && leftTemporal.isSupported(ChronoUnit.DAYS))) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return false;
+        }
+
+        return true;
     }
 }
