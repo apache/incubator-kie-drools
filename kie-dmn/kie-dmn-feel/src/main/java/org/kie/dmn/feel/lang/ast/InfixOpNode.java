@@ -27,7 +27,10 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
+import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.function.BinaryOperator;
@@ -230,7 +233,7 @@ public class InfixOpNode
     }
 
     public static Object add(Object left, Object right, EvaluationContext ctx) {
-        if ( left == null || right == null ) {
+        if (isNullableAddSub(left, right) ) {
             return null;
         } else if ( left instanceof String && right instanceof String ) {
             return ((String) left) + ((String) right);
@@ -284,7 +287,7 @@ public class InfixOpNode
     }
 
     public static Object sub(Object left, Object right, EvaluationContext ctx) {
-        if ( left == null || right == null ) {
+        if (isNullableAddSub(left, right) ) {
             return null;
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
             if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
@@ -427,6 +430,19 @@ public class InfixOpNode
             return true;
         }
         return l || r;
+    }
+
+    static boolean isNullableAddSub(Object left, Object right) {
+        if ( left == null || right == null ) {
+            return true;
+        }
+        if (left instanceof ChronoLocalDate && (right instanceof ChronoZonedDateTime || right instanceof ChronoLocalDateTime)) {
+            return true;
+        }
+        if (right instanceof ChronoLocalDate && (left instanceof ChronoZonedDateTime || left instanceof ChronoLocalDateTime)) {
+            return true;
+        }
+        return false;
     }
 
     private static LocalDate addLocalDateAndDuration(LocalDate left, Duration right) {

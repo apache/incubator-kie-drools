@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +156,30 @@ public class InfixOpNodeTest {
         right = Duration.of(-1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+    }
+
+    @Test
+    public void addDateTimeAndTime() {
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 11, 1, 1);
+        LocalTime localTime = LocalTime.of(11, 11, 11);
+        assertThat(InfixOpNode.add(localDateTime, localTime, null)).isNull();
+        assertThat(InfixOpNode.add(localTime, localDateTime, null)).isNull();
+    }
+
+    @Test
+    public void subDateTimeAndTime() {
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 11, 1, 1);
+        LocalTime localTime = LocalTime.of(11, 11, 11);
+        assertThat(InfixOpNode.sub(localDateTime, localTime, null)).isNull();
+        assertThat(InfixOpNode.sub(localTime, localDateTime, null)).isNull();
+    }
+
+    @Test
+    public void isNullableAddSub() {
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 1, 1, 11, 1, 1);
+        LocalTime localTime = LocalTime.of(11, 11, 11);
+        assertThat(InfixOpNode.isNullableAddSub(localDateTime, localTime)).isFalse();
+        assertThat(InfixOpNode.isNullableAddSub(localTime, localDateTime)).isFalse();
     }
 
 }

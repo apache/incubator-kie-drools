@@ -87,7 +87,11 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "@\"2021-01-02\" - @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
                 { "@\"2021-01-01\" - @\"-PT25H\"", LocalDate.of(2021, 1, 2 ), null  },
                 { "@\"2021-01-01\" + @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
-                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  }
+                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  },
+                { "@\"2020-12-30\" + @\"2016-07-29T05:48:23.765-05:00\"", null, null  },
+                { "@\"2020-12-30\" - @\"2016-07-29T05:48:23.765-05:00\"", null, null  },
+                { "@\"2016-07-29T05:48:23.765-05:00\" + @\"2020-12-30\"", null, null  },
+                { "@\"2016-07-29T05:48:23.765-05:00\" - @\"2020-12-30\"", null, null  }
         };
         return addAdditionalParameters(cases, false);
     }
