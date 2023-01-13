@@ -16,18 +16,6 @@
 
 package org.drools.kiesession.entrypoints;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
@@ -36,9 +24,11 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.Lockable;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectStoreWrapper;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -54,7 +44,6 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.conf.KieBaseMutabilityOption;
@@ -62,11 +51,23 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
-public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, PropertyChangeListener  {
+public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, PropertyChangeListener, Lockable {
 
     protected static final transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
 
@@ -116,12 +117,14 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                 new IdentityObjectStore();
     }
 
+    @Override
     public void lock() {
         if (lock != null) {
             lock.lock();
         }
     }
 
+    @Override
     public void unlock() {
         if (lock != null) {
             lock.unlock();

@@ -3,8 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>drools-reliability</module>
+    </modules>
 
-  <parent>
+    <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
     <!-- Keep in sync with jboss-parent version in kie-user-bom-parent/pom.xml -->
@@ -202,6 +205,7 @@
         <module>kie-archetypes</module>
         <module>drools-drl-quarkus-extension</module>
         <module>jpmml-migration-recipe</module>
+        <module>drools-reliability</module>
       </modules>
     </profile>
     <profile>
@@ -292,6 +296,7 @@
         <module>kie-internal</module>
         <module>kie-test-util</module>
         <module>drools-drl-quarkus-extension</module>
+        <module>drools-reliability</module>
       </modules>
     </profile>
   </profiles>
