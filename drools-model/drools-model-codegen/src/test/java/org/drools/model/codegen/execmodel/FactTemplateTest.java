@@ -17,9 +17,11 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 import org.drools.core.ClockType;
 import org.drools.core.facttemplates.Event;
@@ -56,6 +58,7 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.model.DSL.accFunction;
 import static org.drools.model.DSL.accumulate;
 import static org.drools.model.DSL.after;
@@ -1188,5 +1191,124 @@ public class FactTemplateTest {
 
         Collection<Result> results = getObjectsIntoList(ksession, Result.class);
         assertThat(results).contains(new Result("Found"));
+    }
+
+    @Test
+    public void testCollectUniqueEventsAfterTimeWindow() {
+        Result result = new Result();
+
+        Prototype stockTickPrototype = prototype( "org.drools.StockTick" );
+        PrototypeVariable tick1Var = variable( stockTickPrototype );
+
+        Prototype controlPrototype = prototype( "org.drools.ControlEvent" );
+        PrototypeVariable controlVar1 = variable( controlPrototype );
+        PrototypeVariable controlVar2 = variable( controlPrototype );
+        PrototypeVariable controlVar3 = variable( controlPrototype );
+
+        Variable<List> resultsVar = declarationOf( List.class );
+
+        Rule rule = rule( "stock" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
+                        not( protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ) ),
+                        on(tick1Var).execute((drools, t1) -> {
+                            Event controlEvent = createMapBasedEvent( controlPrototype );
+                            controlEvent.set( "name", t1.get( "name" ) );
+                            controlEvent.set( "event", t1 );
+                            controlEvent.set( "rule_name", "stock" );
+                            drools.insert(controlEvent);
+                            drools.delete(t1);
+                        })
+                );
+
+        Rule startRule = rule( "start" )
+                .build(
+                        protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ),
+                        not( protoPattern(controlVar2).expr( "end_once_after", Index.ConstraintType.EQUAL, "stock" ) ),
+                        on(controlVar1).execute((drools, c1) -> {
+                            Event startControlEvent = createMapBasedEvent( controlPrototype ).withExpiration(10, TimeUnit.SECONDS);
+                            startControlEvent.set( "start_once_after", c1.get( "rule_name" ) );
+                            drools.insert(startControlEvent);
+
+                            Event endControlEvent = createMapBasedEvent( controlPrototype );
+                            endControlEvent.set( "end_once_after", c1.get( "rule_name" ) );
+                            drools.insert(endControlEvent);
+                        })
+                );
+
+        Rule endRule = rule( "end" )
+                .build(
+                        protoPattern(controlVar1).expr( "end_once_after", Index.ConstraintType.EQUAL, "stock" ),
+                        not( protoPattern(controlVar2).expr( "start_once_after", Index.ConstraintType.EQUAL, "stock" ) ),
+                        accumulate( protoPattern(controlVar3).expr("rule_name", Index.ConstraintType.EQUAL, "stock" ),
+                                accFunction(org.drools.core.base.accumulators.CollectListAccumulateFunction::new, controlVar3).as(resultsVar)),
+                        on(controlVar1, resultsVar).execute((drools, c1, results) -> {
+                            drools.delete(c1);
+                            result.setValue(results.stream().peek(drools::delete).map(r -> ((PrototypeFact) r).get("event")).collect(Collectors.toList()));
+                        })
+                );
+
+        Rule cleanupRule = rule( "cleanup" )
+                .build(
+                        protoPattern(tick1Var).expr( "value", Index.ConstraintType.GREATER_THAN, 2 ),
+                        protoPattern(controlVar1).expr( "rule_name", Index.ConstraintType.EQUAL, "stock" ).expr( "name", Index.ConstraintType.EQUAL, tick1Var, "name" ),
+                        on(tick1Var).execute((drools, t1) -> drools.delete(t1))
+                );
+
+        Model model = new ModelImpl().addRule(rule).addRule(startRule).addRule(endRule).addRule(cleanupRule);
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model, EventProcessingOption.STREAM);
+
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieSession ksession = kieBase.newKieSession(conf, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        Event tick1 = createMapBasedEvent( stockTickPrototype );
+        tick1.set( "name", "RedHat" );
+        tick1.set( "value", 10 );
+        ksession.insert(tick1);
+        assertThat(ksession.fireAllRules()).isEqualTo(2);
+
+        clock.advanceTime( 3, TimeUnit.SECONDS );
+
+        Event tick2 = createMapBasedEvent( stockTickPrototype );
+        tick2.set( "name", "RedHat" );
+        tick2.set( "value", 12 );
+        ksession.insert(tick2);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(result.getValue()).isNull();
+
+        Event tickTest = createMapBasedEvent( stockTickPrototype );
+        tickTest.set( "name", "test" );
+        tickTest.set( "value", 42 );
+        ksession.insert(tickTest);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+
+        Event tick3 = createMapBasedEvent( stockTickPrototype );
+        tick3.set( "name", "RedHat" );
+        tick3.set( "value", 14 );
+        ksession.insert(tick3);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+        assertThat(result.getValue()).isNull();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+
+        List<PrototypeFact> events = (List<PrototypeFact>) result.getValue();
+        assertThat(events).hasSize(2);
+        for (PrototypeFact event : events) {
+            if (event.get("name").equals("RedHat")) {
+                assertThat(event.get("value")).isEqualTo(10);
+            } else if (event.get("name").equals("test")) {
+                assertThat(event.get("value")).isEqualTo(42);
+            } else {
+                fail("there should be only 2 events with names RedHat and test");
+            }
+        }
     }
 }
