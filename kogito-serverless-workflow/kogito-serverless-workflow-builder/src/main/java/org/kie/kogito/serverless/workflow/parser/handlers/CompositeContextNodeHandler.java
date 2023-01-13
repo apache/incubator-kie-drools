@@ -53,7 +53,11 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     }
 
     protected final CompositeContextNodeFactory<?> makeCompositeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        return factory.compositeContextNode(parserContext.newId()).name(state.getName()).autoComplete(true);
+        return makeCompositeNode(factory, state.getName());
+    }
+
+    protected final CompositeContextNodeFactory<?> makeCompositeNode(RuleFlowNodeContainerFactory<?, ?> factory, String nodeName) {
+        return factory.compositeContextNode(parserContext.newId()).name(nodeName).autoComplete(true);
     }
 
     protected final <T extends AbstractCompositeNodeFactory<?, ?>> T handleActions(T embeddedSubProcess, List<Action> actions) {

@@ -41,7 +41,6 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-
         SplitFactory<?> nodeFactory = factory.splitNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_START_NAME).type(Split.TYPE_AND);
         JoinFactory<?> connectionNode = factory.joinNode(parserContext.newId()).name(state.getName() + ServerlessWorkflowParser.NODE_END_NAME);
         CompletionType completionType = state.getCompletionType();
@@ -57,11 +56,21 @@ public class ParallelHandler extends CompositeContextNodeHandler<ParallelState> 
             }
         }
         for (Branch branch : state.getBranches()) {
-            CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), branch.getActions());
+            CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory, getName(branch)), branch.getActions());
             long branchId = embeddedSubProcess.getNode().getId();
             embeddedSubProcess.done().connection(nodeFactory.getNode().getId(), branchId).connection(branchId, connectionNode.getNode().getId());
         }
         return new MakeNodeResult(nodeFactory, connectionNode);
+    }
+
+    private String getName(Branch branch) {
+        StringBuilder sb = new StringBuilder(state.getName());
+        // when branch name will be made mandatory (0.9), this if can be removed
+        String branchName = branch.getName();
+        if (branchName != null && !branchName.isBlank()) {
+            sb.append('-').append(branchName);
+        }
+        return sb.toString();
     }
 
     @Override
