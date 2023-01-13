@@ -87,7 +87,8 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "@\"2021-01-02\" - @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
                 { "@\"2021-01-01\" - @\"-PT25H\"", LocalDate.of(2021, 1, 2 ), null  },
                 { "@\"2021-01-01\" + @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
-                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  }
+                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  },
+                {  "@\"PT1H\" * @\"PT25H\"", null, FEELEvent.Severity.ERROR  }
         };
         return addAdditionalParameters(cases, false);
     }
