@@ -16,25 +16,20 @@
 
 package org.drools.traits.core.common;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.traits.core.factmodel.TraitProxy;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.consequence.Activation;
-import org.drools.core.common.PropagationContext;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.traits.core.base.TraitHelperImpl;
+import org.drools.traits.core.factmodel.TraitProxy;
 
 public class TraitNamedEntryPoint extends NamedEntryPoint {
 
@@ -43,25 +38,7 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
     public TraitNamedEntryPoint(EntryPointId entryPoint,
                                 EntryPointNode entryPointNode,
                                 ReteEvaluator reteEvaluator) {
-        this(entryPoint,
-             entryPointNode,
-             reteEvaluator,
-             new ReentrantLock());
-    }
-
-    public TraitNamedEntryPoint(EntryPointId entryPoint,
-                                EntryPointNode entryPointNode,
-                                ReteEvaluator reteEvaluator,
-                                ReentrantLock lock) {
-        this.entryPoint = entryPoint;
-        this.entryPointNode = entryPointNode;
-        this.reteEvaluator = reteEvaluator;
-        this.ruleBase = this.reteEvaluator.getKnowledgeBase();
-        this.lock = lock;
-        this.handleFactory = this.reteEvaluator.getFactHandleFactory();
-        this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
-        boolean isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour());
-        this.objectStore = new ClassAwareObjectStore(isEqualityBehaviour, this.lock);
+        super(entryPoint, entryPointNode, reteEvaluator);
         this.traitHelper = new TraitHelperImpl((InternalWorkingMemoryActions) reteEvaluator, this);
     }
 
