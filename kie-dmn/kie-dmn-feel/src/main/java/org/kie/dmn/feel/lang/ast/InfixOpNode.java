@@ -333,8 +333,6 @@ public class InfixOpNode
             return Duration.ofNanos(durationNumericValue.multiply(rightDecimal).longValue());
         } else if ( left instanceof Number && right instanceof Duration ) {
             return Duration.ofSeconds( EvalHelper.getBigDecimalOrNull( left ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 ).longValue() );
-        } else if ( left instanceof Duration && right instanceof Duration ) {
-            return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
             return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).multiply(EvalHelper.getBigDecimalOrNull(right), MathContext.DECIMAL128).intValue());
         } else if (left instanceof Number && right instanceof ChronoPeriod) {
