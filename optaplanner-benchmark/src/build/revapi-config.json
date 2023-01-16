@@ -35,7 +35,7 @@
           "code": "java.method.returnTypeTypeParametersChanged",
           "old": "method java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getSolutionFileIOClass()",
           "new": "method java.lang.Class<? extends org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>> org.optaplanner.benchmark.config.ProblemBenchmarksConfig::getSolutionFileIOClass()",
-          "justification": "ADD YOUR EXPLANATION FOR THE NECESSITY OF THIS CHANGE"
+          "justification": "Fix the type parameter."
         },
         {
           "ignore": true,
@@ -43,7 +43,7 @@
           "old": "parameter void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::setSolutionFileIOClass(===java.lang.Class<org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>>===)",
           "new": "parameter void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::setSolutionFileIOClass(===java.lang.Class<? extends org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO<?>>===)",
           "parameterIndex": "0",
-          "justification": "ADD YOUR EXPLANATION FOR THE NECESSITY OF THIS CHANGE"
+          "justification": "Fix the type parameter."
         }
       ]
     }
