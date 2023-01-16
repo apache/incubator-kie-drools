@@ -64,4 +64,11 @@ public class KubeURIParserProtocolTest {
             new KubeURI(":apps/v1/deployment/default/kogito-app-1");
         });
     }
+
+    @Test
+    public void testProtocolWithDoubleDots() {
+        Assertions.assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> {
+            new KubeURI("kubernetes:");
+        });
+    }
 }

@@ -43,7 +43,7 @@ final class KubeDiscoveryConfigCache {
                 return Optional.ofNullable(cachedValue);
             }
         } catch (RuntimeException e) {
-            logger.error("Service Discovery has failed", e);
+            logger.error("Service Discovery has failed on property [{}={}]", configName, configValue, e);
         }
         return Optional.ofNullable(configValue);
     }
@@ -51,6 +51,6 @@ final class KubeDiscoveryConfigCache {
     private boolean isValidURI(String value) {
         return value != null && !value.isBlank() && KubeConstants.SUPPORTED_PROTOCOLS
                 .stream()
-                .anyMatch(protocol -> value.startsWith(protocol + ":"));
+                .anyMatch(protocol -> value.length() > protocol.length() + 1 && value.startsWith(protocol + ":"));
     }
 }
