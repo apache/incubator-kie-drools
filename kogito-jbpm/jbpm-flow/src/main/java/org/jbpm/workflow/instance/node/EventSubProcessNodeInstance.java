@@ -15,6 +15,7 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,6 +55,9 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
 
     @Override
     public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
+        if (triggerTime == null) {
+            triggerTime = new Date();
+        }
         if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-") || type.equals("timerTriggered")) {
             // start it only if it was not already started - meaning there are node instances
             if (this.getNodeInstances().isEmpty()) {

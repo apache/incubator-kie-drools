@@ -172,6 +172,9 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     @Override
     public void cancel() {
+        if (triggerTime == null) {
+            triggerTime = new Date();
+        }
         leaveTime = new Date();
         boolean hidden = false;
         org.kie.api.definition.process.Node node = getNode();

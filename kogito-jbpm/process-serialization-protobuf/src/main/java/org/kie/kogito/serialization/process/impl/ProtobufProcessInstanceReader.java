@@ -161,10 +161,7 @@ public class ProtobufProcessInstanceReader {
         WorkflowContext workflowContext = processInstanceProtobuf.getContext();
 
         for (KogitoTypesProtobuf.NodeInstance nodeInstanceProtobuf : workflowContext.getNodeInstanceList()) {
-            NodeInstanceImpl nodeInstanceImpl = buildNodeInstance(nodeInstanceProtobuf, processInstance);
-            if (nodeInstanceProtobuf.hasTriggerDate()) {
-                nodeInstanceImpl.internalSetTriggerTime(new Date(nodeInstanceProtobuf.getTriggerDate()));
-            }
+            buildNodeInstance(nodeInstanceProtobuf, processInstance);
         }
 
         for (KogitoTypesProtobuf.NodeInstanceGroup group : workflowContext.getExclusiveGroupList()) {
@@ -264,6 +261,9 @@ public class ProtobufProcessInstanceReader {
                 result.internalSetSlaDueDate(new Date(slaNodeInstanceContext.getSlaDueDate()));
             }
             result.internalSetSlaTimerId(slaNodeInstanceContext.getSlaTimerId());
+            if (nodeInstance.hasTriggerDate()) {
+                result.internalSetTriggerTime(new Date(nodeInstance.getTriggerDate()));
+            }
 
             return result;
         } catch (IOException e) {
