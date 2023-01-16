@@ -25,7 +25,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 })
 public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
-    private Class<SolutionFileIO<?>> solutionFileIOClass = null;
+    private Class<? extends SolutionFileIO<?>> solutionFileIOClass = null;
 
     private Boolean writeOutputSolutionEnabled = null;
 
@@ -44,11 +44,11 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public Class<SolutionFileIO<?>> getSolutionFileIOClass() {
+    public Class<? extends SolutionFileIO<?>> getSolutionFileIOClass() {
         return solutionFileIOClass;
     }
 
-    public void setSolutionFileIOClass(Class<SolutionFileIO<?>> solutionFileIOClass) {
+    public void setSolutionFileIOClass(Class<? extends SolutionFileIO<?>> solutionFileIOClass) {
         this.solutionFileIOClass = solutionFileIOClass;
     }
 
