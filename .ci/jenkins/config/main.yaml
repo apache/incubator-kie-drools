@@ -7,6 +7,7 @@ ecosystem:
 git:
   branches:
   - name: main
+    main_branch: true
     seed:
       branch: main
   - name: 8.29.x
