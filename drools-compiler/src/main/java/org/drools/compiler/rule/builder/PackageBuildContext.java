@@ -23,17 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
-import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.drl.parser.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
-import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
+import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.parser.DroolsError;
 
 /**
  * A context for the current build
@@ -94,12 +92,11 @@ public class PackageBuildContext {
         this.typesafe = isStrictMode( dialectRegistry );
 
         if ( dialect == null && (component != null && component.getDialect() != null) ) {
-            this.errors.add( new DescrBuildError( null,
-                                                  parentDescr,
-                                                  component,
-                                                  "Unable to load Dialect '" + component.getDialect() + "'" ) );
-            // dialect is null, but fall back to default dialect so we can attempt to compile rest of rule.
-            this.dialect = defaultDialect;
+            String errorMessage = "Unable to load Dialect '" + component.getDialect() + "'";
+            if (component.getDialect().equals("mvel")) {
+                errorMessage += ". Please add drools-mvel among your dependencies";
+            }
+            throw new RuntimeException( errorMessage );
         }
     }
 
