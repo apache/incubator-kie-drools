@@ -190,7 +190,7 @@
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
-    <version.io.smallrye.jandex-maven-plugin>3.0.5</version.io.smallrye.jandex-maven-plugin>
+    <version.io.smallrye.jandex-maven-plugin>${version.io.smallrye.jandex}</version.io.smallrye.jandex-maven-plugin>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
@@ -209,7 +209,7 @@
 
     <!-- Override with old org.jboss if relying on quarkus 2.13.x or older -->
     <jandex.group-id>io.smallrye</jandex.group-id>
-    <jandex-maven-plugin.group-id>io.smallrye</jandex-maven-plugin.group-id>
+    <jandex-maven-plugin.group-id>${jandex.group-id}</jandex-maven-plugin.group-id>
     
   </properties>
 
