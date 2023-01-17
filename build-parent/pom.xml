@@ -190,6 +190,7 @@
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
     <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex-maven-plugin>3.0.5</version.io.smallrye.jandex-maven-plugin>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
@@ -205,6 +206,10 @@
     <!-- DROOLS-7140 Drools 8 enforce JDK and Maven versions as a rule --> 
     <version.jdk>${maven.compiler.release}</version.jdk>
     <version.maven>${version.org.apache.maven}</version.maven>
+
+    <!-- Override with old org.jboss if relying on quarkus 2.13.x or older -->
+    <jandex.group-id>io.smallrye</jandex.group-id>
+    <jandex-maven-plugin.group-id>io.smallrye</jandex-maven-plugin.group-id>
     
   </properties>
 
@@ -1254,7 +1259,7 @@
 
       <!-- used  by DMN test to ensure NI reflect-conf.json is correctly up-to-date -->
       <dependency>
-        <groupId>io.smallrye</groupId>
+        <groupId>${jandex.group-id}</groupId>
         <artifactId>jandex</artifactId>
         <version>${version.io.smallrye.jandex}</version>
       </dependency>
@@ -1920,9 +1925,9 @@
           <version>1.0</version>
         </plugin>
         <plugin>
-          <groupId>io.smallrye</groupId>
+          <groupId>${jandex-maven-plugin.group-id}</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
-          <version>${version.io.smallrye.jandex}</version>
+          <version>${version.io.smallrye.jandex-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.asciidoctor</groupId>
@@ -2547,6 +2552,21 @@
           </plugins>
         </pluginManagement>
       </build>
+    </profile>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <properties>
+        <jandex.group-id>org.jboss</jandex.group-id>
+        <version.io.smallrye.jandex>2.4.3.Final</version.io.smallrye.jandex>
+        <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
+        <version.io.smallrye.jandex-maven-plugin>1.2.3</version.io.smallrye.jandex-maven-plugin>
+        <enforcer.skip>true</enforcer.skip>
+      </properties>
     </profile>
   </profiles>
 
