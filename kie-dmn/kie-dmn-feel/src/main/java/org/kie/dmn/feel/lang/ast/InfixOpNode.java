@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
@@ -34,11 +34,14 @@ import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 public class InfixOpNode
         extends BaseNode {
@@ -250,7 +253,7 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).plus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).plusDays( ((Duration) right).toDays() );
+            return addLocalDateAndDuration((LocalDate) left, (Duration) right);
         } else if (left instanceof ChronoPeriod && right instanceof ZonedDateTime) {
             return ((ZonedDateTime) right).plus((ChronoPeriod) left);
         } else if (left instanceof ChronoPeriod && right instanceof OffsetDateTime) {
@@ -266,7 +269,7 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
             return ((LocalDateTime) right).plus( (Duration) left);
         } else if ( left instanceof Duration && right instanceof LocalDate ) {
-            return ((LocalDate) right).plusDays( ((Duration) left).toDays() );
+            return addLocalDateAndDuration((LocalDate) right, (Duration) left);
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof LocalTime ) {
@@ -275,6 +278,9 @@ public class InfixOpNode
             return ((OffsetTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof OffsetTime ) {
             return ((OffsetTime) right).plus( (Duration) left);
+        } else if ( left instanceof Temporal && right instanceof Temporal ) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else {
             return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
         }
@@ -284,18 +290,7 @@ public class InfixOpNode
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
-            if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
-                if( right instanceof LocalDateTime ) {
-                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof ZonedDateTime || right instanceof OffsetDateTime ) {
-                if( left instanceof LocalDateTime ) {
-                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneId.systemDefault() );
-                }
-            } else if( right instanceof LocalDate && left instanceof LocalDate ) {
-                return Duration.ofDays( ChronoUnit.DAYS.between( (LocalDate) right, (LocalDate) left ) );
-            }
-            return Duration.between( (Temporal) right, (Temporal) left);
+            return subtractTemporals((Temporal) left, (Temporal) right, ctx);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return new ComparablePeriod(((ChronoPeriod) left).minus((ChronoPeriod) right));
         } else if ( left instanceof Duration && right instanceof Duration ) {
@@ -315,7 +310,9 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).minus( (Duration) right);
         } else if ( left instanceof LocalDate && right instanceof Duration ) {
-            return ((LocalDate) left).minusDays( ((Duration) right).toDays() );
+            LocalDateTime leftLDT = LocalDateTime.of((LocalDate) left, LocalTime.MIDNIGHT);
+            LocalDateTime evaluated = leftLDT.minus((Duration) right);
+            return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
@@ -361,6 +358,7 @@ public class InfixOpNode
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
             final BigDecimal rightDecimal = EvalHelper.getBigDecimalOrNull(right);
             if (rightDecimal.compareTo(BigDecimal.ZERO) == 0) {
+                ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.DIVISION_BY_ZERO.getMask()));
                 return null;
             } else {
                 return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
@@ -375,8 +373,8 @@ public class InfixOpNode
     }
 
     public static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
-        BigDecimal l = EvalHelper.getBigDecimalOrNull( left );
-        BigDecimal r = EvalHelper.getBigDecimalOrNull( right );
+        BigDecimal l = left instanceof String ? null : EvalHelper.getBigDecimalOrNull( left );
+        BigDecimal r = right instanceof String ? null : EvalHelper.getBigDecimalOrNull( right );
         if ( l == null || r == null ) {
             return null;
         }
@@ -384,6 +382,7 @@ public class InfixOpNode
             return op.apply( l, r );
         } catch ( ArithmeticException e ) {
             // happens in cases like division by 0
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.GENERAL_ARITHMETIC_EXCEPTION, e.getMessage())));
             return null;
         }
     }
@@ -422,6 +421,12 @@ public class InfixOpNode
         return l || r;
     }
 
+    private static LocalDate addLocalDateAndDuration(LocalDate left, Duration right) {
+        LocalDateTime leftLDT = LocalDateTime.of( left, LocalTime.MIDNIGHT);
+        LocalDateTime evaluated = leftLDT.plus(right);
+        return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
+    }
+
     @Override
     public ASTNode[] getChildrenNode() {
         return new ASTNode[] { left, right };
@@ -430,5 +435,58 @@ public class InfixOpNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    private static Object subtractTemporals(final Temporal left, final Temporal right, final EvaluationContext ctx) {
+        // Based on the Table 57 in the spec, if it is only date, convert to date and time.
+        final Temporal leftTemporal = getTemporalForSubtraction(left);
+        final Temporal rightTemporal = getTemporalForSubtraction(right);
+
+        if (isAllowedTemporalSubtractionBasedOnSpec(leftTemporal, rightTemporal, ctx)) {
+            return Duration.between(rightTemporal, leftTemporal);
+        } else {
+            return null;
+        }
+    }
+
+    private static Temporal getTemporalForSubtraction(final Temporal temporal) {
+        if (temporal instanceof LocalDate) {
+            return ZonedDateTime.of((LocalDate) temporal, LocalTime.MIDNIGHT, ZoneOffset.UTC);
+        } else {
+            return temporal;
+        }
+    }
+
+    /**
+     * Checks if the subtraction is supported by the DMN specification based on the temporals specified as parameters.
+     *
+     * @param leftTemporal Left temporal parameter of the subtraction expression.
+     * @param rightTemporal Right temporal parameter of the subtraction expression.
+     * @param ctx Context that is used to notify about not allowed set of parameters.
+     * @return True, if the temporal parameters are valid for subtraction based on the DMN specification.
+     *         False, when subtraction is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>
+     *         - Subtraction of a datetime with timezone and a datetime without a timezone is not defined in the specification.
+     *         - Subtraction of a time and a datetime is not defined in the specification.
+     */
+    private static boolean isAllowedTemporalSubtractionBasedOnSpec(final Temporal leftTemporal, final Temporal rightTemporal, final EvaluationContext ctx) {
+        // Both datetimes have a timezone or both timezones don't have it. Cannot combine timezoned datetime and datetime without a timezone.
+        if ((leftTemporal instanceof ZonedDateTime || leftTemporal instanceof OffsetDateTime)
+                && (rightTemporal instanceof LocalDateTime))  {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "first", leftTemporal, "second", rightTemporal)));
+            return false;
+        } else if ((rightTemporal instanceof ZonedDateTime || rightTemporal instanceof OffsetDateTime)
+                && (leftTemporal instanceof LocalDateTime)) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.DATE_AND_TIME_TIMEZONE_NEEDED, "second", rightTemporal, "first", leftTemporal)));
+            return false;
+        }
+
+        // Cannot combine time and date (or datetime) based on the DMN specification.
+        if ((!leftTemporal.isSupported(ChronoUnit.DAYS) && rightTemporal.isSupported(ChronoUnit.DAYS))
+                || (!rightTemporal.isSupported(ChronoUnit.DAYS) && leftTemporal.isSupported(ChronoUnit.DAYS))) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return false;
+        }
+
+        return true;
     }
 }

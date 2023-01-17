@@ -15,13 +15,17 @@
 
 package org.drools.decisiontable;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.drl.extensions.DecisionTableProvider;
 import org.drools.util.StringUtils;
 import org.drools.template.parser.DecisionTableParseException;
@@ -92,6 +96,19 @@ public class DecisionTableProviderImpl
         }
 
         return null;
+    }
+
+    @Override
+    public Map<String, List<String[]>> loadPropertiesFromFile(File file, DecisionTableConfiguration configuration) {
+        switch (configuration.getInputType()) {
+            case XLS :
+            case XLSX :
+                PropertiesSheetListener propertiesSheetListener = new PropertiesSheetListener();
+                InputType.XLS.createParser(propertiesSheetListener).parseFile(file);
+                return propertiesSheetListener.getProperties();
+            default :
+                return new HashMap<>();
+        }
     }
 
     /**

@@ -108,7 +108,7 @@ public class DMNAlphaNetworkEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         FeelDecisionTable feelDecisionTable = new FeelDecisionTable(decisionTableName, outputs, feelHelper, variableTypes, dmnModelImpl.getTypeRegistry().unknown());
 
-        return new DMNAlphaNetworkEvaluatorImpl(dmnCompiledAlphaNetworkEvaluator, feelHelper, decisionTableName, feelDecisionTable, dmnBaseNode, results);
+        return new DMNAlphaNetworkEvaluatorImpl(dmnCompiledAlphaNetworkEvaluator, feelHelper, decisionTableName, decisionTable.getId(), feelDecisionTable, dmnBaseNode, results);
     }
 
     private ObjectTypeNodeCompiler createAlphaNetworkCompiler(ObjectTypeNode firstObjectTypeNodeOfRete) {

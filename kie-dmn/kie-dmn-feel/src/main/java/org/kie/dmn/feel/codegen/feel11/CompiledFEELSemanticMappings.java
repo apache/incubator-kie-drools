@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
@@ -339,41 +338,36 @@ public class CompiledFEELSemanticMappings {
      * FEEL spec Table 45
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object add(Object left, Object right) {
-        return InfixOpNode.add(left, right, null);
+    public static Object add(final Object left, final Object right, final EvaluationContext context) {
+        return InfixOpNode.add(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object sub(Object left, Object right) {
-        return InfixOpNode.sub(left, right, null);
+    public static Object sub(final Object left, final Object right, final EvaluationContext context) {
+        return InfixOpNode.sub(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object mult(Object left, Object right) {
-        return InfixOpNode.mult(left, right, null);
+    public static Object mult(final Object left, final Object right, final EvaluationContext context) {
+        return InfixOpNode.mult(left, right, context);
     }
 
     /**
      * FEEL spec Table 45
      * Delegates to {@link InfixOpNode} except evaluationcontext
      */
-    public static Object div(Object left, Object right) {
-        return InfixOpNode.div(left, right, null);
+    public static Object div(final Object left, final Object right, final EvaluationContext context) {
+        return InfixOpNode.div(left, right, context);
     }
 
-    // to ground to null if right = 0
-    public static Object div(Object left, BigDecimal right) {
-        return right == null || right.signum() == 0 ? null : InfixOpNode.div(left, right, null);
-    }
-
-    public static Object pow(Object left, Object right) {
-        return InfixOpNode.math(left, right, null, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
+    public static Object pow(final Object left, final Object right, final EvaluationContext context) {
+        return InfixOpNode.math(left, right, context, (l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
     }
 
     /**

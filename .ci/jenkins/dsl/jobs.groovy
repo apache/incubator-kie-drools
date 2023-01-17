@@ -76,15 +76,13 @@ KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', 
 
 // Environment nightlies
 setupSpecificBuildChainNightlyJob('native')
-setupSpecificBuildChainNightlyJob('quarkus-main')
-setupSpecificBuildChainNightlyJob('quarkus-branch')
 setupSpecificBuildChainNightlyJob('mandrel')
-setupSpecificBuildChainNightlyJob('mandrel-lts')
-setupSpecificBuildChainNightlyJob('quarkus-lts')
 
 // Jobs with integration branch
 setupSpecificNightlyJob('quarkus-main', true)
+setupSpecificNightlyJob('quarkus-branch', true)
 setupSpecificNightlyJob('quarkus-lts', true)
+setupSpecificNightlyJob('mandrel-lts', true)
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)

@@ -50,14 +50,9 @@ As introduced in xref:getting-started/index.adoc#first-rule-project_getting-star
       <artifactId>drools-ruleunits-engine</artifactId>
       <version>${version.org.drools}</version>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-      <version>${version.org.drools}</version>
-    </dependency>
 ----
 
-`drools-ruleunits-engine` is required for Rule Unit APIs. `drools-model-compiler` is required to generate executable model that is also recommended in {PRODUCT} 8.
+`drools-ruleunits-engine` is required for Rule Unit APIs.
 
 Regarding related Java API usage, in {PRODUCT} 7, you create a `KieSession` from rule assets. Then insert facts and fire rules.
 

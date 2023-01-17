@@ -40,12 +40,8 @@ Firstly, `pom.xml`.
       <groupId>org.drools</groupId>
       <artifactId>drools-ruleunits-engine</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-    </dependency>
 ----
-They are required dependencies for executable model with rule unit use cases.
+This is a required dependency for rule unit use cases.
 
 [NOTE]
 ====

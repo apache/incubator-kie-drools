@@ -164,7 +164,11 @@ public class DroolsQuarkusResourceUtils {
             compilerSettings.addClasspath(classPath.toFile());
         }
         for (ResolvedDependency i : dependencies) {
-            compilerSettings.addClasspath(i.getResolvedPaths().getSinglePath().toFile());
+            if (i.isResolved()) {
+                compilerSettings.addClasspath(i.getResolvedPaths().getSinglePath().toFile());
+            } else {
+                LOGGER.info("Ignoring non-resolved dependency {}", i.getKey().toGacString());
+            }
         }
         return compilerSettings;
     }

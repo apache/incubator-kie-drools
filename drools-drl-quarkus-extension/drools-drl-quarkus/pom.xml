@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.drools</groupId>
         <artifactId>drools-drl-quarkus-extension</artifactId>
-        <version>8.33.0-SNAPSHOT</version>
+        <version>8.34.0-SNAPSHOT</version>
     </parent>
 
     <name>Drools :: Quarkus Extension :: Runtime</name>
@@ -114,7 +114,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.jboss.jandex</groupId>
+                <groupId>io.smallrye</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
             </plugin>
         </plugins>

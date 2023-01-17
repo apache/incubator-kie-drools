@@ -163,16 +163,8 @@ MavenCommand getEcosystemMavenCommand(String directory, boolean includeSettings 
 
 MavenCommand getFullMavenCommand(String directory, boolean includeSettings = true) {
     def mvnCmd = getEcosystemMavenCommand(directory, includeSettings)
-    if (isNative()) {
-        mvnCmd.withProfiles(['native'])
-                .withProperty('quarkus.native.container-build', true)
-                .withProperty('quarkus.native.container-runtime', 'docker')
-                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
-
-        String builderImage = getNativeBuilderImage()
-        if (builderImage) {
-            mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
-        }
+    if (env.BUILD_MVN_OPTS_CURRENT) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS_CURRENT ])
     }
     return mvnCmd
 }
@@ -187,14 +179,6 @@ void mavenSetProperty(String repo, String property, String newVersion) {
 
 void cleanContainers() {
     cloud.cleanContainersAndImages('docker')
-}
-
-boolean isNative() {
-    return env.NATIVE ? env.NATIVE.toBoolean() : false
-}
-
-String getNativeBuilderImage() {
-    return env.NATIVE_BUILDER_IMAGE
 }
 
 String getQuarkusBranch() {

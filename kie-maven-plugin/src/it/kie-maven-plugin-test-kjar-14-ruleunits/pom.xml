@@ -16,17 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-model-compiler</artifactId>
-      <version>${org.kie.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-api</artifactId>
-      <version>${org.kie.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-impl</artifactId>
+      <artifactId>drools-ruleunits-engine</artifactId>
       <version>${org.kie.version}</version>
     </dependency>
 

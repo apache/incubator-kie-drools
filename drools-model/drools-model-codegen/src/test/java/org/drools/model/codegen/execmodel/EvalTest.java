@@ -475,4 +475,70 @@ public class EvalTest extends BaseModelTest {
         ksession.insert("5");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
+
+    public static class Dt1 implements java.io.Serializable{
+        private java.lang.Integer a;
+
+        public Integer getA() {
+            return a;
+        }
+
+        public void setA(Integer a) {
+            this.a = a;
+        }
+    }
+
+    public static class Dt2 implements java.io.Serializable{
+        private String t;
+
+        public String getT() {
+            return t;
+        }
+
+        public void setT(String t) {
+            this.t = t;
+        }
+    }
+
+    @Test
+    public void testModifyEvalAfterJoin() {
+        // DROOLS-7255
+        String str =
+                "import " + Dt1.class.getCanonicalName() + ";" +
+                "import " + Dt2.class.getCanonicalName() + ";" +
+                "\n" +
+                "rule \"b_1\"\n" +
+                "    when\n" +
+                "        dt1 : Dt1( )\n" +
+                "        dt2 : Dt2( )\n" +
+                "        eval(dt2.getT()==\"YES\")\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"b_2\"\n" +
+                "    when\n" +
+                "        dt2 : Dt2(  )\n" +
+                "        eval(dt2.getT()==\"YES\")\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"modify dt2 rule\"\n" +
+                "    when\n" +
+                "        dt1 : Dt1(a == 1)\n" +
+                "        dt2 : Dt2( )\n" +
+                "    then\n" +
+                "        modify( dt2 ) {\n" +
+                "            setT(\"YES\")\n" +
+                "        }\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Dt1 dt1 = new Dt1();
+        dt1.setA(1);
+        ksession.insert(dt1);
+        ksession.insert(new Dt2());
+
+        assertThat(ksession.fireAllRules()).isEqualTo(3);
+    }
 }

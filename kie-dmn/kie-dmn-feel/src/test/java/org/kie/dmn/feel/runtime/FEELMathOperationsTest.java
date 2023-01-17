@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
@@ -29,21 +30,35 @@ public class FEELMathOperationsTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 { "10+5", BigDecimal.valueOf( 15 ) , null},
+                { "10+\"5\"", null, null},
                 { "-10 + -5", BigDecimal.valueOf( -15 ) , null},
+                { "-10 + \"-5\"", null , null},
                 { "(-10) + (-5)", BigDecimal.valueOf( -15 ) , null},
+                { "(-10) + \"(-5)\"", null, null},
+                { "(-10) + (\"-5\")", null, null}, { "10-5", BigDecimal.valueOf( 5 ) , null},
                 { "10-5", BigDecimal.valueOf( 5 ) , null},
+                { "10-\"5\"", null, null},
                 { "-10 - -5", BigDecimal.valueOf( -5 ) , null},
+                { "-10 - \"-5\"", null, null},
                 { "(-10) - (-5)", BigDecimal.valueOf( -5 ) , null},
+                { "-10 - \"(-5)\"", null, null},
+                { "-10 - (\"-5\")", null, null},
                 { "(10 + 20) - (-5 + 3)", BigDecimal.valueOf( 32 ) , null},
+                { "(10 + 20) - (\"-5\" + 3)", null, null},
                 { "10*5", BigDecimal.valueOf( 50 ) , null},
+                { "-10*\"5\"", null, null},
                 { "-10 * -5", BigDecimal.valueOf( 50 ) , null},
+                { "-10 * \"-5\"", null, null},
                 { "(-10) * (-5)", BigDecimal.valueOf( 50 ) , null},
+                { "(-10) * (\"-5\")", null, null},
                 { "(10 + 20) * (-5 * 3)", BigDecimal.valueOf( -450 ) , null},
+                { "(10 + 20) * (\"-5\" * 3)", null , null},
                 { "10/5", BigDecimal.valueOf( 2 ) , null},
+                { "10/\"5\"", null, null},
                 { "-10 / -5", BigDecimal.valueOf( 2 ) , null},
                 { "(-10) / (-5)", BigDecimal.valueOf( 2 ) , null},
                 { "(10 + 20) / (-5 * 3)", BigDecimal.valueOf( -2 ) , null},
-                { "(10 + 20) / 0", null , null},
+                { "(10 + 20) / 0", null , FEELEvent.Severity.ERROR},
                 { "10 ** 5", BigDecimal.valueOf( 100000 ) , null},
                 { "10 ** -5", new BigDecimal( "0.00001" ) , null},
                 { "(5+2) ** 5", BigDecimal.valueOf( 16807 ) , null},
@@ -69,6 +84,10 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "--1", BigDecimal.valueOf( 1 ), null },
                 { "---1", BigDecimal.valueOf( -1 ), null },
                 { "{ amount : 100000.00, rate : 0.25, term : 36, PMT : (amount *rate/12) / (1 - (1 + rate/12)**-term) }.PMT", EvalHelper.getBigDecimalOrNull( "3975.982590125552338278440100112431" ), null},
+                { "@\"2021-01-02\" - @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
+                { "@\"2021-01-01\" - @\"-PT25H\"", LocalDate.of(2021, 1, 2 ), null  },
+                { "@\"2021-01-01\" + @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
+                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  }
         };
         return addAdditionalParameters(cases, false);
     }

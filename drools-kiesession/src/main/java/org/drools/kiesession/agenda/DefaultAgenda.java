@@ -570,8 +570,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
             RuleAgendaItem item = eager.removeFirst();
             if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
                 evaluateQueriesForRule( item );
-                RuleExecutor ruleExecutor = item.getRuleExecutor();
-                ruleExecutor.evaluateNetwork( this );
+                item.getRuleExecutor().evaluateNetwork( this );
             }
         }
     }

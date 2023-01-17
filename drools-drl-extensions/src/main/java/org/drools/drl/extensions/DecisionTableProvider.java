@@ -15,7 +15,9 @@
 
 package org.drools.drl.extensions;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.Resource;
@@ -29,5 +31,5 @@ public interface DecisionTableProvider extends KieService {
     List<String> loadFromInputStreamWithTemplates(Resource resource,
                                                   DecisionTableConfiguration configuration);
 
-
+    Map<String,List<String[]>> loadPropertiesFromFile(File file, DecisionTableConfiguration configuration);
 }

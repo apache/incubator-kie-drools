@@ -58,6 +58,7 @@ public class DMNDTExpressionEvaluator
     private final DMNNode           node;
     private       DTInvokerFunction dt;
     private       FEELImpl          feel;
+    private       String            dtNodeId;
 
     public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt) {
         this.node = node;
@@ -73,7 +74,7 @@ public class DMNDTExpressionEvaluator
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
         try {
-            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result );
             List<String> paramNames = dt.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList());
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
@@ -101,7 +102,7 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 
@@ -141,5 +142,14 @@ public class DMNDTExpressionEvaluator
         public boolean hasErrors = false;
         public List<Integer> matchedRules;
         public List<Integer> fired;
+    }
+    
+
+    public String getDtNodeId() {
+        return dtNodeId;
+    }
+
+    public void setDtNodeId(String dtNodeId) {
+        this.dtNodeId = dtNodeId;
     }
 }

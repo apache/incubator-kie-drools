@@ -36,8 +36,8 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
 
     private static final long serialVersionUID = -6975232157053159223L;
     private final String function;
-    private String mapMissingTo;
-    private String defaultValue;
+    private Object mapMissingTo;
+    private Object defaultValue;
     private INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod;
     private List<KiePMMLExpression> kiePMMLExpressions;
 
@@ -84,11 +84,11 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
         return function;
     }
 
-    public String getMapMissingTo() {
+    public Object getMapMissingTo() {
         return mapMissingTo;
     }
 
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return defaultValue;
     }
 
@@ -138,14 +138,14 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
             super("Apply-", () -> new KiePMMLApply(name, extensions, function));
         }
 
-        public Builder withMapMissingTo(String mapMissingTo) {
+        public Builder withMapMissingTo(Object mapMissingTo) {
             if (mapMissingTo != null) {
                 toBuild.mapMissingTo = mapMissingTo;
             }
             return this;
         }
 
-        public Builder withDefaultValue(String defaultValue) {
+        public Builder withDefaultValue(Object defaultValue) {
             if (defaultValue != null) {
                 toBuild.defaultValue = defaultValue;
             }
