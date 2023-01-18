@@ -464,8 +464,11 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         if (jColIdx < ddtaTable.inputCols()) {
             List<Bound> bounds = findBoundsSorted(ddtaTable, jColIdx, activeRules);
             List<Interval> activeIntervals = new ArrayList<>();
-            Bound<?> lastBound = bounds.get(0);
+            Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
+                if (lastBound == null) {
+                    lastBound = currentBound;
+                }
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.size() > 1 && canBeNewCurrInterval(lastBound, currentBound)) {
                     Interval analysisInterval = new Interval(lastBound.isUpperBound() ? Interval.invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
@@ -604,7 +607,7 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
 
     private ToIntervals toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
         List<Interval> results = new ArrayList<>();
-        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
+        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode && !isNegated) {
             return new ToIntervals(Collections.emptyList(), false);
         }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
@@ -646,17 +649,24 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             final boolean allSingularities = results.stream().allMatch(Interval::isSingularity);
             return new ToIntervals(results, allSingularities);
         } else {
+            boolean isNotNull = false;
             for (BaseNode n : elements) {
                 if (n instanceof DashNode) {
                     results.add(new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col));
                     continue;
                 }
                 UnaryTestNode ut = (UnaryTestNode) n;
+                // NullNode gets here when it is negated not(null). In that case the interval is everything (specified minMax).
+                if (ut.getValue() instanceof NullNode) {
+                    results.add(new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col));
+                    isNotNull = true;
+                    continue;
+                }
                 Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
                 results.add(interval);
             }
             final boolean allSingularities = results.stream().allMatch(Interval::isSingularity); // intentionally record singularities before negating / not()
-            if (isNegated) {
+            if (isNegated && !isNotNull) {
                 return new ToIntervals(Interval.invertOverDomain(results, minMax), allSingularities);
             }
             return new ToIntervals(results, allSingularities);
