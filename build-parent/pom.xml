@@ -396,6 +396,12 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-core</artifactId>
         <version>${version.io.smallrye.openapi.core}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>io.smallrye</groupId>
+            <artifactId>jandex</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -1440,59 +1446,6 @@
               </configuration>
             </execution>
             <execution>
-              <id>ban-blacklisted-dependencies</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <bannedDependencies>
-                    <excludes combine.children="append">
-                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                      <exclude>commons-logging:commons-log*</exclude>
-
-                      <exclude>log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
-                      <exclude>javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
-                      <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
-                      <exclude>org.jboss:jandex</exclude> <!-- Use io.smallrye:jandex instead -->
-                      <exclude>org.jboss.jandex:jandex-maven-plugin</exclude> <!-- Use io.smallrye:jandex-maven-plugin instead -->
-                      <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
-
-                      <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
-                      <exclude>javax.activation:activation</exclude>
-                      <exclude>javax.annotation:javax.annotation-api</exclude>
-                      <exclude>javax.enterprise:cdi-api</exclude>
-                      <exclude>javax.inject:javax.inject</exclude>
-                      <exclude>javax.interceptor:javax.interceptor-api</exclude>
-                      <exclude>javax.jws:jsr181-api</exclude>
-                      <exclude>javax.persistence:javax.persistence-api</exclude>
-                      <exclude>javax.servlet:javax.servlet-api</exclude>
-                      <exclude>javax.xml.bind:jaxb-api</exclude>
-                      <exclude>javax.xml.soap:javax.xml.soap-api</exclude>
-                      <exclude>javax.xml.ws:javaxws-api</exclude>
-                      <exclude>javax.el:javax.el-api</exclude>
-                      <exclude>javax.ws.rs:jsr311-api</exclude>
-                      <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
-                      <exclude>javax.mail:mail</exclude>
-                      <exclude>javax.xml.stream:stax-api</exclude>
-                      <exclude>org.jboss.spec.javax.*:*</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-activation_1.1_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-annotation_1.0_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-javamail_1.4_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-jaxws_2.1_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</exclude>
-                      <exclude>org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec</exclude>
-                      <!-- End  -->
-                    </excludes>
-                  </bannedDependencies>
-                </rules>
-                <fail>${enforcer.failOnBannedDependencies}</fail>
-              </configuration>
-            </execution>
-            <execution>
               <id>ban-duplicated-classes</id>
               <!-- Using phase=none as we don't want this execution as part of the default build. The phase
                    is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
@@ -2381,7 +2334,75 @@
       </activation>
       <properties>
         <org.kie.productized>true</org.kie.productized>
+        <jandex.group-id>org.jboss</jandex.group-id>
+        <version.io.smallrye.jandex>2.4.3.Final</version.io.smallrye.jandex>
+        <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
+        <version.io.smallrye.jandex-maven-plugin>1.2.3</version.io.smallrye.jandex-maven-plugin>
       </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <executions>
+                <!-- Productized ban-blacklisted-dependencies: do not ban org.jboss:jandex on productized profile -->
+                <execution>
+                  <id>ban-blacklisted-dependencies</id>
+                  <phase>validate</phase>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                    <rules>
+                      <bannedDependencies>
+                        <excludes combine.children="append">
+                          <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                          <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                          <exclude>commons-logging:commons-log*</exclude>
+
+                          <exclude>log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                          <exclude>javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                          <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
+                          <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
+
+                          <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
+                          <exclude>javax.activation:activation</exclude>
+                          <exclude>javax.annotation:javax.annotation-api</exclude>
+                          <exclude>javax.enterprise:cdi-api</exclude>
+                          <exclude>javax.inject:javax.inject</exclude>
+                          <exclude>javax.interceptor:javax.interceptor-api</exclude>
+                          <exclude>javax.jws:jsr181-api</exclude>
+                          <exclude>javax.persistence:javax.persistence-api</exclude>
+                          <exclude>javax.servlet:javax.servlet-api</exclude>
+                          <exclude>javax.xml.bind:jaxb-api</exclude>
+                          <exclude>javax.xml.soap:javax.xml.soap-api</exclude>
+                          <exclude>javax.xml.ws:javaxws-api</exclude>
+                          <exclude>javax.el:javax.el-api</exclude>
+                          <exclude>javax.ws.rs:jsr311-api</exclude>
+                          <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
+                          <exclude>javax.mail:mail</exclude>
+                          <exclude>javax.xml.stream:stax-api</exclude>
+                          <exclude>org.jboss.spec.javax.*:*</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-activation_1.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-annotation_1.0_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-javamail_1.4_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-jaxws_2.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec</exclude>
+                          <!-- End  -->
+                        </excludes>
+                      </bannedDependencies>
+                    </rules>
+                    <fail>${enforcer.failOnBannedDependencies}</fail>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
     <!--
       Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
@@ -2554,19 +2575,78 @@
       </build>
     </profile>
     <profile>
-      <id>productized</id>
+      <id>default</id>
       <activation>
         <property>
-          <name>productized</name>
+          <name>!productized</name>
         </property>
       </activation>
-      <properties>
-        <jandex.group-id>org.jboss</jandex.group-id>
-        <version.io.smallrye.jandex>2.4.3.Final</version.io.smallrye.jandex>
-        <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
-        <version.io.smallrye.jandex-maven-plugin>1.2.3</version.io.smallrye.jandex-maven-plugin>
-        <enforcer.skip>true</enforcer.skip>
-      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-enforcer-plugin</artifactId>
+              <executions>
+                <!-- Default ban-blacklisted-dependencies execution, when productized not enabled -->
+                <execution>
+                  <id>ban-blacklisted-dependencies</id>
+                  <phase>validate</phase>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                    <rules>
+                      <bannedDependencies>
+                        <excludes combine.children="append">
+                          <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                          <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                          <exclude>commons-logging:commons-log*</exclude>
+
+                          <exclude>log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                          <exclude>javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                          <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
+                          <exclude>org.jboss:jandex</exclude> <!-- Use io.smallrye:jandex instead -->
+                          <exclude>org.jboss.jandex:jandex-maven-plugin</exclude> <!-- Use io.smallrye:jandex-maven-plugin instead -->
+                          <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
+
+                          <!-- Java EE 8 Spec JARs: Use Jakarta EE 8 instead. -->
+                          <exclude>javax.activation:activation</exclude>
+                          <exclude>javax.annotation:javax.annotation-api</exclude>
+                          <exclude>javax.enterprise:cdi-api</exclude>
+                          <exclude>javax.inject:javax.inject</exclude>
+                          <exclude>javax.interceptor:javax.interceptor-api</exclude>
+                          <exclude>javax.jws:jsr181-api</exclude>
+                          <exclude>javax.persistence:javax.persistence-api</exclude>
+                          <exclude>javax.servlet:javax.servlet-api</exclude>
+                          <exclude>javax.xml.bind:jaxb-api</exclude>
+                          <exclude>javax.xml.soap:javax.xml.soap-api</exclude>
+                          <exclude>javax.xml.ws:javaxws-api</exclude>
+                          <exclude>javax.el:javax.el-api</exclude>
+                          <exclude>javax.ws.rs:jsr311-api</exclude>
+                          <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
+                          <exclude>javax.mail:mail</exclude>
+                          <exclude>javax.xml.stream:stax-api</exclude>
+                          <exclude>org.jboss.spec.javax.*:*</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-activation_1.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-annotation_1.0_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-javamail_1.4_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-jaxws_2.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-servlet_3.0_spec</exclude>
+                          <exclude>org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec</exclude>
+                          <!-- End  -->
+                        </excludes>
+                      </bannedDependencies>
+                    </rules>
+                    <fail>${enforcer.failOnBannedDependencies}</fail>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 
