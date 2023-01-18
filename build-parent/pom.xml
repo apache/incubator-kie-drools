@@ -396,12 +396,6 @@
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-core</artifactId>
         <version>${version.io.smallrye.openapi.core}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>io.smallrye</groupId>
-            <artifactId>jandex</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
