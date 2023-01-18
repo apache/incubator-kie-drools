@@ -25,12 +25,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class InfixOpNodeTest {
 
@@ -154,6 +162,31 @@ public class InfixOpNodeTest {
         right = Duration.of(-1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
         assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+    }
+    @Test
+    public void divNumberByDuration() {
+        Object left = 5;
+        Object right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.div(left, right, mock(EvaluationContext.class))).isNull();
+    }
+
+    @Test
+    public void isAllowedDivisionBasedOnSpec() {
+        EvaluationContext evaluationContext = mock(EvaluationContext.class);
+        Object left = 300;
+        Object right = 25;
+        assertThat(InfixOpNode.isAllowedDivisionBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        left = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.isAllowedDivisionBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.isAllowedDivisionBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        left = 5;
+        right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.isAllowedDivisionBasedOnSpec(left, right, evaluationContext)).isFalse();
+        verify(evaluationContext, times(1)).notifyEvt(any(Supplier.class));
     }
 
 }
