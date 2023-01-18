@@ -39,12 +39,14 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.IntervalTimer;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,14 +54,19 @@ import static org.mockito.Mockito.when;
 public class RuleBuilderTest {
 
     @Test
-    public void testBuild() throws Exception {
+    public void testBuild() {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
 
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(new PackageDescr("org.drools"));
         InternalKnowledgePackage pkg = kBuilder.getPackage("org.drools");
 
-        final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
+        final PackageDescr pkgDescr;
+        try {
+            pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
+        } catch (DroolsParserException e) {
+            throw new RuntimeException(e);
+        }
 
         // just checking there is no parsing errors
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -98,7 +105,7 @@ public class RuleBuilderTest {
     }
 
     @Test
-    public void testBuildAttributes() throws Exception {
+    public void testBuildAttributes() {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
         final RuleImpl rule = mock( RuleImpl.class );
@@ -158,7 +165,7 @@ public class RuleBuilderTest {
     }
 
     @Test
-    public void testBuildMetaAttributes() throws Exception {
+    public void testBuildMetaAttributes() {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
         final RuleImpl rule = mock( RuleImpl.class );
@@ -191,7 +198,7 @@ public class RuleBuilderTest {
     }
 
     @Test
-    public void testBuildDurationExpression() throws Exception {
+    public void testBuildDurationExpression() {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
         final RuleImpl rule = mock( RuleImpl.class );
@@ -220,7 +227,7 @@ public class RuleBuilderTest {
     }
 
     @Test
-    public void testBuildBigDecimalLiteralConstraint() throws Exception {
+    public void testBuildBigDecimalLiteralConstraint() {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
@@ -248,7 +255,7 @@ public class RuleBuilderTest {
     }
 
     @Test
-    public void testInvalidDialect() throws Exception {
+    public void testInvalidDialect() {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         ruleDescr.addAttribute( new AttributeDescr( "dialect", "mvl" ) );
@@ -256,13 +263,16 @@ public class RuleBuilderTest {
         pkgDescr.addRule( ruleDescr );
 
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
-        kBuilder.addPackage(pkgDescr);
-
-        assertThat(kBuilder.getErrors().isEmpty()).as(kBuilder.getErrors().toString()).isFalse();
-    }    
+        try {
+            kBuilder.addPackage(pkgDescr);
+            fail("Use of an invalid dialect should cause an exception");
+        } catch (Exception e) {
+            // ignore
+        }
+    }
     
     @Test
-    public void testBuildBigIntegerLiteralConstraint() throws Exception {
+    public void testBuildBigIntegerLiteralConstraint() {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
         AndDescr andDescr = new AndDescr();
