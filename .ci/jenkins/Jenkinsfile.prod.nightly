@@ -12,8 +12,8 @@ pipeline {
         string(description: 'The deployment URL', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL')
         booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
         string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
-        string(description: 'The product version', name: 'PRODUCT_VERSION')
-        string(description: 'The drools product version', name: 'DROOLS_PRODUCT_VERSION')
+        string(description: 'The product version, if not provided the optaplanner main branch one will be used', name: 'PRODUCT_VERSION')
+        string(description: 'The drools product version, if not provided the drools main branch one will be used', name: 'DROOLS_PRODUCT_VERSION')
         string(description: 'The config repository branch', name: 'CONFIG_BRANCH', defaultValue: 'main')
     }
     options {
@@ -46,10 +46,13 @@ pipeline {
                         pipelineHelper.retry(
                         {
                             def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
+                            def droolsVersion = env.DROOLS_PRODUCT_VERSION ?: parseVersionFromPom("kiegroup/drools")
+                            def productVersion = env.PRODUCT_VERSION ?: parseVersionFromPom("kiegroup/optaplanner")
                             def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing', 'jboss-integration/rhbop-optaplanner']
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
-                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
+                                'droolsProductVersion': droolsVersion,
+                                'productVersion': productVersion,
                                 'drools-scmRevision': getCurrentBranch(),
                                 'optaplanner-quickstarts-scmRevision': getOptaPlannerQuickstartsBranch()
                             ]
@@ -217,4 +220,17 @@ String calculateArchiveRepoBranch() {
     }
     // e.g., main
     return branch
+}
+
+
+// Parse version from main branch of the given project
+//      * project: in the form of owner/repository
+def parseVersionFromPom(String project) {
+    def currentBranch = getCurrentBranch() ?: env.GIT_BRANCH
+    def pomFilename = "${project.replaceAll("/", "_")}_pom.xml"
+    def pomPath = "${env.WORKSPACE}/${pomFilename}"
+
+    sh "curl https://raw.githubusercontent.com/${project}/${currentBranch}/pom.xml -o ${pomPath}"
+    def pom = readMavenPom file: pomPath
+    return pom.getVersion().replaceAll('-SNAPSHOT', '')
 }
