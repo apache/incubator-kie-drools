@@ -26,6 +26,7 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition.Type;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 class FileNameWorkflowOperationIdTest {
@@ -65,5 +66,13 @@ class FileNameWorkflowOperationIdTest {
         assertThat(id.getPackageName()).isEqualTo("pepe");
         assertThat(id.getUri()).hasToString("http://myserver.com/spec/PePE1.yaml");
         assertThat(id.getService()).isEqualTo("service");
+    }
+
+    @Test
+    void testEmptyFileName() {
+        definition.setType(Type.REST);
+        definition.setOperation("file://wrongUri.yaml#doSomething");
+        assertThatThrownBy(() -> WorkflowOperationIdFactoryType.FILE_NAME.factory().from(workflow, definition, Optional.empty())).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Empty file name");
     }
 }

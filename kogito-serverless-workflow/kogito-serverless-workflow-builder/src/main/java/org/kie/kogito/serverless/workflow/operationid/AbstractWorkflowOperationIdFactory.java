@@ -52,11 +52,15 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
             uri = URI.create(actionResource.getUri());
             fileName = getFileName(workflow, function, context, uri, actionResource.getOperation(), actionResource.getService());
         }
-        String packageName = onlyChars(removeExt(fileName.toLowerCase()));
-        if (packageName == null || packageName.isBlank()) {
+        if (fileName == null || fileName.isBlank()) {
             throw new IllegalArgumentException(
-                    format("Unable to define a package name for function named '%s', please consider using a different strategy defined in the kogito.sw.operationIdStrategy property.",
-                            function.getName()));
+                    format("Empty file name for function '%s', please review uri '%s' or consider using a different strategy defined in the kogito.sw.operationIdStrategy property",
+                            function.getName(), uri));
+        }
+        String packageName = onlyChars(removeExt(fileName.toLowerCase()));
+        if (packageName.isBlank()) {
+            throw new IllegalArgumentException(
+                    format("Empty package for file '%s'. A file name should contain at least one letter which is not part of the extension", fileName));
         }
         return new WorkflowOperationId(uri, actionResource.getOperation(), actionResource.getService(), fileName, packageName);
     }
