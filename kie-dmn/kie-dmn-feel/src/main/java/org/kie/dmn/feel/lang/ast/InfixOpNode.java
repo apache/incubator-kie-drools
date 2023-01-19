@@ -347,12 +347,13 @@ public class InfixOpNode
     public static Object div(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
-        } else if (!isAllowedDivisionBasedOnSpec(left, right, ctx)) {
-            return null;
-        } else if ( left instanceof Duration && right instanceof Number ) {
+        }  else if ( left instanceof Duration && right instanceof Number ) {
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
             return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
+        }   else if  (left instanceof Number && right instanceof Duration) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else if ( left instanceof Duration && right instanceof Duration ) {
             return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
@@ -364,7 +365,8 @@ public class InfixOpNode
                 return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
             }
         } else if (left instanceof Number && right instanceof ChronoPeriod) {
-            return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(left).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128).intValue());
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
         } else {
@@ -467,13 +469,13 @@ public class InfixOpNode
      *         False, when division is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>
      *         - Division of a number by a duration is not allowed in the specification.
      */
-    static boolean isAllowedDivisionBasedOnSpec(final Object left, final Object right, final EvaluationContext ctx) {
-        if (left instanceof Number && right instanceof Duration) {
-            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
-            return false;
-        }
-        return true;
-    }
+    // static boolean isAllowedDivisionBasedOnSpec(final Object left, final Object right, final EvaluationContext ctx) {
+    //     if (left instanceof Number && right instanceof Duration) {
+    //         ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     /**
      * Checks if the subtraction is supported by the DMN specification based on the temporals specified as parameters.
