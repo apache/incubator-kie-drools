@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -351,7 +352,7 @@ public class InfixOpNode
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
             return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
-        } else if ( left instanceof Number && right instanceof Duration || left instanceof Number && right instanceof ChronoPeriod ) {
+        } else if ( left instanceof Number && right instanceof TemporalAmount) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
         } else if ( left instanceof Duration && right instanceof Duration ) {
