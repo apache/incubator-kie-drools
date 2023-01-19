@@ -21,10 +21,12 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import guru.nidi.graphviz.engine.Graphviz;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.model.Rule;
+import org.junit.After;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +40,11 @@ import static org.assertj.core.api.Assertions.linesOf;
  *
  */
 public class GraphvizOutputTest {
+
+    @After
+    public void tearDown() {
+        Graphviz.releaseEngine();
+    }
 
     @Test
     public void generate_simpleGraph() throws URISyntaxException {
@@ -80,7 +87,7 @@ public class GraphvizOutputTest {
     public void generate_simulateEngineFailure() throws URISyntaxException {
         Graph graph = createSimpleGraph();
 
-        GraphImageGenerator generator = new GraphImageGenerator("simple", true); // initialize with a failing render engine without fallback
+        GraphImageGenerator generator = GraphImageGenerator.getGraphImageGeneratorWithErrorGraphvizEngine("simple"); // initialize with a failing render engine without fallback
         String filePathDot = generator.generateDot(graph);
         File actual = new File(filePathDot);
         File expected = new File(this.getClass().getResource("simple.dot").toURI());

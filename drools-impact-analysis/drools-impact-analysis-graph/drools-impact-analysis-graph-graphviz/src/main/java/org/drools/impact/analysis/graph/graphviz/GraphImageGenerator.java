@@ -76,29 +76,33 @@ public class GraphImageGenerator {
         initEngines();
     }
 
-    // test purpose to simulate an environment where rendering engine is not available
-    public GraphImageGenerator(String graphName, boolean errorEngine) {
-        this.graphName = graphName;
-        if (errorEngine) {
-            Graphviz.useEngine(new GraphvizEngine() {
+    // test purpose method to simulate an environment where rendering engine is not available
+    public static GraphImageGenerator getGraphImageGeneratorWithErrorGraphvizEngine(String graphName) {
+        GraphImageGenerator generator = new GraphImageGenerator();
+        generator.graphName = graphName;
+        Graphviz.useEngine(new GraphvizEngine() {
 
-                @Override
-                public void close() throws Exception {}
+            @Override
+            public void close() throws Exception {
+                // not used
+            }
 
-                @Override
-                public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
-                    onError.accept(this); // result in putting ErrorGraphvizEngine into Graphviz.engineQueue
-                }
+            @Override
+            public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
+                onError.accept(this); // results in putting ErrorGraphvizEngine into Graphviz.engineQueue
+            }
 
-                @Override
-                public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
-                    return null;
-                }
+            @Override
+            public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
+                return null;
+            }
 
-            });
-        } else {
-            initEngines();
-        }
+        });
+        return generator;
+    }
+
+    private GraphImageGenerator() {
+        // test purpose
     }
 
     public GraphImageGenerator(String graphName, int width, int height, int cmdLineEngineTimeout) {
