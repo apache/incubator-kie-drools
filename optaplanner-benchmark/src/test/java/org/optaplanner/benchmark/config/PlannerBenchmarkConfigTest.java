@@ -2,7 +2,6 @@ package org.optaplanner.benchmark.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -91,7 +90,7 @@ class PlannerBenchmarkConfigTest {
         pbc.setSolutionFileIOClass(RigidTestdataSolutionFileIO.class);
 
         Class<? extends SolutionFileIO<?>> configured = pbc.getSolutionFileIOClass();
-        assertNotNull(configured);
+        assertThat(configured).isNotNull();
     }
 
     private static class TestdataSolutionFileIO extends JacksonSolutionFileIO<TestdataSolution> {

@@ -1,6 +1,7 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.io.File;
@@ -23,7 +24,6 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
@@ -74,7 +74,7 @@ public abstract class AbstractSubSingleStatisticTest<Point_ extends StatisticPoi
             Marshaller marshaller = context.createMarshaller();
             marshaller.marshal(root, writer);
         } catch (Exception e) {
-            Assertions.fail("Failed serializing statistic.", e);
+            fail("Failed serializing statistic.", e);
         }
 
         // Deserialize from XML.
@@ -82,7 +82,7 @@ public abstract class AbstractSubSingleStatisticTest<Point_ extends StatisticPoi
         try {
             root = unmarshaller.unmarshal(new StreamSource(tempFile.toFile()), clz);
         } catch (Exception e) {
-            Assertions.fail("Failed deserializing statistic.", e);
+            fail("Failed deserializing statistic.", e);
         }
 
         SubSingleStatistic_ deserialized = root.getValue();

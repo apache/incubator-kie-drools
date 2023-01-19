@@ -1,15 +1,14 @@
 package org.optaplanner.core.impl.testutil;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Assertions;
 
 /**
  * On the later JDKs, it is no longer possible to mock {@link Random} to return custom sequences.
@@ -211,12 +210,10 @@ public final class TestRandom extends Random {
      * @throws org.opentest4j.AssertionFailedError when bound not matching
      */
     public void assertIntBoundJustRequested(int bound) {
-        if (Objects.equals(bound, lastRequestedIntBound)) {
-            lastRequestedIntBound = null;
-            return;
-        }
-        Assertions.fail("Expected bound (" + bound + ") to have just been requested, " +
-                "but was (" + lastRequestedIntBound + ").");
+        assertThat(lastRequestedIntBound)
+                .as("Expected bound (%s) to have just been requested, but was (%s).", bound, lastRequestedIntBound)
+                .isEqualTo(bound);
+        lastRequestedIntBound = null;
     }
 
 }
