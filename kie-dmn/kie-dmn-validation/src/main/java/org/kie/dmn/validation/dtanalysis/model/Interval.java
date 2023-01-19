@@ -271,39 +271,41 @@ public class Interval {
         final List<Interval> is = flatten(intervals);
         Iterator<Interval> iterator = is.iterator();
         if (!iterator.hasNext()) {
-            return Arrays.asList(domain); // if none, inversion is the domain.
+            return Collections.singletonList(domain); // if none, inversion is the domain.
         }
-        Interval i0 = iterator.next();
-        if (!domain.lowerBound.equals(i0.lowerBound)) {
+
+        Interval firstInterval = iterator.next();
+        if (!domain.lowerBound.equals(firstInterval.lowerBound)) {
             Interval left = new Interval(domain.lowerBound.getBoundaryType(),
                                          domain.lowerBound.getValue(),
-                                         i0.lowerBound.getValue(),
-                                         invertBoundary(i0.lowerBound.getBoundaryType()),
-                                         i0.rule,
-                                         i0.col);
+                                         firstInterval.lowerBound.getValue(),
+                                         invertBoundary(firstInterval.lowerBound.getBoundaryType()),
+                                         firstInterval.rule,
+                                         firstInterval.col);
             results.add(left);
         }
-        Interval iPrev = i0;
+        Interval previousInterval = firstInterval;
         while (iterator.hasNext()) {
-            Interval iNext = iterator.next();
-            if ((!iPrev.upperBound.getValue().equals(iNext.lowerBound.getValue())) || (iPrev.upperBound.getBoundaryType() == RangeBoundary.OPEN && iNext.lowerBound.getBoundaryType() == RangeBoundary.OPEN)) {
-                Interval iNew = new Interval(invertBoundary(iPrev.upperBound.getBoundaryType()),
-                                              iPrev.upperBound.getValue(),
-                                              iNext.lowerBound.getValue(),
-                                              invertBoundary(iNext.lowerBound.getBoundaryType()),
-                                              iPrev.rule,
-                                              iPrev.col);
+            Interval nextInterval = iterator.next();
+            if ((!previousInterval.upperBound.getValue().equals(nextInterval.lowerBound.getValue()))
+                    || (previousInterval.upperBound.getBoundaryType() == RangeBoundary.OPEN && nextInterval.lowerBound.getBoundaryType() == RangeBoundary.OPEN)) {
+                Interval iNew = new Interval(invertBoundary(previousInterval.upperBound.getBoundaryType()),
+                                              previousInterval.upperBound.getValue(),
+                                              nextInterval.lowerBound.getValue(),
+                                              invertBoundary(nextInterval.lowerBound.getBoundaryType()),
+                                              previousInterval.rule,
+                                              previousInterval.col);
                 results.add(iNew);
             }
-            iPrev = iNext;
+            previousInterval = nextInterval;
         }
-        if (!domain.upperBound.equals(iPrev.upperBound)) {
-            Interval right = new Interval(invertBoundary(iPrev.upperBound.getBoundaryType()),
-                                          iPrev.upperBound.getValue(),
+        if (!domain.upperBound.equals(previousInterval.upperBound)) {
+            Interval right = new Interval(invertBoundary(previousInterval.upperBound.getBoundaryType()),
+                                          previousInterval.upperBound.getValue(),
                                           domain.upperBound.getValue(),
                                           domain.upperBound.getBoundaryType(),
-                                          iPrev.rule,
-                                          iPrev.col);
+                                          previousInterval.rule,
+                                          previousInterval.col);
             results.add(right);
         }
         LOG.debug("results {}", results);
