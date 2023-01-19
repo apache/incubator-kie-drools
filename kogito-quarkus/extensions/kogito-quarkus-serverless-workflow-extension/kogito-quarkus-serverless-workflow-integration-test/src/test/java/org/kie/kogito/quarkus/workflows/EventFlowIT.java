@@ -78,6 +78,13 @@ class EventFlowIT {
     }
 
     @Test
+    void testNotStartingEventWorkflowTimeout() {
+        final String flowName = "nonStartMultipleEventWorkflowTimeout";
+        String id = startProcess(flowName);
+        waitForFinish(flowName, id, Duration.ofSeconds(5));
+    }
+
+    @Test
     void testNotStartingMultipleEventRainy() throws IOException {
         final String flowName = "nonStartMultipleEvent";
         final String id = startProcess(flowName);

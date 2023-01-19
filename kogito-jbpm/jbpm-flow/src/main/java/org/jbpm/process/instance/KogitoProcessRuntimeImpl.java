@@ -161,7 +161,7 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
             KogitoProcessInstance processInstance = getProcessInstance(processInstanceId);
             org.jbpm.process.instance.ProcessInstance jbpmProcessInstance = (org.jbpm.process.instance.ProcessInstance) processInstance;
 
-            jbpmProcessInstance.configureSLA();
+            jbpmProcessInstance.configureTimers();
             delegate.getProcessEventSupport().fireBeforeProcessStarted(processInstance, delegate.getInternalKieRuntime());
             jbpmProcessInstance.setAgendaFilter(agendaFilter);
             jbpmProcessInstance.start(trigger);

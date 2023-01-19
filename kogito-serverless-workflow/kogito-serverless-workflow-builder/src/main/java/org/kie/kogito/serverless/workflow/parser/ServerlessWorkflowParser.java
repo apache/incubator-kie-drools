@@ -45,6 +45,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.datainputschema.DataInputSchema;
+import io.serverlessworkflow.api.timeouts.TimeoutsDefinition;
+import io.serverlessworkflow.api.timeouts.WorkflowExecTimeout;
 import io.serverlessworkflow.api.workflow.Constants;
 
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.processResourceFile;
@@ -108,6 +110,14 @@ public class ServerlessWorkflowParser {
         if (parserContext.isCompensation()) {
             factory.metaData(Metadata.COMPENSATION, true);
             factory.addCompensationContext(workflow.getId());
+        }
+
+        TimeoutsDefinition timeouts = workflow.getTimeouts();
+        if (timeouts != null) {
+            WorkflowExecTimeout workflowTimeout = timeouts.getWorkflowExecTimeout();
+            if (workflowTimeout != null) {
+                factory.metaData(Metadata.PROCESS_DURATION, workflowTimeout.getDuration());
+            }
         }
 
         Collection<Tag> tags = getTags(workflow);

@@ -122,6 +122,10 @@ public class ProtobufProcessInstanceWriter {
 
         instance.setSla(buildSLAContext(workFlow.getSlaCompliance(), workFlow.getSlaDueDate(), workFlow.getSlaTimerId()));
 
+        if (workFlow.getCancelTimerId() != null) {
+            instance.setCancelTimerId(workFlow.getCancelTimerId());
+        }
+
         if (workFlow.getParentProcessInstanceId() != null) {
             instance.setParentProcessInstanceId(workFlow.getParentProcessInstanceId());
         }

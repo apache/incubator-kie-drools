@@ -73,6 +73,7 @@ public class Metadata {
     public static final String CORRELATION_ATTRIBUTES = "CorrelationAttributes";
     public static final String CONSTANTS = "Constants";
     public static final String EVAL_VARIABLE = "evalVariable";
+    public static final String PROCESS_DURATION = "processDuration";
 
     private Metadata() {
     }

@@ -142,6 +142,8 @@ public class ProtobufProcessInstanceReader {
         processInstance.internalSetSlaTimerId(slaContext.getSlaTimerId());
         processInstance.internalSetSlaCompliance(slaContext.getSlaCompliance());
 
+        processInstance.internalSetCancelTimerId(processInstanceProtobuf.getCancelTimerId());
+
         processInstance.setParentProcessInstanceId(processInstanceProtobuf.getParentProcessInstanceId());
         processInstance.setRootProcessInstanceId(processInstanceProtobuf.getRootProcessInstanceId());
         processInstance.setRootProcessId(processInstanceProtobuf.getRootProcessId());

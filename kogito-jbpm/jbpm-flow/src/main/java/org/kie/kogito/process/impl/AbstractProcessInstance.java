@@ -99,8 +99,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     private Optional<CorrelationInstance> correlationInstance = Optional.empty();
 
-    private CompositeCorrelation correlation;
-
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
     }
@@ -127,7 +125,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
 
         if (Objects.nonNull(correlation)) {
-            this.correlation = correlation;
             this.correlationInstance = Optional.of(process.correlations().create(correlation, id()));
         }
     }

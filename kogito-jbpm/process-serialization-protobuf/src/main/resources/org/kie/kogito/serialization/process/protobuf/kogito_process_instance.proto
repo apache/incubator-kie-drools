@@ -36,5 +36,7 @@ message ProcessInstance {
     repeated SwimlaneContext swimlane_context = 19;
 
     repeated string completedNodeIds = 20;
+    
+    optional string cancel_timer_id = 21;
 
 }

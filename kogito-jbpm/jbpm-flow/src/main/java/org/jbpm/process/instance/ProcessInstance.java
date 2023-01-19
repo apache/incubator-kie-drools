@@ -85,7 +85,7 @@ public interface ProcessInstance extends KogitoProcessInstance,
 
     Date getSlaDueDate();
 
-    void configureSLA();
+    void configureTimers();
 
     void setReferenceId(String referenceId);
 
