@@ -22,7 +22,6 @@ import java.util.Optional;
 import org.jbpm.compiler.canonical.descriptors.ExpressionReturnValueSupplier;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -134,7 +133,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
                 @Override
                 public void onEmptyTarget() {
-                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd());
+                    NodeFactory<?, ?> endNodeFactory = endIt(splitId, factory, defaultCondition.getEnd());
                     startNode.metaData(XORSPLITDEFAULT, concatId(splitId, endNodeFactory.getNode().getId()));
                 }
             }));
@@ -155,15 +154,15 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
                 @Override
                 public void onEmptyTarget() {
-                    EndNodeFactory<?> endNodeFactory = endIt(splitId, factory, condition.getEnd());
+                    NodeFactory<?, ?> endNodeFactory = endIt(splitId, factory, condition.getEnd());
                     addConstraint(startNode, endNodeFactory.getNode().getId(), condition);
                 }
             }));
         }
     }
 
-    private EndNodeFactory<?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, End end) {
-        EndNodeFactory<?> endNodeFactory = endNodeFactory(factory, end);
+    private NodeFactory<?, ?> endIt(long sourceNodeId, RuleFlowNodeContainerFactory<?, ?> factory, End end) {
+        NodeFactory<?, ?> endNodeFactory = endNodeFactory(factory, end);
         endNodeFactory.done().connection(sourceNodeId, endNodeFactory.getNode().getId());
         return endNodeFactory;
     }

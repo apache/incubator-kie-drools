@@ -78,7 +78,7 @@ public abstract class StateHandler<S extends State> {
     protected final ParserContext parserContext;
 
     private NodeFactory<?, ?> startNodeFactory;
-    private EndNodeFactory<?> endNodeFactory;
+    private NodeFactory<?, ?> endNodeFactory;
 
     private NodeFactory<?, ?> node;
     private NodeFactory<?, ?> outgoingNode;
@@ -348,32 +348,35 @@ public abstract class StateHandler<S extends State> {
                     callback.ifPresent(c -> c.onStateTarget(targetState));
                 }
             } else {
-                final ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
-                NodeFactory<?, ?> endNode = handleProduceEvents(factory, actionNode, produceEvents);
-                factory.connection(sourceFactory.getNode().getId(), actionNode.getNode().getId());
+                ActionNodeFactory<?> actionNode = factory.actionNode(parserContext.newId());
+                NodeFactory<?, ?> startNode = handleProduceEvents(factory, actionNode, produceEvents);
+                factory.connection(sourceFactory.getNode().getId(), startNode.getNode().getId());
                 if (transition.isCompensate()) {
                     long eventId = compensationEvent(factory, sourceFactory).getNode().getId();
                     callback.ifPresent(c -> c.onIdTarget(eventId));
                 } else {
-                    callback.ifPresent(c -> c.onIdTarget(actionNode.getNode().getId()));
+                    callback.ifPresent(c -> c.onIdTarget(startNode.getNode().getId()));
                 }
-                targetState.connectSource(endNode);
+                targetState.connectSource(actionNode);
             }
         } else {
             callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
         }
     }
 
-    private <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> handleProduceEvents(RuleFlowNodeContainerFactory<?, ?> factory, T startNode, List<ProduceEvent> produceEvents) {
-        NodeFactory<?, ?> endNode = startNode;
-        sendEventNode(startNode, produceEvents.get(0));
+    private <T extends NodeFactory<?, ?> & SupportsAction<?, ?>> NodeFactory<?, ?> handleProduceEvents(RuleFlowNodeContainerFactory<?, ?> factory, T endNode, List<ProduceEvent> produceEvents) {
+        NodeFactory<?, ?> startNode = endNode;
+        NodeFactory<?, ?> currentNode;
+        sendEventNode(endNode, produceEvents.get(0));
         if (produceEvents.size() > 1) {
             ListIterator<ProduceEvent> iter = produceEvents.listIterator(1);
             while (iter.hasNext()) {
-                endNode = connect(endNode, sendEventNode(factory.actionNode(parserContext.newId()), iter.next()));
+                currentNode = startNode;
+                startNode = sendEventNode(factory.actionNode(parserContext.newId()), iter.next());
+                connect(startNode, currentNode);
             }
         }
-        return endNode;
+        return startNode;
     }
 
     @FunctionalInterface
@@ -497,15 +500,15 @@ public abstract class StateHandler<S extends State> {
                 && ((JoinFactory<?>) outgoing).getJoin().getType() == Join.TYPE_XOR;
     }
 
-    protected EndNodeFactory<?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, End end) {
+    protected final NodeFactory<?, ?> endNodeFactory(RuleFlowNodeContainerFactory<?, ?> factory, End end) {
         EndNodeFactory<?> nodeFactory = factory.endNode(parserContext.newId());
+        NodeFactory<?, ?> startNode = nodeFactory;
         List<ProduceEvent> produceEvents = end.getProduceEvents();
         if (produceEvents != null && !produceEvents.isEmpty()) {
-            // TODO deal with more than one produce events in end state 
-            sendEventNode(nodeFactory, produceEvents.get(0));
+            startNode = handleProduceEvents(factory, nodeFactory, produceEvents);
         }
         nodeFactory.terminate(end.isTerminate());
-        return nodeFactory;
+        return startNode;
     }
 
     private NodeFactory<?, ?> compensationEvent(RuleFlowNodeContainerFactory<?, ?> factory, NodeFactory<?, ?> sourceFactory) {
