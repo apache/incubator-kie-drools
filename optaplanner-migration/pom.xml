@@ -22,6 +22,7 @@
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
     <version.org.antlr>4.9.3</version.org.antlr>
+    <version.jakarta.xml.bind.override>2.3.3</version.jakarta.xml.bind.override>
   </properties>
 
   <dependencyManagement>
@@ -37,6 +38,12 @@
         <artifactId>antlr4-runtime</artifactId>
         <version>${version.org.antlr}</version>
       </dependency>
+      <!-- openrewrite-maven transitively depends on jakarta.xml.bind-api with the javax package. -->
+      <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${version.jakarta.xml.bind.override}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -48,6 +55,14 @@
     <dependency>
       <groupId>org.openrewrite</groupId>
       <artifactId>rewrite-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openrewrite</groupId>
+      <artifactId>rewrite-maven</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openrewrite</groupId>
+      <artifactId>rewrite-xml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openrewrite</groupId>

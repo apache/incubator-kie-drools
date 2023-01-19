@@ -38,6 +38,7 @@
          the default GroupId:ArtifactId to map both main branch and 7.x branches to the same SonarCloud project.
          As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <version.rewrite.plugin>4.38.2</version.rewrite.plugin>
   </properties>
 
   <distributionManagement>
@@ -125,6 +126,7 @@
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-migration</module>
     <module>optaplanner-examples</module>
+    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -151,6 +153,30 @@
       <modules>
         <module>optaplanner-operator</module>
       </modules>
+    </profile>
+    <profile>
+      <!--
+        Migration to OptaPlanner 9 involves upgrading to Quarkus 3, Spring Boot 3 and migrating to jakarta.* packages.
+        OptaPlanner 8 remains compatible with Quarkus 2, Spring Boot 2 and javax.* packages.
+        Both OptaPlanner 8 and 9 are functionally equal and will be released simultaneously.
+      -->
+      <id>8-to-9-migration</id>
+      <activation>
+        <property>
+          <name>migration</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.openrewrite.maven</groupId>
+              <artifactId>rewrite-maven-plugin</artifactId>
+              <version>${version.rewrite.plugin}</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>
