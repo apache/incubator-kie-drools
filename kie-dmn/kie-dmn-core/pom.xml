@@ -160,7 +160,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.smallrye</groupId>
+      <groupId>${jandex.group-id}</groupId>
       <artifactId>jandex</artifactId>
       <scope>test</scope>
     </dependency>
@@ -173,6 +173,12 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.smallrye</groupId>
+          <artifactId>jandex</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
