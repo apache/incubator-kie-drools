@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -468,7 +469,7 @@ public class InfixOpNode
      *         - Multiplication of two durations e is not allowed in the specification.
      */
     static boolean isAllowedMultiplicationBasedOnSpec(final Object left, final Object right, final EvaluationContext ctx) {
-        if (left instanceof Duration && right instanceof Duration) {
+        if (left instanceof TemporalAmount && right instanceof TemporalAmount) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.INVALID_PARAMETERS_FOR_OPERATION, "multiplication",
                                                                                                        left.getClass().getName(),
                                                                                                        right.getClass().getName())));
