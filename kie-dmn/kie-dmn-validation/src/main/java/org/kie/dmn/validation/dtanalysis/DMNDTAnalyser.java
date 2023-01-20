@@ -464,8 +464,11 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
         if (jColIdx < ddtaTable.inputCols()) {
             List<Bound> bounds = findBoundsSorted(ddtaTable, jColIdx, activeRules);
             List<Interval> activeIntervals = new ArrayList<>();
-            Bound<?> lastBound = bounds.get(0);
+            Bound<?> lastBound = null;
             for (Bound<?> currentBound : bounds) {
+                if (lastBound == null) {
+                    lastBound = currentBound;
+                }
                 LOG.debug("lastBound {} currentBound {}      activeIntervals {} == rules {}", lastBound, currentBound, activeIntervals, activeIntervalsToRules(activeIntervals));
                 if (activeIntervals.size() > 1 && canBeNewCurrInterval(lastBound, currentBound)) {
                     Interval analysisInterval = new Interval(lastBound.isUpperBound() ? Interval.invertBoundary(lastBound.getBoundaryType()) : lastBound.getBoundaryType(),
@@ -603,57 +606,39 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     }
 
     private ToIntervals toIntervals(List<BaseNode> elements, boolean isNegated, Interval minMax, List discreteValues, int rule, int col) {
-        List<Interval> results = new ArrayList<>();
-        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode) {
+        if (elements.size() == 1 && elements.get(0) instanceof UnaryTestNode && ((UnaryTestNode) elements.get(0)).getValue() instanceof NullNode && !isNegated) {
             return new ToIntervals(Collections.emptyList(), false);
         }
         if (discreteValues != null && !discreteValues.isEmpty() && areAllEQUnaryTest(elements) && elements.size() > 1) {
-            int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
-            BitSet hitValues = new BitSet(bitsetLogicalSize);
-            for (BaseNode n : elements) {
-                Comparable<?> thisValue = valueFromNode(((UnaryTestNode) n).getValue());
-                int indexOf = discreteValues.indexOf(thisValue);
-                if (indexOf < 0) {
-                    throw new IllegalStateException("Unable to determine discreteValue index for: " + n);
-                }
-                hitValues.set(indexOf);
-            }
-            if (isNegated) {
-                hitValues.flip(0, bitsetLogicalSize);
-            }
-            int lowerBoundIdx = -1;
-            int upperBoundIdx = -1;
-            for (int i = 0; i < hitValues.length(); i++) {
-                boolean curValue = hitValues.get(i);
-                if (curValue) {
-                    if (lowerBoundIdx < 0) {
-                        lowerBoundIdx = i;
-                        upperBoundIdx = i;
-                    } else {
-                        upperBoundIdx = i;
-                    }
-                } else {
-                    if (lowerBoundIdx >= 0 && upperBoundIdx >=0) {
-                        results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
-                        lowerBoundIdx = -1;
-                        upperBoundIdx = -1;
-                    }
-                }
-            }
-            if (lowerBoundIdx >= 0 && upperBoundIdx >= 0) {
-                results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
-            }
-            final boolean allSingularities = results.stream().allMatch(Interval::isSingularity);
-            return new ToIntervals(results, allSingularities);
+            return toIntervalsEQUnaryTests(elements, isNegated, discreteValues, rule, col);
         } else {
+            List<Interval> results = new ArrayList<>();
             for (BaseNode n : elements) {
                 if (n instanceof DashNode) {
-                    results.add(new Interval(minMax.getLowerBound().getBoundaryType(), minMax.getLowerBound().getValue(), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col));
-                    continue;
+                    results.add(new Interval(minMax.getLowerBound().getBoundaryType(),
+                            minMax.getLowerBound().getValue(),
+                            minMax.getUpperBound().getValue(),
+                            minMax.getUpperBound().getBoundaryType(),
+                            rule,
+                            col));
+                } else if (n instanceof UnaryTestNode) {
+                    UnaryTestNode ut = (UnaryTestNode) n;
+                    if (ut.getValue() instanceof NullNode && isNegated) {
+                        // If there is a not(null), it covers the whole domain, so it can be immediately returned.
+                        return new ToIntervals(
+                                Collections.singletonList(
+                                        new Interval(minMax.getLowerBound().getBoundaryType(),
+                                                minMax.getLowerBound().getValue(),
+                                                minMax.getUpperBound().getValue(),
+                                                minMax.getUpperBound().getBoundaryType(),
+                                                rule,
+                                                col)),
+                                false);
+                    } else {
+                        Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
+                        results.add(interval);
+                    }
                 }
-                UnaryTestNode ut = (UnaryTestNode) n;
-                Interval interval = utnToInterval(ut, minMax, discreteValues, rule, col);
-                results.add(interval);
             }
             final boolean allSingularities = results.stream().allMatch(Interval::isSingularity); // intentionally record singularities before negating / not()
             if (isNegated) {
@@ -661,6 +646,47 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             }
             return new ToIntervals(results, allSingularities);
         }
+    }
+
+    private ToIntervals toIntervalsEQUnaryTests(List<BaseNode> elements, boolean isNegated, final List discreteValues, int rule, int col) {
+        List<Interval> results = new ArrayList<>();
+        int bitsetLogicalSize = discreteValues.size(); // JDK BitSet size will always be larger.
+        BitSet hitValues = new BitSet(bitsetLogicalSize);
+        for (BaseNode n : elements) {
+            Comparable<?> thisValue = valueFromNode(((UnaryTestNode) n).getValue());
+            int indexOf = discreteValues.indexOf(thisValue);
+            if (indexOf < 0) {
+                throw new IllegalStateException("Unable to determine discreteValue index for: " + n);
+            }
+            hitValues.set(indexOf);
+        }
+        if (isNegated) {
+            hitValues.flip(0, bitsetLogicalSize);
+        }
+        int lowerBoundIdx = -1;
+        int upperBoundIdx = -1;
+        for (int i = 0; i < hitValues.length(); i++) {
+            boolean curValue = hitValues.get(i);
+            if (curValue) {
+                if (lowerBoundIdx < 0) {
+                    lowerBoundIdx = i;
+                    upperBoundIdx = i;
+                } else {
+                    upperBoundIdx = i;
+                }
+            } else {
+                if (lowerBoundIdx >= 0) {
+                    results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
+                    lowerBoundIdx = -1;
+                    upperBoundIdx = -1;
+                }
+            }
+        }
+        if (lowerBoundIdx >= 0) {
+            results.add(createIntervalOfRule(discreteValues, rule, col, lowerBoundIdx, upperBoundIdx));
+        }
+        final boolean allSingularities = results.stream().allMatch(Interval::isSingularity);
+        return new ToIntervals(results, allSingularities);
     }
     
     private static class ToIntervals {

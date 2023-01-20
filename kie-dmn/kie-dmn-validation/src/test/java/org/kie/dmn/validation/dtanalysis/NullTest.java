@@ -16,10 +16,6 @@
 
 package org.kie.dmn.validation.dtanalysis;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -27,6 +23,10 @@ import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import org.kie.dmn.validation.dtanalysis.model.Hyperrectangle;
 import org.kie.dmn.validation.dtanalysis.model.Interval;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
@@ -107,5 +107,28 @@ public class NullTest extends AbstractDTAnalysisTest {
     public void testGapsXYv2WithNull() {
         List<DMNMessage> validate = validator.validate(getReader("GapsXYv2WithNull.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
         GapsXYTest.checkAnalysis(validate);
+    }
+
+    @Test
+    public void testNotNullAndEmptyRule() {
+        final List<DMNMessage> validate = validator.validate(getReader("notnulltest.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        final DTAnalysis analysis = getAnalysis(validate, "_850C5F03-DA51-4DE7-89E4-61D2C502A03E");
+        assertThat(analysis.getOverlaps()).hasSize(1);
+
+        final Hyperrectangle overlap = new Hyperrectangle(1,
+                List.of(Interval.newFromBounds(
+                        new Bound(Interval.NEG_INF, RangeBoundary.CLOSED, null),
+                        new Bound(Interval.POS_INF, RangeBoundary.CLOSED, null))));
+
+        assertThat(analysis.getOverlaps().get(0).getOverlap()).isEqualTo(overlap);
+    }
+
+    @Test
+    public void testNullsWithActiveRules() {
+        final List<DMNMessage> validate = validator.validate(getReader("nulltestdt.dmn"), VALIDATE_MODEL, VALIDATE_COMPILATION, ANALYZE_DECISION_TABLE);
+        final DTAnalysis analysis = getAnalysis(validate, "decisiontablewithnulls");
+        assertThat(analysis.getOverlaps()).isEmpty();
+        assertThat(analysis.getGaps()).isEmpty();
+        assertThat(validate).hasSize(1);
     }
 }
