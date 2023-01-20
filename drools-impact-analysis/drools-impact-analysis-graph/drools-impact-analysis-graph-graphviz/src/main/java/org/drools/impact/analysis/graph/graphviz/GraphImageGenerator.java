@@ -213,7 +213,7 @@ public class GraphImageGenerator {
         try {
             String filePath = outputDir.asString() + "/" + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
-            logger.info("--- Graph dot format is generated to " + filePath);
+            logger.info("--- Graph dot format is generated to {}", filePath);
             return filePath;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -221,28 +221,14 @@ public class GraphImageGenerator {
     }
 
     public String generatePng(Graph g) {
-        if (renderEngineFailed) {
-            logger.warn(RENDER_FAILURE_WARN);
-            return null;
-        }
-
-        guru.nidi.graphviz.model.Graph graph = convertGraph(g);
-
-        try {
-            String filePath = outputDir.asString() + "/" + graphName + ".png";
-            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
-            logger.info("--- Graph png image is generated to " + filePath);
-            return filePath;
-        } catch (GraphvizException e) {
-            logger.warn(RENDER_FAILURE_WARN, e);
-            renderEngineFailed = true;
-            return null;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return generateImage(g, Format.PNG);
     }
 
     public String generateSvg(Graph g) {
+        return generateImage(g, Format.SVG);
+    }
+
+    private String generateImage(Graph g, Format format) {
         if (renderEngineFailed) {
             logger.warn(RENDER_FAILURE_WARN);
             return null;
@@ -251,9 +237,9 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir.asString() + "/" + graphName + ".svg";
-            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
-            logger.info("--- Graph svg image is generated to " + filePath);
+            String filePath = outputDir.asString() + "/" + graphName + "." + format.fileExtension;
+            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(format).toFile(new File(filePath));
+            logger.info("--- Graph {} image is generated to {}", format.fileExtension, filePath);
             return filePath;
         } catch (GraphvizException e) {
             logger.warn(RENDER_FAILURE_WARN, e);
