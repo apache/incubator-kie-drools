@@ -20,10 +20,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
@@ -75,6 +79,18 @@ public class TimeFunction
                 // if it does not contain any zone information at all, then I know for certain is a local time.
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 return FEELFnResult.ofResult(asLocalTime);
+            } else if (parsed.query(TemporalQueries.zone()) != null) {
+                // Extract info from parsed
+                ZoneId zoneId = parsed.query(TemporalQueries.zone());
+                LocalTime asLocalTime = parsed.query(LocalTime::from);
+                // Retrieve zoned date time from current date and provided time
+                LocalDate dt = LocalDate.now();
+                LocalDateTime ldt = LocalDateTime.of(dt, asLocalTime);
+                ZonedDateTime zdt = ldt.atZone(zoneId);
+                ZoneOffset offset = zdt.getOffset();
+                // Instantiate an offset-zoned time from the previous data
+                OffsetTime asOffSetTime = OffsetTime.of(asLocalTime, offset);
+                return FEELFnResult.ofResult(asOffSetTime);
             }
 
             return FEELFnResult.ofResult(parsed);

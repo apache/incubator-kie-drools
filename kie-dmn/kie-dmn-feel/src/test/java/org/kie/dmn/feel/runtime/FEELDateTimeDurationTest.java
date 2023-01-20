@@ -78,6 +78,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "(@\"13:20:00@Europe/Rome\").timezone", "Europe/Rome" , null},
                 { "(@\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
                 { "(@\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
+                { "@\"13:20:00@Europe/Rome\"", OffsetTime.of(13, 20, 00, 0, ZoneOffset.ofHours(+1)), null},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
