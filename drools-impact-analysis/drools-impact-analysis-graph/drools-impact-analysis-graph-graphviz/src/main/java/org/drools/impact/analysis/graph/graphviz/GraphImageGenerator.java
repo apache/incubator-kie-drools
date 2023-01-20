@@ -211,7 +211,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir.asString() + "/" + graphName + ".dot";
+            String filePath = outputDir.asString() + File.separator + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
             logger.info("--- Graph dot format is generated to {}", filePath);
             return filePath;
@@ -237,7 +237,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir.asString() + "/" + graphName + "." + format.fileExtension;
+            String filePath = outputDir.asString() + File.separator + graphName + "." + format.fileExtension;
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(format).toFile(new File(filePath));
             logger.info("--- Graph {} image is generated to {}", format.fileExtension, filePath);
             return filePath;
