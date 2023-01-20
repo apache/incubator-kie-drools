@@ -51,7 +51,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.smallrye</groupId>
+      <groupId>${jandex.group-id}</groupId>
       <artifactId>jandex</artifactId>
       <scope>test</scope>
     </dependency>
