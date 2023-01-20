@@ -14,7 +14,7 @@ pipeline {
         string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
         string(description: 'The product version, if not provided the optaplanner main branch one will be used', name: 'PRODUCT_VERSION')
         string(description: 'The drools product version, if not provided the drools main branch one will be used', name: 'DROOLS_PRODUCT_VERSION')
-        string(description: 'The config repository branch', name: 'CONFIG_BRANCH', defaultValue: 'main')
+        string(description: 'The config repository branch', name: 'CONFIG_BRANCH', defaultValue: 'master')
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
@@ -25,6 +25,12 @@ pipeline {
     stages {
         stage('Initialize') {
             steps {
+                script {
+                    // Fetch versions from pom if not provided
+                    env.PRODUCT_VERSION = "${PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/optaplanner')}"
+                    env.DROOLS_PRODUCT_VERSION = "${DROOLS_PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/drools')}"
+                }
+
                 sh 'printenv'
             }
         }
@@ -46,13 +52,11 @@ pipeline {
                         pipelineHelper.retry(
                         {
                             def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
-                            def droolsVersion = env.DROOLS_PRODUCT_VERSION ?: parseVersionFromPom("kiegroup/drools")
-                            def productVersion = env.PRODUCT_VERSION ?: parseVersionFromPom("kiegroup/optaplanner")
                             def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing', 'jboss-integration/rhbop-optaplanner']
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
-                                'droolsProductVersion': droolsVersion,
-                                'productVersion': productVersion,
+                                'productVersion': env.PRODUCT_VERSION,
+                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION,
                                 'drools-scmRevision': getCurrentBranch(),
                                 'optaplanner-quickstarts-scmRevision': getOptaPlannerQuickstartsBranch()
                             ]
