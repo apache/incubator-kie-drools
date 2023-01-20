@@ -16,12 +16,18 @@
 
 package org.kie.dmn.feel.util;
 
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
+import org.kie.dmn.feel.runtime.functions.DateFunction;
+import org.kie.dmn.feel.runtime.functions.TimeFunction;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -32,12 +38,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
-import org.kie.dmn.feel.runtime.functions.DateFunction;
-import org.kie.dmn.feel.runtime.functions.TimeFunction;
 
 public final class TypeUtil {
 
@@ -70,7 +70,7 @@ public final class TypeUtil {
             return formatString(val.toString(), wrapForCodeUsage);
         } else if (val instanceof LocalDate) {
             return formatDate((LocalDate) val, wrapForCodeUsage);
-        } else if (val instanceof LocalTime || val instanceof OffsetTime) {
+        } else if (val instanceof LocalTime || val instanceof FEELZonedTime) {
             return formatTimeString(TimeFunction.FEEL_TIME.format((TemporalAccessor) val), wrapForCodeUsage);
         } else if (val instanceof LocalDateTime || val instanceof OffsetDateTime) {
             return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val), wrapForCodeUsage);

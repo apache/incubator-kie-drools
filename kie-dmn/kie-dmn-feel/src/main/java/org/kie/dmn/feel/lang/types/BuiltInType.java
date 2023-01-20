@@ -16,12 +16,20 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.SimpleType;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
@@ -34,14 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.SimpleType;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
 
 public enum BuiltInType implements SimpleType {
 
@@ -122,7 +122,7 @@ public enum BuiltInType implements SimpleType {
             return STRING;
         } else if( o instanceof LocalDate ) {
             return DATE;
-        } else if( o instanceof LocalTime || o instanceof OffsetTime ) {
+        } else if( o instanceof LocalTime || o instanceof FEELZonedTime) {
             return TIME;
         } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
             return DATE_TIME;

@@ -16,14 +16,6 @@
 
 package org.kie.dmn.core.compiler.profiles;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collections;
-
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.EvenFunction;
@@ -38,8 +30,16 @@ import org.kie.dmn.feel.runtime.functions.ProductFunction;
 import org.kie.dmn.feel.runtime.functions.SplitFunction;
 import org.kie.dmn.feel.runtime.functions.SqrtFunction;
 import org.kie.dmn.feel.runtime.functions.StddevFunction;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
 import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,8 +81,8 @@ public class ExtendedDMNProfileTest {
     @Test
     public void testTimeFunction_invokeExtended() {
         assertResult(timeFunction.invoke("2016-12-20T14:30:22"), DateTimeFormatter.ISO_TIME.parse( "14:30:22", LocalTime::from ));
-        assertResult(timeFunction.invoke("2016-12-20T14:30:22-05:00"), DateTimeFormatter.ISO_TIME.parse( "14:30:22-05:00", OffsetTime::from ));
-        assertResult(timeFunction.invoke("2016-12-20T14:30:22z"), DateTimeFormatter.ISO_TIME.parse( "14:30:22z", OffsetTime::from ));
+        assertResult(timeFunction.invoke("2016-12-20T14:30:22-05:00"), DateTimeFormatter.ISO_TIME.parse( "14:30:22-05:00", FEELZonedTime::from ));
+        assertResult(timeFunction.invoke("2016-12-20T14:30:22z"), DateTimeFormatter.ISO_TIME.parse( "14:30:22z", FEELZonedTime::from ));
     }
 
     @Test

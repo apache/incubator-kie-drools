@@ -16,23 +16,23 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
-import org.junit.Before;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class TimeFunctionTest {
 
@@ -65,8 +65,8 @@ public class TimeFunctionTest {
 
     @Test
     public void invokeStringParamWithOffset() {
-        FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06+01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(1)));
-        FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06-01:00"), OffsetTime.of(10,15,6, 0, ZoneOffset.ofHours(-1)));
+        FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06+01:00"), FEELZonedTime.of(10,15,6, 0, ZoneOffset.ofHours(1)));
+        FunctionTestUtil.assertResult(timeFunction.invoke("10:15:06-01:00"), FEELZonedTime.of(10,15,6, 0, ZoneOffset.ofHours(-1)));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class TimeFunctionTest {
 
     @Test
     public void invokeTemporalAccessorParamDate() {
-        FunctionTestUtil.assertResult(timeFunction.invoke(LocalDate.of(2017, 6, 12)), OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC));
+        FunctionTestUtil.assertResult(timeFunction.invoke(LocalDate.of(2017, 6, 12)), FEELZonedTime.of(0, 0, 0, 0, ZoneOffset.UTC));
     }
 
     @Test
@@ -153,8 +153,8 @@ public class TimeFunctionTest {
 
     @Test
     public void invokeTimeUnitsParamsWithOffset() {
-        FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(1)), OffsetTime.of(10, 43, 15, 0, ZoneOffset.ofHours(1)));
-        FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(-1)), OffsetTime.of(10, 43, 15, 0, ZoneOffset.ofHours(-1)));
+        FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(1)), FEELZonedTime.of(10, 43, 15, 0, ZoneOffset.ofHours(1)));
+        FunctionTestUtil.assertResult(timeFunction.invoke(10, 43, 15, Duration.ofHours(-1)), FEELZonedTime.of(10, 43, 15, 0, ZoneOffset.ofHours(-1)));
     }
 
     @Test
@@ -166,9 +166,9 @@ public class TimeFunctionTest {
     public void invokeTimeUnitsParamsWithOffsetWithNanoseconds() {
         FunctionTestUtil.assertResult(
                 timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), Duration.ofHours(1)),
-                OffsetTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(1)));
+                FEELZonedTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(1)));
         FunctionTestUtil.assertResult(
                 timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), Duration.ofHours(-1)),
-                OffsetTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(-1)));
+                FEELZonedTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(-1)));
     }
 }

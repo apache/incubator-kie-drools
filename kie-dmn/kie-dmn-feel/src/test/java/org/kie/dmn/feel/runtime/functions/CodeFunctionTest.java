@@ -16,13 +16,19 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
+
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -30,12 +36,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class CodeFunctionTest {
 
@@ -74,9 +74,9 @@ public class CodeFunctionTest {
     }
 
     @Test
-    public void invokeOffsetTime() {
-        final OffsetTime offsetTime = OffsetTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(offsetTime), "time( \"" + TimeFunction.FEEL_TIME.format(offsetTime) + "\" )");
+    public void invokeZonedTime() {
+        final FEELZonedTime feelZonedTime = FEELZonedTime.now();
+        FunctionTestUtil.assertResult(codeFunction.invoke(feelZonedTime), "time( \"" + TimeFunction.FEEL_TIME.format(feelZonedTime) + "\" )");
     }
 
     @Test

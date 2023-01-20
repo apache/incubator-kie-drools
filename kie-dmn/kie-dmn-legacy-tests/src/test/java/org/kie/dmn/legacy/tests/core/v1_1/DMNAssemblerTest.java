@@ -16,9 +16,6 @@
 
 package org.kie.dmn.legacy.tests.core.v1_1;
 
-import java.time.OffsetTime;
-import java.time.format.DateTimeFormatter;
-
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -32,8 +29,11 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,7 +67,7 @@ public class DMNAssemblerTest extends BaseDMN1_1VariantTest {
         final DMNContext ctx = runtime.newContext();
         ctx.set( "timestring", "2016-12-20T14:30:22z" );
         final DMNResult result = runtime.evaluateAll(model, ctx);
-        assertThat(result.getDecisionResultByName("time").getResult()).isEqualTo(DateTimeFormatter.ISO_TIME.parse("14:30:22z", OffsetTime::from));
+        assertThat(result.getDecisionResultByName("time").getResult()).isEqualTo(DateTimeFormatter.ISO_TIME.parse("14:30:22z", FEELZonedTime::from));
     }
 
     @Test

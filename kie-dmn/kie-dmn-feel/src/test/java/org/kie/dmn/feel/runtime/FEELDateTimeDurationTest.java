@@ -16,22 +16,22 @@
 
 package org.kie.dmn.feel.runtime;
 
+import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-
-import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 
@@ -54,13 +54,13 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "time(\"23:59:00\")", DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) , null},
                 { "@\"23:59:00\"", DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) , null},
                 { "time(\"05:48:23.765\")", DateTimeFormatter.ISO_TIME.parse( "05:48:23.765", LocalTime::from ) , null},
-                { "time(\"23:59:00z\")", DateTimeFormatter.ISO_TIME.parse( "23:59:00z", OffsetTime::from ) , null},
-                { "time(\"13:20:00-05:00\")", DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", OffsetTime::from ) , null},
+                { "time(\"23:59:00z\")", DateTimeFormatter.ISO_TIME.parse( "23:59:00z", FEELZonedTime::from ) , null},
+                { "time(\"13:20:00-05:00\")", DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", FEELZonedTime::from ) , null},
                 { "time( 14, 52, 25, null )", LocalTime.of( 14, 52, 25 ) , null},
-                { "time( 14, 52, 25, duration(\"PT5H\"))", OffsetTime.of( 14, 52, 25, 0, ZoneOffset.ofHours( 5 ) ) , null},
+                { "time( 14, 52, 25, duration(\"PT5H\"))", FEELZonedTime.of( 14, 52, 25, 0, ZoneOffset.ofHours( 5 ) ) , null},
                 { "time( date and time(\"2016-07-29T05:48:23\") )", LocalTime.of( 5, 48, 23, 0 ) , null},
-                { "time( date and time(\"2016-07-29T05:48:23Z\") )", OffsetTime.of( 5, 48, 23, 0, ZoneOffset.UTC ) , null},
-                { "time( date and time(\"2016-07-29T05:48:23.765-05:00\") )", OffsetTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) , null},
+                { "time( date and time(\"2016-07-29T05:48:23Z\") )", FEELZonedTime.of( 5, 48, 23, 0, ZoneOffset.UTC ) , null},
+                { "time( date and time(\"2016-07-29T05:48:23.765-05:00\") )", FEELZonedTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) , null},
                 { "date and time(\"2016-07-29T05:48:23\")", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "@\"2016-07-29T05:48:23\"", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
                 { "date and time( 2016, 7, 29, 5, 48, 23 )", LocalDateTime.of( 2016, 7, 29, 5, 48, 23, 0 ) , null},
@@ -165,8 +165,8 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P1DT1H1M\" ) + date and time(\"2016-07-29T05:48:23\")", LocalDateTime.of(2016, 7, 30, 6, 49, 23, 0) , null},
                 { "time(\"22:57:00\") + duration( \"PT1H1M\" )", LocalTime.of(23, 58, 0) , null},
                 { "duration( \"PT1H1M\" ) + time(\"22:57:00\")", LocalTime.of(23, 58, 0) , null},
-                { "time( 22, 57, 00, duration(\"PT5H\")) + duration( \"PT1H1M\" )", OffsetTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
-                { "duration( \"PT1H1M\" ) + time( 22, 57, 00, duration(\"PT5H\"))", OffsetTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
+                { "time( 22, 57, 00, duration(\"PT5H\")) + duration( \"PT1H1M\" )", FEELZonedTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
+                { "duration( \"PT1H1M\" ) + time( 22, 57, 00, duration(\"PT5H\"))", FEELZonedTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
 
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1Y1M\" ) ", OffsetDateTime.of(2017, 8, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
@@ -185,7 +185,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "date(\"2016-07-29\") - duration( \"P1D\" )", LocalDate.of(2016, 7, 28) , null},
                 { "date(\"2016-07-29\") - duration( \"P1Y1M\" )", LocalDate.of(2015, 6, 29) , null},
                 { "time(\"22:57:00\") - duration( \"PT1H1M\" )", LocalTime.of(21, 56, 0) , null},
-                { "time( 22, 57, 00, duration(\"PT5H\")) - duration( \"PT1H1M\" )", OffsetTime.of( 21, 56, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
+                { "time( 22, 57, 00, duration(\"PT5H\")) - duration( \"PT1H1M\" )", FEELZonedTime.of( 21, 56, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
 
                 { "duration( \"P2Y2M\" ) * 2", ComparablePeriod.parse("P52M"), null },
                 { "2 * duration( \"P2Y2M\" )", ComparablePeriod.parse("P52M"), null },
@@ -251,7 +251,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) , null},
                 { "date and time(\"2017-05-14\")", LocalDateTime.of( 2017, 5, 14, 0, 0, 0, 0 ) , null},
                 { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null},
-                { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", OffsetTime::from ) , null },
+                { "time(date(\"2017-08-10\"))", DateTimeFormatter.ISO_TIME.parse( "00:00:00z", FEELZonedTime::from ) , null },
                 { "duration(\"P1Y\") instance of years and months duration", Boolean.TRUE , null },
                 { "duration(\"P1Y\") instance of days and time duration", Boolean.FALSE , null },
                 { "duration(\"P1D\") instance of years and months duration", Boolean.FALSE , null },

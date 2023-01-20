@@ -16,18 +16,18 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DateTimeFunctionTest {
 
@@ -104,11 +104,11 @@ public class DateTimeFunctionTest {
     }
 
     @Test
-    public void invokeParamTemporalOffsetTime() {
+    public void invokeParamTemporalZonedTime() {
         FunctionTestUtil.assertResult(
                 dateTimeFunction.invoke(
                         LocalDate.of(2017, 6, 12),
-                        OffsetTime.of(10, 6, 20, 0, ZoneOffset.UTC)),
+                        FEELZonedTime.of(10, 6, 20, 0, ZoneOffset.UTC)),
                 ZonedDateTime.of(2017, 6, 12, 10, 6, 20, 0, ZoneOffset.UTC));
     }
 }

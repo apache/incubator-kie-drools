@@ -16,25 +16,6 @@
 
 package org.kie.dmn.legacy.tests.core.v1_1;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.chrono.ChronoPeriod;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -63,6 +44,7 @@ import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
@@ -72,6 +54,23 @@ import org.kie.dmn.model.v1_1.TDefinitions;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DMNTestUtil.getAndAssertModelNoErrors;
@@ -631,10 +630,10 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
             put( "fromDateTime", LocalDate.of( 2016, 12, 24 ) );
             put( "fromYearMonthDay", LocalDate.of( 1999, 11, 22 ) );
         }});
-        assertThat( ctx.get("Time")).isEqualTo(OffsetTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1 ) ) );
+        assertThat( ctx.get("Time")).isEqualTo(FEELZonedTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1 ) ) );
         assertThat( ctx.get("Date-Time2")).isEqualTo(ZonedDateTime.of(2015, 12, 24, 0, 0, 1, 0, ZoneOffset.ofHours(-1 ) ) );
-        assertThat( ctx.get("Time2")).isEqualTo(OffsetTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1 ) ) );
-        assertThat( ctx.get("Time3")).isEqualTo(OffsetTime.of( 12, 59, 1, 300000000, ZoneOffset.ofHours( -1 ) ));
+        assertThat( ctx.get("Time2")).isEqualTo(FEELZonedTime.of(0, 0, 1, 0, ZoneOffset.ofHours(-1 ) ) );
+        assertThat( ctx.get("Time3")).isEqualTo(FEELZonedTime.of( 12, 59, 1, 300000000, ZoneOffset.ofHours( -1 ) ));
         assertThat( ctx.get("dtDuration1")).isEqualTo(Duration.parse( "P13DT2H14S" ) );
         assertThat( ctx.get("dtDuration2")).isEqualTo(Duration.parse( "P367DT3H58M59S" ) );
         assertThat( ctx.get("hoursInDuration")).isEqualTo(new BigDecimal( "3" ) );

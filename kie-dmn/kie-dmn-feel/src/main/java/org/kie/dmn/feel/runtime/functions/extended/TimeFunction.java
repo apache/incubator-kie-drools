@@ -1,20 +1,5 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.DateTimeException;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.ResolverStyle;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalQueries;
-
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
@@ -23,7 +8,22 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.kie.dmn.model.api.GwtIncompatible;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 
 @GwtIncompatible
 public class TimeFunction extends BaseFEELFunction {
@@ -56,18 +56,11 @@ public class TimeFunction extends BaseFEELFunction {
 
         try {
             TemporalAccessor parsed = FEEL_TIME.parse(val);
-
-            if (parsed.query(TemporalQueries.offset()) != null) {
-                // it is an offset-zoned time, so I can know for certain an OffsetTime
-                OffsetTime asOffSetTime = parsed.query(OffsetTime::from);
-                return FEELFnResult.ofResult(asOffSetTime);
-            } else if (parsed.query(TemporalQueries.zone()) == null) {
-                // if it does not contain any zone information at all, then I know for certain is a local time.
-                LocalTime asLocalTime = parsed.query(LocalTime::from);
-                return FEELFnResult.ofResult(asLocalTime);
+            try {
+                return FEELFnResult.ofResult(FEELZonedTime.from(parsed));
+            } catch (DateTimeException ex) {
+                return FEELFnResult.ofResult(LocalTime.from(parsed));
             }
-
-            return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
             // try to parse it as a date time and extract the date component
             // NOTE: this is an extension to the standard
@@ -110,7 +103,7 @@ public class TimeFunction extends BaseFEELFunction {
                 return FEELFnResult.ofResult(LocalTime.of(hour.intValue(), minute.intValue(), seconds.intValue(),
                         nanosecs));
             } else {
-                return FEELFnResult.ofResult(OffsetTime.of(hour.intValue(), minute.intValue(), seconds.intValue(),
+                return FEELFnResult.ofResult(FEELZonedTime.of(hour.intValue(), minute.intValue(), seconds.intValue(),
                         nanosecs,
                         ZoneOffset.ofTotalSeconds((int) offset.getSeconds())));
             }
@@ -127,7 +120,7 @@ public class TimeFunction extends BaseFEELFunction {
         try {
             // If the temporal accessor type doesn't support time, try to parse it as a date with UTC midnight.
             if (!date.isSupported(ChronoField.HOUR_OF_DAY)) {
-                return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( date, OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC) )
+                return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( date, FEELZonedTime.of(0, 0, 0, 0, ZoneOffset.UTC) )
                         .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "time-parsing exception")),
                                 this::invoke
                         );
@@ -140,7 +133,7 @@ public class TimeFunction extends BaseFEELFunction {
                     // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated.
                     return invoke(date.query(TemporalQueries.localTime()) + "@" + zone);
                 } else {
-                    return FEELFnResult.ofResult(OffsetTime.from(date));
+                    return FEELFnResult.ofResult(FEELZonedTime.from(date));
                 }
             }
         } catch (DateTimeException e) {

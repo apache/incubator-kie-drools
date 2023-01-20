@@ -5,10 +5,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.Period;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -37,8 +44,8 @@ public class FEELCodeMarshallerTest {
                 { LocalDate.of( 2017, 07, 01 ), "date( \"2017-07-01\" )" },
                 // time
                 { LocalTime.of( 14, 32, 55 ), "time( \"14:32:55\" )" },
-                { OffsetTime.of( 14, 32, 55, 125000000, ZoneOffset.ofHours( -5 ) ), "time( \"14:32:55.125-05:00\" )" },
-                { OffsetTime.of( 14, 32, 55, 125000000, ZoneOffset.UTC ), "time( \"14:32:55.125Z\" )" },
+                { FEELZonedTime.of( 14, 32, 55, 125000000, ZoneOffset.ofHours( -5 ) ), "time( \"14:32:55.125-05:00\" )" },
+                { FEELZonedTime.of( 14, 32, 55, 125000000, ZoneOffset.UTC ), "time( \"14:32:55.125Z\" )" },
                 // date and time
                 { LocalDateTime.of( 2017, 06, 30, 10, 49, 11 ), "date and time( \"2017-06-30T10:49:11\" )" },
                 { LocalDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000 ), "date and time( \"2017-06-30T10:49:11.65\" )" },

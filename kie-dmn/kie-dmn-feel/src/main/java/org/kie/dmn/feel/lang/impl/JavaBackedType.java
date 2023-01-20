@@ -16,6 +16,18 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.lang.FEELType;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.model.api.GwtIncompatible;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Duration;
@@ -23,7 +35,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.util.Arrays;
@@ -37,17 +48,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.FEELProperty;
-import org.kie.dmn.feel.lang.FEELType;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -147,7 +147,7 @@ public class JavaBackedType implements CompositeType {
             return BuiltInType.STRING;
         } else if( LocalDate.class.isAssignableFrom(clazz) ) {
             return BuiltInType.DATE;
-        } else if( LocalTime.class.isAssignableFrom(clazz) || OffsetTime.class.isAssignableFrom(clazz) ) {
+        } else if( LocalTime.class.isAssignableFrom(clazz) || FEELZonedTime.class.isAssignableFrom(clazz) ) {
             return BuiltInType.TIME;
         } else if( ZonedDateTime.class.isAssignableFrom(clazz) || OffsetDateTime.class.isAssignableFrom(clazz) || LocalDateTime.class.isAssignableFrom(clazz) || java.util.Date.class.isAssignableFrom(clazz) ) {
             return BuiltInType.DATE_TIME;

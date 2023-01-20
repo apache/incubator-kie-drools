@@ -1,22 +1,22 @@
 package org.kie.dmn.feel.marshaller;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,8 +42,8 @@ public class FEELStringMarshallerUnmarshallTest {
                 { BuiltInType.DATE, "2017-07-01", LocalDate.of( 2017, 07, 01 ) },
                 // time
                 { BuiltInType.TIME, "14:32:55", LocalTime.of( 14, 32, 55 ) },
-                { BuiltInType.TIME, "14:32:55.125-05:00", OffsetTime.of( 14, 32, 55, 125000000, ZoneOffset.ofHours( -5 ) ) },
-                { BuiltInType.TIME, "14:32:55.125Z", OffsetTime.of( 14, 32, 55, 125000000, ZoneOffset.UTC ) },
+                { BuiltInType.TIME, "14:32:55.125-05:00", FEELZonedTime.of( 14, 32, 55, 125000000, ZoneOffset.ofHours( -5 ) ) },
+                { BuiltInType.TIME, "14:32:55.125Z", FEELZonedTime.of( 14, 32, 55, 125000000, ZoneOffset.UTC ) },
                 // date and time
                 { BuiltInType.DATE_TIME, "2017-06-30T10:49:11", LocalDateTime.of( 2017, 06, 30, 10, 49, 11 ) },
                 { BuiltInType.DATE_TIME, "2017-06-30T10:49:11.650", LocalDateTime.of( 2017, 06, 30, 10, 49, 11, 650000000 ) },

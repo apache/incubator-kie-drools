@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
@@ -41,6 +40,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.customtypes.FEELZonedTime;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -275,10 +275,10 @@ public class InfixOpNode
             return ((LocalTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof LocalTime ) {
             return ((LocalTime) right).plus( (Duration) left);
-        } else if ( left instanceof OffsetTime && right instanceof Duration ) {
-            return ((OffsetTime) left).plus( (Duration) right);
-        } else if ( left instanceof Duration && right instanceof OffsetTime ) {
-            return ((OffsetTime) right).plus( (Duration) left);
+        } else if ( left instanceof FEELZonedTime && right instanceof Duration ) {
+            return ((FEELZonedTime) left).plus( (Duration) right);
+        } else if ( left instanceof Duration && right instanceof FEELZonedTime) {
+            return ((FEELZonedTime) right).plus( (Duration) left);
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
             ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
             return null;
@@ -316,8 +316,8 @@ public class InfixOpNode
             return LocalDate.of(evaluated.getYear(), evaluated.getMonth(), evaluated.getDayOfMonth());
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
             return ((LocalTime) left).minus( (Duration) right);
-        } else if ( left instanceof OffsetTime && right instanceof Duration ) {
-            return ((OffsetTime) left).minus( (Duration) right);
+        } else if ( left instanceof FEELZonedTime && right instanceof Duration ) {
+            return ((FEELZonedTime) left).minus( (Duration) right);
         } else {
             return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 )  );
         }
