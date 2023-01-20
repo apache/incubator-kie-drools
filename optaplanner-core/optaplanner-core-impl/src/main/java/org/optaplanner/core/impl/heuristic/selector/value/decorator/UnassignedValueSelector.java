@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -22,12 +23,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
  * Does implement {@link EntityIndependentValueSelector} because the question whether a value is assigned or not does not depend
  * on a specific entity.
  */
-public class UnassignedValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+public final class UnassignedValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
-    protected final EntityIndependentValueSelector<Solution_> childValueSelector;
+    private final EntityIndependentValueSelector<Solution_> childValueSelector;
 
-    protected SingletonInverseVariableSupply inverseVariableSupply;
+    private SingletonInverseVariableSupply inverseVariableSupply;
 
     public UnassignedValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {
         if (childValueSelector.isNeverEnding()) {
@@ -108,6 +110,21 @@ public class UnassignedValueSelector<Solution_> extends AbstractValueSelector<So
                 .stream(Spliterators.spliterator(childValueSelector.iterator(), childValueSelector.getSize(), 0), false)
                 // Skip assigned values.
                 .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        UnassignedValueSelector<?> that = (UnassignedValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector);
     }
 
     @Override

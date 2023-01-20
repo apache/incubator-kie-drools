@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -12,11 +13,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class EntityDependentSortingValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public final class EntityDependentSortingValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector<Solution_> childValueSelector;
-    protected final SelectionCacheType cacheType;
-    protected final SelectionSorter<Solution_, Object> sorter;
+    private final ValueSelector<Solution_> childValueSelector;
+    private final SelectionCacheType cacheType;
+    private final SelectionSorter<Solution_, Object> sorter;
 
     protected ScoreDirector<Solution_> scoreDirector = null;
 
@@ -104,6 +106,22 @@ public class EntityDependentSortingValueSelector<Solution_> extends AbstractValu
     @Override
     public Iterator<Object> endingIterator(Object entity) {
         return iterator(entity);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        EntityDependentSortingValueSelector<?> that = (EntityDependentSortingValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector) && cacheType == that.cacheType
+                && Objects.equals(sorter, that.sorter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, cacheType, sorter);
     }
 
     @Override

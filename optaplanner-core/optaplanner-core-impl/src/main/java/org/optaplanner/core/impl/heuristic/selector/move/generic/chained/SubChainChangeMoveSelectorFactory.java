@@ -34,8 +34,9 @@ public class SubChainChangeMoveSelectorFactory<Solution_>
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        SubChainSelector<Solution_> subChainSelector = SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig)
-                .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
+        SubChainSelector<Solution_> subChainSelector =
+                SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig)
+                        .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {

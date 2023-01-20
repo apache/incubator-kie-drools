@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -89,4 +90,18 @@ public abstract class AbstractCachingEntitySelector<Solution_> extends AbstractE
         return cachedEntityList.iterator();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        AbstractCachingEntitySelector<?> that = (AbstractCachingEntitySelector<?>) other;
+        return Objects.equals(childEntitySelector, that.childEntitySelector) && cacheType == that.cacheType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, cacheType);
+    }
 }

@@ -1,13 +1,13 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = {
         "subPillarEnabled",
         "minimumSubPillarSize",
-        "maximumSubPillarSize",
         "maximumSubPillarSize"
 })
 public final class SubPillarConfigPolicy {
@@ -99,4 +99,21 @@ public final class SubPillarConfigPolicy {
         return entityComparator;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        SubPillarConfigPolicy that = (SubPillarConfigPolicy) o;
+        return subPillarEnabled == that.subPillarEnabled
+                && minimumSubPillarSize == that.minimumSubPillarSize
+                && maximumSubPillarSize == that.maximumSubPillarSize
+                && Objects.equals(entityComparator, that.entityComparator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subPillarEnabled, minimumSubPillarSize, maximumSubPillarSize, entityComparator);
+    }
 }

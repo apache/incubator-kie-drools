@@ -4,6 +4,8 @@ import java.util.Random;
 
 /**
  * Strategy pattern to select a index of a nearby ordered value range according to a probability distribution.
+ * It is recommended that instances be {@link Object#equals equal} if they represent the same random function,
+ * in order to support nearby entity selector equality.
  */
 public interface NearbyRandom {
 

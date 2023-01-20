@@ -2,15 +2,17 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public class DowncastingValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public final class DowncastingValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector<Solution_> childValueSelector;
-    protected final Class<?> downcastEntityClass;
+    private final ValueSelector<Solution_> childValueSelector;
+    private final Class<?> downcastEntityClass;
 
     public DowncastingValueSelector(ValueSelector<Solution_> childValueSelector, Class<?> downcastEntityClass) {
         this.childValueSelector = childValueSelector;
@@ -63,6 +65,22 @@ public class DowncastingValueSelector<Solution_> extends AbstractValueSelector<S
             return Collections.emptyIterator();
         }
         return childValueSelector.endingIterator(entity);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        DowncastingValueSelector<?> that = (DowncastingValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector)
+                && Objects.equals(downcastEntityClass, that.downcastEntityClass);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, downcastEntityClass);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
@@ -14,9 +15,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
  * <p>
  * Keep this code in sync with {@link CachingValueSelector} and {@link CachingMoveSelector}.
  */
-public class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
+public final class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
-    protected final boolean randomSelection;
+    private final boolean randomSelection;
 
     public CachingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
             boolean randomSelection) {
@@ -61,6 +62,23 @@ public class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelec
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        CachingEntitySelector<?> that = (CachingEntitySelector<?>) o;
+        return randomSelection == that.randomSelection;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), randomSelection);
     }
 
     @Override

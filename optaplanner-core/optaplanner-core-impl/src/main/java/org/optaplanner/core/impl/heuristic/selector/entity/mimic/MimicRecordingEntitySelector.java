@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -11,12 +12,12 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionLis
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
+public final class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
         implements EntityMimicRecorder<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
+    private final EntitySelector<Solution_> childEntitySelector;
 
-    protected final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
+    private final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
 
     public MimicRecordingEntitySelector(EntitySelector<Solution_> childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
@@ -158,6 +159,28 @@ public class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelec
             return childEntityIterator.previousIndex();
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MimicRecordingEntitySelector<?> that = (MimicRecordingEntitySelector<?>) other;
+        /*
+         * Using list size in order to prevent recursion in equals/hashcode.
+         * Since the replaying selector will always point back to this instance,
+         * we only need to know if the lists are the same
+         * in order to be able to tell if two instances are equal.
+         */
+        return Objects.equals(childEntitySelector, that.childEntitySelector)
+                && Objects.equals(replayingEntitySelectorList.size(), that.replayingEntitySelectorList.size());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, replayingEntitySelectorList.size());
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -16,12 +17,13 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ProbabilityValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+public final class ProbabilityValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
-    protected final EntityIndependentValueSelector<Solution_> childValueSelector;
-    protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
+    private final EntityIndependentValueSelector<Solution_> childValueSelector;
+    private final SelectionCacheType cacheType;
+    private final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
 
     protected NavigableMap<Double, Object> cachedEntityMap = null;
     protected double probabilityWeightTotal = -1.0;
@@ -129,6 +131,22 @@ public class ProbabilityValueSelector<Solution_> extends AbstractValueSelector<S
     @Override
     public Iterator<Object> endingIterator(Object entity) {
         return childValueSelector.endingIterator(entity);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        ProbabilityValueSelector<?> that = (ProbabilityValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector) && cacheType == that.cacheType
+                && Objects.equals(probabilityWeightFactory, that.probabilityWeightFactory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, cacheType, probabilityWeightFactory);
     }
 
     @Override

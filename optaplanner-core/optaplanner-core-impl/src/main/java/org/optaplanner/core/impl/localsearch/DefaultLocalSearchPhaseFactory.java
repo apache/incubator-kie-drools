@@ -42,11 +42,9 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
-        DefaultLocalSearchPhase.Builder<Solution_> builder = new DefaultLocalSearchPhase.Builder<>(
-                phaseIndex,
-                solverConfigPolicy.getLogIndentation(),
-                phaseTermination,
-                buildDecider(phaseConfigPolicy, phaseTermination));
+        DefaultLocalSearchPhase.Builder<Solution_> builder =
+                new DefaultLocalSearchPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(), phaseTermination,
+                        buildDecider(phaseConfigPolicy, phaseTermination));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);

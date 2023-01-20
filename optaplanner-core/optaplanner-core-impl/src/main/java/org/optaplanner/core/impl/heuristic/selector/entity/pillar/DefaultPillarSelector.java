@@ -1,17 +1,11 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
@@ -24,30 +18,31 @@ import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecyc
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarDemand;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
  * @see PillarSelector
  */
-public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_>
+public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_>
         implements PillarSelector<Solution_>, SelectionCacheLifecycleListener<Solution_> {
 
-    protected static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
+    private static final SelectionCacheType CACHE_TYPE = SelectionCacheType.STEP;
 
-    protected final EntitySelector<Solution_> entitySelector;
-    protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptors;
-    protected final boolean randomSelection;
-    protected final SubPillarConfigPolicy subpillarConfigPolicy;
+    private final EntitySelector<Solution_> entitySelector;
+    private final boolean randomSelection;
+    private final SubPillarConfigPolicy subpillarConfigPolicy;
+    private final PillarDemand<Solution_> pillarDemand;
 
-    protected List<List<Object>> cachedBasePillarList = null;
+    private List<List<Object>> cachedBasePillarList = null;
 
     public DefaultPillarSelector(EntitySelector<Solution_> entitySelector,
             List<GenuineVariableDescriptor<Solution_>> variableDescriptors, boolean randomSelection,
             SubPillarConfigPolicy subpillarConfigPolicy) {
         this.entitySelector = entitySelector;
-        this.variableDescriptors = variableDescriptors;
         this.randomSelection = randomSelection;
         this.subpillarConfigPolicy = subpillarConfigPolicy;
+        this.pillarDemand = new PillarDemand<>(entitySelector, variableDescriptors, subpillarConfigPolicy);
         Class<?> entityClass = entitySelector.getEntityDescriptor().getEntityClass();
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
             if (!entityClass.equals(
@@ -79,22 +74,6 @@ public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_
         }
     }
 
-    private static <Solution_> List<Object> getSingleVariableValueState(Object entity,
-            List<GenuineVariableDescriptor<Solution_>> variableDescriptors) {
-        Object value = variableDescriptors.get(0).getValue(entity);
-        return Collections.singletonList(value);
-    }
-
-    private static <Solution_> List<Object> getMultiVariableValueState(Object entity,
-            List<GenuineVariableDescriptor<Solution_>> variableDescriptors, int variableCount) {
-        List<Object> valueState = new ArrayList<>(variableCount);
-        for (int i = 0; i < variableCount; i++) {
-            Object value = variableDescriptors.get(i).getValue(entity);
-            valueState.add(value);
-        }
-        return valueState;
-    }
-
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
@@ -109,46 +88,29 @@ public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_
         return CACHE_TYPE;
     }
 
+    PillarDemand<Solution_> getPillarDemand() {
+        return pillarDemand;
+    }
+
     @Override
     public void constructCache(SolverScope<Solution_> solverScope) {
-        long entitySize = entitySelector.getSize();
-        if (entitySize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The selector (" + this + ") has an entitySelector ("
-                    + entitySelector + ") with entitySize (" + entitySize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
-        Stream<Object> entities = StreamSupport.stream(entitySelector.spliterator(), false);
-        Comparator<?> comparator = subpillarConfigPolicy.getEntityComparator();
-        if (comparator != null) {
-            /*
-             * The entity selection will be sorted. This will result in all the pillars being sorted without having to
-             * sort them individually later.
-             */
-            entities = entities.sorted((Comparator<? super Object>) comparator);
-        }
-        // Create all the pillars from a stream of entities; if sorted, the pillars will be sequential.
-        Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
-        int variableCount = variableDescriptors.size();
-        entities.forEach(entity -> {
-            List<Object> valueState = variableCount == 1 ? getSingleVariableValueState(entity, variableDescriptors)
-                    : getMultiVariableValueState(entity, variableDescriptors, variableCount);
-            List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
-            pillar.add(entity);
-        });
-        // Store the cache. Exclude pillars of size lower than the minimumSubPillarSize, as we shouldn't select those.
-        Collection<List<Object>> pillarLists = valueStateToPillarMap.values();
-        int minimumSubPillarSize = subpillarConfigPolicy.getMinimumSubPillarSize();
-        if (minimumSubPillarSize > 1) {
-            cachedBasePillarList = pillarLists.stream()
-                    .filter(pillar -> pillar.size() >= minimumSubPillarSize)
-                    .collect(Collectors.toList());
-        } else { // Use shortcut when we don't intend to remove anything.
-            cachedBasePillarList = new ArrayList<>(pillarLists);
-        }
+        /*
+         * The first pillar selector creates the supply.
+         * Other matching pillar selectors, if there are any, reuse the supply.
+         */
+        cachedBasePillarList = solverScope.getScoreDirector().getSupplyManager()
+                .demand(pillarDemand)
+                .read();
     }
 
     @Override
     public void disposeCache(SolverScope<Solution_> solverScope) {
+        /*
+         * Cancel the demand of each pillar selector.
+         * The final pillar selector's demand cancellation will cause the supply to be removed entirely.
+         */
+        solverScope.getScoreDirector().getSupplyManager()
+                .cancel(pillarDemand);
         cachedBasePillarList = null;
     }
 

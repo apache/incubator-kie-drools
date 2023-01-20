@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.mimic;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -153,6 +154,21 @@ public class MimicReplayingValueSelector<Solution_> extends AbstractValueSelecto
     public Iterator<Object> endingIterator(Object entity) {
         // No replaying, because the endingIterator() is used for determining size
         return valueMimicRecorder.endingIterator(entity);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MimicReplayingValueSelector<?> that = (MimicReplayingValueSelector<?>) other;
+        return Objects.equals(valueMimicRecorder, that.valueMimicRecorder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueMimicRecorder);
     }
 
     @Override

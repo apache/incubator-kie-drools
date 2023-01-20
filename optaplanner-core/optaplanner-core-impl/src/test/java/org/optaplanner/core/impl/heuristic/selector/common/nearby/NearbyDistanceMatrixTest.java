@@ -20,8 +20,7 @@ class NearbyDistanceMatrixTest {
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix =
-                new NearbyDistanceMatrix(meter, 4, origin -> entityList.iterator(), origin -> 4);
+        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4, entityList, origin -> 4);
         nearbyDistanceMatrix.addAllDestinations(a);
         nearbyDistanceMatrix.addAllDestinations(b);
         nearbyDistanceMatrix.addAllDestinations(c);
@@ -55,8 +54,7 @@ class NearbyDistanceMatrixTest {
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter = (origin,
                 destination) -> origin.distances[destination.index];
 
-        NearbyDistanceMatrix nearbyDistanceMatrix =
-                new NearbyDistanceMatrix(meter, 4, origin -> entityList.iterator(), origin -> 4);
+        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 4, entityList, origin -> 4);
         nearbyDistanceMatrix.addAllDestinations(a);
         nearbyDistanceMatrix.addAllDestinations(b);
         nearbyDistanceMatrix.addAllDestinations(c);
@@ -91,8 +89,7 @@ class NearbyDistanceMatrixTest {
 
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter =
                 (origin, destination) -> origin.distances[destination.index];
-        NearbyDistanceMatrix nearbyDistanceMatrix =
-                new NearbyDistanceMatrix(meter, 1, origin -> valueList.iterator(), origin -> valueList.size());
+        NearbyDistanceMatrix nearbyDistanceMatrix = new NearbyDistanceMatrix(meter, 1, valueList, origin -> valueList.size());
 
         // Add destinations for a. Destinations of b will be added when nearbyDistanceMatrix.getDestination() is called.
         nearbyDistanceMatrix.addAllDestinations(a);

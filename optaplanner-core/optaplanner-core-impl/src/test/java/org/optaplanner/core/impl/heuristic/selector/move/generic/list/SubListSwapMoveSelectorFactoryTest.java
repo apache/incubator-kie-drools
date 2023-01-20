@@ -17,7 +17,8 @@ class SubListSwapMoveSelectorFactoryTest {
     @Test
     void buildBaseMoveSelector() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
-        SubListSwapMoveSelectorFactory<TestdataListSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
+        SubListSwapMoveSelectorFactory<TestdataListSolution> factory =
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
@@ -34,7 +35,8 @@ class SubListSwapMoveSelectorFactoryTest {
     void disableSelectReversingMoveToo() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         config.setSelectReversingMoveToo(false);
-        SubListSwapMoveSelectorFactory<TestdataListSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
+        SubListSwapMoveSelectorFactory<TestdataListSolution> factory =
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
@@ -49,7 +51,8 @@ class SubListSwapMoveSelectorFactoryTest {
     @Test
     void requiresListVariable() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
-        SubListSwapMoveSelectorFactory<TestdataSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
+        SubListSwapMoveSelectorFactory<TestdataSolution> factory =
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = buildHeuristicConfigPolicy();
 

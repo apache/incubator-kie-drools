@@ -44,9 +44,11 @@ public class ChangeMoveSelectorFactory<Solution_>
                     + ") should haven been initialized during unfolding.");
         }
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(config.getValueSelectorConfig())
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory
+                .<Solution_> create(config.getValueSelectorConfig())
                 .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {

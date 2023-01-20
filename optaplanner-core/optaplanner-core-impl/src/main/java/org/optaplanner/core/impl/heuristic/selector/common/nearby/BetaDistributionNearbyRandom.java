@@ -1,12 +1,13 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import java.util.Objects;
 import java.util.Random;
 
 import org.apache.commons.math3.distribution.BetaDistribution;
 
-public class BetaDistributionNearbyRandom implements NearbyRandom {
+public final class BetaDistributionNearbyRandom implements NearbyRandom {
 
-    protected final BetaDistribution betaDistribution;
+    private final BetaDistribution betaDistribution;
 
     public BetaDistributionNearbyRandom(double betaDistributionAlpha, double betaDistributionBeta) {
         if (betaDistributionAlpha <= 0) {
@@ -36,4 +37,19 @@ public class BetaDistributionNearbyRandom implements NearbyRandom {
         return Integer.MAX_VALUE;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        BetaDistributionNearbyRandom that = (BetaDistributionNearbyRandom) other;
+        return Objects.equals(betaDistribution.getAlpha(), that.betaDistribution.getAlpha())
+                && Objects.equals(betaDistribution.getBeta(), that.betaDistribution.getBeta());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(betaDistribution.getAlpha(), betaDistribution.getBeta());
+    }
 }

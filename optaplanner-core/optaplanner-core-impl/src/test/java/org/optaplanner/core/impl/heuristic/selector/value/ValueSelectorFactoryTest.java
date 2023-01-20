@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringVal
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -84,9 +85,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
-                configPolicy, entityDescriptor,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat(valueSelector)
@@ -165,8 +165,9 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        assertThatIllegalArgumentException().isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig)
-                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
     @Test
@@ -177,7 +178,7 @@ class ValueSelectorFactoryTest {
         ValueSelector baseValueSelector =
                 SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value", new TestdataValue("v1"));
         ValueSelector resultingValueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector);
+                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(FilteringValueSelector.class);
     }
 
@@ -187,11 +188,11 @@ class ValueSelectorFactoryTest {
         valueSelectorConfig.setProbabilityWeightFactoryClass(DummySelectionProbabilityWeightFactory.class);
 
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
-        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(valueSelectorConfig);
+        ValueSelectorFactory valueSelectorFactory =
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateProbability(SelectionOrder.PROBABILISTIC);
-        ValueSelector resultingValueSelector =
-                valueSelectorFactory.applyProbability(SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC,
-                        baseValueSelector);
+        ValueSelector resultingValueSelector = valueSelectorFactory.applyProbability(SelectionCacheType.PHASE,
+                SelectionOrder.PROBABILISTIC, baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(ProbabilityValueSelector.class);
     }
 
@@ -210,7 +211,8 @@ class ValueSelectorFactoryTest {
     }
 
     private void applySorting(ValueSelectorConfig valueSelectorConfig) {
-        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(valueSelectorConfig);
+        ValueSelectorFactory valueSelectorFactory =
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateSorting(SelectionOrder.SORTED);
 
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
@@ -219,16 +221,19 @@ class ValueSelectorFactoryTest {
         when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
 
         ValueSelector resultingValueSelector =
-                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector);
+                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(SortingValueSelector.class);
     }
 
     @Test
     void applySortingFailsFast_withoutAnySorter() {
-        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
+        ValueSelectorFactory valueSelectorFactory =
+                ValueSelectorFactory.create(new ValueSelectorConfig());
         ValueSelector baseValueSelector = mock(ValueSelector.class);
         assertThatIllegalArgumentException().isThrownBy(
-                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector))
+                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create()))
                 .withMessageContaining("needs a sorterManner");
     }
 
@@ -239,7 +244,8 @@ class ValueSelectorFactoryTest {
         valueSelectorConfig.setMimicSelectorRef("someSelectorId");
 
         assertThatIllegalArgumentException().isThrownBy(
-                () -> ValueSelectorFactory.create(valueSelectorConfig).buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
+                () -> ValueSelectorFactory.create(valueSelectorConfig)
+                        .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
     }
 

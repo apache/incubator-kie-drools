@@ -13,9 +13,14 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * <p>
  * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
  *
+ * <p>
+ * Implementations are expected to be stateless.
+ * The solver may choose to reuse instances.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
+@FunctionalInterface
 public interface SelectionFilter<Solution_, T> {
 
     /**

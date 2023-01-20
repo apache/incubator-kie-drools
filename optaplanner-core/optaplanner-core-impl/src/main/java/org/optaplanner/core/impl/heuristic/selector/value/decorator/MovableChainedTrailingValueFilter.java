@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -13,7 +15,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class MovableChainedTrailingValueFilter<Solution_> implements SelectionFilter<Solution_, Object> {
+public final class MovableChainedTrailingValueFilter<Solution_> implements SelectionFilter<Solution_, Object> {
 
     private final GenuineVariableDescriptor<Solution_> variableDescriptor;
 
@@ -35,11 +37,25 @@ public class MovableChainedTrailingValueFilter<Solution_> implements SelectionFi
         return entityDescriptor.getEffectiveMovableEntitySelectionFilter().accept(scoreDirector, trailingEntity);
     }
 
-    protected SingletonInverseVariableSupply retrieveSingletonInverseVariableSupply(ScoreDirector<Solution_> scoreDirector) {
+    private SingletonInverseVariableSupply retrieveSingletonInverseVariableSupply(ScoreDirector<Solution_> scoreDirector) {
         // TODO Performance loss because the supply is retrieved for every accept
         // A SelectionFilter should be optionally made aware of lifecycle events, so it can cache the supply
         SupplyManager supplyManager = ((InnerScoreDirector<Solution_, ?>) scoreDirector).getSupplyManager();
         return supplyManager.demand(new SingletonInverseVariableDemand<>(variableDescriptor));
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MovableChainedTrailingValueFilter<?> that = (MovableChainedTrailingValueFilter<?>) other;
+        return Objects.equals(variableDescriptor, that.variableDescriptor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor);
+    }
 }

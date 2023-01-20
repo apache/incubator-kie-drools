@@ -116,7 +116,8 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 solverConfig.getMoveThreadBufferSize(),
                 solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory.getInitializingScoreTrend(),
-                solutionDescriptor).build();
+                solutionDescriptor,
+                ClassInstanceCache.create()).build();
         TerminationConfig terminationConfig_ =
                 Objects.requireNonNullElseGet(solverConfig.getTerminationConfig(), TerminationConfig::new);
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);

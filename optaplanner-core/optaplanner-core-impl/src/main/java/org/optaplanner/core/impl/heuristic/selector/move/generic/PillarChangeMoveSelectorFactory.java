@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,8 @@ public class PillarChangeMoveSelectorFactory<Solution_>
                         : Collections.singletonList(config.getValueSelectorConfig().getVariableName());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
-                .buildPillarSelector(configPolicy, config.getSubPillarType(), config.getSubPillarSequenceComparatorClass(),
+                .buildPillarSelector(configPolicy, config.getSubPillarType(),
+                        (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(),
                         minimumCacheType, selectionOrder, variableNameIncludeList);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
                 .buildValueSelector(configPolicy, pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder);

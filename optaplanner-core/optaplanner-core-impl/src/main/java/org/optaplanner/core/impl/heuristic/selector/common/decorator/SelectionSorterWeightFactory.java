@@ -11,9 +11,14 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * The selections are then sorted by their weight,
  * normally ascending unless it's configured descending.
  *
+ * <p>
+ * Implementations are expected to be stateless.
+ * The solver may choose to reuse instances.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
+@FunctionalInterface
 public interface SelectionSorterWeightFactory<Solution_, T> {
 
     /**

@@ -28,21 +28,48 @@
         <cacheType>STEP</cacheType>
         <selectionOrder>SHUFFLED</selectionOrder>
       </changeMoveSelector>
-      <!--<swapMoveSelector>-->
-        <!--<cacheType>PHASE</cacheType>-->
-        <!--<selectionOrder>SHUFFLED</selectionOrder>-->
-      <!--</swapMoveSelector>-->
-      <tailChainSwapMoveSelector/>
+      <changeMoveSelector>
+        <entitySelector id="entitySelector1"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector1"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <entitySelector id="entitySelector2"/>
+        <secondaryEntitySelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector2"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondaryEntitySelector>
+      </swapMoveSelector>
+      <tailChainSwapMoveSelector>
+        <entitySelector id="entitySelector3"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector3"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </tailChainSwapMoveSelector>
       <subChainChangeMoveSelector>
         <subChainSelector>
           <maximumSubChainSize>50</maximumSubChainSize>
         </subChainSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainChangeMoveSelector>
-      <!--<subChainSwapMoveSelector>-->
-        <!--<selectReversingMoveToo>false</selectReversingMoveToo>-->
-      <!--</subChainSwapMoveSelector>-->
-      <!-- TODO use nearby selection to scale out -->
+      <subChainSwapMoveSelector>
+        <subChainSelector>
+          <maximumSubChainSize>50</maximumSubChainSize>
+        </subChainSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subChainSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>400</lateAcceptanceSize>

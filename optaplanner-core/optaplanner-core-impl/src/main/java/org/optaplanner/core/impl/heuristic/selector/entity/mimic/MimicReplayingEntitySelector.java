@@ -3,21 +3,22 @@ package org.optaplanner.core.impl.heuristic.selector.entity.mimic;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntityMimicRecorder<Solution_> entityMimicRecorder;
+    private final EntityMimicRecorder<Solution_> entityMimicRecorder;
 
-    protected boolean hasRecordingCreated;
-    protected boolean hasRecording;
-    protected boolean recordingCreated;
-    protected Object recording;
-    protected boolean recordingAlreadyReturned;
+    private boolean hasRecordingCreated;
+    private boolean hasRecording;
+    private boolean recordingCreated;
+    private Object recording;
+    private boolean recordingAlreadyReturned;
 
     public MimicReplayingEntitySelector(EntityMimicRecorder<Solution_> entityMimicRecorder) {
         this.entityMimicRecorder = entityMimicRecorder;
@@ -147,6 +148,21 @@ public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelec
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MimicReplayingEntitySelector<?> that = (MimicReplayingEntitySelector<?>) other;
+        return Objects.equals(entityMimicRecorder, that.entityMimicRecorder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityMimicRecorder);
     }
 
     @Override

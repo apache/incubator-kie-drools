@@ -142,8 +142,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
-            ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination,
-            Semaphore runnablePartThreadSemaphore, SolverScope<Solution_> solverScope) {
+            ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
+            SolverScope<Solution_> solverScope) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
@@ -210,7 +210,6 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         private final SolutionPartitioner<Solution_> solutionPartitioner;
         private final ThreadFactory threadFactory;
         private final Integer runnablePartThreadLimit;
-
         private final List<PhaseConfig> phaseConfigList;
         private final HeuristicConfigPolicy<Solution_> configPolicy;
 

@@ -2,15 +2,16 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class SortingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
+public final class SortingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
-    protected final SelectionSorter<Solution_, Object> sorter;
+    private final SelectionSorter<Solution_, Object> sorter;
 
     public SortingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
             SelectionSorter<Solution_, Object> sorter) {
@@ -48,6 +49,23 @@ public class SortingEntitySelector<Solution_> extends AbstractCachingEntitySelec
     @Override
     public ListIterator<Object> listIterator(int index) {
         return cachedEntityList.listIterator(index);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        SortingEntitySelector<?> that = (SortingEntitySelector<?>) o;
+        return Objects.equals(sorter, that.sorter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), sorter);
     }
 
     @Override

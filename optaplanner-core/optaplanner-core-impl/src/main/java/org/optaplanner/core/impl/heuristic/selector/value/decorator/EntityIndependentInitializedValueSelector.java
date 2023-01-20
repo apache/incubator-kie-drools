@@ -4,7 +4,8 @@ import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class EntityIndependentInitializedValueSelector<Solution_> extends InitializedValueSelector<Solution_>
+public final class EntityIndependentInitializedValueSelector<Solution_>
+        extends InitializedValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     public EntityIndependentInitializedValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector) {

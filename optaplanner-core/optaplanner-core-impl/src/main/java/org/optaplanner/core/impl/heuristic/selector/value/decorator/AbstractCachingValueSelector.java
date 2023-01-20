@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -100,4 +101,18 @@ public abstract class AbstractCachingValueSelector<Solution_> extends AbstractVa
         return cachedValueList.iterator();
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        AbstractCachingValueSelector<?> that = (AbstractCachingValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector) && cacheType == that.cacheType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, cacheType);
+    }
 }

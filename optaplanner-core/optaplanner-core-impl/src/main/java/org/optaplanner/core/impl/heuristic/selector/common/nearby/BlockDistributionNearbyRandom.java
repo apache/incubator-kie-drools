@@ -1,14 +1,14 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import java.util.Objects;
 import java.util.Random;
 
-public class BlockDistributionNearbyRandom implements NearbyRandom {
+public final class BlockDistributionNearbyRandom implements NearbyRandom {
 
-    protected final int sizeMinimum;
-    protected final int sizeMaximum;
-    protected final double sizeRatio;
-
-    protected final double uniformDistributionProbability;
+    private final int sizeMinimum;
+    private final int sizeMaximum;
+    private final double sizeRatio;
+    private final double uniformDistributionProbability;
 
     public BlockDistributionNearbyRandom(int sizeMinimum, int sizeMaximum, double sizeRatio,
             double uniformDistributionProbability) {
@@ -68,4 +68,20 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
         return sizeMaximum;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        BlockDistributionNearbyRandom that = (BlockDistributionNearbyRandom) other;
+        return sizeMinimum == that.sizeMinimum && sizeMaximum == that.sizeMaximum
+                && Double.compare(that.sizeRatio, sizeRatio) == 0
+                && Double.compare(that.uniformDistributionProbability, uniformDistributionProbability) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sizeMinimum, sizeMaximum, sizeRatio, uniformDistributionProbability);
+    }
 }

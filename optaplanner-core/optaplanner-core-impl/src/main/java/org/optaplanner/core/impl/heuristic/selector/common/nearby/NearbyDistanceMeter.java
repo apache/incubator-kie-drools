@@ -1,5 +1,13 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+/**
+ * Implementations are expected to be stateless.
+ * The solver may choose to reuse instances.
+ *
+ * @param <O>
+ * @param <D>
+ */
+@FunctionalInterface
 public interface NearbyDistanceMeter<O, D> {
 
     /**

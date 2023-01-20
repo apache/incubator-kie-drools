@@ -56,8 +56,7 @@ public interface PhaseFactory<Solution_> {
                 }
             }
             PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
-            Phase<Solution_> phase =
-                    phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
+            Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
             phaseList.add(phase);
         }
         return phaseList;

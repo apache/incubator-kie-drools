@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -17,15 +18,15 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
+public final class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
         implements SelectionCacheLifecycleListener<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
-    protected final SelectionCacheType cacheType;
-    protected final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
+    private final EntitySelector<Solution_> childEntitySelector;
+    private final SelectionCacheType cacheType;
+    private final SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory;
 
-    protected NavigableMap<Double, Object> cachedEntityMap = null;
-    protected double probabilityWeightTotal = -1.0;
+    private NavigableMap<Double, Object> cachedEntityMap = null;
+    private double probabilityWeightTotal = -1.0;
 
     public ProbabilityEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
             SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory) {
@@ -95,7 +96,7 @@ public class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector
 
     @Override
     public Iterator<Object> iterator() {
-        return new Iterator<Object>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return true;
@@ -131,6 +132,22 @@ public class ProbabilityEntitySelector<Solution_> extends AbstractEntitySelector
     @Override
     public Iterator<Object> endingIterator() {
         return childEntitySelector.endingIterator();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        ProbabilityEntitySelector<?> that = (ProbabilityEntitySelector<?>) other;
+        return Objects.equals(childEntitySelector, that.childEntitySelector) && cacheType == that.cacheType
+                && Objects.equals(probabilityWeightFactory, that.probabilityWeightFactory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, cacheType, probabilityWeightFactory);
     }
 
     @Override

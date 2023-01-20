@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,11 +40,10 @@ public class PillarSwapMoveSelectorFactory<Solution_>
     }
 
     private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
-            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
-            boolean randomSelection) {
+            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType, boolean randomSelection) {
         return PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
-                        config.getSubPillarSequenceComparatorClass(), minimumCacheType,
+                        (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(), minimumCacheType,
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection),
                         config.getVariableNameIncludeList());
     }

@@ -27,6 +27,29 @@
     "revapi": {
       "_comment": "Changes between 8.13.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
+        {
+          "ignore": true,
+          "code": "java.method.removed",
+          "old": "method boolean java.lang.Object::equals(java.lang.Object) @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.removed",
+          "old": "method int java.lang.Object::hashCode() @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "oldValue": "{\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\", \"maximumSubPillarSize\"}",
+          "newValue": "{\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\"}",
+          "justification": "Duplicate field name, no impact."
+        }
       ]
     }
   }

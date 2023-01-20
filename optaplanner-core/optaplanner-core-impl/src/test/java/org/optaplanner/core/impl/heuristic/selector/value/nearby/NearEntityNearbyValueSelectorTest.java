@@ -1,12 +1,17 @@
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfValueSelectorForEntity;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -15,8 +20,10 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingE
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -85,13 +92,13 @@ class NearEntityNearbyValueSelectorTest {
         NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
                 childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
 
-        SolverScope solverScope = mock(SolverScope.class);
+        SolverScope<TestdataSolution> solverScope = mockSolverScope();
         valueSelector.solvingStarted(solverScope);
 
         // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
         TestdataEntity movingEntity = europe;
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = mockPhaseScope(solverScope);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -111,7 +118,7 @@ class NearEntityNearbyValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = mockPhaseScope(solverScope);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -141,8 +148,26 @@ class NearEntityNearbyValueSelectorTest {
         valueSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
-        //        verify(childValueSelector, times(5)).endingIterator(any());
-        //        verify(childValueSelector, times(5)).getSize(any());
+    }
+
+    private SolverScope<TestdataSolution> mockSolverScope() {
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        doReturn(solutionDescriptor).when(scoreDirector).getSolutionDescriptor();
+        doReturn(VariableListenerSupport.create(scoreDirector)).when(scoreDirector).getSupplyManager();
+
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
+        doReturn(scoreDirector).when(solverScope).getScoreDirector();
+        return solverScope;
+    }
+
+    private AbstractPhaseScope<TestdataSolution> mockPhaseScope(SolverScope<TestdataSolution> solverScope) {
+        return spy(new AbstractPhaseScope<>(solverScope) {
+            @Override
+            public AbstractStepScope<TestdataSolution> getLastCompletedStepScope() {
+                throw new UnsupportedOperationException();
+            }
+        });
     }
 
     @Test
@@ -203,13 +228,13 @@ class NearEntityNearbyValueSelectorTest {
         NearEntityNearbyValueSelector valueSelector = new NearEntityNearbyValueSelector(
                 childValueSelector, new MimicReplayingEntitySelector(entityMimicRecorder), meter, null, false);
 
-        SolverScope solverScope = mock(SolverScope.class);
+        SolverScope<TestdataSolution> solverScope = mockSolverScope();
         valueSelector.solvingStarted(solverScope);
 
         // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
         TestdataChainedEntity movingEntity = spain;
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = mockPhaseScope(solverScope);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
 
@@ -229,7 +254,7 @@ class NearEntityNearbyValueSelectorTest {
 
         valueSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScopeB = mockPhaseScope(solverScope);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeB);
 
@@ -259,8 +284,6 @@ class NearEntityNearbyValueSelectorTest {
         valueSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childValueSelector, 1, 2, 5);
-        //        verify(childValueSelector, times(5)).endingIterator(any());
-        //        verify(childValueSelector, times(5)).getSize(any());
     }
 
 }

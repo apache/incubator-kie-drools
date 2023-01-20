@@ -19,8 +19,7 @@ abstract class AbstractCompositeMoveSelectorFactory<Solution_, MoveSelectorConfi
     }
 
     protected List<MoveSelector<Solution_>> buildInnerMoveSelectors(List<MoveSelectorConfig> innerMoveSelectorList,
-            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
-            boolean randomSelection) {
+            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType, boolean randomSelection) {
         return innerMoveSelectorList.stream()
                 .map(moveSelectorConfig -> {
                     MoveSelectorFactory<Solution_> innerMoveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);

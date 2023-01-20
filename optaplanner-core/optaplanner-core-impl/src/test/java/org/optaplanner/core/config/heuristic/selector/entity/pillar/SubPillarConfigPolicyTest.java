@@ -1,5 +1,6 @@
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.mock;
@@ -67,6 +68,29 @@ class SubPillarConfigPolicyTest {
                 .isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> SubPillarConfigPolicy.sequential(1, 2, null))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void equalitySizes() {
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withSubpillars(1, 2);
+        assertThat(policy).isEqualTo(policy);
+        SubPillarConfigPolicy policy2 = SubPillarConfigPolicy.withSubpillars(1, 2);
+        assertThat(policy2).isEqualTo(policy);
+        SubPillarConfigPolicy policy3 = SubPillarConfigPolicy.withSubpillars(1, 3);
+        assertThat(policy3).isNotEqualTo(policy2);
+        SubPillarConfigPolicy policy4 = SubPillarConfigPolicy.withSubpillars(2, 3);
+        assertThat(policy4).isNotEqualTo(policy3);
+    }
+
+    @Test
+    void equalityComparator() {
+        Comparator<Object> comparator = (a, b) -> 0;
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequentialUnlimited(comparator);
+        assertThat(policy).isEqualTo(policy);
+        SubPillarConfigPolicy policy2 = SubPillarConfigPolicy.sequentialUnlimited(comparator);
+        assertThat(policy2).isEqualTo(policy);
+        SubPillarConfigPolicy policy3 = SubPillarConfigPolicy.sequentialUnlimited((a, b) -> 0);
+        assertThat(policy3).isNotEqualTo(policy);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -9,9 +10,9 @@ import java.util.Random;
  * <p>
  * Inverse cumulative probability: {@code F(p) = m(1 - (1 - p)^(1/2))}.
  */
-public class LinearDistributionNearbyRandom implements NearbyRandom {
+public final class LinearDistributionNearbyRandom implements NearbyRandom {
 
-    protected final int sizeMaximum;
+    private final int sizeMaximum;
 
     public LinearDistributionNearbyRandom(int sizeMaximum) {
         this.sizeMaximum = sizeMaximum;
@@ -39,4 +40,18 @@ public class LinearDistributionNearbyRandom implements NearbyRandom {
         return sizeMaximum;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        LinearDistributionNearbyRandom that = (LinearDistributionNearbyRandom) other;
+        return sizeMaximum == that.sizeMaximum;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sizeMaximum);
+    }
 }

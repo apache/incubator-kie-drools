@@ -136,7 +136,7 @@ image::planner-introduction/compatibility.png[align="center"]
 
 OptaPlanner is stable, reliable and scalable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 values each, multiple constraint types and billions of possible constraint matches.
 
-See xref:release-notes/[Release notes] for an overview of recent activity in the project.
+See xref:release-notes/release-notes.adoc[Release notes] for an overview of recent activity in the project.
 
 
 [[backwardsCompatibility]]

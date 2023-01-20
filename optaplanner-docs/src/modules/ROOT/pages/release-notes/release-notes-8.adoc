@@ -1,6 +1,32 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.34.0.Final]]
+=== OptaPlanner 8.34.0.Final
+
+==== Performance improvements in pillar moves and nearby selection
+
+OptaPlanner can now auto-detect situations where multiple xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#pillarMoveSelectors[pillar move selectors] can share a pre-computed pillar cache and reuse it instead of recomputing it for each move selector.
+Users who combine different pillar moves (such as `PillarChangeMove` and `PillarSwapMove`) should see significant benefits.
+
+The same applies to users of xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[nearby selection].
+OptaPlanner can now auto-detect situations where a pre-computed distance matrix can be shared between multiple move selectors, saving a considerable amount of memory and CPU processing time.
+
+As a consequence, implementations of the following interfaces are expected to be stateless:
+
+* `org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory`
+
+In general, if solver configuration asks the user to implement an interface,
+the expectation is that the implementation will be stateless
+or at the very least not try to include external state.
+With the aforementioned performance improvements,
+failing to follow this requirement will result in subtle bugs and score corruption
+as the solver will now reuse these instances as it sees fit.
+
 [[releaseNotes-8.33.0.Final]]
 === OptaPlanner 8.33.0.Final
 

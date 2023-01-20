@@ -167,8 +167,9 @@ class MoveSelectorFactoryTest {
         MoveSelectorFactory<TestdataSolution> moveSelectorFactory = new DummyMoveSelectorFactory(moveSelectorConfig,
                 baseMoveSelector);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> moveSelectorFactory
-                .buildMoveSelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(buildHeuristicConfigPolicy(),
+                        SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
     @Test

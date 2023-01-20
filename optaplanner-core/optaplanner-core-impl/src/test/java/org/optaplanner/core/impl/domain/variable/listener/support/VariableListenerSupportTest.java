@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -117,7 +116,7 @@ class VariableListenerSupportTest {
 
         NotifiableRegistry<TestdataShadowVariableOrderSolution> registry = new NotifiableRegistry<>(solutionDescriptor);
         VariableListenerSupport<TestdataShadowVariableOrderSolution> variableListenerSupport =
-                new VariableListenerSupport<>(scoreDirector, registry, new HashMap<>());
+                new VariableListenerSupport<>(scoreDirector, registry);
 
         variableListenerSupport.linkVariableListeners();
 

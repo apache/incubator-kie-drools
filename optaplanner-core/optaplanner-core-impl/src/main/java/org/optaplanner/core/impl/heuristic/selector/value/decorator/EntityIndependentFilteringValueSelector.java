@@ -6,7 +6,8 @@ import java.util.List;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
-public class EntityIndependentFilteringValueSelector<Solution_> extends FilteringValueSelector<Solution_>
+public final class EntityIndependentFilteringValueSelector<Solution_>
+        extends FilteringValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     public EntityIndependentFilteringValueSelector(EntityIndependentValueSelector<Solution_> childValueSelector,

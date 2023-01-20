@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -17,7 +18,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p>
  * Mainly used for chained planning variables, but supports other planning variables too.
  */
-public class InitializedValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public class InitializedValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
     public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector) {
         if (valueSelector instanceof EntityIndependentValueSelector) {
@@ -27,11 +29,11 @@ public class InitializedValueSelector<Solution_> extends AbstractValueSelector<S
         }
     }
 
-    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
-    protected final ValueSelector<Solution_> childValueSelector;
-    protected final boolean bailOutEnabled;
+    private final GenuineVariableDescriptor<Solution_> variableDescriptor;
+    final ValueSelector<Solution_> childValueSelector;
+    final boolean bailOutEnabled;
 
-    protected InitializedValueSelector(ValueSelector<Solution_> childValueSelector) {
+    InitializedValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.variableDescriptor = childValueSelector.getVariableDescriptor();
         this.childValueSelector = childValueSelector;
         bailOutEnabled = childValueSelector.isNeverEnding();
@@ -122,6 +124,22 @@ public class InitializedValueSelector<Solution_> extends AbstractValueSelector<S
         return value == null
                 || !variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(value.getClass())
                 || variableDescriptor.isInitialized(value);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        InitializedValueSelector<?> that = (InitializedValueSelector<?>) other;
+        return Objects.equals(variableDescriptor, that.variableDescriptor)
+                && Objects.equals(childValueSelector, that.childValueSelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor, childValueSelector);
     }
 
     @Override

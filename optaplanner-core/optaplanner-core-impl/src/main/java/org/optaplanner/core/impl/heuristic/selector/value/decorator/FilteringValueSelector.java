@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -12,7 +13,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class FilteringValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public class FilteringValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
     public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
@@ -26,10 +28,10 @@ public class FilteringValueSelector<Solution_> extends AbstractValueSelector<Sol
     }
 
     protected final ValueSelector<Solution_> childValueSelector;
-    protected final List<SelectionFilter<Solution_, Object>> filterList;
+    private final List<SelectionFilter<Solution_, Object>> filterList;
     protected final boolean bailOutEnabled;
 
-    protected ScoreDirector<Solution_> scoreDirector = null;
+    private ScoreDirector<Solution_> scoreDirector = null;
 
     protected FilteringValueSelector(ValueSelector<Solution_> childValueSelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
@@ -135,6 +137,21 @@ public class FilteringValueSelector<Solution_> extends AbstractValueSelector<Sol
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FilteringValueSelector<?> that = (FilteringValueSelector<?>) o;
+        return Objects.equals(childValueSelector, that.childValueSelector) && Objects.equals(filterList, that.filterList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, filterList);
     }
 
     @Override

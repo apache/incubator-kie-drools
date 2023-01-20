@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
@@ -14,7 +15,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p>
  * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingMoveSelector}.
  */
-public class CachingValueSelector<Solution_> extends AbstractCachingValueSelector<Solution_>
+public final class CachingValueSelector<Solution_>
+        extends AbstractCachingValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     protected final boolean randomSelection;
@@ -47,6 +49,23 @@ public class CachingValueSelector<Solution_> extends AbstractCachingValueSelecto
         } else {
             return new CachedListRandomIterator<>(cachedValueList, workingRandom);
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        if (!super.equals(other))
+            return false;
+        CachingValueSelector<?> that = (CachingValueSelector<?>) other;
+        return randomSelection == that.randomSelection;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), randomSelection);
     }
 
     @Override

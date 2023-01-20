@@ -24,8 +24,7 @@ public class SubChainSelectorFactory<Solution_> {
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
-    public static <Solution_> SubChainSelectorFactory<Solution_>
-            create(SubChainSelectorConfig subChainSelectorConfig) {
+    public static <Solution_> SubChainSelectorFactory<Solution_> create(SubChainSelectorConfig subChainSelectorConfig) {
         return new SubChainSelectorFactory<>(subChainSelectorConfig);
     }
 
@@ -36,7 +35,6 @@ public class SubChainSelectorFactory<Solution_> {
     }
 
     /**
-     *
      * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),

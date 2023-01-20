@@ -32,9 +32,8 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex,
-            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> solverTermination) {
+    public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
@@ -44,14 +43,9 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
             phaseConfigList_ = Arrays.asList(new ConstructionHeuristicPhaseConfig(), new LocalSearchPhaseConfig());
         }
 
-        DefaultPartitionedSearchPhase.Builder<Solution_> builder = new DefaultPartitionedSearchPhase.Builder<>(
-                phaseIndex,
-                solverConfigPolicy.getLogIndentation(),
-                phaseTermination,
-                buildSolutionPartitioner(),
-                threadFactory,
-                resolvedActiveThreadCount,
-                phaseConfigList_,
+        DefaultPartitionedSearchPhase.Builder<Solution_> builder = new DefaultPartitionedSearchPhase.Builder<>(phaseIndex,
+                solverConfigPolicy.getLogIndentation(), phaseTermination, buildSolutionPartitioner(), threadFactory,
+                resolvedActiveThreadCount, phaseConfigList_,
                 phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();

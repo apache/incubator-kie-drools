@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.entity.PlanningPin;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -29,4 +31,18 @@ public class PinEntityFilter<Solution_> implements SelectionFilter<Solution_, Ob
         return !pinned;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        PinEntityFilter<?> that = (PinEntityFilter<?>) other;
+        return Objects.equals(memberAccessor, that.memberAccessor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberAccessor);
+    }
 }

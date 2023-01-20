@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -10,11 +11,12 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
-public class SelectedCountLimitValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+public final class SelectedCountLimitValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
-    protected final ValueSelector<Solution_> childValueSelector;
-    protected final long selectedCountLimit;
+    private final ValueSelector<Solution_> childValueSelector;
+    private final long selectedCountLimit;
 
     /**
      * Unlike most of the other {@link ValueSelector} decorations,
@@ -110,6 +112,21 @@ public class SelectedCountLimitValueSelector<Solution_> extends AbstractValueSel
             return childValueIterator.next();
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        SelectedCountLimitValueSelector<?> that = (SelectedCountLimitValueSelector<?>) other;
+        return selectedCountLimit == that.selectedCountLimit && Objects.equals(childValueSelector, that.childValueSelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector, selectedCountLimit);
     }
 
     @Override

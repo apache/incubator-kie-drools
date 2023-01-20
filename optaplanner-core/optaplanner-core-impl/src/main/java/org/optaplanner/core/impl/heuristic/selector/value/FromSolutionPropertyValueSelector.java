@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
@@ -15,17 +16,18 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * This is the common {@link ValueSelector} implementation.
  */
-public class FromSolutionPropertyValueSelector<Solution_> extends AbstractValueSelector<Solution_>
+public final class FromSolutionPropertyValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
-    protected final EntityIndependentValueRangeDescriptor<Solution_> valueRangeDescriptor;
-    protected final SelectionCacheType minimumCacheType;
-    protected final boolean randomSelection;
-    protected final boolean valueRangeMightContainEntity;
+    private final EntityIndependentValueRangeDescriptor<Solution_> valueRangeDescriptor;
+    private final SelectionCacheType minimumCacheType;
+    private final boolean randomSelection;
+    private final boolean valueRangeMightContainEntity;
 
-    protected ValueRange<Object> cachedValueRange = null;
-    protected Long cachedEntityListRevision = null;
-    protected boolean cachedEntityListIsDirty = false;
+    private ValueRange<Object> cachedValueRange = null;
+    private Long cachedEntityListRevision = null;
+    private boolean cachedEntityListIsDirty = false;
 
     public FromSolutionPropertyValueSelector(EntityIndependentValueRangeDescriptor<Solution_> valueRangeDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
@@ -151,6 +153,22 @@ public class FromSolutionPropertyValueSelector<Solution_> extends AbstractValueS
             throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
                     + ")'s workingEntityList became dirty between steps but is still used afterwards.");
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        FromSolutionPropertyValueSelector<?> that = (FromSolutionPropertyValueSelector<?>) other;
+        return randomSelection == that.randomSelection &&
+                Objects.equals(valueRangeDescriptor, that.valueRangeDescriptor) && minimumCacheType == that.minimumCacheType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueRangeDescriptor, minimumCacheType, randomSelection);
     }
 
     @Override

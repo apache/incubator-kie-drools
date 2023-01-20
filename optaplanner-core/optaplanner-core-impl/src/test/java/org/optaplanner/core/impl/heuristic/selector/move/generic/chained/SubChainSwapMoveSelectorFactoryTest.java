@@ -23,7 +23,8 @@ class SubChainSwapMoveSelectorFactoryTest {
         SubChainSwapMoveSelectorConfig config = new SubChainSwapMoveSelectorConfig();
         config.setSubChainSelectorConfig(leftSubChainSelectorConfig);
         config.setSecondarySubChainSelectorConfig(rightSubChainSelectorConfig);
-        SubChainSwapMoveSelectorFactory<TestdataChainedSolution> factory = new SubChainSwapMoveSelectorFactory<>(config);
+        SubChainSwapMoveSelectorFactory<TestdataChainedSolution> factory =
+                new SubChainSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataChainedSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataChainedSolution.buildSolutionDescriptor());

@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
@@ -14,12 +15,13 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public final class FromEntityPropertyValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
-    protected final ValueRangeDescriptor<Solution_> valueRangeDescriptor;
-    protected final boolean randomSelection;
+    private final ValueRangeDescriptor<Solution_> valueRangeDescriptor;
+    private final boolean randomSelection;
 
-    protected Solution_ workingSolution;
+    private Solution_ workingSolution;
 
     public FromEntityPropertyValueSelector(ValueRangeDescriptor<Solution_> valueRangeDescriptor, boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
@@ -78,6 +80,21 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
     public Iterator<Object> endingIterator(Object entity) {
         ValueRange<Object> valueRange = (ValueRange<Object>) valueRangeDescriptor.extractValueRange(workingSolution, entity);
         return ((CountableValueRange<Object>) valueRange).createOriginalIterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FromEntityPropertyValueSelector<?> that = (FromEntityPropertyValueSelector<?>) o;
+        return randomSelection == that.randomSelection && Objects.equals(valueRangeDescriptor, that.valueRangeDescriptor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(valueRangeDescriptor, randomSelection);
     }
 
     @Override

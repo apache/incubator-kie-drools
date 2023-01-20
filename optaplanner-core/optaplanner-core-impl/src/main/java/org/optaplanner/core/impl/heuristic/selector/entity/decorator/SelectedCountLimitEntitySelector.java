@@ -3,17 +3,18 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
-    protected final boolean randomSelection;
-    protected final long selectedCountLimit;
+    private final EntitySelector<Solution_> childEntitySelector;
+    private final boolean randomSelection;
+    private final long selectedCountLimit;
 
     public SelectedCountLimitEntitySelector(EntitySelector<Solution_> childEntitySelector, boolean randomSelection,
             long selectedCountLimit) {
@@ -104,6 +105,22 @@ public class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntityS
             return childEntityIterator.next();
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        SelectedCountLimitEntitySelector<?> that = (SelectedCountLimitEntitySelector<?>) other;
+        return randomSelection == that.randomSelection && selectedCountLimit == that.selectedCountLimit
+                && Objects.equals(childEntitySelector, that.childEntitySelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, randomSelection, selectedCountLimit);
     }
 
     @Override

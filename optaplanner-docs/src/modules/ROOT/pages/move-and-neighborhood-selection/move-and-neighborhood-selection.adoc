@@ -1004,6 +1004,12 @@ Apply the filter on the lowest level possible.
 In most cases, you'll need to know both the entity and the value involved so you'll have to apply it on the move selector.
 ====
 
+[NOTE]
+====
+`SelectionFilter` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
+
 [[filteredMoveSelection]]
 ==== Filtered move selection
 
@@ -1167,6 +1173,12 @@ You'll also need to configure it (unless it's annotated on the domain model and 
     </entitySelector>
 ----
 
+[NOTE]
+====
+`Comparator` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
+
 
 [[sortedSelectionBySelectionSorterWeightFactory]]
 ==== Sorted selection by `SelectionSorterWeightFactory`
@@ -1229,6 +1241,12 @@ You'll also need to configure it (unless it's annotated on the domain model and 
     </entitySelector>
 ----
 
+[NOTE]
+====
+`SelectionSorterWeightFactory` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
+
 
 [[sortedSelectionBySelectionSorter]]
 ==== Sorted selection by `SelectionSorter`
@@ -1244,6 +1262,8 @@ public interface SelectionSorter<Solution_, T> {
 }
 ----
 
+
+
 [source,xml,options="nowrap"]
 ----
     <entitySelector>
@@ -1252,6 +1272,12 @@ public interface SelectionSorter<Solution_, T> {
       <sorterClass>...MyEntitySorter</sorterClass>
     </entitySelector>
 ----
+
+[NOTE]
+====
+`SelectionSorter` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
 
 
 [[probabilisticSelection]]
@@ -1283,6 +1309,12 @@ public interface SelectionProbabilityWeightFactory<Solution_, T> {
 ----
 
 For example, if there are three entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected four times more than B and C.
+
+[NOTE]
+====
+`SelectionProbabilityWeightFactory` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
 
 
 [[limitedSelection]]
@@ -1367,6 +1399,13 @@ public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer
 
 }
 ----
+
+[NOTE]
+====
+`NearbyDistanceMeter` implementations are expected to be stateless.
+The solver may choose to reuse them in different contexts.
+====
+
 
 To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector`
 and use <<mimicSelection,mimic selection>> to specify which entity should be near by the selection.

@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
@@ -16,9 +17,10 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * Does not implement {@link EntityIndependentValueSelector} because if used like that,
  * it shouldn't be added during configuration in the first place.
  */
-public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public final class ReinitializeVariableValueSelector<Solution_>
+        extends AbstractValueSelector<Solution_> {
 
-    protected final ValueSelector<Solution_> childValueSelector;
+    private final ValueSelector<Solution_> childValueSelector;
 
     public ReinitializeVariableValueSelector(ValueSelector<Solution_> childValueSelector) {
         this.childValueSelector = childValueSelector;
@@ -70,6 +72,21 @@ public class ReinitializeVariableValueSelector<Solution_> extends AbstractValueS
 
     private boolean isReinitializable(Object entity) {
         return childValueSelector.getVariableDescriptor().isReinitializable(entity);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        ReinitializeVariableValueSelector<?> that = (ReinitializeVariableValueSelector<?>) other;
+        return Objects.equals(childValueSelector, that.childValueSelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childValueSelector);
     }
 
     @Override

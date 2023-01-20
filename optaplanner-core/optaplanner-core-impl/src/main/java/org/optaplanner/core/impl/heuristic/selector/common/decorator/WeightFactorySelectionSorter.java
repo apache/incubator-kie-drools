@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -19,7 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
-public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {
+public final class WeightFactorySelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {
 
     private final SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory;
     private final Comparator<Comparable> appliedWeightComparator;
@@ -64,4 +65,19 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
         selectionList.addAll(selectionMap.values());
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        WeightFactorySelectionSorter<?, ?> that = (WeightFactorySelectionSorter<?, ?>) other;
+        return Objects.equals(selectionSorterWeightFactory, that.selectionSorterWeightFactory)
+                && Objects.equals(appliedWeightComparator, that.appliedWeightComparator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(selectionSorterWeightFactory, appliedWeightComparator);
+    }
 }

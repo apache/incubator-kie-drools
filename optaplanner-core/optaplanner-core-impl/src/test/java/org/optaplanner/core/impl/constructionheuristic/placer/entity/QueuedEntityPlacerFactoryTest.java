@@ -48,7 +48,8 @@ class QueuedEntityPlacerFactoryTest {
                 .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
 
         QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
-                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig).buildEntityPlacer(configPolicy);
+                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig)
+                        .buildEntityPlacer(configPolicy);
 
         SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);
