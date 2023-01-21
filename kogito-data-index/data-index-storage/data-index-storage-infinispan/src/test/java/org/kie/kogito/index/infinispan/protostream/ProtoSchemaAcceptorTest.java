@@ -16,6 +16,8 @@
 
 package org.kie.kogito.index.infinispan.protostream;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.infinispan.schema.ProtoSchemaAcceptor;
 import org.kie.kogito.persistence.api.schema.SchemaType;
@@ -30,19 +32,19 @@ class ProtoSchemaAcceptorTest {
 
     @Test
     void supportedStorageTypeAndSchemaType() {
-        protoSchemaAcceptor.storageType = INFINISPAN_STORAGE;
+        protoSchemaAcceptor.storageType = Optional.of(INFINISPAN_STORAGE);
         assertTrue(protoSchemaAcceptor.accept(new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE)));
     }
 
     @Test
     void unsupportedSchemaType() {
-        protoSchemaAcceptor.storageType = INFINISPAN_STORAGE;
+        protoSchemaAcceptor.storageType = Optional.of(INFINISPAN_STORAGE);
         assertFalse(protoSchemaAcceptor.accept(new SchemaType("test")));
     }
 
     @Test
     void unsupportedStorageType() {
-        protoSchemaAcceptor.storageType = "test";
+        protoSchemaAcceptor.storageType = Optional.of("test");
         assertFalse(protoSchemaAcceptor.accept(new SchemaType(ProtoSchemaAcceptor.PROTO_SCHEMA_TYPE)));
     }
 }

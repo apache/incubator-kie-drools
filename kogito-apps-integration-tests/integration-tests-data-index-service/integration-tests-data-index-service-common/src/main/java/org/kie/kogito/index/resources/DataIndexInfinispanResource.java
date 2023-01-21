@@ -50,7 +50,7 @@ public class DataIndexInfinispanResource implements TestResource {
         infinispan.withNetworkAliases("infinispan");
         infinispan.start();
         String infinispanURL = "localhost:" + infinispan.getMappedPort();
-        properties.put("quarkus.infinispan-client.server-list", infinispanURL);
+        properties.put("quarkus.infinispan-client.hosts", infinispanURL);
         kafka.withNetwork(network);
         kafka.withNetworkAliases("kafka");
         kafka.start();

@@ -68,6 +68,7 @@
       </activation>
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
+        <failsafe.include>**/*IT.java</failsafe.include>
       </properties>
     </profile>
   </profiles>

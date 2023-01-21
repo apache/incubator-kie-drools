@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   infinispan:
-    image: infinispan/server:11.0.3.Final
+    image: infinispan/server:14.0.4.Final
     #    network_mode: host
     ports:
       - 11222:11222

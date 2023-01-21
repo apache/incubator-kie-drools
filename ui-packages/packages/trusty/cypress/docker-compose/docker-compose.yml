@@ -36,7 +36,7 @@ services:
       SERVER_SERVLET_CONTEXTPATH: "/"
 
   infinispan:
-    image: infinispan/server:11.0.4.Final
+    image: infinispan/server:14.0.4.Final
     container_name: infinispan
     ports:
       - 11222:11222

@@ -25,6 +25,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-persistence-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-data-index-mongodb</artifactId>
     </dependency>
     <dependency>
@@ -64,6 +68,7 @@
       </activation>
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
+        <failsafe.include>**/*IT.java</failsafe.include>
       </properties>
     </profile>
   </profiles>

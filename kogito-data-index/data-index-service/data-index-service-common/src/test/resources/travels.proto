@@ -34,7 +34,7 @@ message Flight {
 /* @Indexed */ 
 message Hotel { 
 	option java_package = "org.acme.travels.travels";
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Address address = 1; 
 	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
 	optional string bookingNumber = 2; 
@@ -48,7 +48,7 @@ message Hotel {
 /* @Indexed */ 
 message Traveller { 
 	option java_package = "org.acme.travels.travels";
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Address address = 1; 
 	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
 	optional string email = 2; 
@@ -66,19 +66,19 @@ message Traveller {
 /* @Indexed */ 
 message Travels { 
 	option java_package = "org.acme.travels.travels";
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Flight flight = 1; 
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Hotel hotel = 2; 
 	/* @Field(index = Index.YES, store = Store.YES) @SortableField */ 
 	optional string id = 3; 
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Traveller traveller = 4; 
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional Trip trip = 5; 
-	/* @Field(index = Index.NO, store = Store.YES) */ 
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional VisaApplication visaApplication = 6; 
-	/* @Field(index = Index.NO, store = Store.YES) */
+	/* @Field(index = Index.YES, store = Store.YES) */
 	optional org.kie.kogito.index.model.KogitoMetadata metadata = 7;
 }
 /* @Indexed */ 

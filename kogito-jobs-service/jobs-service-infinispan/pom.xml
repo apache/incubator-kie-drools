@@ -39,10 +39,6 @@
         <!-- Needs to be declared as Jobs service doesn't leverage persistence-commons-infinispan. -->
         <dependency>
             <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-commons-jdk11</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.infinispan</groupId>
             <artifactId>infinispan-query-dsl</artifactId>
         </dependency>
         <dependency>

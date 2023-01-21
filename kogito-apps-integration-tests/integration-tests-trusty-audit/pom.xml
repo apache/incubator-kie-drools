@@ -12,7 +12,7 @@
 
     <properties>
         <container.image.kogito-service>to-be-changed-in-submodules</container.image.kogito-service>
-        <version.dmp.fabric8>0.38.1</version.dmp.fabric8>
+        <version.dmp.fabric8>0.40.3</version.dmp.fabric8>
     </properties>
 
     <dependencies>
@@ -84,9 +84,9 @@
                 <executions>
                     <!--
                         This module depends on the 'trusty-ui' which depends on 'kogito-apps-ui-packages' module.
-                        Please consider addition of executions from 'frontend-maven-plugin' in 
+                        Please consider addition of executions from 'frontend-maven-plugin' in
                         the 'kogito-apps-ui-packages' module in case that this dependency will be removed.
-                    !-->        
+                    !-->
                     <execution>
                         <id>yarn e2e test</id>
                         <goals>
@@ -110,7 +110,6 @@
                         <image>
                             <alias>zookeeper</alias>
                             <name>wurstmeister/zookeeper:latest</name>
-                              
                             <run>
                                 <ports>
                                     <port>2181:2181</port>
@@ -131,12 +130,11 @@
                         <image>
                             <alias>kafka</alias>
                             <name>${container.image.wurstmeister.kafka}</name>
-
                             <run>
                                 <dependsOn>
                                     <container>zookeeper</container>
                                 </dependsOn>
-                              <ports>
+                                <ports>
                                     <port>9092:9092</port>
                                     <!-- This plugin does not suport the expose port ("9093") !-->
                                     <port>9093:9093</port>
@@ -144,7 +142,7 @@
                                 <env>
                                     <LOG_DIR>/tmp/logs</LOG_DIR>
                                     <KAFKA_ADVERTISED_LISTENERS>INSIDE://kafka-1:9093,OUTSIDE://localhost:9092</KAFKA_ADVERTISED_LISTENERS>
-                                    <KAFKA_LISTENER_SECURITY_PROTOCOL_MAP>INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT</KAFKA_LISTENER_SECURITY_PROTOCOL_MAP> 
+                                    <KAFKA_LISTENER_SECURITY_PROTOCOL_MAP>INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT</KAFKA_LISTENER_SECURITY_PROTOCOL_MAP>
                                     <KAFKA_LISTENERS>INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092</KAFKA_LISTENERS>
                                     <KAFKA_ZOOKEEPER_CONNECT>zookeeper-1:2181</KAFKA_ZOOKEEPER_CONNECT>
                                     <KAFKA_INTER_BROKER_LISTENER_NAME>INSIDE</KAFKA_INTER_BROKER_LISTENER_NAME>
@@ -162,7 +160,6 @@
                         <image>
                             <alias>infinispan</alias>
                             <name>${container.image.infinispan}</name>
-
                             <run>
                                 <ports>
                                     <port>11222:11222</port>
@@ -183,11 +180,11 @@
                                 </log>
                                 <wait>
                                     <time>60000</time>
-                                    <tcp>
-                                        <ports>
-                                            <port>11222</port>
-                                        </ports>
-                                    </tcp>
+                                    <http>
+                                        <url>http://localhost:11222/</url>
+                                        <status>200..401</status>
+                                        <method>GET</method>
+                                    </http>
                                 </wait>
                             </run>
                         </image>
@@ -219,7 +216,6 @@
                         <image>
                             <alias>explainability</alias>
                             <name>${container.image.explainability-service-messaging}</name>
-
                             <run>
                                 <dependsOn>
                                     <container>kafka</container>
@@ -241,11 +237,11 @@
                                 </log>
                                 <wait>
                                     <time>60000</time>
-                                    <tcp>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </tcp>
+                                    <http>
+                                        <url>http://localhost:1336/q/health/started</url>
+                                        <status>200</status>
+                                        <method>GET</method>
+                                    </http>
                                 </wait>
                             </run>
                         </image>
@@ -263,7 +259,7 @@
                                 </ports>
                                 <env>
                                     <KAFKA_BOOTSTRAP_SERVERS>kafka-1:9093</KAFKA_BOOTSTRAP_SERVERS>
-                                    <QUARKUS_INFINISPAN_CLIENT_SERVER_LIST>server-1:11222</QUARKUS_INFINISPAN_CLIENT_SERVER_LIST>
+                                    <QUARKUS_INFINISPAN_CLIENT_HOSTS>server-1:11222</QUARKUS_INFINISPAN_CLIENT_HOSTS>
                                     <QUARKUS_INFINISPAN_CLIENT_USE_AUTH>"false"</QUARKUS_INFINISPAN_CLIENT_USE_AUTH>
                                     <TRUSTY_EXPLAINABILITY_ENABLED>"true"</TRUSTY_EXPLAINABILITY_ENABLED>
                                 </env>
@@ -280,7 +276,6 @@
                         <image>
                             <alias>trusty-ui</alias>
                             <name>${container.image.trusty-ui}</name>
-
                             <run>
                                 <dependsOn>
                                     <container>kafka</container>
@@ -301,11 +296,11 @@
                                 </log>
                                 <wait>
                                     <time>60000</time>
-                                    <tcp>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </tcp>
+                                    <http>
+                                        <url>http://localhost:1338/q/health/started</url>
+                                        <method>GET</method>
+                                        <status>200</status>
+                                    </http>
                                 </wait>
                             </run>
                         </image>

@@ -86,7 +86,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
     private static final String KEYCLOAK_ALIAS = "keycloak";
     private static final String KEYCLOAK_DB_VENDOR_VARIABLE = "DB_VENDOR";
     private static final String KEYCLOAK_DB_VENDOR_VALUE = "h2";
-    private static final String KEYCLOAK_ACCESS_TOKEN_PATH = "/auth/realms/kogito/protocol/openid-connect/token";
+    private static final String KEYCLOAK_ACCESS_TOKEN_PATH = "/realms/kogito/protocol/openid-connect/token";
     private static final String KEYCLOAK_GRANT_TYPE_PARAM_NAME = "grant_type";
     private static final String KEYCLOAK_GRANT_TYPE_PARAM_VALUE = "password";
     private static final String KEYCLOAK_USERNAME_PARAM_NAME = "username";
