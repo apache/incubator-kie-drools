@@ -31,7 +31,7 @@ import static java.lang.String.format;
 public interface ProtoGenerator {
 
     GeneratedFileType PROTO_TYPE = GeneratedFileType.of("PROTO", GeneratedFileType.Category.STATIC_HTTP_RESOURCE);
-    String INDEX_COMMENT = "@Field(index = Index.NO, store = Store.YES) @SortableField";
+    String INDEX_COMMENT = "@Field(index = Index.YES, store = Store.YES) @SortableField";
     String KOGITO_JAVA_CLASS_OPTION = "kogito_java_class";
     String KOGITO_SERIALIZABLE = "kogito.Serializable";
 

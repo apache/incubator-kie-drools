@@ -42,8 +42,8 @@ public class KeycloakContainerTest {
     @Test
     public void shouldAddDefaultSettings() {
         assertThat(container.getExposedPorts()).contains(KogitoKeycloakContainer.PORT);
-        assertThat(container.getEnvMap()).containsEntry("KEYCLOAK_USER", "admin")
-                .containsEntry("KEYCLOAK_PASSWORD", "admin");
+        assertThat(container.getEnvMap()).containsEntry("KEYCLOAK_ADMIN", "admin")
+                .containsEntry("KEYCLOAK_ADMIN_PASSWORD", "admin");
     }
 
     @Test

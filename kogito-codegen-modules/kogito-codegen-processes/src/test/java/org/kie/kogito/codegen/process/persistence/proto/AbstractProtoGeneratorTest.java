@@ -351,21 +351,21 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("adult");
         assertThat(field.getType()).isEqualTo("bool");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("age");
         assertThat(field.getType()).isEqualTo("int32");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("bigDecimal");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.math.BigDecimal\"]");
 
         field = person.getFields().get(index++);
@@ -373,21 +373,21 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("bytes");
         assertThat(field.getType()).isEqualTo("bytes");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("date");
         assertThat(field.getType()).isEqualTo("kogito.Date");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("duration");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.Duration\"]");
 
         field = person.getFields().get(index++);
@@ -395,21 +395,21 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("id");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("instant");
         assertThat(field.getType()).isEqualTo("kogito.Instant");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("localDate");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.LocalDate\"]");
 
         field = person.getFields().get(index++);
@@ -417,7 +417,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("localDateTime");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.LocalDateTime\"]");
 
         field = person.getFields().get(index++);
@@ -425,14 +425,14 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("offsetDateTime");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.OffsetDateTime\"]");
 
         field = person.getFields().get(index++);
@@ -440,21 +440,21 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("parent");
         assertThat(field.getType()).isEqualTo("Person");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("relatives");
         assertThat(field.getType()).isEqualTo("Person");
         assertThat(field.getApplicability()).isEqualTo("repeated");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("salary");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"org.kie.kogito.codegen.data.Money\"]");
 
         field = person.getFields().get(index++);
@@ -462,7 +462,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("zonedDateTime");
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
         assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.ZonedDateTime\"]");
     }
 
@@ -490,21 +490,21 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getName()).isEqualTo("adult");
         assertThat(field.getType()).isEqualTo("bool");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(1);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("age");
         assertThat(field.getType()).isEqualTo("int32");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
 
         field = person.getFields().get(2);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField\n @VariableInfo(tags=\"test\")");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField\n @VariableInfo(tags=\"test\")");
     }
 
     @Test

@@ -36,7 +36,7 @@ public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestRes
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(KOGITO_KEYCLOAK_PROPERTY, String.format("http://localhost:%s/auth", getTestResource().getMappedPort()));
+        return singletonMap(KOGITO_KEYCLOAK_PROPERTY, String.format("http://localhost:%s", getTestResource().getMappedPort()));
     }
 
     public static class Conditional extends KeycloakSpringBootTestResource {

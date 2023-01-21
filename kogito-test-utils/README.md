@@ -43,7 +43,7 @@ public class MyTest {
 }
 ```
 
-The property _quarkus.infinispan-client.server-list_ will be automatically populated with a random port.
+The property _quarkus.infinispan-client.hosts_ will be automatically populated with a random port.
 
 In case we want to run the container only if some requirements are met, we need to use it this way:
 

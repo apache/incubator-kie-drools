@@ -31,7 +31,6 @@ import org.infinispan.client.hotrod.event.impl.ClientListenerNotifier;
 import org.infinispan.client.hotrod.impl.operations.OperationsFactory;
 import org.infinispan.client.hotrod.impl.operations.PingOperation;
 import org.infinispan.client.hotrod.impl.operations.PingResponse;
-import org.infinispan.client.hotrod.impl.protocol.Codec;
 import org.infinispan.client.hotrod.impl.transport.netty.ChannelFactory;
 
 /**
@@ -54,14 +53,12 @@ public class InfinispanHealthCheck implements HealthCheck {
         return cacheManagerOptional.map(cacheManager -> {
 
             final ChannelFactory channelFactory = cacheManager.getChannelFactory();
-            final Codec codec = cacheManager.getCodec();
             final Configuration configuration = cacheManager.getConfiguration();
-            final ClientListenerNotifier listenerNotifier = new ClientListenerNotifier(codec,
+            final ClientListenerNotifier listenerNotifier = new ClientListenerNotifier(
                     cacheManager.getMarshaller(),
                     channelFactory,
                     configuration);
             final OperationsFactory operationsFactory = new OperationsFactory(channelFactory,
-                    codec,
                     listenerNotifier,
                     configuration);
 

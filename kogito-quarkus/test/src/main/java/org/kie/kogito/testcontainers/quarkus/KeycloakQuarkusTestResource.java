@@ -51,7 +51,7 @@ public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource<
     @Override
     protected Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<>();
-        String url = format("http://localhost:%s/auth/realms/kogito", getTestResource().getMappedPort());
+        String url = format("http://localhost:%s/realms/kogito", getTestResource().getMappedPort());
         properties.put(KOGITO_KEYCLOAK_PROPERTY, url);
         tenants.forEach(tenant -> properties.put(format("quarkus.oidc.%s.auth-server-url", tenant), url));
         return properties;

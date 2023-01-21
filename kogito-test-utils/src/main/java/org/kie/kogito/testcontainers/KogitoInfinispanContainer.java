@@ -17,8 +17,10 @@ package org.kie.kogito.testcontainers;
 
 import org.kie.kogito.test.resources.TestResource;
 import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static org.kie.kogito.testcontainers.Constants.CONTAINER_START_TIMEOUT;
 
 /**
@@ -33,7 +35,7 @@ public class KogitoInfinispanContainer extends KogitoGenericContainer<KogitoInfi
     public KogitoInfinispanContainer() {
         super(NAME);
         addExposedPort(PORT);
-        waitingFor(Wait.forHttp("/").withStartupTimeout(CONTAINER_START_TIMEOUT));
+        waitingFor(new HttpWaitStrategy().forPort(PORT).forStatusCodeMatching(response -> response == HTTP_OK || response == HTTP_UNAUTHORIZED)).withStartupTimeout(CONTAINER_START_TIMEOUT);
         withClasspathResourceMapping("testcontainers/infinispan/infinispan-local.xml", CONF_PATH + "infinispan-local.xml", BindMode.READ_ONLY);
         withCommand("-c infinispan-local.xml");
         withEnv("USER", "admin");

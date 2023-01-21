@@ -32,16 +32,16 @@ public class KogitoKeycloakContainer extends KogitoGenericContainer<KogitoKeyclo
     public static final String CLIENT_SECRET = "secret";
     public static final int PORT = 8080;
 
-    private static final String REALM_FILE = "/tmp/realm.json";
+    private static final String REALM_FILE = "/opt/keycloak/data/import/realm.json";
 
     public KogitoKeycloakContainer() {
         super(NAME);
         addExposedPort(PORT);
-        withEnv("KEYCLOAK_USER", USER);
-        withEnv("KEYCLOAK_PASSWORD", PASSWORD);
-        withEnv("KEYCLOAK_IMPORT", REALM_FILE);
+        withEnv("KEYCLOAK_ADMIN", USER);
+        withEnv("KEYCLOAK_ADMIN_PASSWORD", PASSWORD);
         withClasspathResourceMapping("testcontainers/keycloak/kogito-realm.json", REALM_FILE, BindMode.READ_ONLY);
-        waitingFor(Wait.forHttp("/auth"));
+        waitingFor(Wait.forLogMessage(".*Keycloak.*started.*", 1));
+        withCommand("start-dev --import-realm");
     }
 
     @Override
