@@ -55,8 +55,8 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.0</version.info.picocli>
     <version.io.micrometer>1.10.2</version.io.micrometer>
-    <version.io.quarkus>2.15.0.Final</version.io.quarkus>
-    <version.io.smallrye.openapi.core>2.3.1</version.io.smallrye.openapi.core>
+    <version.io.quarkus>2.16.0.Final</version.io.quarkus>
+    <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.antlr>2.7.7</version.antlr>
@@ -129,7 +129,7 @@
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
     <version.org.w3c.dom>2.3.0-jaxb-1.0.6</version.org.w3c.dom>
-    <version.org.mockito>4.9.0</version.org.mockito>
+    <version.org.mockito>4.11.0</version.org.mockito>
     <!-- Version of JMH -->
     <version.org.openjdk.jmh>1.21</version.org.openjdk.jmh>
 
