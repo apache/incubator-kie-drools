@@ -107,6 +107,10 @@ pipeline {
             }
             steps {
                 script {
+                    if (getDroolsVersion()) {
+                        maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
+                    }
+
                     maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
 
                     mavenCleanInstallOptaPlannerParents()
@@ -517,6 +521,10 @@ String getBuildBranch() {
 
 String getProjectVersion() {
     return params.PROJECT_VERSION
+}
+
+String getDroolsVersion() {
+    return params.DROOLS_VERSION
 }
 
 String getBotBranch() {

@@ -58,6 +58,7 @@ pipeline {
                 always {
                     setReleasePropertyIfneeded('optaplanner.version', getOptaPlannerVersion())
                     setReleasePropertyIfneeded('optaplanner.branch', getOptaPlannerReleaseBranch())
+                    setReleasePropertyIfneeded('drools.version', getDroolsVersion())
                 }
             }
         }
@@ -65,7 +66,7 @@ pipeline {
         stage('Build & Deploy OptaPlanner') {
             steps {
                 script {
-                    def buildParams = getDefaultBuildParams(getOptaPlannerVersion())
+                    def buildParams = getDefaultBuildParams()
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
                     addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', getOptaPlannerReleaseBranch())
@@ -109,7 +110,7 @@ pipeline {
             }
             steps {
                 script {
-                    def buildParams = getDefaultBuildParams(getOptaPlannerVersion())
+                    def buildParams = getDefaultBuildParams()
                     addDeployBuildUrlParam(buildParams, OPTAPLANNER_DEPLOY)
 
                     buildJob(OPTAPLANNER_PROMOTE, buildParams)
@@ -273,10 +274,11 @@ def readPropertiesFromUrl(String url, String propsFilename) {
     return props
 }
 
-List getDefaultBuildParams(String version) {
+List getDefaultBuildParams() {
     List buildParams = []
-    addDisplayNameParam(buildParams, getDisplayName(version))
-    addStringParam(buildParams, 'PROJECT_VERSION', version)
+    addDisplayNameParam(buildParams, getDisplayName(getOptaPlannerVersion()))
+    addStringParam(buildParams, 'PROJECT_VERSION', getOptaPlannerVersion())
+    addStringParam(buildParams, 'DROOLS_VERSION', getDroolsVersion())
     return buildParams
 }
 
@@ -325,6 +327,10 @@ String getDisplayName(version = '') {
 
 String getOptaPlannerVersion() {
     return params.OPTAPLANNER_VERSION ?: getReleaseProperty('optaplanner.version')
+}
+
+String getDroolsVersion() {
+    return params.DROOLS_VERSION ?: getReleaseProperty('drools.version')
 }
 
 String getGitAuthor() {

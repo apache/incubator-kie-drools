@@ -37,7 +37,7 @@ if (Utils.isMainBranch(this)) {
 
 // Tools
 KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'optaplanner')
-KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
         [ 'optaplanner', 'optaplanner-quickstarts' ],
         [ 'rsynek', 'triceo']
 )
@@ -112,6 +112,8 @@ void setupProjectReleaseJob() {
 
             stringParam('OPTAPLANNER_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
             stringParam('OPTAPLANNER_RELEASE_BRANCH', '', '(optional) Use to override the release branch name deduced from the OPTAPLANNER_VERSION')
+
+            stringParam('DROOLS_VERSION', '', '(optional) Drools version to be set to the project before releasing the artifacts.')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
@@ -317,6 +319,8 @@ void setupDeployJob(Folder jobFolder) {
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+
+            stringParam('DROOLS_VERSION', '', '(optional) Drools version to be set to the project before releasing the artifacts.')
 
             if (jobFolder.isPullRequest()) {
                 stringParam('PR_TARGET_BRANCH', '', 'What is the target branch of the PR?')
