@@ -239,8 +239,14 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         return getTerminalNode().getSubRule();
     }
 
+    @Override
     public TerminalNode getTerminalNode() {
-        return (TerminalNode) getTupleSink();
+        LeftTupleSink tupleSink = getTupleSink();
+        if (tupleSink.getType() == NodeTypeEnums.RuleTerminalNode) {
+            return (RuleTerminalNode) tupleSink;
+        } else {
+            return (QueryTerminalNode) tupleSink;
+        }
     }
 
     public List<FactHandle> getFactHandles() {

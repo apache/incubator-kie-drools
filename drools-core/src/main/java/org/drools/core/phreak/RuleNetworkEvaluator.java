@@ -58,6 +58,7 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaPathMemory;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TerminalNode;
@@ -326,7 +327,7 @@ public class RuleNetworkEvaluator {
             boolean terminalNode = true;
             switch (node.getType()) {
                 case NodeTypeEnums.RuleTerminalNode:
-                    pRtNode.doNode(( TerminalNode ) node, activationsManager, srcTuples, executor);
+                    pRtNode.doNode(( RuleTerminalNode ) node, activationsManager, srcTuples, executor);
                     break;
                 case NodeTypeEnums.QueryTerminalNode:
                     pQtNode.doNode((QueryTerminalNode) node, activationsManager, srcTuples, stack);
