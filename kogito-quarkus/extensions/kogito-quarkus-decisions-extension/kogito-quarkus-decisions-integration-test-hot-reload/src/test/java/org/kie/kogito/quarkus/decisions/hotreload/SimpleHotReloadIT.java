@@ -45,7 +45,7 @@ public class SimpleHotReloadIT {
                     .addAsResource("TrafficViolation.txt", DMN_RESOURCE_FILE));
 
     @Test
-    void simpleHotReloadTest() throws InterruptedException {
+    void simpleHotReloadTest() {
         executeTest("Traffic Violation");
 
         test.modifyResourceFile(DMN_RESOURCE_FILE, s -> s.replaceAll("Traffic", "NewTraffic"));

@@ -17,7 +17,7 @@ package org.kie.kogito.quarkus.decisions.hotreload;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -54,7 +54,7 @@ public class NewFileHotReloadIT {
         String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(requireNonNull(classLoader.getResource("TrafficViolation.txt")).getFile());
-        String xml = new String(java.nio.file.Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+        String xml = Files.readString(file.toPath());
 
         test.addResourceFile(DMN_RESOURCE_FILE, xml);
 

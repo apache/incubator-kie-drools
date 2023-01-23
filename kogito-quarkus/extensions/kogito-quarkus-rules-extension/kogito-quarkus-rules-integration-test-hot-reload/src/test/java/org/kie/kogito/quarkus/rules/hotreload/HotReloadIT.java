@@ -40,7 +40,7 @@ public class HotReloadIT {
             () -> ShrinkWrap.create(JavaArchive.class).addAsResource("adult.txt", RESOURCE_FILE));
 
     @Test
-    public void testServletChange() throws InterruptedException {
+    public void testServletChange() {
         String personsPayload = "{\"persons\":[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]}";
 
         String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);

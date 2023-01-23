@@ -61,7 +61,7 @@ public class NewUnitIT {
                     .addAsResource("adult.txt", DRL_RESOURCE_FILE + ".dummy")); // add a dummy file only to enforce creation of reasource folder
 
     @Test
-    public void testServletChange() throws InterruptedException {
+    public void testServletChange() {
         String httpPort = ConfigProvider.getConfig().getValue("quarkus.http.port", String.class);
         String personsPayload = "{\"persons\":[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]}";
 

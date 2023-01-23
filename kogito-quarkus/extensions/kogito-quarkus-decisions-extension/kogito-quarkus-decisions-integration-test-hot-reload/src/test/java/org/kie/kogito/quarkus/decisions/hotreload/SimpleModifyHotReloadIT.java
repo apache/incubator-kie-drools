@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.quarkus.decisions.hotreload;
 
-import java.util.function.Supplier;
-
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -42,20 +40,14 @@ public class SimpleModifyHotReloadIT {
     private static final String DMN_RESOURCE_FILE = RESOURCE_FILE_PATH + "/TrafficViolation.dmn";
 
     @RegisterExtension
-    final static QuarkusDevModeTest test = new QuarkusDevModeTest().setArchiveProducer(
-            new Supplier<JavaArchive>() {
-
-                @Override
-                public JavaArchive get() {
-                    JavaArchive ja = ShrinkWrap.create(JavaArchive.class)
+    final static QuarkusDevModeTest test =
+            new QuarkusDevModeTest().setArchiveProducer(
+                    () -> ShrinkWrap.create(JavaArchive.class)
                             .addAsResource("application.properties.stronglytyped", "/application.properties")
-                            .addAsResource("TrafficViolation.txt", DMN_RESOURCE_FILE);
-                    return ja;
-                }
-            });
+                            .addAsResource("TrafficViolation.txt", DMN_RESOURCE_FILE));
 
     @Test
-    void simpleHotReloadTest() throws InterruptedException {
+    void simpleHotReloadTest() {
         executeTest("No");
 
         // --- Change #1
