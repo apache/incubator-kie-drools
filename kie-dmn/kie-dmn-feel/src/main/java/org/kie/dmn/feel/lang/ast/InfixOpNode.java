@@ -352,8 +352,9 @@ public class InfixOpNode
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
             return Duration.ofNanos(durationNumericValue.divide(rightDecimal, 0, RoundingMode.HALF_EVEN).longValue());
-        } else if ( left instanceof Number && right instanceof Duration ) {
-            return Duration.ofSeconds( EvalHelper.getBigDecimalOrNull( left ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 ).longValue() );
+        } else if ( left instanceof Number && right instanceof TemporalAmount) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.OPERATION_IS_UNDEFINED_FOR_PARAMETERS.getMask()));
+            return null;
         } else if ( left instanceof Duration && right instanceof Duration ) {
             return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
@@ -364,8 +365,6 @@ public class InfixOpNode
             } else {
                 return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(rightDecimal, MathContext.DECIMAL128).intValue());
             }
-        } else if (left instanceof Number && right instanceof ChronoPeriod) {
-            return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(left).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128).intValue());
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).divide(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) right)), MathContext.DECIMAL128);
         } else {

@@ -199,10 +199,10 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"PT23H\" ) * 2.5", Duration.parse("P2DT9H30M"), null },
 
                 { "duration( \"P2Y2M\" ) / 2", ComparablePeriod.parse("P13M"), null },
-                { "2 / duration( \"P2Y2M\" )", ComparablePeriod.parse("P0D"), null },
+                { "2 / duration( \"P2Y2M\" )", null, FEELEvent.Severity.ERROR },
                 { "duration( \"P2Y2M\" ) / duration( \"P2Y2M\" )", BigDecimal.valueOf(1), null },
                 { "duration( \"P2DT20H14M\" ) / 2", Duration.parse( "P1DT10H7M" ) , null},
-                { "2 / duration( \"P2DT20H14M\" )", Duration.parse( "PT0S" ) , null},
+                { "2 / duration( \"P2DT20H14M\" )", null, FEELEvent.Severity.ERROR},
                 { "duration( \"P2DT20H14M\" ) / duration( \"P2DT20H14M\" )", BigDecimal.valueOf(1) , null},
                 { "duration( \"P10Y11M\" ) / 2.5", ComparablePeriod.parse("P4Y4M"), null },
                 { "duration( \"P10Y11M\" ) / -2.5", ComparablePeriod.parse("-P4Y4M"), null },
