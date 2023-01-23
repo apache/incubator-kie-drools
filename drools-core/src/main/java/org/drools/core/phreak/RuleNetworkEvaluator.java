@@ -327,6 +327,9 @@ public class RuleNetworkEvaluator {
             boolean terminalNode = true;
             switch (node.getType()) {
                 case NodeTypeEnums.RuleTerminalNode:
+                    // Avoid supertype cast (TerminalNode) because it could cause a performance degradation by a JDK bug
+                    // See https://issues.redhat.com/browse/DROOLS-7268
+                    // See https://bugs.openjdk.org/browse/JDK-8180450
                     pRtNode.doNode(( RuleTerminalNode ) node, activationsManager, srcTuples, executor);
                     break;
                 case NodeTypeEnums.QueryTerminalNode:
