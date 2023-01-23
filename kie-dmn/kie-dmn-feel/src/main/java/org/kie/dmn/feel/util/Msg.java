@@ -64,6 +64,8 @@ public final class Msg {
     public static final Message4 DATE_AND_TIME_TIMEZONE_NEEDED = new Message4("The action requires either both parameters to have a timezone or both not to have a timezone. The %s operand %s has a timezone, the %s operand %s doesn't have a timezone.");
     public static final Message0 OPERATION_IS_UNDEFINED_FOR_PARAMETERS = new Message0("Based on the specification, the operation is undefined for the specified parameter set.");
 
+    public static final Message3 INVALID_PARAMETERS_FOR_OPERATION = new Message3("Based on the specification, the '%s' operation is not applicable with the specified parameters '%s' and '%s'");
+
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);
     }

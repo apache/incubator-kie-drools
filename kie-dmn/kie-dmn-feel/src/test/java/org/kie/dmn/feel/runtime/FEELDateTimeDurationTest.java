@@ -189,10 +189,11 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
 
                 { "duration( \"P2Y2M\" ) * 2", ComparablePeriod.parse("P52M"), null },
                 { "2 * duration( \"P2Y2M\" )", ComparablePeriod.parse("P52M"), null },
-                { "duration( \"P2Y2M\" ) * duration( \"P2Y2M\" )", BigDecimal.valueOf(676), null },
+                { "duration( \"P2Y2M\" ) * duration( \"P2Y2M\" )", null , FEELEvent.Severity.ERROR},
                 { "duration( \"P2DT20H14M\" ) * 2", Duration.parse( "P4DT40H28M" ) , null},
                 { "2 * duration( \"P2DT20H14M\" )", Duration.parse( "P4DT40H28M" ) , null},
-                { "duration( \"P2DT20H14M\" ) * duration( \"P2DT20H14M\" )", BigDecimal.valueOf(60339009600L) , null},
+                { "duration( \"P2DT20H14M\" ) * duration( \"P2DT20H14M\" )", null , FEELEvent.Severity.ERROR},
+                { "@\"PT1H\" * @\"PT25H\"", null, FEELEvent.Severity.ERROR  },
                 { "duration( \"P4Y4M\" ) * 2.5", ComparablePeriod.parse("P10Y10M"), null },
                 { "duration( \"P4DT1H\" ) * 1.5", Duration.parse("P6DT1H30M"), null },
                 { "duration( \"PT23H\" ) * 2.5", Duration.parse("P2DT9H30M"), null },
@@ -275,6 +276,11 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 {"date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
                 {"duration(\"-PT10H\")", Duration.parse("-PT10H"), null},
                 {"@\"-PT10H\"", Duration.parse("-PT10H"), null},
+
+                { "@\"2021-01-02\" - @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
+                { "@\"2021-01-01\" - @\"-PT25H\"", LocalDate.of(2021, 1, 2 ), null  },
+                { "@\"2021-01-01\" + @\"PT1H\"", LocalDate.of(2021, 1, 1 ), null  },
+                { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  }
         };
         return addAdditionalParameters(cases, false);
     }

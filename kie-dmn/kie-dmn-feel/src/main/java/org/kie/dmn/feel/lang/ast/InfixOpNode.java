@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
 import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
@@ -325,14 +326,14 @@ public class InfixOpNode
     public static Object mult(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
+        } else if (!isAllowedMultiplicationBasedOnSpec(left, right, ctx)) {
+            return null;
         } else if ( left instanceof Duration && right instanceof Number ) {
             final BigDecimal durationNumericValue = BigDecimal.valueOf(((Duration) left).toNanos());
             final BigDecimal rightDecimal = BigDecimal.valueOf(((Number) right).doubleValue());
             return Duration.ofNanos(durationNumericValue.multiply(rightDecimal).longValue());
         } else if ( left instanceof Number && right instanceof Duration ) {
             return Duration.ofSeconds( EvalHelper.getBigDecimalOrNull( left ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 ).longValue() );
-        } else if ( left instanceof Duration && right instanceof Duration ) {
-            return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
         } else if (left instanceof ChronoPeriod && right instanceof Number) {
             return ComparablePeriod.ofMonths(EvalHelper.getBigDecimalOrNull(ComparablePeriod.toTotalMonths((ChronoPeriod) left)).multiply(EvalHelper.getBigDecimalOrNull(right), MathContext.DECIMAL128).intValue());
         } else if (left instanceof Number && right instanceof ChronoPeriod) {
@@ -455,6 +456,26 @@ public class InfixOpNode
         } else {
             return temporal;
         }
+    }
+
+    /**
+     * Checks if the multiplication is supported by the DMN specification based on the objects specified as parameters.
+     *
+     * @param left Left parameter of the subtraction expression.
+     * @param right Right parameter of the subtraction expression.
+     * @param ctx Context that is used to notify about not allowed set of parameters.
+     * @return True, if the parameters are valid for multiplication based on the DMN specification.
+     *         False, when multiplication is not defined for the specified set of parameters in the DMN spec, or is forbidden: <br>
+     *         - Multiplication of two durations e is not allowed in the specification.
+     */
+    static boolean isAllowedMultiplicationBasedOnSpec(final Object left, final Object right, final EvaluationContext ctx) {
+        if (left instanceof TemporalAmount && right instanceof TemporalAmount) {
+            ctx.notifyEvt(() -> new InvalidParametersEvent(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.INVALID_PARAMETERS_FOR_OPERATION, "multiplication",
+                                                                                                       left.getClass().getName(),
+                                                                                                       right.getClass().getName())));
+            return false;
+        }
+        return true;
     }
 
     /**
