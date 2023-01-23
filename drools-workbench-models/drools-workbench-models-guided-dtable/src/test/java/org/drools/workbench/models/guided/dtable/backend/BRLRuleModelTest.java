@@ -1681,7 +1681,7 @@ public class BRLRuleModelTest {
 
         //Test 3
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{3l, "", "desc-row3", "Pupa", 35l},
+                new Object[]{3l, "", "desc-row3", "REGEX:HELLO$|BYE BYE$", 35l},
         }));
 
         String drl3 = p.marshal(dt);
@@ -1690,7 +1690,7 @@ public class BRLRuleModelTest {
                 "rule \"Row 3 extended-entry\"\n" +
                 "  dialect \"mvel\"\n" +
                 "  when\n" +
-                "    p1 : Smurf( name == \"Pupa\", age == 35 )\n" +
+                "    p1 : Smurf( name == \"REGEX:HELLO$|BYE BYE$\", age == 35 )\n" +
                 "  then\n" +
                 "end";
 
