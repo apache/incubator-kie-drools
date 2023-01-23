@@ -54,17 +54,21 @@ As you define rules using `defineRules` method, you can execute the rules, of co
 
 [source,java]
 ----
-    public void testHelloWorld() {
+    public void helloWorld() {
         HelloWorldUnit unit = new HelloWorldUnit();
         unit.getStrings().add("Hello World");
 
-        assertThat(unit.fire()).isEqualTo(2);
+        RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit);
+
+        assertThat(unitInstance.fire()).isEqualTo(2);
         assertThat(unit.getResults()).containsExactlyInAnyOrder("it worked!", "it also worked with HELLO WORLD");
 
         unit.getResults().clear();
         unit.getInts().add(11);
-        assertThat(unit.fire()).isEqualTo(1);
+        assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(unit.getResults()).containsExactly("String 'Hello World' is 11 characters long");
+
+        unitInstance.close();
     }
 ----
 
