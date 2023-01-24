@@ -39,4 +39,6 @@ export interface ProcessDetailsInitArgs {
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
   isStunnerEnabled?: boolean;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }

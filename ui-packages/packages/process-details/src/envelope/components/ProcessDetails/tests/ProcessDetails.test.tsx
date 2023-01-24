@@ -127,7 +127,9 @@ describe('ProcessDetails tests', () => {
       id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
       processDetails: data,
       omittedProcessTimelineEvents: [],
-      showSwfDiagram: true
+      showSwfDiagram: true,
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
 
     const Jobs: Job[] = [
@@ -305,7 +307,9 @@ describe('ProcessDetails tests', () => {
       id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
       processDetails: data,
       omittedProcessTimelineEvents: [],
-      showSwfDiagram: false
+      showSwfDiagram: false,
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
 
     const Jobs: Job[] = [

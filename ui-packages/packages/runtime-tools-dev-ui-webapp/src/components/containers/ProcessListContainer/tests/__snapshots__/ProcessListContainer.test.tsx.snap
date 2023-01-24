@@ -53,6 +53,7 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
         }
       }
       initialState={Object {}}
+      isWorkflow={true}
       pluralProcessLabel="Workflows"
       singularProcessLabel="Workflow"
       targetOrigin="*"

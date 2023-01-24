@@ -64,6 +64,8 @@ const ProcessDetailsContainer: React.FC<
       diagramPreviewSize={diagramPreviewSize}
       showSwfDiagram={appContext.isWorkflow()}
       isStunnerEnabled={appContext.getIsStunnerEnabled()}
+      singularProcessLabel={appContext.customLabels.singularProcessLabel}
+      pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
     />
   );
 };

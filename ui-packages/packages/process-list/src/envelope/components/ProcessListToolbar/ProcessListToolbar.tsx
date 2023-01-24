@@ -84,6 +84,9 @@ interface ProcessListToolbarProps {
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   driver: ProcessListDriver;
   defaultStatusFilter: ProcessInstanceState[];
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
+  isWorkflow: boolean;
 }
 
 const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
@@ -101,6 +104,9 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   setIsAllChecked,
   driver,
   defaultStatusFilter,
+  singularProcessLabel,
+  pluralProcessLabel,
+  isWorkflow,
   ouiaId,
   ouiaSafe
 }) => {
@@ -137,16 +143,15 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
 
   const operations: IOperations = {
     ABORT: {
-      type: BulkListType.PROCESS_INSTANCE,
+      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.ABORT],
       messages: {
-        successMessage: 'Aborted process: ',
-        noItemsMessage: 'No processes were aborted',
+        successMessage: `Aborted ${pluralProcessLabel?.toLowerCase()}: `,
+        noItemsMessage: `No ${pluralProcessLabel?.toLowerCase()} were aborted`,
         warningMessage: !processStates.includes(ProcessInstanceState.Aborted)
-          ? 'Note: The process status has been updated. The list may appear inconsistent until you refresh any applied filters.'
+          ? `Note: The ${singularProcessLabel?.toLowerCase()} status has been updated. The list may appear inconsistent until you refresh any applied filters.`
           : '',
-        ignoredMessage:
-          'These processes were ignored because they were already completed or aborted.'
+        ignoredMessage: `These ${pluralProcessLabel?.toLowerCase()} were ignored because they were already completed or aborted.`
       },
       functions: {
         perform: async () => {
@@ -189,13 +194,12 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       }
     },
     SKIP: {
-      type: BulkListType.PROCESS_INSTANCE,
+      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.SKIP],
       messages: {
-        successMessage: 'Skipped process: ',
-        noItemsMessage: 'No processes were skipped',
-        ignoredMessage:
-          'These processes were ignored because they were not in error state.'
+        successMessage: `Skipped ${pluralProcessLabel?.toLowerCase()}: `,
+        noItemsMessage: `No ${pluralProcessLabel?.toLowerCase()} were skipped`,
+        ignoredMessage: `These ${pluralProcessLabel?.toLowerCase()} were ignored because they were not in error state.`
       },
       functions: {
         perform: async () => {
@@ -224,13 +228,12 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       }
     },
     RETRY: {
-      type: BulkListType.PROCESS_INSTANCE,
+      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.RETRY],
       messages: {
-        successMessage: 'Retriggered process: ',
-        noItemsMessage: 'No processes were retriggered',
-        ignoredMessage:
-          'These processes were ignored because they were not in error state.'
+        successMessage: `Retriggered ${pluralProcessLabel?.toLowerCase()}: `,
+        noItemsMessage: `No ${pluralProcessLabel?.toLowerCase()} were retriggered`,
+        ignoredMessage: `These ${pluralProcessLabel?.toLowerCase()} were ignored because they were not in error state.`
       },
       functions: {
         perform: async () => {

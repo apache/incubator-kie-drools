@@ -51,6 +51,8 @@ const ProcessDetailsContainer: React.FC<
       targetOrigin={window.location.origin}
       processInstance={processInstance}
       showSwfDiagram={false}
+      singularProcessLabel={'process'}
+      pluralProcessLabel={'processes'}
     />
   );
 };

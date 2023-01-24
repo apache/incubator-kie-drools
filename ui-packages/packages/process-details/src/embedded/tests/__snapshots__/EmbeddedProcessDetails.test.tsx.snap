@@ -20,6 +20,7 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
       "rescheduleJob": [MockFunction],
     }
   }
+  pluralProcessLabel="Workflows"
   processInstance={
     Object {
       "addons": Array [
@@ -100,6 +101,7 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
     }
   }
   showSwfDiagram={true}
+  singularProcessLabel="Workflow"
   targetOrigin="origin"
 >
   <ForwardRef>

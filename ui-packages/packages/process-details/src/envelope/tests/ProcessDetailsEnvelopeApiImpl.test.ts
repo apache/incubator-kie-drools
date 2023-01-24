@@ -130,7 +130,9 @@ describe('ProcessDetailsEnvelopeApiImpl tests', () => {
       },
       {
         processInstance: data,
-        showSwfDiagram: false
+        showSwfDiagram: false,
+        singularProcessLabel: 'Workflow',
+        pluralProcessLabel: 'Workflows'
       }
     );
 

@@ -193,7 +193,7 @@ describe('ProcessListTable test', () => {
       expect(skipSuccessWrapper.find('ProcessInfoModal').exists()).toBeTruthy();
       expect(
         skipSuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The process travels was successfully skipped.');
+      ).toEqual('The workflow travels was successfully skipped.');
     });
   });
 
@@ -218,7 +218,7 @@ describe('ProcessListTable test', () => {
       ).toBeTruthy();
       expect(
         retrySuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The process travels was successfully re-executed.');
+      ).toEqual('The workflow travels was successfully re-executed.');
     });
   });
 
@@ -243,7 +243,7 @@ describe('ProcessListTable test', () => {
       ).toBeTruthy();
       expect(
         abortSuccessWrapper.find('ProcessInfoModal').props()['modalContent']
-      ).toEqual('The process travels was successfully aborted.');
+      ).toEqual('The workflow travels was successfully aborted.');
     });
   });
 });

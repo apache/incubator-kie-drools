@@ -55,6 +55,7 @@ exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
       }
     }
     isEnvelopeConnectedToChannel={true}
+    isWorkflow={true}
     pluralProcessLabel="Workflows"
     singularProcessLabel="Workflow"
   />

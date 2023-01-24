@@ -34,6 +34,7 @@ export interface Props {
   initialState: ProcessListState;
   singularProcessLabel: string;
   pluralProcessLabel: string;
+  isWorkflow: boolean;
 }
 
 export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
@@ -66,7 +67,8 @@ export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
           {
             initialState: { ...props.initialState },
             singularProcessLabel: props.singularProcessLabel,
-            pluralProcessLabel: props.pluralProcessLabel
+            pluralProcessLabel: props.pluralProcessLabel,
+            isWorkflow: props.isWorkflow
           }
         );
       },

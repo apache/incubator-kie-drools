@@ -28,8 +28,10 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "rescheduleJob": [Function],
       }
     }
+    pluralProcessLabel="processes"
     processInstance={Object {}}
     showSwfDiagram={false}
+    singularProcessLabel="process"
     targetOrigin="http://localhost"
   >
     <ForwardRef>

@@ -28,7 +28,9 @@ import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/Proce
 import { ProcessDetailsGatewayApi } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
 import { act } from 'react-dom/test-utils';
 import wait from 'waait';
-
+jest.mock(
+  '../../../containers/ProcessDetailsContainer/ProcessDetailsContainer'
+);
 describe('WebApp - ProcessDetailsPage tests', () => {
   const props = {
     match: {
@@ -141,7 +143,6 @@ describe('WebApp - ProcessDetailsPage tests', () => {
       handleNodeInstanceRetrigger: jest.fn()
     })
   );
-
   let gatewayApi: ProcessDetailsGatewayApi;
 
   jest

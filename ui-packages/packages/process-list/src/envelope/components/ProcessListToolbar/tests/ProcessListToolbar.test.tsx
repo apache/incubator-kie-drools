@@ -53,7 +53,10 @@ const props = {
   isAllChecked: false,
   setIsAllChecked: jest.fn(),
   driver: null,
-  defaultStatusFilter: [ProcessInstanceState.Active]
+  defaultStatusFilter: [ProcessInstanceState.Active],
+  singularProcessLabel: 'Workflow',
+  pluralProcessLabel: 'Workflows',
+  isWorkflow: true
 };
 beforeEach(() => {
   props.setProcessStates.mockClear();

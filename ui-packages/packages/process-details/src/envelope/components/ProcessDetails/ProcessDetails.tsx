@@ -70,6 +70,8 @@ interface ProcessDetailsProps {
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
   isStunnerEnabled?: boolean;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }
 
 type svgResponse = SvgSuccessResponse | SvgErrorResponse;
@@ -81,6 +83,8 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   omittedProcessTimelineEvents,
   diagramPreviewSize,
   showSwfDiagram,
+  singularProcessLabel,
+  pluralProcessLabel,
   isStunnerEnabled
 }) => {
   const [data, setData] = useState<ProcessInstance>({} as ProcessInstance);
@@ -246,13 +250,17 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       setTitleType(TitleType.SUCCESS);
       setInfoModalTitle('Abort operation');
       setInfoModalContent(
-        `The process ${processInstance.processName} was successfully aborted.`
+        `The ${singularProcessLabel.toLowerCase()} ${
+          processInstance.processName
+        } was successfully aborted.`
       );
     } catch (abortError) {
       setTitleType(TitleType.FAILURE);
       setInfoModalTitle('Abort operation');
       setInfoModalContent(
-        `Failed to abort process ${processInstance.processName}. Message: ${abortError.message}`
+        `Failed to abort ${singularProcessLabel.toLowerCase()} ${
+          processInstance.processName
+        }. Message: ${abortError.message}`
       );
     } finally {
       handleInfoModalToggle();

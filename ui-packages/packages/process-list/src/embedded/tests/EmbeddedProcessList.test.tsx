@@ -37,7 +37,8 @@ describe('EmbeddedProcessList tests', () => {
         }
       },
       singularProcessLabel: 'Workflow',
-      pluralProcessLabel: 'Workflows'
+      pluralProcessLabel: 'Workflows',
+      isWorkflow: true
     };
 
     const wrapper = mount(<EmbeddedProcessList {...props} />);

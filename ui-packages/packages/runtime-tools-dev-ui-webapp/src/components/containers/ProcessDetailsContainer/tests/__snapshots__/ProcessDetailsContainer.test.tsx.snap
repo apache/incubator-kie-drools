@@ -39,7 +39,9 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "rescheduleJob": [Function],
       }
     }
+    pluralProcessLabel="workflows"
     processInstance={Object {}}
+    singularProcessLabel="workflow"
     targetOrigin="*"
   >
     <ForwardRef>

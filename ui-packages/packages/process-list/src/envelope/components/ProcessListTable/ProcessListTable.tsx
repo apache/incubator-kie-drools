@@ -139,14 +139,18 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
       await driver.handleProcessSkip(processInstance);
       onShowMessage(
         'Skip operation',
-        `The process ${processInstance.processName} was successfully skipped.`,
+        `The ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        } was successfully skipped.`,
         TitleType.SUCCESS,
         processInstance
       );
     } catch (error) {
       onShowMessage(
         'Skip operation',
-        `The process ${processInstance.processName} failed to skip. Message: ${error.message}`,
+        `The ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        } failed to skip. Message: ${error.message}`,
         TitleType.FAILURE,
         processInstance
       );
@@ -162,14 +166,18 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
       await driver.handleProcessRetry(processInstance);
       onShowMessage(
         'Retry operation',
-        `The process ${processInstance.processName} was successfully re-executed.`,
+        `The ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        } was successfully re-executed.`,
         TitleType.SUCCESS,
         processInstance
       );
     } catch (error) {
       onShowMessage(
         'Retry operation',
-        `The process ${processInstance.processName} failed to re-execute. Message: ${error.message}`,
+        `The ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        } failed to re-execute. Message: ${error.message}`,
         TitleType.FAILURE,
         processInstance
       );
@@ -185,7 +193,9 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
       await driver.handleProcessAbort(processInstance);
       onShowMessage(
         'Abort operation',
-        `The process ${processInstance.processName} was successfully aborted.`,
+        `The ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        } was successfully aborted.`,
         TitleType.SUCCESS,
         processInstance
       );
@@ -198,7 +208,9 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
     } catch (error) {
       onShowMessage(
         'Abort operation',
-        `Failed to abort process ${processInstance.processName}. Message: ${error.message}`,
+        `Failed to abort ${singularProcessLabel?.toLowerCase()} ${
+          processInstance.processName
+        }. Message: ${error.message}`,
         TitleType.FAILURE,
         processInstance
       );

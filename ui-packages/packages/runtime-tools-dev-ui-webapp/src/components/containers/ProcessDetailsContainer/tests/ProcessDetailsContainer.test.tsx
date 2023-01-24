@@ -64,7 +64,11 @@ jest
   .mockImplementation(() => {
     return {
       isWorkflow: jest.fn(),
-      getIsStunnerEnabled: jest.fn()
+      getIsStunnerEnabled: jest.fn(),
+      customLabels: {
+        singularProcessLabel: 'workflow',
+        pluralProcessLabel: 'workflows'
+      }
     };
   });
 

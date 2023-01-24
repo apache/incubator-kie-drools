@@ -37,6 +37,8 @@ export interface Props {
   diagramPreviewSize?: DiagramPreviewSize;
   showSwfDiagram: boolean;
   isStunnerEnabled?: boolean;
+  singularProcessLabel: string;
+  pluralProcessLabel: string;
 }
 
 export const EmbeddedProcessDetails = React.forwardRef<
@@ -74,7 +76,9 @@ export const EmbeddedProcessDetails = React.forwardRef<
           omittedProcessTimelineEvents: props.omittedProcessTimelineEvents,
           diagramPreviewSize: props.diagramPreviewSize,
           showSwfDiagram: props.showSwfDiagram,
-          isStunnerEnabled: props.isStunnerEnabled
+          isStunnerEnabled: props.isStunnerEnabled,
+          singularProcessLabel: props.singularProcessLabel,
+          pluralProcessLabel: props.pluralProcessLabel
         }
       );
     },

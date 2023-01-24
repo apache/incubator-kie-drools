@@ -20,6 +20,8 @@ exports[`ProcessListToolbar test Snapshot tests 1`] = `
     }
   }
   isAllChecked={false}
+  isWorkflow={true}
+  pluralProcessLabel="Workflows"
   processInstances={
     Array [
       Object {
@@ -215,6 +217,7 @@ exports[`ProcessListToolbar test Snapshot tests 1`] = `
   setProcessInstances={[MockFunction]}
   setProcessStates={[MockFunction]}
   setSelectedInstances={[MockFunction]}
+  singularProcessLabel="Workflow"
 >
   <ProcessInfoModal
     handleModalToggle={[Function]}

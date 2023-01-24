@@ -47,7 +47,8 @@ describe('ProcessListEnvelopeView tests', () => {
             sortBy: {}
           },
           singularProcessLabel: 'Workflow',
-          pluralProcessLabel: 'Workflows'
+          pluralProcessLabel: 'Workflows',
+          isWorkflow: true
         });
       }
       wrapper = wrapper.update();

@@ -106,7 +106,9 @@ describe('EmbeddedProcessDetails tests', () => {
       targetOrigin: 'origin',
       driver: new MockedProcessDetailsDriver(),
       processInstance: data,
-      showSwfDiagram: true
+      showSwfDiagram: true,
+      singularProcessLabel: 'Workflow',
+      pluralProcessLabel: 'Workflows'
     };
 
     const wrapper = mount(<EmbeddedProcessDetails {...props} />);

@@ -62,7 +62,8 @@ describe('ProcessListEnvelopeApiImpl tests', () => {
           }
         },
         singularProcessLabel: 'Workflow',
-        pluralProcessLabel: 'Workflows'
+        pluralProcessLabel: 'Workflows',
+        isWorkflow: true
       }
     );
 
