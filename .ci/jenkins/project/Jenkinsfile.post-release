@@ -7,11 +7,10 @@ import org.kie.jenkins.MavenCommand
 String optaplannerRepository = 'optaplanner'
 String quickstartsRepository = 'optaplanner-quickstarts'
 String stableBranchName = 'stable'
-String kieBenchmarksRepo = 'kie-benchmarks'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {
@@ -113,32 +112,6 @@ pipeline {
                         checkoutRepo(websiteRepository, 'main')
                         mergeAndPush(prLink, 'main')
                         githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
-                    }
-                }
-            }
-        }
-        stage('update version.org.optaplanner property in kie-benchmarks') {
-            steps {
-                script {
-                    String prLink = null
-                    String commitMsg = 'bumped up kie-version to next SNAPSHOT'
-                    String localBranch = "bump-up-kie-benchmarks-${env.BOT_BRANCH_HASH}"
-                    String targetBranch = 'main'
-                    dir(kieBenchmarksRepo){
-                        checkoutRepo(kieBenchmarksRepo, targetBranch)
-                        githubscm.setUserConfigFromCreds()
-                        githubscm.createBranch(localBranch)
-                        // update version.org.optaplanner property in kie-benchmarks
-                        maven.mvnSetVersionProperty('version.org.optaplanner', getNextMinorSnapshotVersion(getProjectVersion()))
-                        if (githubscm.isThereAnyChanges()) {
-                            // Add changed files, commit, open and merge PR
-                            prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
-                            sh "git checkout ${targetBranch}"
-                            mergeAndPush(prLink, targetBranch)
-                            githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsID())
-                        } else {
-                            println '[WARN] no changes to commit'
-                        }
                     }
                 }
             }
