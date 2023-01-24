@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.commons.configuration.XMLStringConfiguration;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
-import org.kie.kogito.index.DataIndexStorageService;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.schema.SchemaDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;

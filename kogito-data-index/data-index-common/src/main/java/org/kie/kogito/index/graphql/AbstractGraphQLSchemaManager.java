@@ -27,11 +27,11 @@ import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     DataIndexStorageService cacheService;
 
     @Inject
-    GraphQLScalarType qlDateTimeScalarType;
+    GraphQLScalarType dateTimeScalarType;
 
     private GraphQLSchema schema;
 
@@ -78,9 +78,17 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
         }
     }
 
-    abstract GraphQLSchema createSchema();
+    public abstract GraphQLSchema createSchema();
 
-    protected String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
+    public DataIndexStorageService getCacheService() {
+        return cacheService;
+    }
+
+    public GraphQLScalarType getDateTimeScalarType() {
+        return dateTimeScalarType;
+    }
+
+    public String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
         if (source == null || source.getEndpoint() == null || source.getProcessId() == null) {
             return null;

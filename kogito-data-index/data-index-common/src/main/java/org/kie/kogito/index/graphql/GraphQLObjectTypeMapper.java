@@ -34,7 +34,7 @@ import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
 
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
-import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
 
 public class GraphQLObjectTypeMapper implements Function<DomainDescriptor, GraphQLObjectType> {
 

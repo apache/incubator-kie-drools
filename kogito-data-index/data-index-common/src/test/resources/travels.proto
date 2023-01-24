@@ -1,0 +1,119 @@
+syntax = "proto2"; 
+package org.acme.travels.travels; 
+import "kogito-index.proto";
+import "kogito-types.proto";
+option kogito_model = "Travels";
+option kogito_id = "travels";
+
+/* @Indexed */ 
+message Address { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string city = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string country = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string street = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string zipCode = 4; 
+}
+/* @Indexed */ 
+message Flight { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional kogito.Date arrival = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional kogito.Date departure = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string flightNumber = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string gate = 4; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string seat = 5; 
+}
+/* @Indexed */ 
+message Hotel { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Address address = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string bookingNumber = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string name = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string phone = 4; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string room = 5; 
+}
+/* @Indexed */ 
+message Traveller { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Address address = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string email = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string firstName = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string lastName = 4; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string nationality = 5;
+	/* @Field(index = Index.YES, store = Store.YES) */
+	repeated Address locations = 6;
+	/* @Field(index = Index.YES, store = Store.YES) */
+	repeated string aliases = 7;
+}
+/* @Indexed */ 
+message Travels { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Flight flight = 1; 
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Hotel hotel = 2; 
+	/* @Field(index = Index.YES, store = Store.YES) @SortableField */ 
+	optional string id = 3; 
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Traveller traveller = 4; 
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional Trip trip = 5; 
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional VisaApplication visaApplication = 6; 
+	/* @Field(index = Index.YES, store = Store.YES) */
+	optional org.kie.kogito.index.model.KogitoMetadata metadata = 7;
+}
+/* @Indexed */ 
+message Trip { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional kogito.Date begin = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string city = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string country = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional kogito.Date end = 4; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional bool visaRequired = 5; 
+}
+/* @Indexed */ 
+message VisaApplication { 
+	option java_package = "org.acme.travels.travels";
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional bool approved = 1; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string city = 2; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string country = 3; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional int32 duration = 4; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string firstName = 5; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string lastName = 6; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string nationality = 7; 
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
+	optional string passportNumber = 8;
+	/* @Field(index = Index.NO, store = Store.YES) @SortableField */
+	optional int64 id = 9;
+}

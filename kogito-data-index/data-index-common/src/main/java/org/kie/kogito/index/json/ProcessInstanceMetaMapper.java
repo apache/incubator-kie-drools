@@ -22,13 +22,13 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.kie.kogito.index.Constants.ID;
-import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.LAST_UPDATE;
-import static org.kie.kogito.index.Constants.PROCESS_ID;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.PROCESS_NAME;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+import static org.kie.kogito.index.storage.Constants.ID;
+import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.LAST_UPDATE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
+import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_NAME;
 
 public class ProcessInstanceMetaMapper implements Function<ProcessInstanceDataEvent, ObjectNode> {
 

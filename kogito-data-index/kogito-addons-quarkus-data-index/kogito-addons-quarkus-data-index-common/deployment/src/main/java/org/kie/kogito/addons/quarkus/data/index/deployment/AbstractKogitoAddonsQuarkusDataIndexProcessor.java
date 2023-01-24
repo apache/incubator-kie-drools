@@ -18,9 +18,9 @@ package org.kie.kogito.addons.quarkus.data.index.deployment;
 
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Type;
+import org.kie.kogito.index.addon.vertx.VertxGraphiQLSetup;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.vertx.VertxGraphiQLSetup;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 

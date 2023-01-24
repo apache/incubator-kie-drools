@@ -24,12 +24,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.kie.kogito.index.Constants.ID;
-import static org.kie.kogito.index.Constants.KOGITO_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.LAST_UPDATE;
-import static org.kie.kogito.index.Constants.PROCESS_ID;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 import static org.kie.kogito.index.json.JsonUtils.getObjectMapper;
+import static org.kie.kogito.index.storage.Constants.ID;
+import static org.kie.kogito.index.storage.Constants.KOGITO_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.LAST_UPDATE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_ID;
+import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 
 public class UserTaskInstanceMetaMapper implements Function<UserTaskInstanceDataEvent, ObjectNode> {
 

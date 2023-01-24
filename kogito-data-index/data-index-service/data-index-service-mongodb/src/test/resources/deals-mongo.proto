@@ -5,7 +5,7 @@ import "kogito-types.proto";
 option kogito_model = "Deals";
 option kogito_id = "deals";
 
-message Address {
+message Location {
     option java_package = "org.acme.travels";
     optional string city = 1;
     optional string country = 2;
@@ -22,16 +22,16 @@ message Deals {
     optional string name = 2;
     /* @Field(index = Index.NO, store = Store.YES) */
     optional string review = 3;
-    optional Traveller traveller = 4;
+    optional Product product = 4;
     /* @Field(index = Index.NO, store = Store.YES) */
     optional org.kie.kogito.index.model.KogitoMetadata metadata = 5;
 }
 
-message Traveller {
+message Product {
     option java_package = "org.acme.travels";
-    optional Address address = 1;
-    optional string email = 2;
-    optional string firstName = 3;
-    optional string lastName = 4;
-    optional string nationality = 5;
+    optional Location location = 1;
+    optional string name = 2;
+    optional string code = 3;
+    optional string label = 4;
+    optional double price = 5;
 }

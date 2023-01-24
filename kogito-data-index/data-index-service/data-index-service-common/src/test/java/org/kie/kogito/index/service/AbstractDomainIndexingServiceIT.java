@@ -44,23 +44,23 @@ import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.kie.kogito.index.DateTimeUtils.formatDateTime;
 import static org.kie.kogito.index.DateTimeUtils.formatOffsetDateTime;
-import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskId;
-import static org.kie.kogito.index.GraphQLUtils.getDealsByTaskIdNoActualOwner;
-import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceById;
-import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndErrorNode;
-import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByIdAndState;
-import static org.kie.kogito.index.GraphQLUtils.getProcessInstanceByParentProcessInstanceId;
-import static org.kie.kogito.index.GraphQLUtils.getTravelsByProcessInstanceId;
-import static org.kie.kogito.index.GraphQLUtils.getTravelsByUserTaskId;
-import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceById;
-import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdAndActualOwner;
-import static org.kie.kogito.index.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessInstanceVariablesMap;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
+import static org.kie.kogito.index.service.GraphQLUtils.getDealsByTaskId;
+import static org.kie.kogito.index.service.GraphQLUtils.getDealsByTaskIdNoActualOwner;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceById;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceByIdAndErrorNode;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceByIdAndState;
+import static org.kie.kogito.index.service.GraphQLUtils.getProcessInstanceByParentProcessInstanceId;
+import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByProcessInstanceId;
+import static org.kie.kogito.index.service.GraphQLUtils.getTravelsByUserTaskId;
+import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceById;
+import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdAndActualOwner;
+import static org.kie.kogito.index.service.GraphQLUtils.getUserTaskInstanceByIdNoActualOwner;
 
 public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingServiceIT {
 

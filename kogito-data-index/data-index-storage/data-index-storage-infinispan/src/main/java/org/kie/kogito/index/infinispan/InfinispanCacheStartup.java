@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.index.DataIndexStorageService;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 
 import io.quarkus.runtime.Startup;
 

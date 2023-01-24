@@ -44,10 +44,10 @@ import io.quarkus.test.junit.QuarkusTest;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.kogito.index.Constants.JOBS_STORAGE;
-import static org.kie.kogito.index.Constants.PROCESS_ID_MODEL_STORAGE;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_STORAGE;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
+import static org.kie.kogito.index.storage.Constants.JOBS_STORAGE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_ID_MODEL_STORAGE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_STORAGE;
+import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_STORAGE;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)

@@ -88,7 +88,7 @@ public class UserTaskInstanceEventMapper implements Function<UserTaskInstanceDat
                 .build();
     }
 
-    protected String getEndpoint(URI source, String pId, String taskName, String taskId) {
+    public String getEndpoint(URI source, String pId, String taskName, String taskId) {
         String name = UrlEscapers.urlPathSegmentEscaper().escape(taskName);
         return source.toString() + format("/%s/%s/%s", pId, name, taskId);
     }

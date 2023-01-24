@@ -37,11 +37,11 @@ import org.kie.kogito.persistence.mongodb.index.IndexCreateOrUpdateEvent;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
 import org.kie.kogito.persistence.mongodb.storage.MongoModelService;
 
-import static org.kie.kogito.index.Constants.JOBS_STORAGE;
-import static org.kie.kogito.index.Constants.PROCESS_ID_MODEL_STORAGE;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_STORAGE;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
 import static org.kie.kogito.index.mongodb.Constants.isDomainCollection;
+import static org.kie.kogito.index.storage.Constants.JOBS_STORAGE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_ID_MODEL_STORAGE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_STORAGE;
+import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_STORAGE;
 
 @ApplicationScoped
 public class MongoModelServiceImpl implements MongoModelService {

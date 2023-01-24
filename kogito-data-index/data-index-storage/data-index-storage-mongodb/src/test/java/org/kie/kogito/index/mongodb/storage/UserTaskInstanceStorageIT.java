@@ -36,7 +36,7 @@ import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_STORAGE;
+import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_STORAGE;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)

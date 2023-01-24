@@ -35,8 +35,8 @@ import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
 
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
-import static org.kie.kogito.index.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
-import static org.kie.kogito.index.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.PROCESS_INSTANCES_DOMAIN_ATTRIBUTE;
+import static org.kie.kogito.index.storage.Constants.USER_TASK_INSTANCES_DOMAIN_ATTRIBUTE;
 
 public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
 

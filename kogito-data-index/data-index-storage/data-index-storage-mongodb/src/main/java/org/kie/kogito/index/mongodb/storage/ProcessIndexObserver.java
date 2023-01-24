@@ -21,7 +21,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.kogito.index.DataIndexStorageService;
+import org.kie.kogito.index.storage.DataIndexStorageService;
 import org.kie.kogito.persistence.mongodb.index.IndexCreateOrUpdateEvent;
 import org.kie.kogito.persistence.mongodb.index.ProcessIndexEvent;
 

@@ -1,37 +1,37 @@
-syntax = "proto2"; 
-package org.acme.travels.visaApplications; 
+syntax = "proto2";
+package org.acme.travels.visaApplications;
 import "kogito-index.proto";
 import "kogito-types.proto";
 option kogito_model = "VisaApplications";
 option kogito_id = "visaApplications";
 
-/* @Indexed */ 
-message VisaApplication { 
-	option java_package = "org.acme.travels.visaApplications";
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional bool approved = 1; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string city = 2; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string country = 3; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional int32 duration = 4; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string firstName = 5; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string lastName = 6; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string nationality = 7; 
-	/* @Field(index = Index.NO, store = Store.YES) @SortableField */ 
-	optional string passportNumber = 8; 
+/* @Indexed */
+message VisaApplication {
+  option java_package = "org.acme.travels.visaApplications";
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional bool approved = 1;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string city = 2;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string country = 3;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional int32 duration = 4;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string firstName = 5;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string lastName = 6;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string nationality = 7;
+  /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+  optional string passportNumber = 8;
 }
-/* @Indexed */ 
-message VisaApplications { 
-	option java_package = "org.acme.travels.visaApplications";
-	/* @Field(index = Index.YES, store = Store.YES) @SortableField */ 
-	optional string id = 1; 
-	/* @Field(index = Index.NO, store = Store.YES) */ 
-	optional VisaApplication visaApplication = 2; 
-    /* @Field(index = Index.NO, store = Store.YES) */
-    optional org.kie.kogito.index.model.KogitoMetadata metadata = 3;
+/* @Indexed */
+message VisaApplications {
+  option java_package = "org.acme.travels.visaApplications";
+  /* @Field(index = Index.YES, store = Store.YES) @SortableField */
+  optional string id = 1;
+  /* @Field(index = Index.NO, store = Store.YES) */
+  optional VisaApplication visaApplication = 2;
+  /* @Field(index = Index.NO, store = Store.YES) */
+  optional org.kie.kogito.index.model.KogitoMetadata metadata = 3;
 }
