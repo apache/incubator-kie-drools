@@ -13,7 +13,7 @@
     <DataField name="sepal_width" optype="continuous" dataType="double">
       <Interval closure="closedClosed" leftMargin="2.0" rightMargin="4.4"/>
     </DataField>
-    <DataField name="petal_length" optype="continuous" dataType="integer">
+    <DataField name="petal_length" optype="continuous" dataType="double">
       <Interval closure="closedClosed" leftMargin="1.0" rightMargin="6.9"/>
     </DataField>
     <DataField name="petal_width" optype="continuous" dataType="double">
