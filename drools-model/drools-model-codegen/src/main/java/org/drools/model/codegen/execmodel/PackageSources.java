@@ -75,7 +75,7 @@ public class PackageSources {
         pkgModel.getLambdaClasses()
                 .values()
                 .stream()
-                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
+                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getContents())))
                 .forEach(sources.lambdaClasses::add);
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();

@@ -35,10 +35,6 @@ public class CreatedClass {
         this.sourcePath = String.format("%s/%s.java", packageName.replace(".", "/"), className);
     }
 
-    public String getCompilationUnitAsString() {
-        return contents;
-    }
-
     public String getClassNameWithPackage() {
         return canonicalName;
     }
