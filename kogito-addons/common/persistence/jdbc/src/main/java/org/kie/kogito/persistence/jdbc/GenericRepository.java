@@ -214,6 +214,6 @@ public class GenericRepository extends Repository {
     }
 
     private static String sqlIncludingVersion(String statement, String processVersion) {
-        return statement + (processVersion == null ? PROCESS_VERSION_IS_NULL : PROCESS_VERSION_EQUALS_TO);
+        return statement + " " + (processVersion == null ? PROCESS_VERSION_IS_NULL : PROCESS_VERSION_EQUALS_TO);
     }
 }
