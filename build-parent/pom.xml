@@ -1734,7 +1734,7 @@
             <excludes>
               <exclude>**/*IntegrationTest.java</exclude>
             </excludes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=US</argLine>
             <systemPropertyVariables>
               <apple.awt.UIElement>true</apple.awt.UIElement>
               <org.uberfire.nio.git.daemon.enabled>false</org.uberfire.nio.git.daemon.enabled>
@@ -1760,7 +1760,7 @@
               <include>**/*IntegrationTest.java</include>
               <include>**/*IT.java</include>
             </includes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=US</argLine>
           </configuration>
         </plugin>
         <plugin>
@@ -2168,17 +2168,7 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-Duser.language=en -Duser.region=US</argLine>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <argLine>-Duser.language=en -Duser.region=US</argLine>
-        </configuration>
       </plugin>
     </plugins>
   </build>
