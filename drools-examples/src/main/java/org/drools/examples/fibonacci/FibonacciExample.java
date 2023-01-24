@@ -16,6 +16,7 @@
 
 package org.drools.examples.fibonacci;
 
+import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -30,10 +31,16 @@ public class FibonacciExample {
     public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession("FibonacciKS");
 
-        ksession.insert( new Fibonacci( 50 ) );
+        ksession.insert( new Fibonacci( 3 ) ); // new Fibonacci( 50 )
         ksession.fireAllRules();
 
+        //
+        System.out.println("\ncache size (before ksession.dispose)=" + RuntimeComponentFactoryImpl.DEFAULT.reliabilityService.cacheSize());
+
         ksession.dispose(); // Stateful rule session must always be disposed when finished
+
+        System.out.println("\ncache size (after ksession.dispose)=" + RuntimeComponentFactoryImpl.DEFAULT.reliabilityService.cacheSize());
+
     }
 
     public static class Fibonacci {

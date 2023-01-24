@@ -21,7 +21,6 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Lockable;
@@ -114,7 +113,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
         this.objectStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled() ?
                 new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
-                new IdentityObjectStore();
+                RuntimeComponentFactory.get().getObjectStoreFactory(); //new IdentityObjectStore();
     }
 
     @Override
