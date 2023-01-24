@@ -20,7 +20,6 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -53,8 +52,6 @@ public interface RuntimeComponentFactory extends KieService {
     FactHandleFactory getFactHandleFactoryService();
 
     TraitFactory getTraitFactory(RuleBase knowledgeBase);
-
-    ObjectStore getObjectStoreFactory();
 
     KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator);
 
