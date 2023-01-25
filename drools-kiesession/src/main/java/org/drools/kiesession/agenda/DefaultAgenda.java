@@ -345,7 +345,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
         RuleAgendaItem item = activation.asAgendaItem().getRuleAgendaItem();
         if (item != null) {
-            item.getRuleExecutor().fireConsequenceEvent( this.workingMemory, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
+            item.getRuleExecutor().fireConsequenceEvent( this.workingMemory, this, activation, ON_DELETE_MATCH_CONSEQUENCE_NAME );
         }
 
         workingMemory.getRuleEventSupport().onDeleteMatch( activation );
