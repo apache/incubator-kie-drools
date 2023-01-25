@@ -25,23 +25,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class InfixOpNodeTest {
 
     private static List<BinaryOperator<BigDecimal>> MATH_OPERATORS;
+
     @Before
     public void setUp() throws Exception {
         MATH_OPERATORS = new ArrayList<>();
-        MATH_OPERATORS.add((l, r) -> l.add(r, MathContext.DECIMAL128 ) );
-        MATH_OPERATORS.add((l, r) -> l.subtract(r, MathContext.DECIMAL128 ) );
-        MATH_OPERATORS.add((l, r) -> l.multiply(r, MathContext.DECIMAL128 ) );
-        MATH_OPERATORS.add((l, r) -> l.divide(r, MathContext.DECIMAL128 ) );
+        MATH_OPERATORS.add((l, r) -> l.add(r, MathContext.DECIMAL128));
+        MATH_OPERATORS.add((l, r) -> l.subtract(r, MathContext.DECIMAL128));
+        MATH_OPERATORS.add((l, r) -> l.multiply(r, MathContext.DECIMAL128));
+        MATH_OPERATORS.add((l, r) -> l.divide(r, MathContext.DECIMAL128));
         MATH_OPERATORS.add((l, r) -> BigDecimalMath.pow(l, r, MathContext.DECIMAL128));
     }
 
@@ -75,42 +84,42 @@ public class InfixOpNodeTest {
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
         LocalDate retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
 
         left = LocalDate.of(2021, 1, 2);
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2));
         right = Duration.of(24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 3));
 
         left = LocalDate.of(2021, 1, 3);
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 4));
 
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 28 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 28));
 
         left = LocalDate.of(2020, 12, 31);
         right = Duration.of(-1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.add(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 30));
     }
 
     @Test
@@ -118,42 +127,68 @@ public class InfixOpNodeTest {
         LocalDate left = LocalDate.of(2021, 1, 1);
         Duration right = Duration.of(-1, ChronoUnit.HOURS);
         LocalDate retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
         right = Duration.of(-24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2));
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 2));
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
 
         left = LocalDate.of(2021, 1, 2);
         right = Duration.of(1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
         right = Duration.of(24, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
 
         left = LocalDate.of(2021, 1, 3);
         right = Duration.of(25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2021, 1, 1));
 
         left = LocalDate.of(2020, 12, 30);
         right = Duration.of(-25, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
 
         left = LocalDate.of(2020, 12, 31);
         right = Duration.of(-1, ChronoUnit.HOURS);
         retrieved = (LocalDate) InfixOpNode.sub(left, right, null);
-        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31 ));
+        assertThat(retrieved).isEqualTo(LocalDate.of(2020, 12, 31));
+    }
+    @Test
+    public void mulDurationAndDuration() {
+        Object left = Duration.of(5, DAYS);
+        Object right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.mult(left, right, mock(EvaluationContext.class))).isNull();
     }
 
+
+    @Test
+    public void isAllowedMultiplicationBasedOnSpec() {
+        EvaluationContext evaluationContext = mock(EvaluationContext.class);
+        Object left = 23;
+        Object right = 354.5;
+        assertThat(InfixOpNode.isAllowedMultiplicationBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.isAllowedMultiplicationBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        left = Duration.of(5, DAYS);
+        right = 354.5;
+        assertThat(InfixOpNode.isAllowedMultiplicationBasedOnSpec(left, right, evaluationContext)).isTrue();
+        verify(evaluationContext, never()).notifyEvt(any());
+        left = Duration.of(5, DAYS);
+        right = Duration.of(5, DAYS);
+        assertThat(InfixOpNode.isAllowedMultiplicationBasedOnSpec(left, right, evaluationContext)).isFalse();
+        verify(evaluationContext, times(1)).notifyEvt(any(Supplier.class));
+    }
 }

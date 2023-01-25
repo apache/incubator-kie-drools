@@ -5,7 +5,7 @@ import org.kie.jenkins.MavenCommand
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !built-in'
+        label 'kie-rhel8 && kie-mem16g && !built-in'
     }
 
     tools {
@@ -29,6 +29,8 @@ pipeline {
 
         // Keep here for visitibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
+
+        BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -40,15 +42,18 @@ pipeline {
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
-
-                    checkoutRepo(getRepoName(), getBuildBranch())
+                    dir(getRepoName()){
+                        checkoutRepo(getRepoName(), getBuildBranch())
+                    }
                 }
             }
         }
         stage('Update project version') {
             steps {
                 script {
-                    maven.mvnVersionsSet(getMavenCommand(getRepoName()), getDroolsVersion(), true)
+                    dir(getRepoName()){
+                        maven.mvnVersionsSet(getMavenCommand(), getDroolsVersion(), true)
+                    }
                 }
             }
         }
@@ -58,7 +63,9 @@ pipeline {
             }
             steps {
                 script {
-                    runMavenDeploy(getRepoName())
+                    dir(getRepoName()){
+                        runMavenDeploy()
+                    }    
                 }
             }
         }
@@ -73,14 +80,37 @@ pipeline {
                                 githubscm.findAndStageNotIgnoredFiles('pom.xml')
                                 githubscm.findAndStageNotIgnoredFiles('antora.yml')
                             })
-                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsId())
                         } else {
                             println '[WARN] no changes to commit'
                         }
                     }
                 }
             }
-        }
+        } 
+        stage('update Drools version in kie-benchmarks') {
+            when {
+                expression { isMainBranch() }
+            }            
+            steps {
+                script {
+                    String commitMsg = 'bumped up Drools version to next SNAPSHOT'
+                    String localBranch = "kie-benchmarks-drools-update-${env.BRANCH_HASH}"
+                    String targetBranch = 'main'
+                    String kieBenchmarksRepo = 'kie-benchmarks'
+                    dir(kieBenchmarksRepo){
+                        checkoutRepo(kieBenchmarksRepo, targetBranch)
+                        githubscm.createBranch(localBranch)
+                        maven.mvnSetVersionProperty('version.org.drools', getNextMinorSnapshotVersion(getDroolsVersion()))
+                        // Add changed files, commit, open and merge PR
+                        String prLink = commitAndCreatePR(commitMsg, localBranch, targetBranch)
+                        sh "git checkout ${targetBranch}"
+                        mergeAndPush(prLink, targetBranch)
+                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsId())
+                    }
+                }
+            }
+        }        
     }
     post {
         unsuccessful {
@@ -103,12 +133,9 @@ void sendNotification() {
 }
 
 void checkoutRepo(String repository, String branch) {
-    dir(repository) {
-        deleteDir()
-        checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
-        // need to manually checkout branch since on a detached branch after checkout command
-        sh "git checkout ${branch}"
-    }
+    checkout(githubscm.resolveRepository(repository, getGitAuthor(), branch, false))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${branch}"
 }
 
 boolean shouldDeployToRepository() {
@@ -132,23 +159,44 @@ String getDroolsVersion() {
     return params.DROOLS_VERSION
 }
 
-String getGitAuthorCredsID() {
+String getGitAuthorCredsId() {
     return env.AUTHOR_CREDS_ID
 }
 
-MavenCommand getMavenCommand(String directory) {
+MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
-                .inDirectory(directory)
                 .withProperty('full')
 }
 
-void runMavenDeploy(String directory) {
-    mvnCmd = getMavenCommand(directory)
+void runMavenDeploy(boolean localDeployment = false) {
+    mvnCmd = getMavenCommand()
 
     if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
     mvnCmd.skipTests(true).run('clean deploy')
+}
+
+boolean isMainBranch() {
+    return env.IS_MAIN_BRANCH ? env.IS_MAIN_BRANCH.toBoolean() : false
+}
+
+String getNextMinorSnapshotVersion(String currentVersion) {
+    return util.getNextVersion(currentVersion, 'minor')
+}
+
+String commitAndCreatePR(String commitMsg, String localBranch, String targetBranch) {
+    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
+    githubscm.commitChanges(commitMsg)
+    githubscm.pushObject('origin', localBranch, getGitAuthorCredsId())
+    return githubscm.createPR(commitMsg, prBody, targetBranch, getGitAuthorCredsId())
+}
+
+void mergeAndPush(String prLink, String targetBranch) {
+    if (prLink?.trim()) {
+        githubscm.mergePR(prLink, getGitAuthorCredsId())
+        githubscm.pushObject('origin', targetBranch, getGitAuthorCredsId())
+    }
 }
