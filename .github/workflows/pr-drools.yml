@@ -44,7 +44,7 @@ jobs:
         env:
           BUILD_MVN_OPTS_CURRENT: -Dfull
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
+          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/main/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report

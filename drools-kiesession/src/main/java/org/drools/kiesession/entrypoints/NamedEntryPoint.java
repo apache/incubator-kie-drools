@@ -16,9 +16,20 @@
 
 package org.drools.kiesession.entrypoints;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
-import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -46,21 +57,10 @@ import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.conf.KieBaseMutabilityOption;
+import org.drools.kiesession.session.SessionComponentsFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
@@ -68,7 +68,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, PropertyChangeListener, Lockable {
 
-    protected static final transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
+    protected static final Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
 
     protected static final Class<?>[] ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
@@ -111,9 +111,11 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         RuleBaseConfiguration conf = this.ruleBase.getRuleBaseConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
-        this.objectStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled() ?
-                new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
-                RuntimeComponentFactory.get().getObjectStoreFactory(); //new IdentityObjectStore();
+
+        boolean useClassAwareStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled();
+        this.objectStore = useClassAwareStore ?
+                SessionComponentsFactory.get().createClassAwareObjectStore(isEqualityBehaviour, lock) :
+                SessionComponentsFactory.get().createIdentityObjectStore();
     }
 
     @Override
