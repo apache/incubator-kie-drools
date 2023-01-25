@@ -44,6 +44,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.PhreakPropagationContext;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -62,7 +63,6 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
@@ -70,6 +70,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
+import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.ruleunits.api.RuleUnits;
 import org.drools.ruleunits.impl.facthandles.RuleUnitDefaultFactHandle;
 import org.kie.api.KieBase;
@@ -91,6 +92,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private final AtomicLong propagationIdCounter = new AtomicLong(1);
 
     private final RuleBase ruleBase;
+    private final long identifier;
     private final SessionConfiguration sessionConfiguration;
     private final FactHandleFactory handleFactory;
 
@@ -115,6 +117,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
     public RuleUnitExecutorImpl(RuleBase knowledgeBase, SessionConfiguration sessionConfiguration) {
         this.ruleBase = knowledgeBase;
+        this.identifier = ((InternalKnowledgeBase) ruleBase).nextWorkingMemoryCounter();
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
@@ -138,6 +141,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
                     null, handle, defaultEntryPoint.getEntryPoint(), null );
             otn.assertInitialFact( handle, pctx, this );
         }
+    }
+
+    @Override
+    public long getIdentifier() {
+        return this.identifier;
     }
 
     @Override
