@@ -10,9 +10,6 @@ git:
     main_branch: true
     seed:
       branch: main
-  - name: 8.29.x
-    seed:
-      branch: seed-optaplanner-8.29.x
   - name: 8.33.x
     seed:
       branch: seed-optaplanner-8.33.x
