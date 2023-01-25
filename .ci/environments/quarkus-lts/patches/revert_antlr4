@@ -1,0 +1,78 @@
+commit 0fe180eb5182ef048afdf5c31c6714d059de96ae
+Author: radtriste <tradisso@redhat.com>
+Date:   Wed Jan 18 14:17:01 2023 +0100
+
+    Revert Antlr4 update to 4.10
+
+diff --git a/build-parent/pom.xml b/build-parent/pom.xml
+index 1f08d30611..68043f28f1 100644
+--- a/build-parent/pom.xml
++++ b/build-parent/pom.xml
+@@ -61,7 +61,7 @@
+     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
+     <version.antlr>2.7.7</version.antlr>
+     <version.org.antlr>3.5.2</version.org.antlr>
+-    <version.org.antlrgwt>4.10.0</version.org.antlrgwt>
++    <version.org.antlrgwt>4.8.2</version.org.antlrgwt>
+     <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
+     <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
+     <version.org.apache.ant>1.10.11</version.org.apache.ant>
+@@ -576,13 +576,13 @@
+       </dependency>
+ 
+       <dependency>
+-        <groupId>org.antlr4gwt</groupId>
++        <groupId>org.antlr</groupId>
+         <artifactId>antlr4gwt-runtime</artifactId>
+         <version>${version.org.antlrgwt}</version>
+       </dependency>
+ 
+       <dependency>
+-        <groupId>org.antlr4gwt</groupId>
++        <groupId>org.antlr</groupId>
+         <artifactId>antlr4gwt-runtime</artifactId>
+         <version>${version.org.antlrgwt}</version>
+         <classifier>sources</classifier>
+@@ -1587,14 +1587,14 @@
+                       <!-- antlr4gwt and antlr4-c3-gwt (javax.json) rely on duplicated resources to provide a GWT-compatible
+                            implementation for ANTLR -->
+                       <dependency>
+-                        <groupId>org.antlr4gwt</groupId>
++                        <groupId>org.antlr</groupId>
+                         <artifactId>antlr4gwt-runtime</artifactId>
+                         <ignoreClasses>
+                           <ignoreClass>org.antlr.v4.*</ignoreClass>
+                         </ignoreClasses>
+                       </dependency>
+                       <dependency>
+-                        <groupId>org.antlr4gwt</groupId>
++                        <groupId>org.antlr</groupId>
+                         <artifactId>antlr4gwt-annotations</artifactId>
+                         <ignoreClasses>
+                           <ignoreClass>org.antlr.v4.runtime.misc.*</ignoreClass>
+diff --git a/kie-dmn/kie-dmn-feel-gwt-showcase/pom.xml b/kie-dmn/kie-dmn-feel-gwt-showcase/pom.xml
+index 989dee312a..a56d73b476 100644
+--- a/kie-dmn/kie-dmn-feel-gwt-showcase/pom.xml
++++ b/kie-dmn/kie-dmn-feel-gwt-showcase/pom.xml
+@@ -105,7 +105,7 @@
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>org.antlr4gwt</groupId>
++      <groupId>org.antlr</groupId>
+       <artifactId>antlr4gwt-runtime</artifactId>
+       <scope>provided</scope>
+     </dependency>
+diff --git a/kie-dmn/kie-dmn-feel-gwt/pom.xml b/kie-dmn/kie-dmn-feel-gwt/pom.xml
+index 877156523c..349ef1a73b 100644
+--- a/kie-dmn/kie-dmn-feel-gwt/pom.xml
++++ b/kie-dmn/kie-dmn-feel-gwt/pom.xml
+@@ -28,7 +28,7 @@
+     </dependency>
+ 
+     <dependency>
+-      <groupId>org.antlr4gwt</groupId>
++      <groupId>org.antlr</groupId>
+       <artifactId>antlr4gwt-runtime</artifactId>
+       <scope>provided</scope>
+     </dependency>
