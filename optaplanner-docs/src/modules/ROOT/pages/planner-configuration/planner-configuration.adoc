@@ -978,8 +978,8 @@ Use a <<chainedPlanningVariable,chained planning variable>> instead of a list pl
 - xref:repeated-planning/repeated-planning.adoc#continuousPlanning[continuous planning] or xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[entity pinning],
 - <<planningEntityDifficulty,planning entity difficulty comparison>> or <<planningValueStrength,planning value strength comparison>>,
 - xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[nearby selection],
-- xref:exhaustive-search/exhaustive-search.adoc[exhaustive search],
-- xref:partitioned-search/partitioned-search.adoc[partitioned search],
+- xref:exhaustive-search/exhaustive-search.adoc#exhaustiveSearch[exhaustive search],
+- xref:partitioned-search/partitioned-search.adoc#partitionedSearch[partitioned search],
 - coexistence with another list or basic planning variable.
 ====
 

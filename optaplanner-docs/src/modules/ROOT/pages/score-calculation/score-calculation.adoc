@@ -1098,7 +1098,7 @@ to use a different constraint package than some other weights.
 
 So every constraint weight ends up with a constraint package and a constraint name.
 Each constraint weight links with a constraint implementation,
-for example in xref:constraint-streams/constraint-streams.adoc[Constraint Streams]:
+for example in xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams]:
 
 [source,java,options="nowrap"]
 ----
@@ -1247,7 +1247,7 @@ List<ConstraintJustification> constraintJustificationlist = scoreExplanation.get
 
 In score DRL, justifications are always instances of
 `org.optaplanner.core.api.score.stream.DefaultConstraintJustification`,
-while in xref:constraint-streams/constraint-streams.adoc[constraint streams], the return type xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[can be customised],
+while in xref:constraint-streams/constraint-streams.adoc#constraintStreams[constraint streams], the return type xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[can be customised],
 so that it can be easily serialized and sent over the wire.
 Such custom justifications can be queried like so:
 

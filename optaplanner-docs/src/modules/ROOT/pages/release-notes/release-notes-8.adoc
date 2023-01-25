@@ -169,7 +169,7 @@ We encourage users to check out the https://github.com/kiegroup/optaplanner-quic
 
 ==== Score DRL deprecated in favor of Constraint Streams
 
-Support for Score DRL has been deprecated and users are encouraged to migrate to xref:constraint-streams/constraint-streams.adoc[Constraint Streams] at their earliest convenience.
+Support for Score DRL has been deprecated and users are encouraged to migrate to xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] at their earliest convenience.
 link:https://www.optaplanner.org/download/upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
 Score DRL is not going away in OptaPlanner 8.
 
@@ -235,7 +235,7 @@ image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
 
 ==== Mapping in Constraint Streams
 
-The xref:constraint-streams/constraint-streams.adoc[Constraint Streams API] received a major new functionality.
+The xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams API] received a major new functionality.
 You can now modify your streams using xref:constraint-streams/constraint-streams.adoc#constraintStreamsMappingTuples[mapping functions].
 
 ==== Ready for OpenJDK 16
@@ -275,7 +275,7 @@ There is a new `activemq-quarkus-school-timetabling` quickstart that shows how t
 
 ==== Major performance improvements for Constraint Streams
 
-The default implementation of the xref:constraint-streams/constraint-streams.adoc[Constraint Streams API]
+The default implementation of the xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams API]
 has seen major performance improvements.
 Use cases with tri and quad streams may experience order of magnitude speedups.
 Use cases with xref:constraint-streams/constraint-streams.adoc#constraintStreamsGroupingAndCollectors[grouping]
