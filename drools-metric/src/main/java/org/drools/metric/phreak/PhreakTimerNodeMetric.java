@@ -16,9 +16,8 @@
 package org.drools.metric.phreak;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.TupleSets;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.phreak.PhreakTimerNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
@@ -35,9 +34,9 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
                        SegmentMemory smem,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(timerNode);

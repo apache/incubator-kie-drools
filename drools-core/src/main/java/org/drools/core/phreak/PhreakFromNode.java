@@ -21,20 +21,20 @@ import java.util.Map;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 
@@ -45,9 +45,9 @@ public class PhreakFromNode {
                        FromMemory fm,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(fm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -68,8 +68,8 @@ public class PhreakFromNode {
                               FromMemory fm,
                               LeftTupleSink sink,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples) {
 
         BetaMemory bm = fm.getBetaMemory();
         ContextEntry[] context = bm.getContext();
@@ -124,9 +124,9 @@ public class PhreakFromNode {
                               FromMemory fm,
                               LeftTupleSink sink,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         BetaMemory bm = fm.getBetaMemory();
         ContextEntry[] context = bm.getContext();
         BetaConstraints betaConstraints = fromNode.getBetaConstraints();
@@ -188,9 +188,9 @@ public class PhreakFromNode {
     }
 
     public void doLeftDeletes(FromMemory fm,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         BetaMemory bm = fm.getBetaMemory();
         TupleMemory ltm = bm.getLeftTupleMemory();
 
@@ -236,8 +236,8 @@ public class PhreakFromNode {
                                   PropagationContext propagationContext,
                                   ContextEntry[] context,
                                   boolean useLeftMemory,
-                                  TupleSets<LeftTuple> trgLeftTuples,
-                                  TupleSets<LeftTuple> stagedLeftTuples ) {
+                                  LeftTupleSets trgLeftTuples,
+                                  LeftTupleSets stagedLeftTuples ) {
         if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandleForEvaluation())) {
 
             if (rightTuple.getFirstChild() == null) {
@@ -261,8 +261,8 @@ public class PhreakFromNode {
     }
 
     public static void deleteChildLeftTuple(PropagationContext propagationContext,
-                                            TupleSets<LeftTuple> trgLeftTuples,
-                                            TupleSets<LeftTuple> stagedLeftTuples,
+                                            LeftTupleSets trgLeftTuples,
+                                            LeftTupleSets stagedLeftTuples,
                                             LeftTuple childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.setPropagationContext( propagationContext );

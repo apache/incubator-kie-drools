@@ -22,13 +22,16 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.StackEntry;
@@ -36,9 +39,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.rule.consequence.Activation;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
 public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
@@ -412,13 +413,13 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     @Override
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return new QueryElementNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     @Override
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               sink,
@@ -429,7 +430,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     @Override
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               rightTuple,
                                               sink );
@@ -440,7 +441,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               rightTuple,
@@ -491,7 +492,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
 
         private SegmentMemory querySegmentMemory;
 
-        private TupleSets<LeftTuple> resultLeftTuples;
+        private LeftTupleSets resultLeftTuples;
 
         private long nodePosMaskBit;
 
@@ -501,7 +502,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             // if there is only one sink there is no split and then no smem staging and no normalization
             // otherwise it uses special tuplset with alternative linking fields (rightParentPrev/Next)
             this.resultLeftTuples = node.getSinkPropagator().size() > 1 ?
-                                    new QueryTupleSets() : new TupleSetsImpl<>();
+                                    new QueryTupleSets() : new LeftTupleSetsImpl();
         }
 
         public QueryElementNode getNode() {
@@ -539,14 +540,14 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             if (resultLeftTuples instanceof QueryTupleSets ) {
                 if (!BuildtimeSegmentUtilities.isTipNode(node, removingTn)) {
                     // a sink has been removed and now there is no longer a split
-                    TupleSetsImpl<LeftTuple> newTupleSets = new TupleSetsImpl<>();
+                    LeftTupleSets newTupleSets = new LeftTupleSetsImpl();
                     this.resultLeftTuples.addTo( newTupleSets );
                     this.resultLeftTuples = newTupleSets;
                 }
             } else {
                 if (BuildtimeSegmentUtilities.isTipNode(node, removingTn)) {
                     // a sink has been added and now there is a split
-                    TupleSetsImpl<LeftTuple> newTupleSets = new QueryTupleSets();
+                    LeftTupleSets newTupleSets = new QueryTupleSets();
                     this.resultLeftTuples.addTo( newTupleSets );
                     this.resultLeftTuples = newTupleSets;
                 }
@@ -578,7 +579,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             resultLeftTuples.resetAll();
         }
 
-        public static class QueryTupleSets extends TupleSetsImpl<LeftTuple> {
+        public static class QueryTupleSets extends LeftTupleSetsImpl {
             @Override
             protected LeftTuple getPreviousTuple( LeftTuple tuple ) {
                 return tuple.getRightParentPrevious();

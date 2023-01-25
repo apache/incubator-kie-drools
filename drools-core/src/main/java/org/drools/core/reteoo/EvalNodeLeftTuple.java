@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Arrays;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
-
-import java.util.Arrays;
 
 public class EvalNodeLeftTuple extends BaseLeftTuple {
 
@@ -39,7 +39,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public EvalNodeLeftTuple(final InternalFactHandle factHandle,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(factHandle,
               sink,
@@ -48,12 +48,12 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     public EvalNodeLeftTuple(final InternalFactHandle factHandle,
                              final LeftTuple leftTuple,
-                             final Sink sink) {
+                             final LeftTupleSink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public EvalNodeLeftTuple(final LeftTuple leftTuple,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -64,7 +64,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     public EvalNodeLeftTuple(final LeftTuple leftTuple,
                              RightTuple rightTuple,
-                             Sink sink) {
+                             LeftTupleSink sink) {
         super(leftTuple,
               rightTuple,
               sink);
@@ -72,7 +72,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
 
     public EvalNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
              rightTuple,
@@ -86,7 +86,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
                              final RightTuple rightTuple,
                              final LeftTuple currentLeftChild,
                              final LeftTuple currentRightChild,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,

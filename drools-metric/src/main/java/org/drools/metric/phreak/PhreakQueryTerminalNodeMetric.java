@@ -16,10 +16,9 @@
 package org.drools.metric.phreak;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.TupleSets;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.phreak.PhreakQueryTerminalNode;
 import org.drools.core.phreak.StackEntry;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.util.LinkedList;
 import org.drools.metric.util.MetricLogUtils;
@@ -29,7 +28,7 @@ public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
     @Override
     public void doNode(QueryTerminalNode qtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
+                       LeftTupleSets srcLeftTuples,
                        LinkedList<StackEntry> stack) {
 
         try {

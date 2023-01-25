@@ -106,12 +106,12 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return AgendaComponentFactory.get().createTerminalTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return AgendaComponentFactory.get().createTerminalTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
@@ -119,7 +119,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, sink );
     }   
     
@@ -127,7 +127,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }    
@@ -153,5 +153,10 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         super.doAttach(context);
         getLeftTupleSource().addTupleSink( this, context );
         addAssociation( context, context.getRule() );
+    }
+
+    @Override
+    public QueryTerminalNode asQueryTerminalNode() {
+        return this;
     }
 }

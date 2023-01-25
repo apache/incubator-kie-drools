@@ -15,7 +15,12 @@
 
 package org.drools.mvel.integrationtests.phreak;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.PhreakExistsNode;
@@ -31,12 +36,9 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -51,14 +53,14 @@ public class Scenario {
     BetaMemory            bm;
     InternalWorkingMemory wm;
 
-    TupleSets<LeftTuple>  leftTuples;
+    LeftTupleSets leftTuples;
     TupleSets<RightTuple> rightRuples;
 
     StagedBuilder expectedResultBuilder;
 
-    TupleSets<LeftTuple> actualResultLeftTuples;
+    LeftTupleSets actualResultLeftTuples;
 
-    TupleSets<LeftTuple> previousResultTuples;
+    LeftTupleSets previousResultTuples;
 
     List<StagedBuilder> preStagedBuilders;
     List<StagedBuilder> postStagedBuilders;
@@ -79,7 +81,7 @@ public class Scenario {
         this.sinkNode = sinkNode;
         this.bm = bm;
         this.wm = wm;
-        this.leftTuples = new TupleSetsImpl<LeftTuple>();
+        this.leftTuples = new LeftTupleSetsImpl();
         this.rightRuples = new TupleSetsImpl<RightTuple>();
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
@@ -172,7 +174,7 @@ public class Scenario {
 
     public Scenario run() {
         previousResultTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
-        actualResultLeftTuples = new TupleSetsImpl<LeftTuple>();
+        actualResultLeftTuples = new LeftTupleSetsImpl();
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode().doNode( (JoinNode) betaNode, sinkNode,

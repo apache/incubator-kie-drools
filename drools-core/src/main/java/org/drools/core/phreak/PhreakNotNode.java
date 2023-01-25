@@ -16,6 +16,8 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
@@ -25,7 +27,6 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
@@ -35,9 +36,9 @@ public class PhreakNotNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         if (!notNode.isRightInputIsRiaNode()) {
             doNormalNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -51,9 +52,9 @@ public class PhreakNotNode {
                              LeftTupleSink sink,
                              BetaMemory bm,
                              ReteEvaluator reteEvaluator,
-                             TupleSets<LeftTuple> srcLeftTuples,
-                             TupleSets<LeftTuple> trgLeftTuples,
-                             TupleSets<LeftTuple> stagedLeftTuples) {
+                             LeftTupleSets srcLeftTuples,
+                             LeftTupleSets trgLeftTuples,
+                             LeftTupleSets stagedLeftTuples) {
 
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
@@ -108,8 +109,8 @@ public class PhreakNotNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -140,8 +141,8 @@ public class PhreakNotNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples,
-                               TupleSets<LeftTuple> stagedLeftTuples ) {
+                               LeftTupleSets trgLeftTuples,
+                               LeftTupleSets stagedLeftTuples ) {
 
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
@@ -215,9 +216,9 @@ public class PhreakNotNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -309,8 +310,8 @@ public class PhreakNotNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples,
-                               TupleSets<LeftTuple> stagedLeftTuples) {
+                               LeftTupleSets trgLeftTuples,
+                               LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -371,7 +372,7 @@ public class PhreakNotNode {
     }
 
     public static boolean updateBlockersAndPropagate(NotNode notNode, RightTuple rightTuple, ReteEvaluator reteEvaluator, TupleMemory rtm, ContextEntry[] contextEntry,
-                                                     BetaConstraints constraints, boolean iterateFromStart, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm) {
+                                                     BetaConstraints constraints, boolean iterateFromStart, LeftTupleSink sink, LeftTupleSets trgLeftTuples, TupleMemory ltm) {
         LeftTuple firstBlocked = rightTuple.getTempBlocked();
         if ( firstBlocked != null ) {
             RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
@@ -428,9 +429,9 @@ public class PhreakNotNode {
     }
 
     public void doLeftDeletes(BetaMemory bm,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
@@ -461,7 +462,7 @@ public class PhreakNotNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples) {
+                               LeftTupleSets trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -519,7 +520,7 @@ public class PhreakNotNode {
         constraints.resetTuple(contextEntry);
     }
 
-    private static void insertChildLeftTuple( LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
+    private static void insertChildLeftTuple( LeftTupleSink sink, LeftTupleSets trgLeftTuples, TupleMemory ltm, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
         if (!leftTuple.isExpired()) {
             if (useLeftMemory) {
                 ltm.add(leftTuple);

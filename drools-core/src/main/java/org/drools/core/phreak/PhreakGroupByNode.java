@@ -15,8 +15,9 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -25,7 +26,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
 public class PhreakGroupByNode extends PhreakAccumulateNode {
@@ -59,8 +59,8 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                                              final ReteEvaluator reteEvaluator,
                                              final AccumulateMemory memory,
                                              final AccumulateNode.BaseAccumulation accctx,
-                                             final TupleSets<LeftTuple> trgLeftTuples,
-                                             final TupleSets<LeftTuple> stagedLeftTuples) {
+                                             final LeftTupleSets trgLeftTuples,
+                                             final LeftTupleSets stagedLeftTuples) {
 
         PropagationContext propagationContext = accctx.getPropagationContext();
         accctx.setPropagationContext( null );
@@ -133,7 +133,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
-    protected void propagateDelete( TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, Object accctx ) {
+    protected void propagateDelete( LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, Object accctx ) {
         GroupByContext groupByContext = (GroupByContext)accctx;
         for ( TupleList<AccumulateContextEntry> tupleList : groupByContext.getGroups().values()) {
             super.propagateDelete(trgLeftTuples, stagedLeftTuples, tupleList.getContext());

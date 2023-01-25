@@ -321,8 +321,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void cancelActivation(final Activation activation) {
-        AgendaItem item = (AgendaItem) activation;
-
         workingMemory.cancelActivation( activation, isDeclarativeAgenda() );
 
         if ( isDeclarativeAgenda() ) {
@@ -342,16 +340,15 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
             }
             (( Tuple ) activation).decreaseActivationCountForEvents();
 
-            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                           workingMemory,
-                                                                           MatchCancelledCause.WME_MODIFY );
+            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation, workingMemory, MatchCancelledCause.WME_MODIFY );
         }
 
-        if (item.getRuleAgendaItem() != null) {
-            item.getRuleAgendaItem().getRuleExecutor().fireConsequenceEvent( this.workingMemory, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
+        RuleAgendaItem item = activation.asAgendaItem().getRuleAgendaItem();
+        if (item != null) {
+            item.getRuleExecutor().fireConsequenceEvent( this.workingMemory, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
         }
 
-        workingMemory.getRuleEventSupport().onDeleteMatch( item );
+        workingMemory.getRuleEventSupport().onDeleteMatch( activation );
     }
 
     @Override

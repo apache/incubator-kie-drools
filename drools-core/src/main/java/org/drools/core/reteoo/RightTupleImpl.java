@@ -33,6 +33,11 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     private RightTuple           tempNextRightTuple;
     private LeftTuple            tempBlocked;
 
+    private RightTuple stagedNext;
+    private RightTuple stagedPrevious;
+
+    protected RightTupleSink sink;
+
     private boolean              retracted;
 
     public RightTupleImpl() { }
@@ -42,8 +47,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
         setFactHandle( handle );
     }
 
-    public RightTupleImpl(InternalFactHandle handle,
-                      RightTupleSink sink) {
+    public RightTupleImpl(InternalFactHandle handle, RightTupleSink sink) {
         this( handle );
         this.sink = sink;
 
@@ -52,7 +56,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     }
 
     public RightTupleSink getTupleSink() {
-        return (RightTupleSink) sink;
+        return sink;
     }
     
     public void reAdd() {
@@ -146,11 +150,21 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     }
     
     public RightTuple getStagedNext() {
-        return (RightTuple) stagedNext;
+        return stagedNext;
+    }
+
+    @Override
+    public void setStagedNext(Tuple stageNext) {
+        this.stagedNext = (RightTuple) stageNext;
     }
 
     public RightTuple getStagedPrevious() {
-        return (RightTuple) stagedPrevious;
+        return stagedPrevious;
+    }
+
+    @Override
+    public void setStagedPrevious(Tuple stagedPrevious) {
+        this.stagedPrevious = (RightTuple) stagedPrevious;
     }
 
     public LeftTuple getTempBlocked() {
@@ -202,6 +216,8 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
 
     public void clearStaged() {
         super.clearStaged();
+        this.stagedNext = null;
+        this.stagedPrevious = null;
         this.tempNextRightTuple = null;
         this.tempBlocked = null;
     }

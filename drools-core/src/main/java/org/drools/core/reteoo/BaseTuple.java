@@ -30,13 +30,8 @@ public abstract class BaseTuple implements Tuple {
 
     private PropagationContext propagationContext;
 
-    protected Tuple stagedNext;
-    protected Tuple stagedPrevious;
-
     private Tuple   previous;
     private Tuple   next;
-
-    protected Sink  sink;
 
     protected Tuple handlePrevious;
     protected Tuple handleNext;
@@ -65,8 +60,6 @@ public abstract class BaseTuple implements Tuple {
 
     public void clearStaged() {
         this.stagedType = LeftTuple.NONE;
-        this.stagedNext = null;
-        this.stagedPrevious = null;
     }
 
     public InternalFactHandle getFactHandle() {
@@ -93,14 +86,6 @@ public abstract class BaseTuple implements Tuple {
 
     public void setPropagationContext(PropagationContext propagationContext) {
         this.propagationContext = propagationContext;
-    }
-
-    public void setStagedNext(Tuple stageNext) {
-        this.stagedNext = stageNext;
-    }
-
-    public void setStagedPrevious( Tuple stagedPrevious ) {
-        this.stagedPrevious = stagedPrevious;
     }
 
     public Tuple getPrevious() {

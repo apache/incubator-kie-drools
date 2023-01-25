@@ -36,7 +36,7 @@ public class ConditionalBranchEvaluator implements Externalizable {
 
     public ConditionalBranchEvaluator( EvalCondition condition,
                                        RuleBasePartitionId partitionId,
-                                       LeftTupleSink tupleSink,
+                                       LeftTupleSinkNode tupleSink,
                                        boolean breaking,
                                        ConditionalBranchEvaluator elseBranchEvaluator ) {
         this.condition = condition;
@@ -52,7 +52,7 @@ public class ConditionalBranchEvaluator implements Externalizable {
         public ConditionalExecution() { }
 
         private ConditionalExecution( RuleBasePartitionId partitionId,
-                                      LeftTupleSink tupleSink,
+                                      LeftTupleSinkNode tupleSink,
                                       boolean breaking ) {
             this.sink = new SingleLeftTupleSinkAdapter( partitionId, tupleSink );
             this.breaking = breaking;

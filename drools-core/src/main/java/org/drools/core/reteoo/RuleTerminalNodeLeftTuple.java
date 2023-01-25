@@ -31,6 +31,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
@@ -51,7 +52,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             activationFactHandle;
-    private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
     protected         RuleAgendaItem                                 ruleAgendaItem;
@@ -66,7 +66,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
     // Constructors
     // ------------------------------------------------------------
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final Sink sink,
+                                     final LeftTupleSink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(factHandle,
               sink,
@@ -75,12 +75,12 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         super(factHandle, leftTuple, sink);
     }
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final Sink sink,
+                                     final LeftTupleSink sink,
                                      final PropagationContext pctx,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -91,7 +91,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         super(leftTuple,
               rightTuple,
               sink);
@@ -101,7 +101,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
                                      final RightTuple rightTuple,
                                      final LeftTuple currentLeftChild,
                                      final LeftTuple currentRightChild,
-                                     final Sink sink,
+                                     final LeftTupleSink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,
@@ -276,14 +276,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         return Collections.unmodifiableList(declarations);
     }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public void cancel() {
-        this.canceled = true;
-    }
-
     public boolean isMatched() {
         return matched;
     }
@@ -339,5 +331,10 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), ruleAgendaItem.getRule().getName());
+    }
+
+    @Override
+    public Activation asActivation() {
+        return this;
     }
 }

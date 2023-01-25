@@ -27,18 +27,18 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.drl.parser.DrlParser;
-import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.ObjectType;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -47,6 +47,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ModifyPreviousTuples;
@@ -56,18 +57,17 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.base.ObjectType;
 import org.drools.core.rule.accessor.PatternExtractor;
-import org.drools.core.common.PropagationContext;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.RuleDescr;
+import org.drools.drl.parser.DrlParser;
+import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
@@ -506,20 +506,20 @@ public class MVELConsequenceBuilderTest {
         }    
         
         public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         Sink sink,
+                                         LeftTupleSink sink,
                                          PropagationContext pctx, boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple,sink, pctx, leftTupleMemoryEnabled );
         }
 
         public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                          final LeftTuple leftTuple,
-                                         final Sink sink) {
+                                         final LeftTupleSink sink) {
             return new LeftTupleImpl(factHandle,leftTuple, sink );
         }
 
         public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
-                                         Sink sink) {
+                                         LeftTupleSink sink) {
             return new LeftTupleImpl(leftTuple, rightTuple, sink );
         }   
         
@@ -527,7 +527,7 @@ public class MVELConsequenceBuilderTest {
                                          RightTuple rightTuple,
                                          LeftTuple currentLeftChild,
                                          LeftTuple currentRightChild,
-                                         Sink sink,
+                                         LeftTupleSink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }

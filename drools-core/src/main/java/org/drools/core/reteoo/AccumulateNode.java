@@ -439,12 +439,12 @@ public class AccumulateNode extends BetaNode {
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return new FromNodeLeftTuple(factHandle, leftTuple, sink);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
@@ -452,7 +452,7 @@ public class AccumulateNode extends BetaNode {
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, sink);
     }
 
@@ -460,7 +460,7 @@ public class AccumulateNode extends BetaNode {
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }

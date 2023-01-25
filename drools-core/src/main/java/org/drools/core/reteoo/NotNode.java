@@ -88,19 +88,19 @@ public class NotNode extends BetaNode {
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return new NotNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
@@ -108,7 +108,7 @@ public class NotNode extends BetaNode {
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }       

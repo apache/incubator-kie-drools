@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.kie.api.definition.rule.Rule;
 
@@ -47,4 +49,17 @@ public interface NetworkNode {
     boolean hasAssociatedTerminal(NetworkNode terminalNode);
 
     NetworkNode[] getSinks();
+
+    default TerminalNode asTerminalNode() {
+        throw new UnsupportedOperationException();
+    }
+
+    default QueryTerminalNode asQueryTerminalNode() {
+        throw new UnsupportedOperationException();
+    }
+
+    default LeftTupleSource asLeftTupleSource() {
+        throw new UnsupportedOperationException();
+    }
+
 }

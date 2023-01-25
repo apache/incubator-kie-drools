@@ -24,7 +24,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.RuleBasePartitionId;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
-    protected LeftTupleSink sink;
+    protected LeftTupleSinkNode sink;
     
     private LeftTupleSink[] sinkArray;
 
@@ -34,7 +34,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
 
     public SingleLeftTupleSinkAdapter(final RuleBasePartitionId partitionId,
-                                      final LeftTupleSink sink) {
+                                      final LeftTupleSinkNode sink) {
         super( partitionId );
         this.sink = sink;
         this.sinkArray = new LeftTupleSink[]{this.sink};
@@ -52,11 +52,11 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
-        return ( LeftTupleSinkNode ) sink;
+        return sink;
     }
 
     public LeftTupleSinkNode getLastLeftTupleSink() {
-        return ( LeftTupleSinkNode ) sink;
+        return sink;
     }
 
     public int size() {
@@ -66,7 +66,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        this.sink = (LeftTupleSink) in.readObject();
+        this.sink = (LeftTupleSinkNode) in.readObject();
         this.sinkArray = new LeftTupleSink[]{this.sink};
     }
 

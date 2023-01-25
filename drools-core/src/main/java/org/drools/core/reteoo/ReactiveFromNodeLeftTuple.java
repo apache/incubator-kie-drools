@@ -41,19 +41,19 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
                                      final RightTuple rightTuple,
                                      final LeftTuple currentLeftChild,
                                      final LeftTuple currentRightChild,
-                                     final Sink sink,
+                                     final LeftTupleSink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
         storeTupleObjects(leftTuple, rightTuple.getFactHandle());
     }
 
 
-    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink ) {
+    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, LeftTuple leftTuple, LeftTupleSink sink ) {
         super(factHandle, leftTuple, sink);
         storeTupleObjects(leftTuple, factHandle);
     }
 
-    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled ) {
+    public ReactiveFromNodeLeftTuple( InternalFactHandle factHandle, LeftTupleSink sink, boolean leftTupleMemoryEnabled ) {
         super( factHandle, sink, leftTupleMemoryEnabled );
         objects = new Object[] { factHandle.getObject() };
         hash = Arrays.hashCode( objects );

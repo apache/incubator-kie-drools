@@ -15,8 +15,8 @@
 
 package org.drools.core.phreak;
 
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -40,9 +40,9 @@ public class PhreakEvalNode {
                        EvalMemory em,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -63,8 +63,8 @@ public class PhreakEvalNode {
                               EvalMemory em,
                               LeftTupleSink sink,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -88,9 +88,9 @@ public class PhreakEvalNode {
                               EvalMemory em,
                               LeftTupleSink sink,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -130,9 +130,9 @@ public class PhreakEvalNode {
         }
     }
 
-    public void doLeftDeletes(TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+    public void doLeftDeletes(LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 

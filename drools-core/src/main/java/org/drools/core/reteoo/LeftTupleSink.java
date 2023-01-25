@@ -38,22 +38,22 @@ public interface LeftTupleSink extends LeftTupleNode, Sink {
 
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                               final LeftTuple leftTuple,
-                              final Sink sink);
+                              final LeftTupleSink sink);
 
     LeftTuple createLeftTuple(LeftTuple leftTuple,
-                              Sink sink,
+                              LeftTupleSink sink,
                               PropagationContext pctx,
                               boolean leftTupleMemoryEnabled);
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
-                              Sink sink);
+                              LeftTupleSink sink);
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
                               LeftTuple currentLeftChild,
                               LeftTuple currentRightChild,
-                              Sink sink,
+                              LeftTupleSink sink,
                               boolean leftTupleMemoryEnabled);
 
     ObjectTypeNode.Id getLeftInputOtnId();

@@ -22,6 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleList;
 
@@ -121,7 +122,7 @@ public interface Tuple extends Serializable, Entry<Tuple> {
         return getStagedType() == DELETE || getStagedType() == NORMALIZED_DELETE;
     }
 
-    Tuple getStagedPrevious();
+    <T extends Tuple> T getStagedPrevious();
     void setStagedPrevious( Tuple stagePrevious );
 
     <T extends Tuple> T getStagedNext();
@@ -136,6 +137,11 @@ public interface Tuple extends Serializable, Entry<Tuple> {
 
     PropagationContext getPropagationContext();
     void setPropagationContext( PropagationContext propagationContext );
+
+    @Override
+    Tuple getNext();
+    @Override
+    void setNext(Tuple next);
 
     Tuple getPrevious();
     void setPrevious( Tuple previous );
@@ -179,5 +185,9 @@ public interface Tuple extends Serializable, Entry<Tuple> {
             }
         }
         return mostRecentContext;
+    }
+
+    default Activation asActivation() {
+        throw new UnsupportedOperationException();
     }
 }

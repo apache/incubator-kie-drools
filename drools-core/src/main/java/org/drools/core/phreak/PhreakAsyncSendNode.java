@@ -20,8 +20,9 @@ import java.util.concurrent.Executor;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.AsyncMessage;
 import org.drools.core.reteoo.AsyncMessagesCoordinator;
 import org.drools.core.reteoo.AsyncSendNode;
@@ -29,9 +30,8 @@ import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
 public class PhreakAsyncSendNode {
@@ -43,7 +43,7 @@ public class PhreakAsyncSendNode {
     public void doNode(AsyncSendNode node,
                        AsyncSendMemory memory,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples) {
+                       LeftTupleSets srcLeftTuples) {
 
         if (srcLeftTuples.getInsertFirst() != null) {
             doLeftInserts(node, memory, reteEvaluator, srcLeftTuples);
@@ -55,7 +55,7 @@ public class PhreakAsyncSendNode {
     public void doLeftInserts(AsyncSendNode node,
                               AsyncSendMemory memory,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples) {
+                              LeftTupleSets srcLeftTuples) {
 
         BetaMemory bm = memory.getBetaMemory();
         ContextEntry[] context = bm.getContext();

@@ -21,12 +21,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.AsyncReceiveNode.AsyncReceiveMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
@@ -49,7 +49,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentPrototype   proto;
     private          List<Memory>       nodeMemories = new ArrayList<>();
     private          List<PathMemory>   pathMemories = new ArrayList<>(1);;
-    private          TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
+    private          LeftTupleSets  stagedLeftTuples = new LeftTupleSetsImpl();
     private          long               linkedNodeMask;
     private          long               dirtyNodeMask;
     private          long               allLinkedMaskTest;
@@ -350,7 +350,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.pos = pos;
     }
 
-    public TupleSets<LeftTuple> getStagedLeftTuples() {
+    public LeftTupleSets getStagedLeftTuples() {
         return stagedLeftTuples;
     }
 

@@ -361,12 +361,12 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return new FromNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, sink, pctx,
                                      leftTupleMemoryEnabled );
@@ -374,7 +374,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
@@ -382,7 +382,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }

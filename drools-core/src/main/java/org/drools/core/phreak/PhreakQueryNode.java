@@ -17,24 +17,24 @@ package org.drools.core.phreak;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.common.PropagationContext;
 
 public class PhreakQueryNode {
     public void doNode(QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qmem, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -55,7 +55,7 @@ public class PhreakQueryNode {
                               QueryElementNodeMemory qmem,
                               StackEntry stackEntry,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples) {
+                              LeftTupleSets srcLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -82,7 +82,7 @@ public class PhreakQueryNode {
     public void doLeftUpdates(QueryElementNode queryNode,
                               QueryElementNodeMemory qmem,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples) {
+                              LeftTupleSets srcLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -111,9 +111,9 @@ public class PhreakQueryNode {
 
     public void doLeftDeletes(QueryElementNodeMemory qmem,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 

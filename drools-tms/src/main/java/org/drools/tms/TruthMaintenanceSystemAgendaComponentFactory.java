@@ -18,14 +18,14 @@ package org.drools.tms;
 
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItemImpl;
 import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
@@ -38,7 +38,7 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
 
     @Override
     public LeftTuple createTerminalTuple(InternalFactHandle factHandle,
-                                         Sink sink,
+                                         LeftTupleSink sink,
                                          boolean leftTupleMemoryEnabled) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }
@@ -46,13 +46,13 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
     @Override
     public LeftTuple createTerminalTuple(final InternalFactHandle factHandle,
                                          final LeftTuple leftTuple,
-                                         final Sink sink) {
+                                         final LeftTupleSink sink) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     @Override
     public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                         Sink sink,
+                                         LeftTupleSink sink,
                                          PropagationContext pctx,
                                          boolean leftTupleMemoryEnabled) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
@@ -61,7 +61,7 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
     @Override
     public LeftTuple createTerminalTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
-                                         Sink sink) {
+                                         LeftTupleSink sink) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
     }
 
@@ -70,7 +70,7 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
                                          RightTuple rightTuple,
                                          LeftTuple currentLeftChild,
                                          LeftTuple currentRightChild,
-                                         Sink sink,
+                                         LeftTupleSink sink,
                                          boolean leftTupleMemoryEnabled) {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }

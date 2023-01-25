@@ -34,19 +34,19 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public FromNodeLeftTuple(final InternalFactHandle factHandle,
-                             Sink sink,
+                             LeftTupleSink sink,
                              boolean leftTupleMemoryEnabled) {
         super( factHandle, sink, leftTupleMemoryEnabled );
     }
     
     public FromNodeLeftTuple(final InternalFactHandle factHandle,
                              final LeftTuple leftTuple,
-                             final Sink sink) {
+                             final LeftTupleSink sink) {
         super( factHandle, leftTuple, sink );
     }    
 
     public FromNodeLeftTuple(final LeftTuple leftTuple,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super( leftTuple, sink, pctx, leftTupleMemoryEnabled );
@@ -54,7 +54,7 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
     
     public FromNodeLeftTuple(final LeftTuple leftTuple,
                              RightTuple rightTuple,
-                             Sink sink) {
+                             LeftTupleSink sink) {
         super( leftTuple, rightTuple, sink );
     }    
 
@@ -62,7 +62,7 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
                              final RightTuple rightTuple,
                              final LeftTuple currentLeftChild,
                              final LeftTuple currentRightChild,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         super( leftTuple, 
                rightTuple, 

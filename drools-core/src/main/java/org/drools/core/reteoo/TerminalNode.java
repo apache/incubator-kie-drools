@@ -63,4 +63,8 @@ public interface TerminalNode
     void visitLeftTupleNodes(Consumer<LeftTupleNode> func);
 
     int getSubruleIndex();
+
+    default TerminalNode asTerminalNode() {
+        return this;
+    }
 }

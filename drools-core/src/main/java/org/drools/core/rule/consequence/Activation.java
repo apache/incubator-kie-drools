@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
+import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -119,5 +120,9 @@ public interface Activation extends Serializable, Match {
 
     default List<Object> getObjectsDeep() {
         return Collections.emptyList();
+    }
+
+    default AgendaItem asAgendaItem() {
+        throw new UnsupportedOperationException();
     }
 }

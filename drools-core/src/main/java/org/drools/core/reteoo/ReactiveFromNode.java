@@ -19,14 +19,14 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
-import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.rule.accessor.DataProvider;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.util.index.TupleList;
 
 public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemory> {
@@ -60,19 +60,19 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
         private static final long serialVersionUID = 510l;
 
-        private final TupleSets<LeftTuple> stagedLeftTuples;
+        private final LeftTupleSets stagedLeftTuples;
 
         public ReactiveFromMemory(BetaMemory betaMemory,
                                   DataProvider dataProvider) {
             super(betaMemory, dataProvider);
-            stagedLeftTuples = new TupleSetsImpl<>();
+            stagedLeftTuples = new LeftTupleSetsImpl();
         }
 
         public short getNodeType() {
             return NodeTypeEnums.ReactiveFromNode;
         }
 
-        public TupleSets<LeftTuple> getStagedLeftTuples() {
+        public LeftTupleSets getStagedLeftTuples() {
             return stagedLeftTuples;
         }
     }
@@ -84,19 +84,19 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final Sink sink) {
+                                     final LeftTupleSink sink) {
         return new ReactiveFromNodeLeftTuple(factHandle, leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple( LeftTuple leftTuple,
-                                      Sink sink,
+                                      LeftTupleSink sink,
                                       PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
         throw new UnsupportedOperationException();
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     Sink sink) {
+                                     LeftTupleSink sink) {
         throw new UnsupportedOperationException();
     }
 
@@ -105,7 +105,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     Sink sink,
+                                     LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new ReactiveFromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }

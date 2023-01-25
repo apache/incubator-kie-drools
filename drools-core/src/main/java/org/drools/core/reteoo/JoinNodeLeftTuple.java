@@ -31,19 +31,19 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
                              final LeftTuple leftTuple,
-                             final Sink sink) {
+                             final LeftTupleSink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
@@ -51,13 +51,13 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final Sink sink) {
+                             final LeftTupleSink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
              rightTuple,
@@ -71,7 +71,7 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
                              final RightTuple rightTuple,
                              final LeftTuple currentLeftChild,
                              final LeftTuple currentRightChild,
-                             final Sink sink,
+                             final LeftTupleSink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,

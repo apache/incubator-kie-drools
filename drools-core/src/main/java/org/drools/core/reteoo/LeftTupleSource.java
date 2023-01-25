@@ -100,7 +100,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
 
     public abstract LeftTuple createPeer(LeftTuple original);
 
-    public void addTupleSink(final LeftTupleSink tupleSink) {
+    public void addTupleSink(final LeftTupleSinkNode tupleSink) {
         addTupleSink(tupleSink, null);
     }
 
@@ -129,11 +129,11 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    public void addTupleSink(final LeftTupleSink tupleSink, final BuildContext context) {
+    public void addTupleSink(final LeftTupleSinkNode tupleSink, final BuildContext context) {
         this.sink = addTupleSink(this.sink, tupleSink, context);
     }
 
-    protected LeftTupleSinkPropagator addTupleSink(final LeftTupleSinkPropagator sinkPropagator, final LeftTupleSink tupleSink, final BuildContext context) {
+    protected LeftTupleSinkPropagator addTupleSink(final LeftTupleSinkPropagator sinkPropagator, final LeftTupleSinkNode tupleSink, final BuildContext context) {
         if ( sinkPropagator instanceof EmptyLeftTupleSinkAdapter ) {
             // otherwise, we use the lighter synchronous propagator
             return new SingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
@@ -167,7 +167,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
             final CompositeLeftTupleSinkAdapter sinkAdapter = (CompositeLeftTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
+                this.sink = new SingleLeftTupleSinkAdapter( this.getPartitionId(), (LeftTupleSinkNode) sinkAdapter.getSinks()[0] );
             }
         }
     }
@@ -323,6 +323,11 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     public ObjectType getObjectType() {
         ObjectTypeNode objectTypeNode = getObjectTypeNode();
         return objectTypeNode != null ? objectTypeNode.getObjectType() : null;
+    }
+
+    @Override
+    public LeftTupleSource asLeftTupleSource() {
+        return this;
     }
 
     public abstract boolean isLeftTupleMemoryEnabled();

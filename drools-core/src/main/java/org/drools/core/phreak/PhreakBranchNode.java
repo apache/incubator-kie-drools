@@ -16,7 +16,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.TupleSets;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.ConditionalBranchNode;
@@ -33,9 +33,9 @@ public class PhreakBranchNode {
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples,
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples,
                        RuleExecutor executor) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
@@ -57,8 +57,8 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
 
@@ -97,9 +97,9 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples,
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
@@ -184,9 +184,9 @@ public class PhreakBranchNode {
 
     public void doLeftDeletes(LeftTupleSink sink,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples,
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples,
                               RuleExecutor executor) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();

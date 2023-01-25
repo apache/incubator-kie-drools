@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.TupleSets;
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
@@ -38,7 +38,7 @@ import org.drools.core.util.LinkedList;
 public class PhreakQueryTerminalNode {
     public void doNode(QueryTerminalNode qtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
+                       LeftTupleSets srcLeftTuples,
                        LinkedList<StackEntry> stack) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qtnNode, activationsManager, srcLeftTuples, stack);
@@ -57,7 +57,7 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
@@ -85,7 +85,7 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
@@ -113,7 +113,7 @@ public class PhreakQueryTerminalNode {
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {

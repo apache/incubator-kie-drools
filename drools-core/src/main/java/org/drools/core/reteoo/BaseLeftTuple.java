@@ -49,6 +49,11 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     private LeftTuple          peer;
 
+    protected LeftTuple stagedNext;
+    protected LeftTuple stagedPrevious;
+
+    protected LeftTupleSink  sink;
+
     private short              stagedTypeForQueries;
 
     public BaseLeftTuple() {
@@ -59,7 +64,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public BaseLeftTuple(InternalFactHandle factHandle,
-                         Sink sink,
+                         LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         setFactHandle( factHandle );
         this.sink = sink;
@@ -70,7 +75,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     public BaseLeftTuple(InternalFactHandle factHandle,
                          LeftTuple leftTuple,
-                         Sink sink) {
+                         LeftTupleSink sink) {
         setFactHandle( factHandle );
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
@@ -79,7 +84,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     public BaseLeftTuple(LeftTuple leftTuple,
-                         Sink sink,
+                         LeftTupleSink sink,
                          PropagationContext pctx,
                          boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex() + 1;
@@ -102,7 +107,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     public BaseLeftTuple(LeftTuple leftTuple,
                          RightTuple rightTuple,
-                         Sink sink) {
+                         LeftTupleSink sink) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple.getNextParentWithHandle();
         this.leftParent = leftTuple;
@@ -133,7 +138,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     public BaseLeftTuple(LeftTuple leftTuple,
                          RightTuple rightTuple,
-                         Sink sink,
+                         LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
@@ -147,7 +152,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          RightTuple rightTuple,
                          LeftTuple currentLeftChild,
                          LeftTuple currentRightChild,
-                         Sink sink,
+                         LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         setFactHandle( rightTuple.getFactHandle() );
         this.index = leftTuple.getIndex() + 1;
@@ -342,7 +347,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     @Override
     public LeftTupleSink getTupleSink() {
-        return (LeftTupleSink)sink;
+        return sink;
     }
 
     /* Had to add the set method because sink adapters must override
@@ -559,17 +564,29 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     @Override
     public LeftTuple getStagedNext() {
-        return (LeftTuple) stagedNext;
+        return stagedNext;
     }
 
     @Override
     public LeftTuple getStagedPrevious() {
-        return (LeftTuple) stagedPrevious;
+        return stagedPrevious;
+    }
+
+    @Override
+    public void setStagedNext(Tuple stageNext) {
+        this.stagedNext = (LeftTuple) stageNext;
+    }
+
+    @Override
+    public void setStagedPrevious( Tuple stagedPrevious ) {
+        this.stagedPrevious = (LeftTuple) stagedPrevious;
     }
 
     @Override
     public void clearStaged() {
         super.clearStaged();
+        this.stagedNext = null;
+        this.stagedPrevious = null;
         if (getContextObject() == Boolean.TRUE) {
             setContextObject( null );
         }

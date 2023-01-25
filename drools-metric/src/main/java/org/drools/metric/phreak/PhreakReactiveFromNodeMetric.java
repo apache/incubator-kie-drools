@@ -15,10 +15,9 @@
 
 package org.drools.metric.phreak;
 
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakReactiveFromNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNode.ReactiveFromMemory;
@@ -31,9 +30,9 @@ public class PhreakReactiveFromNodeMetric extends PhreakReactiveFromNode {
                        ReactiveFromMemory fm,
                        LeftTupleSink sink,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(fromNode);

@@ -25,11 +25,11 @@ import org.kie.api.internal.utils.KieService;
 public interface AgendaComponentFactory extends KieService {
 
     LeftTuple createTerminalTuple();
-    LeftTuple createTerminalTuple(InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled);
-    LeftTuple createTerminalTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, Sink sink);
-    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled);
+    LeftTuple createTerminalTuple(InternalFactHandle factHandle, LeftTupleSink sink, boolean leftTupleMemoryEnabled);
+    LeftTuple createTerminalTuple(InternalFactHandle factHandle, LeftTuple leftTuple, LeftTupleSink sink);
+    LeftTuple createTerminalTuple(LeftTuple leftTuple, LeftTupleSink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled);
+    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTupleSink sink);
+    LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, LeftTupleSink sink, boolean leftTupleMemoryEnabled);
 
     RuleAgendaItem createAgendaItem(long activationNumber, Tuple tuple, int salience, PropagationContext context, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup);
 
@@ -55,7 +55,7 @@ public interface AgendaComponentFactory extends KieService {
 
         @Override
         public LeftTuple createTerminalTuple(InternalFactHandle factHandle,
-                                             Sink sink,
+                                             LeftTupleSink sink,
                                              boolean leftTupleMemoryEnabled) {
             return new RuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
         }
@@ -63,13 +63,13 @@ public interface AgendaComponentFactory extends KieService {
         @Override
         public LeftTuple createTerminalTuple(final InternalFactHandle factHandle,
                                              final LeftTuple leftTuple,
-                                             final Sink sink) {
+                                             final LeftTupleSink sink) {
             return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
         }
 
         @Override
         public LeftTuple createTerminalTuple(LeftTuple leftTuple,
-                                             Sink sink,
+                                             LeftTupleSink sink,
                                              PropagationContext pctx,
                                              boolean leftTupleMemoryEnabled) {
             return new RuleTerminalNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
@@ -78,7 +78,7 @@ public interface AgendaComponentFactory extends KieService {
         @Override
         public LeftTuple createTerminalTuple(LeftTuple leftTuple,
                                              RightTuple rightTuple,
-                                             Sink sink) {
+                                             LeftTupleSink sink) {
             return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
         }
 
@@ -87,7 +87,7 @@ public interface AgendaComponentFactory extends KieService {
                                              RightTuple rightTuple,
                                              LeftTuple currentLeftChild,
                                              LeftTuple currentRightChild,
-                                             Sink sink,
+                                             LeftTupleSink sink,
                                              boolean leftTupleMemoryEnabled) {
             return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
         }

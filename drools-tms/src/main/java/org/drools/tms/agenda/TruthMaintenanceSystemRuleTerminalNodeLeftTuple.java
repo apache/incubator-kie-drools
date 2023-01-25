@@ -18,11 +18,11 @@ package org.drools.tms.agenda;
 
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.reteoo.Sink;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.SimpleMode;
@@ -38,23 +38,23 @@ public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAsse
     public TruthMaintenanceSystemRuleTerminalNodeLeftTuple() {
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, Sink sink, boolean leftTupleMemoryEnabled) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, LeftTupleSink sink, boolean leftTupleMemoryEnabled) {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, LeftTuple leftTuple, Sink sink) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(InternalFactHandle factHandle, LeftTuple leftTuple, LeftTupleSink sink) {
         super(factHandle, leftTuple, sink);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, Sink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, LeftTupleSink sink, PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, Sink sink) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTupleSink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
-    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled) {
+    public TruthMaintenanceSystemRuleTerminalNodeLeftTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, LeftTupleSink sink, boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
 

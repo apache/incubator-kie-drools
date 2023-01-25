@@ -19,17 +19,17 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.rule.accessor.Salience;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.accessor.Salience;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.MatchCancelledCause;
 
@@ -43,7 +43,7 @@ import org.kie.api.event.rule.MatchCancelledCause;
 public class PhreakRuleTerminalNode {
     public void doNode(TerminalNode rtnNode,
                        ActivationsManager activationsManager,
-                       TupleSets<LeftTuple> srcLeftTuples,
+                       LeftTupleSets srcLeftTuples,
                        RuleExecutor executor) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(activationsManager, srcLeftTuples, executor);
@@ -62,7 +62,7 @@ public class PhreakRuleTerminalNode {
 
     public void doLeftInserts(TerminalNode rtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
 
@@ -150,7 +150,7 @@ public class PhreakRuleTerminalNode {
 
     public void doLeftUpdates(TerminalNode rtnNode,
                               ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
         if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
@@ -239,7 +239,7 @@ public class PhreakRuleTerminalNode {
     }
 
     public void doLeftDeletes(ActivationsManager activationsManager,
-                              TupleSets<LeftTuple> srcLeftTuples,
+                              LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {

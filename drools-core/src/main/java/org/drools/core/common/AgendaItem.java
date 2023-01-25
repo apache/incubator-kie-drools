@@ -39,10 +39,6 @@ public interface AgendaItem extends Activation {
 
     String toExternalForm();
 
-    boolean isCanceled();
-
-    void cancel();
-
     List<FactHandle> getFactHandles();
 
     Runnable getCallback();
@@ -85,5 +81,10 @@ public interface AgendaItem extends Activation {
             }
         }
         return Collections.unmodifiableList(list);
+    }
+
+    @Override
+    default AgendaItem asAgendaItem() {
+        return this;
     }
 }

@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleNode;
@@ -57,8 +57,8 @@ public class TupleEvaluationUtil {
         return forceFlush ? sm.getPathMemories().get(0) : sm.getFirstDataDrivenPathMemory();
     }
 
-    public static TupleSets<LeftTuple> createLeftTupleTupleSets(LeftTuple leftTuple, short stagedType) {
-        TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<>();
+    public static LeftTupleSets createLeftTupleTupleSets(LeftTuple leftTuple, short stagedType) {
+        LeftTupleSets leftTupleSets = new LeftTupleSetsImpl();
         if (leftTuple != null) {
             switch (stagedType) {
                 case Tuple.INSERT:
@@ -102,11 +102,11 @@ public class TupleEvaluationUtil {
     public static void forceFlushPath(ReteEvaluator reteEvaluator, PathMemory outPmem) {
         SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
         if (outSmem != null) {
-            forceFlushLeftTuple(outPmem, outSmem, reteEvaluator, new TupleSetsImpl<>());
+            forceFlushLeftTuple(outPmem, outSmem, reteEvaluator, new LeftTupleSetsImpl());
         }
     }
 
-    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, ReteEvaluator reteEvaluator, TupleSets<LeftTuple> leftTupleSets) {
+    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, ReteEvaluator reteEvaluator, LeftTupleSets leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         LeftTupleNode node;

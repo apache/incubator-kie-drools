@@ -15,12 +15,11 @@
 
 package org.drools.metric.phreak;
 
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakAsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.AsyncSendNode.AsyncSendMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.metric.util.MetricLogUtils;
 
 public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
@@ -29,7 +28,7 @@ public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
     public void doNode(AsyncSendNode node,
                        AsyncSendMemory memory,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples) {
+                       LeftTupleSets srcLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(node);

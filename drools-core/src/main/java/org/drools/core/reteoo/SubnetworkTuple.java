@@ -46,19 +46,19 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     // Constructors
     // ------------------------------------------------------------
     public SubnetworkTuple(final InternalFactHandle factHandle,
-                           final Sink sink,
+                           final LeftTupleSink sink,
                            final boolean leftTupleMemoryEnabled) {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public SubnetworkTuple(final InternalFactHandle factHandle,
                            final LeftTuple leftTuple,
-                           final Sink sink) {
+                           final LeftTupleSink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public SubnetworkTuple(final LeftTuple leftTuple,
-                           final Sink sink,
+                           final LeftTupleSink sink,
                            final PropagationContext pctx,
                            final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
@@ -66,7 +66,7 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
     public SubnetworkTuple(final LeftTuple leftTuple,
                            final RightTuple rightTuple,
-                           final Sink sink) {
+                           final LeftTupleSink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
@@ -74,7 +74,7 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
                            final RightTuple rightTuple,
                            final LeftTuple currentLeftChild,
                            final LeftTuple currentRightChild,
-                           final Sink sink,
+                           final LeftTupleSink sink,
                            final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,

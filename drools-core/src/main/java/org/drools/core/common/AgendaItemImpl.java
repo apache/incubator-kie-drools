@@ -67,7 +67,6 @@ public class AgendaItemImpl implements AgendaItem {
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             factHandle;
-    private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
 
@@ -316,16 +315,6 @@ public class AgendaItemImpl implements AgendaItem {
             declarations.add(decl.getIdentifier());
         }
         return Collections.unmodifiableList(declarations);
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    @Override
-    public void cancel() {
-        this.canceled = true;
     }
 
     @Override

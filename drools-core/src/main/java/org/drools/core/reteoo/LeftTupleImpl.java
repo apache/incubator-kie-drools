@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Arrays;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
-
-import java.util.Arrays;
 
 public class LeftTupleImpl extends BaseLeftTuple {
     private static final long serialVersionUID = 540l;
@@ -36,7 +36,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public LeftTupleImpl(final InternalFactHandle factHandle,
-                         Sink sink,
+                         LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         super(factHandle,
               sink,
@@ -45,12 +45,12 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final InternalFactHandle factHandle,
                          final LeftTuple leftTuple,
-                         final Sink sink) {
+                         final LeftTupleSink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public LeftTupleImpl(final LeftTuple leftTuple,
-                         final Sink sink,
+                         final LeftTupleSink sink,
                          final PropagationContext pctx,
                          final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -61,7 +61,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final LeftTuple leftTuple,
                          RightTuple rightTuple,
-                         Sink sink) {
+                         LeftTupleSink sink) {
         super(leftTuple,
               rightTuple,
               sink);
@@ -69,7 +69,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final LeftTuple leftTuple,
                          final RightTuple rightTuple,
-                         final Sink sink,
+                         final LeftTupleSink sink,
                          final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
              rightTuple,
@@ -83,7 +83,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
                          final RightTuple rightTuple,
                          final LeftTuple currentLeftChild,
                          final LeftTuple currentRightChild,
-                         final Sink sink,
+                         final LeftTupleSink sink,
                          final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,

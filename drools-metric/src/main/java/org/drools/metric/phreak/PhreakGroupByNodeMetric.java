@@ -14,11 +14,10 @@
 
 package org.drools.metric.phreak;
 
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.TupleSets;
 import org.drools.core.phreak.PhreakGroupByNode;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.metric.util.MetricLogUtils;
 
@@ -29,9 +28,9 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
                         LeftTupleSink sink,
                         AccumulateNode.AccumulateMemory am,
                         ReteEvaluator reteEvaluator,
-                        TupleSets<LeftTuple> srcLeftTuples,
-                        TupleSets<LeftTuple> trgLeftTuples,
-                        TupleSets<LeftTuple> stagedLeftTuples) {
+                        LeftTupleSets srcLeftTuples,
+                        LeftTupleSets trgLeftTuples,
+                        LeftTupleSets stagedLeftTuples) {
 
         try {
             MetricLogUtils.getInstance().startMetrics(accNode);

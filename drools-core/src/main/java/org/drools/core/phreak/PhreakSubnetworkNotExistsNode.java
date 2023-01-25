@@ -1,5 +1,6 @@
 package org.drools.core.phreak;
 
+import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -8,8 +9,8 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
-import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.index.TupleList;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
@@ -18,9 +19,9 @@ public class PhreakSubnetworkNotExistsNode {
     public static void doSubNetworkNode(BetaNode node,
                                         LeftTupleSink sink,
                                         BetaMemory bm,
-                                        TupleSets<LeftTuple> srcLeftTuples,
-                                        TupleSets<LeftTuple> trgLeftTuples,
-                                        TupleSets<LeftTuple> stagedLeftTuples) {
+                                        LeftTupleSets srcLeftTuples,
+                                        LeftTupleSets trgLeftTuples,
+                                        LeftTupleSets stagedLeftTuples) {
 
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
@@ -43,7 +44,7 @@ public class PhreakSubnetworkNotExistsNode {
         srcLeftTuples.resetAll();
     }
 
-    private static void updateLeft(TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleMemory ltm) {
+    private static void updateLeft(LeftTupleSets srcLeftTuples, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, TupleMemory ltm) {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -62,7 +63,7 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void deleteRight(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples) {
+    private static void deleteRight(BetaNode node, LeftTupleSink sink, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, TupleSets<RightTuple> srcRightTuples) {
         if (srcRightTuples.getDeleteFirst() != null) {
             // must come last, to avoid staging something for propagation that is then unstaged
             for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
@@ -100,7 +101,7 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void insertLeft(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleMemory ltm, boolean tupleMemoryEnabled) {
+    private static void insertLeft(BetaNode node, LeftTupleSink sink, LeftTupleSets srcLeftTuples, LeftTupleSets trgLeftTuples, TupleMemory ltm, boolean tupleMemoryEnabled) {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -124,7 +125,7 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void insertRight(BetaNode node, LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleSets<RightTuple> srcRightTuples, boolean tupleMemoryEnabled) {
+    private static void insertRight(BetaNode node, LeftTupleSink sink, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, TupleSets<RightTuple> srcRightTuples, boolean tupleMemoryEnabled) {
         if (srcRightTuples.getInsertFirst() != null) {
             // this must come before left insert, so 'not' knows if there are matches or not before creating the child lt
             for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
@@ -161,7 +162,7 @@ public class PhreakSubnetworkNotExistsNode {
         }
     }
 
-    private static void deleteLeft(TupleSets<LeftTuple> srcLeftTuples, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples, TupleMemory ltm) {
+    private static void deleteLeft(LeftTupleSets srcLeftTuples, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, TupleMemory ltm) {
         if (srcLeftTuples.getDeleteFirst() != null) {
             for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();

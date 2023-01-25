@@ -98,7 +98,8 @@ public class RuleExecutor {
                 if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
                     directFirings--;
                 } else {
-                    innerFireActivation( reteEvaluator, activationsManager, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                    Activation activation = tuple.asActivation();
+                    innerFireActivation( reteEvaluator, activationsManager, activation, activation.getConsequence() );
                 }
                 removeLeftTuple( tuple );
             }
@@ -285,7 +286,7 @@ public class RuleExecutor {
     }
 
     public void addLeftTuple(Tuple tuple) {
-        ((AgendaItem) tuple).setQueued(true);
+        tuple.asActivation().setQueued(true);
         this.tupleList.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);

@@ -16,6 +16,8 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
@@ -25,7 +27,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
@@ -35,9 +36,9 @@ public class PhreakExistsNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        ReteEvaluator reteEvaluator,
-                       TupleSets<LeftTuple> srcLeftTuples,
-                       TupleSets<LeftTuple> trgLeftTuples,
-                       TupleSets<LeftTuple> stagedLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
         if (!existsNode.isRightInputIsRiaNode()) {
             doNormalNode(existsNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
@@ -50,9 +51,9 @@ public class PhreakExistsNode {
                              LeftTupleSink sink,
                              BetaMemory bm,
                              ReteEvaluator reteEvaluator,
-                             TupleSets<LeftTuple> srcLeftTuples,
-                             TupleSets<LeftTuple> trgLeftTuples,
-                             TupleSets<LeftTuple> stagedLeftTuples) {
+                             LeftTupleSets srcLeftTuples,
+                             LeftTupleSets trgLeftTuples,
+                             LeftTupleSets stagedLeftTuples) {
 
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
@@ -104,8 +105,8 @@ public class PhreakExistsNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -141,7 +142,7 @@ public class PhreakExistsNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples) {
+                               LeftTupleSets trgLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -192,9 +193,9 @@ public class PhreakExistsNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               ReteEvaluator reteEvaluator,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -292,8 +293,8 @@ public class PhreakExistsNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples,
-                               TupleSets<LeftTuple> stagedLeftTuples) {
+                               LeftTupleSets trgLeftTuples,
+                               LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -411,9 +412,9 @@ public class PhreakExistsNode {
     }
 
     public void doLeftDeletes(BetaMemory bm,
-                              TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples,
-                              TupleSets<LeftTuple> stagedLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         TupleMemory ltm = bm.getLeftTupleMemory();
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
@@ -441,8 +442,8 @@ public class PhreakExistsNode {
                                BetaMemory bm,
                                ReteEvaluator reteEvaluator,
                                TupleSets<RightTuple> srcRightTuples,
-                               TupleSets<LeftTuple> trgLeftTuples,
-                               TupleSets<LeftTuple> stagedLeftTuples) {
+                               LeftTupleSets trgLeftTuples,
+                               LeftTupleSets stagedLeftTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
         TupleMemory ltm = bm.getLeftTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
@@ -504,7 +505,7 @@ public class PhreakExistsNode {
         }
     }
 
-    private static void insertChildLeftTuple( LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
+    private static void insertChildLeftTuple( LeftTupleSink sink, LeftTupleSets trgLeftTuples, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
         if (!leftTuple.isExpired()) {
             trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple, sink, pctx, useLeftMemory ) );
         }
