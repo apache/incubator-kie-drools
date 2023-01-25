@@ -16,12 +16,13 @@
 
 package org.drools.kiesession.factory;
 
+import java.io.Serializable;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.PropagationContextFactory;
@@ -41,14 +42,10 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.KieSessionsPoolImpl;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
-import org.drools.reliability.ReliabilityService;
-import org.drools.reliability.ReliableObjectStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.KieSessionsPool;
 import org.kie.api.runtime.StatelessKieSession;
-
-import java.io.Serializable;
 
 public class RuntimeComponentFactoryImpl implements Serializable, RuntimeComponentFactory {
 
@@ -59,8 +56,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
     private final WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
     private final AgendaFactory agendaFactory = DefaultAgendaFactory.getInstance();
     private final AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
-    //
-    public static final ReliabilityService reliabilityService = new ReliabilityService();
 
     public FactHandleFactory getFactHandleFactoryService() {
         return handleFactory;
@@ -84,10 +79,6 @@ public class RuntimeComponentFactoryImpl implements Serializable, RuntimeCompone
 
     public TraitFactory getTraitFactory(RuleBase knowledgeBase) {
         return null;
-    }
-
-    public ObjectStore getObjectStoreFactory() {
-        return new ReliableObjectStore(this.reliabilityService.getCache());
     }
 
     public final KnowledgeHelper createKnowledgeHelper(ReteEvaluator reteEvaluator) {
