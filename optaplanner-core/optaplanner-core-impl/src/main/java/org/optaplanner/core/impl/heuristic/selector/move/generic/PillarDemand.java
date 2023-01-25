@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
-public class PillarDemand<Solution_> implements Demand<MemoizingSupply<List<List<Object>>>> {
+public final class PillarDemand<Solution_> implements Demand<MemoizingSupply<List<List<Object>>>> {
 
     private final EntitySelector<Solution_> entitySelector;
     private final List<GenuineVariableDescriptor<Solution_>> variableDescriptors;

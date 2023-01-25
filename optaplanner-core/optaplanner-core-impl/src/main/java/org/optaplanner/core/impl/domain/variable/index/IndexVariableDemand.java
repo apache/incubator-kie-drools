@@ -1,17 +1,14 @@
 package org.optaplanner.core.impl.domain.variable.index;
 
-import java.util.Objects;
-
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
+import org.optaplanner.core.impl.domain.variable.supply.AbstractVariableDescriptorBasedDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
-public class IndexVariableDemand<Solution_> implements Demand<IndexVariableSupply> {
-
-    protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
+public final class IndexVariableDemand<Solution_>
+        extends AbstractVariableDescriptorBasedDemand<Solution_, IndexVariableSupply> {
 
     public IndexVariableDemand(ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
-        this.sourceVariableDescriptor = sourceVariableDescriptor;
+        super(sourceVariableDescriptor);
     }
 
     // ************************************************************************
@@ -20,33 +17,7 @@ public class IndexVariableDemand<Solution_> implements Demand<IndexVariableSuppl
 
     @Override
     public IndexVariableSupply createExternalizedSupply(SupplyManager supplyManager) {
-        return new ExternalizedIndexVariableSupply<>(sourceVariableDescriptor);
-    }
-
-    // ************************************************************************
-    // Equals/hashCode method
-    // ************************************************************************
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof IndexVariableDemand)) {
-            return false;
-        }
-        IndexVariableDemand<Solution_> other = (IndexVariableDemand<Solution_>) o;
-        return sourceVariableDescriptor.equals(other.sourceVariableDescriptor);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(IndexVariableDemand.class.getName(), sourceVariableDescriptor);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" + sourceVariableDescriptor.getSimpleEntityAndVariableName() + ")";
+        return new ExternalizedIndexVariableSupply<>((ListVariableDescriptor<Solution_>) variableDescriptor);
     }
 
 }

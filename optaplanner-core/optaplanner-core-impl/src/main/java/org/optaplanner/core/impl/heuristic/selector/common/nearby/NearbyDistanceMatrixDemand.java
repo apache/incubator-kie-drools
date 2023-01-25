@@ -19,7 +19,7 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * <p>
  * In cases where the demand represents the same nearby selector (as defined by
  * {@link NearbyDistanceMatrixDemand#equals(Object)})
- * the {@link SupplyManager} ensures that the same {@link NearbyDistanceMatrixSupply} instance is returned
+ * the {@link SupplyManager} ensures that the same supply instance is returned
  * with the pre-computed {@link NearbyDistanceMatrix}.
  *
  * @param <Solution_>
