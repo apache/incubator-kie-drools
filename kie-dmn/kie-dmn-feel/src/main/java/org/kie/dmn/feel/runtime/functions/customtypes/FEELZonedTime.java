@@ -5,6 +5,8 @@ import org.kie.dmn.feel.util.Msg;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -41,12 +43,12 @@ public class FEELZonedTime implements Temporal {
         }
     }
 
-    public static FEELZonedTime of(LocalTime time, ZoneId offset) {
-        return new FEELZonedTime(time, offset);
+    public static FEELZonedTime of(LocalTime time, ZoneId zoneId) {
+        return new FEELZonedTime(time, zoneId);
     }
 
-    public static FEELZonedTime of(int hour, int minute, int second, int nanoOfSecond, ZoneId offset) {
-        return new FEELZonedTime(LocalTime.of(hour, minute, second, nanoOfSecond), offset);
+    public static FEELZonedTime of(int hour, int minute, int second, int nanoOfSecond, ZoneId zoneId) {
+        return new FEELZonedTime(LocalTime.of(hour, minute, second, nanoOfSecond), zoneId);
     }
 
     public static FEELZonedTime now() {
@@ -66,15 +68,6 @@ public class FEELZonedTime implements Temporal {
     @Override
     public boolean isSupported(TemporalUnit unit) {
         return unit.isTimeBased();
-    }
-
-    @Override
-    public Temporal with(TemporalField field, long newValue) {
-        if (isSupported(field)) {
-            return new FEELZonedTime(zonedDateTime.with(field, newValue));
-        } else {
-            throw unsupportedTemporalFieldException();
-        }
     }
 
     @Override
@@ -116,7 +109,30 @@ public class FEELZonedTime implements Temporal {
 
     @Override
     public Temporal with(TemporalAdjuster adjuster) {
-        return new FEELZonedTime(zonedDateTime.with(adjuster));
+        final ZonedDateTime wasZonedTemporalResult;
+        if (adjuster instanceof TemporalAccessor) {
+            wasZonedTemporalResult = withZonedTemporal((TemporalAccessor) adjuster);
+            if (wasZonedTemporalResult == null) {
+                return new FEELZonedTime(zonedDateTime.with(adjuster));
+            } else {
+                return new FEELZonedTime(wasZonedTemporalResult);
+            }
+        } else {
+            return new FEELZonedTime(zonedDateTime.with(adjuster));
+        }
+    }
+
+    @Override
+    public Temporal with(TemporalField field, long newValue) {
+        if (isSupported(field)) {
+            if (field == ChronoField.OFFSET_SECONDS) {
+                return new FEELZonedTime(zonedDateTime.withZoneSameLocal(ZoneOffset.ofTotalSeconds(Math.toIntExact(newValue))));
+            } else {
+                return new FEELZonedTime(zonedDateTime.with(field, newValue));
+            }
+        } else {
+            throw unsupportedTemporalFieldException();
+        }
     }
 
     @Override
@@ -199,11 +215,24 @@ public class FEELZonedTime implements Temporal {
 
     @Override
     public String toString() {
-        // If the zone is ZoneRegion
+        // If the zone is ZoneRegion, don't add offset. This is a specific of time string in FEEL.
         if (!(zonedDateTime.getZone() instanceof ZoneOffset)) {
             return zonedDateTime.toLocalTime().toString() + "@" + zonedDateTime.getZone();
         } else {
             return zonedDateTime.toLocalTime().toString() + zonedDateTime.getOffset().toString();
+        }
+    }
+
+    private ZonedDateTime withZonedTemporal(final TemporalAccessor temporalAccessor) {
+        if (temporalAccessor instanceof OffsetTime
+                || temporalAccessor instanceof OffsetDateTime
+                || temporalAccessor instanceof FEELZonedTime
+                || temporalAccessor instanceof ZonedDateTime) {
+            final ZoneId zoneId = temporalAccessor.query(TemporalQueries.zone());
+            final ZonedDateTime firstAdjustment = zonedDateTime.withZoneSameLocal(zoneId);
+            return firstAdjustment.with(LocalTime.from(temporalAccessor));
+        } else {
+            return null;
         }
     }
 }
