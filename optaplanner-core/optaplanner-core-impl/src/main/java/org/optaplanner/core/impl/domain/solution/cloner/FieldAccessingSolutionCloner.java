@@ -306,6 +306,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
 
         private <C> C cloneCollectionsElementIfNeeded(C original) {
+            if (original == null) {
+                return null;
+            }
             // Because an element which is itself a Collection or Map might hold an entity, we clone it too
             // Also, the List<Long> in Map<String, List<Long>> needs to be cloned
             // if the List<Long> is a shadow, despite that Long never needs to be cloned (because it's immutable).

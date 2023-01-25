@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,12 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
     @DeepPlanningClone
     @ShadowVariable(variableListenerClass = DummyVariableListener.class, sourceVariableName = "value")
     private Map<String, String> shadowVariableMap;
+
+    @DeepPlanningClone
+    private Map<List<String>, String> stringListToStringMap = new HashMap<>();
+
+    @DeepPlanningClone
+    private Map<String, List<String>> stringToStringListMap = new HashMap<>();
 
     public TestdataFieldAnnotatedDeepCloningEntity() {
     }
@@ -70,4 +77,19 @@ public class TestdataFieldAnnotatedDeepCloningEntity extends TestdataObject {
         this.shadowVariableMap = shadowVariableMap;
     }
 
+    public Map<List<String>, String> getStringListToStringMap() {
+        return stringListToStringMap;
+    }
+
+    public void setStringListToStringMap(Map<List<String>, String> stringListToStringMap) {
+        this.stringListToStringMap = stringListToStringMap;
+    }
+
+    public Map<String, List<String>> getStringToStringListMap() {
+        return stringToStringListMap;
+    }
+
+    public void setStringToStringListMap(Map<String, List<String>> stringToStringListMap) {
+        this.stringToStringListMap = stringToStringListMap;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -942,11 +943,23 @@ public abstract class AbstractSolutionClonerTest {
         TestdataFieldAnnotatedDeepCloningEntity a = new TestdataFieldAnnotatedDeepCloningEntity("a", val1);
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
+        Map<List<String>, String> stringListToStringMap = new LinkedHashMap<>();
+        stringListToStringMap.put(null, "a");
+        stringListToStringMap.put(List.of("b"), null);
+        stringListToStringMap.put(Arrays.asList("c", null), null);
+        a.setStringListToStringMap(stringListToStringMap);
+
         TestdataFieldAnnotatedDeepCloningEntity b = new TestdataFieldAnnotatedDeepCloningEntity("b", val1);
         Map<String, String> bShadowVariableMap = new HashMap<>();
         bShadowVariableMap.put("shadow key b1", "shadow value b1");
         bShadowVariableMap.put("shadow key b2", "shadow value b2");
         b.setShadowVariableMap(bShadowVariableMap);
+        Map<String, List<String>> stringToStringListMap = new LinkedHashMap<>();
+        stringToStringListMap.put("a", null);
+        stringToStringListMap.put(null, List.of("b"));
+        stringToStringListMap.put("c", Arrays.asList("d", null));
+        b.setStringToStringListMap(stringToStringListMap);
+
         TestdataFieldAnnotatedDeepCloningEntity c = new TestdataFieldAnnotatedDeepCloningEntity("c", val3);
         List<String> cShadowVariableList = Arrays.asList("shadow c1", "shadow c2");
         c.setShadowVariableList(cShadowVariableList);
@@ -1046,6 +1059,31 @@ public abstract class AbstractSolutionClonerTest {
                 assertThat(cloneShadowVariableMap.get(key)).isSameAs(originalShadowVariableMap.get(key));
             }
         }
+
+        Map<List<String>, String> originalStringListToStringMap = originalEntity.getStringListToStringMap();
+        Map<List<String>, String> cloneStringListToStringMap = cloneEntity.getStringListToStringMap();
+        if (originalStringListToStringMap == null) {
+            assertThat(cloneStringListToStringMap).isNull();
+        } else {
+            assertThat(cloneStringListToStringMap).isNotSameAs(originalStringListToStringMap);
+            assertThat(cloneStringListToStringMap).hasSameSizeAs(originalStringListToStringMap);
+            for (List<String> key : originalStringListToStringMap.keySet()) {
+                assertThat(cloneStringListToStringMap.get(key)).isSameAs(originalStringListToStringMap.get(key));
+            }
+        }
+
+        Map<String, List<String>> originalStringToStringListMap = originalEntity.getStringToStringListMap();
+        Map<String, List<String>> cloneStringToStringListMap = cloneEntity.getStringToStringListMap();
+        if (originalStringToStringListMap == null) {
+            assertThat(cloneStringToStringListMap).isNull();
+        } else {
+            assertThat(cloneStringToStringListMap).isNotSameAs(originalStringToStringListMap);
+            assertThat(cloneStringToStringListMap).hasSameSizeAs(originalStringToStringListMap);
+            for (String key : originalStringToStringListMap.keySet()) {
+                assertThat(cloneStringToStringListMap.get(key)).isEqualTo(originalStringToStringListMap.get(key));
+            }
+        }
+
     }
 
 }
