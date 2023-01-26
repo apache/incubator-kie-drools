@@ -18,6 +18,85 @@ import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 
+///////////////////////////////////////////////////////////////////////////////////////////
+// Whole Drools project jobs
+///////////////////////////////////////////////////////////////////////////////////////////
+
+jenkins_path_project = "${jenkins_path}/project"
+
+// Init branch
+createProjectSetupBranchJob()
+
+// Nightly jobs
+setupProjectNightlyJob()
+
+// Release jobs
+setupProjectReleaseJob()
+
+// Tools
+KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'drools')
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
+        [ 'drools' ],
+        [ 'mariofusco', 'danielezonca']
+)
+
+void createProjectSetupBranchJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-setup-branch', JobType.SETUP_BRANCH, "${jenkins_path_project}/Jenkinsfile.setup-branch", 'Drools Setup Branch')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DROOLS_VERSION', '', 'Drools version')
+        }
+    }
+}
+
+void setupProjectNightlyJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
+    jobParams.triggers = [cron : '@midnight']
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupProjectReleaseJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-kogito-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Drools/Kogito Artifacts Release')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
+
+            stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
+
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Drools repository only project jobs
+///////////////////////////////////////////////////////////////////////////////////////////
+
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     def jobConfig = [
         parallel: true,
@@ -35,30 +114,25 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 ]
             ], [
                 id: 'kogito-runtimes',
-                dependsOn: 'drools',
                 repository: 'kogito-runtimes'
             ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'kogito-runtimes',
             ], [
                 id: 'kogito-quarkus-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
                 ],
             ], [
                 id: 'kogito-springboot-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
                 ],
             ], [
                 id: 'serverless-workflow-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],

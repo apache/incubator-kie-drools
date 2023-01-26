@@ -10,26 +10,14 @@ on:
 jobs:
   dsl-tests:
     concurrency:
-      group: ${{ github.repository.name }}_jenkinsfile_tests-${{ github.head_ref }}
+      group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
-    - name: Setup correct base branch
-      run: |
-        base_branch="${{ github.base_ref }}"
-        if [[ ${base_branch} =~ ^[0-9]+\.[0-9]+\.x$ ]]; then 
-          IFS='.' read -ra ver <<< "${base_branch}"
-          release=${ver[2]}
-          minor=${ver[1]}
-          major=${ver[0]}
-          base_branch="$((major-7)).$minor.$release"
-        fi
-        echo "BASE_BRANCH=${base_branch}" >> $GITHUB_ENV
-
     - name: DSL tests
       uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main
       with:
-        main-config-file-repo: kiegroup/kogito-pipelines
-        main-config-file-path: dsl/config/main.yaml
-        branch-config-file-repo: kiegroup/kogito-pipelines
-        base-branch: ${{ env.BASE_BRANCH }}
+        project: drools
+        main-config-file-repo: kiegroup/drools
+        main-config-file-path: .ci/jenkins/config/main.yaml
+        branch-config-file-repo: kiegroup/drools
