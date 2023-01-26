@@ -111,9 +111,10 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
         boolean useClassAwareStore = isEqualityBehaviour || conf.isMutabilityEnabled();
+        long id = reteEvaluator.getIdentifier();
         this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(isEqualityBehaviour, lock) :
-                SessionComponentsFactory.get().createIdentityObjectStore();
+                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
+                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
     }
 
     @Override
