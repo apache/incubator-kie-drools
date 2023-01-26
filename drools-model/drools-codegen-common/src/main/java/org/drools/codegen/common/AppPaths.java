@@ -45,54 +45,8 @@ public class AppPaths {
     private final Path resourcesPath;
     private final Path outputTarget;
 
-    /**
-     * Augmentation Mode from Quarkus. The app is deployed at "target/quarkus-app/dev/app" and behaves as an "exploded" jar.
-     * Every resource is in this root path, so all the generated code must also be generated in this very same path.
-     *
-     * @param targetPath The path as defined by the Quarkus deployment model
-     * @see <a href=""https://quarkus.io/guides/maven-tooling#remote-development-mode>Remote Development Mode</a>
-     * @return the app path
-     */
-    public static AppPaths fromMutableJar(Path targetPath) {
-        // we force GRADLE as the build tool since our resources' directory doesn't need a prefix.
-        return new AppPaths(Collections.singleton(targetPath),
-                Collections.singleton(targetPath),
-                false,
-                BuildTool.GRADLE,
-                "",
-                targetPath);
-    }
-
     public static AppPaths fromProjectDir(Path projectDir, Path outputTarget) {
         return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "main", outputTarget);
-    }
-
-    public static AppPaths fromQuarkus(Path outputTarget, Iterable<Path> paths, BuildTool bt) {
-        Set<Path> projectPaths = new LinkedHashSet<>();
-        Collection<Path> classesPaths = new ArrayList<>();
-        boolean isJar = false;
-        for (Path path : paths) {
-            PathType pathType = getPathType(path);
-            switch (pathType) {
-                case CLASSES:
-                    classesPaths.add(path);
-                    projectPaths.add(path.getParent().getParent());
-                    break;
-                case TEST_CLASSES:
-                    projectPaths.add(path.getParent().getParent());
-                    break;
-                case JAR:
-                    isJar = true;
-                    classesPaths.add(path);
-                    projectPaths.add(path.getParent().getParent());
-                    break;
-                case UNKNOWN:
-                    classesPaths.add(path);
-                    projectPaths.add(path);
-                    break;
-            }
-        }
-        return new AppPaths(projectPaths, classesPaths, isJar, bt, "main", outputTarget);
     }
 
     /**
@@ -105,29 +59,6 @@ public class AppPaths {
         return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN, "test", Paths.get(projectDir.toString(), TARGET_DIR));
     }
 
-    private static PathType getPathType(Path archiveLocation) {
-        String path = archiveLocation.toString();
-        if (path.endsWith(TARGET_DIR + File.separator + "classes")) {
-            return PathType.CLASSES;
-        }
-        if (path.endsWith(TARGET_DIR + File.separator + "test-classes")) {
-            return PathType.TEST_CLASSES;
-        }
-        // Quarkus generates a file with extension .jar.original when doing a native compilation of a uberjar
-        // TODO replace ".jar.original" with constant JarResultBuildStep.RENAMED_JAR_EXTENSION when it will be avialable in Quakrus 1.7
-        if (path.endsWith(".jar") || path.endsWith(".jar.original")) {
-            return PathType.JAR;
-        }
-        return PathType.UNKNOWN;
-    }
-
-    private enum PathType {
-        CLASSES,
-        TEST_CLASSES,
-        JAR,
-        UNKNOWN
-    }
-
     /**
      * @param projectPaths
      * @param classesPaths
@@ -135,7 +66,7 @@ public class AppPaths {
      * @param bt
      * @param resourcesBasePath "main" or "test"
      */
-    private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
+    protected AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt,
             String resourcesBasePath, Path outputTarget) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
