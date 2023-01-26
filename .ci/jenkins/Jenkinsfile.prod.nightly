@@ -121,7 +121,13 @@ pipeline {
                             optaplannerSourcesFileUrl,
                             optaplannerQuickstartsSourcesFileUrl,
                             env.ALREADY_BUILT_PROJECTS,
-                            ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'optaplanner': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion'], 'platform.quarkus.bom': PME_BUILD_VARIABLES['quarkusVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: '')],
+                            [
+                                'rhbop': PME_BUILD_VARIABLES['optaplannerVersion'],
+                                'optaplanner': PME_BUILD_VARIABLES['optaplannerVersion'],
+                                'drools': PME_BUILD_VARIABLES['droolsProductVersion'],
+                                'quarkus.bom': PME_BUILD_VARIABLES['quarkusVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: ''),
+                                'platform.quarkus.bom': PME_BUILD_VARIABLES['quarkusPlatformVersion']?.replaceAll("\\{\\{.*\\}\\}", PME_BUILD_VARIABLES['quarkusVersionCommunity'] ?: '')
+                            ],
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                         )
 
