@@ -75,4 +75,4 @@ jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
   default_tools:
     jdk: kie-jdk11
-    maven: kie-maven-3.8.6
+    maven: kie-maven-3.8.7
