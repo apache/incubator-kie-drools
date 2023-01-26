@@ -20,7 +20,7 @@ package org.kie.api.runtime.conf;
 import java.util.Objects;
 
 /**
- * A class for the session clock configuration.
+ * A class for the session persistence configuration.
  */
 public class PersistedSessionOption implements SingleValueKieSessionOption {
 
