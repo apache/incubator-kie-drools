@@ -43,6 +43,8 @@ import org.kie.api.time.SessionClock;
 
 public interface ReteEvaluator {
 
+    long getIdentifier();
+
     ActivationsManager getActivationsManager();
 
     RuleBase getKnowledgeBase();

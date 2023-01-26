@@ -21,21 +21,21 @@ public interface SessionComponentsFactory extends KieService {
         return SessionComponentsFactory.Holder.INSTANCE;
     }
 
-    ObjectStore createIdentityObjectStore();
+    ObjectStore createIdentityObjectStore(String entryPointName);
 
-    ObjectStore createClassAwareObjectStore(boolean isEqualityBehaviour, Lock lock);
+    ObjectStore createClassAwareObjectStore(String entryPointName, boolean isEqualityBehaviour, Lock lock);
 
 
     class DefaultSessionComponentsFactory implements SessionComponentsFactory {
         private static final DefaultSessionComponentsFactory INSTANCE = new DefaultSessionComponentsFactory();
 
         @Override
-        public ObjectStore createIdentityObjectStore() {
+        public ObjectStore createIdentityObjectStore(String entryPointName) {
             return new IdentityObjectStore();
         }
 
         @Override
-        public ObjectStore createClassAwareObjectStore(boolean isEqualityBehaviour, Lock lock) {
+        public ObjectStore createClassAwareObjectStore(String entryPointName, boolean isEqualityBehaviour, Lock lock) {
             return new ClassAwareObjectStore(isEqualityBehaviour, lock);
         }
     }

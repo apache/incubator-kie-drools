@@ -313,8 +313,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.propagationIdCounter = new AtomicLong(propagationContext);
         init( config, environment, propagationContext );
 
-        this.entryPointsManager = new NamedEntryPointsManager(this);
-
         this.nodeMemories = new ConcurrentNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
 
@@ -323,6 +321,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory().createAgenda(kBase);
         this.agenda.setWorkingMemory(this);
+
+        this.entryPointsManager = new NamedEntryPointsManager(this);
 
         this.sequential = conf.isSequential();
 
