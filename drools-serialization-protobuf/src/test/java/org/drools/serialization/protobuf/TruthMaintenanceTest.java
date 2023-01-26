@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -352,7 +352,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
             field.setAccessible( true );
-            final ObjectHashMap m = (ObjectHashMap) field.get( tms );
+            final Map<EqualityKey, EqualityKey> m = (Map<EqualityKey, EqualityKey>) field.get(tms);
             field.setAccessible( false );
             assertThat(m.size()).as("assertMap should be empty").isEqualTo(0);
         } finally {
@@ -491,7 +491,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
             final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
             field.setAccessible( true );
-            final ObjectHashMap m = (ObjectHashMap) field.get( tms );
+            final Map<EqualityKey, EqualityKey> m = (Map<EqualityKey, EqualityKey>) field.get( tms );
             field.setAccessible( false );
             assertThat(m.size()).as("assertMap should be empty").isEqualTo(0);
         } finally {
@@ -657,13 +657,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             ksession.setGlobal( "gb",
                                 "b" );
             ksession.setGlobal( "gs",
-                                new Short( (short) 3 ) );
+                                Short.valueOf( (short) 3 ) );
 
             ksession.fireAllRules();
 
             ksession = getSerialisedStatefulKnowledgeSession(ksession, true);
 
-            FactHandle h = ksession.insert( new Integer( 6 ) );
+            FactHandle h = ksession.insert(Integer.valueOf( 6 ) );
             assertThat(ksession.getObjects().size()).isEqualTo(1);
 
             ksession.fireAllRules();

@@ -83,6 +83,8 @@ public class TripleImpl implements Triple {
         this.value = value;
     }
 
+    public int hash;
+
     @Override
     public int hashCode() {
         final int prime = 31;

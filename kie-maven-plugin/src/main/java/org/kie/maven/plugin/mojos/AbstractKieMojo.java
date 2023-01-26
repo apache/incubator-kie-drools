@@ -24,7 +24,6 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.kie.maven.plugin.KieMavenPluginContext;
 import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.kie.maven.plugin.helpers.ExecModelModeHelper.execModelParameterEnabled;

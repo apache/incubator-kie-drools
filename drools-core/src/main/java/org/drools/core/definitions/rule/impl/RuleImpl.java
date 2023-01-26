@@ -62,7 +62,7 @@ public class RuleImpl implements Externalizable,
                                  InternalRule,
                                  Query {
 
-    private static final int NO_LOOP_BIT =              1 << 0;
+    private static final int NO_LOOP_BIT = 1;
     private static final int AUTO_FOCUS_BIT =           1 << 1;
     private static final int LOCK_ON_ACTIVE_BIT =       1 << 2;
     private static final int LOGICAL_DEPENDENCY_BIT =   1 << 3;

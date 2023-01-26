@@ -118,7 +118,7 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
-        Entry[] entries = new Entry[10];
+        TupleList[] entries = new TupleList[10];
         entries[0] = mock(TupleList.class);
         entries[5] = mock(TupleList.class);
         entries[9] = mock(TupleList.class);

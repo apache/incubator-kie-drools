@@ -15,11 +15,13 @@
 
 package org.drools.core.util;
 
-public interface FastIterator {
-    public class NullFastIterator implements FastIterator {
+import org.drools.core.reteoo.Tuple;
+
+public interface FastIterator<T> {
+    public class NullFastIterator<T> implements FastIterator<T> {
         public static final NullFastIterator INSTANCE = new NullFastIterator();
 
-        @Override public Entry next(Entry object) {
+        @Override public T next(T object) {
             return null;
         }
 
@@ -28,30 +30,21 @@ public interface FastIterator {
         }
     }
 
-    Entry next(Entry object);
+    T next(T object);
     
     boolean isFullIterator();
 
-    public static FastIterator EMPTY = new FastIterator() {
-        public Entry next(Entry object) {
-            return null;
-        }
-        public boolean isFullIterator() {
-            return false;
-        }
-    };
-
-    public static class IteratorAdapter implements Iterator {
-        private final FastIterator fastIterator;
-        private Entry current = null;
+    public class IteratorAdapter<T> implements Iterator<T> {
+        private final FastIterator<T> fastIterator;
+        private T current = null;
         private boolean firstConsumed = false;
 
-        public IteratorAdapter(FastIterator fastIterator, Entry first) {
+        public IteratorAdapter(FastIterator<T> fastIterator, T first) {
             this.fastIterator = fastIterator;
             current = first;
         }
 
-        public Object next() {
+        public T next() {
             if (!firstConsumed) {
                 firstConsumed = true;
                 return current;

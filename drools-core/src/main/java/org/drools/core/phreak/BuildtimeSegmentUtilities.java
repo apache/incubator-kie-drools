@@ -408,7 +408,7 @@ public class BuildtimeSegmentUtilities {
         return sink.getAssociatedTerminalsSize() > 1 || !sink.hasAssociatedTerminal(removingTN);
     }
 
-    public static final int NOT_NODE_BIT               = 1 << 0;
+    public static final int NOT_NODE_BIT               = 1;
     public static final int JOIN_NODE_BIT              = 1 << 1;
     public static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
     public static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;

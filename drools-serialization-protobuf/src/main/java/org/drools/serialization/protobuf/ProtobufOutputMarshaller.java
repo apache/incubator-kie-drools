@@ -76,7 +76,6 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.serialization.protobuf.ProtobufMessages.FactHandle;
@@ -463,14 +462,12 @@ public class ProtobufOutputMarshaller {
                                                     EntryPoint wmep,
                                                     ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
-        ObjectHashMap justifiedMap = tms.getEqualityKeyMap();
+        Map<EqualityKey, EqualityKey> justifiedMap = tms.getEqualityKeyMap();
 
         if ( !justifiedMap.isEmpty() ) {
             EqualityKey[] keys = new EqualityKey[justifiedMap.size()];
-            org.drools.core.util.Iterator it = justifiedMap.iterator();
             int i = 0;
-            for ( org.drools.core.util.ObjectHashMap.ObjectEntry entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (org.drools.core.util.ObjectHashMap.ObjectEntry) it.next() ) {
-                EqualityKey key = (EqualityKey) entry.getKey();
+            for (EqualityKey key : justifiedMap.values()) {
                 keys[i++] = key;
             }
 

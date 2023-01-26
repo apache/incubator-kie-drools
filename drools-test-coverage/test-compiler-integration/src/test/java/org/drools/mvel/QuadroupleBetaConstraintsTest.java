@@ -23,6 +23,7 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     public QuadroupleBetaConstraintsTest(boolean useLambdaConstraint) {
         this.useLambdaConstraint = useLambdaConstraint;
+
     }
 
     @Test

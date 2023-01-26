@@ -16,6 +16,7 @@
 
 package org.drools.core.util;
 
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.index.TupleList;
 
 public class TupleRBTree<K extends Comparable< ? super K>> {
@@ -107,24 +108,20 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         LOWER, UPPER
     };
 
-    public static class RangeFastIterator<K extends Comparable< ? super K>> implements FastIterator {
+    public static class RangeFastIterator<K extends Comparable< ? super K>> implements Iterator<Node<K>> {
         private Node<K> upperBound;
         private Node<K> next;
 
         public RangeFastIterator(Node<K> lowerNearest,
-                                  Node<K> upperNearest) {
+                                 Node<K> upperNearest) {
             this.next = lowerNearest;
             this.upperBound = upperNearest;
         }
 
-        public Entry next(Entry object) {
-            Entry temp = next;
+        public Node<K> next() {
+            Node<K> temp = next;
             next = checkUpperBound( recurse( next ) );
             return temp;
-        }
-
-        public boolean isFullIterator() {
-            return false;
         }
 
         private Node<K> recurse(Node<K> current) {
@@ -183,16 +180,16 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         return n;
     }
 
-    public FastIterator fastIterator() {
-        return root == null ? FastIterator.EMPTY : new RangeFastIterator( first(), null );
+    public Iterator<Node<K>> iterator() {
+        return root == null ? EMPTY : new RangeFastIterator( first(), null );
     }
 
     @Override
     public String toString() {
-        FastIterator iterator = fastIterator();
+        Iterator<Node<K>> iterator = iterator();
         StringBuilder sb = new StringBuilder("[");
         boolean first = true;
-        for (Entry entry = iterator.next(null); entry != null; entry = iterator.next(null)) {
+        for (Node<K> entry = iterator.next(); entry != null; entry = iterator.next()) {
             if (first) {
                 first = false;
             } else {
@@ -204,7 +201,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         return sb.toString();
     }
 
-    public FastIterator range(K lowerBound,
+    public Iterator<Node<K>> range(K lowerBound,
                               boolean testLowerEqual,
                               K upperBound,
                               boolean testUpperEqual) {
@@ -212,11 +209,11 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         Node<K> upperNearest = findNearestNode( upperBound, testUpperEqual, Boundary.UPPER );
 
         if ( lowerNearest == null || upperNearest == null ) {
-            return FastIterator.EMPTY;
+            return EMPTY;
         }
 
         if ( lowerNearest.key.compareTo( upperNearest.key  ) > 0 ) {
-            return FastIterator.EMPTY;
+            return EMPTY;
         }
 
         return new RangeFastIterator( lowerNearest, upperNearest );
@@ -528,7 +525,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
         RED, BLACK
     }
 
-    public static class Node<K extends Comparable< ? super K>> extends TupleList<Object> implements Entry<TupleList<Object>>, Comparable<Node<K>> {
+    public static class Node<K extends Comparable< ? super K>> extends TupleList {
         public  K       key;
         private Node<K> left;
         private Node<K> right;
@@ -574,4 +571,10 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
             other.key = key;
         }
     }
+
+    public Iterator<Node<K>> EMPTY = new Iterator<>() {
+        public Node<K> next() {
+            return null;
+        }
+    };
 }

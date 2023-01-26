@@ -16,11 +16,16 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 public interface TupleMemory {
+
+    default Index getIndex() {
+        return null;
+    }
 
     enum IndexType {
         NONE, EQUAL, COMPARISON, RANGE;
@@ -36,38 +41,36 @@ public interface TupleMemory {
      * could potentially be in the wrong bucket. So the bucket matches check always checks to ignore the first facthandle if it's
      * the same as the context fact.
      */
-    Tuple getFirst( Tuple leftTuple );
+    Tuple getFirst( Tuple tuple );
     
-    void removeAdd( Tuple rightTuple );
+    void removeAdd( Tuple tuple );
 
-    void add( Tuple rightTuple );
+    void add( Tuple tuple );
 
-    void remove( Tuple rightTuple );
-
-    boolean contains( Tuple rightTuple );
+    void remove( Tuple tuple );
 
     boolean isIndexed();
 
     int size();
 
-    Iterator iterator();
+    Iterator<Tuple> iterator();
     
-    FastIterator fastIterator();
+    FastIterator<Tuple> fastIterator();
     
     /**
      * Iterates the entire data structure, regardless of whether TupleMemory is hashed or not.
      * @return
      */
-    FastIterator fullFastIterator();
+    FastIterator<Tuple> fullFastIterator();
     
     /**
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
-     * @param rightTuple
+     * @param tuple
      * @return
      */
-    FastIterator fullFastIterator( Tuple rightTuple );
+    FastIterator<Tuple> fullFastIterator( Tuple tuple );
 
-    Entry[] toArray();
+    Tuple[] toArray();
 
     IndexType getIndexType();
 

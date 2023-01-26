@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
@@ -105,7 +104,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         out.writeBoolean( left );
     }
 
-    public void init(Entry[] table, int size, int factSize) {
+    public void init(TupleList[] table, int size, int factSize) {
         this.table = table;
         this.size = size;
         this.factSize = factSize;
@@ -120,11 +119,11 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return this.tupleValueFullIterator;
     }
 
-    public FastIterator fastIterator() {
+    public FastIterator<Tuple>  fastIterator() {
         return LinkedList.fastIterator;
     }
 
-    public FastIterator fullFastIterator() {
+    public FastIterator<Tuple>  fullFastIterator() {
         if ( fullFastIterator == null ) {
             fullFastIterator = new FullFastIterator( this.table );
         } else {
@@ -133,34 +132,28 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return fullFastIterator;
     }
 
-    public FastIterator fullFastIterator(Tuple leftTuple) {
-        fullFastIterator.resume(leftTuple.getMemory(), this.table);
+    public FastIterator<Tuple>  fullFastIterator(Tuple tuple) {
+        fullFastIterator.resume(tuple.getMemory(), this.table);
         return fullFastIterator;
     }
 
-    public static class FullFastIterator implements FastIterator {
-        private Entry[]     table;
+    public static class FullFastIterator implements FastIterator<Tuple> {
+        private TupleList[]     table;
         private int         row;
 
-        public FullFastIterator(Entry[] table, int row) {
-            this.table = table;
-            this.row = row + 1;
-        }
-
-        public FullFastIterator(Entry[] table) {
+        public FullFastIterator(TupleList[] table) {
             this.table = table;
             this.row = 0;
         }
 
-        public void resume(Entry target, Entry[] table) {
+        public void resume(TupleList target, TupleList[] table) {
             this.table = table;
             row = indexOf( target.hashCode(),
                            this.table.length );
             row++; // row always points to the row after the current list
         }
 
-        public Entry next(Entry object) {
-            Tuple tuple = ( Tuple ) object;
+        public Tuple next(Tuple tuple) {
             TupleList list = null;
             if ( tuple != null ) {
                 list = tuple.getMemory(); // assumes you do not pass in a null RightTuple
@@ -173,7 +166,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                 while ( list == null ) {
                     if ( this.row < length ) {
                         // iterate while there is no current bucket, trying each array position
-                        list = (TupleList) this.table[this.row];
+                        list = this.table[this.row];
                         this.row++;
                     } else {
                         // we've scanned the whole table and nothing is left, so return null
@@ -208,15 +201,15 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             return true;
         }
 
-        public void reset(Entry[] table) {
+        public void reset(TupleList[] table) {
             this.table = table;
             this.row = 0;
         }
 
     }
 
-    public Tuple getFirst(final Tuple rightTuple) {
-        TupleList bucket = get( rightTuple, !left );
+    public Tuple getFirst(final Tuple tuple) {
+        TupleList bucket = get( tuple, !left );
         return bucket != null ? bucket.getFirst() : null;
     }
 
@@ -229,8 +222,8 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
     }
 
     @Override
-    public int getResizeHashcode(Entry entry) {
-        // Entry is always LeftTupleList which caches the hashcode, so just return it
+    public int getResizeHashcode(TupleList entry) {
+        // TupleList is always LeftTupleList which caches the hashcode, so just return it
         return  entry.hashCode();
     }
 
@@ -238,7 +231,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         implements
         Iterator<Tuple> {
         private final AbstractHashTable hashTable;
-        private Entry[]                 table;
+        private TupleList[]                 table;
         private int                     row;
         private int                     length;
         private TupleList               list;
@@ -306,8 +299,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
     public Tuple[] toArray() {
         Tuple[] result = new Tuple[this.factSize];
         int index = 0;
-        for (Entry aTable : this.table) {
-            TupleList bucket = (TupleList) aTable;
+        for (TupleList bucket : this.table) {
             while (bucket != null) {
                 Tuple entry = bucket.getFirst();
                 while (entry != null) {
@@ -392,7 +384,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         HashEntry hashEntry = this.index.hashCodeOf( tuple, left );
 
         int index = indexOf( hashEntry.hashCode(), this.table.length );
-        TupleList entry = (TupleList) this.table[index];
+        TupleList entry = this.table[index];
 
         // search to find an existing entry
         while ( entry != null ) {
@@ -403,8 +395,8 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         }
 
         // entry does not exist, so create
-        entry = new IndexTupleList( this.index, hashEntry );
-        entry.setNext( (TupleList) this.table[index] );
+        entry = new IndexTupleList( this.index, hashEntry.clone() );
+        entry.setNext( this.table[index] );
         this.table[index] = entry;
 
         if ( this.size++ >= this.threshold ) {
@@ -413,15 +405,11 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return entry;
     }
 
-    public boolean contains(final Tuple tuple) {
-        return get(tuple, left) != null;
-    }
-
     private TupleList get(final Tuple tuple, boolean isLeftTuple) {
         HashEntry hashEntry = this.index.hashCodeOf( tuple, isLeftTuple );
 
         int index = indexOf( hashEntry.hashCode(), this.table.length );
-        TupleList entry = (TupleList) this.table[index];
+        TupleList entry = this.table[index];
 
         while ( entry != null ) {
             if ( matches( entry, hashEntry ) ) {
@@ -443,8 +431,8 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        Iterator it = iterator();
-        for ( Tuple leftTuple = (Tuple) it.next(); leftTuple != null; leftTuple = (Tuple) it.next() ) {
+        Iterator<Tuple> it = iterator();
+        for ( Tuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
             builder.append(leftTuple).append("\n");
         }
 

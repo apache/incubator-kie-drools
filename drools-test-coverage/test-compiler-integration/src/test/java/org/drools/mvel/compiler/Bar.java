@@ -15,7 +15,7 @@
 
 package org.drools.mvel.compiler;
 
-public class Bar implements Cloneable {
+public class Bar {
 
 	private String id;
 

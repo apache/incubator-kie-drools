@@ -87,7 +87,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         return rootUndefeated;
     }
 
-    public DefeasibleMode<M> getLast() {
+    public M getLast() {
         return tailUndefeated;
     }
 
@@ -432,14 +432,13 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         return getStatus() != DefeasibilityStatus.UNDECIDABLY && getStatus() != DefeasibilityStatus.DEFEATEDLY;
     }
 
-    public FastIterator iterator() {
+    public FastIterator<M> iterator() {
         return iterator;
     }
 
-    private static class IteratorImpl implements FastIterator {
+    private static class IteratorImpl<M extends DefeasibleMode<M>> implements FastIterator<M> {
 
-        public Entry next(Entry object) {
-            DefeasibleMode dep = (DefeasibleMode) object;
+        public M next(M dep) {
             if ( dep.getRootDefeated() != null ) {
                 // try going down the list of defeated first
                 return dep.getRootDefeated();

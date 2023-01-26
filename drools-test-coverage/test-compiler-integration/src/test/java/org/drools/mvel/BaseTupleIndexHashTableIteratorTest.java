@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.util.index.IndexUtil;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
@@ -31,6 +32,8 @@ import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.modelcompiler.util.EvaluationUtil;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -42,6 +45,28 @@ public abstract class BaseTupleIndexHashTableIteratorTest {
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
     protected boolean useLambdaConstraint;
+
+    private int originalMemoryImpl;
+
+    @Before
+    public void before() {
+        try {
+            originalMemoryImpl = IndexUtil.EQUALS_MEMORY;
+            IndexUtil.EQUALS_MEMORY = IndexUtil.CUSTOM_MAP;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @After
+    public void after() {
+        try {
+            IndexUtil.EQUALS_MEMORY = originalMemoryImpl;
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     @Parameterized.Parameters(name = "useLambdaConstraint={0}")
     public static Collection<Object[]> getParameters() {

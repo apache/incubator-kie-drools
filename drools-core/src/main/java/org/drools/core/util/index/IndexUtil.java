@@ -34,6 +34,21 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 
 public class IndexUtil {
 
+    public static int EQUALS_MEMORY; // did not set this as final, as some tests need to change this
+
+    public static int COMPARABLE_MEMORY; // did not set this as final, as some tests need to change this
+
+    public static final int FASTUTIL_MAP = 1;
+    public static final int CUSTOM_MAP = 2;
+    public static final int FASTUTIL_TREE = 3;
+    public static final int CUSTOM_TREE = 4;
+
+    static {
+        EQUALS_MEMORY = Integer.parseInt(System.getProperty("org.drools.equalsmemory", Integer.toString(FASTUTIL_MAP)));
+        EQUALS_MEMORY = Integer.parseInt(System.getProperty("org.drools.comparablememory", Integer.toString(FASTUTIL_TREE)));
+    }
+
+
     // package private for test convenience
     static boolean USE_COMPARISON_INDEX = true;
     static boolean USE_COMPARISON_INDEX_JOIN = true;
@@ -363,11 +378,21 @@ public class IndexUtil {
             }
 
             if (indexSpec.constraintType == ConstraintType.EQUAL) {
-                return new TupleIndexHashTable( indexSpec.indexes, false );
+                switch (EQUALS_MEMORY) {
+                    case FASTUTIL_MAP: return new FastUtilHashTupleMemory(indexSpec.indexes, false);
+                    case CUSTOM_MAP:
+                    default :
+                        return new TupleIndexHashTable( indexSpec.indexes, false );
+                }
             }
 
             if (indexSpec.constraintType.isComparison()) {
-                return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], false );
+                switch (COMPARABLE_MEMORY) {
+                    case FASTUTIL_TREE: return new FastUtilTreeMemory(indexSpec.constraintType, indexSpec.indexes[0], false);
+                    case CUSTOM_TREE:
+                    default :
+                        return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], false );
+                }
             }
 
             return new TupleList();
@@ -382,11 +407,21 @@ public class IndexUtil {
             }
 
             if (indexSpec.constraintType == ConstraintType.EQUAL) {
-                return new TupleIndexHashTable( indexSpec.indexes, true );
+                switch (EQUALS_MEMORY) {
+                    case FASTUTIL_MAP: return new FastUtilHashTupleMemory(indexSpec.indexes, true);
+                    case CUSTOM_MAP:
+                    default :
+                        return new TupleIndexHashTable( indexSpec.indexes, true );
+                }
             }
 
             if (indexSpec.constraintType.isComparison()) {
-                return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], true );
+                switch (COMPARABLE_MEMORY) {
+                    case FASTUTIL_TREE: return new FastUtilTreeMemory(indexSpec.constraintType, indexSpec.indexes[0], true);
+                    case CUSTOM_TREE:
+                    default :
+                        return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], true);
+                }
             }
 
             return new TupleList();
