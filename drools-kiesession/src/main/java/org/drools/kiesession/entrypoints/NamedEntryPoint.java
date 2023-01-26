@@ -114,8 +114,8 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
 
         boolean useClassAwareStore = isEqualityBehaviour || conf.getOption(KieBaseMutabilityOption.KEY).isMutabilityEnabled();
         this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(isEqualityBehaviour, lock) :
-                SessionComponentsFactory.get().createIdentityObjectStore();
+                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
+                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
     }
 
     @Override
