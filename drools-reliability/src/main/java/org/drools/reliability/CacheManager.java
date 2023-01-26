@@ -1,0 +1,49 @@
+package org.drools.reliability;
+
+import org.infinispan.Cache;
+import org.infinispan.commons.api.CacheContainerAdmin;
+import org.infinispan.commons.marshall.JavaSerializationMarshaller;
+import org.infinispan.configuration.cache.CacheMode;
+import org.infinispan.configuration.cache.Configuration;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.manager.DefaultCacheManager;
+
+public enum CacheManager implements AutoCloseable {
+    INSTANCE;
+
+    private final DefaultCacheManager cacheManager;
+    private final Configuration cacheConfiguration;
+
+    CacheManager() {
+        // Set up a clustered Cache Manager.
+        GlobalConfigurationBuilder global = new GlobalConfigurationBuilder();
+        global.serialization()
+                .marshaller(new JavaSerializationMarshaller())
+                .allowList()
+                .addRegexps("org.drools.");
+        global.transport().defaultTransport();
+       
+        // Initialize the default Cache Manager.
+        cacheManager = new DefaultCacheManager(global.build());
+
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.persistence().passivation(false)
+                .addSoftIndexFileStore()
+                .shared(false)
+                .dataLocation("tmp/cache/data")
+                .indexLocation("tmp/cache/index");
+
+        builder.clustering().cacheMode(CacheMode.DIST_SYNC);
+        cacheConfiguration = builder.build();
+    }
+    public <k, V> Cache<k, V> getOrCreateCache(String cacheName) {
+        // Obtain a volatile cache.
+        return cacheManager.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheName, cacheConfiguration);
+    }
+
+    @Override
+    public void close() {
+        cacheManager.stop();
+    }
+}
