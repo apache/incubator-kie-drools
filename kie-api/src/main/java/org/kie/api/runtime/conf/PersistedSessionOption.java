@@ -29,9 +29,6 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
      */
     public static final String PROPERTY_NAME = "drools.persistedsession";
 
-    /**
-     * clock type
-     */
     private final long sessionId;
 
     private PersistedSessionOption() {
