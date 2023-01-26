@@ -18,6 +18,9 @@ package org.kie.kogito.quarkus.workflows;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
@@ -36,7 +39,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.http.ContentType;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.buildCloudEvent;
 import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.startProcess;
 import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.waitForFinish;
@@ -69,9 +75,23 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
     @Test
     void testConsumer() throws IOException {
         final String flowId = "asyncEventConsumer";
-        String id = startProcess("asyncEventConsumer");
+        String id = startProcess(flowId);
         kafkaClient.produce(marshaller.marshall(buildCloudEvent(id, "wait", marshaller)), "wait");
-        waitForFinish(flowId, id, Duration.ofSeconds(5));
+        waitForFinish(flowId, id, Duration.ofSeconds(6));
     }
 
+    @Test
+    void testPublisher() throws IOException, InterruptedException {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
+                .post("asyncEventPublisher")
+                .then()
+                .statusCode(201);
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        kafkaClient.consume("wait", v -> countDownLatch.countDown());
+        countDownLatch.await(3, TimeUnit.SECONDS);
+        assertThat(countDownLatch.getCount()).isZero();
+    }
 }

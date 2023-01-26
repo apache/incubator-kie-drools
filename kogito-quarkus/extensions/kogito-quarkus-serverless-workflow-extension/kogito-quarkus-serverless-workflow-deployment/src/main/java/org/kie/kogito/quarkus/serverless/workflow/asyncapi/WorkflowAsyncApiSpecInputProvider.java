@@ -40,7 +40,7 @@ public class WorkflowAsyncApiSpecInputProvider implements AsyncApiSpecInputProvi
         }
         try (Stream<Path> workflowFiles = Files.walk(inputDir)) {
             return new AsyncAPISpecInput(WorkflowCodeGenUtils.operationResources(workflowFiles, f -> f.getType() == Type.ASYNCAPI, context)
-                    .collect(Collectors.toMap(resource -> resource.getOperationId().getFileName(), AsyncInputStreamSupplier::new)), KOGITO_PACKAGE_PREFIX);
+                    .collect(Collectors.toMap(resource -> resource.getOperationId().getFileName(), AsyncInputStreamSupplier::new, (key1, key2) -> key1)), KOGITO_PACKAGE_PREFIX);
         } catch (IOException io) {
             throw new IllegalStateException(io);
         }

@@ -21,6 +21,11 @@ channels:
       summary: Get messages
       message:
         $ref: '#/components/messages/message'
+    publish:
+      operationId: sendWait
+      summary: Send messages
+      message:
+        $ref: '#/components/messages/message'
 components:
   messages:
     message:
