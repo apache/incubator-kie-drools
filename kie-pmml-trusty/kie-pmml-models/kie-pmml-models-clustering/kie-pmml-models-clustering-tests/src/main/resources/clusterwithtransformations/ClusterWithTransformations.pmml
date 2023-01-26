@@ -21,9 +21,9 @@
     </DataField>
     <DataField name="class" optype="categorical" dataType="string"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
-    <DataField name="input3" optype="continuous" dataType="double">
-      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6"/>
-      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6"/>
+    <DataField name="input3" optype="continuous" dataType="integer">
+      <Interval closure="closedClosed" leftMargin="12" rightMargin="15"/>
+      <Interval closure="closedClosed" leftMargin="29" rightMargin="45"/>
     </DataField>
   </DataDictionary>
   <TransformationDictionary>

@@ -90,7 +90,7 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         inputData.put("petal_length", petalLength);
         inputData.put("petal_width", petalWidth);
         inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", 34.1);
+        inputData.put("input3", 34);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME);
 
@@ -164,7 +164,7 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         inputData.put("petal_length", String.valueOf(petalLength));
         inputData.put("petal_width", String.valueOf(petalWidth));
         inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", "34.1");
+        inputData.put("input3", "34");
         assertThat(evaluate(pmmlRuntime, inputData, FILE_NAME_NO_SUFFIX, MODEL_NAME)).isNotNull();
     }
 

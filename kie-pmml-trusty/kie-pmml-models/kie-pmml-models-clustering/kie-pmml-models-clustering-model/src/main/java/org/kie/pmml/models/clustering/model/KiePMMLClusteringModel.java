@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.Named;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -99,7 +100,7 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
         Double[] inputs = new Double[clusteringFields.size()];
         for (int i = 0; i < clusteringFields.size(); i++) {
             String fieldName = clusteringFields.get(i).getField();
-            inputs[i] = requestData.containsKey(fieldName) ? (Double) requestData.get(fieldName) : null;
+            inputs[i] = requestData.containsKey(fieldName) ? convertToDouble(requestData.get(fieldName)) : null;
         }
 
         double[] aggregates = new double[clusters.size()];
@@ -118,6 +119,13 @@ public class KiePMMLClusteringModel extends KiePMMLModel implements IsInterprete
         context.setAffinity(aggregates[selectedIndex]);
 
         return selectedCluster.getId().orElseGet(() -> Integer.toString(selectedEntityId));
+    }
+
+    static Double convertToDouble(Object toConvert) {
+        if (!(toConvert instanceof Number )) {
+            throw new IllegalArgumentException("Input data must be declared and sent as Number, received " + toConvert);
+        }
+        return (Double) DATA_TYPE.DOUBLE.getActualValue(toConvert);
     }
 
     private double computeAdjustmentFactor(Map<String, Object> requestData) {
