@@ -95,7 +95,7 @@ abstract class MaterializedLambda {
         String contents = MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit);
         String classHash = classHash(contents);
         String isolatedPackageName = getIsolatedPackageName(classHash);
-        String className = String.format("%s%s", getPrefix(), classHash);
+        String className = getPrefix() + classHash;
 
         String renamedContents = contents.replace(CLASS_NAME_TEMPLATE_NAME, className);
         String packageDeclaration = new PackageDeclaration(new Name(isolatedPackageName)).toString();
@@ -111,7 +111,7 @@ abstract class MaterializedLambda {
         We aggregate the Lambda classes based on the first two letters of the hash
      */
     private String getIsolatedPackageName(String className) {
-        return String.format("%s.P%s", packageName, className.substring(0, 2));
+        return packageName + ".P" + className.substring(0, 2);
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {

@@ -31,8 +31,8 @@ public class CreatedClass {
         this.className = className;
         this.packageName = packageName;
         this.contents = contents;
-        this.canonicalName = String.format("%s.%s", packageName, className);
-        this.sourcePath = String.format("%s/%s.java", packageName.replace(".", "/"), className);
+        this.canonicalName = packageName + "." + className;
+        this.sourcePath = this.canonicalName.replace('.', '/') + ".java";
     }
 
     public String getClassNameWithPackage() {
