@@ -87,9 +87,7 @@
       "timeouts": {
         "eventTimeout": "PT5S"
       }, 
-      "end": {
-        "terminate": "true"
-      }
+      "end": true
     }
   ]
 }

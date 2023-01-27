@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,19 @@
  */
 package org.jbpm.process.instance.impl.actions;
 
+import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 
-public class CancelNodeInstanceAction extends AbstractNodeInstanceAction {
+public class CompleteStateBasedNodeInstanceAction extends AbstractNodeInstanceAction {
 
     private static final long serialVersionUID = 1L;
 
-    public CancelNodeInstanceAction(String attachedToNodeId) {
+    public CompleteStateBasedNodeInstanceAction(String attachedToNodeId) {
         super(attachedToNodeId);
     }
 
     @Override
     protected void execute(NodeInstance nodeInstance) {
-        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).cancel();
+        ((StateBasedNodeInstance) nodeInstance).triggerCompleted();
     }
 }

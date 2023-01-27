@@ -84,9 +84,7 @@
         }
        ],
       "exclusive": true, 
-      "end": {
-        "terminate": "true"
-      }
+      "end": true
     }
   ]
 }

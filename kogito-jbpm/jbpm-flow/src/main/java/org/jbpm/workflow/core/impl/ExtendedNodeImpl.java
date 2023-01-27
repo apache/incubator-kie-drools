@@ -52,9 +52,4 @@ public class ExtendedNodeImpl extends NodeImpl {
     public String[] getActionTypes() {
         return EVENT_TYPES;
     }
-
-    @Override
-    public String getNodeUniqueId() {
-        throw new UnsupportedOperationException();
-    }
 }

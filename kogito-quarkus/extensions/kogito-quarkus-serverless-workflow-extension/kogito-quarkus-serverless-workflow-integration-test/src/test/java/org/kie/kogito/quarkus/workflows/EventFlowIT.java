@@ -73,7 +73,7 @@ class EventFlowIT {
     }
 
     @Test
-    void testNotStartingMultipleEventExclusive() throws IOException {
+    void testNotStartingMultipleEventExclusive1() throws IOException {
         doIt("nonStartMultipleEventExclusive", "event1Exclusive");
     }
 
@@ -82,6 +82,16 @@ class EventFlowIT {
         final String flowName = "nonStartMultipleEventWorkflowTimeout";
         String id = startProcess(flowName);
         waitForFinish(flowName, id, Duration.ofSeconds(5));
+    }
+
+    @Test
+    void testNotStartingMultipleEventExclusive2() throws IOException {
+        doIt("nonStartMultipleEventExclusive", "event2Exclusive");
+    }
+
+    @Test
+    void testNotStartingMultipleEventExclusive3() throws IOException {
+        doIt("nonStartMultipleEventExclusive", "event3Exclusive");
     }
 
     @Test

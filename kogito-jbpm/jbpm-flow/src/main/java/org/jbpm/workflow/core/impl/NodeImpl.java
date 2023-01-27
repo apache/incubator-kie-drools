@@ -397,7 +397,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
 
     @Override
     public String getNodeUniqueId() {
-        throw new UnsupportedOperationException();
+        return (String) getMetaData("UniqueId");
     }
 
     @Override

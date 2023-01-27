@@ -222,11 +222,11 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         node = process.getNodes()[6];
         assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[5];
-        assertThat(node).isInstanceOf(Join.class);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[1];
-        assertThat(node).isInstanceOf(StartNode.class);
+        assertThat(node).isInstanceOf(Join.class);
         node = process.getNodes()[3];
-        assertThat(node).isInstanceOf(StartNode.class);
+        assertThat(node).isInstanceOf(ActionNode.class);
 
         // now check the composite one to see what nodes it has
         CompositeContextNode compositeNode = (CompositeContextNode) process.getNodes()[6];
@@ -491,11 +491,11 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         Node node = process.getNodes()[5];
         assertThat(node).isInstanceOf(CompositeContextNode.class);
         node = process.getNodes()[4];
-        assertThat(node).isInstanceOf(Join.class);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[0];
-        assertThat(node).isInstanceOf(StartNode.class);
+        assertThat(node).isInstanceOf(Join.class);
         node = process.getNodes()[2];
-        assertThat(node).isInstanceOf(StartNode.class);
+        assertThat(node).isInstanceOf(ActionNode.class);
         node = process.getNodes()[6];
         assertThat(node).isInstanceOf(Split.class);
         node = process.getNodes()[7];
