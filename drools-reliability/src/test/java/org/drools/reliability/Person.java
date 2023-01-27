@@ -1,6 +1,8 @@
 package org.drools.reliability;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
     private String name;
     private int age;
 
