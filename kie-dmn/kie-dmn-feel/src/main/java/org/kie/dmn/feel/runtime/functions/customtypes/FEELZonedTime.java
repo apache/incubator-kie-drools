@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
@@ -82,7 +83,11 @@ public class FEELZonedTime implements Temporal {
     @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
         if (isSupported(unit)) {
-            return zonedDateTime.until(endExclusive, unit);
+            if (!endExclusive.isSupported(ChronoUnit.DAYS)) {
+                return zonedDateTime.toOffsetDateTime().toOffsetTime().until(endExclusive, unit);
+            } else {
+                return zonedDateTime.until(endExclusive, unit);
+            }
         } else {
             throw unsupportedTemporalUnitException();
         }
