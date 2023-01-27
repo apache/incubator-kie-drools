@@ -40,13 +40,13 @@ public class MaterializedLambdaPredicateTest {
         String expectedClassName = classNameWithPackage.substring(classNameWithPackage.lastIndexOf('.')+1);
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PB1;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PEA;\n" +
                 "\n" +
                 "import static rulename.*;\n" +
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "\n" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
-                "public enum LambdaPredicateB10E24A0870D07ADBD2B7B094A8B2B00 implements org.drools.model.functions.Predicate1<org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum LambdaPredicateEA4398DA4D9410AA6946A437AA1BBE61 implements org.drools.model.functions.Predicate1<org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "\n" +
@@ -81,13 +81,13 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.P14;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PC0;\n" +
                 "\n" +
                 "import static rulename.*;\n" +
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "\n" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
-                "public enum LambdaPredicate14E784B79B9F77DA22FCE590325C2B0D implements org.drools.model.functions.Predicate2<org.drools.model.codegen.execmodel.domain.Person, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum LambdaPredicateC0B44DB8E400F27965585A7108E25888 implements org.drools.model.functions.Predicate2<org.drools.model.codegen.execmodel.domain.Person, org.drools.model.codegen.execmodel.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "\n" +
