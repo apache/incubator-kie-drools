@@ -223,6 +223,6 @@ public class CloneHelperTest {
 
     private <T> void assertCloneError(T toClone) {
         UnaryOperator<T> cloner = (UnaryOperator<T>) CloneHelper.get().getCloner(toClone.getClass());
-        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> cloner.apply(toClone));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> cloner.apply(toClone));
     }
 }

@@ -16,6 +16,7 @@
 package org.jbpm.process.core.datatype.impl.coverter;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,31 +66,45 @@ public class CloneHelper {
     }
 
     private Optional<UnaryOperator<?>> searchCloneable(Class<?> type) {
+        return findCloneMethod(type).map(m -> handleException(m::invoke, type, "clone method"));
+    }
+
+    private Optional<UnaryOperator<?>> searchCopyConstructor(Class<?> type) {
+        return findCopyConstructor(type).map(c -> handleException(c::newInstance, type, "copy constructor"));
+    }
+
+    @FunctionalInterface
+    private interface CloneOperation {
+        Object apply(Object o) throws ReflectiveOperationException;
+    }
+
+    private UnaryOperator<?> handleException(CloneOperation cloneOperation, Class<?> type, String message) {
+        return o -> {
+            try {
+                return cloneOperation.apply(o);
+            } catch (InvocationTargetException ex) {
+                Throwable targetException = ex.getTargetException();
+                if (targetException instanceof RuntimeException) {
+                    throw (RuntimeException) targetException;
+                } else {
+                    throw new IllegalStateException("Invocation to " + message + " failed for " + type, targetException);
+                }
+            } catch (ReflectiveOperationException e) {
+                logger.warn("Unexpected issue accessing existing {} for type {}, returning same instance. {}", message, type, e.getMessage());
+                return o;
+            }
+        };
+    }
+
+    private Optional<Method> findCloneMethod(Class<?> type) {
         if (Cloneable.class.isAssignableFrom(type)) {
             try {
-                Method m = type.getMethod("clone");
-                return Optional.of(o -> {
-                    try {
-                        return m.invoke(o);
-                    } catch (ReflectiveOperationException ex) {
-                        throw new IllegalStateException(type + " implements cloneable but invocation to clone method failed", ex);
-                    }
-                });
+                return Optional.of(type.getMethod("clone"));
             } catch (NoSuchMethodException ex) {
                 logger.warn("{} implements cloneable but clone method cannot be found", type);
             }
         }
         return Optional.empty();
-    }
-
-    private Optional<UnaryOperator<?>> searchCopyConstructor(Class<?> type) {
-        return findCopyConstructor(type).map(c -> o -> {
-            try {
-                return c.newInstance(o);
-            } catch (ReflectiveOperationException ex) {
-                throw new IllegalStateException("Error cloning object " + o + " using copy constructor", ex);
-            }
-        });
     }
 
     private Optional<Constructor<?>> findCopyConstructor(Class<?> type) {
