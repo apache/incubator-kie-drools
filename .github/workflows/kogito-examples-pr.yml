@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java-version: [11]
-        maven-version: ['3.8.6']
+        maven-version: ['3.8.7']
         examples-subfolder:
           - kogito-quarkus-examples
           - kogito-springboot-examples
