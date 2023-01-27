@@ -174,7 +174,11 @@ public class FEELZonedTime implements Temporal {
 
     @Override
     public <R> R query(TemporalQuery<R> query) {
-        return zonedDateTime.query(query);
+        if (query == TemporalQueries.localDate() || query == TemporalQueries.chronology()) {
+            return null;
+        } else {
+            return zonedDateTime.query(query);
+        }
     }
 
     private DateTimeException unsupportedTemporalUnitException() {
