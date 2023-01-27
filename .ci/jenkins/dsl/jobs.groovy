@@ -30,6 +30,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.getEnvironmentName() ? '' : '-Dvalidate-formatting', // Validate formatting only for default env
                 ]
             ], [
                 id: 'kogito-quarkus-examples',
@@ -85,10 +86,10 @@ setupSpecificBuildChainNightlyJob('native')
 setupSpecificBuildChainNightlyJob('mandrel')
 
 // Jobs with integration branch
-setupSpecificNightlyJob('quarkus-main', true)
-setupSpecificNightlyJob('quarkus-branch', true)
-setupSpecificNightlyJob('quarkus-lts', true)
-setupSpecificNightlyJob('mandrel-lts', true)
+setupQuarkusIntegrationJob('quarkus-main')
+setupQuarkusIntegrationJob('quarkus-branch')
+setupQuarkusIntegrationJob('quarkus-lts')
+setupQuarkusIntegrationJob('mandrel-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -108,22 +109,8 @@ if (Utils.isMainBranch(this)) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupSpecificNightlyJob(String envName, boolean useIntegrationBranch = false) {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, "kogito-apps${useIntegrationBranch ? '-integration-branch' : ''}", JobType.NIGHTLY, envName, "${jenkins_path}/Jenkinsfile.specific_nightly", "Kogito Apps Nightly ${envName}")
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.triggers = [ cron : '@midnight' ]
-    jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        NOTIFICATION_JOB_NAME: "${envName} check",
-        USE_INTEGRATION_BRANCH : useIntegrationBranch,
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-            stringParam('GIT_AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}", 'Set the Git author creds id')
-        }
-    }
+void setupQuarkusIntegrationJob(String envName) {
+    KogitoJobUtils.createQuarkusNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
 }
 
 void setupSpecificBuildChainNightlyJob(String envName) {
