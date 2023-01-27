@@ -17,6 +17,7 @@ package org.drools.reliability;
 
 import org.infinispan.Cache;
 import org.infinispan.commons.api.CacheContainerAdmin;
+import org.infinispan.commons.marshall.JavaSerializationMarshaller;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
@@ -32,13 +33,24 @@ public enum CacheManager implements AutoCloseable {
 
     CacheManager() {
         // Set up a clustered Cache Manager.
-        GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
+        GlobalConfigurationBuilder global = new GlobalConfigurationBuilder();
+        global.serialization()
+                .marshaller(new JavaSerializationMarshaller())
+                .allowList()
+                .addRegexps("org.drools.");
+        global.transport().defaultTransport();
 
         // Initialize the default Cache Manager.
         cacheManager = new DefaultCacheManager(global.build());
 
         // Create a distributed cache with synchronous replication.
         ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.persistence().passivation(false)
+                .addSoftIndexFileStore()
+                .shared(false)
+                .dataLocation("tmp/cache/data")
+                .indexLocation("tmp/cache/index");
+
         builder.clustering().cacheMode(CacheMode.DIST_SYNC);
         cacheConfiguration = builder.build();
     }
