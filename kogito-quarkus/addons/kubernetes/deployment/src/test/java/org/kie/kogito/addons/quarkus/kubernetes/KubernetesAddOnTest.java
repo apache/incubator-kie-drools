@@ -32,6 +32,7 @@ public class KubernetesAddOnTest {
 
     @RegisterExtension
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
+            .overrideConfigKey("quarkus.devservices.enabled", "false")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class));
 
     @Inject
