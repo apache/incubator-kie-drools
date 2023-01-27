@@ -37,7 +37,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
@@ -718,7 +718,7 @@ public class KieContainerImpl
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
         KieSessionConfiguration ksConf = sessionConfsCache.computeIfAbsent(kSessionModel.getName(),
-                                                                           k -> new SessionConfigurationImpl( null, kProject.getClassLoader() ) );
+                                                                           k -> new SessionConfiguration( null, kProject.getClassLoader() ) );
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;

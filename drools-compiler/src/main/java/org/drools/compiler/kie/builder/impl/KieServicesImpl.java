@@ -26,11 +26,10 @@ import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.io.ResourceFactoryServiceImpl;
+import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -299,15 +298,15 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieSessionConfiguration newKieSessionConfiguration() {
-        return SessionConfiguration.newInstance();
+        return new SessionConfiguration();
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
-        return new SessionConfigurationImpl(properties);
+        return new SessionConfiguration(properties);
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader) {
-        return new SessionConfigurationImpl(properties, classLoader);
+        return new SessionConfiguration(properties, classLoader);
     }
 
     public Environment newEnvironment() {

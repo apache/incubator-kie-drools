@@ -28,7 +28,7 @@ public interface KieSessionOptionsConfiguration {
      *               itself contains the option key, and so a single parameter
      *               is enough.
      */
-    public <T extends KieSessionOption> void setOption( T option );
+    <T extends KieSessionOption> void setOption( T option );
 
     /**
      * Gets an option value
@@ -38,7 +38,7 @@ public interface KieSessionOptionsConfiguration {
      * @return the Option value for the given option. Returns null if option is
      *         not configured.
      */
-    public <T extends SingleValueKieSessionOption> T getOption( Class<T> option );
+    <T extends SingleValueKieSessionOption> T getOption( Class<T> option );
 
 
     /**
@@ -52,7 +52,5 @@ public interface KieSessionOptionsConfiguration {
      * @return the Option value for the given option + key. Returns null if option is
      *         not configured.
      */
-    public <T extends MultiValueKieSessionOption> T getOption( Class<T> option, String key );
-
-
+    <T extends MultiValueKieSessionOption> T getOption( Class<T> option, String key );
 }

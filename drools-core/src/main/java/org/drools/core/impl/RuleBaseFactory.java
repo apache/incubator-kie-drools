@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.SessionConfiguration;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.KieSessionConfiguration;
 
@@ -131,7 +131,7 @@ public class RuleBaseFactory {
      *     The KnowledgeSessionConfiguration.
      */
     public static KieSessionConfiguration newKnowledgeSessionConfiguration() {
-        return SessionConfiguration.newInstance();
+        return new SessionConfiguration();
     }
 
     /**
@@ -140,7 +140,7 @@ public class RuleBaseFactory {
      *     The KnowledgeSessionConfiguration.
      */
     public static KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
-        return new SessionConfigurationImpl(properties);
+        return new SessionConfiguration(properties);
     }
 
 }

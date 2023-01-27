@@ -208,7 +208,9 @@ public class RuleUnitWriter {
     }
 
     private Expression clockConfigExpression(ClockTypeOption clockType) {
-        return (clockType == ClockTypeOption.PSEUDO) ? parseExpression("org.drools.core.ClockType.PSEUDO_CLOCK") : parseExpression("org.drools.core.ClockType.REALTIME_CLOCK");
+        return (clockType == ClockTypeOption.PSEUDO) ?
+                parseExpression("org.kie.api.runtime.conf.ClockTypeOption.PSEUDO") :
+                parseExpression("org.kie.api.runtime.conf.ClockTypeOption.REALTIME");
     }
 
     private Expression kieBaseOptionsExpression(RuleUnitDescription description) {

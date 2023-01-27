@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -75,24 +74,12 @@ public class ObjectMarshallingStrategyStoreTest {
 		srcItems.add( entityTwo );
 		
 		ObjectMarshallingStrategy[] strats = new ObjectMarshallingStrategy[] {
-				new IdentityPlaceholderResolverStrategy( new ObjectMarshallingStrategyAcceptor() {
-
-					@Override
-					public boolean accept(Object object) {
-						return entityOne.equals(object);
-					}
-				}, Collections.singletonMap(entityOne.id, (Object) entityOne)),
-				new IdentityPlaceholderResolverStrategy( new ObjectMarshallingStrategyAcceptor() {
-
-					@Override
-					public boolean accept(Object object) {
-						return entityTwo.equals(object);
-					}
-				}, Collections.singletonMap(entityTwo.id, (Object) entityTwo)) };
+				new IdentityPlaceholderResolverStrategy(object -> entityOne.equals(object), Collections.singletonMap(entityOne.id, entityOne)),
+				new IdentityPlaceholderResolverStrategy(object -> entityTwo.equals(object), Collections.singletonMap(entityTwo.id, entityTwo)) };
 
 		env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats);
 
-		KieSessionConfiguration ksc = SessionConfiguration.newInstance();
+		KieSessionConfiguration ksc = new SessionConfiguration();
 
 		final KieBaseConfiguration kbconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
 
@@ -127,25 +114,13 @@ public class ObjectMarshallingStrategyStoreTest {
 		srcItems.add( entityTwo );
 		
 		ObjectMarshallingStrategy[] strats = new ObjectMarshallingStrategy[] {
-				new IdentityPlaceholderResolverStrategy("entityOne", new ObjectMarshallingStrategyAcceptor() {
-
-					@Override
-					public boolean accept(Object object) {
-						return entityOne.equals(object);
-					}
-				}, Collections.singletonMap(entityOne.id, (Object) entityOne)),
-				new IdentityPlaceholderResolverStrategy("entityTwo", new ObjectMarshallingStrategyAcceptor() {
-
-					@Override
-					public boolean accept(Object object) {
-						return entityTwo.equals(object);
-					}
-				}, Collections.singletonMap(entityTwo.id, (Object) entityTwo)),
+				new IdentityPlaceholderResolverStrategy("entityOne", object -> entityOne.equals(object), Collections.singletonMap(entityOne.id, entityOne)),
+				new IdentityPlaceholderResolverStrategy("entityTwo", object -> entityTwo.equals(object), Collections.singletonMap(entityTwo.id, entityTwo)),
 				};
 
 		env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, strats);
 
-		KieSessionConfiguration ksc = SessionConfiguration.newInstance();
+		KieSessionConfiguration ksc = new SessionConfiguration();
 
 		final KieBaseConfiguration kbconf = RuleBaseFactory.newKnowledgeBaseConfiguration();
 
@@ -173,20 +148,17 @@ public class ObjectMarshallingStrategyStoreTest {
 		// Deserialize object
 		StatefulKnowledgeSession ksession2;
 		{
-			ByteArrayInputStream bais = new ByteArrayInputStream(b1);
-			try{
+			try (ByteArrayInputStream bais = new ByteArrayInputStream(b1)) {
 				ksession2 = marshaller.unmarshall(bais, ks.getSessionConfiguration(), ks.getEnvironment());
 				Collection items = ksession2.getFactHandles();
-                assertThat(items.size() == 2).isTrue();
-				for( Object item : items ){
-					FactHandle factHandle = (FactHandle)item;
-                    assertThat(srcItems.contains(((DefaultFactHandle) factHandle).getObject())).isTrue();
+				assertThat(items.size() == 2).isTrue();
+				for (Object item : items) {
+					FactHandle factHandle = (FactHandle) item;
+					assertThat(srcItems.contains(((DefaultFactHandle) factHandle).getObject())).isTrue();
 				}
-			}catch( RuntimeException npe ){
+			} catch (RuntimeException npe) {
 				// Here ocurrs the bug that shows that NamedObjectMarshallingStrategies are required.
-				fail( "This error only happens if identity ObjectMarshallingStrategy use old name" );
-			}finally{
-				bais.close();
+				fail("This error only happens if identity ObjectMarshallingStrategy use old name");
 			}
 			
 			

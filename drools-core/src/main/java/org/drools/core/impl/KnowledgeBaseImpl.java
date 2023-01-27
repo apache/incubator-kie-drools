@@ -36,7 +36,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -161,7 +160,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
         setupRete();
 
-        sessionConfiguration = new SessionConfigurationImpl( null, this.config.getClassLoader(), this.config.getChainedProperties() );
+        sessionConfiguration = new SessionConfiguration( null, this.config.getClassLoader(), this.config.getChainedProperties() );
 
         mutable = this.config.isMutabilityEnabled();
     }

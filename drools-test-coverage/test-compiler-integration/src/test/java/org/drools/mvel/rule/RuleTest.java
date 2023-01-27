@@ -17,7 +17,6 @@ package org.drools.mvel.rule;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
@@ -29,6 +28,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.expr.MVELSalienceExpression;
 import org.junit.Test;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,8 +130,8 @@ public class RuleTest {
 
     @Test
     public void testTimeMachine() {
-        SessionConfiguration conf = SessionConfiguration.newInstance();
-        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setOption( ClockTypeOption.PSEUDO );
         WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", null).newKieSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
