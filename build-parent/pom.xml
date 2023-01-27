@@ -189,8 +189,8 @@
     <version.org.postgresql>42.5.0</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.0.5</version.io.smallrye.jandex>
-    <version.io.smallrye.jandex-maven-plugin>${version.io.smallrye.jandex}</version.io.smallrye.jandex-maven-plugin>
+    <version.io.smallrye.jandex>2.4.3.Final</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex-maven-plugin>1.2.3</version.io.smallrye.jandex-maven-plugin>
     <version.org.eclipse.yasson>1.0.11</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.24.2</version.com.github.javaparser>
@@ -208,8 +208,8 @@
     <version.maven>${version.org.apache.maven}</version.maven>
 
     <!-- Override with old org.jboss if relying on quarkus 2.13.x or older -->
-    <jandex.group-id>io.smallrye</jandex.group-id>
-    <jandex-maven-plugin.group-id>${jandex.group-id}</jandex-maven-plugin.group-id>
+    <jandex.group-id>org.jboss</jandex.group-id>
+    <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
     
   </properties>
 
@@ -2379,10 +2379,6 @@
       </activation>
       <properties>
         <org.kie.productized>true</org.kie.productized>
-        <jandex.group-id>org.jboss</jandex.group-id>
-        <version.io.smallrye.jandex>2.4.3.Final</version.io.smallrye.jandex>
-        <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
-        <version.io.smallrye.jandex-maven-plugin>1.2.3</version.io.smallrye.jandex-maven-plugin>
       </properties>
     </profile>
     <!--
@@ -2550,42 +2546,6 @@
                   <classifier>runtime</classifier>
                 </dependency>
               </dependencies>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-enforcer-plugin</artifactId>
-              <executions>
-                <!-- Additional ban-blacklisted-dependencies deps to be checked when productized is disabled -->
-                <execution>
-                  <id>ban-blacklisted-dependencies</id>
-                  <configuration>
-                    <rules>
-                      <bannedDependencies>
-                        <!-- these banned deps are added to the default list define above -->
-                        <excludes combine.children="append">
-                          <exclude>org.jboss:jandex</exclude> <!-- Use io.smallrye:jandex instead -->
-                          <exclude>org.jboss.jandex:jandex-maven-plugin</exclude> <!-- Use io.smallrye:jandex-maven-plugin instead -->
-                          <!-- End  -->
-                        </excludes>
-                      </bannedDependencies>
-                    </rules>
-                  </configuration>
-                </execution>
-              </executions>
             </plugin>
           </plugins>
         </pluginManagement>
