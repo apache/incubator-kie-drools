@@ -59,7 +59,7 @@ public class RuleUnitWriterTest {
         String unitSource = ruleUnitWriter.getUnitSource();
 
         assertThat(unitSource).contains("org.kie.api.conf.EventProcessingOption.STREAM"); // TestRuleUnitDescription.getKieBaseOptions
-        assertThat(unitSource).contains("org.drools.core.ClockType.PSEUDO_CLOCK"); // TestRuleUnitDescription.getClockType
+        assertThat(unitSource).contains("org.kie.api.runtime.conf.ClockTypeOption.PSEUDO"); // TestRuleUnitDescription.getClockType
     }
 
     private RuleUnitWriter createRuleUnitWriterWithTestParameters(DroolsModelBuildContext.Builder contextBuilder) {

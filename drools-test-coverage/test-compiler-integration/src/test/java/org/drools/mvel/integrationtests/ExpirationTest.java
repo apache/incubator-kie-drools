@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
-import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.integrationtests.facts.BasicEvent;
@@ -766,7 +766,7 @@ public class ExpirationTest {
                 "	  System.out.println(\"R is fired\");  \n" +
                 " end\n";
 
-        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
@@ -854,7 +854,7 @@ public class ExpirationTest {
                 "    System.out.println(\"R2 Fired\"); \n" +
                 " end\n";
 
-        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -950,7 +950,7 @@ public class ExpirationTest {
                         "     System.out.println(\"R2 is fired\");\n"+
                         " end";
 
-        final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
+        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);

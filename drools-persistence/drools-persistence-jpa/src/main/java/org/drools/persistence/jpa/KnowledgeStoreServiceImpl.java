@@ -57,7 +57,7 @@ public class KnowledgeStoreServiceImpl
                                                   KieSessionConfiguration configuration,
                                                   Environment environment) {
         if ( configuration == null ) {
-            configuration = SessionConfiguration.newInstance();
+            configuration = new SessionConfiguration();
         }
 
         if ( environment == null ) {
@@ -75,7 +75,7 @@ public class KnowledgeStoreServiceImpl
                                                    KieSessionConfiguration configuration,
                                                    Environment environment) {
         if ( configuration == null ) {
-            configuration = SessionConfiguration.newInstance();
+            configuration = new SessionConfiguration();
         }
 
         if ( environment == null ) {
@@ -94,7 +94,7 @@ public class KnowledgeStoreServiceImpl
             KieSessionConfiguration configuration,
             Environment environment) {
         if ( configuration == null ) {
-            configuration = SessionConfiguration.newInstance();
+            configuration = new SessionConfiguration();
         }
 
         if ( environment == null ) {

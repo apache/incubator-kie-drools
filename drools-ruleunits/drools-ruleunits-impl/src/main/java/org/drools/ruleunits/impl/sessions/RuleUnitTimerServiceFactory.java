@@ -16,7 +16,7 @@
 package org.drools.ruleunits.impl.sessions;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerService;
 import org.drools.wiring.api.ComponentsFactory;
 
@@ -26,7 +26,7 @@ public class RuleUnitTimerServiceFactory {
         TimerService service;
         switch (config.getClockType()) {
             case REALTIME_CLOCK:
-                service = newTimerService((SessionConfigurationImpl) config);
+                service = newTimerService((SessionConfiguration) config);
                 break;
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
@@ -38,7 +38,7 @@ public class RuleUnitTimerServiceFactory {
         return service;
     }
 
-    private static TimerService newTimerService(SessionConfigurationImpl config) {
+    private static TimerService newTimerService(SessionConfiguration config) {
         String className = config.getPropertyValue("drools.timerService", "org.drools.core.time.impl.JDKTimerService");
         if (className == null) {
             return null;

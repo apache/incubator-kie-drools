@@ -11,6 +11,7 @@ import org.drools.ruleunits.impl.factory.AbstractRuleUnit;
 import org.drools.ruleunits.impl.factory.AbstractRuleUnits;
 import org.drools.ruleunits.impl.ReteEvaluatorBasedRuleUnitInstance;
 import org.drools.ruleunits.impl.sessions.RuleUnitExecutorImpl;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
 
@@ -19,7 +20,7 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     private static final SessionConfiguration sessionConfiguration = ruleBase.getSessionConfiguration();
 
     static {
-        sessionConfiguration.setClockType($ClockType$);
+        sessionConfiguration.setOption( $ClockType$ );
     }
 
     public CLASS_NAME() {

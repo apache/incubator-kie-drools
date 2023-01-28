@@ -16,22 +16,22 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.ClockType;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CronJobTest {
     @Test
     public void testCronTriggerJob() throws Exception {
-        SessionConfiguration config = SessionConfiguration.newInstance();
-        config.setClockType( ClockType.PSEUDO_CLOCK );
+        SessionConfiguration config = new SessionConfiguration();
+        config.setOption( ClockTypeOption.PSEUDO );
         PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( config );
 
         timeService.advanceTime( 0,

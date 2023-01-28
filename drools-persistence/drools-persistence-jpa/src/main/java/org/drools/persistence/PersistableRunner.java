@@ -92,7 +92,7 @@ public class PersistableRunner implements SingleSessionCommandService {
                               KieSessionConfiguration conf,
                               Environment env ) {
         if ( conf == null ) {
-            conf = SessionConfiguration.newInstance();
+            conf = new SessionConfiguration();
         }
         this.env = env;
 
@@ -168,7 +168,7 @@ public class PersistableRunner implements SingleSessionCommandService {
                               KieSessionConfiguration conf,
                               Environment env ) {
         if ( conf == null ) {
-            conf = SessionConfiguration.newInstance();
+            conf = new SessionConfiguration();
         }
 
         this.env = env;
