@@ -166,7 +166,7 @@ public abstract class JbpmBpmn2TestCase {
                 DefaultSignalManagerFactory.class.getName());
         defaultProps.setProperty("drools.processInstanceManagerFactory",
                 DefaultProcessInstanceManagerFactory.class.getName());
-        KieSessionConfiguration conf = SessionConfiguration.newInstance(defaultProps);
+        KieSessionConfiguration conf = new SessionConfiguration(defaultProps);
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
         workingMemoryLogger = new KogitoWorkingMemoryInMemoryLogger(result);
