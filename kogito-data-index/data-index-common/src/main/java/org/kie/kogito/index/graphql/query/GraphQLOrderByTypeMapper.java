@@ -78,6 +78,8 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
         switch (name) {
             case "Int":
             case "Long":
+            case "BigDecimal":
+            case "Float":
             case "String":
             case "Boolean":
             case "DateTime":

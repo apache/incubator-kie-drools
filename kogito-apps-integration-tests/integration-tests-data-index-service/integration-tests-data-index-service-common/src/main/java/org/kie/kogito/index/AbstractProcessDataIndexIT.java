@@ -32,7 +32,9 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.config.JsonConfig;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
@@ -53,6 +55,9 @@ public abstract class AbstractProcessDataIndexIT {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        JsonConfig jsonConfig = JsonConfig.jsonConfig().numberReturnType(JsonPathConfig.NumberReturnType.DOUBLE);
+
+        RestAssured.config = RestAssured.config().jsonConfig(jsonConfig);
     }
 
     RequestSpecification spec;
@@ -81,8 +86,10 @@ public abstract class AbstractProcessDataIndexIT {
         String pId = given()
                 .contentType(ContentType.JSON)
                 .body("{\"traveller\" : {\"firstName\" : \"Darth\",\"lastName\" : \"Vader\",\"email\" : \"darth.vader@deathstar.com\",\"nationality\" : \"Tatooine\", " +
-                        "\"testDate\" : \"2022-03-09T23:00:00Z\", " + "    \"testInstant\": \"2022-03-10T16:15:50Z\"" +
-                        "}}")
+                        "\"testDate\" : \"2022-03-09T23:00:00Z\", " + "    \"testInstant\": \"2022-03-10T16:15:50Z\", " +
+                        " \"testInteger\":  2147483641 ," + " \"testLong\": 8223372036854775802," +
+                        " \"testFloat\": 12028234663852423984636272836465776.837366," +
+                        " \"testDouble\" : 21348234663852886984636272864657746.234566" + "}}")
                 .when()
                 .post("/approvals")
                 .then()
@@ -112,7 +119,8 @@ public abstract class AbstractProcessDataIndexIT {
                     .atMost(TIMEOUT)
                     .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
                             .body("{ \"query\" : \"{Approvals{ id, traveller { firstName, lastName, testDate, " +
-                                    "testInstant}, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
+                                    "testInstant, testInteger, testLong, testFloat, testDouble}, " +
+                                    "metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
                             .when().post("/graphql")
                             .then().statusCode(200)
                             .body("data.Approvals.size()", is(1))
@@ -121,6 +129,10 @@ public abstract class AbstractProcessDataIndexIT {
                             .body("data.Approvals[0].traveller.lastName", is("Vader"))
                             .body("data.Approvals[0].traveller.testDate", is("2022-03-09T23:00:00Z"))
                             .body("data.Approvals[0].traveller.testInstant", is("2022-03-10T16:15:50Z"))
+                            .body("data.Approvals[0].traveller.testInteger", is(2147483641))
+                            .body("data.Approvals[0].traveller.testLong", is(Long.valueOf("8223372036854775802")))
+                            .body("data.Approvals[0].traveller.testFloat", is(1.2028235E34))
+                            .body("data.Approvals[0].traveller.testDouble", is(2.134823466385289E34))
                             .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
                             .body("data.Approvals[0].metadata.processInstances.size()", is(1))
                             .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
@@ -666,7 +678,7 @@ public abstract class AbstractProcessDataIndexIT {
         assertEquals(2, schemaJsonNode.at("/$defs").size());
 
         assertEquals("object", schemaJsonNode.at("/$defs/Traveller/type").asText());
-        assertEquals(8, schemaJsonNode.at("/$defs/Traveller/properties").size());
+        assertEquals(12, schemaJsonNode.at("/$defs/Traveller/properties").size());
         assertEquals("#/$defs/Address", schemaJsonNode.at("/$defs/Traveller/properties/address/$ref").asText());
         assertEquals("string",
                 schemaJsonNode.at("/$defs/Traveller/properties/email/type").asText());

@@ -1,4 +1,6 @@
 scalar DateTime
+scalar BigDecimal
+scalar Long
 
 schema {
     query: Query
@@ -174,6 +176,53 @@ input NumericArgument {
 input NumericRange {
     from: Int!
     to: Int!
+}
+input LongArgument {
+    in: [Long!]
+    isNull: Long
+    equal: Long
+    greaterThan: Long
+    greaterThanEqual: Long
+    lessThan: Long
+    lessThanEqual: Long
+    between: LongRange
+}
+
+input LongRange {
+    from: Long!
+    to: Long!
+}
+
+input FloatArgument {
+    in: [Float!]
+    isNull: Boolean
+    equal: Float
+    greaterThan: Float
+    greaterThanEqual: Float
+    lessThan: Float
+    lessThanEqual: Float
+    between: FloatRange
+}
+
+input FloatRange {
+    from: Float!
+    to: Float!
+}
+
+input BigDecimalArgument {
+    in: [BigDecimal!]
+    isNull: Boolean
+    equal: BigDecimal
+    greaterThan: BigDecimal
+    greaterThanEqual: BigDecimal
+    lessThan: BigDecimal
+    lessThanEqual: BigDecimal
+    between: BigDecimalRange
+}
+
+input BigDecimalRange {
+    from: BigDecimal!
+    to: BigDecimal!
 }
 
 input DateArgument {

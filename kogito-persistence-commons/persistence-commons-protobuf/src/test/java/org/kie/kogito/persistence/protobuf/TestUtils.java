@@ -54,7 +54,11 @@ public class TestUtils {
         DOMAIN_DESCRIPTOR.setAttributes(List.of(new org.kie.kogito.persistence.api.proto.AttributeDescriptor("flight", "org.acme.travels.travels.Flight"),
                 new org.kie.kogito.persistence.api.proto.AttributeDescriptor("hotel", "org.acme.travels.travels.Hotel"),
                 new org.kie.kogito.persistence.api.proto.AttributeDescriptor("id", "java.lang.String"),
-                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("metadata", "java.lang.String")));
+                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("metadata", "java.lang.String"),
+                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("testInt", "java.lang.Integer"),
+                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("testDouble", "java.lang.Double"),
+                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("testFloat", "java.lang.Float"),
+                new org.kie.kogito.persistence.api.proto.AttributeDescriptor("testLong", "java.lang.Long")));
 
         DomainDescriptor flight = new DomainDescriptor();
         flight.setTypeName("org.acme.travels.travels.Flight");
@@ -107,10 +111,14 @@ public class TestUtils {
         AttributeDescriptor hotel = new AttributeDescriptor("hotel", "Hotel", false);
         AttributeDescriptor id = new AttributeDescriptor("id", "string", true);
         AttributeDescriptor metadata = new AttributeDescriptor("metadata", "string", true);
+        AttributeDescriptor testInt = new AttributeDescriptor("testInt", "int32", true);
+        AttributeDescriptor testDouble = new AttributeDescriptor("testDouble", "double", true);
+        AttributeDescriptor testFloat = new AttributeDescriptor("testFloat", "float", true);
+        AttributeDescriptor testLong = new AttributeDescriptor("testLong", "int64", true);
         IndexDescriptor idIndex = new IndexDescriptor("id", List.of("id"));
         EntityIndexDescriptor travelEntityIndexDescriptor = new EntityIndexDescriptor("org.acme.travels.travels.Travels",
                 List.of(idIndex),
-                List.of(flight, hotel, id, metadata));
+                List.of(flight, hotel, id, metadata, testInt, testDouble, testFloat, testLong));
 
         Map<String, EntityIndexDescriptor> entityIndexDescriptorMap = new HashMap<>();
         entityIndexDescriptorMap.put(flightEntityIndexDescriptor.getName(), flightEntityIndexDescriptor);

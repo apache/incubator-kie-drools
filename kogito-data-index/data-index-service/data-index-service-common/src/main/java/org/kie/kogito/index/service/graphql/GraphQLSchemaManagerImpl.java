@@ -43,6 +43,7 @@ import org.reactivestreams.Publisher;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLInputObjectType;
@@ -147,6 +148,8 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                     return builder;
                 })
                 .scalar(getDateTimeScalarType())
+                .scalar(ExtendedScalars.GraphQLBigDecimal)
+                .scalar(ExtendedScalars.GraphQLLong)
                 .build();
 
         SchemaGenerator schemaGenerator = new SchemaGenerator();

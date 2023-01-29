@@ -92,8 +92,13 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
         String name = resolveBaseTypeName(field.getType());
         switch (name) {
             case "Int":
-            case "Long":
                 return getInputObjectType("NumericArgument");
+            case "Long":
+                return getInputObjectType("LongArgument");
+            case "Double":
+                return getInputObjectType("BigDecimalArgument");
+            case "Float":
+                return getInputObjectType("FloatArgument");
             case "String":
                 return getInputObjectType("StringArgument");
             case "Boolean":

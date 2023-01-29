@@ -99,6 +99,9 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                                 parser.mapAttribute(field.getName(), mapDateArgument(field.getName()));
                                 break;
                             case "NumericArgument":
+                            case "FloatArgument":
+                            case "BigDecimalArgument":
+                            case "LongArgument":
                                 parser.mapAttribute(field.getName(), mapNumericArgument(field.getName()));
                                 break;
                             case "KogitoMetadataArgument":

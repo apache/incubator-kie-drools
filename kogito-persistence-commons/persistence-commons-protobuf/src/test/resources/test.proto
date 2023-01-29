@@ -30,4 +30,12 @@ message Travels {
     optional string id = 3;
     /* @Field(index = Index.NO, store = Store.YES) */
     optional string metadata = 4;
+    /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+    optional int32 testInt = 5;
+    /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+    optional double testDouble = 6;
+    /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+    optional float testFloat = 7;
+    /* @Field(index = Index.NO, store = Store.YES) @SortableField */
+    optional int64 testLong = 8;
 }

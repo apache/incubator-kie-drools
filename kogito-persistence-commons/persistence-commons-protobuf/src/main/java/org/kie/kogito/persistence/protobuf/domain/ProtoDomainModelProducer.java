@@ -91,6 +91,10 @@ public class ProtoDomainModelProducer {
                     return Integer.class.getName();
                 case LONG:
                     return Long.class.getName();
+                case FLOAT:
+                    return Float.class.getName();
+                case DOUBLE:
+                    return Double.class.getName();
                 case BOOLEAN:
                     return Boolean.class.getName();
                 case MESSAGE:

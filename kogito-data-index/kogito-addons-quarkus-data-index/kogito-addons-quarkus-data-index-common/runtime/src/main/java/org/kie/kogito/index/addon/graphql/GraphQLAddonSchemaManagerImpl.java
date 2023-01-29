@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.kogito.index.graphql.AbstractGraphQLSchemaManager;
 import org.kie.kogito.index.model.ProcessInstanceState;
 
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -49,6 +50,8 @@ public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager 
                     return builder;
                 })
                 .scalar(getDateTimeScalarType())
+                .scalar(ExtendedScalars.GraphQLBigDecimal)
+                .scalar(ExtendedScalars.GraphQLLong)
                 .build();
 
         SchemaGenerator schemaGenerator = new SchemaGenerator();
