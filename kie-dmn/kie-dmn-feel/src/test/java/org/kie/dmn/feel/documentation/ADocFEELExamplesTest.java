@@ -44,7 +44,7 @@ public class ADocFEELExamplesTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ADocFEELExamplesTest.class);
     private static final List<FEELProfile> profiles = new ArrayList<>();
-    {
+    static {
         profiles.add(new KieExtendedFEELProfile());
     }
     private final FEEL feel = FEEL.newInstance(profiles);
