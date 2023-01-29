@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -65,7 +66,7 @@ public class UnmarshalMarshalTest {
 
     @Test
     public void testV13_ch11example_asFromOMG() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving.
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving.
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_3/", "Chapter 11 Example.dmn", marshaller, DMN13_SCHEMA_SOURCE);
     }
 

@@ -17,6 +17,7 @@
 package org.drools.scenariosimulation.backend.fluent;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactMappingValue;
@@ -58,7 +59,7 @@ public class ValidateFactCommandTest {
         when(registryContext.lookup(KieSession.class)).thenReturn(kieSession);
         Function<Object, ValueWrapper> alwaysMatchFunction = ValueWrapper::of;
 
-        ValidateFactCommand validateFactCommand = new ValidateFactCommand(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
+        ValidateFactCommand validateFactCommand = new ValidateFactCommand(List.of(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 
         when(kieSession.getObjects(any(ObjectFilter.class))).thenReturn(Collections.singleton(null));
         validateFactCommand.execute(registryContext);

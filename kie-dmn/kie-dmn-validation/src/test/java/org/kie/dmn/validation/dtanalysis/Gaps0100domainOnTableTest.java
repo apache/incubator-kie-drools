@@ -43,19 +43,19 @@ public class Gaps0100domainOnTableTest extends AbstractDTAnalysisTest {
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
+                                                                     List.of(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound(new BigDecimal("0"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null)))),
                                                   new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("100"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("100"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+                                                                     List.of(Interval.newFromBounds(new Bound(new BigDecimal("100"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound(new BigDecimal("100"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null)))));
         assertThat(gaps).hasSize(2);
 
         // Assert GAPS

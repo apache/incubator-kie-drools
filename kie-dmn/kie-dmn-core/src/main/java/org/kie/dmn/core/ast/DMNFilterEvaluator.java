@@ -113,7 +113,7 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
 
                 //If on the first evaluation, a number is returned, we are using an index instead of a boolean filter
                 if (first && evalReturn instanceof Number) {
-                    List list = inObj instanceof List ? (List) inObj : Arrays.asList(inObj);
+                    List list = inObj instanceof List ? (List) inObj : List.of(inObj);
                     int i = ((Number) evalReturn).intValue();
                     if (i > 0 && i <= list.size()) {
                         return new EvaluatorResultImpl(list.get(i - 1), ResultType.SUCCESS);

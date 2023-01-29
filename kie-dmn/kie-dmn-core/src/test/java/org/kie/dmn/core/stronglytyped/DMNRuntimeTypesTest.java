@@ -310,7 +310,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         context.set("vowel", "e");
         context.set("listVowel", Arrays.asList("a", "e"));
         context.set("justA", "a");
-        context.set("listOfA", Arrays.asList("a"));
+        context.set("listOfA", List.of("a"));
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);
@@ -344,7 +344,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
         context.set("vowel", "x"); // fails allowedValues
         context.set("listVowel", Arrays.asList("a", "x")); // fails allowedValues of the inner type
         context.set("justA", "e"); // fails allowedValues
-        context.set("listOfA", Arrays.asList("e")); // fails allowedValues of the inner type
+        context.set("listOfA", List.of("e")); // fails allowedValues of the inner type
 
         final DMNResult dmnResult = evaluateModel(runtime, dmnModel, context);
         LOG.debug("{}", dmnResult);

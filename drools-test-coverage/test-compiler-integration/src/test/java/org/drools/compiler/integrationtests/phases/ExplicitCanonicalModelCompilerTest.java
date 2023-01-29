@@ -49,7 +49,7 @@ public class ExplicitCanonicalModelCompilerTest {
         handler.getResults().forEach(results::addBuilderResult);
 
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
-        Collection<CompositePackageDescr> compositePackageDescrs = asList(compositePackageDescr);
+        Collection<CompositePackageDescr> compositePackageDescrs = List.of(compositePackageDescr);
 
         ExplicitCanonicalModelCompiler<PackageSources> compiler =
                 ExplicitCanonicalModelCompiler.of(

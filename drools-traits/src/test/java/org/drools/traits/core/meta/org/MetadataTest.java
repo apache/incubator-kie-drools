@@ -336,8 +336,8 @@ public class MetadataTest {
         Klass_.modify( klass1 ).oneAnother( aki2 ).call();
 
         assertThat(klass1.getOneAnother()).isSameAs(aki2);
-        assertThat(aki2.getManyKlasses()).isEqualTo(Arrays.asList(klass1));
-        assertThat(aki.getManyKlasses()).isEqualTo(Arrays.asList(klass2));
+        assertThat(aki2.getManyKlasses()).isEqualTo(List.of(klass1));
+        assertThat(aki.getManyKlasses()).isEqualTo(List.of(klass2));
 
     }
 

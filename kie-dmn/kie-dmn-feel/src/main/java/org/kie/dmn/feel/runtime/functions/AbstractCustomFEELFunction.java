@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,7 +84,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
 
     @Override
     public List<List<Param>> getParameters() {
-        return Arrays.asList(parameters);
+        return Collections.singletonList(parameters);
     }
 
     String getSignature() {

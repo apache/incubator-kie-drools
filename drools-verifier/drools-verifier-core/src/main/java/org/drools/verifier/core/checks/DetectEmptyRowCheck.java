@@ -18,6 +18,7 @@ package org.drools.verifier.core.checks;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Issue;
@@ -51,6 +52,6 @@ public class DetectEmptyRowCheck
                               final CheckType checkType) {
         return new Issue(severity,
                          checkType,
-                         new HashSet<>(Arrays.asList(ruleInspector.getRowIndex() + 1)));
+                         new HashSet<>(List.of(ruleInspector.getRowIndex() + 1)));
     }
 }

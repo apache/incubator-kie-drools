@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.process.ProcessContext;
@@ -143,7 +144,7 @@ public class ProcessContextTest {
                 return Collections.emptyList();
             }
 
-            return Arrays.asList(entity);
+            return List.of(entity);
         }
 
         @Override

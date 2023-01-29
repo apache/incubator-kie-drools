@@ -168,7 +168,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
-        assertThat(list).isEqualTo(Arrays.asList("ok"));
+        assertThat(list).isEqualTo(List.of("ok"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
@@ -321,7 +321,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
-        assertThat(list).isEqualTo(Arrays.asList("ok"));
+        assertThat(list).isEqualTo(List.of("ok"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
@@ -790,7 +790,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.setGlobal( "list", list );
 
         ks.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList("ok1"));
+        assertThat(list).isEqualTo(List.of("ok1"));
 
         try {
             ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true );
@@ -902,7 +902,7 @@ public class LogicalTraitTest extends CommonTraitTest {
 //            System.out.println( o );
 //        }
 
-        assertThat(list).isEqualTo(Arrays.asList("ok1"));
+        assertThat(list).isEqualTo(List.of("ok1"));
     }
 
 
@@ -1003,7 +1003,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         FactHandle handle = ks.insert( "go" );
 
         ks.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList("ok"));
+        assertThat(list).isEqualTo(List.of("ok"));
 
         for ( Object o : ks.getObjects() ) {
             System.out.println( o  + " >> " + ((InternalFactHandle)ks.getFactHandle( o )).getEqualityKey() );

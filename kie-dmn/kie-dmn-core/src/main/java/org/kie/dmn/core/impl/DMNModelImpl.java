@@ -542,7 +542,7 @@ public class DMNModelImpl
             }
             if (alias != null) {
                 Collection<List<String>> allPrefixesUnderMyNamespace = result.computeIfAbsent(node.getNamespace(), k -> new ArrayList<>());
-                allPrefixesUnderMyNamespace.add(Arrays.asList(alias));
+                allPrefixesUnderMyNamespace.add(List.of(alias));
             }
             return result;
         }

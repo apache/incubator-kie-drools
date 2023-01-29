@@ -1153,7 +1153,7 @@ public class AbductionTest {
             System.out.println( ">>> " + o );
         }
 
-        assertThat(list).isEqualTo(Arrays.asList("Apple"));
+        assertThat(list).isEqualTo(List.of("Apple"));
     }
 
 }

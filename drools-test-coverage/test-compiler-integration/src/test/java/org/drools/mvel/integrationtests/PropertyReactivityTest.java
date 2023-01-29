@@ -643,7 +643,7 @@ public class PropertyReactivityTest {
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList("XXX -> Walter"));
+        assertThat(list).isEqualTo(List.of("XXX -> Walter"));
     }
 
     /**
@@ -794,7 +794,7 @@ public class PropertyReactivityTest {
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList("XXX White"));
+        assertThat(list).isEqualTo(List.of("XXX White"));
     }
 
     /**

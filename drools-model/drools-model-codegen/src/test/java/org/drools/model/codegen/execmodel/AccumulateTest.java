@@ -1117,7 +1117,7 @@ public class AccumulateTest extends BaseModelTest {
         ksession.insert(data1);
 
         Object data2 = dataType.newInstance();
-        dataType.set(data2, "values", Arrays.asList(10));
+        dataType.set(data2, "values", List.of(10));
         dataType.set(data2, "bias", 100);
         ksession.insert(data2);
 

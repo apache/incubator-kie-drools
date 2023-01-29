@@ -118,7 +118,7 @@ public class CompiledFEELSupport {
             if (value == null) {
                 return null;
             }
-            List list = value instanceof List ? (List) value : Arrays.asList(value);
+            List list = value instanceof List ? (List) value : List.of(value);
 
             Object f = filterExpression.apply(
                     new SilentWrappingEvaluationContextImpl(ctx)); // I need to try evaluate filter first, ignoring errors; only if evaluation fails, or is not a Number, it delegates to try `evaluateExpressionsInContext`
@@ -162,7 +162,7 @@ public class CompiledFEELSupport {
             if (value == null) {
                 return null;
             }
-            List list = value instanceof List ? (List) value : Arrays.asList(value);
+            List list = value instanceof List ? (List) value : List.of(value);
 
             if (filterIndex instanceof Number) {
                 int i = ((Number) filterIndex).intValue();

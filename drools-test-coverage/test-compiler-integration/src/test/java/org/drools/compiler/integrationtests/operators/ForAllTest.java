@@ -339,9 +339,9 @@ public class ForAllTest {
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Pojo(Collections.emptyList(), 1, 3));
-        ksession.insert(new Pojo(Arrays.asList(2), 1, 3));
-        ksession.insert(new Pojo(Arrays.asList(3), firing ? 0 : 1, 3));
-        ksession.insert(new Pojo(Arrays.asList(2), firing ? 0 : 1, 0));
+        ksession.insert(new Pojo(List.of(2), 1, 3));
+        ksession.insert(new Pojo(List.of(3), firing ? 0 : 1, 3));
+        ksession.insert(new Pojo(List.of(2), firing ? 0 : 1, 0));
 
         assertThat(ksession.fireAllRules()).isEqualTo(firing ? 1 : 0);
     }

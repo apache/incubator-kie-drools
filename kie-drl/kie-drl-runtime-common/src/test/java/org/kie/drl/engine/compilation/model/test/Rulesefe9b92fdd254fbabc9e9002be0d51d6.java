@@ -1,5 +1,7 @@
 package org.kie.drl.engine.compilation.model.test;
 
+import java.util.List;
+
 public class Rulesefe9b92fdd254fbabc9e9002be0d51d6 implements org.drools.model.Model {
 
     public final static java.time.format.DateTimeFormatter DATE_TIME_FORMATTER = new java.time.format.DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(org.drools.util.DateUtils.getDateFormatMask()).toFormatter(java.util.Locale.ENGLISH);
@@ -38,7 +40,7 @@ public class Rulesefe9b92fdd254fbabc9e9002be0d51d6 implements org.drools.model.M
     }
 
     public java.util.List<org.drools.model.Rule> getRulesList() {
-        return java.util.Arrays.asList();
+        return List.of();
     }
 
     java.util.List<org.drools.model.Rule> rules = getRulesList();

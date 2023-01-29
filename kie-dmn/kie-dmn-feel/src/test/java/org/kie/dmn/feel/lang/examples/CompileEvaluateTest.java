@@ -158,7 +158,7 @@ public class CompileEvaluateTest {
         assertThat(errors).isEmpty();
         
         Map<String, Object> inputs = new HashMap<>();
-        inputs.put( "input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
+        inputs.put("input", List.of(prototype(entry("Primary-Key", "k987"))));
         Object result = feel.evaluate(compiledExpression, inputs);
         assertThat(result).asList().containsExactly("k987");
         assertThat(errors).isEmpty();
@@ -173,7 +173,7 @@ public class CompileEvaluateTest {
         assertThat(errors).isEmpty();
         
         Map<String, Object> inputs = new HashMap<>();
-        inputs.put( "my input", Arrays.asList(prototype(entry("Primary-Key", "k987"))) );
+        inputs.put("my input", List.of(prototype(entry("Primary-Key", "k987"))));
         Object result = feel.evaluate(compiledExpression, inputs);
         assertThat(result).isEqualTo("k987");
         assertThat(errors).isEmpty();

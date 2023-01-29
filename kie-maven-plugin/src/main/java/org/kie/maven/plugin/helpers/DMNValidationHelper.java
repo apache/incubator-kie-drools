@@ -116,7 +116,7 @@ public class DMNValidationHelper {
         log.info("DMN DT Validator initialized.");
         for (DMNModel model : dmnModels) {
             log.info("Analysing decision tables in DMN Model '" + model.getName() + "' ...");
-            List<DTAnalysis> results = analyser.analyse(model, new HashSet<>(Arrays.asList(Validation.ANALYZE_DECISION_TABLE)));
+            List<DTAnalysis> results = analyser.analyse(model, new HashSet<>(List.of(Validation.ANALYZE_DECISION_TABLE)));
             if (results.isEmpty()) {
                 log.info(" no decision tables found.");
             } else {

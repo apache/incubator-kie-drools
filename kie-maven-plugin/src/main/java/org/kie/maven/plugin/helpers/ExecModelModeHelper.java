@@ -34,7 +34,7 @@ public class ExecModelModeHelper {
     }
 
     public static boolean ancEnabled(String s) {
-        return asList(WITHANC).contains(valueOf(s.toUpperCase()));
+        return List.of(WITHANC).contains(valueOf(s.toUpperCase()));
     }
 
     public static boolean isModelCompilerInClassPath(List<Dependency> dependencies) {

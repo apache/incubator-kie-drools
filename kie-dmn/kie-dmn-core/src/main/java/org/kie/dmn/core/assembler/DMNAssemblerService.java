@@ -229,7 +229,7 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     public static List<DMNProfile> getDefaultDMNProfiles(ChainedProperties properties) {
         if (!isStrictMode(properties)) {
-            return Arrays.asList(new ExtendedDMNProfile());
+            return List.of(new ExtendedDMNProfile());
         } else {
             return Collections.emptyList();
         }

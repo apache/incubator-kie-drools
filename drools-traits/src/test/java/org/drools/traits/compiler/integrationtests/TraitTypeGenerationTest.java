@@ -330,7 +330,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
             System.out.println( ">>> " + o );
         }
 
-        assertThat(list).isEqualTo(Arrays.asList(4));
+        assertThat(list).isEqualTo(List.of(4));
     }
 
 

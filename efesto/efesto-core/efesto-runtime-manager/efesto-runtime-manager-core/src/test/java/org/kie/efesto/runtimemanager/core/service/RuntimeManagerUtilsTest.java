@@ -110,7 +110,7 @@ class RuntimeManagerUtilsTest {
 
     @Test
     void addKieRuntimeServiceToFirstLevelCache() {
-        List<KieRuntimeService> discoveredKieRuntimeServices = Arrays.asList(kieRuntimeServiceA);
+        List<KieRuntimeService> discoveredKieRuntimeServices = Collections.singletonList(kieRuntimeServiceA);
         final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate = new HashMap<>();
         RuntimeManagerUtils.populateFirstLevelCache(discoveredKieRuntimeServices, toPopulate);
         assertThat(toPopulate).hasSize(1);

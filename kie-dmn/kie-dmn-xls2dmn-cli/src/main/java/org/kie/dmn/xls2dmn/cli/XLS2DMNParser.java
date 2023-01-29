@@ -143,7 +143,7 @@ public class XLS2DMNParser implements DecisionTableParser {
             DRGElement drgElem = definitions.getDrgElement().stream().filter(e -> e.getName().equals(sheetName)).findFirst().orElseThrow(() -> new XLS2DMNException("Unable to locate DRG element for sheet: " + sheetName));
             DecisionTable dt = (DecisionTable) ((Decision) drgElem).getExpression();
             DTSheetListener listener = new DTSheetListener(dt, hi);
-            sheetListeners.put(sheetName, Arrays.asList(listener));
+            sheetListeners.put(sheetName, List.of(listener));
         }
         new ExcelParser(sheetListeners).parseWorkbook(workbook);
         DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newDefaultMarshaller();

@@ -2810,7 +2810,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test
@@ -2837,7 +2837,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test
@@ -2864,7 +2864,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test(timeout = 10000)
@@ -3303,7 +3303,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("ok"));
+        assertThat(list).isEqualTo(List.of("ok"));
     }
 
 
@@ -6468,7 +6468,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList(42));
+        assertThat(list).isEqualTo(List.of(42));
 
         kieSession.delete( handle );
 
@@ -6538,7 +6538,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList(42));
+        assertThat(list).isEqualTo(List.of(42));
 
         //kieSession.delete( iFH );
         kieSession.delete( sFH );
@@ -8125,7 +8125,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kbase.newKieSession();
 
-        kieSession.insert( asList("test") );
+        kieSession.insert(List.of("test"));
         kieSession.insert( new AtomicBoolean( true ) );
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }

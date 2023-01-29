@@ -156,7 +156,7 @@ public class DMNRuntimeBuilder {
         }
 
         public Either<Exception, DMNRuntime> fromClasspathResource(final String resourceName, final Class<?> testClass) {
-            return fromResources(Arrays.asList(new ClassPathResource(resourceName, testClass)));
+            return fromResources(List.of(new ClassPathResource(resourceName, testClass)));
         }
 
         public Either<Exception, DMNRuntime> fromClasspathResources(final String resourceName, final Class<?> testClass, final String... additionalResources) {

@@ -137,7 +137,7 @@ public class TraitHelperImpl implements Externalizable,
     }
 
     private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
-        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, traits, activation );
+        updateManyTraits(object, mask, Collections.singletonList(originator), modifiedClass, traits, activation);
     }
 
     private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {

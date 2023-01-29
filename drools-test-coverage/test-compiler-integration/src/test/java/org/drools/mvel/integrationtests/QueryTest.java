@@ -955,7 +955,7 @@ public class QueryTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("Hello World"));
+        assertThat(list).isEqualTo(List.of("Hello World"));
     }
 
 
@@ -1029,7 +1029,7 @@ public class QueryTest {
         ks.insert( "Hello" );
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("Bye"));
+        assertThat(list).isEqualTo(List.of("Bye"));
     }
 
     @Test

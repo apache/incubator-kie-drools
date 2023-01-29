@@ -46,7 +46,7 @@ public class TrisotechValidationTest {
 
     @BeforeClass
     public static void init() {
-        List<DMNProfile> dmnProfiles = Arrays.asList(new TrisotechDMNProfile());
+        List<DMNProfile> dmnProfiles = List.of(new TrisotechDMNProfile());
         Properties p = new Properties();
         p.put(DMNAssemblerService.DMN_DECISION_LOGIC_COMPILER, TrisotechDMNEvaluatorCompilerFactory.class.getCanonicalName());
         validator = DMNValidatorFactory.newValidator(dmnProfiles, p);

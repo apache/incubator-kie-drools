@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -62,7 +63,7 @@ public class FilterExpressionNode
         }
         Object value = expression.evaluate( ctx );
         // spec determines single values should be treated as lists of one element
-        List list = value instanceof List ? (List) value : Arrays.asList( value );
+        List list = value instanceof List ? (List) value : Collections.singletonList(value);
 
         try {
             if( filter.getResultType() != BuiltInType.BOOLEAN ) {
