@@ -17,6 +17,7 @@
 package org.drools.verifier.core.maps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,9 +41,7 @@ public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
     public void put(final T object,
                     final int index) {
         final ArrayList<Key> keys = new ArrayList<>();
-        for (final Key additionalKey : object.keys()) {
-            keys.add(additionalKey);
-        }
+        keys.addAll(Arrays.asList(object.keys()));
 
         doForAll(index,
                  new Callback<T>() {

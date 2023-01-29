@@ -454,9 +454,7 @@ public class JavaAccumulateBuilder
             }
         } );
 
-        for ( JavaLocalDeclarationDescr local : analysis.getLocalVariablesMap().values() ) {
-            locals.add( local );
-        }
+        locals.addAll(analysis.getLocalVariablesMap().values());
 
         StringBuilder initCode = new StringBuilder();
         int lastAdded = 0;

@@ -17,6 +17,7 @@
 package org.drools.verifier.core.maps.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.verifier.core.relations.HumanReadable;
@@ -30,9 +31,7 @@ public class RedundancyResult<Parent, Item extends IsRedundant & HumanReadable> 
     private Parent parent;
 
     public RedundancyResult(final Item... items) {
-        for (final Item item : items) {
-            list.add(item);
-        }
+        list.addAll(Arrays.asList(items));
     }
 
     public RedundancyResult(final Parent parent,

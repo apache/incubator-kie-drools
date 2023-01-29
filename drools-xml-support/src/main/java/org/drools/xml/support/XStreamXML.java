@@ -1171,9 +1171,7 @@ public class XStreamXML {
             reader.moveUp();
 
             Set<String> identifiers = new TreeSet<>();
-            for ( int i = 0; i < list.size(); i++ ) {
-                identifiers.add( list.get( i ) );
-            }
+            identifiers.addAll(list);
 
             ArrayList<Map<String, Object>> results = new ArrayList<>();
             ArrayList<Map<String, FactHandle>> resultHandles = new ArrayList<>();

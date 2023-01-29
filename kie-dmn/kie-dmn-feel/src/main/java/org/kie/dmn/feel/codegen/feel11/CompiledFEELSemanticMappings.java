@@ -19,6 +19,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -258,9 +259,7 @@ public class CompiledFEELSemanticMappings {
             result.add(null);
             return result;
         }
-        for (T elem : a) {
-            result.add(elem);
-        }
+        result.addAll(Arrays.asList(a));
         return result;
     }
 

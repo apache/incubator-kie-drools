@@ -69,9 +69,7 @@ public class DrlCompilerHelper {
     public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
         KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
         Set<PackageDescr> packageDescrSet = new HashSet<>();
-        for (CompositePackageDescr packageDescr : buildCompositePackageDescrs(resources, conf)) {
-            packageDescrSet.add(packageDescr);
-        }
+        packageDescrSet.addAll(buildCompositePackageDescrs(resources, conf));
         return new DrlPackageDescrSetResource(packageDescrSet, resources.getModelLocalUriId().basePath());
     }
 

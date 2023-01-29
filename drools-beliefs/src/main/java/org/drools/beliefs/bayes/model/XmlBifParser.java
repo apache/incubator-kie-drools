@@ -129,9 +129,7 @@ public class XmlBifParser {
     private static void getOutcomesByVariable(Network network, String nameDefinition, List<String> outcomes) {
         for (Variable var : network.getVariables()) {
             if (var.getName().equals(nameDefinition)) {
-                for (String outcome : var.getOutComes()) {
-                    outcomes.add(outcome);
-                }
+                outcomes.addAll(var.getOutComes());
             }
         }
     }

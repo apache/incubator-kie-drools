@@ -104,9 +104,7 @@ public class ObjectStoreWrapper implements Collection {
 
     private List asList() {
         List list = new ArrayList();
-        for (Object o : this) {
-            list.add(o);
-        }
+        list.addAll(this);
         return list;
     }
 

@@ -82,9 +82,7 @@ public class HelloWorldTest {
         MVELRuntime.setThreadDebugger(new Debugger() {
             public int onBreak(Frame frame) {
                 System.out.println("onBreak");
-                for (String var: frame.getFactory().getKnownVariables()) {
-                    knownVariables.add(var);
-                }
+                knownVariables.addAll(frame.getFactory().getKnownVariables());
                 return 0;
             }
         });

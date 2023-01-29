@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -222,9 +223,7 @@ public class GlobalUpdateTest {
 
     public List asList(String... items) {
         List<String> list = new ArrayList<String>();
-        for ( String s : items ) {
-            list.add( s );
-        }
+        list.addAll(Arrays.asList(items));
         return list;
     }
 

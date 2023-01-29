@@ -98,7 +98,7 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
         knowledgeBase.getKiePackages().forEach( kpkg -> {
             DMNPackage dmnPkg = (DMNPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get( ResourceType.DMN );
             if( dmnPkg != null ) {
-                dmnPkg.getAllModels().values().forEach( model -> models.add( model ) );
+                models.addAll(dmnPkg.getAllModels().values());
             }
         } );
         return models;

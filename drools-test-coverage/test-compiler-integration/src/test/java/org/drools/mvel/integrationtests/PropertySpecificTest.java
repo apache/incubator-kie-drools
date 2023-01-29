@@ -17,6 +17,7 @@ package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -1874,9 +1875,7 @@ public class PropertySpecificTest {
 
     <T> List<T> list(T... items) {
         List<T> list = new ArrayList<T>();
-        for ( T item : items ) {
-            list.add( item);
-        }
+        list.addAll(Arrays.asList(items));
         return list;
     }
 

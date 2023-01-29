@@ -17,6 +17,7 @@ package org.drools.verifier.jarloader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
@@ -103,9 +104,7 @@ public class PackageHeaderLoaderTest {
     private Collection<String> createImportsList(String... list) {
         Collection<String> imports = new ArrayList<String>();
 
-        for (String s : list) {
-            imports.add(s);
-        }
+        imports.addAll(Arrays.asList(list));
 
         return imports;
     }

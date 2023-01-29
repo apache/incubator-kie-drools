@@ -66,9 +66,7 @@ public class DefaultDMNMessagesManager
 
     @Override
     public void addAllUnfiltered(List<? extends DMNMessage> messages) {
-        for (DMNMessage message : messages) {
-            this.messages.add(message);
-        }
+        this.messages.addAll(messages);
     }
 
     @Override

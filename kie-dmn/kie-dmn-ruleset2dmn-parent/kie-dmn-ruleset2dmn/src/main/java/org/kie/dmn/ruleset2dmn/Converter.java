@@ -113,9 +113,7 @@ public class Converter {
         List<SimpleRuleRow> rsRules = s0.map(SimpleRuleRow::new).collect(Collectors.toList());
         Set<String> usedPredictors = new LinkedHashSet<>();
         for (SimpleRuleRow rr : rsRules) {
-            for (String key : rr.map.keySet()) {
-                usedPredictors.add(key);
-            }
+            usedPredictors.addAll(rr.map.keySet());
             LOG.debug("{}", rr);
         }
         LOG.debug("{}", usedPredictors);

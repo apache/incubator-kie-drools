@@ -81,6 +81,6 @@ public class MockEvalCondition extends EvalCondition {
     }
 
     public void setIsAllowed(final boolean isAllowed) {
-        this.isAllowed = new Boolean( isAllowed );
+        this.isAllowed = Boolean.valueOf( isAllowed );
     }
 }
