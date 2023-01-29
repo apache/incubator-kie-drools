@@ -254,7 +254,7 @@ public class MCDCAnalyser {
         Set<List<Comparable<?>>> filter1outs = candidateBlocks.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
         LOG.trace("filter1outs {}", filter1outs);
 
-        if (filter1outs.stream().filter(not(getVisitedPositiveOutput()::contains)).count() > 0) {
+        if (filter1outs.stream().anyMatch(not(getVisitedPositiveOutput()::contains))) {
             LOG.trace("Trying to prioritize non-yet visited outputs...");
             Set<List<Comparable<?>>> hypo = new HashSet<>(filter1outs);
             hypo.removeAll(getVisitedPositiveOutput());

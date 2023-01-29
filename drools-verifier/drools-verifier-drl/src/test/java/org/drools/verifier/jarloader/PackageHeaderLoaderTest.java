@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.jar.JarInputStream;
 
 import org.drools.verifier.Verifier;
@@ -102,11 +103,7 @@ public class PackageHeaderLoaderTest {
     }
 
     private Collection<String> createImportsList(String... list) {
-        Collection<String> imports = new ArrayList<String>();
-
-        imports.addAll(Arrays.asList(list));
-
-        return imports;
+        return Arrays.asList(list);
     }
 
 }

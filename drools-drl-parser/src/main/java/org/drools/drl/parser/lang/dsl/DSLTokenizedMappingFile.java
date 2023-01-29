@@ -22,6 +22,7 @@ import java.io.StringReader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
                 }
                 if( "#/".equals( commentMat.group( 2 ) ) ){
                     String[] options = commentMat.group( 1 ).substring( 2 ).trim().split( "\\s+" );
-                    optionSet.addAll(Arrays.asList(options));
+                    Collections.addAll(optionSet, options);
                 }
                 continue;
             }

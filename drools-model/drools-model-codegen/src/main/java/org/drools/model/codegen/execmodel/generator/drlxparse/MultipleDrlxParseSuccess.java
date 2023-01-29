@@ -44,7 +44,7 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
             if (result instanceof SingleDrlxParseSuccess) {
                 flattenedDrlx.add(result);
             } else if (((MultipleDrlxParseSuccess) result).getOperator() == operator) {
-                flattenedDrlx.addAll(Arrays.asList(((MultipleDrlxParseSuccess) result).getResults()));
+                Collections.addAll(flattenedDrlx, ((MultipleDrlxParseSuccess) result).getResults());
             } else {
                 return new MultipleDrlxParseSuccess( operator, results );
             }

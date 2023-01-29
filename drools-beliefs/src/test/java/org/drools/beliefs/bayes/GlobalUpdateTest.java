@@ -222,9 +222,7 @@ public class GlobalUpdateTest {
     }
 
     public List asList(String... items) {
-        List<String> list = new ArrayList<String>();
-        list.addAll(Arrays.asList(items));
-        return list;
+        return Arrays.asList(items);
     }
 
     public void connectChildren(Graph<BayesVariable> graph, JunctionTreeClique parent, List list, JunctionTreeClique... children) {

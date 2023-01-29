@@ -17,6 +17,7 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -166,7 +167,7 @@ public class VarargsTest {
 
         @Modifies("processed")
         public void add( String... strings ){
-            set.addAll(Arrays.asList(strings));
+            Collections.addAll(set, strings);
         }
 
         public boolean contains( String s ){

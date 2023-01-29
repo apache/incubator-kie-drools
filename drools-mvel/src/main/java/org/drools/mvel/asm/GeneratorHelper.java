@@ -136,7 +136,7 @@ public final class GeneratorHelper {
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
             Set<String> imports = new HashSet<>();
-            imports.addAll(Arrays.asList(stub.getPackageImports()));
+            Collections.addAll(imports, stub.getPackageImports());
             typeResolver = new ClassTypeResolver(imports, classLoader, stub.getPackageName());
         }
         return typeResolver;

@@ -55,13 +55,13 @@ public class FieldAction
     }
 
     public static KeyDefinition[] keyDefinitions() {
-        final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        keyDefinitions.addAll(Arrays.asList(Action.keyDefinitions()));
+        KeyDefinition[] origKeys = Action.keyDefinitions();
+        KeyDefinition[] keys = new KeyDefinition[origKeys.length +2];
+        System.arraycopy(origKeys, 0, keys, 0, origKeys.length);
+        keys[keys.length-2] = FIELD;
+        keys[keys.length-1] = FIELD;
 
-        keyDefinitions.add(FIELD);
-        keyDefinitions.add(FACT_TYPE__FIELD_NAME);
-
-        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
+        return keys;
     }
 
     @Override

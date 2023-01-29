@@ -65,16 +65,10 @@ public class FieldCondition<T extends Comparable>
 
     @Override
     public Key[] keys() {
-        final ArrayList<Key> keys = new ArrayList<>();
-        keys.addAll(Arrays.asList(super.keys()));
-
-        return keys.toArray(new Key[keys.size()]);
+        return super.keys();
     }
 
     public static KeyDefinition[] keyDefinitions() {
-        final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        keyDefinitions.addAll(Arrays.asList(Condition.keyDefinitions()));
-
-        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
+        return Condition.keyDefinitions();
     }
 }

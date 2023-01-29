@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -1874,9 +1875,7 @@ public class PropertySpecificTest {
     }    
 
     <T> List<T> list(T... items) {
-        List<T> list = new ArrayList<T>();
-        list.addAll(Arrays.asList(items));
-        return list;
+        return Arrays.asList(items);
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {

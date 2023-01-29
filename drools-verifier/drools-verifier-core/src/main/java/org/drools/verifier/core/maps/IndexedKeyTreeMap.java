@@ -40,9 +40,6 @@ public class IndexedKeyTreeMap<T extends HasIndex & HasKeys>
 
     public void put(final T object,
                     final int index) {
-        final ArrayList<Key> keys = new ArrayList<>();
-        keys.addAll(Arrays.asList(object.keys()));
-
         doForAll(index,
                  new Callback<T>() {
                      @Override
