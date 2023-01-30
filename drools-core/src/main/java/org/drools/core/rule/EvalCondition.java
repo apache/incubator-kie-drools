@@ -43,7 +43,7 @@ public class EvalCondition extends ConditionalElement
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+    private List<EvalCondition>        cloned             = Collections.emptyList();
 
     private Map<String, Declaration> outerDeclarations = Collections.EMPTY_MAP;
 

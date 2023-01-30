@@ -305,7 +305,7 @@ public class ClassDefinition
     }
 
     public Collection<AnnotationDefinition> getAnnotations() {
-        return annotations != null ? annotations.values() : Collections.<AnnotationDefinition>emptyList();
+        return annotations != null ? annotations.values() : Collections.emptyList();
     }
 
     public AnnotationDefinition getAnnotation(Class<?> annotationClass) {

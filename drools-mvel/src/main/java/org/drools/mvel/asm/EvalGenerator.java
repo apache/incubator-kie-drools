@@ -113,6 +113,6 @@ public class EvalGenerator {
             }
         });
 
-        stub.setEval(generator.<EvalExpression>newInstance());
+        stub.setEval(generator.newInstance());
     }
 }

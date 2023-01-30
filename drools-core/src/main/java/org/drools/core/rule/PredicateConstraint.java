@@ -55,7 +55,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     private Declaration[]              localDeclarations;
 
-    private List<PredicateConstraint>  cloned             = Collections.<PredicateConstraint> emptyList();
+    private List<PredicateConstraint>  cloned             = Collections.emptyList();
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 

@@ -151,7 +151,7 @@ public class Select<T> {
             return new ExactMatcherSearch<T>((ExactMatcher) this.matcher,
                                              this.map).search();
         } else {
-            final MultiMap<Value, T, List<T>> result = MultiMapFactory.<Value, T>make();
+            final MultiMap<Value, T, List<T>> result = MultiMapFactory.make();
             MultiMap.merge(result,
                            map);
             return result;

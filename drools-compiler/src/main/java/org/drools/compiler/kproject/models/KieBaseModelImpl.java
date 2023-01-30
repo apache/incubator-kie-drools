@@ -101,7 +101,7 @@ public class KieBaseModelImpl
     }
 
     public List<String> getPackages() {
-        return packages != null ? packages : Collections.<String>emptyList();
+        return packages != null ? packages : Collections.emptyList();
     }
 
     public KieBaseModel addPackage(String pkg) {

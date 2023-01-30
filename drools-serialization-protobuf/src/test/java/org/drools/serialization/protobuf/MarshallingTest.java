@@ -2070,7 +2070,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         SessionConfiguration config = new SessionConfiguration();
         config.setOption( ClockTypeOption.PSEUDO );
         KieSession ksession = knowledgeBase.newKieSession( config, KieServices.get().newEnvironment() );
-        PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.getSessionClock();
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase );
 
         ksession.insert( "cheese" );
@@ -2197,7 +2197,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         cep = ksession.getEntryPoint( "c-ep" );
         assertThat(cep.getFactHandles().size()).isEqualTo(1);
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 11, TimeUnit.SECONDS );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2257,7 +2257,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 3, TimeUnit.SECONDS );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2318,7 +2318,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 15, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2335,7 +2335,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(4);
 
-        timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2674,7 +2674,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                                         .build( EventProcessingOption.STREAM );
         KieSession ksession = kbase1.newKieSession( ksconf, null );
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
 
         List list = new ArrayList();
         ksession.setGlobal("list", list);
@@ -2694,7 +2694,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.setGlobal("list", list);
         ksession.setGlobal("list2", list2);
 
-        PseudoClockScheduler timeService2 = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService2 = (PseudoClockScheduler) ksession.getSessionClock();
 
         ksession.fireAllRules();
 

@@ -46,13 +46,13 @@ public class HTMLReportWriter extends ReportModeller
         writeToFile( UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.HTML_FILE_INDEX,
                      formPage( UrlFactory.THIS_FOLDER,
                                ComponentsReportVisitor.visitObjectTypeCollection( UrlFactory.THIS_FOLDER,
-                                                                                  data.<ObjectType> getAll( VerifierComponentType.OBJECT_TYPE ) ) ) );
+                                                                                  data.getAll(VerifierComponentType.OBJECT_TYPE))));
 
         // packages.htm
         writeToFile( UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.HTML_FILE_PACKAGES,
                      formPage( UrlFactory.THIS_FOLDER,
                                ComponentsReportVisitor.visitRulePackageCollection( UrlFactory.THIS_FOLDER,
-                                                                                   data.<RulePackage> getAll( VerifierComponentType.RULE_PACKAGE ) ) ) );
+                                                                                   data.getAll(VerifierComponentType.RULE_PACKAGE))));
 
         // Rules
         String ruleFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.RULE_FOLDER;

@@ -218,7 +218,7 @@ public class DroolsJaxbHelperProviderImpl
     public JAXBContext newJAXBContext(String[] classNames,
                                           KieBase kbase) throws JAXBException {
         return newJAXBContext( classNames,
-                            Collections.<String, Object> emptyMap(),
+                            Collections.emptyMap(),
                             kbase );
     }
 

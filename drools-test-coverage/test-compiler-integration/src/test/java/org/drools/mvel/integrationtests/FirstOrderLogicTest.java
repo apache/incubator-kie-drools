@@ -1026,7 +1026,7 @@ public class FirstOrderLogicTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), streamConfig, "test_ForallSlidingWindow.drl");
         KieSession ksession = kbase.newKieSession(conf, null);
 
-        final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        final SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );

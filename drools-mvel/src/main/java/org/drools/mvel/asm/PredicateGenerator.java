@@ -114,6 +114,6 @@ public class PredicateGenerator {
             }
         });
 
-        stub.setPredicate(generator.<PredicateExpression>newInstance());
+        stub.setPredicate(generator.newInstance());
     }
 }

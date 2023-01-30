@@ -72,7 +72,7 @@ public enum FieldGenStrategy {
     abstract String generateSetterName(String fieldName);
 
     public static FieldGenStrategy getFieldGenStrategy(Set<String> fieldsKeySet, String typeName) {
-        Set<String> lowerCaseSet = fieldsKeySet.stream().map(StringUtils::lcFirst).distinct().collect(Collectors.toSet());
+        Set<String> lowerCaseSet = fieldsKeySet.stream().map(StringUtils::lcFirst).collect(Collectors.toSet());
         if (fieldsKeySet.size() == lowerCaseSet.size()) {
             return JAVA_BEAN;
         } else {

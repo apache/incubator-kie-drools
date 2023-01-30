@@ -142,6 +142,6 @@ public class ConsequenceGenerator {
             }
         });
 
-        stub.setConsequence(generator.<Consequence>newInstance());
+        stub.setConsequence(generator.newInstance());
     }
 }
