@@ -1,0 +1,24 @@
+ecosystem:
+  main_project: kogito
+  projects:
+  - name: drools
+    regexs:
+    - drools.*
+git:
+  branches:
+  - name: main
+    main_branch: true
+    seed:
+      branch: main
+seed:
+  config_file:
+    git:
+      repository: drools
+      author:
+        name: kiegroup
+        credentials_id: kie-ci
+      branch: main
+    path: .ci/jenkins/config/branch.yaml
+  jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
+jenkins:
+  email_creds_id: KOGITO_CI_EMAIL_TO # TODO to update to DROOLS_EMAIL_CI and add in Jenkins

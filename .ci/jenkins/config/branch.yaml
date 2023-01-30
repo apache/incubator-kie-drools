@@ -1,0 +1,107 @@
+environments:
+  native:
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+  mandrel:
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+    - prod
+  quarkus-main:
+    env_vars:
+      QUARKUS_BRANCH: main
+    ids:
+    - quarkus
+  quarkus-branch:
+    env_vars:
+      QUARKUS_BRANCH: '2.16'
+    ids:
+    - quarkus
+  quarkus-lts:
+    env_vars:
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
+      QUARKUS_BRANCH: '2.13'
+    ids:
+    - quarkus
+    - lts
+    - prod
+  mandrel-lts:
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      QUARKUS_BRANCH: '2.13'
+      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+    - prod
+    - lts
+  sonarcloud:
+    auto_generation: false
+    ids:
+    - sonarcloud
+    - coverage
+productized_branch: true
+disable:
+  triggers: false
+repositories:
+- name: drools
+- name: drools-website
+git:
+  author:
+    name: kiegroup
+    credentials_id: kie-ci
+    token_credentials_id: kie-ci3-token
+  bot_author:
+    name: bsig-gh-bot
+    credentials_id: bsig-gh-bot
+  fork_author:
+    name: kie-ci
+    credentials_id: kie-ci
+  quarkus:
+    author:
+      name: quarkusio
+      credentials_id: kie-ci
+    branch: main
+  jenkins_config_path: .ci/jenkins
+buildchain_config:
+  git:
+    repository: drools
+    file_path: .ci/buildchain-config.yaml
+maven:
+  settings_file_id: kogito_release_settings
+  nexus:
+    release_url: https://repository.jboss.org/nexus
+    release_repository: jboss-releases-repository
+    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
+    staging_profile_id: 1976dd1c18392a
+    build_promotion_profile_id: ea49ccd6f174
+  artifacts_repository: ''
+  artifacts_upload_repository:
+    url: https://repository.jboss.org/nexus/content/repositories/snapshots/
+    creds_id: kogito-snapshots-upload
+  pr_checks:
+    repository:
+      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
+      creds_id: unpacks-zip-on-qa-nexus
+cloud:
+  image:
+    registry_credentials_nightly: nightly_kogito
+    registry_credentials_release: release_kogito
+    registry: quay.io
+    namespace: kiegroup
+    latest_git_branch: main
+jenkins:
+  email_creds_id: KOGITO_CI_EMAIL_TO
+  default_tools:
+    jdk: kie-jdk11
+    maven: kie-maven-3.8.7
