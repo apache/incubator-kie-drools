@@ -31,6 +31,7 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
+import org.drools.drl.quarkus.util.deployment.QuarkusAppPaths;
 import org.drools.util.PortablePath;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.CompositeIndex;
@@ -81,13 +82,7 @@ public class KogitoQuarkusResourceUtils {
 
     public static KogitoBuildContext kogitoBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index, Dependency appArtifact) {
         // scan and parse paths
-        AppPaths.BuildTool buildTool;
-        if (System.getProperty("org.gradle.appname") == null) {
-            buildTool = AppPaths.BuildTool.MAVEN;
-        } else {
-            buildTool = AppPaths.BuildTool.GRADLE;
-        }
-        AppPaths appPaths = AppPaths.fromQuarkus(outputTarget, paths, buildTool);
+        AppPaths appPaths = QuarkusAppPaths.from(outputTarget, paths, AppPaths.BuildTool.findBuildTool());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
                 .withApplicationPropertyProvider(new KogitoQuarkusApplicationPropertiesProvider())
