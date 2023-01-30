@@ -25,7 +25,7 @@ public class LoggingPrintStream extends PrintStream {
 
     protected Logger logger;
     private StringBuilder buffer = new StringBuilder();
-    protected boolean isError = false;
+    protected boolean isError;
     private final PrintStream originalOutputStream;
 
     public LoggingPrintStream(OutputStream outputStream, boolean isError) {

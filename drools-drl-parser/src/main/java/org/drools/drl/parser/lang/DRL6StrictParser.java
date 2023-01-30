@@ -712,7 +712,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
 
             setAnnotationsOn(declare);
 
-            String window = "";
+            String window;
 
             match(input,
                     DRL6Lexer.ID,
@@ -3012,7 +3012,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
     @SuppressWarnings("unchecked")
     private BaseDescr lhsPatternBind(PatternContainerDescrBuilder<?, ?> ce,
             final boolean allowOr) throws RecognitionException {
-        PatternDescrBuilder<?> pattern = null;
+        PatternDescrBuilder<?> pattern;
         CEDescrBuilder<?, OrDescr> or = null;
         BaseDescr result = null;
 
@@ -3149,7 +3149,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private BaseDescr lhsAccumulate(PatternContainerDescrBuilder<?, ?> ce) throws RecognitionException {
-        PatternDescrBuilder<?> pattern = null;
+        PatternDescrBuilder<?> pattern;
         BaseDescr result = null;
 
         pattern = helper.start((DescrBuilder<?, ?>) ce,
@@ -3905,7 +3905,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void fromEntryPoint(PatternDescrBuilder<?> pattern) throws RecognitionException {
-        String ep = "";
+        String ep;
 
         match(input,
                 DRL6Lexer.ID,
@@ -3948,7 +3948,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void fromWindow(PatternDescrBuilder<?> pattern) throws RecognitionException {
-        String window = "";
+        String window;
 
         match(input,
                 DRL6Lexer.ID,
@@ -4927,7 +4927,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
                  String text,
                  int[] follow,
                  DroolsEditorType etype ) throws RecognitionException {
-        Token matchedSymbol = null;
+        Token matchedSymbol;
         matchedSymbol = input.LT(1);
         if (input.LA(1) == ttype && (text == null || text.equals(matchedSymbol.getText()))) {
             input.consume();
@@ -4984,7 +4984,7 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
             String text,
             int[] follow)
             throws RecognitionException {
-        RecognitionException e = null;
+        RecognitionException e;
         // if next token is what we are looking for then "delete" this token
         if (mismatchIsUnwantedToken(input,
                 ttype,

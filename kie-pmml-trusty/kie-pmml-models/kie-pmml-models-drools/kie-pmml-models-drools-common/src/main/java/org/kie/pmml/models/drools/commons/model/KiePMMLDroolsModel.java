@@ -112,7 +112,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
                                                                                       darMapInputDTO);
 
         Optional<RuntimeManager> runtimeManager = getRuntimeManager(true);
-        if (!runtimeManager.isPresent()) {
+        if (runtimeManager.isEmpty()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
 

@@ -124,7 +124,7 @@ public class ForExpressionNode
     }
 
     private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextNode icn) {
-        ForIteration fi = null;
+        ForIteration fi;
         String name = icn.evaluateName( ctx );
         Object result = icn.evaluate( ctx );
         Object rangeEnd = icn.evaluateRangeEnd(ctx);

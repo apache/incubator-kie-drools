@@ -173,16 +173,16 @@ public class ReteDiagram {
                 visitNodes( entryPointNode, "", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
             }
             
-            out.println("");
+            out.println();
             printNodeMap(nodeMap, out);
             
-            out.println("");
+            out.println();
             printVertexes(vertexes, out);
             
-            out.println("");
+            out.println();
             printLevelMap(levelMap, out, vertexes);
             
-            out.println("");
+            out.println();
             if (layout == Layout.PARTITION) {
                 printPartitionMap(nodeMap, out, vertexes);
             }

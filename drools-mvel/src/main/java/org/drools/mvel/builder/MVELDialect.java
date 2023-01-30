@@ -617,7 +617,7 @@ public class MVELDialect
         if (otherInputVariables != null) {
             MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
             for (Entry<String, Class<?>> stringClassEntry : otherInputVariables.entrySet()) {
-                if ((!analysis.getNotBoundedIdentifiers().contains(stringClassEntry.getKey()) && !mvelAnalysis.getMvelVariables().keySet().contains(stringClassEntry.getKey())) || "rule".equals(stringClassEntry.getKey())) {
+                if ((!analysis.getNotBoundedIdentifiers().contains(stringClassEntry.getKey()) && !mvelAnalysis.getMvelVariables().containsKey(stringClassEntry.getKey())) || "rule".equals(stringClassEntry.getKey())) {
                     // no point including them if they aren't used
                     // and rule was already included
                     continue;

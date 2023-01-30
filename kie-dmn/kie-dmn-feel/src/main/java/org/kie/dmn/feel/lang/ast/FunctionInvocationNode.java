@@ -75,8 +75,8 @@ public class FunctionInvocationNode
         if (this.tcFolded != null) {
             return tcFolded.value;
         }
-        FEELFunction function = null;
-        Object value = null;
+        FEELFunction function;
+        Object value;
         if ( name instanceof NameRefNode ) {
             // simple name
             value = ctx.getValue( name.getText() );

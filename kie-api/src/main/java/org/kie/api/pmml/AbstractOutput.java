@@ -51,7 +51,7 @@ public abstract class AbstractOutput<T> implements PMML4Output<T> {
         super();
         this.correlationId = correlationId;
         this.segmentationId = segmentationId;
-        this.segmentationId = segmentId;
+        this.segmentId = segmentId;
         this.name = name;
     }
 

@@ -161,7 +161,7 @@ public class ObjectFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof ObjectFieldImpl) ) {
+        if (!(object instanceof ObjectFieldImpl)) {
             return false;
         }
         final ObjectFieldImpl other = (ObjectFieldImpl) object;

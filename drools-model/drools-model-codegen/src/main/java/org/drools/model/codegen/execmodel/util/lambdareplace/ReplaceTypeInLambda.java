@@ -103,7 +103,7 @@ public class ReplaceTypeInLambda {
                                                         .filter(mce -> mce.getNameAsString().equals(PATTERN_CALL))
                                                         .filter(mce -> mce.getArguments().stream().anyMatch(a -> a.toString().equals(toVar(bindingId))))
                                                         .findAny();
-        if (!optPattern.isPresent()) {
+        if (optPattern.isEmpty()) {
             return;
         }
 

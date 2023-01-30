@@ -29,6 +29,7 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -2889,7 +2890,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
-        context.set("my data", new JavaPojoCharUtilDate("Doe", new Character('J'), new java.util.Date(2020, 0, 28, 10, 15)));
+        context.set("my data", new JavaPojoCharUtilDate("Doe", Character.valueOf('J'), new java.util.Date(2020, Calendar.JANUARY, 28, 10, 15)));
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);

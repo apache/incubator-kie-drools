@@ -63,7 +63,7 @@ public class MapBackedType
 
     @Override
     public boolean isInstanceOf(Object o) {
-        if ( o == null || !(o instanceof Map) ) {
+        if (!(o instanceof Map)) {
             return false;
         }
         Map<?, ?> instance = (Map<?, ?>) o;

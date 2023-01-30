@@ -526,7 +526,7 @@ public class KieBuilderTest {
         
         KieSession kieSession = kieContainer.newKieSession();
         assertThat(kieSession.getChannels().size()).isEqualTo(1);
-        assertThat(kieSession.getChannels().keySet().contains("testChannel")).isTrue();
+        assertThat(kieSession.getChannels().containsKey("testChannel")).isTrue();
     }
     
     @Test
@@ -559,7 +559,7 @@ public class KieBuilderTest {
         
         StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession();
         assertThat(statelessKieSession.getChannels().size()).isEqualTo(1);
-        assertThat(statelessKieSession.getChannels().keySet().contains("testChannel")).isTrue();
+        assertThat(statelessKieSession.getChannels().containsKey("testChannel")).isTrue();
     }
     
     public static class MockChannel implements Channel {

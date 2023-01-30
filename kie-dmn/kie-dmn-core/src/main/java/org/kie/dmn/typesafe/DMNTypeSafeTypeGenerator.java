@@ -87,7 +87,7 @@ public class DMNTypeSafeTypeGenerator {
         sb.append("Do not modify this file, as any modifications will be lost when invoking the facility again.").append("\n");
         sb.append("Do not rely on the generated class(es) implementation, as the actual implementations may change.").append("\n");
         sb.append("Generated on: " + ZonedDateTime.now().toString()).append("\n");
-        sb.append("").append("\n");
+        sb.append("\n");
         return sb.toString();
     }
 

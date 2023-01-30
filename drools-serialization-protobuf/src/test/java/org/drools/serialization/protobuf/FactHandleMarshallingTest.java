@@ -192,7 +192,7 @@ public class FactHandleMarshallingTest {
         ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( confEP, object );
 
 
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         switch (type) {
             case 0: {
 

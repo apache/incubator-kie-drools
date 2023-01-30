@@ -93,7 +93,7 @@ public class LongFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof LongFieldImpl) ) {
+        if (!(object instanceof LongFieldImpl)) {
             return false;
         }
         final LongFieldImpl other = (LongFieldImpl) object;

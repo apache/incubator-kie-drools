@@ -101,8 +101,8 @@ public abstract class BaseDoubleClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setDoubleValue",
-                                                      new Class[]{Object.class, double.class} );
+            return this.getClass().getDeclaredMethod("setDoubleValue",
+                                                     Object.class, double.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

@@ -69,7 +69,7 @@ public class JpaPersistenceContext implements PersistenceContext {
 
     public PersistentSession findSession(Long id) {
 
-        SessionInfo sessionInfo = null;
+        SessionInfo sessionInfo;
         if( this.pessimisticLocking ) {
             sessionInfo = this.em.find( SessionInfo.class, id, lockMode );
             TransactionManagerHelper.addToUpdatableSet(txm, sessionInfo);
@@ -123,7 +123,7 @@ public class JpaPersistenceContext implements PersistenceContext {
     }
 
     public PersistentWorkItem findWorkItem(Long id) {
-        WorkItemInfo workItemInfo = null;
+        WorkItemInfo workItemInfo;
         if( this.pessimisticLocking ) {
             workItemInfo = this.em.find( WorkItemInfo.class, id, lockMode );
             TransactionManagerHelper.addToUpdatableSet(txm, workItemInfo);

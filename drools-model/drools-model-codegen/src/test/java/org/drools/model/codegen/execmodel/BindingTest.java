@@ -428,7 +428,6 @@ public class BindingTest extends BaseModelTest {
         ksession.insert(p3);
         ksession.fireAllRules();
         assertThat(result).isEmpty();
-        result.clear();
     }
 
     @Test
@@ -471,6 +470,5 @@ public class BindingTest extends BaseModelTest {
         ksession.insert(p3);
         ksession.fireAllRules();
         assertThat(result).isEmpty();
-        result.clear();
     }
 }

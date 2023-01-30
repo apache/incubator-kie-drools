@@ -317,9 +317,9 @@ public class JBRULESTest {
 
         final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/primespoc.jar" ) );
 
-        JarEntry entry = null;
+        JarEntry entry;
         final byte[] buf = new byte[1024];
-        int len = 0;
+        int len;
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
                 final ByteArrayOutputStream out = new ByteArrayOutputStream();

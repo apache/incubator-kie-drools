@@ -45,7 +45,7 @@ public class MinuteFunction
 
         try {
             Object r = TimeFunction.INSTANCE.invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
-            if ( r != null && r instanceof TemporalAccessor ) {
+            if (r instanceof TemporalAccessor) {
                 return invoke( (TemporalAccessor) r );
             } else {
                 return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "timestring", "time-parsing exception" ) );

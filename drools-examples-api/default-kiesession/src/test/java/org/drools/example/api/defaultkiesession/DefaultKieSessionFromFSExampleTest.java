@@ -38,7 +38,7 @@ public class DefaultKieSessionFromFSExampleTest {
         go(ps);
         ps.close();
 
-        String actual = new String(baos.toByteArray());
+        String actual = baos.toString();
 
         String expected = "" +
                           "Dave: Hello, HAL. Do you read me, HAL?" + NL +
@@ -48,14 +48,14 @@ public class DefaultKieSessionFromFSExampleTest {
     }
 
     public void go(PrintStream out) {
-        String currentFolder = null;
+        String currentFolder;
         try {
             currentFolder = new File(".").getCanonicalPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        File rootFolder = null;
+        File rootFolder;
         if (currentFolder.endsWith("drools")) {
             rootFolder = new File("drools-examples-api/default-kiesession");
         } else if (currentFolder.endsWith("drools-examples-api")) {

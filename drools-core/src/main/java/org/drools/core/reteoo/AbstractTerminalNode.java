@@ -397,7 +397,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             return true;
         }
 
-        if ( object == null || !(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
         final TerminalNode other = (TerminalNode) object;

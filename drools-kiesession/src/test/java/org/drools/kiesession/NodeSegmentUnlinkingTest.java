@@ -103,7 +103,7 @@ public class NodeSegmentUnlinkingTest {
     }
 
     public void  setUp(int type) {
-        setUp(new int[] { type, type, type, type, type, type, type, type } );
+        setUp(type, type, type, type, type, type, type, type);
     }
     
     public void setUp(int... type) {

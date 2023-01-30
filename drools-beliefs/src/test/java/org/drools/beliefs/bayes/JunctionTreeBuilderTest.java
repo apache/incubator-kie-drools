@@ -71,17 +71,17 @@ public class JunctionTreeBuilderTest {
 
         JunctionTreeBuilder jtBuilder = new JunctionTreeBuilder( graph );
 
-        assertLinkedNode(jtBuilder, new int[]{1, 2, 3, 4});
-        assertLinkedNode(jtBuilder, new int[]{2, 1});
-        assertLinkedNode(jtBuilder, new int[]{3, 1});
-        assertLinkedNode(jtBuilder, new int[]{4, 1});
+        assertLinkedNode(jtBuilder, 1, 2, 3, 4);
+        assertLinkedNode(jtBuilder, 2, 1);
+        assertLinkedNode(jtBuilder, 3, 1);
+        assertLinkedNode(jtBuilder, 4, 1);
 
         jtBuilder.moralize();
 
-        assertLinkedNode(jtBuilder, new int[]{1, 2, 3, 4});
-        assertLinkedNode(jtBuilder, new int[]{2, 1, 3, 4});
-        assertLinkedNode(jtBuilder, new int[]{3, 1, 2, 4});
-        assertLinkedNode(jtBuilder, new int[]{4, 1, 2, 3});
+        assertLinkedNode(jtBuilder, 1, 2, 3, 4);
+        assertLinkedNode(jtBuilder, 2, 1, 3, 4);
+        assertLinkedNode(jtBuilder, 3, 1, 2, 4);
+        assertLinkedNode(jtBuilder, 4, 1, 2, 3);
     }
 
     @Test
@@ -105,17 +105,17 @@ public class JunctionTreeBuilderTest {
         JunctionTreeBuilder jtBuilder = new JunctionTreeBuilder( graph );
         jtBuilder.moralize();
 
-        assertLinkedNode(jtBuilder, new int[]{x1.getId(), 2, 3});
+        assertLinkedNode(jtBuilder, x1.getId(), 2, 3);
 
-        assertLinkedNode(jtBuilder, new int[]{x2.getId(), 1, 4});
+        assertLinkedNode(jtBuilder, x2.getId(), 1, 4);
 
-        assertLinkedNode(jtBuilder, new int[]{x3.getId(), 1, 4, 5, 6});
+        assertLinkedNode(jtBuilder, x3.getId(), 1, 4, 5, 6);
 
-        assertLinkedNode(jtBuilder, new int[]{x4.getId(), 2, 3, 5, 6});
+        assertLinkedNode(jtBuilder, x4.getId(), 2, 3, 5, 6);
 
-        assertLinkedNode(jtBuilder, new int[]{x5.getId(), 3, 4, 6});
+        assertLinkedNode(jtBuilder, x5.getId(), 3, 4, 6);
 
-        assertLinkedNode(jtBuilder, new int[]{x6.getId(), 3, 4, 5});
+        assertLinkedNode(jtBuilder, x6.getId(), 3, 4, 5);
 
     }
 
@@ -185,7 +185,7 @@ public class JunctionTreeBuilderTest {
         jtBuilder.createClique(dX1.getId(), clonedAdjMatrix, vertices, adjList );
 
         assertThat(vertices.size()).isEqualTo(3);
-        assertThat(vertices.containsAll(Arrays.asList(new Integer[]{2, 3, 4}))).isTrue();
+        assertThat(vertices.containsAll(Arrays.asList(2, 3, 4))).isTrue();
 
         assertLinkedNode(jtBuilder, 1, 2, 3, 4);
         assertLinkedNode(jtBuilder, 2, 1, 3, 4);
@@ -419,12 +419,12 @@ public class JunctionTreeBuilderTest {
             elmVertMap.put( v.getId(), elmCandVert );
         }
 
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 1, 2, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 2, 1, 4 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 3, 1, 5 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 4, 2, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 5, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 6, 1, 4, 5 });
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 1, 2, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 2, 1, 4);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 3, 1, 5);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 4, 2, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 1, 4, 5);
 
         assertThat(elmVertMap.get(1).getNewEdgesRequired()).isEqualTo(3);
         assertThat(elmVertMap.get(2).getNewEdgesRequired()).isEqualTo(1);
@@ -441,16 +441,16 @@ public class JunctionTreeBuilderTest {
         boolean[] adjList = clonedAdjMatrix[ id  ];
         jtBuilder.createClique(5, clonedAdjMatrix, verticesToUpdate, adjList);
         assertThat(verticesToUpdate.size()).isEqualTo(4);
-        assertThat(verticesToUpdate.containsAll(Arrays.asList(new Integer[]{1, 3,  6}))).isTrue();
+        assertThat(verticesToUpdate.containsAll(Arrays.asList(1, 3, 6))).isTrue();
         jtBuilder.eliminateVertex(p, elmVertMap, clonedAdjMatrix, adjList, verticesToUpdate, v );
 
         // assert all new edges
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 1, 2, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 2, 1, 4 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 3, 1, 5, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 4, 2, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 5, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 6, 1, 3, 4, 5 });
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 1, 2, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 2, 1, 4);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 3, 1, 5, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 4, 2, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 1, 3, 4, 5);
 
         // assert new edges were correctly recalculated
         assertThat(elmVertMap.get(1).getNewEdgesRequired()).isEqualTo(2);
@@ -475,16 +475,16 @@ public class JunctionTreeBuilderTest {
         adjList = clonedAdjMatrix[ id  ];
         jtBuilder.createClique(4, clonedAdjMatrix, verticesToUpdate, adjList);
         assertThat(verticesToUpdate.size()).isEqualTo(3);
-        assertThat(verticesToUpdate.containsAll(Arrays.asList(new Integer[]{1, 2, 6}))).isTrue(); // don't forget 3 and 5 were already eliminated
+        assertThat(verticesToUpdate.containsAll(Arrays.asList(1, 2, 6))).isTrue(); // don't forget 3 and 5 were already eliminated
         jtBuilder.eliminateVertex(p, elmVertMap, clonedAdjMatrix, adjList, verticesToUpdate, v );
 
         // assert all new edges
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 1, 2, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 2, 1, 4, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 3, 1, 5, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 4, 2, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 5, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 6, 1, 2, 3, 4, 5 });
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 1, 2, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 2, 1, 4, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 3, 1, 5, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 4, 2, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 1, 2, 3, 4, 5);
 
         // assert new edges were correctly recalculated
         assertThat(elmVertMap.get(1).getNewEdgesRequired()).isEqualTo(0);
@@ -554,12 +554,12 @@ public class JunctionTreeBuilderTest {
         jtBuilder.triangulate();
 
         // assert all new edges
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 1, 2, 3, 4, 5, 6 });
-        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), new int[]{2, 1, 4});
-        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), new int[]{3, 1, 5});
-        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), new int[]{4, 1, 2, 5, 6});
-        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), new int[]{5, 1, 3, 4, 6});
-        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), new int[]{6, 1, 4, 5});
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 1, 2, 3, 4, 5, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 2, 1, 4);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 3, 1, 5);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 4, 1, 2, 5, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 1, 3, 4, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 1, 4, 5);
     }
 
     @Test
@@ -601,12 +601,12 @@ public class JunctionTreeBuilderTest {
         List<OpenBitSet> cliques =  jtBuilder.triangulate();
 
         // assert all new edges
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 1, 2, 3 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 2, 1, 3, 4, 5, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 3, 1, 2, 5 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 4, 2 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 5, 2, 3, 6 });
-        assertLinkedVertex( jtBuilder.getAdjacencyMatrix(), new int[] { 6, 2, 5 });
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 1, 2, 3);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 2, 1, 3, 4, 5, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 3, 1, 2, 5);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 4, 2);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 2, 3, 6);
+        assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 2, 5);
 
         assertThat(cliques.size()).isEqualTo(5); // 5th is 0, which is just a dummy V to get numbers aligned
         assertThat(cliques.contains(bitSet("1110"))).isTrue(); // x1, x2, x3 //a, b, c

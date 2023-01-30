@@ -131,7 +131,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
             }
         }
 
-        T proxy = null;
+        T proxy;
         HierarchyEncoder hier = getHierarchyEncoder();
         try {
             switch (mode) {
@@ -266,7 +266,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
         if (wrapperCache == null) {
             wrapperCache = new HashMap<>();
         }
-        Class<? extends CoreWrapper<K>> wrapperClass = null;
+        Class<? extends CoreWrapper<K>> wrapperClass;
         if (wrapperCache.containsKey(coreKlazz)) {
             wrapperClass = (Class<? extends CoreWrapper<K>>) wrapperCache.get(coreKlazz);
         } else {

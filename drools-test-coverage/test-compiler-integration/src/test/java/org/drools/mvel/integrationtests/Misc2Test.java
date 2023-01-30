@@ -6568,7 +6568,7 @@ public class Misc2Test {
 
         InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
         FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
-        FactTemplate factTemplate = new FactTemplateImpl( kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate} );
+        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", fieldTemplate);
 
         KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl( kPackage );
         StringReader rule = new StringReader( drl );
@@ -8623,15 +8623,11 @@ public class Misc2Test {
         Runnable task1 = () -> {
             synchronized(lock1) {
               try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock2) {
-              }
             }
         };
         Runnable task2 = () -> {
             synchronized(lock2) {
               try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock1) {
-              }
             }
         };
         new Thread(task1).start();

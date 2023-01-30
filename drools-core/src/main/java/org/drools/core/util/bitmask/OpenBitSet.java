@@ -1263,9 +1263,7 @@ public class OpenBitSet implements BitMask {
         if (mask instanceof OpenBitSet) {
             remove((OpenBitSet)mask);
         } else if (mask instanceof AllSetBitMask) {
-            for (int i = 0; i < this.bits.length; i++) {
-                this.bits[i] = 0L;
-            }
+            Arrays.fill(this.bits, 0L);
         } else if (mask instanceof AllSetButLastBitMask) {
             this.bits[0] = isSet(0) ? 1L : 0L;
             for (int i = 1; i < this.bits.length; i++) {

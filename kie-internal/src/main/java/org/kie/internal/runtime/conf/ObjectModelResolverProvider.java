@@ -27,7 +27,7 @@ import java.util.ServiceLoader;
 public class ObjectModelResolverProvider {
 
     private static ServiceLoader<ObjectModelResolver> serviceLoader = ServiceLoader.load(ObjectModelResolver.class);
-    private static List<ObjectModelResolver> resolvers;
+    private static volatile List<ObjectModelResolver> resolvers;
 
     /**
      * Returns all found resolvers

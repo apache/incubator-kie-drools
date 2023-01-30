@@ -466,7 +466,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         } else {
             InputStream is = KieModuleDeploymentHelperImpl.class.getResourceAsStream(path);
             if (is == null) {
-                is = new FileInputStream(new File(path));
+                is = new FileInputStream(path);
             }
             String content = convertFileToString(is, true);
             String name = path.substring(path.lastIndexOf("/") + 1);
@@ -576,7 +576,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
     private static byte[] readStream(InputStream ios) throws Exception {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
-            int read = 0;
+            int read;
             while ((read = ios.read(buffer)) != -1) {
                 baos.write(buffer, 0, read);
             }

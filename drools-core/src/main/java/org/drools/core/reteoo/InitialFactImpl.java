@@ -59,7 +59,7 @@ public final class InitialFactImpl
             return true;
         }
 
-        if ( object == null || !(object instanceof InitialFactImpl) ) {
+        if (!(object instanceof InitialFactImpl)) {
             return false;
         }
 

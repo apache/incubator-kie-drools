@@ -52,7 +52,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
         }
         
-        FEELEvent capturedException = null;
+        FEELEvent capturedException;
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {

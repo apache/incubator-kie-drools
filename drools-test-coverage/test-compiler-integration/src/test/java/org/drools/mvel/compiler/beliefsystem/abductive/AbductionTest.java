@@ -370,7 +370,7 @@ public class AbductionTest {
 
             Bean bean = (Bean) o;
 
-            if ( id != bean.id ) return false;
+            if (!id.equals(bean.id)) return false;
 
             return true;
         }

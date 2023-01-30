@@ -1099,7 +1099,7 @@ public class XStreamXML {
             QueryResults results = (QueryResults) object;
 
             // write out identifiers
-            List<String> originalIds = Arrays.asList( results.getIdentifiers() );
+            String[] originalIds = results.getIdentifiers();
             Set<String> actualIds = new HashSet<>();
             if ( results instanceof QueryResultsImpl) {
                 for ( String identifier : originalIds ) {
@@ -1117,7 +1117,7 @@ public class XStreamXML {
                 for( String identifier : results.getIdentifiers() ) {
                     for( QueryResultsRow row : ((FlatQueryResults) results) ) {
                        Object rowObj = row.get(identifier);
-                       if( rowObj != null && rowObj instanceof DroolsQuery ) {
+                       if(rowObj instanceof DroolsQuery) {
                           continue;
                        }
                        actualIds.add( identifier );

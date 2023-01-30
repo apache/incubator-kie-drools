@@ -189,7 +189,7 @@ public class DMNRuntimeBuilder {
 
             List<DMNModel> dmnModels = new ArrayList<>();
             for (DMNResource dmnRes : sortedDmnResources) {
-                DMNModel dmnModel = null;
+                DMNModel dmnModel;
                 if (ctx.relativeResolver != null) {
                     if (dmnCompiler instanceof DMNCompilerImpl) {
                         dmnModel = ((DMNCompilerImpl) dmnCompiler).compile(dmnRes.getDefinitions(),

@@ -503,7 +503,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                     WindowDeclarationDescrBuilder.class,
                                     null );
 
-            String window = "";
+            String window;
 
             match( input,
                    DRL5Lexer.ID,
@@ -2720,7 +2720,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
     @SuppressWarnings("unchecked")
     private BaseDescr lhsPatternBind( PatternContainerDescrBuilder< ? , ? > ce,
                                       final boolean allowOr ) throws RecognitionException {
-        PatternDescrBuilder< ? > pattern = null;
+        PatternDescrBuilder< ? > pattern;
         CEDescrBuilder< ? , OrDescr> or = null;
         BaseDescr result = null;
 
@@ -2849,7 +2849,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * @throws RecognitionException 
      */
     private BaseDescr lhsAccumulate( PatternContainerDescrBuilder< ? , ? > ce ) throws RecognitionException {
-        PatternDescrBuilder< ? > pattern = null;
+        PatternDescrBuilder< ? > pattern;
         BaseDescr result = null;
 
         pattern = helper.start( (DescrBuilder< ? , ? >) ce,
@@ -3541,7 +3541,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * @throws RecognitionException
      */
     private void fromEntryPoint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        String ep = "";
+        String ep;
 
         match( input,
                DRL5Lexer.ID,
@@ -3581,7 +3581,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * @throws RecognitionException
      */
     private void fromWindow( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        String window = "";
+        String window;
 
         match( input,
                DRL5Lexer.ID,
@@ -4142,7 +4142,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
     public String type() throws RecognitionException {
         String type = "";
         try {
-            int first = input.index(), last = first;
+            int first = input.index(), last;
             match( input,
                    DRL5Lexer.ID,
                    null,
@@ -4465,7 +4465,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                          String text,
                          int[] follow,
                          DroolsEditorType etype ) throws RecognitionException {
-        Token matchedSymbol = null;
+        Token matchedSymbol;
         matchedSymbol = input.LT( 1 );
         if ( input.LA( 1 ) == ttype && (text == null || text.equals( matchedSymbol.getText() )) ) {
             input.consume();
@@ -4522,7 +4522,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                                                 String text,
                                                 int[] follow )
                                                               throws RecognitionException {
-        RecognitionException e = null;
+        RecognitionException e;
         // if next token is what we are looking for then "delete" this token
         if ( mismatchIsUnwantedToken( input,
                                       ttype,

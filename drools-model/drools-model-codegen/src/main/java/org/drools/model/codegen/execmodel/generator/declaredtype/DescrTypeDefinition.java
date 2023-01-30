@@ -91,7 +91,7 @@ public class DescrTypeDefinition implements TypeDefinition {
             });
 
             // We're extending a class using the Declared Type mechanism, so the super class doesn't exist in the classloader
-            if (!optResolvedSuper.isPresent()) {
+            if (optResolvedSuper.isEmpty()) {
                 superTypeName = of(superType.getName());
                 declaredAbstractClass = of(superType.getName());
             }

@@ -358,7 +358,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
 
-        org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
+        org.kie.api.definition.rule.Rule[] rules = kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
         assertThat(rules.length).isEqualTo(3);
 
         KieSession session = kBase.newKieSession();

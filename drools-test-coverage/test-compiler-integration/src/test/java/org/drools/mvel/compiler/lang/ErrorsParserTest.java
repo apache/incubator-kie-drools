@@ -153,7 +153,7 @@ public class ErrorsParserTest {
         final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
-        int len = 0;
+        int len;
 
         while ( (len = reader.read( buf )) >= 0 ) {
             text.append( buf,

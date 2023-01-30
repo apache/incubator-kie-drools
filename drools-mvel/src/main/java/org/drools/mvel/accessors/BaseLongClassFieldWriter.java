@@ -101,8 +101,8 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setLongValue",
-                                                      new Class[]{Object.class, long.class} );
+            return this.getClass().getDeclaredMethod("setLongValue",
+                                                     Object.class, long.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

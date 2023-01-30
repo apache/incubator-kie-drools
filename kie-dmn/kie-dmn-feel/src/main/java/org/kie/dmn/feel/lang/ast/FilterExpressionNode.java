@@ -69,7 +69,7 @@ public class FilterExpressionNode
             if( filter.getResultType() != BuiltInType.BOOLEAN ) {
                 // check if index
                 Object f = filter.evaluate(new SilentWrappingEvaluationContextImpl(ctx)); // I need to try evaluate filter first, ignoring errors; only if evaluation fails, or is not a Number, it delegates to try `evaluateExpressionsInContext`
-                if (f != null && f instanceof Number) {
+                if (f instanceof Number) {
                     // what to do if Number is not an integer??
                     int i = ((Number) f).intValue();
                     if ( i > 0 && i <= list.size() ) {

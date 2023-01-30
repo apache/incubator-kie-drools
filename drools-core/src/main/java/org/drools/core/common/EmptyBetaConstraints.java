@@ -141,7 +141,7 @@ public class EmptyBetaConstraints
             return true;
         }
 
-        return (object != null && (object instanceof EmptyBetaConstraints));
+        return ((object instanceof EmptyBetaConstraints));
     }
 
     public ContextEntry[] createContext() {

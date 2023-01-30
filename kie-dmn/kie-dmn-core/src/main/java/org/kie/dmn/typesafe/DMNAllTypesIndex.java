@@ -98,7 +98,7 @@ public class DMNAllTypesIndex {
 
     private String convertBuiltin(DMNType expectedFEELType) {
         BuiltInType builtin = DMNTypeUtils.getFEELBuiltInType(expectedFEELType);
-        Class<?> convertedClass = Object.class;
+        Class<?> convertedClass;
         if (builtin == BuiltInType.DURATION) {
             convertedClass = convertDurationToJavaClass(expectedFEELType);
         } else {
@@ -112,9 +112,7 @@ public class DMNAllTypesIndex {
             case UNKNOWN:
                 return Object.class;
             case DATE:
-                return Temporal.class;
             case TIME:
-                return Temporal.class;
             case DATE_TIME:
                 return Temporal.class;
             case BOOLEAN:
@@ -133,7 +131,6 @@ public class DMNAllTypesIndex {
         switch (expectedFEELType.getName()) {
             case SimpleType.YEARS_AND_MONTHS_DURATION:
             case "yearMonthDuration":
-                return TemporalAmount.class;
             case SimpleType.DAYS_AND_TIME_DURATION:
             case "dayTimeDuration":
                 return TemporalAmount.class;

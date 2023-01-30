@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
+import java.util.Objects;
 
 import org.junit.Test;
 
@@ -113,14 +114,14 @@ public class InputStreamMarkResetTest {
                 if( this.time != newThingy.time ) { 
                     return false;
                 }
-                Integer count = null;
+                Integer count;
                 if( this.intCount != null ) { 
                     count = this.intCount;
                 }
                 else {
                     count = Integer.parseInt(this.strCount);
                 }
-                Integer newCount = null;
+                Integer newCount;
                 if( newThingy.intCount != null ) { 
                     newCount = newThingy.intCount; 
                 }
@@ -132,7 +133,7 @@ public class InputStreamMarkResetTest {
                         return false;
                     }
                 }
-                else if( count != newCount ) { 
+                else if(!Objects.equals(count, newCount)) {
                     return false;
                 }
             }

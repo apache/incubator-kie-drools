@@ -92,7 +92,7 @@ public class DoubleFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof DoubleFieldImpl) ) {
+        if (!(object instanceof DoubleFieldImpl)) {
             return false;
         }
         final DoubleFieldImpl other = (DoubleFieldImpl) object;

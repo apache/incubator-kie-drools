@@ -65,7 +65,7 @@ public class DMNValidationHelper {
                                          Function<DMNMessage, String> computeMessage,
                                              Log log) {
         for (DMNMessage msg : validation) {
-            Consumer<CharSequence> logFn = null;
+            Consumer<CharSequence> logFn;
             switch (msg.getLevel()) {
                 case ERROR:
                     logFn = log::error;

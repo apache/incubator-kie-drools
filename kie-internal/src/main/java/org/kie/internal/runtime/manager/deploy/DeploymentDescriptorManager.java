@@ -81,7 +81,7 @@ public class DeploymentDescriptorManager {
     }
 
     private URL getLocationURL(String location) {
-        URL locationUrl = null;
+        URL locationUrl;
         if (location.startsWith("classpath:")) {
             String stripedLocation = location.replaceFirst("classpath:", "");
             locationUrl = this.getClass().getResource(stripedLocation);

@@ -60,7 +60,7 @@ public class InvokeFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "parameters", "cannot be null"));
         }
 
-        FEELEvent capturedException = null;
+        FEELEvent capturedException;
         try {
             ctx.enterFrame();
 

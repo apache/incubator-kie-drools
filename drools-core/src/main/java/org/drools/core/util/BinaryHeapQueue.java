@@ -44,7 +44,7 @@ public class BinaryHeapQueue
     private Comparator<Activation> comparator;
 
     /** The number of elements currently in this heap. */
-    private volatile int size;
+    private int size;
 
     /** The elements in this heap. */
     private Activation[] elements;

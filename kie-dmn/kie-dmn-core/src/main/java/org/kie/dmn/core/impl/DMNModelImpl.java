@@ -466,7 +466,7 @@ public class DMNModelImpl
     }
 
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
-        if (!getImportAliasFor(iNS, iModelName).isPresent()) {
+        if (getImportAliasFor(iNS, iModelName).isEmpty()) {
             this.importAliases.put(iAlias, new QName(iNS, iModelName));
         }
     }

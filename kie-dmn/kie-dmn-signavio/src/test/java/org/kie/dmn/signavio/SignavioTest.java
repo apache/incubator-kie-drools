@@ -52,7 +52,7 @@ public class SignavioTest {
         List<DMNModel> models = runtime.getModels();
         
         DMNContext context = runtime.newContext();
-        context.set("persons", Arrays.asList(new String[]{"p1", "p2"}));
+        context.set("persons", Arrays.asList("p1", "p2"));
         
         DMNModel model0 = models.get(0);
         LOG.info("EVALUATE ALL:");

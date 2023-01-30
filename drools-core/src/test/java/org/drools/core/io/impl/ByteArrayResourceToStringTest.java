@@ -36,23 +36,23 @@ public class ByteArrayResourceToStringTest {
     public static Collection<Object[]> data() {
         return new ArrayList<Object[]>(Arrays.asList(new Object[][]{
                 {
-                        Arrays.asList(new Byte[]{10, 20, 30, 40}),
+                        Arrays.asList(10, 20, 30, 40),
                         null,
                         "ByteArrayResource[bytes=[10, 20, 30, 40], encoding=null]"
                 },
                 {
-                        Arrays.asList(new Byte[]{10, 20, 30, 40, 50, 60, 70, 80, 90, 100}),
+                        Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 100),
                         null,
                         "ByteArrayResource[bytes=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100], encoding=null]"
                 },
                 {
-                        Arrays.asList(new Byte[]{10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}),
+                        Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120),
                         null,
                         "ByteArrayResource[bytes=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, ...], encoding=null]"
                 },
                 // non-null encoding
                 {
-                        Arrays.asList(new Byte[]{10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}),
+                        Arrays.asList(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120),
                         "UTF-8",
                         "ByteArrayResource[bytes=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, ...], encoding=UTF-8]"
                 },

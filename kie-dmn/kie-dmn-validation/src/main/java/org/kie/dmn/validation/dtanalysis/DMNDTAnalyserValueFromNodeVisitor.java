@@ -198,10 +198,6 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
                     }
                     break;
                 case STRING:
-                    if (params.size() == 1) {
-                        return areAllSupported(params);
-                    }
-                    break;
                 case DURATION:
                     if (params.size() == 1) {
                         return areAllSupported(params);

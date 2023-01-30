@@ -56,7 +56,7 @@ public class MonthAddFunction
                 r = BuiltInFunctions.getFunction( DateFunction.class ).invoke( datetime ).cata( BuiltInType.justNull(), Function.identity() );
             }
 
-            if ( r != null && r instanceof TemporalAccessor ) {
+            if (r instanceof TemporalAccessor) {
                 return invoke( (TemporalAccessor) r, months );
             } else {
                 return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datestring", "date-parsing exception" ) );

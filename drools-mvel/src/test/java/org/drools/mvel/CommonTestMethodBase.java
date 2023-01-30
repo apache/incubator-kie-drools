@@ -213,7 +213,7 @@ public class CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        Collection<KiePackage> knowledgePackages = null;
+        Collection<KiePackage> knowledgePackages;
         if ( serialize ) {
             try {
                 knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  ((KnowledgeBuilderConfigurationImpl)kbuilderConf).getClassLoader() );

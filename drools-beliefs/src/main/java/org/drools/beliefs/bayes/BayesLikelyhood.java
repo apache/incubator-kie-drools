@@ -43,9 +43,7 @@ public class BayesLikelyhood {
         }
 
         varPotential = new double[ this.variable.getProbabilityTable().length ][];
-        for ( int i = 0; i < varPotential.length; i++ ) {
-            varPotential[i] = distribution;
-        }
+        Arrays.fill(varPotential, distribution);
 
         BayesVariable[] vars = jtNode.getValues().toArray( new BayesVariable[jtNode.getValues().size()] );
         int numberOfStates = PotentialMultiplier.createNumberOfStates(vars);

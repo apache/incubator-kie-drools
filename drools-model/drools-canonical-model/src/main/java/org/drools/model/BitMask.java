@@ -16,6 +16,7 @@
 package org.drools.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.drools.model.bitmask.BitMaskUtil;
 import org.drools.model.bitmask.LongBitMask;
@@ -59,9 +60,7 @@ public interface BitMask extends Serializable, Cloneable {
         }
         int nWords = (numBits / 64) + 1;
         long[] bits = new long[nWords];
-        for (int i = 0; i < bits.length; i++) {
-            bits[i] = -1L;
-        }
+        Arrays.fill(bits, -1L);
         return new OpenBitSet(bits, nWords);
     }
 }

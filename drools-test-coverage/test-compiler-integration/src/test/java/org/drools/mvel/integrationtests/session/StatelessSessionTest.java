@@ -83,7 +83,7 @@ public class StatelessSessionTest {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
 
-        session.execute( Arrays.asList( new Object[]{stilton} ) );
+        session.execute( Arrays.asList(stilton));
 
         assertThat(list.get(0)).isEqualTo("stilton");
     }
@@ -119,7 +119,7 @@ public class StatelessSessionTest {
         
         final StatelessKieSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
         final ExecutableCommand cmd = (ExecutableCommand) CommandFactory.newInsert( stilton, "outStilton" );
-        final BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new ExecutableCommand<?>[] { cmd } ) );
+        final BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList(cmd) );
         
         final ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );

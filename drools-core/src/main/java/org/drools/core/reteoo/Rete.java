@@ -196,7 +196,7 @@ public class Rete extends ObjectSource implements ObjectSink {
             return true;
         }
 
-        if ( object == null || !(object instanceof Rete) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof Rete) || this.hashCode() != object.hashCode()) {
             return false;
         }
         return this.entryPoints.equals( ((Rete)object).entryPoints );

@@ -51,7 +51,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
     public void compileNode(DRGElement de, DMNCompilerImpl compiler, DMNModelImpl model) {
         BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) de;
         BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
-        DMNType type = null;
+        DMNType type;
         DMNType fnType = null;
         if ( bkm.getVariable() == null ) {
             DMNCompilerHelper.reportMissingVariable( model, de, bkm, Msg.MISSING_VARIABLE_FOR_BKM );

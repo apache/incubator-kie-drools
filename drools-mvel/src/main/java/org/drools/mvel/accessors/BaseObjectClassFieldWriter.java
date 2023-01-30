@@ -89,8 +89,8 @@ public abstract class BaseObjectClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setValue",
-                                                      new Class[]{Object.class, Object.class} );
+            return this.getClass().getDeclaredMethod("setValue",
+                                                     Object.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

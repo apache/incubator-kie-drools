@@ -230,7 +230,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
     }
 
     public void removeUndefeated(DefeasibleMode dep) {
-        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue().toString() ) );
+        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals(dep.getValue()) );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {

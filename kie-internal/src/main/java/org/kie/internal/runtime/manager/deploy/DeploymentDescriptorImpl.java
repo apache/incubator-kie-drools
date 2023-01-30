@@ -132,7 +132,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         if (requiredRoles != null && !requiredRoles.isEmpty()) {
 
             for (String roleString : requiredRoles) {
-                String rolePrefix = null;
+                String rolePrefix;
                 String role = roleString;
 
                 if (roleString.indexOf(":") != -1) {

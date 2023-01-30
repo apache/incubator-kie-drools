@@ -83,7 +83,7 @@ public class PropertySpecificTest {
 
     public static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {
         ObjectType objectType = objectTypeNode.getObjectType();
-        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+        return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
 
     @Test

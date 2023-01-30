@@ -93,7 +93,7 @@ public class BooleanFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof BooleanFieldImpl) ) {
+        if (!(object instanceof BooleanFieldImpl)) {
             return false;
         }
         final BooleanFieldImpl other = (BooleanFieldImpl) object;

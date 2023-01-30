@@ -40,7 +40,7 @@ public class DSLMappingEntryTest {
                                          final String inputValue) throws IOException {
         String mapping = "[condition][]" + inputKey + "=" + inputValue;
         StringReader dsl = new StringReader( mapping );
-        DSLMappingEntry entry = null;
+        DSLMappingEntry entry;
         try {
             DSLTokenizedMappingFile parser = new DSLTokenizedMappingFile();
             if ( parser.parseAndLoad( dsl ) ) {

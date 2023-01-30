@@ -227,7 +227,7 @@ public class ModelGenerator {
         BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
 
         Optional<AndDescr> optExtendedLhs = getExtendedLhs(context, packageDescr, ruleDescr, new HashSet<>());
-        if (!optExtendedLhs.isPresent()) {
+        if (optExtendedLhs.isEmpty()) {
             return;
         }
         new ModelGeneratorVisitor(context, packageModel).visit(optExtendedLhs.get());
@@ -290,7 +290,7 @@ public class ModelGenerator {
         Optional<RuleDescr> optParent = packageDescr.getRules().stream()
                 .filter( r -> r.getName().equals( ruleDescr.getParentName() ) ).findFirst();
 
-        if (!optParent.isPresent()) {
+        if (optParent.isEmpty()) {
             context.addCompilationError(new DescrBuildError(packageDescr, ruleDescr, null, "Rule " + ruleDescr.getName() + " extends an unknown rule " + ruleDescr.getParentName()));
             return Optional.empty();
         }
@@ -298,7 +298,7 @@ public class ModelGenerator {
         RuleDescr parentRuleDescr = optParent.get();
         AndDescr extendedLhs = new AndDescr();
         Optional<AndDescr> optParentExtendedLhs = getExtendedLhs(context, packageDescr, parentRuleDescr, ruleDescrSet);
-        if (!optParentExtendedLhs.isPresent()) {
+        if (optParentExtendedLhs.isEmpty()) {
             // No need to add CompilationError because it should have been already added.
             return Optional.empty();
         }
@@ -490,7 +490,7 @@ public class ModelGenerator {
     public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
             boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
-            if (!context.getGlobals().containsKey(decl.getBindingId()) && !context.getQueryParameterByName(decl.getBindingId()).isPresent()) {
+            if (!context.getGlobals().containsKey(decl.getBindingId()) && context.getQueryParameterByName(decl.getBindingId()).isEmpty()) {
                 addVariable(block, decl, context, domainClass);
             }
         }

@@ -178,7 +178,7 @@ public class ConstraintUtil {
     private static void inverseMethodCallExpr(MethodCallExpr mcExpr) {
         String mcExprName = mcExpr.getName().asString();
 
-        String methodName = mcExprName.substring(CLASS_NAME.length(), mcExprName.length());
+        String methodName = mcExprName.substring(CLASS_NAME.length());
         NodeList<Expression> arguments = mcExpr.getArguments();
 
         if (methodName.startsWith(GREATER_THAN_PREFIX)) {

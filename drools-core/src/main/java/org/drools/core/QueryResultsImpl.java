@@ -98,9 +98,7 @@ public class QueryResultsImpl
         }
 
         for ( Declaration declr : getDeclarations(0).values() ) {
-            if ( ! idSet.contains( declr.getIdentifier() ) ) {
-                idSet.add(declr.getIdentifier());
-            }
+            idSet.add(declr.getIdentifier());
         }
 
         identifiers = idSet.toArray(new String[idSet.size()]);

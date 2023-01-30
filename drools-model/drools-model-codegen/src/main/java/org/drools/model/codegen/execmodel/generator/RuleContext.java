@@ -386,7 +386,7 @@ public class RuleContext {
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
-        if(!getOOPathDeclarationById(d.getBindingId()).isPresent()) {
+        if(getOOPathDeclarationById(d.getBindingId()).isEmpty()) {
             this.ooPathDeclarations.add(d);
         }
     }

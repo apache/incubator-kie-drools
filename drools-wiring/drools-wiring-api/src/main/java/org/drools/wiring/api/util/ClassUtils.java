@@ -72,10 +72,6 @@ public abstract class ClassUtils {
         m.put("double", "D");
         m.put("char", "C");
         m.put("void", "V");
-        final Map<String, String> r = new HashMap<>();
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            r.put(e.getValue(), e.getKey());
-        }
         abbreviationMap = Collections.unmodifiableMap(m);
 
         final Map<String, Class<?>> m2 = new HashMap<>();

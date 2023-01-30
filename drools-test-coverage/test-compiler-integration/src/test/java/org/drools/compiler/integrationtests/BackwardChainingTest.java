@@ -623,7 +623,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.insert(new Parent("eve",
                                        "jill"));
 
-            QueryResults results = null;
+            QueryResults results;
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
             list.clear();
@@ -703,8 +703,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
                                    "eve, mary", "mary, eve"}, list);
 
             list.clear();
-
-            list.clear();
+            
             results = ksession.getQueryResults("parent", v, v);
             for (final QueryResultsRow result : results) {
                 list.add(result.get("parent") + ":" + result.get("child"));

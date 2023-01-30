@@ -175,7 +175,7 @@ public class BinaryHeapQueueTest {
         }
 
         public boolean equal(final Object object) {
-            if ( (object == null) || !(object instanceof Group) ) {
+            if (!(object instanceof Group)) {
                 return false;
             }
 

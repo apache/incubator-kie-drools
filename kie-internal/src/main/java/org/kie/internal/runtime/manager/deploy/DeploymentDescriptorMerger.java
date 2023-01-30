@@ -59,7 +59,7 @@ public class DeploymentDescriptorMerger {
         if (mode == null) {
             mode = MergeMode.MERGE_COLLECTIONS;
         }
-        DeploymentDescriptor merged = null;
+        DeploymentDescriptor merged;
         DeploymentDescriptorBuilder builder = primary.getBuilder();
         builder.setBuildHandler(new MergeModeBuildHandler(mode));
 

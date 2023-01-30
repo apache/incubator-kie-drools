@@ -124,7 +124,7 @@ public class EvalConditionNode extends LeftTupleSource
             return true;
         }
 
-        if ( object == null || !(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

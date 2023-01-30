@@ -102,7 +102,7 @@ public class ConsequenceBuilder {
     public static class _0 extends AbstractValidBuilder<_0> {
 
         public _0(final Block0 block) {
-            super(new Variable[0]);
+            super();
             this.block = block.asBlockN();
         }
 

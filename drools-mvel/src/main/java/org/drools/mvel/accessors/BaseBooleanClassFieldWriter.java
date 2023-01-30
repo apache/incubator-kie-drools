@@ -99,8 +99,8 @@ public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setBooleanValue",
-                                                      new Class[]{Object.class, boolean.class} );
+            return this.getClass().getDeclaredMethod("setBooleanValue",
+                                                     Object.class, boolean.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

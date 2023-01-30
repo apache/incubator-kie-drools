@@ -49,7 +49,7 @@ public class NNMedianFunction
         List<BigDecimal> sorted = new ArrayList<>();
         for( int i = 0; i < list.size(); i++ ) {
             Object element = list.get( i );
-            if( element != null && element instanceof Number ) {
+            if(element instanceof Number) {
                 sorted.add(EvalHelper.getBigDecimalOrNull( element ) );
             } else if( element != null ) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains element that is not a number"));

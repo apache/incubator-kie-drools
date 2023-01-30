@@ -145,7 +145,7 @@ public class VarargsTest {
         public B(int value) { this.value = value; }
         public B(String value) { this.value = Integer.parseInt(value); }
         public int getValue() { return value; }
-        public boolean equals(Object other) { return other != null && other instanceof B && value == ((B)other).value; };
+        public boolean equals(Object other) { return other instanceof B && value == ((B) other).value; };
     }
 
     @PropertyReactive

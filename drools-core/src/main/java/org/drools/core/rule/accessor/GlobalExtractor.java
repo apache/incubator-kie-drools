@@ -94,7 +94,7 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
     }
 
     public String getExtractToClassName() {
-        Class< ? > clazz = null;
+        Class< ? > clazz;
         // @todo : this is a bit nasty, but does the trick
         if ( this.objectType instanceof ClassObjectType ) {
             clazz = ((ClassObjectType) this.objectType).getClassType();
@@ -106,8 +106,8 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{ReteEvaluator.class, Object.class} );
+            return this.getClass().getDeclaredMethod("getValue",
+                                                     ReteEvaluator.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

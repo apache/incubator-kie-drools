@@ -64,14 +64,14 @@ public class OOPathQueriesTest {
                         "end\n";
 
         final Thing smartphone = new Thing("smartphone");
-        final List<String> itemList = Arrays.asList(new String[] { "display", "keyboard", "processor" });
+        final List<String> itemList = Arrays.asList("display", "keyboard", "processor");
         itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
         ksession.insert(smartphone);
 
-        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", new Object[] { smartphone, Variable.v });
+        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", smartphone, Variable.v);
         final List<String> resultList = StreamSupport.stream(queryResults.spliterator(), false)
                 .map(row -> ((Thing) row.get("$y")).getName()).collect(Collectors.toList());
         assertThat(resultList).as("Query does not contain all items").containsAll(itemList);

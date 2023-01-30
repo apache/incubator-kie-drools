@@ -123,7 +123,7 @@ public class MapBackedClassLoader extends ClassLoader {
     }
 
     public InputStream getResourceAsStream(final String name) {
-        byte[] bytes = null;
+        byte[] bytes;
         synchronized ( this.store ) {
             bytes = this.store.get( convertResourcePathToClassName( name ) );
         }

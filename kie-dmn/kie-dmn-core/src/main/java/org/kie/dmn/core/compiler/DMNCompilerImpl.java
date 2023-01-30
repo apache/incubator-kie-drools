@@ -594,7 +594,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param topLevel null if it is a top level ItemDefinition
      */
     private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, DMNType topLevel) {
-        BaseDMNTypeImpl type = null;
+        BaseDMNTypeImpl type;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
             type = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, itemDef.getTypeRef());

@@ -76,7 +76,7 @@ public class DMNEvaluationUtils {
         DMNContext dmnContext = dmnContextProducer.get();
         LOG.debug("Will use dmnContext: {}", dmnContext);
 
-        DMNResult result = null;
+        DMNResult result;
 
         final List<String> names = Optional.ofNullable(decisionNames).orElse(Collections.emptyList());
         final List<String> ids = Optional.ofNullable(decisionIds).orElse(Collections.emptyList());

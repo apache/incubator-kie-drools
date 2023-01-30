@@ -461,7 +461,7 @@ public class DMNRuntimeImpl
             Optional<String> importAlias = callerNode.getModelImportAliasFor(node.getModelNamespace(), node.getModelName());
             if (importAlias.isPresent()) {
                 Object aliasContext = result.getContext().get(importAlias.get());
-                if (aliasContext != null && (aliasContext instanceof Map<?, ?>)) {
+                if ((aliasContext instanceof Map<?, ?>)) {
                     Map<?, ?> map = (Map<?, ?>) aliasContext;
                     return map.containsKey(node.getName());
                 }
@@ -495,7 +495,7 @@ public class DMNRuntimeImpl
     }
 
     private boolean walkIntoImportScope(DMNResultImpl result, DMNNode callerNode, DMNNode destinationNode) {
-        if (!result.getContext().scopeNamespace().isPresent()) {
+        if (result.getContext().scopeNamespace().isEmpty()) {
             if (destinationNode.getModelNamespace().equals(result.getModel().getNamespace())) {
                 return false;
             } else {

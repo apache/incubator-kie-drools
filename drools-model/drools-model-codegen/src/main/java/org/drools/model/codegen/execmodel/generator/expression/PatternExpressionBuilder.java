@@ -99,7 +99,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private void setScopeToAscendantExpr(MethodCallExpr targetExpr, MethodCallExpr newScope) {
         Optional<Expression> optCurrentScope = targetExpr.getScope();
-        if (!optCurrentScope.isPresent()) {
+        if (optCurrentScope.isEmpty()) {
             targetExpr.setScope(newScope);
         } else {
             Expression currentScope = optCurrentScope.get();

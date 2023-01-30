@@ -193,7 +193,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                     Object [] objArr = wrapper.getElements();
                     int length = objArr.length;
                     String componentTypeName = wrapper.getComponentType();
-                    Class realArrComponentType = null;
+                    Class realArrComponentType;
                     realArrComponentType = getClass(componentTypeName);
 
                     // create and fill array

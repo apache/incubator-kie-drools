@@ -101,8 +101,8 @@ public abstract class BaseIntClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setIntValue",
-                                                      new Class[]{Object.class, int.class} );
+            return this.getClass().getDeclaredMethod("setIntValue",
+                                                     Object.class, int.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

@@ -2688,7 +2688,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
     public static class ProbeEvent {
 
-        private int value = 1;
+        private int value;
 
         public int getValue() {
             return value;

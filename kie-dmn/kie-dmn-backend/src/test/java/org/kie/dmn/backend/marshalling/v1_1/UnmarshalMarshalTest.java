@@ -232,15 +232,13 @@ public class UnmarshalMarshalTest {
 
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
-        attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
-                new QName("expressionLanguage"),
-                new QName("typeLanguage"),
-                new QName("isCollection"),
-                new QName("hitPolicy"),
-                new QName("preferredOrientation")
-        }));
+        attrWhichCanDefault.addAll(Arrays.asList(new QName("expressionLanguage"),
+                                                 new QName("typeLanguage"),
+                                                 new QName("isCollection"),
+                                                 new QName("hitPolicy"),
+                                                 new QName("preferredOrientation")));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
-        nodeHavingDefaultableAttr.addAll(Arrays.asList(new String[]{"definitions", "decisionTable", "itemDefinition", "itemComponent"}));
+        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent"));
         Diff checkSimilar = DiffBuilder
                 .compare(control)
                 .withTest(test)

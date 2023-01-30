@@ -171,7 +171,7 @@ public class MVELCompilationUnit
         if (this == obj) {
             return true;
         }
-        if (obj == null || !(obj instanceof MVELCompilationUnit)) {
+        if (!(obj instanceof MVELCompilationUnit)) {
             return false;
         }
 

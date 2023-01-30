@@ -93,7 +93,7 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
         String fluentTarget = getFluentContext().getFactory().getFluentTarget(cls.getName());
         addCommand(new SetVarAsRegistryEntry(fluentTarget, name));
 
-        K object = null;
+        K object;
         try {
             // @TODO We really should use a component factory for these, but for now use impl lookup
             Class imlpCls = getFluentContext().getFactory().getImplClass(cls.getName());

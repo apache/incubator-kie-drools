@@ -45,7 +45,7 @@ public class MonthFunction
 
         try {
             Object r = DateFunction.INSTANCE.invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
-            if ( r != null && r instanceof TemporalAccessor ) {
+            if (r instanceof TemporalAccessor) {
                 return invoke( (TemporalAccessor) r );
             } else {
                 return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datestring", "date-parsing exception" ) );

@@ -152,7 +152,7 @@ public class QuadroupleBetaConstraints extends MultipleBetaConstraint {
             return true;
         }
 
-        if ( object == null || !(object instanceof QuadroupleBetaConstraints) ) {
+        if (!(object instanceof QuadroupleBetaConstraints)) {
             return false;
         }
 

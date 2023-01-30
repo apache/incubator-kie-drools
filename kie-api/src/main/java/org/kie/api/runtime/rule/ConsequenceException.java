@@ -36,7 +36,7 @@ public class ConsequenceException extends RuntimeException {
     @Override
     public String getMessage() {
         StringBuilder sb = new StringBuilder( "Exception executing consequence for " );
-        Rule rule = null;
+        Rule rule;
 
         if( match != null && ( rule = match.getRule() ) != null ){
             String packageName = rule.getPackageName();

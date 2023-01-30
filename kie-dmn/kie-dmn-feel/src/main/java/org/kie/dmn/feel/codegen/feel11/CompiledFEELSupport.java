@@ -144,7 +144,7 @@ public class CompiledFEELSupport {
                     // In case any element fails in there or the filter expression returns null, it will only exclude the element, but will continue to process the list.
                     // In case all elements fail, the result will be an empty list.
                     Object r = filterExpression.apply(new SilentWrappingEvaluationContextImpl(ctx));
-                    if (r instanceof Boolean && r == Boolean.TRUE) {
+                    if (r == Boolean.TRUE) {
                         results.add(v);
                     }
                 } catch (Exception e) {
@@ -284,7 +284,7 @@ public class CompiledFEELSupport {
         }
 
         private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextCompiled icn) {
-            ForIteration fi = null;
+            ForIteration fi;
             String name = (String) icn.getName().apply(ctx);
             Object result = icn.getExpression().apply(ctx);
             Object rangeEnd = icn.getRangeEndExpr().apply(ctx);
@@ -449,7 +449,7 @@ public class CompiledFEELSupport {
     }
 
     private static Object[] toFunctionParams(Object params) {
-        Object[] invocationParams = null;
+        Object[] invocationParams;
         if (params instanceof List) {
             invocationParams = ((List) params).toArray(new Object[]{});
         } else if (params instanceof Object[]) {

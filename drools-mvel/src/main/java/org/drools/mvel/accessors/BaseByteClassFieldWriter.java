@@ -104,8 +104,8 @@ public abstract class BaseByteClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setByteValue",
-                                                      new Class[]{Object.class, byte.class} );
+            return this.getClass().getDeclaredMethod("setByteValue",
+                                                     Object.class, byte.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

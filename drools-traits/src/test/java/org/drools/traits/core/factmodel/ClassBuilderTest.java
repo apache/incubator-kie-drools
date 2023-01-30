@@ -132,7 +132,7 @@ public class ClassBuilderTest {
      */
     private void writeJar(byte[] data) throws FileNotFoundException,
                                       IOException {
-        FileOutputStream out = new FileOutputStream( new File( "/Users/michaelneale/edson.jar" ) );
+        FileOutputStream out = new FileOutputStream("/Users/michaelneale/edson.jar");
         JarOutputStream jout = new JarOutputStream( out );
         JarEntry je = new JarEntry( "br/com/auster/TestClass1.class" );
         jout.putNextEntry( je );
