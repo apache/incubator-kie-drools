@@ -51,9 +51,9 @@ Enviroment variables can be used to set the information needed to connect to kaf
 
 ```bash
 export KAFKA_BOOTSTRAP_SERVERS=localhost:9092
-export QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=localhost:11222
-export QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME=myuser
-export QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=mypassword
+export QUARKUS_INFINISPAN_CLIENT_HOSTS=localhost:11222
+export QUARKUS_INFINISPAN_CLIENT_USERNAME=myuser
+export QUARKUS_INFINISPAN_CLIENT_PASSWORD=mypassword
 ```
 
 #### Handling failures
