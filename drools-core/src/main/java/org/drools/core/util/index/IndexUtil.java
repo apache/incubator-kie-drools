@@ -45,7 +45,7 @@ public class IndexUtil {
 
     static {
         EQUALS_MEMORY = Integer.parseInt(System.getProperty("org.drools.equalsmemory", Integer.toString(FASTUTIL_MAP)));
-        EQUALS_MEMORY = Integer.parseInt(System.getProperty("org.drools.comparablememory", Integer.toString(FASTUTIL_TREE)));
+        COMPARABLE_MEMORY = Integer.parseInt(System.getProperty("org.drools.comparablememory", Integer.toString(CUSTOM_MAP)));
     }
 
 

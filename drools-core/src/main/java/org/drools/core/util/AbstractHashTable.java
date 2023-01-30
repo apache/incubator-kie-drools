@@ -33,13 +33,13 @@ public abstract class AbstractHashTable
     Externalizable {
     static final int           MAX_CAPACITY = 1 << 30;
 
-    public static final int                           PRIME            = 31;
+    public static final int    PRIME            = 31;
 
     protected int              size;
     protected int              threshold;
     protected float            loadFactor;
 
-    protected TupleList[] table;
+    protected TupleList[]      table;
 
     private HashTableIterator  iterator;
 
@@ -509,10 +509,6 @@ public abstract class AbstractHashTable
 
         }
 
-        public DoubleHashEntry(int hashSeed, Object obj1, Object obj2) {
-            set(hashSeed, obj1, obj2);
-        }
-
         public HashEntry set(int hashSeed, Object obj1, Object obj2) {
             this.obj1 = obj1;
             this.obj2 = obj2;
@@ -560,10 +556,6 @@ public abstract class AbstractHashTable
 
         }
 
-        public TripleHashEntry(int hashSeed, Object obj1, Object obj2, Object obj3) {
-            set(hashSeed, obj1, obj2, obj3);
-        }
-
         public HashEntry set(int hashSeed, Object obj1, Object obj2, Object obj3) {
             this.obj1 = obj1;
             this.obj2 = obj2;
@@ -598,6 +590,7 @@ public abstract class AbstractHashTable
             tripleEntry.hashCode = hashCode;
             tripleEntry.obj1 = obj1;
             tripleEntry.obj2 = obj2;
+            tripleEntry.obj3 = obj3;
             return tripleEntry;
         }
     }
