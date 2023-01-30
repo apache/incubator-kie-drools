@@ -23,6 +23,7 @@ import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -69,10 +70,10 @@ public abstract class BaseFEELFunction implements FEELFunction {
                                      final Object[] params) {
 
         logger.log(Level.SEVERE, "params count: " + params.length);
-        logger.log(Level.SEVERE, "params are: " + params);
+        logger.log(Level.SEVERE, "params are: " + Arrays.toString(params));
         for (Object param : params) {
             if (param == null) {
-                logger.log(Level.SEVERE, "param null: " + param);
+                logger.log(Level.SEVERE, "param null: " + null);
             } else {
                 logger.log(Level.SEVERE, "param: " + param.getClass() + " --- " + param);
             }

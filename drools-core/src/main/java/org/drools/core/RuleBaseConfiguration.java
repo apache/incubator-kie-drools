@@ -259,7 +259,7 @@ public class RuleBaseConfiguration
      */
     public RuleBaseConfiguration(Properties properties) {
         init(properties,
-             null);
+             (ClassLoader) null);
     }
 
     /**
@@ -272,7 +272,7 @@ public class RuleBaseConfiguration
      */
     public RuleBaseConfiguration() {
         init(null,
-             null);
+             (ClassLoader) null);
     }
 
     /**

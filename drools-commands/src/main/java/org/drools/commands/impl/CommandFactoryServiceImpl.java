@@ -254,7 +254,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     }
 
     public Command newQuery(String identifier, String name) {
-        return new QueryCommand(identifier, name, null);
+        return new QueryCommand(identifier, name, (Object) null);
     }
 
     public Command newQuery(String identifier, String name, Object[] arguments) {

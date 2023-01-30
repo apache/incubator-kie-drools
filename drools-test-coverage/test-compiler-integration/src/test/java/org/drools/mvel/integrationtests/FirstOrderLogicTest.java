@@ -1263,7 +1263,7 @@ public class FirstOrderLogicTest {
         }
         
         public int intValue() {
-            Integer intValue = Integer.valueOf(value);
+            int intValue = Integer.parseInt(value);
             return intValue;
         }
     }    

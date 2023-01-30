@@ -412,11 +412,11 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean logical ) {
-        return don( core, traits, logical, null );
+        return don(core, traits, logical, (Mode) null);
     }
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
-        return don( core, trait, logical, null );
+        return don(core, trait, logical, (Mode) null);
     }
 
     public <T, K> T don( K core, Class<T> trait, Mode... modes ) {

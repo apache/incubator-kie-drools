@@ -549,7 +549,7 @@ public class HierarchyTest {
     }
 
     private Long toLong( BitSet ns ) {
-        Long l = 0L;
+        long l = 0L;
         for ( int j = 0; j < ns.length(); j++ ) {
             if ( ns.get( j ) ) {
                 l += ( 1 << j );

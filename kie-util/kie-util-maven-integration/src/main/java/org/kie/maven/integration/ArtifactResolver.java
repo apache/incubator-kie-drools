@@ -100,9 +100,7 @@ public abstract class ArtifactResolver {
     public static ArtifactResolver getResolverFor(InputStream pomStream, ReleaseId releaseId, boolean allowDefaultPom ) {
         if (pomStream != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomStream);
-            if (artifactResolver != null) {
-                return artifactResolver;
-            }
+            return artifactResolver;
         }
         return getResolverFor(releaseId, allowDefaultPom);
     }

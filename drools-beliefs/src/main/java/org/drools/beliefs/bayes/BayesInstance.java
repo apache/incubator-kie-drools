@@ -117,33 +117,31 @@ public class BayesInstance<T> {
 
     public  void buildParameterMapping(Class<T> target) {
         Constructor[] cons = target.getConstructors();
-        if ( cons != null ) {
-            for ( Constructor con : cons ) {
-                for ( Annotation ann : con.getDeclaredAnnotations() ) {
-                    if ( ann.annotationType() == BayesVariableConstructor.class ) {
-                        Class[] paramTypes = con.getParameterTypes();
+        for ( Constructor con : cons ) {
+            for ( Annotation ann : con.getDeclaredAnnotations() ) {
+                if ( ann.annotationType() == BayesVariableConstructor.class ) {
+                    Class[] paramTypes = con.getParameterTypes();
 
-                        targetParameterMap = new int[paramTypes.length];
-                        if ( paramTypes[0] != BayesInstance.class ) {
-                            throw new RuntimeException( "First Argument must be " + BayesInstance.class.getSimpleName() );
-                        }
-                        Annotation[][] paramAnns = con.getParameterAnnotations();
-                        for ( int j = 1; j < paramAnns.length; j++ ) {
-                            if ( paramAnns[j][0].annotationType() == VarName.class ) {
-                                String varName = ((VarName)paramAnns[j][0]).value();
-                                BayesVariable var = variables.get(varName);
-                                Object[] outcomes = new Object[ var.getOutcomes().length ];
-                                if ( paramTypes[j].isAssignableFrom( Boolean.class) || paramTypes[j].isAssignableFrom( boolean.class) ) {
-                                    for ( int k = 0; k < var.getOutcomes().length; k++ ) {
-                                        outcomes[k] = Boolean.valueOf( (String) var.getOutcomes()[k]);
-                                    }
-                                }
-                                varStates[var.getId()].setOutcomes( outcomes );
-                                targetParameterMap[j] = var.getId();
-                            }
-                        }
-                        targetConstructor = con;
+                    targetParameterMap = new int[paramTypes.length];
+                    if ( paramTypes[0] != BayesInstance.class ) {
+                        throw new RuntimeException( "First Argument must be " + BayesInstance.class.getSimpleName() );
                     }
+                    Annotation[][] paramAnns = con.getParameterAnnotations();
+                    for ( int j = 1; j < paramAnns.length; j++ ) {
+                        if ( paramAnns[j][0].annotationType() == VarName.class ) {
+                            String varName = ((VarName)paramAnns[j][0]).value();
+                            BayesVariable var = variables.get(varName);
+                            Object[] outcomes = new Object[ var.getOutcomes().length ];
+                            if ( paramTypes[j].isAssignableFrom( Boolean.class) || paramTypes[j].isAssignableFrom( boolean.class) ) {
+                                for ( int k = 0; k < var.getOutcomes().length; k++ ) {
+                                    outcomes[k] = Boolean.valueOf( (String) var.getOutcomes()[k]);
+                                }
+                            }
+                            varStates[var.getId()].setOutcomes( outcomes );
+                            targetParameterMap[j] = var.getId();
+                        }
+                    }
+                    targetConstructor = con;
                 }
             }
         }

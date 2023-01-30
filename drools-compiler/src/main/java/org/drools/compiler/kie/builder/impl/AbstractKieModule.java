@@ -193,7 +193,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
             KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, buildContext);
             if ( kbuilder.hasErrors() ) {
                 // Messages already populated by the buildKnowlegePackages
-                return new KnowledgePackagesBuildResult(true, pkgs);
+                return new KnowledgePackagesBuildResult(true, null);
             }
             pkgs = kbuilder.getKnowledgePackages();
         }

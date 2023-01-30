@@ -106,22 +106,20 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         Set<PortablePath> origFileNames = new HashSet<>(trgMfs.getFilePaths());
 
         String[] sources = sourceFiles.toArray(new String[sourceFiles.size()]);
-        if (sources.length != 0) {
-            CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
+        CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
-            Stream.of(res.getErrors()).collect(groupingBy( CompilationProblem::getFileName))
-                    .forEach( (name, errors) -> {
-                        errors.forEach( m -> buildContext.getMessages().addMessage(new CompilationProblemAdapter( m )) );
-                        File srcFile = srcMfs.getFile( name );
-                        if ( srcFile instanceof MemoryFile ) {
-                            String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
-                            buildContext.getMessages().addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
-                        }
-                    } );
+        Stream.of(res.getErrors()).collect(groupingBy( CompilationProblem::getFileName))
+                .forEach( (name, errors) -> {
+                    errors.forEach( m -> buildContext.getMessages().addMessage(new CompilationProblemAdapter( m )) );
+                    File srcFile = srcMfs.getFile( name );
+                    if ( srcFile instanceof MemoryFile ) {
+                        String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
+                        buildContext.getMessages().addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
+                    }
+                } );
 
-            for (CompilationProblem problem : res.getWarnings()) {
-                buildContext.getMessages().addMessage(new CompilationProblemAdapter(problem));
-            }
+        for (CompilationProblem problem : res.getWarnings()) {
+            buildContext.getMessages().addMessage(new CompilationProblemAdapter(problem));
         }
 
         if (ProjectClassLoader.isEnableStoreFirst()) {

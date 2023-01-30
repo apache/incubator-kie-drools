@@ -149,11 +149,11 @@ public class GlobalTest extends BaseModelTest {
             for (Object o : objects) {
               if ((o instanceof Number))
               {
-                Double d = Double.valueOf(o.toString());
+                double d = Double.parseDouble(o.toString());
                 if (ret == null) {
                   ret = d;
                 } else {
-                  ret = Double.valueOf(ret.doubleValue() + d.doubleValue());
+                  ret = Double.valueOf(ret.doubleValue() + d);
                 }
               }
             }

@@ -62,7 +62,7 @@ public class BayesLikelyhood {
                 break;
             }
         }
-        if ( varPos == -1 || varPos == vars.length ) {
+        if ( varPos == -1 ) {
             throw new IllegalStateException( "Unable to find Variable in set" );
         }
     }

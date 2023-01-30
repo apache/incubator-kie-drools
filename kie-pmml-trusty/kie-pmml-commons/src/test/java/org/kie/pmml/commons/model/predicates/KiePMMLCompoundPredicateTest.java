@@ -180,7 +180,7 @@ public class KiePMMLCompoundPredicateTest {
     @Test
     void orOperator() {
         Boolean aBoolean = null;
-        Boolean aBoolean2 = true;
+        boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.orOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
@@ -206,7 +206,7 @@ public class KiePMMLCompoundPredicateTest {
     @Test
     void andOperator() {
         Boolean aBoolean = null;
-        Boolean aBoolean2 = true;
+        boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.andOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
@@ -232,7 +232,7 @@ public class KiePMMLCompoundPredicateTest {
     @Test
     void xorOperator() {
         Boolean aBoolean = null;
-        Boolean aBoolean2 = true;
+        boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.xorOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
@@ -259,7 +259,7 @@ public class KiePMMLCompoundPredicateTest {
     @Test
     void surrogateOperator() {
         Boolean aBoolean = null;
-        Boolean aBoolean2 = true;
+        boolean aBoolean2 = true;
         assertThat(KiePMMLCompoundPredicate.surrogateOperator(aBoolean, aBoolean2)).isTrue();
 
         aBoolean2 = false;
