@@ -50,8 +50,7 @@
     <version.assembly.plugin>3.4.2</version.assembly.plugin>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
-    <!-- The first version that supports analysis of classes compiled by Java 11. -->
-    <version.dependency.plugin>3.1.2</version.dependency.plugin>
+    <version.dependency.plugin>3.5.0</version.dependency.plugin>
     <version.formatter.plugin>2.21.0</version.formatter.plugin>
     <version.impsort.plugin>1.8.0</version.impsort.plugin>
     <version.jacoco.plugin>0.8.8</version.jacoco.plugin>
@@ -64,7 +63,7 @@
     <version.pitest.plugin>1.10.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.22</version.sniffer.plugin>
-    <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
+    <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
     <version.versions.plugin>2.14.2</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
