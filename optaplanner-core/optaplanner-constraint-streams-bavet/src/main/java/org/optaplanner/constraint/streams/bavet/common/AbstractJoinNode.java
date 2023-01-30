@@ -1,7 +1,10 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayDeque;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
@@ -26,11 +29,9 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
     private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
-
-    protected final boolean isFiltering;
-
-    protected final int outputStoreIndexLeftOutEntry;
-    protected final int outputStoreIndexRightOutEntry;
+    private final boolean isFiltering;
+    private final int outputStoreIndexLeftOutEntry;
+    private final int outputStoreIndexRightOutEntry;
     protected final Queue<OutTuple_> dirtyTupleQueue;
 
     protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
@@ -64,13 +65,35 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         dirtyTupleQueue.add(outTuple);
     }
 
-    protected void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple) {
-        setOutTupleLeftFacts(outTuple, leftTuple);
-        doUpdateOutTuple(outTuple);
+    protected final void insertOutTupleFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+        if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
+            insertOutTuple(leftTuple, rightTuple);
+        }
     }
 
-    protected void updateOutTupleRight(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple) {
-        setOutTupleRightFact(outTuple, rightTuple);
+    protected final void innerUpdateLeft(LeftTuple_ leftTuple, Consumer<Consumer<UniTuple<Right_>>> rightTupleConsumer) {
+        // Prefer an update over retract-insert if possible
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        if (!isFiltering) {
+            // Propagate the update for downstream filters, matchWeighers, ...
+            outTupleListLeft.forEach(outTuple -> updateOutTupleLeft(outTuple, leftTuple));
+        } else {
+            // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
+            Map<TupleList<MutableOutTuple_>, MutableOutTuple_> rightToOutMap = new IdentityHashMap<>(outTupleListLeft.size());
+            outTupleListLeft.forEach(outTuple -> {
+                TupleListEntry<MutableOutTuple_> rightOutEntry = outTuple.getStore(outputStoreIndexRightOutEntry);
+                rightToOutMap.put(rightOutEntry.getList(), outTuple);
+
+            });
+            rightTupleConsumer.accept(rightTuple -> {
+                TupleList<MutableOutTuple_> rightOutList = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+                processOutTupleUpdate(leftTuple, rightTuple, rightToOutMap, rightOutList);
+            });
+        }
+    }
+
+    private void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple) {
+        setOutTupleLeftFacts(outTuple, leftTuple);
         doUpdateOutTuple(outTuple);
     }
 
@@ -91,6 +114,45 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             default:
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
+        }
+    }
+
+    protected final void innerUpdateRight(UniTuple<Right_> rightTuple, Consumer<Consumer<LeftTuple_>> leftTupleConsumer) {
+        // Prefer an update over retract-insert if possible
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        if (!isFiltering) {
+            // Propagate the update for downstream filters, matchWeighers, ...
+            outTupleListRight.forEach(outTuple -> {
+                setOutTupleRightFact(outTuple, rightTuple);
+                doUpdateOutTuple(outTuple);
+            });
+        } else {
+            // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
+            Map<TupleList<MutableOutTuple_>, MutableOutTuple_> leftToOutMap = new IdentityHashMap<>(outTupleListRight.size());
+            outTupleListRight.forEach(outTuple -> {
+                TupleListEntry<MutableOutTuple_> leftOutEntry = outTuple.getStore(outputStoreIndexLeftOutEntry);
+                leftToOutMap.put(leftOutEntry.getList(), outTuple);
+            });
+            leftTupleConsumer.accept(leftTuple -> {
+                TupleList<MutableOutTuple_> leftOutList = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+                processOutTupleUpdate(leftTuple, rightTuple, leftToOutMap, leftOutList);
+            });
+        }
+    }
+
+    private void processOutTupleUpdate(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple,
+            Map<TupleList<MutableOutTuple_>, MutableOutTuple_> outMap, TupleList<MutableOutTuple_> outList) {
+        MutableOutTuple_ outTuple = outMap.get(outList);
+        if (testFiltering(leftTuple, rightTuple)) {
+            if (outTuple == null) {
+                insertOutTuple(leftTuple, rightTuple);
+            } else {
+                updateOutTupleLeft(outTuple, leftTuple);
+            }
+        } else {
+            if (outTuple != null) {
+                retractOutTuple(outTuple);
+            }
         }
     }
 

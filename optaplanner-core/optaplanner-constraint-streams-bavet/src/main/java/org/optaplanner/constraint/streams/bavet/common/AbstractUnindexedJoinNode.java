@@ -1,8 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -20,17 +17,14 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     private final int inputStoreIndexLeftEntry;
     private final int inputStoreIndexRightEntry;
-
     private final TupleList<LeftTuple_> leftTupleList = new TupleList<>();
     private final TupleList<UniTuple<Right_>> rightTupleList = new TupleList<>();
 
-    protected AbstractUnindexedJoinNode(
-            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+    protected AbstractUnindexedJoinNode(int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
             int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering,
-            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
-        super(inputStoreIndexLeftOutTupleList, inputStoreIndexRightOutTupleList,
-                nextNodesTupleLifecycle, isFiltering,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering, int outputStoreIndexLeftOutEntry,
+            int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftOutTupleList, inputStoreIndexRightOutTupleList, nextNodesTupleLifecycle, isFiltering,
                 outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.inputStoreIndexLeftEntry = inputStoreIndexLeftEntry;
         this.inputStoreIndexRightEntry = inputStoreIndexRightEntry;
@@ -46,11 +40,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
         TupleList<MutableOutTuple_> outTupleListLeft = new TupleList<>();
         leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
-        rightTupleList.forEach(rightTuple -> {
-            if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-                insertOutTuple(leftTuple, rightTuple);
-            }
-        });
+        rightTupleList.forEach(rightTuple -> insertOutTupleFiltered(leftTuple, rightTuple));
     }
 
     @Override
@@ -61,34 +51,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             insertLeft(leftTuple);
             return;
         }
-        // Prefer an update over retract-insert if possible
-        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-        if (!isFiltering) {
-            // Propagate the update for downstream filters, matchWeighers, ...
-            outTupleListLeft.forEach(outTuple -> updateOutTupleLeft(outTuple, leftTuple));
-        } else {
-            // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
-            Map<TupleList<MutableOutTuple_>, MutableOutTuple_> rightToOutMap = new IdentityHashMap<>(outTupleListLeft.size());
-            outTupleListLeft.forEach(outTuple -> {
-                TupleListEntry<MutableOutTuple_> rightOutEntry = outTuple.getStore(outputStoreIndexRightOutEntry);
-                rightToOutMap.put(rightOutEntry.getList(), outTuple);
-            });
-            rightTupleList.forEach((rightTuple) -> {
-                TupleList<MutableOutTuple_> rightOutList = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-                MutableOutTuple_ outTuple = rightToOutMap.get(rightOutList);
-                if (testFiltering(leftTuple, rightTuple)) {
-                    if (outTuple == null) {
-                        insertOutTuple(leftTuple, rightTuple);
-                    } else {
-                        updateOutTupleLeft(outTuple, leftTuple);
-                    }
-                } else {
-                    if (outTuple != null) {
-                        retractOutTuple(outTuple);
-                    }
-                }
-            });
-        }
+        innerUpdateLeft(leftTuple, rightTupleList::forEach);
     }
 
     @Override
@@ -113,11 +76,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
         TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
         rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
-        leftTupleList.forEach(leftTuple -> {
-            if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-                insertOutTuple(leftTuple, rightTuple);
-            }
-        });
+        leftTupleList.forEach(leftTuple -> insertOutTupleFiltered(leftTuple, rightTuple));
     }
 
     @Override
@@ -128,34 +87,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             insertRight(rightTuple);
             return;
         }
-        // Prefer an update over retract-insert if possible
-        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-        if (!isFiltering) {
-            // Propagate the update for downstream filters, matchWeighers, ...
-            outTupleListRight.forEach(outTuple -> updateOutTupleRight(outTuple, rightTuple));
-        } else {
-            // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
-            Map<TupleList<MutableOutTuple_>, MutableOutTuple_> leftToOutMap = new IdentityHashMap<>(outTupleListRight.size());
-            outTupleListRight.forEach(outTuple -> {
-                TupleListEntry<MutableOutTuple_> leftOutEntry = outTuple.getStore(outputStoreIndexLeftOutEntry);
-                leftToOutMap.put(leftOutEntry.getList(), outTuple);
-            });
-            leftTupleList.forEach((leftTuple) -> {
-                TupleList<MutableOutTuple_> leftOutList = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-                MutableOutTuple_ outTuple = leftToOutMap.get(leftOutList);
-                if (testFiltering(leftTuple, rightTuple)) {
-                    if (outTuple == null) {
-                        insertOutTuple(leftTuple, rightTuple);
-                    } else {
-                        updateOutTupleRight(outTuple, rightTuple);
-                    }
-                } else {
-                    if (outTuple != null) {
-                        retractOutTuple(outTuple);
-                    }
-                }
-            });
-        }
+        innerUpdateRight(rightTuple, leftTupleList::forEach);
     }
 
     @Override
