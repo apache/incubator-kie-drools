@@ -64,8 +64,8 @@ public class NNMedianFunction
             if (!(sorted.get(medianPos0) instanceof BigDecimal) || !(sorted.get(medianPos1) instanceof BigDecimal)) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "does not contain number"));
             }
-            BigDecimal median0 = (BigDecimal) sorted.get(medianPos0);
-            BigDecimal median1 = (BigDecimal) sorted.get(medianPos1);
+            BigDecimal median0 = sorted.get(medianPos0);
+            BigDecimal median1 = sorted.get(medianPos1);
             BigDecimal medianAvg = median0.add(median1).divide(new BigDecimal(2, MathContext.DECIMAL128), MathContext.DECIMAL128);
             return FEELFnResult.ofResult(medianAvg);
         } else {

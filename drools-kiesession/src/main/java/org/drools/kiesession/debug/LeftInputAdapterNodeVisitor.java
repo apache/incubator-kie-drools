@@ -33,7 +33,7 @@ public class LeftInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
                            Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         LeftInputAdapterNode an = (LeftInputAdapterNode) node;
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo(node);
         ni.setMemoryEnabled( false );
     }
 

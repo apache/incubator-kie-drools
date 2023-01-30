@@ -351,7 +351,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
         Iterator<?> it = input.iterator();
 
         while (it.hasNext()) {
-            Object object = (Object) it.next();
+            Object object = it.next();
             if (object instanceof TransientNamedObjectModel || object instanceof TransientObjectModel) {
                 it.remove();
             }

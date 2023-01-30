@@ -384,7 +384,7 @@ public class ConditionAnalyzer {
     }
 
     private Expression analyzeArrayCreation(ArrayCreator arrayCreator) {
-        Accessor[] accessors = getFieldValue(ArrayCreator.class, "template", (ArrayCreator) arrayCreator);
+        Accessor[] accessors = getFieldValue(ArrayCreator.class, "template", arrayCreator);
         Class<?> type = arrayCreator.getKnownEgressType();
         Class<?> arrayType = Array.newInstance(type, 0).getClass();
         return getArrayCreationExpression( arrayType, type, accessors );

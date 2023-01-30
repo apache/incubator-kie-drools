@@ -63,7 +63,7 @@ public abstract class BaseShortClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setShortValue( bean,
-                       (short) value );
+                       value);
 
     }
 

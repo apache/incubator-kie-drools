@@ -1421,11 +1421,11 @@ public class PropertyReactivityTest {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
 
-        ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "a", "d" );
+        ksession.update(fh, bean, "a", "d");
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
 
-        ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "c", "b" );
+        ksession.update(fh, bean, "c", "b");
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
     }

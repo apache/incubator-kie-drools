@@ -409,7 +409,7 @@ public interface AgendaGroupsManager extends Externalizable {
             // Set the focus to the agendaGroup if it doesn't already have the focus
             if ( this.focusStack.getLast() != agendaGroup ) {
                 this.focusStack.getLast().setActive( false );
-                InternalAgendaGroup internalGroup = (InternalAgendaGroup) agendaGroup;
+                InternalAgendaGroup internalGroup = agendaGroup;
                 this.focusStack.add( internalGroup );
                 internalGroup.setActive( true );
                 internalGroup.setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );

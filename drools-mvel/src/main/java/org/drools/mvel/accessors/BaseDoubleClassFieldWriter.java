@@ -63,7 +63,7 @@ public abstract class BaseDoubleClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setDoubleValue( bean,
-                        (double) value );
+                        value);
 
     }
 
@@ -78,13 +78,13 @@ public abstract class BaseDoubleClassFieldWriter extends BaseClassFieldWriter {
     public void setFloatValue(final Object bean,
                               final float value) {
         setDoubleValue( bean,
-                        (double) value );
+                        value);
     }
 
     public void setIntValue(final Object bean,
                             final int value) {
         setDoubleValue( bean,
-                        (double) value );
+                        value);
     }
 
     public void setLongValue(final Object bean,
@@ -96,7 +96,7 @@ public abstract class BaseDoubleClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setDoubleValue( bean,
-                        (double) value );
+                        value);
     }
 
     public Method getNativeWriteMethod() {

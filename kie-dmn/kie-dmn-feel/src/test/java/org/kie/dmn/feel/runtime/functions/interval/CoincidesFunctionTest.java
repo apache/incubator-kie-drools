@@ -36,8 +36,8 @@ public class CoincidesFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( coincidesFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( coincidesFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(coincidesFunction.invoke(null, "b"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(coincidesFunction.invoke("a", null), InvalidParametersEvent.class);
     }
 
     @Test

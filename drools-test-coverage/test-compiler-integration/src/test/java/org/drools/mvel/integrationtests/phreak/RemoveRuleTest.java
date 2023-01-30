@@ -84,7 +84,7 @@ public class RemoveRuleTest {
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
         assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
 
@@ -181,7 +181,7 @@ public class RemoveRuleTest {
         JoinNode c1Node = (JoinNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode c2Node = (JoinNode) bNode.getSinkPropagator().getLastLeftTupleSink();
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
@@ -244,7 +244,7 @@ public class RemoveRuleTest {
         JoinNode c1Node = (JoinNode) e2.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode c2Node = (JoinNode) e2.getSinkPropagator().getLastLeftTupleSink();
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
@@ -304,7 +304,7 @@ public class RemoveRuleTest {
         JoinNode b2Node = (JoinNode) liaNode.getSinkPropagator().getLastLeftTupleSink();
         JoinNode c1Node = (JoinNode) b1Node.getSinkPropagator().getLastLeftTupleSink();
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory b1Mem = ( BetaMemory ) wm.getNodeMemory(b1Node);
@@ -421,8 +421,8 @@ public class RemoveRuleTest {
 
         RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
         RuleTerminalNode rtn2 = getRtn("org.kie.r2", kbase1);
-        PathMemory pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
-        PathMemory pmem2 = ( PathMemory ) wm.getNodeMemory(rtn2);
+        PathMemory pmem1 = wm.getNodeMemory(rtn1);
+        PathMemory pmem2 = wm.getNodeMemory(rtn2);
 
         SegmentMemory[] smems1 = pmem1.getSegmentMemories();
         SegmentMemory[] smems2 = pmem2.getSegmentMemories();
@@ -439,13 +439,13 @@ public class RemoveRuleTest {
         JoinNode eNode2 = ( JoinNode ) rtn2.getLeftTupleSource();
         assertThat(eNode2).isSameAs(eNode1);
 
-        pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
+        pmem1 = wm.getNodeMemory(rtn1);
         kbase1.removeRule("org.kie", "r2");
         System.out.println( "---" );
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
         assertThat(sm.getFirst()).isNull();
 
-        pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
+        pmem1 = wm.getNodeMemory(rtn1);
         smems1 = pmem1.getSegmentMemories();
         assertThat(smems1.length).isEqualTo(1);
         assertThat(smems1[0]).isSameAs(sm);
@@ -698,7 +698,7 @@ public class RemoveRuleTest {
         RuleTerminalNode rtn3 = getRtn( "org.kie.r3", kbase1 );
         RuleTerminalNode rtn4 = getRtn( "org.kie.r4", kbase1 );
 
-        PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
+        PathMemory pm1 = wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
         assertThat(smems.length).isEqualTo(4);
         assertThat(smems[0]).isNull();

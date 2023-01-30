@@ -201,7 +201,7 @@ public abstract class AbstractKieProject implements KieProject {
         if (kBaseModel == null) {
             return;
         }
-        Set<String> incs = ((KieBaseModelImpl)kBaseModel).getIncludes();
+        Set<String> incs = kBaseModel.getIncludes();
         if (incs != null && !incs.isEmpty()) {
             for (String inc : incs) {
                 if (!includes.contains(inc)) {

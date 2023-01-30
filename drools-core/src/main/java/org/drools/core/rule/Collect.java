@@ -110,7 +110,7 @@ public class Collect extends ConditionalElement
             throw new RuntimeException( "Collect CE requires an accessible constructor for the return type",
                                         e );
         } catch ( final ClassNotFoundException e ) {
-            throw new RuntimeException( "Collect CE could not resolve return result class '" + ((ClassObjectType) this.resultPattern.getObjectType()).getClassName() + "'",
+            throw new RuntimeException("Collect CE could not resolve return result class '" + this.resultPattern.getObjectType().getClassName() + "'",
                                         e );
         }
     }

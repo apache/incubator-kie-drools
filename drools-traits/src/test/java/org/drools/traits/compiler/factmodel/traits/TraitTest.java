@@ -1935,7 +1935,7 @@ public class TraitTest extends CommonTraitTest {
             TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing = traitBuilder.getProxy(imp, Thing.class);
 
-            TraitableBean core = (TraitableBean) proxy.getObject();
+            TraitableBean core = proxy.getObject();
 
 
             TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);

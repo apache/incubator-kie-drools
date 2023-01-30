@@ -725,7 +725,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                     objectType.getClassName(),
                     fieldName,
                     context.isTypesafe(),
-                    (( MVELAnalysisResult ) analysis).getReturnType());
+                    analysis.getReturnType());
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData("mvel");
             (( MVELCompileable ) reader).compile(data, context.getRule());

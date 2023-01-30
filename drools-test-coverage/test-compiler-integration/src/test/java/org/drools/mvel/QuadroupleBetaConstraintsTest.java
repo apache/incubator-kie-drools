@@ -76,38 +76,38 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
-        constraint0 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint1 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint3 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint4 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint3 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint4 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
-        constraint0 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint1 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint3 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint4 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator() );
+        constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint3 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint4 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
-        constraint0 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint1 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint3 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint4 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
+        constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint3 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint4 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
-        constraint0 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint1 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint3 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint4 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator() );
+        constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint3 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint4 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
-        constraint0 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint1 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator() );
-        constraint3 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator() );
-        constraint4 = ( BetaNodeFieldConstraint ) getCheeseTypeConstraint( "cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator() );
+        constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        constraint3 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
+        constraint4 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaNodeFieldConstraint[] { constraint0, constraint1, constraint3, constraint4 };
         checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
     }

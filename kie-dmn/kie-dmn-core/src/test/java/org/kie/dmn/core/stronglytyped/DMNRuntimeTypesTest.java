@@ -584,9 +584,9 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             assertThat(myPersonCapitalOut.getClass().getSimpleName()).isEqualTo("TPerson");
             assertThat(myPersonCapitalOut.getFEELProperty("name").toOptional().get()).isEqualTo("Paul");
             assertThat(EvalHelper.coerceNumber(myPersonCapitalOut.getFEELProperty("age").toOptional().get())).isEqualTo(EvalHelper.coerceNumber(26));
-            Object myDecision = (String) allProperties.get("myDecision");
+            Object myDecision = allProperties.get("myDecision");
             assertThat(myDecision).isEqualTo("myDecision is John");
-            Object myDecisionCapital = (String) allProperties.get("MyDecision");
+            Object myDecisionCapital = allProperties.get("MyDecision");
             assertThat(myDecisionCapital).isEqualTo("MyDecision is Paul");
         }
     }
@@ -616,7 +616,7 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             assertThat(myPersonOut.getClass().getSimpleName()).isEqualTo("TPerson");
             assertThat(myPersonOut.getFEELProperty("name").toOptional().get()).isEqualTo("John");
             assertThat(EvalHelper.coerceNumber(myPersonOut.getFEELProperty("age").toOptional().get())).isEqualTo(EvalHelper.coerceNumber(28));
-            Object myDecision = (String) allProperties.get("MyNode");
+            Object myDecision = allProperties.get("MyNode");
             assertThat(myDecision).isEqualTo("MyNode is John");
         }
     }

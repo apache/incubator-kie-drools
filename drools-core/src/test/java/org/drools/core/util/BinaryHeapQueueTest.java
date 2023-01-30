@@ -153,7 +153,7 @@ public class BinaryHeapQueueTest {
         }
 
         public void add(final Item item) {
-            this.queue.enqueue( (Activation) item );
+            this.queue.enqueue(item);
         }
 
         public Item getNext() {

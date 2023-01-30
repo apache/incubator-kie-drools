@@ -134,7 +134,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public Collection<? extends KieSession> getKieSessions() {
-        return (Collection<? extends KieSession>) (Object) Collections.unmodifiableSet( statefulSessions );
+        return (Collection<? extends KieSession>) Collections.unmodifiableSet(statefulSessions);
     }
 
     @Override

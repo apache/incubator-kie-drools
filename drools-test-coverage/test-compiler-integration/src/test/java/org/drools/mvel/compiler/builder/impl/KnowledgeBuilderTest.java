@@ -236,7 +236,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
-        final PackageDescr back = (PackageDescr) SerializationHelper.serializeObject( packageDescr );
+        final PackageDescr back = SerializationHelper.serializeObject(packageDescr);
         assertThat(back).isNotNull();
         assertThat(back.getName()).isEqualTo("p1");
 

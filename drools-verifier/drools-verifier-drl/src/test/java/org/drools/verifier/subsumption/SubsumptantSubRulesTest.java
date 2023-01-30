@@ -59,7 +59,7 @@ public class SubsumptantSubRulesTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //                        System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_RULE)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_RULE)) {
                 //                System.out.println( " ** " + ((SubRule) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubRule) ((Subsumption) object).getRight()).getItems() );
                 count++;
             }

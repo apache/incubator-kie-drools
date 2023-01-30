@@ -60,7 +60,7 @@ public class ConstraintUtil {
             if (expr instanceof MethodCallExpr) {
                 processTopLevelExpression(drlx, (MethodCallExpr) expr);
             } else if (expr instanceof EnclosedExpr) {
-                Expression inner = stripEnclosedExpr((EnclosedExpr) expr);
+                Expression inner = stripEnclosedExpr(expr);
                 if (inner instanceof MethodCallExpr) {
                     processTopLevelExpression(drlx, (MethodCallExpr) inner);
                 } else {

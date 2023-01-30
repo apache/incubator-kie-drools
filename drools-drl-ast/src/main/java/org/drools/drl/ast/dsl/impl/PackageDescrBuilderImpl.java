@@ -96,7 +96,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
 
     public AccumulateImportDescrBuilder newAccumulateImport() {
         AccumulateImportDescrBuilder impl = new AccumulateImportDescrBuilderImpl( this );
-        descr.addAccumulateImport( (AccumulateImportDescr) initDescr(impl) );
+        descr.addAccumulateImport(initDescr(impl));
         return impl;
     }
 

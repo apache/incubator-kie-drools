@@ -281,7 +281,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
             removeLast();
         } else {
             dep.getPrevious().setNext(dep.getNext());
-            ((DefeasibleMode)dep.getNext()).setPrevious(dep.getPrevious());
+            dep.getNext().setPrevious(dep.getPrevious());
             dep.nullPrevNext();
         }
     }

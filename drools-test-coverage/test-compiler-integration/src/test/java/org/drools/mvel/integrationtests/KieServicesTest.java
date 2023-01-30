@@ -111,7 +111,7 @@ public class KieServicesTest {
 			// ok.
 		}
 		
-		(( KieContainerImpl ) c1).dispose();
+		c1.dispose();
 		
 		ks.newKieClasspathContainer("id1"); // now OK.
 	}

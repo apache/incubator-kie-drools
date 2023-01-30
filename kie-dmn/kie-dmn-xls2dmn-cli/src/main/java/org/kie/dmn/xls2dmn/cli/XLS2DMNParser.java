@@ -94,7 +94,7 @@ public class XLS2DMNParser implements DecisionTableParser {
     @Override
     public void parseFile(File file) {
         try {
-            parseWorkbook(removeTrailingExtension(file.getName()), WorkbookFactory.create(file, (String) null, true));
+            parseWorkbook(removeTrailingExtension(file.getName()), WorkbookFactory.create(file, null, true));
         } catch (IOException e) {
             throw new DecisionTableParseException(
                     "Failed to open Excel stream, " + "please check that the content is xls97 format.", e);

@@ -225,9 +225,9 @@ public class DefaultExpanderTest {
         ex.expand(source);
         assertThat(ex.hasErrors()).isTrue();
         assertThat(ex.getErrors().size()).isEqualTo(2);
-        ExpanderException err = (ExpanderException) ex.getErrors().get(0);
+        ExpanderException err = ex.getErrors().get(0);
         assertThat(err.getLine()).isEqualTo(4);
-        err = (ExpanderException) ex.getErrors().get(1);
+        err = ex.getErrors().get(1);
         assertThat(err.getLine()).isEqualTo(7);
 
     }
@@ -245,9 +245,9 @@ public class DefaultExpanderTest {
         ex.expand(source);
         assertThat(ex.hasErrors()).isTrue();
         assertThat(ex.getErrors().size()).isEqualTo(2);
-        ExpanderException err = (ExpanderException) ex.getErrors().get(0);
+        ExpanderException err = ex.getErrors().get(0);
         assertThat(err.getLine()).isEqualTo(4);
-        err = (ExpanderException) ex.getErrors().get(1);
+        err = ex.getErrors().get(1);
         assertThat(err.getLine()).isEqualTo(7);
 
     }

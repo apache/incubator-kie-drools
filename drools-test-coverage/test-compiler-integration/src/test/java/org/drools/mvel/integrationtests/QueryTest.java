@@ -414,8 +414,8 @@ public class QueryTest {
 
         Object retractedWorker = null;
         for ( int i = 0; i < 100; i++ ) {
-            retractedWorker = (Object) ksession.getQueryResults( "getWorker",
-                                                                 new Object[]{workerId} );
+            retractedWorker = ksession.getQueryResults("getWorker",
+                                                       new Object[]{workerId});
         }
 
         assertThat(retractedWorker).isNotNull();
@@ -437,7 +437,7 @@ public class QueryTest {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).iterator();
+        Iterator<InternalFactHandle> it = sessionImpl.getNodeMemory( droolsQueryNode ).iterator();
         assertThat(it.hasNext()).isFalse();
     }
 

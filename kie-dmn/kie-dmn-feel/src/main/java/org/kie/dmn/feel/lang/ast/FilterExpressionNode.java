@@ -114,7 +114,7 @@ public class FilterExpressionNode
             // In case any element fails in there or the filter expression returns null, it will only exclude the element, but will continue to process the list.
             // In case all elements fail, the result will be an empty list.
             Object r = this.filter.evaluate(new SilentWrappingEvaluationContextImpl(ctx)); // evaluate filter, ignoring errors 
-            if( r instanceof Boolean && ((Boolean)r) == Boolean.TRUE ) {
+            if( r instanceof Boolean && r == Boolean.TRUE ) {
                 results.add( v );
             }
         } finally {

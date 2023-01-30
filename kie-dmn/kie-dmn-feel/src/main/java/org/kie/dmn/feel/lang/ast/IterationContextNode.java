@@ -60,7 +60,7 @@ public class IterationContextNode
     }
 
     public String evaluateName(EvaluationContext ctx) {
-        return (String) this.name.evaluate( ctx );
+        return this.name.evaluate(ctx);
     }
 
     @Override

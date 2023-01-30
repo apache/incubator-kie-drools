@@ -296,7 +296,7 @@ public class BatchRunFluentTest {
                 .getGlobal("outS").set("outS2", Scope.APPLICATION)
                 .dispose();
 
-        requestContext = (RequestContext) runner.execute(f.getExecutable());
+        requestContext = runner.execute(f.getExecutable());
         assertThat(requestContext.getApplicationContext().get("outS1")).isEqualTo("h1");
         assertThat(requestContext.getApplicationContext().get("outS2")).isEqualTo("h2");
     }
@@ -314,7 +314,7 @@ public class BatchRunFluentTest {
                 .getGlobal("outS").set("outS1", Scope.CONVERSATION)
                 .dispose();
 
-        RequestContext requestContext = (RequestContext) runner.execute(f.getExecutable());
+        RequestContext requestContext = runner.execute(f.getExecutable());
 
         // check that nothing went to the 'out'
         assertThat(requestContext.get("outS")).isEqualTo(null);
@@ -333,7 +333,7 @@ public class BatchRunFluentTest {
                 .getGlobal("outS").set("outS2", Scope.CONVERSATION)
                 .dispose();
 
-        requestContext = (RequestContext) runner.execute(f.getExecutable());
+        requestContext = runner.execute(f.getExecutable());
         assertThat(requestContext.getConversationContext().get("outS1")).isEqualTo("h1");
         assertThat(requestContext.getConversationContext().get("outS2")).isEqualTo("h2");
 
@@ -342,7 +342,7 @@ public class BatchRunFluentTest {
 
         f.endConversation(conversationId);
 
-        requestContext = (RequestContext) runner.execute(f.getExecutable());
+        requestContext = runner.execute(f.getExecutable());
         assertThat(requestContext.getConversationContext()).isNull();
     }
 

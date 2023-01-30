@@ -259,15 +259,15 @@ public class CommandBasedStatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public ProcessInstance startProcess(String processId) {
-        return startProcess( processId, (Map) null, (AgendaFilter) null );
+        return startProcess(processId, null, (AgendaFilter) null);
     }
 
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-        return startProcess( processId, parameters, (AgendaFilter) null );
+        return startProcess(processId, parameters, null);
     }
 
     public ProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
-        return startProcess( processId, (Map) null, agendaFilter );
+        return startProcess(processId, null, agendaFilter);
     }
 
     public ProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
@@ -544,14 +544,14 @@ public class CommandBasedStatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public <T> T execute(Command<T> command) {
-        return (T) this.runner.execute( command );
+        return this.runner.execute(command);
     }
 
     public QueryResults getQueryResults(String query,
                                         Object... arguments) {
-        QueryCommand cmd = new QueryCommand( (String)null,
-                                             query,
-                                             arguments );
+        QueryCommand cmd = new QueryCommand(null,
+                                            query,
+                                            arguments );
         return this.runner.execute( cmd );
     }
 

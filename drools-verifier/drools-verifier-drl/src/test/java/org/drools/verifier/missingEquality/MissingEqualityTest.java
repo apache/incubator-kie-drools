@@ -61,7 +61,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
         Collection<String> ruleNames = new ArrayList<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Cause cause = ((VerifierMessage) o).getFaulty();
                 String name = ((LiteralRestriction) cause).getRuleName();
@@ -109,7 +109,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
         Set<String> ruleNames = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Cause cause = ((VerifierMessage) o).getFaulty();
                 String name = ((VariableRestriction) cause).getRuleName();
@@ -156,7 +156,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
         Set<String> ruleNames = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Cause cause = ((VerifierMessage) o).getFaulty();
                 String name = ((VariableRestriction) cause).getRuleName();
@@ -203,7 +203,7 @@ public class MissingEqualityTest extends TestBaseOld {
 
         Set<String> ruleNames = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Cause cause = ((VerifierMessage) o).getFaulty();
                 String name = ((VariableRestriction) cause).getRuleName();

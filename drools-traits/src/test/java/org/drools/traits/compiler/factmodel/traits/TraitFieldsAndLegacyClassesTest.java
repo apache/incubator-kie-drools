@@ -1293,15 +1293,15 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         KieSession kSession = kBase.newKieSession();
 
         FactType parent = kBase.getFactType("org.drools.traits.test", "PosTrait");
-        assertThat(((FieldDefinition) parent.getField("field0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) parent.getField("field1")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) parent.getField("field2")).getIndex()).isEqualTo(2);
+        assertThat(parent.getField("field0").getIndex()).isEqualTo(0);
+        assertThat(parent.getField("field1").getIndex()).isEqualTo(1);
+        assertThat(parent.getField("field2").getIndex()).isEqualTo(2);
         FactType child = kBase.getFactType("org.drools.traits.test", "MultiInhPosTrait");
-        assertThat(((FieldDefinition) child.getField("field0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) child.getField("field1")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) child.getField("mfield1")).getIndex()).isEqualTo(2);
-        assertThat(((FieldDefinition) child.getField("field2")).getIndex()).isEqualTo(3);
-        assertThat(((FieldDefinition) child.getField("mfield0")).getIndex()).isEqualTo(4);
+        assertThat(child.getField("field0").getIndex()).isEqualTo(0);
+        assertThat(child.getField("field1").getIndex()).isEqualTo(1);
+        assertThat(child.getField("mfield1").getIndex()).isEqualTo(2);
+        assertThat(child.getField("field2").getIndex()).isEqualTo(3);
+        assertThat(child.getField("mfield0").getIndex()).isEqualTo(4);
 
         drl = "" +
               "package org.drools.traits.test;\n" +
@@ -1333,15 +1333,15 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         parent = kBase.getFactType("org.drools.traits.test", "PosTrait");
-        assertThat(((FieldDefinition) parent.getField("field0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) parent.getField("field2")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) parent.getField("field1")).getIndex()).isEqualTo(2);
+        assertThat(parent.getField("field0").getIndex()).isEqualTo(0);
+        assertThat(parent.getField("field2").getIndex()).isEqualTo(1);
+        assertThat(parent.getField("field1").getIndex()).isEqualTo(2);
         child = kBase.getFactType("org.drools.traits.test", "MultiInhPosTrait");
-        assertThat(((FieldDefinition) child.getField("mfield0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) child.getField("field2")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) child.getField("mfield1")).getIndex()).isEqualTo(2);
-        assertThat(((FieldDefinition) child.getField("field0")).getIndex()).isEqualTo(3);
-        assertThat(((FieldDefinition) child.getField("field1")).getIndex()).isEqualTo(4);
+        assertThat(child.getField("mfield0").getIndex()).isEqualTo(0);
+        assertThat(child.getField("field2").getIndex()).isEqualTo(1);
+        assertThat(child.getField("mfield1").getIndex()).isEqualTo(2);
+        assertThat(child.getField("field0").getIndex()).isEqualTo(3);
+        assertThat(child.getField("field1").getIndex()).isEqualTo(4);
 
         drl = "" +
               "package org.drools.traits.test;\n" +
@@ -1373,15 +1373,15 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         parent = kBase.getFactType("org.drools.traits.test", "PosTrait");
-        assertThat(((FieldDefinition) parent.getField("field1")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) parent.getField("field2")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) parent.getField("field0")).getIndex()).isEqualTo(2);
+        assertThat(parent.getField("field1").getIndex()).isEqualTo(0);
+        assertThat(parent.getField("field2").getIndex()).isEqualTo(1);
+        assertThat(parent.getField("field0").getIndex()).isEqualTo(2);
         child = kBase.getFactType("org.drools.traits.test", "MultiInhPosTrait");
-        assertThat(((FieldDefinition) child.getField("field1")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) child.getField("mfield0")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) child.getField("field2")).getIndex()).isEqualTo(2);
-        assertThat(((FieldDefinition) child.getField("mfield1")).getIndex()).isEqualTo(3);
-        assertThat(((FieldDefinition) child.getField("field0")).getIndex()).isEqualTo(4);
+        assertThat(child.getField("field1").getIndex()).isEqualTo(0);
+        assertThat(child.getField("mfield0").getIndex()).isEqualTo(1);
+        assertThat(child.getField("field2").getIndex()).isEqualTo(2);
+        assertThat(child.getField("mfield1").getIndex()).isEqualTo(3);
+        assertThat(child.getField("field0").getIndex()).isEqualTo(4);
 
         drl = "" +
               "package org.drools.traits.test;\n" +
@@ -1413,15 +1413,15 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         parent = kBase.getFactType("org.drools.traits.test", "PosTrait");
-        assertThat(((FieldDefinition) parent.getField("field0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) parent.getField("field1")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) parent.getField("field2")).getIndex()).isEqualTo(2);
+        assertThat(parent.getField("field0").getIndex()).isEqualTo(0);
+        assertThat(parent.getField("field1").getIndex()).isEqualTo(1);
+        assertThat(parent.getField("field2").getIndex()).isEqualTo(2);
         child = kBase.getFactType("org.drools.traits.test", "MultiInhPosTrait");
-        assertThat(((FieldDefinition) child.getField("field0")).getIndex()).isEqualTo(0);
-        assertThat(((FieldDefinition) child.getField("field1")).getIndex()).isEqualTo(1);
-        assertThat(((FieldDefinition) child.getField("field2")).getIndex()).isEqualTo(2);
-        assertThat(((FieldDefinition) child.getField("mfield0")).getIndex()).isEqualTo(3);
-        assertThat(((FieldDefinition) child.getField("mfield1")).getIndex()).isEqualTo(4);
+        assertThat(child.getField("field0").getIndex()).isEqualTo(0);
+        assertThat(child.getField("field1").getIndex()).isEqualTo(1);
+        assertThat(child.getField("field2").getIndex()).isEqualTo(2);
+        assertThat(child.getField("mfield0").getIndex()).isEqualTo(3);
+        assertThat(child.getField("mfield1").getIndex()).isEqualTo(4);
 
     }
 

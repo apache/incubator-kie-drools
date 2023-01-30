@@ -47,7 +47,7 @@ public class QueryFilter extends QueryContext {
     }
 
     public QueryFilter(QueryFilter orig) {
-        super((QueryContext) orig);
+        super(orig);
         this.language = orig.language;
         this.filterParams = orig.filterParams;
         params.putAll(params);

@@ -63,7 +63,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
 
     }
 
@@ -87,7 +87,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setIntValue(final Object bean,
                             final int value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
     }
 
     public abstract void setLongValue(final Object object,
@@ -96,7 +96,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
     }
 
     public Method getNativeWriteMethod() {

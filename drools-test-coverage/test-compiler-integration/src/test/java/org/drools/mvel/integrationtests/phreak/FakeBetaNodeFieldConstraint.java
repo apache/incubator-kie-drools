@@ -106,9 +106,9 @@ public class FakeBetaNodeFieldConstraint implements BetaNodeFieldConstraint {
             } else if (operator == Operator.BuiltInOperator.NOT_EQUAL.getOperator()) {
                 return !value.equals(declValue);
             } else if (operator == Operator.BuiltInOperator.LESS.getOperator()) {
-                return ((Comparable)value).compareTo((Comparable)declValue) < 0;
+                return ((Comparable)value).compareTo(declValue) < 0;
             } else if (operator == Operator.BuiltInOperator.GREATER.getOperator()) {
-                return ((Comparable)value).compareTo((Comparable)declValue) > 0;
+                return ((Comparable)value).compareTo(declValue) > 0;
             } else {
                 throw new UnsupportedOperationException("This operator " + evaluatorString + " is not supported. Feel free to enhance this method");
             }

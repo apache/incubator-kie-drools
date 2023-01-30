@@ -34,8 +34,8 @@ public class DuringFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( duringFunction.invoke((Comparable) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( duringFunction.invoke((Comparable) "a", (Range) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(duringFunction.invoke((Comparable) null, new RangeImpl()), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(duringFunction.invoke("a", null), InvalidParametersEvent.class);
     }
 
     @Test

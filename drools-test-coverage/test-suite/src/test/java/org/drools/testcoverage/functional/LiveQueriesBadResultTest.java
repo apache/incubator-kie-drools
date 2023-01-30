@@ -150,7 +150,7 @@ public class LiveQueriesBadResultTest {
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr", 25));
 
-        ksession.openLiveQuery("queryWithParamWithoutType", (Object[]) null, listener);
+        ksession.openLiveQuery("queryWithParamWithoutType", null, listener);
     }
 
 }

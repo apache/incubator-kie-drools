@@ -33,7 +33,7 @@ public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
                            Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         ObjectTypeNode otn = (ObjectTypeNode) node;
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo(node);
         ni.setMemoryEnabled( otn.isObjectMemoryEnabled() );
     }
 

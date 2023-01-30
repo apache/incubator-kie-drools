@@ -76,6 +76,6 @@ public class SequentialConflictResolver extends AbstractConflictResolver {
             return -1;
         }
 
-        return (int) (existing.getRule().getLoadOrder() - adding.getRule().getLoadOrder());
+        return existing.getRule().getLoadOrder() - adding.getRule().getLoadOrder();
     }
 }

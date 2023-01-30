@@ -81,7 +81,7 @@ public class RuleBaseNodes {
         if ( sink instanceof LeftTupleSource ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
-            for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {
+            for ( LeftTupleSink leftTupleSink : sink.getSinkPropagator().getSinks() ) {
                 addLeftTupleSink( kBase,
                                   leftTupleSink,
                                   nodes );

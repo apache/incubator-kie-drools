@@ -52,7 +52,7 @@ public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends Abstra
     }
 
     public T getMode() {
-        return (T) mode;
+        return mode;
     }
 
     public void setMode(T mode) {

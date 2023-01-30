@@ -63,7 +63,7 @@ public abstract class BaseIntClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setIntValue( bean,
-                     (int) value );
+                     value);
 
     }
 
@@ -96,7 +96,7 @@ public abstract class BaseIntClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setIntValue( bean,
-                     (int) value );
+                     value);
     }
 
     public Method getNativeWriteMethod() {

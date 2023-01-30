@@ -76,7 +76,7 @@ public class TerminalNodeIteratorTest {
         List<String> nodes = new ArrayList<String>();
         Iterator it = TerminalNodeIterator.iterator(kbase);
         for ( TerminalNode node = (TerminalNode) it.next(); node != null; node = (TerminalNode) it.next() ) {
-            nodes.add( ((RuleTerminalNode) node).getRule().getName() );
+            nodes.add( node.getRule().getName());
         }
 
         assertThat(nodes.size()).isEqualTo(6);

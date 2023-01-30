@@ -1029,7 +1029,7 @@ public class XStreamXML {
                     for ( FactHandle factHandle : (Collection<FactHandle>) handle ) {
                         writer.startNode( "fact-handle" );
                         writer.addAttribute( "external-form",
-                                             ((FactHandle) factHandle).toExternalForm() );
+                                             factHandle.toExternalForm());
                         writer.endNode();
                     }
 
@@ -1115,7 +1115,7 @@ public class XStreamXML {
                 }
             } else if( results instanceof FlatQueryResults ) {
                 for( String identifier : results.getIdentifiers() ) {
-                    for( QueryResultsRow row : ((FlatQueryResults) results) ) {
+                    for( QueryResultsRow row : results) {
                        Object rowObj = row.get(identifier);
                        if(rowObj instanceof DroolsQuery) {
                           continue;
@@ -1150,7 +1150,7 @@ public class XStreamXML {
                     FactHandle factHandle = result.getFactHandle( id );
                     writer.startNode( "fact-handle" );
                     writer.addAttribute( "external-form",
-                                         ((FactHandle) factHandle).toExternalForm() );
+                                         factHandle.toExternalForm());
                     writer.endNode();
 
                     writer.endNode();

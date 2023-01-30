@@ -20,6 +20,6 @@ public class EndConversationCommand<Void> implements ExecutableCommand<Void> {
         ConversationContextManager cvnManager = reqContext.getConversationManager();
         cvnManager.endConversation(reqContext, conversationId);
 
-        return (Void) null;
+        return null;
     }
 }

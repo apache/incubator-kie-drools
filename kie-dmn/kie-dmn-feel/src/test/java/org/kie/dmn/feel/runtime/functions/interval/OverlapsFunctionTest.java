@@ -34,8 +34,8 @@ public class OverlapsFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) new RangeImpl(), (Range) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(overlapsFunction.invoke(null, new RangeImpl()), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(overlapsFunction.invoke(new RangeImpl(), null), InvalidParametersEvent.class);
     }
 
     @Test

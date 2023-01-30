@@ -1057,7 +1057,7 @@ public class PatternDSLTest {
                 // Consequence
                 D.on( var_$countOfPersons, var_results )
                         .execute( (drools, i, results) -> {
-                            Activation activation = (Activation) ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
                             results.add(i + ":" + activation.getObjectsDeep());
 
                         } ) );
@@ -1114,7 +1114,7 @@ public class PatternDSLTest {
                 D.on( var_$countOfPersons )
                         .execute( (drools, i) -> {
                             System.out.println(i);
-                            Activation activation = (Activation) ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
                             System.out.println(activation.getObjectsDeep());
                         } ) );
 

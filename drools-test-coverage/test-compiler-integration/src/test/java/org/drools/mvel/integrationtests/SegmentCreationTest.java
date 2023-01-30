@@ -75,7 +75,7 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode and Rule are in same segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(liaNode);
         assertThat(smem.getTipNode()).isEqualTo(rtn);
@@ -99,7 +99,7 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(liaNode);
         assertThat(smem.getTipNode()).isEqualTo(liaNode);
@@ -130,7 +130,7 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode and Rule are in same segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem).isNull();
     }
@@ -154,7 +154,7 @@ public class SegmentCreationTest {
         wm.fireAllRules();
 
         // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(liaNode);
         assertThat(smem.getTipNode()).isEqualTo(beta);
@@ -251,7 +251,7 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode ); 
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(liaNode);
         assertThat(smem.getTipNode()).isEqualTo(liaNode);
@@ -349,7 +349,7 @@ public class SegmentCreationTest {
         wm.flushPropagations();
 
         // LiaNode  is in it's own segment
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( lian );
+        LiaNodeMemory liaMem = wm.getNodeMemory(lian);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getRootNode()).isEqualTo(lian);
         assertThat(smem.getTipNode()).isEqualTo(beta);
@@ -399,13 +399,13 @@ public class SegmentCreationTest {
         FactHandle bFh = wm.insert( new LinkingTest.B() );
         wm.flushPropagations();
 
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         SegmentMemory smem = liaMem.getSegmentMemory();
         assertThat(smem.getAllLinkedMaskTest()).isEqualTo(1);
         assertThat(smem.getLinkedNodeMask()).isEqualTo(4); // B links, but it will not trigger mask
         assertThat(smem.isSegmentLinked()).isFalse();
 
-        PathMemory pmem = ( PathMemory ) wm.getNodeMemory(rtn1);
+        PathMemory pmem = wm.getNodeMemory(rtn1);
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(1);
         assertThat(pmem.getLinkedSegmentMask()).isEqualTo(0);
         assertThat(pmem.isRuleLinked()).isFalse();
@@ -460,13 +460,13 @@ public class SegmentCreationTest {
         assertThat(bNodeSmem.getAllLinkedMaskTest()).isEqualTo(0); // no beta nodes before branch CE, so never unlinks
         assertThat(bNodeSmem.getLinkedNodeMask()).isEqualTo(2);
 
-        PathMemory pmemr2 = ( PathMemory ) wm.getNodeMemory(rtn2);
+        PathMemory pmemr2 = wm.getNodeMemory(rtn2);
         assertThat(pmemr2.getAllLinkedMaskTest()).isEqualTo(1);
         assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(2);
         assertThat(pmemr2.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmemr2.isRuleLinked()).isFalse();
 
-        PathMemory pmemr3 = ( PathMemory ) wm.getNodeMemory(rtn3);
+        PathMemory pmemr3 = wm.getNodeMemory(rtn3);
         assertThat(pmemr3.getAllLinkedMaskTest()).isEqualTo(1);  // notice only the first segment links
         assertThat(pmemr3.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmemr3.isRuleLinked()).isFalse();

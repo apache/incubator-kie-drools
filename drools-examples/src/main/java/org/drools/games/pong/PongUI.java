@@ -79,7 +79,7 @@ public class PongUI extends GameUI {
         int dash = pconf.getNetDash();
         int x = (tableWidth/2) - (netWidth/2);
         for (int i = 0; i < tableHeight; i = i + dash + gap) {
-            tableG.fillRect( (int) x, i, netWidth, dash );
+            tableG.fillRect(x, i, netWidth, dash);
         }
     }
 

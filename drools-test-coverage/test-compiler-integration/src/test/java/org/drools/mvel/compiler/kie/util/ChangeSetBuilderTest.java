@@ -251,7 +251,7 @@ public class ChangeSetBuilderTest {
         }
         when( kieJar.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(ks, releaseId).toXML().getBytes() );
         when( kieJar.getFileNames() ).thenReturn( drlFs );
-        return ( InternalKieModule ) kieJar;
+        return kieJar;
     }
     
     private KieModuleModel createKieProjectWithPackages(KieServices ks, ReleaseId releaseId) {

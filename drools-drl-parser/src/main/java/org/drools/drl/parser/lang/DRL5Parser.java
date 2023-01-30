@@ -1870,7 +1870,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 lhsOr( lhs,
                        true );
                 if ( lhs.getDescr() != null && lhs.getDescr() instanceof ConditionalElementDescr ) {
-                    ConditionalElementDescr root = (ConditionalElementDescr) lhs.getDescr();
+                    ConditionalElementDescr root = lhs.getDescr();
                     BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
                     root.getDescrs().clear();
                     for ( int i = 0; i < descrs.length; i++ ) {
@@ -2240,9 +2240,9 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr conditionalBranch( CEDescrBuilder< ? , ? > ce, ConditionalBranchDescrBuilder<?> conditionalBranch ) throws RecognitionException {
         if ( conditionalBranch == null ) {
-            conditionalBranch = helper.start( (DescrBuilder< ? , ? >) ce,
-                                              ConditionalBranchDescrBuilder.class,
-                                              null );
+            conditionalBranch = helper.start(ce,
+                                             ConditionalBranchDescrBuilder.class,
+                                             null );
         }
 
         try {
@@ -2295,9 +2295,9 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr namedConsequence( CEDescrBuilder< ? , ? > ce, NamedConsequenceDescrBuilder<?> namedConsequence ) throws RecognitionException {
         if ( namedConsequence == null ) {
-            namedConsequence = helper.start( (DescrBuilder< ? , ? >) ce,
-                                              NamedConsequenceDescrBuilder.class,
-                                              null );
+            namedConsequence = helper.start(ce,
+                                            NamedConsequenceDescrBuilder.class,
+                                            null );
         }
 
         try {
@@ -2342,9 +2342,9 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr breakingNamedConsequence( CEDescrBuilder< ? , ? > ce, NamedConsequenceDescrBuilder<?> namedConsequence ) throws RecognitionException {
         if ( namedConsequence == null ) {
-            namedConsequence = helper.start( (DescrBuilder< ? , ? >) ce,
-                                             NamedConsequenceDescrBuilder.class,
-                                             null );
+            namedConsequence = helper.start(ce,
+                                            NamedConsequenceDescrBuilder.class,
+                                            null );
         }
 
         try {
@@ -2897,7 +2897,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                     if ( state.failed ) return null;
 
                     if ( source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr ) {
-                        ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                        ConditionalElementDescr root = source.getDescr();
                         BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
                         root.getDescrs().clear();
                         for ( int i = 0; i < descrs.length; i++ ) {
@@ -3695,7 +3695,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 if ( state.failed ) return;
 
                 if ( source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr ) {
-                    ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                    ConditionalElementDescr root = source.getDescr();
                     BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
                     root.getDescrs().clear();
                     for ( int i = 0; i < descrs.length; i++ ) {

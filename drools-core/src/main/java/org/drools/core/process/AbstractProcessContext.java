@@ -38,7 +38,7 @@ public abstract class AbstractProcessContext implements org.kie.api.runtime.proc
             return processInstance;
         }
         if ( nodeInstance != null ) {
-            return ( ProcessInstance ) nodeInstance.getProcessInstance();
+            return nodeInstance.getProcessInstance();
         }
         return null;
     }

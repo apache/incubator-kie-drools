@@ -641,7 +641,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         type = new SimpleTypeImpl(namespace, name, id, isCollection, av, baseType, baseFEELType);
                     }
                     if (topLevel != null) {
-                        ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                        type.setBelongingType(topLevel);
                     }
                 }
                 if (topLevel == null) {
@@ -666,7 +666,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             } else {
                 DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
                 type = new CompositeTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection());
-                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                type.setBelongingType(topLevel);
             }
             // second, add fields to located composite
             for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
@@ -701,7 +701,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                       itemDef.getName());
             }
         } else {
-            DMNType unknown = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, null);
+            DMNType unknown = resolveTypeRef(dmnModel, itemDef, itemDef, null);
             type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, ((BaseDMNTypeImpl) unknown).getFeelType());
             if (topLevel == null) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType(type);
@@ -716,7 +716,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                           itemDef.getName());
                 }
             } else {
-                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                type.setBelongingType(topLevel);
             }
         }
         return type;

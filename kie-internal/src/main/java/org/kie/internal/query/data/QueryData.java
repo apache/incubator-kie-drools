@@ -34,7 +34,7 @@ public class QueryData extends QueryParameters {
     }
 
     public QueryData(QueryData queryData) {
-       super((QueryParameters) queryData);
+       super(queryData);
        this.queryContext = new QueryContext(queryData.getQueryContext());
     }
 

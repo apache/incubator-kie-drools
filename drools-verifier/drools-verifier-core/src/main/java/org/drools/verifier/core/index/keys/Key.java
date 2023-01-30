@@ -62,7 +62,7 @@ public class Key
     }
 
     public Value getSingleValue() {
-        return (Value) values.iterator().next();
+        return values.iterator().next();
     }
 
     @Override

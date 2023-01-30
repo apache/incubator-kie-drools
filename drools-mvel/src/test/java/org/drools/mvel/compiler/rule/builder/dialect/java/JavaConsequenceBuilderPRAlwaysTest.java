@@ -124,8 +124,8 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
-            JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
+            JavaAnalysisResult analysis = analyzer.analyzeBlock((String) ruleDescr.getConsequence(),
+                                                                new BoundIdentifiers( new HashMap<String, Class<?>>(), null ));
 
             String fixed = fixBlockDescr(context, analysis, new HashMap<String, Declaration>());
 
@@ -157,8 +157,8 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         try {
             ruleDescr.setConsequence( consequence );
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
-            JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
+            JavaAnalysisResult analysis = analyzer.analyzeBlock((String) ruleDescr.getConsequence(),
+                                                                new BoundIdentifiers( new HashMap<String, Class<?>>(), null ));
 
             String fixed = fixBlockDescr( context, analysis, new HashMap<String,Declaration>() );
 

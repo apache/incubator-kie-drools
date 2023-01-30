@@ -196,7 +196,7 @@ public class PhreakJoinNodeTest {
                                 .update( )                                      
               .run();
 
-        InternalFactHandle fh = (InternalFactHandle) wm.getFactHandle( a0 );
+        InternalFactHandle fh = wm.getFactHandle(a0);
         wm.getObjectStore().updateHandle( fh, a2 );
         
         test().left().update( a2 )

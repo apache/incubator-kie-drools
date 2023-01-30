@@ -223,7 +223,7 @@ public class AgendaRuleFlowGroupsTest {
 
         public Void execute(Context context) {
             KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-            ((InternalAgenda) ksession.getAgenda()).getAgendaGroup(agendaGroupName).setFocus();
+            ksession.getAgenda().getAgendaGroup(agendaGroupName).setFocus();
             return null;
         }
 

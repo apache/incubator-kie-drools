@@ -36,8 +36,8 @@ public class AfterFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( afterFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( afterFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(afterFunction.invoke((Comparable) null, "b"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(afterFunction.invoke("a", (Comparable) null), InvalidParametersEvent.class);
     }
 
     @Test

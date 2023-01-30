@@ -216,7 +216,7 @@ public class DroolsDocsComponentFactory {
         {
           rv.add(source.substring(last));
         }
-        return (String[]) rv.toArray(new String[rv.size()]);
+        return rv.toArray(new String[rv.size()]);
       }
 
 

@@ -37,7 +37,7 @@ public class ParserTest {
     @Test
     public void testSprinklerLoadBif() {
 
-        Bif bif = (Bif) XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
+        Bif bif = XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
         Network network = bif.getNetwork();
         assertThat(network.getName()).isEqualTo("Garden");
         assertThat(network.getProperties().get(0)).isEqualTo("package = org.drools.beliefs.bayes.integration");
@@ -97,7 +97,7 @@ public class ParserTest {
 
     @Test
     public void testSprinklerBuildBayesNework() {
-        Bif bif = (Bif) XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
+        Bif bif = XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
 
         BayesNetwork network = XmlBifParser.buildBayesNetwork( bif );
         Map<String, GraphNode<BayesVariable>> map = nodeToMap(network);

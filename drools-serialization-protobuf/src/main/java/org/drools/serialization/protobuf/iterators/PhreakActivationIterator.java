@@ -193,7 +193,7 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) reteEvaluator.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = reteEvaluator.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();

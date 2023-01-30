@@ -63,7 +63,7 @@ public abstract class BaseFloatClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setFloatValue( bean,
-                       (float) value );
+                       value);
     }
 
     public void setCharValue(final Object bean,
@@ -95,7 +95,7 @@ public abstract class BaseFloatClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setFloatValue( bean,
-                       (float) value );
+                       value);
     }
 
     public Method getNativeWriteMethod() {

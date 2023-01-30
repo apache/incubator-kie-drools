@@ -256,10 +256,10 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResultImpl(model, context);
 
         // the engine should evaluate all belonging to the "local" model namespace, not imported nodes explicitly.
-        Optional<DecisionServiceNode> lookupDS = ((DMNModelImpl) model).getDecisionServices().stream()
-                                                                    .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
-                                                                    .filter(ds -> ds.getName().equals(decisionServiceName))
-                                                                    .findFirst();
+        Optional<DecisionServiceNode> lookupDS = model.getDecisionServices().stream()
+                                                      .filter(d -> d.getModelNamespace().equals(model.getNamespace()))
+                                                      .filter(ds -> ds.getName().equals(decisionServiceName))
+                                                      .findFirst();
         if (lookupDS.isPresent()) {
             DecisionServiceNodeImpl decisionService = (DecisionServiceNodeImpl) lookupDS.get();
             for (DMNNode dep : decisionService.getInputParameters().values()) {

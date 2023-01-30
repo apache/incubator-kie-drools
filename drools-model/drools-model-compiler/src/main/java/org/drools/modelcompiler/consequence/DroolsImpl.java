@@ -141,7 +141,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public <T> T getContext(Class<T> contextClass) {
-        return (T)knowledgeHelper.getContext(contextClass);
+        return knowledgeHelper.getContext(contextClass);
     }
 
     @Override

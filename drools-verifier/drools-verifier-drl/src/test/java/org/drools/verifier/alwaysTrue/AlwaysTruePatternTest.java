@@ -200,7 +200,7 @@ public class AlwaysTruePatternTest extends TestBaseOld {
 
         boolean works = false;
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierMessage message = (VerifierMessage) o;
                 if (message.getFaulty().equals(pattern1)) {

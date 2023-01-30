@@ -312,9 +312,9 @@ public class RuleUnlinkingTest {
         BetaMemory bm = null;
         List<PathMemory> list;
 
-        PathMemory rtn1Rs = (PathMemory) wm.getNodeMemory( rtn1 );
-        PathMemory rtn2Rs = (PathMemory) wm.getNodeMemory( rtn2 );
-        PathMemory rtn3Rs = (PathMemory) wm.getNodeMemory( rtn3 );
+        PathMemory rtn1Rs = wm.getNodeMemory(rtn1);
+        PathMemory rtn2Rs = wm.getNodeMemory(rtn2);
+        PathMemory rtn3Rs = wm.getNodeMemory(rtn3);
 
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
 

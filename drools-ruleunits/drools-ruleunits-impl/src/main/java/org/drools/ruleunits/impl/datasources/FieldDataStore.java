@@ -102,7 +102,7 @@ public class FieldDataStore<T> extends AbstractDataSource<T> implements Singleto
     @Override
     public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
-        subscribers.forEach(s -> s.update(dh, (T) obj));
+        subscribers.forEach(s -> s.update(dh, obj));
     }
 
     @Override

@@ -787,10 +787,10 @@ public class JunctionTreeBuilderTest {
         OpenBitSet OpenBitSet2 = bitSet("00111100");
         OpenBitSet OpenBitSet3 = bitSet("11100000"); // linear
 
-        OpenBitSet intersect1And2 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect1And2 = OpenBitSet2.clone();
         intersect1And2.and(OpenBitSet1);
 
-        OpenBitSet intersect2And3 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect2And3 = OpenBitSet2.clone();
         intersect2And3.and(OpenBitSet3);
 
         list.add(OpenBitSet1);
@@ -835,10 +835,10 @@ public class JunctionTreeBuilderTest {
         OpenBitSet OpenBitSet2 = bitSet("00111100");
         OpenBitSet OpenBitSet3 = bitSet("11100001"); // links to 2 and 1, but should still result in a single path. As the 3 -> 1 link, gets pruned
 
-        OpenBitSet intersect1And2 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect1And2 = OpenBitSet2.clone();
         intersect1And2.and(OpenBitSet1);
 
-        OpenBitSet intersect2And3 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect2And3 = OpenBitSet2.clone();
         intersect2And3.and(OpenBitSet3);
 
         list.add(OpenBitSet1);
@@ -881,13 +881,13 @@ public class JunctionTreeBuilderTest {
         OpenBitSet OpenBitSet3 = bitSet("11100000");
         OpenBitSet OpenBitSet4 = bitSet("00100001");
 
-        OpenBitSet intersect1And2 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect1And2 = OpenBitSet2.clone();
         intersect1And2.and(OpenBitSet1);
 
-        OpenBitSet intersect2And3 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect2And3 = OpenBitSet2.clone();
         intersect2And3.and(OpenBitSet3);
 
-        OpenBitSet intersect1And4 = ((OpenBitSet)OpenBitSet1.clone());
+        OpenBitSet intersect1And4 = OpenBitSet1.clone();
         intersect1And4.and(OpenBitSet4);
 
         list.add(OpenBitSet1);
@@ -941,16 +941,16 @@ public class JunctionTreeBuilderTest {
         OpenBitSet OpenBitSet3 = bitSet("11100000");
         OpenBitSet OpenBitSet4 = bitSet("01100001");
 
-        OpenBitSet intersect1And2 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect1And2 = OpenBitSet2.clone();
         intersect1And2.and(OpenBitSet1);
 
-        OpenBitSet intersect2And3 = ((OpenBitSet)OpenBitSet2.clone());
+        OpenBitSet intersect2And3 = OpenBitSet2.clone();
         intersect2And3.and(OpenBitSet3);
 
-        OpenBitSet intersect1And4 = ((OpenBitSet)OpenBitSet1.clone());
+        OpenBitSet intersect1And4 = OpenBitSet1.clone();
         intersect1And4.and(OpenBitSet4);
 
-        OpenBitSet intersect3And4 = ((OpenBitSet)OpenBitSet3.clone());
+        OpenBitSet intersect3And4 = OpenBitSet3.clone();
         intersect3And4.and(OpenBitSet4);
 
         list.add(OpenBitSet1);

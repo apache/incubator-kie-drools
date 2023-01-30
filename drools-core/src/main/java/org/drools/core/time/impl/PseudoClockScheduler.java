@@ -197,7 +197,7 @@ public class PseudoClockScheduler
             queue.remove(item);
             if ( item.getJobHandle().isCancel() ) {
                 // do not call it, do not reschedule it
-                item = (TimerJobInstance) queue.peek();
+                item = queue.peek();
                 continue;
             }
 
