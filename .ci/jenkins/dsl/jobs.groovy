@@ -110,7 +110,7 @@ if (Utils.isMainBranch(this)) {
 /////////////////////////////////////////////////////////////////
 
 void setupQuarkusIntegrationJob(String envName) {
-    KogitoJobUtils.createQuarkusNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
+    KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
 }
 
 void setupSpecificBuildChainNightlyJob(String envName) {
