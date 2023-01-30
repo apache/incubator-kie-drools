@@ -211,7 +211,7 @@ public class NotTest {
         NodeMemories nodeMemories = ksessionImpl.getNodeMemories();
         BetaMemory betaMemory = (BetaMemory) nodeMemories.getNodeMemory(notNode, ksessionImpl);
         TupleMemory rightTupleMemory = betaMemory.getRightTupleMemory();
-        Tuple[] tuples = rightTupleMemory.toArray();
+        Tuple[] tuples = (Tuple[]) rightTupleMemory.toArray();
         for (int i = 0; i < tuples.length; i++) {
             RightTupleImpl tuple = (RightTupleImpl) tuples[i];
             if (tuple.getBlocked() != null) {

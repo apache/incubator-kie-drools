@@ -155,9 +155,9 @@ public class FindMissingNumber {
                 first = numbers[i];
                 second = numbers[i + 1];
 
-                if (!second.subtract( first ).equals( gap )) {
+                if (!second.divide( first ).equals( gap )) {
                     if (missingNumber == null) {
-                        missingNumber = second.subtract(gap);
+                        missingNumber = first.multiply(gap);
                     } else {
                         // Happends if there is no pattern found, or more than 1
                         // missing number.

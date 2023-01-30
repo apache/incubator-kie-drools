@@ -599,6 +599,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         // Make sure we can't accessa  variable bound inside the not node
+        createRule( new NotDescr(),
+                    builder,
+                    "update(stilton);" );
+
         assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();
@@ -622,6 +626,10 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         // Make sure we can't accessa  variable bound inside the not node
+        createRule( new ExistsDescr(),
+                    builder,
+                    "update(stilton);" );
+
         assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();

@@ -248,7 +248,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                 while ( this.list == null ) {
                     if ( this.row < length ) {
                         // iterate while there is no current bucket, trying each array position
-                        this.list = this.table[this.row];
+                        this.list = (TupleList) this.table[this.row];
                         this.row++;
                     } else {
                         // we've scanned the whole table and nothing is left, so return null
@@ -329,7 +329,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
             TupleList previous = null;
-            TupleList current = this.table[index];
+            TupleList current = (TupleList) this.table[index];
             while ( current != memory ) {
                 previous = current;
                 current = current.getNext();
@@ -360,7 +360,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
             TupleList previous = null;
-            TupleList current = this.table[index];
+            TupleList current = (TupleList) this.table[index];
             while ( current != memory ) {
                 previous = current;
                 current = current.getNext();

@@ -190,23 +190,23 @@ public class QueryTest {
 
         String queryName = "assertedobjquery";
         String [] arguments = new String[]{"value1"};
-        QueryResultsImpl resultsImpl = (QueryResultsImpl) session.getQueryResults(queryName, (Object) arguments);
+        QueryResultsImpl resultsImpl = (QueryResultsImpl) session.getQueryResults( queryName, arguments );
 
-        QueryResults results = getQueryResults(session, queryName, (Object) arguments);
+        QueryResults results = getQueryResults( session, queryName, arguments );
 
         assertThat(results.size()).isEqualTo(1);
         InsertedObject value = new InsertedObject( "value1" );
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(value);
 
-        results = getQueryResults(session, "assertedobjquery", (Object) new String[]{"value3"});
+        results = getQueryResults( session, "assertedobjquery", new String[]{"value3"}  );
 
         assertThat(results.size()).isEqualTo(0);
 
-        results = getQueryResults(session, "assertedobjquery2", (Object) new String[]{null, "value2"});
+        results = getQueryResults( session, "assertedobjquery2", new String[]{null, "value2"}  );
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
 
-        results = getQueryResults(session, "assertedobjquery2", (Object) new String[]{"value3", "value2"});
+        results = getQueryResults(session, "assertedobjquery2", new String[]{"value3", "value2"}  );
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
