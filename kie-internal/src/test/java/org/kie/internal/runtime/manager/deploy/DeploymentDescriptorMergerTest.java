@@ -188,7 +188,7 @@ public class DeploymentDescriptorMergerTest {
         assertThat(primary.getWorkItemHandlers().size()).isEqualTo(0);
         assertThat(primary.getLimitSerializationClasses()).isTrue();
 
-        DeploymentDescriptor secondary = new DeploymentDescriptorImpl("org.jbpm.domain");
+        DeploymentDescriptorImpl secondary = new DeploymentDescriptorImpl("org.jbpm.domain");
 
         secondary.getBuilder()
                 .auditMode(AuditMode.JMS)
@@ -209,7 +209,7 @@ public class DeploymentDescriptorMergerTest {
         assertThat(secondary.getGlobals().size()).isEqualTo(0);
         assertThat(secondary.getTaskEventListeners().size()).isEqualTo(0);
         assertThat(secondary.getWorkItemHandlers().size()).isEqualTo(0);
-        ((DeploymentDescriptorImpl) secondary).setLimitSerializationClasses(null);
+        secondary.setLimitSerializationClasses(null);
         assertThat(secondary.getLimitSerializationClasses()).isNull();
 
         // and now let's merge them

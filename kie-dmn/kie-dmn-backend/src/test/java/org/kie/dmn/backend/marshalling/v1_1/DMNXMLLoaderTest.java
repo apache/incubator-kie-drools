@@ -139,9 +139,9 @@ public class DMNXMLLoaderTest {
 
         final InputStream is = this.getClass().getResourceAsStream("ch11example.xml");
         final InputStreamReader isr = new InputStreamReader( is );
-        final Object o = DMNMarshaller.unmarshal( isr );
+        final Definitions o = DMNMarshaller.unmarshal(isr);
 
-        final Definitions root = (Definitions) o;
+        final Definitions root = o;
 
         assertThat(root).isNotNull();
     }
@@ -152,9 +152,9 @@ public class DMNXMLLoaderTest {
 
         final InputStream is = this.getClass().getResourceAsStream("dish-decision.xml");
         final InputStreamReader isr = new InputStreamReader( is );
-        final Object o = DMNMarshaller.unmarshal( isr );
+        final Definitions o = DMNMarshaller.unmarshal(isr);
 
-        final Definitions root = (Definitions) o;
+        final Definitions root = o;
 
         assertThat(root).isNotNull();
     }

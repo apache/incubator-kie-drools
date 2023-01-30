@@ -70,11 +70,11 @@ public class NNMedianFunction
             return FEELFnResult.ofResult(medianAvg);
         } else {
             int medianPos = sorted.size() / 2;
-            Object median = sorted.get(medianPos);
+            BigDecimal median = sorted.get(medianPos);
             if (!(median instanceof BigDecimal)) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "does not contain number"));
             }
-            return FEELFnResult.ofResult((BigDecimal) median);
+            return FEELFnResult.ofResult(median);
         }
     }
 

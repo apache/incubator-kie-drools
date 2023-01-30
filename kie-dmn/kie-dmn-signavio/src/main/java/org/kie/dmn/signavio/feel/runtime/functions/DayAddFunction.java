@@ -49,7 +49,7 @@ public class DayAddFunction
         }
 
         try {
-            Object r;
+            TemporalAccessor r;
             if( datetime.contains( "T" ) ) {
                 r = BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( datetime ).cata( BuiltInType.justNull(), Function.identity() );
             } else {
@@ -57,7 +57,7 @@ public class DayAddFunction
             }
 
             if (r instanceof TemporalAccessor) {
-                return invoke( (TemporalAccessor) r, days );
+                return invoke(r, days);
             } else {
                 return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datestring", "date-parsing exception" ) );
             }

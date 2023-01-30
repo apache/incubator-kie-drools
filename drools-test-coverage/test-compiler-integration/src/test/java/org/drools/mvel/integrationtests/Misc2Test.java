@@ -6570,10 +6570,10 @@ public class Misc2Test {
         FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
         FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", fieldTemplate);
 
-        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl( kPackage );
+        KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl(kPackage );
         StringReader rule = new StringReader( drl );
         try {
-            ( (KnowledgeBuilderImpl) kBuilder ).addPackageFromDrl( rule );
+            kBuilder.addPackageFromDrl(rule);
         } catch (Exception e) {
             throw new RuntimeException( e );
         }

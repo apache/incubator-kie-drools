@@ -238,20 +238,20 @@ public class MVELAccumulateBuilder
                                                                "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
                     } else {
                         Declaration inner = context.getDeclarationResolver().getDeclaration( func.getBind() );
-                        Constraint c = new MVELConstraint( Collections.singletonList( context.getPkg().getName() ),
-                                                           accumDescr.isMultiFunction()
+                        MutableTypeConstraint c = new MVELConstraint(Collections.singletonList(context.getPkg().getName()),
+                                                                     accumDescr.isMultiFunction()
                                                                 ? "this[ " + index + " ] == " + func.getBind()
                                                                 : "this == " + func.getBind(),
-                                                           new Declaration[] { inner },
-                                                           null,
-                                                           null,
-                                                           IndexUtil.ConstraintType.EQUAL,
-                                                           context.getDeclarationResolver().getDeclaration( func.getBind() ),
-                                                           accumDescr.isMultiFunction()
+                                                                     new Declaration[] { inner },
+                                                                     null,
+                                                                     null,
+                                                                     IndexUtil.ConstraintType.EQUAL,
+                                                                     context.getDeclarationResolver().getDeclaration( func.getBind() ),
+                                                                     accumDescr.isMultiFunction()
                                                                 ? new ArrayElementReader( arrayReader, index, function.getResultType() )
                                                                 : new SelfReferenceClassFieldReader( function.getResultType() ),
-                                                           true);
-                        ((MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
+                                                                     true);
+                        c.setType(Constraint.ConstraintType.BETA);
                         pattern.addConstraint( c );
                         index++;
                     }

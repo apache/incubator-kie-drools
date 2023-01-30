@@ -82,7 +82,7 @@ public class MetadataTest {
 
     @Test
     public void testKlassAndSubKlassWithInterfaces() {
-        SubKlass ski = new Foo();
+        Foo ski = new Foo();
         ski.setSubProp( 42 );
         ski.setProp( "hello" );
 
@@ -96,11 +96,11 @@ public class MetadataTest {
         assertThat((int) sk.subProp.get(ski)).isEqualTo(-99);
         assertThat(sk.prop.get(ski)).isEqualTo("bye");
 
-        System.out.println( ((Foo) ski).map );
+        System.out.println( ski.map);
         Map tgt = new HashMap();
         tgt.put( "prop", "bye" );
         tgt.put( "subProp", -99 );
-        assertThat(((Foo) ski).map).isEqualTo(tgt);
+        assertThat(ski.map).isEqualTo(tgt);
     }
 
 

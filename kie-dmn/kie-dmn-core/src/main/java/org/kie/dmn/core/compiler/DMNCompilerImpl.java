@@ -701,8 +701,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                                       itemDef.getName());
             }
         } else {
-            DMNType unknown = resolveTypeRef(dmnModel, itemDef, itemDef, null);
-            type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, ((BaseDMNTypeImpl) unknown).getFeelType());
+            BaseDMNTypeImpl unknown = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, null);
+            type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, unknown.getFeelType());
             if (topLevel == null) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType(type);
                 if (registered != type) {
