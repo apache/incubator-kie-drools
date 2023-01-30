@@ -30,6 +30,7 @@ import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.base.ObjectType;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.index.IndexFactory;
 import org.drools.core.util.index.IndexUtil;
 
 public class SingleBetaConstraints
@@ -156,7 +157,7 @@ public class SingleBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        return IndexUtil.Factory.createBetaMemory(config, nodeType, constraint);
+        return IndexFactory.createBetaMemory(config, nodeType, constraint);
     }
 
     public int hashCode() {

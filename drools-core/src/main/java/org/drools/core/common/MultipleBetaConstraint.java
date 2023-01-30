@@ -25,7 +25,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.index.IndexFactory;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.util.index.IndexUtil.compositeAllowed;
@@ -103,7 +103,7 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        return IndexUtil.Factory.createBetaMemory(config, nodeType, constraints);
+        return IndexFactory.createBetaMemory(config, nodeType, constraints);
     }
 
     public final BetaNodeFieldConstraint[] getConstraints() {
