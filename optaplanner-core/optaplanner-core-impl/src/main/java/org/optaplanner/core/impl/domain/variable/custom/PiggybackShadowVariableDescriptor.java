@@ -52,7 +52,10 @@ public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariable
                         + ") has a @" + PiggybackShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") with a shadowEntityClass (" + shadowEntityClass
-                        + ") which is not a valid planning entity.");
+                        + ") which is not a valid planning entity."
+                        + "\nMaybe check the annotations of the class (" + shadowEntityClass + ")."
+                        + "\nMaybe add the class (" + shadowEntityClass
+                        + ") among planning entities in the solver configuration.");
             }
         }
         String shadowVariableName = piggybackShadowVariable.shadowVariableName();

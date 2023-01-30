@@ -76,7 +76,10 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                     + ") has an @" + InverseRelationShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with a sourceClass (" + sourceClass
-                    + ") which is not a valid planning entity.");
+                    + ") which is not a valid planning entity."
+                    + "\nMaybe check the annotations of the class (" + sourceClass + ")."
+                    + "\nMaybe add the class (" + sourceClass
+                    + ") among planning entities in the solver configuration.");
         }
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();
         // TODO can we getGenuineVariableDescriptor()?

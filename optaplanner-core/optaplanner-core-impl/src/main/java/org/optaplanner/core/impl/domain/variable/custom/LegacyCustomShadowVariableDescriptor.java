@@ -108,7 +108,10 @@ public class LegacyCustomShadowVariableDescriptor<Solution_> extends ShadowVaria
                             + ") has a @" + CustomShadowVariable.class.getSimpleName()
                             + " annotated property (" + variableMemberAccessor.getName()
                             + ") with a refEntityClass (" + refEntityClass
-                            + ") which is not a valid planning entity.");
+                            + ") which is not a valid planning entity."
+                            + "\nMaybe check the annotations of the class (" + refEntityClass + ")."
+                            + "\nMaybe add the class (" + refEntityClass
+                            + ") among planning entities in the solver configuration.");
                 }
             }
             String refVariableName = variableListenerRef.variableName();
@@ -154,7 +157,10 @@ public class LegacyCustomShadowVariableDescriptor<Solution_> extends ShadowVaria
                                 + ") has a @" + CustomShadowVariable.class.getSimpleName()
                                 + " annotated property (" + variableMemberAccessor.getName()
                                 + ") with a sourceEntityClass (" + sourceEntityClass
-                                + ") which is not a valid planning entity.");
+                                + ") which is not a valid planning entity."
+                                + "\nMaybe check the annotations of the class (" + sourceEntityClass + ")."
+                                + "\nMaybe add the class (" + sourceEntityClass
+                                + ") among planning entities in the solver configuration.");
                     }
                 }
                 String sourceVariableName = source.variableName();
