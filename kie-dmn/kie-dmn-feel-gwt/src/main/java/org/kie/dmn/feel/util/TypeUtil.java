@@ -59,9 +59,7 @@ public final class TypeUtil {
     public static boolean isCollectionTypeHomogenous(final Collection collection,
                                                      final Class expectedType) {
         for (final Object object : collection) {
-            if (object == null) {
-                continue;
-            } else if (!isAssignableFrom(expectedType, object.getClass())) {
+            if (object != null && !isAssignableFrom(expectedType, object.getClass())) {
                 return false;
             }
         }

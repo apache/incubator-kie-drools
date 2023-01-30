@@ -48,7 +48,6 @@ public class UpdatableInspectorList<InspectorType extends HasUUID, InspectedType
             if (inspector != null) {
                 // Everything up to date.
                 originalItems.remove(updatable.getUuidKey());
-                continue;
             } else {
                 final InspectorType newInspector = inspectorFactory.make(updatable);
                 add(newInspector);

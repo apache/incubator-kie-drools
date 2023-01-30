@@ -394,7 +394,6 @@ public class DMNCompilerImpl implements DMNCompiler {
                 if ( dc.accept( e ) ) {
                     foundIt = true;
                     dc.compileNode(e, this, model);
-                    continue;
                 }
             }  
             if ( !foundIt ) {
@@ -430,7 +429,6 @@ public class DMNCompilerImpl implements DMNCompiler {
                         if (dc.accept(ds)) {
                             foundIt = true;
                             dc.compileNode(ds, this, model);
-                            continue;
                         }
                     }
                 }

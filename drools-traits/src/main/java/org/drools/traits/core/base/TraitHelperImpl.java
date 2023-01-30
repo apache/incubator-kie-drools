@@ -403,7 +403,6 @@ public class TraitHelperImpl implements Externalizable,
                     }
                 }
                 if ( found ) {
-                    continue;
                 }
             }
         }

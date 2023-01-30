@@ -196,7 +196,6 @@ public class UnmarshalMarshalTest {
                                                                                                            if (check) {
                                                                                                                testIsDefaulableAttribute = true;
                                                                                                                whichDefaultableAttr = a;
-                                                                                                               continue;
                                                                                                            }
                                                                                                        }
                                                                                                    }
