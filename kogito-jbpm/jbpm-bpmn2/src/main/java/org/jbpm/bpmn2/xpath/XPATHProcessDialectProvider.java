@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2011 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.builder;
+package org.jbpm.bpmn2.xpath;
 
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.drl.ast.descr.ReturnValueDescr;
-import org.jbpm.process.core.ContextResolver;
-import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.process.builder.dialect.ProcessDialect;
+import org.jbpm.process.builder.dialect.ProcessDialectProvider;
 
-public interface ReturnValueEvaluatorBuilder {
+public class XPATHProcessDialectProvider implements ProcessDialectProvider {
 
-    void build(PackageBuildContext context,
-            ReturnValueConstraintEvaluator evaluator,
-            ReturnValueDescr returnValueDescr,
-            ContextResolver contextResolver);
+    public static final String ID = "XPath";
+    private static final XPATHProcessDialect DIALECT = new XPATHProcessDialect();
 
+    @Override
+    public String name() {
+        return ID;
+    }
+
+    @Override
+    public ProcessDialect dialect() {
+        return DIALECT;
+    }
 }

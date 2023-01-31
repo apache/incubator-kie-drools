@@ -15,10 +15,10 @@
  */
 package org.jbpm.process.builder.dialect;
 
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jbpm.process.builder.dialect.feel.FeelProcessDialect;
 import org.jbpm.process.builder.dialect.java.JavaProcessDialect;
 import org.jbpm.process.builder.dialect.mvel.MVELProcessDialect;
 
@@ -34,7 +34,9 @@ public class ProcessDialectRegistry {
         dialects = new ConcurrentHashMap<>();
         dialects.put("java", new JavaProcessDialect());
         dialects.put("mvel", new MVELProcessDialect());
-        dialects.put("FEEL", new FeelProcessDialect());
+        ServiceLoader<ProcessDialectProvider> providers = ServiceLoader.load(ProcessDialectProvider.class);
+        providers.forEach(provider -> dialects.put(provider.name(), provider.dialect()));
+
     }
 
     public static ProcessDialect getDialect(String dialect) {

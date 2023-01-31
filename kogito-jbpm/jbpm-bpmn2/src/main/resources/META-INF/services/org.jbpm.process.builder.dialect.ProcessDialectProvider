@@ -1,0 +1,2 @@
+org.jbpm.bpmn2.feel.FeelProcessDialectProvider
+org.jbpm.bpmn2.xpath.XPATHProcessDialectProvider

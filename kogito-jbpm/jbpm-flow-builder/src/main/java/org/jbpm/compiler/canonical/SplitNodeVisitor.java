@@ -18,7 +18,6 @@ package org.jbpm.compiler.canonical;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-import org.jbpm.compiler.canonical.dialect.feel.FEELDialectCanonicalUtils;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
@@ -28,12 +27,14 @@ import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
 
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.UnknownType;
@@ -63,7 +64,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                     if (entry.getValue() instanceof ReturnValueConstraintEvaluator && ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator() instanceof Supplier) {
                         returnValueEvaluator = ((Supplier<Expression>) ((ReturnValueConstraintEvaluator) entry.getValue()).getReturnValueEvaluator()).get();
                     } else if ("FEEL".equals(entry.getValue().getDialect())) {
-                        returnValueEvaluator = FEELDialectCanonicalUtils.buildFEELReturnValueEvaluator(variableScope, entry);
+                        returnValueEvaluator = buildFEELReturnValueEvaluator(entry);
                     } else {
                         BlockStmt actionBody = new BlockStmt();
                         LambdaExpr lambda = new LambdaExpr(
@@ -91,5 +92,11 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
             }
         }
         body.addStatement(getDoneMethod(getNodeId(node)));
+    }
+
+    public static ObjectCreationExpr buildFEELReturnValueEvaluator(Entry<ConnectionRef, Constraint> entry) {
+        return new ObjectCreationExpr(null,
+                StaticJavaParser.parseClassOrInterfaceType("org.jbpm.bpmn2.feel.FeelReturnValueEvaluator"),
+                new NodeList<>(new StringLiteralExpr(entry.getValue().getConstraint())));
     }
 }

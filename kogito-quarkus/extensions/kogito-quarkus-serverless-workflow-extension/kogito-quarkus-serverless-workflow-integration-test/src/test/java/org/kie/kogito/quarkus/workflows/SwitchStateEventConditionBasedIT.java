@@ -23,6 +23,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,8 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.path.json.JsonPath;
 
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.assertProcessInstanceHasFinished;
 import static org.kie.kogito.quarkus.workflows.WorkflowTestUtils.newProcessInstanceAndGetId;
@@ -80,7 +84,11 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
     KafkaTestClient kafkaClient;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
+        //Reset shared topic to avoid conflict with other tests
+        try (AdminClient adminClient = AdminClient.create(singletonMap(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers))) {
+            adminClient.deleteTopics(singleton(KOGITO_OUTGOING_STREAM_TOPIC)).all().get(60, TimeUnit.SECONDS);
+        }
         kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -227,7 +235,7 @@ class SwitchStateEventConditionBasedIT extends AbstractSwitchStateIT {
             cloudEvent.set(rawCloudEvent);
             countDownLatch.countDown();
         });
-        // give some time to consume the event and verifyy the expected decision was made.
+        // give some time to consume the event and verify the expected decision was made.
         assertThat(countDownLatch.await(seconds, TimeUnit.SECONDS)).isTrue();
         return new JsonPath(cloudEvent.get());
     }

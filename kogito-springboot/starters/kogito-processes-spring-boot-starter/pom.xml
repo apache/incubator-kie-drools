@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
+      <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
   </dependencies>
 

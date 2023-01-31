@@ -120,7 +120,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     private static final String KCONTEXT = "kcontext";
     private static RuleFlowProcessValidator INSTANCE;
 
-    private RuleFlowProcessValidator() {
+    protected RuleFlowProcessValidator() {
     }
 
     public static RuleFlowProcessValidator getInstance() {

@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,8 +41,6 @@ public class TypeTransformer {
     public TypeTransformer(ClassLoader classLoader) {
         this.mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
-                .registerModule(new com.fasterxml.jackson.databind.module.SimpleModule()
-                        .addSerializer(ComparablePeriod.class, new ComparablePeriodSerializer()))
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 

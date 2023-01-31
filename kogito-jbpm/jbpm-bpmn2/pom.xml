@@ -49,6 +49,10 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
     </dependency>

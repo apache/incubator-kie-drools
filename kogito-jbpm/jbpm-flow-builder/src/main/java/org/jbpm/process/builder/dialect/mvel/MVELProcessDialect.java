@@ -57,11 +57,11 @@ public class MVELProcessDialect implements ProcessDialect {
      * {@link ProcessClassBuilder} implementations.
      */
 
-    public static void setActionbuilder(ActionBuilder actionbuilder) {
+    public static void setActionBuilder(ActionBuilder actionbuilder) {
         actionBuilder = actionbuilder;
     }
 
-    public static void setReturnvaluebuilder(ReturnValueEvaluatorBuilder returnvaluebuilder) {
+    public static void setReturnValueBuilder(ReturnValueEvaluatorBuilder returnvaluebuilder) {
         returnValueBuilder = returnvaluebuilder;
     }
 

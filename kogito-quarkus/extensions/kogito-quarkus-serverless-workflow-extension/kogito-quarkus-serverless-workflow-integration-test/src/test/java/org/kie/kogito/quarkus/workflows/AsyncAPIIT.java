@@ -81,7 +81,7 @@ class AsyncAPIIT extends AbstractCallbackStateIT {
     }
 
     @Test
-    void testPublisher() throws IOException, InterruptedException {
+    void testPublisher() throws InterruptedException {
         given()
                 .contentType(ContentType.JSON)
                 .when()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.builder.dialect.feel;
+package org.jbpm.bpmn2.feel;
 
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.drl.ast.descr.ReturnValueDescr;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
-import org.jbpm.process.instance.impl.FeelReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 
 public class FeelReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
@@ -28,13 +27,16 @@ public class FeelReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuil
 
     }
 
+    @Override
     public void build(final PackageBuildContext context,
             final ReturnValueConstraintEvaluator constraintNode,
             final ReturnValueDescr descr,
             final ContextResolver contextResolver) {
+
         String text = descr.getText();
         FeelReturnValueEvaluator expr = new FeelReturnValueEvaluator(text);
         constraintNode.setEvaluator(expr);
+
     }
 
 }
