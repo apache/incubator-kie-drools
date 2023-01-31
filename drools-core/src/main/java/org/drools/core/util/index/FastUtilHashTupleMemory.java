@@ -1,8 +1,6 @@
 package org.drools.core.util.index;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.Hash.Strategy;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
@@ -12,34 +10,51 @@ import org.drools.core.util.AbstractHashTable.HashEntry;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.core.util.AbstractHashTable.TripleCompositeIndex;
-import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 
 public class FastUtilHashTupleMemory implements TupleMemory {
 
-    public static final int                           PRIME            = 31;
+    public static final int                    PRIME            = 31;
 
-    private int                                       startResult;
+    private int                                startResult;
 
-    private int                                       factSize;
+    private int                                factSize;
 
-    private Object2ObjectOpenHashMap<HashEntry, IndexTupleList> map;
+    private FastUtilMergableHashSet<HashEntry> set;
 
-    private transient FullFastIterator  fullFastIterator;
+    private transient FullFastIterator         fullFastIterator;
 
-    private boolean                        left;
+    private boolean                            left;
 
-    private Index index;
+    private Index                              index;
+
+    public static class HashStrategy implements Strategy<HashEntry> {
+        public static HashStrategy INSTANCE = new HashStrategy();
+
+        public static HashStrategy get() {
+            return INSTANCE;
+        }
+
+        @Override
+        public int hashCode(HashEntry a) {
+            return a.hashCode();
+        }
+
+        @Override
+        public boolean equals(HashEntry a, HashEntry b) {
+            return a.equals(b != null ? ((IndexTupleList)b).hashEntry : null);
+        }
+    }
 
     public FastUtilHashTupleMemory(FieldIndex[] index,
                                    boolean left) {
-        this.map = new Object2ObjectOpenHashMap<>();
+        this.set = new FastUtilMergableHashSet<>(HashStrategy.get());
 
         this.left = left;
 
-        fullFastIterator = new FullFastIterator(map);
+        fullFastIterator = new FullFastIterator(set);
 
         this.startResult = PRIME;
         for ( FieldIndex i : index ) {
@@ -75,7 +90,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
     private TupleList get(final Tuple tuple, boolean left) {
         HashEntry hashEntry = this.index.hashCodeOf(tuple, left);
 
-        TupleList tupleList = map.get(hashEntry);
+        TupleList tupleList = (TupleList) set.get(hashEntry);
 
         return tupleList;
     }
@@ -94,7 +109,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
         // bucket is empty so remove.
         if ( tupleList.getFirst() == null ) {
-            map.remove(tupleList.hashEntry);
+            set.remove(tupleList.hashEntry);
         }
 
         tupleList = getOrCreate(hashEntry);
@@ -112,13 +127,13 @@ public class FastUtilHashTupleMemory implements TupleMemory {
     }
 
     private IndexTupleList getOrCreate(HashEntry hashEntry) {
-        final IndexTupleList entry = map.compute(hashEntry, (key, value) -> {
+        final IndexTupleList returned = (IndexTupleList) set.compute(hashEntry, (key, value) -> {
             if (value == null) {
                 value = new IndexTupleList(key.clone());
             }
             return value;
         });
-        return entry;
+        return returned;
     }
 
     @Override
@@ -129,7 +144,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
         this.factSize--;
 
         if ( memory.getFirst() == null ) {
-            map.remove(memory.hashEntry());
+            set.remove(memory.hashEntry());
         }
         tuple.clear();
     }
@@ -146,7 +161,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
     @Override
     public Iterator iterator() {
-        return new FullIterator( new FullFastIterator(map));
+        return new FullIterator( new FullFastIterator(set));
     }
 
     @Override
@@ -171,12 +186,11 @@ public class FastUtilHashTupleMemory implements TupleMemory {
         Tuple[] result = new Tuple[size()];
         int index = 0;
 
-        for ( Object2ObjectMap.Entry<HashEntry, IndexTupleList> i : Object2ObjectMaps.fastIterable(map)) {
-            TupleList tupleList  = i.getValue();
-            Tuple entry = tupleList.getFirst();
-            while (entry != null) {
-                result[index++] = entry;
-                entry = entry.getNext();
+        for ( HashEntry hash : set) {
+            Tuple tuple = ((TupleList)hash).getFirst();
+            while (tuple != null) {
+                result[index++] = tuple;
+                tuple = tuple.getNext();
             }
         }
 
@@ -195,12 +209,12 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
     @Override
     public void clear() {
-        map.clear();
+        set.clear();
         this.startResult = PRIME;
         this.factSize = 0;
     }
 
-    public static class IndexTupleList extends TupleList {
+    public static class IndexTupleList extends TupleList implements HashEntry {
         private HashEntry hashEntry;
 
         public IndexTupleList(HashEntry hashEntry) {
@@ -209,6 +223,28 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
         public HashEntry hashEntry() {
             return hashEntry;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            IndexTupleList that = (IndexTupleList) o;
+            return hashEntry.equals(that.hashEntry);
+        }
+
+        @Override
+        public int hashCode() {
+            return hashEntry.hashCode();
+        }
+
+        @Override
+        public HashEntry clone() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -223,19 +259,19 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
         @Override
         public Tuple next() {
-            this.tuple = (Tuple) fullFastIterator.next(tuple);
+            this.tuple = fullFastIterator.next(tuple);
             return this.tuple;
         }
     }
 
     public static class FullFastIterator implements FastIterator<Tuple> {
 
-        private Object2ObjectOpenHashMap<HashEntry, IndexTupleList> map;
+        private FastUtilMergableHashSet<HashEntry> set;
 
-        private ObjectIterator<Object2ObjectMap.Entry<HashEntry, IndexTupleList>> it;
+        private ObjectIterator<HashEntry>                     it;
 
-        public FullFastIterator(Object2ObjectOpenHashMap<HashEntry, IndexTupleList> map) {
-            this.map = map;;
+        public FullFastIterator(FastUtilMergableHashSet<HashEntry> set) {
+            this.set = set;
         }
 
         /**
@@ -247,7 +283,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
 
             TupleList targetMemory = target.getMemory(); // not ideal as this is a linear search to find the resume point
             while (it.hasNext()) {
-                TupleList c = it.next().getValue();
+                TupleList c = (TupleList) it.next();
                 if (c == targetMemory) {
                     return;
                 }
@@ -264,7 +300,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
             }
 
             if (it.hasNext()) {
-                next = it.next().getValue().getFirst();
+                next = ((TupleList)it.next()).getFirst();
             }
             return next;
         }
@@ -274,7 +310,7 @@ public class FastUtilHashTupleMemory implements TupleMemory {
         }
 
         public void reset() {
-            it = Object2ObjectMaps.fastIterable(map).iterator();
+            it = set.iterator();
         }
     }
 }

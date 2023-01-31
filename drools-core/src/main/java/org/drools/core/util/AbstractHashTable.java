@@ -292,7 +292,7 @@ public abstract class AbstractHashTable
         }
     }
 
-    public static class IndexTupleList extends TupleList {
+    public static class IndexTupleList extends TupleList implements HashEntry {
         private HashEntry hashEntry;
         private Index index;
         private int hashCode;
@@ -327,6 +327,11 @@ public abstract class AbstractHashTable
 
         public HashEntry getHashEntry() {
             return hashEntry;
+        }
+
+        @Override
+        public HashEntry clone() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -497,6 +502,14 @@ public abstract class AbstractHashTable
             singleEntry.obj1 = obj1;
             return singleEntry;
         }
+
+        @Override
+        public String toString() {
+            return "SingleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   '}';
+        }
     }
 
     public static class DoubleHashEntry implements HashEntry {
@@ -542,6 +555,15 @@ public abstract class AbstractHashTable
             doubleEntry.obj1 = obj1;
             doubleEntry.obj2 = obj2;
             return doubleEntry;
+        }
+
+        @Override
+        public String toString() {
+            return "DoubleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   ", obj2=" + obj2 +
+                   '}';
         }
     }
 
@@ -592,6 +614,16 @@ public abstract class AbstractHashTable
             tripleEntry.obj2 = obj2;
             tripleEntry.obj3 = obj3;
             return tripleEntry;
+        }
+
+        @Override
+        public String toString() {
+            return "TripleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   ", obj2=" + obj2 +
+                   ", obj3=" + obj3 +
+                   '}';
         }
     }
 }
