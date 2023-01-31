@@ -17,9 +17,9 @@ final class HardMediumSoftScoreInliner extends AbstractScoreInliner<HardMediumSo
     public WeightedScoreImpacter<HardMediumSoftScore, HardMediumSoftScoreContext> buildWeightedScoreImpacter(
             Constraint constraint, HardMediumSoftScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        int hardConstraintWeight = constraintWeight.getHardScore();
-        int mediumConstraintWeight = constraintWeight.getMediumScore();
-        int softConstraintWeight = constraintWeight.getSoftScore();
+        int hardConstraintWeight = constraintWeight.hardScore();
+        int mediumConstraintWeight = constraintWeight.mediumScore();
+        int softConstraintWeight = constraintWeight.softScore();
         HardMediumSoftScoreContext context =
                 new HardMediumSoftScoreContext(this, constraint, constraintWeight,
                         impact -> this.hardScore += impact, impact -> this.mediumScore += impact,

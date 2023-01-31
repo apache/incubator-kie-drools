@@ -15,7 +15,6 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.constraint.drl.DrlScoreDirector;
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -147,8 +146,8 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     // ************************************************************************
 
     public void configureConstraintWeight(Rule rule, Score_ constraintWeight) {
-        if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        if (constraintWeight.initScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.initScore() + ") must be 0.");
         }
         if (constraintMatchEnabled) {
             String constraintPackage = rule.getPackageName();
@@ -302,7 +301,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      * @param <Score_> the {@link Score} type
      */
     @FunctionalInterface
-    protected interface ScoreMatchExecutor<Score_ extends AbstractScore<Score_>> {
+    protected interface ScoreMatchExecutor<Score_ extends Score<Score_>> {
 
         void accept(RuleContext kcontext, Score_ matchWeight);
 

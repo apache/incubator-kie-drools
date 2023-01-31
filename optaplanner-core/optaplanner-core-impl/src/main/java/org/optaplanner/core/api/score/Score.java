@@ -1,5 +1,7 @@
 package org.optaplanner.core.api.score;
 
+import java.io.Serializable;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -8,19 +10,22 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
- * <p>
- * Implementations must be immutable.
- * <p>
- * Implementations are allowed to optionally implement Pareto comparison
- * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
- * <p>
- * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
  *
+ * @implSpec
+ *           <ul>
+ *           <li>Implementations must be immutable,
+ *           preferably a Java record or even a primitive record,
+ *           if the target JDK permits that.</li>
+ *           <li>Implementations must override {@link #initScore()},
+ *           or else an endless loop occurs.</li>
+ *           <li>Implementations are allowed to optionally implement Pareto comparison
+ *           and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.</li>
+ *           </ul>
  * @param <Score_> the actual score type to allow addition, subtraction and other arithmetic
- * @see AbstractScore
  * @see HardSoftScore
  */
-public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> {
+public interface Score<Score_ extends Score<Score_>>
+        extends Comparable<Score_>, Serializable {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
@@ -33,20 +38,26 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
      * @return higher is better, always negative (except in statistical calculations), 0 if all planning variables are
      *         initialized
      */
-    int getInitScore();
+    default int initScore() {
+        // TODO remove default implementation in 9.0; exists only for backwards compatibility
+        return getInitScore();
+    }
 
     /**
-     * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
+     * As defined by {@link #initScore()}.
      *
-     * @return true if {@link #getInitScore()} is 0
+     * @deprecated Use {@link #initScore()} instead.
      */
-    boolean isSolutionInitialized();
+    @Deprecated(forRemoval = true)
+    default int getInitScore() {
+        return initScore();
+    }
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
      *
      * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
-     * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
+     * @return equals score except that {@link #initScore()} is set to {@code newInitScore}
      */
     Score_ withInitScore(int newInitScore);
 
@@ -107,7 +118,14 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
      *
      * @return - this
      */
-    Score_ negate();
+    default Score_ negate() {
+        Score_ zero = zero();
+        Score_ current = (Score_) this;
+        if (zero.equals(current)) {
+            return current;
+        }
+        return zero.subtract(current);
+    }
 
     /**
      * Returns a Score whose value is the absolute value of the score, i.e. |this|.
@@ -140,7 +158,7 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
      * <p>
      * For example: {@code -0hard/-7soft} returns {@code new int{-0, -7}}
      * <p>
-     * The level numbers do not contain the {@link #getInitScore()}.
+     * The level numbers do not contain the {@link #initScore()}.
      * For example: {@code -3init/-0hard/-7soft} also returns {@code new int{-0, -7}}
      *
      * @return never null
@@ -162,13 +180,22 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
     }
 
     /**
+     * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
+     *
+     * @return true if {@link #initScore()} is 0
+     */
+    default boolean isSolutionInitialized() {
+        return initScore() >= 0;
+    }
+
+    /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints
      * and {@link #isSolutionInitialized()} is true.
      *
      * Simple scores ({@link SimpleScore}, {@link SimpleLongScore}, {@link SimpleBigDecimalScore}) are always feasible,
-     * if their {@link #getInitScore()} is 0.
+     * if their {@link #initScore()} is 0.
      *
-     * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
+     * @return true if the hard score is 0 or higher and the {@link #initScore()} is 0.
      */
     boolean isFeasible();
 

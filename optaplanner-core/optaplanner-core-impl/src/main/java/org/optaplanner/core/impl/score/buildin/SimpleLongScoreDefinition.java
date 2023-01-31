@@ -67,8 +67,8 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
 
     @Override
     public SimpleLongScore divideBySanitizedDivisor(SimpleLongScore dividend, SimpleLongScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
         long dividendScore = dividend.getScore();
         long divisorScore = sanitize(divisor.getScore());
         return fromLevelNumbers(

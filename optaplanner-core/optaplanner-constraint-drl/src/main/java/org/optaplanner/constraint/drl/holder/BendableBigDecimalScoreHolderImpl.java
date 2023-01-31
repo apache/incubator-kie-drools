@@ -66,8 +66,8 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
         } else {
             Integer singleLevel = null;
             BigDecimal singleLevelWeight = null;
-            for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
-                BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(i);
+            for (int i = 0; i < constraintWeight.levelsSize(); i++) {
+                BigDecimal levelWeight = constraintWeight.hardOrSoftScore(i);
                 if (!levelWeight.equals(BigDecimal.ZERO)) {
                     if (singleLevel != null) {
                         singleLevel = null;
@@ -80,13 +80,13 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
             }
             if (singleLevel != null) {
                 BigDecimal levelWeight = singleLevelWeight;
-                if (singleLevel < constraintWeight.getHardLevelsSize()) {
+                if (singleLevel < constraintWeight.hardLevelsSize()) {
                     int level = singleLevel;
                     matchExecutor =
                             (RuleContext kcontext, BigDecimal matchWeight) -> addHardConstraintMatch(
                                     kcontext, level, levelWeight.multiply(matchWeight));
                 } else {
-                    int level = singleLevel - constraintWeight.getHardLevelsSize();
+                    int level = singleLevel - constraintWeight.hardLevelsSize();
                     matchExecutor =
                             (RuleContext kcontext, BigDecimal matchWeight) -> addSoftConstraintMatch(
                                     kcontext, level, levelWeight.multiply(matchWeight));
@@ -96,10 +96,10 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
                     BigDecimal[] hardWeights = new BigDecimal[hardScores.length];
                     BigDecimal[] softWeights = new BigDecimal[softScores.length];
                     for (int i = 0; i < hardWeights.length; i++) {
-                        hardWeights[i] = constraintWeight.getHardScore(i).multiply(matchWeight);
+                        hardWeights[i] = constraintWeight.hardScore(i).multiply(matchWeight);
                     }
                     for (int i = 0; i < softWeights.length; i++) {
-                        softWeights[i] = constraintWeight.getSoftScore(i).multiply(matchWeight);
+                        softWeights[i] = constraintWeight.softScore(i).multiply(matchWeight);
                     }
                     addMultiConstraintMatch(kcontext, hardWeights, softWeights);
                 };
@@ -110,10 +110,10 @@ public final class BendableBigDecimalScoreHolderImpl extends AbstractScoreHolder
             BigDecimal[] hardWeights = new BigDecimal[hardScores.length];
             BigDecimal[] softWeights = new BigDecimal[softScores.length];
             for (int i = 0; i < hardWeights.length; i++) {
-                hardWeights[i] = constraintWeight.getHardScore(i).multiply(weightMultiplier.getHardScore(i));
+                hardWeights[i] = constraintWeight.hardScore(i).multiply(weightMultiplier.hardScore(i));
             }
             for (int i = 0; i < softWeights.length; i++) {
-                softWeights[i] = constraintWeight.getSoftScore(i).multiply(weightMultiplier.getSoftScore(i));
+                softWeights[i] = constraintWeight.softScore(i).multiply(weightMultiplier.softScore(i));
             }
             addMultiConstraintMatch(kcontext, hardWeights, softWeights);
         });

@@ -7,7 +7,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -30,7 +30,7 @@ public @interface PlanningScore {
      * For example with 3 hard levels, hard level 0 always outweighs hard level 1 which always outweighs hard level 2,
      * which outweighs all the soft levels.
      *
-     * @return 0 or higher if the {@link Score} is a {@link AbstractBendableScore}, not used otherwise
+     * @return 0 or higher if the {@link Score} is a {@link IBendableScore}, not used otherwise
      */
     int bendableHardLevelsSize() default NO_LEVEL_SIZE;
 
@@ -39,7 +39,7 @@ public @interface PlanningScore {
      * <p>
      * For example with 3 soft levels, soft level 0 always outweighs soft level 1 which always outweighs soft level 2.
      *
-     * @return 0 or higher if the {@link Score} is a {@link AbstractBendableScore}, not used otherwise
+     * @return 0 or higher if the {@link Score} is a {@link IBendableScore}, not used otherwise
      */
     int bendableSoftLevelsSize() default NO_LEVEL_SIZE;
 

@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public interface ScoreDefinition<Score_ extends Score<Score_>> {
 
     /**
-     * Returns the label for {@link Score#getInitScore()}.
+     * Returns the label for {@link Score#initScore()}.
      *
      * @return never null
      * @see #getLevelLabels()
@@ -108,7 +108,7 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      * The opposite of {@link Score#toLevelNumbers()}.
      *
      * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
-     *        method, see {@link Score#getInitScore()}
+     *        method, see {@link Score#initScore()}
      * @param levelNumbers never null
      * @return never null
      */
@@ -120,7 +120,7 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      *
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      *        equal to {@link #getLevelsSize()}.
-     * @param score never null, with {@link Score#getInitScore()} {@code 0}.
+     * @param score never null, with {@link Score#initScore()} {@code 0}.
      * @return never null
      */
     Score_ buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, Score_ score);
@@ -131,7 +131,7 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      *
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      *        equal to {@link #getLevelsSize()}.
-     * @param score never null, with {@link Score#getInitScore()} {@code 0}
+     * @param score never null, with {@link Score#initScore()} {@code 0}
      * @return never null
      */
     Score_ buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, Score_ score);

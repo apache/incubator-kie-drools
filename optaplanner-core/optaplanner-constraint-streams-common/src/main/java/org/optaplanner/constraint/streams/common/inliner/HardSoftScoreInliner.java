@@ -20,7 +20,7 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                 impact -> this.hardScore += impact, impact -> this.softScore += impact);
         if (constraintWeight.getSoftScore() == 0) {
             return WeightedScoreImpacter.of(context, HardSoftScoreContext::changeHardScoreBy);
-        } else if (constraintWeight.getHardScore() == 0) {
+        } else if (constraintWeight.hardScore() == 0) {
             return WeightedScoreImpacter.of(context, HardSoftScoreContext::changeSoftScoreBy);
         } else {
             return WeightedScoreImpacter.of(context, HardSoftScoreContext::changeScoreBy);

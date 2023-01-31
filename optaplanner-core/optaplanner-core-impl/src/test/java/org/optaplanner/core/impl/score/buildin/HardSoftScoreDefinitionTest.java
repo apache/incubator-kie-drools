@@ -42,8 +42,8 @@ class HardSoftScoreDefinitionTest {
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftScore.of(-1, -2));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(optimisticBound.getHardScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
+        assertThat(optimisticBound.hardScore()).isEqualTo(Integer.MAX_VALUE);
         assertThat(optimisticBound.getSoftScore()).isEqualTo(Integer.MAX_VALUE);
     }
 
@@ -53,8 +53,8 @@ class HardSoftScoreDefinitionTest {
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftScore.of(-1, -2));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(optimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
+        assertThat(optimisticBound.hardScore()).isEqualTo(-1);
         assertThat(optimisticBound.getSoftScore()).isEqualTo(-2);
     }
 
@@ -64,8 +64,8 @@ class HardSoftScoreDefinitionTest {
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
                 HardSoftScore.of(-1, -2));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(pessimisticBound.getHardScore()).isEqualTo(-1);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
+        assertThat(pessimisticBound.hardScore()).isEqualTo(-1);
         assertThat(pessimisticBound.getSoftScore()).isEqualTo(-2);
     }
 
@@ -75,8 +75,8 @@ class HardSoftScoreDefinitionTest {
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
                 HardSoftScore.of(-1, -2));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(pessimisticBound.getHardScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
+        assertThat(pessimisticBound.hardScore()).isEqualTo(Integer.MIN_VALUE);
         assertThat(pessimisticBound.getSoftScore()).isEqualTo(Integer.MIN_VALUE);
     }
 

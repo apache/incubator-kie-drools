@@ -82,7 +82,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
         }
         Score score = (Score) o;
         if (propertyIndex == 0) {
-            return score.getInitScore();
+            return score.initScore();
         }
         if (propertyIndex >= scoreDefinition.getLevelsSize() + 1) {
             throw new IllegalArgumentException("The propertyIndex (" + propertyIndex
@@ -140,7 +140,7 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
             return;
         }
         Score score = (Score) value;
-        statement.setInt(parameterIndex, score.getInitScore());
+        statement.setInt(parameterIndex, score.initScore());
         Number[] levelNumbers = score.toLevelNumbers();
         if (levelNumbers.length != levelsSize) {
             throw new IllegalStateException("The levelNumbers length (" + levelNumbers.length + ") for score (" + score

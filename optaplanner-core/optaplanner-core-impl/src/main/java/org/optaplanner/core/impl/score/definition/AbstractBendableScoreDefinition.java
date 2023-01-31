@@ -1,6 +1,6 @@
 package org.optaplanner.core.impl.score.definition;
 
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
 
 public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score_>> extends AbstractScoreDefinition<Score_>
@@ -58,10 +58,10 @@ public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score
     @Override
     public boolean isCompatibleArithmeticArgument(Score score) {
         if (super.isCompatibleArithmeticArgument(score)) {
-            AbstractBendableScore<?> bendableScore = (AbstractBendableScore<?>) score;
-            return getLevelsSize() == bendableScore.getLevelsSize()
-                    && getHardLevelsSize() == bendableScore.getHardLevelsSize()
-                    && getSoftLevelsSize() == bendableScore.getSoftLevelsSize();
+            IBendableScore<?> bendableScore = (IBendableScore<?>) score;
+            return getLevelsSize() == bendableScore.levelsSize()
+                    && getHardLevelsSize() == bendableScore.hardLevelsSize()
+                    && getSoftLevelsSize() == bendableScore.softLevelsSize();
         }
         return false;
     }

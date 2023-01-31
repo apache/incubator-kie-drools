@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 
 /**
@@ -16,27 +17,27 @@ import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
  * <p>
  * This class is immutable.
  * <p>
- * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
+ * The {@link #hardLevelsSize()} and {@link #softLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
  *
  * @see Score
  */
-public final class BendableBigDecimalScore extends AbstractBendableScore<BendableBigDecimalScore> {
+public final class BendableBigDecimalScore implements IBendableScore<BendableBigDecimalScore> {
 
     /**
      * @param scoreString never null
      * @return never null
      */
     public static BendableBigDecimalScore parseScore(String scoreString) {
-        String[][] scoreTokens = parseBendableScoreTokens(BendableBigDecimalScore.class, scoreString);
-        int initScore = parseInitScore(BendableBigDecimalScore.class, scoreString, scoreTokens[0][0]);
+        String[][] scoreTokens = ScoreUtil.parseBendableScoreTokens(BendableBigDecimalScore.class, scoreString);
+        int initScore = ScoreUtil.parseInitScore(BendableBigDecimalScore.class, scoreString, scoreTokens[0][0]);
         BigDecimal[] hardScores = new BigDecimal[scoreTokens[1].length];
         for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[1][i]);
+            hardScores[i] = ScoreUtil.parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[1][i]);
         }
         BigDecimal[] softScores = new BigDecimal[scoreTokens[2].length];
         for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[2][i]);
+            softScores[i] = ScoreUtil.parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[2][i]);
         }
         return ofUninitialized(initScore, hardScores, softScores);
     }
@@ -44,7 +45,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     /**
      * Creates a new {@link BendableBigDecimalScore}.
      *
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -119,6 +120,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final BigDecimal[] hardScores;
     private final BigDecimal[] softScores;
 
@@ -133,54 +135,99 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     /**
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      * @param hardScores never null
      * @param softScores never null
      */
     private BendableBigDecimalScore(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScores = hardScores;
         this.softScores = softScores;
     }
 
+    @Override
+    public int initScore() {
+        return initScore;
+    }
+
     /**
      * @return not null, array copy because this class is immutable
      */
-    public BigDecimal[] getHardScores() {
+    public BigDecimal[] hardScores() {
         return Arrays.copyOf(hardScores, hardScores.length);
     }
 
     /**
+     * As defined by {@link #hardScores()}.
+     *
+     * @deprecated Use {@link #hardScores()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public BigDecimal[] getHardScores() {
+        return hardScores();
+    }
+
+    /**
      * @return not null, array copy because this class is immutable
      */
-    public BigDecimal[] getSoftScores() {
+    public BigDecimal[] softScores() {
         return Arrays.copyOf(softScores, softScores.length);
     }
 
+    /**
+     * As defined by {@link #softScores()}.
+     *
+     * @deprecated Use {@link #softScores()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public BigDecimal[] getSoftScores() {
+        return softScores();
+    }
+
     @Override
-    public int getHardLevelsSize() {
+    public int hardLevelsSize() {
         return hardScores.length;
     }
 
     /**
-     * @param index {@code 0 <= index <} {@link #getHardLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #hardLevelsSize()}
      * @return higher is better
      */
-    public BigDecimal getHardScore(int index) {
+    public BigDecimal hardScore(int index) {
         return hardScores[index];
     }
 
+    /**
+     * As defined by {@link #hardScore(int)}.
+     *
+     * @deprecated Use {@link #hardScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public BigDecimal getHardScore(int index) {
+        return hardScore(index);
+    }
+
     @Override
-    public int getSoftLevelsSize() {
+    public int softLevelsSize() {
         return softScores.length;
     }
 
     /**
-     * @param index {@code 0 <= index <} {@link #getSoftLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #softLevelsSize()}
      * @return higher is better
      */
-    public BigDecimal getSoftScore(int index) {
+    public BigDecimal softScore(int index) {
         return softScores[index];
+    }
+
+    /**
+     * As defined by {@link #softScore(int)}.
+     *
+     * @deprecated Use {@link #softScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public BigDecimal getSoftScore(int index) {
+        return softScore(index);
     }
 
     // ************************************************************************
@@ -192,21 +239,26 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         return new BendableBigDecimalScore(newInitScore, hardScores, softScores);
     }
 
-    @Override
-    public int getLevelsSize() {
-        return hardScores.length + softScores.length;
-    }
-
     /**
-     * @param index {@code 0 <= index <} {@link #getLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #levelsSize()}
      * @return higher is better
      */
-    public BigDecimal getHardOrSoftScore(int index) {
+    public BigDecimal hardOrSoftScore(int index) {
         if (index < hardScores.length) {
             return hardScores[index];
         } else {
             return softScores[index - hardScores.length];
         }
+    }
+
+    /**
+     * As defined by {@link #hardOrSoftScore(int)}.
+     *
+     * @deprecated Use {@link #hardOrSoftScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public BigDecimal getHardOrSoftScore(int index) {
+        return hardOrSoftScore(index);
     }
 
     @Override
@@ -228,13 +280,13 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i].add(addend.getHardScore(i));
+            newHardScores[i] = hardScores[i].add(addend.hardScore(i));
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i].add(addend.getSoftScore(i));
+            newSoftScores[i] = softScores[i].add(addend.softScore(i));
         }
         return new BendableBigDecimalScore(
-                initScore + addend.getInitScore(),
+                initScore + addend.initScore(),
                 newHardScores, newSoftScores);
     }
 
@@ -244,13 +296,13 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i].subtract(subtrahend.getHardScore(i));
+            newHardScores[i] = hardScores[i].subtract(subtrahend.hardScore(i));
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i].subtract(subtrahend.getSoftScore(i));
+            newSoftScores[i] = softScores[i].subtract(subtrahend.softScore(i));
         }
         return new BendableBigDecimalScore(
-                initScore - subtrahend.getInitScore(),
+                initScore - subtrahend.initScore(),
                 newHardScores, newSoftScores);
     }
 
@@ -314,7 +366,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
-    public BendableBigDecimalScore negate() {
+    public BendableBigDecimalScore negate() { // Overridden as the default impl would create zero() all the time.
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
@@ -341,7 +393,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     @Override
     public BendableBigDecimalScore zero() {
-        return BendableBigDecimalScore.zero(getHardLevelsSize(), getSoftLevelsSize());
+        return BendableBigDecimalScore.zero(hardLevelsSize(), softLevelsSize());
     }
 
     @Override
@@ -362,20 +414,20 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
             return true;
         } else if (o instanceof BendableBigDecimalScore) {
             BendableBigDecimalScore other = (BendableBigDecimalScore) o;
-            if (getHardLevelsSize() != other.getHardLevelsSize()
-                    || getSoftLevelsSize() != other.getSoftLevelsSize()) {
+            if (hardLevelsSize() != other.hardLevelsSize()
+                    || softLevelsSize() != other.softLevelsSize()) {
                 return false;
             }
-            if (initScore != other.getInitScore()) {
+            if (initScore != other.initScore()) {
                 return false;
             }
             for (int i = 0; i < hardScores.length; i++) {
-                if (!hardScores[i].stripTrailingZeros().equals(other.getHardScore(i).stripTrailingZeros())) {
+                if (!hardScores[i].stripTrailingZeros().equals(other.hardScore(i).stripTrailingZeros())) {
                     return false;
                 }
             }
             for (int i = 0; i < softScores.length; i++) {
-                if (!softScores[i].stripTrailingZeros().equals(other.getSoftScore(i).stripTrailingZeros())) {
+                if (!softScores[i].stripTrailingZeros().equals(other.softScore(i).stripTrailingZeros())) {
                     return false;
                 }
             }
@@ -397,17 +449,17 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     @Override
     public int compareTo(BendableBigDecimalScore other) {
         validateCompatible(other);
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         }
         for (int i = 0; i < hardScores.length; i++) {
-            int hardScoreComparison = hardScores[i].compareTo(other.getHardScore(i));
+            int hardScoreComparison = hardScores[i].compareTo(other.hardScore(i));
             if (hardScoreComparison != 0) {
                 return hardScoreComparison;
             }
         }
         for (int i = 0; i < softScores.length; i++) {
-            int softScoreComparison = softScores[i].compareTo(other.getSoftScore(i));
+            int softScoreComparison = softScores[i].compareTo(other.softScore(i));
             if (softScoreComparison != 0) {
                 return softScoreComparison;
             }
@@ -417,13 +469,13 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     @Override
     public String toShortString() {
-        return buildBendableShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0);
+        return ScoreUtil.buildBendableShortString(this, n -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0);
     }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
-        s.append(getInitPrefix());
+        s.append(ScoreUtil.getInitPrefix(initScore));
         s.append("[");
         boolean first = true;
         for (BigDecimal hardScore : hardScores) {
@@ -449,17 +501,17 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     public void validateCompatible(BendableBigDecimalScore other) {
-        if (getHardLevelsSize() != other.getHardLevelsSize()) {
+        if (hardLevelsSize() != other.hardLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with hardScoreSize (" + getHardLevelsSize()
+                    + ") with hardScoreSize (" + hardLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with hardScoreSize (" + other.getHardLevelsSize() + ").");
+                    + ") with hardScoreSize (" + other.hardLevelsSize() + ").");
         }
-        if (getSoftLevelsSize() != other.getSoftLevelsSize()) {
+        if (softLevelsSize() != other.softLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with softScoreSize (" + getSoftLevelsSize()
+                    + ") with softScoreSize (" + softLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with softScoreSize (" + other.getSoftLevelsSize() + ").");
+                    + ") with softScoreSize (" + other.softLevelsSize() + ").");
         }
     }
 

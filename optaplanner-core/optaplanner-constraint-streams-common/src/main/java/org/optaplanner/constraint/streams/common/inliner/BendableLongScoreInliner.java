@@ -22,8 +22,8 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
             BendableLongScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
         Integer singleLevel = null;
-        for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
-            if (constraintWeight.getHardOrSoftScore(i) != 0L) {
+        for (int i = 0; i < constraintWeight.levelsSize(); i++) {
+            if (constraintWeight.hardOrSoftScore(i) != 0L) {
                 if (singleLevel != null) {
                     singleLevel = null;
                     break;
@@ -34,10 +34,10 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
         IntLongConsumer hardScoreUpdater = (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact;
         IntLongConsumer softScoreUpdater = (scoreLevel, impact) -> this.softScores[scoreLevel] += impact;
         if (singleLevel != null) {
-            boolean isHardScore = singleLevel < constraintWeight.getHardLevelsSize();
-            int level = isHardScore ? singleLevel : singleLevel - constraintWeight.getHardLevelsSize();
+            boolean isHardScore = singleLevel < constraintWeight.hardLevelsSize();
+            int level = isHardScore ? singleLevel : singleLevel - constraintWeight.hardLevelsSize();
             BendableLongScoreContext context = new BendableLongScoreContext(this, constraint, constraintWeight,
-                    hardScores.length, softScores.length, level, constraintWeight.getHardOrSoftScore(singleLevel),
+                    hardScores.length, softScores.length, level, constraintWeight.hardOrSoftScore(singleLevel),
                     hardScoreUpdater, softScoreUpdater);
             if (isHardScore) {
                 return WeightedScoreImpacter.of(context, (BendableLongScoreContext ctx, long impact,

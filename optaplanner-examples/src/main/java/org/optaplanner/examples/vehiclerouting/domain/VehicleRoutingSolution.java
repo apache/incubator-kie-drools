@@ -113,7 +113,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         if (score == null) {
             return null;
         }
-        long distance = -score.getSoftScore();
+        long distance = -score.softScore();
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(distance / 1000.0);
         }

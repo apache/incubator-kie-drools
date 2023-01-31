@@ -1637,8 +1637,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             || isValidJustificationList.test(constraintMatch.getIndictedObjectList()))
                     .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
-                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
-                            && indictmentScore.getSoftScore() >= 0))
+                    .filter(indictmentScore -> !(indictmentScore.hardScore() >= 0 && indictmentScore.mediumScore() >= 0
+                            && indictmentScore.softScore() >= 0))
                     .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
             XSSFCell cell;
             if (isPrintedView) {
@@ -1650,9 +1650,9 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                 cell = nextCell(hardPenaltyStyle);
             } else if (unavailable) {
                 cell = nextCell(unavailableStyle);
-            } else if (score.getMediumScore() < 0) {
+            } else if (score.mediumScore() < 0) {
                 cell = nextCell(mediumPenaltyStyle);
-            } else if (score.getSoftScore() < 0) {
+            } else if (score.softScore() < 0) {
                 cell = nextCell(softPenaltyStyle);
             } else {
                 cell = nextCell(wrappedStyle);

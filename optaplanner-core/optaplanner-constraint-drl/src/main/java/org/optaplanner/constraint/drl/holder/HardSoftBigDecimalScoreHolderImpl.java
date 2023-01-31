@@ -47,24 +47,24 @@ public final class HardSoftBigDecimalScoreHolderImpl extends AbstractScoreHolder
         if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> {
             };
-        } else if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+        } else if (constraintWeight.softScore().equals(BigDecimal.ZERO)) {
             matchExecutor =
                     (RuleContext kcontext, BigDecimal matchWeight) -> addHardConstraintMatch(kcontext,
-                            constraintWeight.getHardScore().multiply(matchWeight));
-        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
+                            constraintWeight.hardScore().multiply(matchWeight));
+        } else if (constraintWeight.hardScore().equals(BigDecimal.ZERO)) {
             matchExecutor =
                     (RuleContext kcontext, BigDecimal matchWeight) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore().multiply(matchWeight));
+                            constraintWeight.softScore().multiply(matchWeight));
         } else {
             matchExecutor = (RuleContext kcontext, BigDecimal matchWeight) -> addMultiConstraintMatch(
-                    kcontext, constraintWeight.getHardScore().multiply(matchWeight),
-                    constraintWeight.getSoftScore().multiply(matchWeight));
+                    kcontext, constraintWeight.hardScore().multiply(matchWeight),
+                    constraintWeight.softScore().multiply(matchWeight));
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardSoftBigDecimalScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
-                        constraintWeight.getHardScore().multiply(weightMultiplier.getHardScore()),
-                        constraintWeight.getSoftScore().multiply(weightMultiplier.getSoftScore())));
+                        constraintWeight.hardScore().multiply(weightMultiplier.hardScore()),
+                        constraintWeight.softScore().multiply(weightMultiplier.softScore())));
     }
 
     // ************************************************************************

@@ -55,7 +55,7 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
     public HardSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.hardScore() : Integer.MAX_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
     }
 
@@ -63,16 +63,16 @@ public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftSco
     public HardSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.hardScore() : Integer.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }
 
     @Override
     public HardSoftScore divideBySanitizedDivisor(HardSoftScore dividend, HardSoftScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        int dividendHardScore = dividend.getHardScore();
-        int divisorHardScore = sanitize(divisor.getHardScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        int dividendHardScore = dividend.hardScore();
+        int divisorHardScore = sanitize(divisor.hardScore());
         int dividendSoftScore = dividend.getSoftScore();
         int divisorSoftScore = sanitize(divisor.getSoftScore());
         return fromLevelNumbers(

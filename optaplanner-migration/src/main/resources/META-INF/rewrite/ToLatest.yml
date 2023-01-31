@@ -12,3 +12,4 @@ recipeList:
       newPropertyKey: quarkus.optaplanner.solver.solve.duration
       fileMatcher: '**/application.properties'
   - org.optaplanner.migration.v8.AsConstraintRecipe
+  - org.optaplanner.migration.v8.ScoreGettersRecipe

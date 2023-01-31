@@ -20,9 +20,9 @@ final class HardMediumSoftBigDecimalScoreInliner extends AbstractScoreInliner<Ha
             buildWeightedScoreImpacter(Constraint constraint,
                     HardMediumSoftBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        BigDecimal hardConstraintWeight = constraintWeight.getHardScore();
-        BigDecimal mediumConstraintWeight = constraintWeight.getMediumScore();
-        BigDecimal softConstraintWeight = constraintWeight.getSoftScore();
+        BigDecimal hardConstraintWeight = constraintWeight.hardScore();
+        BigDecimal mediumConstraintWeight = constraintWeight.mediumScore();
+        BigDecimal softConstraintWeight = constraintWeight.softScore();
         HardMediumSoftBigDecimalScoreContext context =
                 new HardMediumSoftBigDecimalScoreContext(this, constraint, constraintWeight,
                         impact -> this.hardScore = this.hardScore.add(impact),

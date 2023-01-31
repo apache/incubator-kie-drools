@@ -1,10 +1,14 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
+import static org.optaplanner.core.impl.score.ScoreUtil.HARD_LABEL;
+import static org.optaplanner.core.impl.score.ScoreUtil.MEDIUM_LABEL;
+import static org.optaplanner.core.impl.score.ScoreUtil.SOFT_LABEL;
+
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 3 levels of long constraints: hard, medium and soft.
@@ -16,23 +20,20 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftLongScore> {
+public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongScore> {
 
     public static final HardMediumSoftLongScore ZERO = new HardMediumSoftLongScore(0, 0L, 0L, 0L);
     public static final HardMediumSoftLongScore ONE_HARD = new HardMediumSoftLongScore(0, 1L, 0L, 0L);
     public static final HardMediumSoftLongScore ONE_MEDIUM = new HardMediumSoftLongScore(0, 0L, 1L, 0L);
     public static final HardMediumSoftLongScore ONE_SOFT = new HardMediumSoftLongScore(0, 0L, 0L, 1L);
-    private static final String HARD_LABEL = "hard";
-    private static final String MEDIUM_LABEL = "medium";
-    private static final String SOFT_LABEL = "soft";
 
     public static HardMediumSoftLongScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(HardMediumSoftLongScore.class, scoreString,
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(HardMediumSoftLongScore.class, scoreString,
                 HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
-        int initScore = parseInitScore(HardMediumSoftLongScore.class, scoreString, scoreTokens[0]);
-        long hardScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[1]);
-        long mediumScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[2]);
-        long softScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[3]);
+        int initScore = ScoreUtil.parseInitScore(HardMediumSoftLongScore.class, scoreString, scoreTokens[0]);
+        long hardScore = ScoreUtil.parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[1]);
+        long mediumScore = ScoreUtil.parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[2]);
+        long softScore = ScoreUtil.parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[3]);
         return ofUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
@@ -60,6 +61,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final long hardScore;
     private final long mediumScore;
     private final long softScore;
@@ -75,10 +77,15 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     private HardMediumSoftLongScore(int initScore, long hardScore, long mediumScore, long softScore) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScore = hardScore;
         this.mediumScore = mediumScore;
         this.softScore = softScore;
+    }
+
+    @Override
+    public int initScore() {
+        return initScore;
     }
 
     /**
@@ -88,6 +95,16 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
+    public long hardScore() {
+        return hardScore;
+    }
+
+    /**
+     * As defined by {@link #hardScore()}.
+     *
+     * @deprecated Use {@link #hardScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public long getHardScore() {
         return hardScore;
     }
@@ -101,6 +118,16 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      *
      * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
+    public long mediumScore() {
+        return mediumScore;
+    }
+
+    /**
+     * As defined by {@link #mediumScore()}.
+     *
+     * @deprecated Use {@link #mediumScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public long getMediumScore() {
         return mediumScore;
     }
@@ -114,6 +141,16 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
+    public long softScore() {
+        return softScore;
+    }
+
+    /**
+     * As defined by {@link #softScore()}.
+     *
+     * @deprecated Use {@link #softScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public long getSoftScore() {
         return softScore;
     }
@@ -130,7 +167,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      *
-     * @return true if the {@link #getHardScore()} is 0 or higher
+     * @return true if the {@link #hardScore()} is 0 or higher
      */
     @Override
     public boolean isFeasible() {
@@ -140,18 +177,18 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     @Override
     public HardMediumSoftLongScore add(HardMediumSoftLongScore addend) {
         return new HardMediumSoftLongScore(
-                initScore + addend.getInitScore(),
-                hardScore + addend.getHardScore(),
-                mediumScore + addend.getMediumScore(),
+                initScore + addend.initScore(),
+                hardScore + addend.hardScore(),
+                mediumScore + addend.mediumScore(),
                 softScore + addend.getSoftScore());
     }
 
     @Override
     public HardMediumSoftLongScore subtract(HardMediumSoftLongScore subtrahend) {
         return new HardMediumSoftLongScore(
-                initScore - subtrahend.getInitScore(),
-                hardScore - subtrahend.getHardScore(),
-                mediumScore - subtrahend.getMediumScore(),
+                initScore - subtrahend.initScore(),
+                hardScore - subtrahend.hardScore(),
+                mediumScore - subtrahend.mediumScore(),
                 softScore - subtrahend.getSoftScore());
     }
 
@@ -183,11 +220,6 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
-    public HardMediumSoftLongScore negate() {
-        return new HardMediumSoftLongScore(-initScore, -hardScore, -mediumScore, -softScore);
-    }
-
-    @Override
     public HardMediumSoftLongScore abs() {
         return new HardMediumSoftLongScore(Math.abs(initScore), Math.abs(hardScore), Math.abs(mediumScore),
                 Math.abs(softScore));
@@ -209,9 +241,9 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
             return true;
         } else if (o instanceof HardMediumSoftLongScore) {
             HardMediumSoftLongScore other = (HardMediumSoftLongScore) o;
-            return initScore == other.getInitScore()
-                    && hardScore == other.getHardScore()
-                    && mediumScore == other.getMediumScore()
+            return initScore == other.initScore()
+                    && hardScore == other.hardScore()
+                    && mediumScore == other.mediumScore()
                     && softScore == other.getSoftScore();
         } else {
             return false;
@@ -225,12 +257,12 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     @Override
     public int compareTo(HardMediumSoftLongScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
-        } else if (hardScore != other.getHardScore()) {
-            return Long.compare(hardScore, other.getHardScore());
-        } else if (mediumScore != other.getMediumScore()) {
-            return Long.compare(mediumScore, other.getMediumScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
+        } else if (hardScore != other.hardScore()) {
+            return Long.compare(hardScore, other.hardScore());
+        } else if (mediumScore != other.mediumScore()) {
+            return Long.compare(mediumScore, other.mediumScore());
         } else {
             return Long.compare(softScore, other.getSoftScore());
         }
@@ -238,12 +270,13 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> n.longValue() != 0L, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+        return ScoreUtil.buildShortString(this, n -> n.longValue() != 0L, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
+        return ScoreUtil.getInitPrefix(initScore) + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore
+                + SOFT_LABEL;
     }
 
 }

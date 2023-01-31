@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 1 level of {@link BigDecimal} constraints.
@@ -14,15 +14,15 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalScore> {
+public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore> {
 
     public static final SimpleBigDecimalScore ZERO = new SimpleBigDecimalScore(0, BigDecimal.ZERO);
     public static final SimpleBigDecimalScore ONE = new SimpleBigDecimalScore(0, BigDecimal.ONE);
 
     public static SimpleBigDecimalScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
-        int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
-        BigDecimal score = parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreTokens[1]);
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
+        int initScore = ScoreUtil.parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
+        BigDecimal score = ScoreUtil.parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreTokens[1]);
         return ofUninitialized(initScore, score);
     }
 
@@ -38,6 +38,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final BigDecimal score;
 
     /**
@@ -51,8 +52,13 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     private SimpleBigDecimalScore(int initScore, BigDecimal score) {
-        super(initScore);
+        this.initScore = initScore;
         this.score = score;
+    }
+
+    @Override
+    public int initScore() {
+        return initScore;
     }
 
     /**
@@ -62,6 +68,16 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
      *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
+    public BigDecimal score() {
+        return score;
+    }
+
+    /**
+     * As defined by {@link #score()}.
+     *
+     * @deprecated Use {@link #score()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getScore() {
         return score;
     }
@@ -78,15 +94,15 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     @Override
     public SimpleBigDecimalScore add(SimpleBigDecimalScore addend) {
         return new SimpleBigDecimalScore(
-                initScore + addend.getInitScore(),
-                score.add(addend.getScore()));
+                initScore + addend.initScore(),
+                score.add(addend.score()));
     }
 
     @Override
     public SimpleBigDecimalScore subtract(SimpleBigDecimalScore subtrahend) {
         return new SimpleBigDecimalScore(
-                initScore - subtrahend.getInitScore(),
-                score.subtract(subtrahend.getScore()));
+                initScore - subtrahend.initScore(),
+                score.subtract(subtrahend.score()));
     }
 
     @Override
@@ -125,11 +141,6 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     @Override
-    public SimpleBigDecimalScore negate() {
-        return new SimpleBigDecimalScore(-initScore, score.negate());
-    }
-
-    @Override
     public SimpleBigDecimalScore abs() {
         return new SimpleBigDecimalScore(Math.abs(initScore), score.abs());
     }
@@ -155,8 +166,8 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
             return true;
         } else if (o instanceof SimpleBigDecimalScore) {
             SimpleBigDecimalScore other = (SimpleBigDecimalScore) o;
-            return initScore == other.getInitScore()
-                    && score.stripTrailingZeros().equals(other.getScore().stripTrailingZeros());
+            return initScore == other.initScore()
+                    && score.stripTrailingZeros().equals(other.score().stripTrailingZeros());
         } else {
             return false;
         }
@@ -169,21 +180,21 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         } else {
-            return score.compareTo(other.getScore());
+            return score.compareTo(other.score());
         }
     }
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, "");
+        return ScoreUtil.buildShortString(this, n -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, "");
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + score;
+        return ScoreUtil.getInitPrefix(initScore) + score;
     }
 
 }

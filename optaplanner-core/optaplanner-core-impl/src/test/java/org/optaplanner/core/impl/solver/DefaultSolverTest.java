@@ -740,18 +740,18 @@ class DefaultSolverTest {
                 .collect(Collectors.toList()));
 
         Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
-        assertThat(score.getInitScore()).isEqualTo(-entityCount);
+        assertThat(score.initScore()).isEqualTo(-entityCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
         // Keep restarting the solver until the solution is initialized.
         for (int initScore = -entityCount; initScore < 0; initScore += stepCountLimit) {
-            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().initScore()).isEqualTo(initScore);
             softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
             solution = solver.solve(solution);
         }
 
         // Finally, the initScore is 0.
-        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().initScore()).isZero();
         softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
@@ -772,18 +772,18 @@ class DefaultSolverTest {
         TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
 
         Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
-        assertThat(score.getInitScore()).isEqualTo(-valueCount);
+        assertThat(score.initScore()).isEqualTo(-valueCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
         // Keep restarting the solver until the solution is initialized.
         for (int initScore = -valueCount; initScore < 0; initScore += stepCountLimit) {
-            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().initScore()).isEqualTo(initScore);
             softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
             solution = solver.solve(solution);
         }
 
         // Finally, the initScore is 0.
-        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().initScore()).isZero();
         softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 

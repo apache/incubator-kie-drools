@@ -61,8 +61,8 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
             HardSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftLongScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Long.MAX_VALUE,
-                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Long.MAX_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.hardScore() : Long.MAX_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.softScore() : Long.MAX_VALUE);
     }
 
     @Override
@@ -70,18 +70,18 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
             HardSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftLongScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Long.MIN_VALUE,
-                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Long.MIN_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.hardScore() : Long.MIN_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.softScore() : Long.MIN_VALUE);
     }
 
     @Override
     public HardSoftLongScore divideBySanitizedDivisor(HardSoftLongScore dividend, HardSoftLongScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        long dividendHardScore = dividend.getHardScore();
-        long divisorHardScore = sanitize(divisor.getHardScore());
-        long dividendSoftScore = dividend.getSoftScore();
-        long divisorSoftScore = sanitize(divisor.getSoftScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        long dividendHardScore = dividend.hardScore();
+        long divisorHardScore = sanitize(divisor.hardScore());
+        long dividendSoftScore = dividend.softScore();
+        long divisorSoftScore = sanitize(divisor.softScore());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

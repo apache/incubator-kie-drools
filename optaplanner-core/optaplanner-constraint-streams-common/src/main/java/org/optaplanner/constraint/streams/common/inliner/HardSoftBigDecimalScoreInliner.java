@@ -22,9 +22,9 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                 new HardSoftBigDecimalScoreContext(this, constraint, constraintWeight,
                         impact -> this.hardScore = this.hardScore.add(impact),
                         impact -> this.softScore = this.softScore.add(impact));
-        if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
+        if (constraintWeight.softScore().equals(BigDecimal.ZERO)) {
             return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeHardScoreBy);
-        } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
+        } else if (constraintWeight.hardScore().equals(BigDecimal.ZERO)) {
             return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeSoftScoreBy);
         } else {
             return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeScoreBy);

@@ -62,7 +62,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
                     applyVariables(inputSolution, variablesSolution);
                     score = inputSolution.getScore();
                 }
-                logger.info("    {} (according to {})", score.getSoftScore(), inputFile.getName());
+                logger.info("    {} (according to {})", score.softScore(), inputFile.getName());
             }
         }
     }

@@ -17,7 +17,7 @@ final class SimpleBigDecimalScoreContext extends ScoreContext<SimpleBigDecimalSc
     }
 
     public UndoScoreImpacter changeScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        BigDecimal impact = constraintWeight.getScore().multiply(matchWeight);
+        BigDecimal impact = constraintWeight.score().multiply(matchWeight);
         scoreUpdater.accept(impact);
         UndoScoreImpacter undoScoreImpact = () -> scoreUpdater.accept(impact.negate());
         if (!constraintMatchEnabled) {

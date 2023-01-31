@@ -22,7 +22,7 @@ final class HardMediumSoftBigDecimalScoreContext extends ScoreContext<HardMedium
     }
 
     public UndoScoreImpacter changeSoftScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        BigDecimal softImpact = constraintWeight.getSoftScore().multiply(matchWeight);
+        BigDecimal softImpact = constraintWeight.softScore().multiply(matchWeight);
         softScoreUpdater.accept(softImpact);
         UndoScoreImpacter undoScoreImpact = () -> softScoreUpdater.accept(softImpact.negate());
         if (!constraintMatchEnabled) {
@@ -33,7 +33,7 @@ final class HardMediumSoftBigDecimalScoreContext extends ScoreContext<HardMedium
     }
 
     public UndoScoreImpacter changeMediumScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        BigDecimal mediumImpact = constraintWeight.getMediumScore().multiply(matchWeight);
+        BigDecimal mediumImpact = constraintWeight.mediumScore().multiply(matchWeight);
         mediumScoreUpdater.accept(mediumImpact);
         UndoScoreImpacter undoScoreImpact = () -> mediumScoreUpdater.accept(mediumImpact.negate());
         if (!constraintMatchEnabled) {
@@ -44,7 +44,7 @@ final class HardMediumSoftBigDecimalScoreContext extends ScoreContext<HardMedium
     }
 
     public UndoScoreImpacter changeHardScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        BigDecimal hardImpact = constraintWeight.getHardScore().multiply(matchWeight);
+        BigDecimal hardImpact = constraintWeight.hardScore().multiply(matchWeight);
         hardScoreUpdater.accept(hardImpact);
         UndoScoreImpacter undoScoreImpact = () -> hardScoreUpdater.accept(hardImpact.negate());
         if (!constraintMatchEnabled) {
@@ -55,9 +55,9 @@ final class HardMediumSoftBigDecimalScoreContext extends ScoreContext<HardMedium
     }
 
     public UndoScoreImpacter changeScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
-        BigDecimal hardImpact = constraintWeight.getHardScore().multiply(matchWeight);
-        BigDecimal mediumImpact = constraintWeight.getMediumScore().multiply(matchWeight);
-        BigDecimal softImpact = constraintWeight.getSoftScore().multiply(matchWeight);
+        BigDecimal hardImpact = constraintWeight.hardScore().multiply(matchWeight);
+        BigDecimal mediumImpact = constraintWeight.mediumScore().multiply(matchWeight);
+        BigDecimal softImpact = constraintWeight.softScore().multiply(matchWeight);
         hardScoreUpdater.accept(hardImpact);
         mediumScoreUpdater.accept(mediumImpact);
         softScoreUpdater.accept(softImpact);

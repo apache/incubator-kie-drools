@@ -64,8 +64,8 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
         } else {
             Integer singleLevel = null;
             Long singleLevelWeight = null;
-            for (int i = 0; i < constraintWeight.getLevelsSize(); i++) {
-                long levelWeight = constraintWeight.getHardOrSoftScore(i);
+            for (int i = 0; i < constraintWeight.levelsSize(); i++) {
+                long levelWeight = constraintWeight.hardOrSoftScore(i);
                 if (levelWeight != 0L) {
                     if (singleLevel != null) {
                         singleLevel = null;
@@ -78,13 +78,13 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
             }
             if (singleLevel != null) {
                 long levelWeight = singleLevelWeight;
-                if (singleLevel < constraintWeight.getHardLevelsSize()) {
+                if (singleLevel < constraintWeight.hardLevelsSize()) {
                     int level = singleLevel;
                     matchExecutor =
                             (RuleContext kcontext, long matchWeight) -> addHardConstraintMatch(
                                     kcontext, level, levelWeight * matchWeight);
                 } else {
-                    int level = singleLevel - constraintWeight.getHardLevelsSize();
+                    int level = singleLevel - constraintWeight.hardLevelsSize();
                     matchExecutor =
                             (RuleContext kcontext, long matchWeight) -> addSoftConstraintMatch(
                                     kcontext, level, levelWeight * matchWeight);
@@ -94,10 +94,10 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
                     long[] hardWeights = new long[hardScores.length];
                     long[] softWeights = new long[softScores.length];
                     for (int i = 0; i < hardWeights.length; i++) {
-                        hardWeights[i] = constraintWeight.getHardScore(i) * matchWeight;
+                        hardWeights[i] = constraintWeight.hardScore(i) * matchWeight;
                     }
                     for (int i = 0; i < softWeights.length; i++) {
-                        softWeights[i] = constraintWeight.getSoftScore(i) * matchWeight;
+                        softWeights[i] = constraintWeight.softScore(i) * matchWeight;
                     }
                     addMultiConstraintMatch(kcontext, hardWeights, softWeights);
                 };
@@ -108,10 +108,10 @@ public final class BendableLongScoreHolderImpl extends AbstractScoreHolder<Benda
             long[] hardWeights = new long[hardScores.length];
             long[] softWeights = new long[softScores.length];
             for (int i = 0; i < hardWeights.length; i++) {
-                hardWeights[i] = constraintWeight.getHardScore(i) * weightMultiplier.getHardScore(i);
+                hardWeights[i] = constraintWeight.hardScore(i) * weightMultiplier.hardScore(i);
             }
             for (int i = 0; i < softWeights.length; i++) {
-                softWeights[i] = constraintWeight.getSoftScore(i) * weightMultiplier.getSoftScore(i);
+                softWeights[i] = constraintWeight.softScore(i) * weightMultiplier.softScore(i);
             }
             addMultiConstraintMatch(kcontext, hardWeights, softWeights);
         });

@@ -71,7 +71,7 @@ class OptaPlannerProcessorExtendedSolutionSolveTest {
         SolverJob<TestdataQuarkusSolution, Long> solverJob = solverManager.solve(1L, problem);
         TestdataExtendedQuarkusSolution solution = (TestdataExtendedQuarkusSolution) solverJob.getFinalBestSolution();
         assertNotNull(solution);
-        assertTrue(solution.getScore().getScore() >= 0);
+        assertTrue(solution.getScore().score() >= 0);
         assertEquals("Extra Data", solution.getExtraData());
     }
 

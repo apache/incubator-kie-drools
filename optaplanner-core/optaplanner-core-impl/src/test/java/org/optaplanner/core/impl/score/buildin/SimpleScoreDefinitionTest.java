@@ -37,8 +37,8 @@ class SimpleScoreDefinitionTest {
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleScore.of(-1));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(optimisticBound.getScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
+        assertThat(optimisticBound.score()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Test
@@ -47,8 +47,8 @@ class SimpleScoreDefinitionTest {
         SimpleScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleScore.of(-1));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(optimisticBound.getScore()).isEqualTo(-1);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
+        assertThat(optimisticBound.score()).isEqualTo(-1);
     }
 
     @Test
@@ -57,8 +57,8 @@ class SimpleScoreDefinitionTest {
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleScore.of(-1));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(pessimisticBound.getScore()).isEqualTo(-1);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
+        assertThat(pessimisticBound.score()).isEqualTo(-1);
     }
 
     @Test
@@ -67,8 +67,8 @@ class SimpleScoreDefinitionTest {
         SimpleScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleScore.of(-1));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
-        assertThat(pessimisticBound.getScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
+        assertThat(pessimisticBound.score()).isEqualTo(Integer.MIN_VALUE);
     }
 
     @Test

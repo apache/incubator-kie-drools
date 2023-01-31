@@ -36,18 +36,18 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     @Override
     public BendableBigDecimalScore parseScore(String scoreString) {
         BendableBigDecimalScore score = BendableBigDecimalScore.parseScore(scoreString);
-        if (score.getHardLevelsSize() != hardLevelsSize) {
+        if (score.hardLevelsSize() != hardLevelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + BendableBigDecimalScore.class.getSimpleName()
                     + ") doesn't follow the correct pattern:"
-                    + " the hardLevelsSize (" + score.getHardLevelsSize()
+                    + " the hardLevelsSize (" + score.hardLevelsSize()
                     + ") doesn't match the scoreDefinition's hardLevelsSize (" + hardLevelsSize + ").");
         }
-        if (score.getSoftLevelsSize() != softLevelsSize) {
+        if (score.softLevelsSize() != softLevelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + BendableBigDecimalScore.class.getSimpleName()
                     + ") doesn't follow the correct pattern:"
-                    + " the softLevelsSize (" + score.getSoftLevelsSize()
+                    + " the softLevelsSize (" + score.softLevelsSize()
                     + ") doesn't match the scoreDefinition's softLevelsSize (" + softLevelsSize + ").");
         }
         return score;
@@ -105,15 +105,15 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     @Override
     public BendableBigDecimalScore divideBySanitizedDivisor(BendableBigDecimalScore dividend,
             BendableBigDecimalScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
         BigDecimal[] hardScores = new BigDecimal[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
-            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+            hardScores[i] = divide(dividend.hardScore(i), sanitize(divisor.hardScore(i)));
         }
         BigDecimal[] softScores = new BigDecimal[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
-            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+            softScores[i] = divide(dividend.softScore(i), sanitize(divisor.softScore(i)));
         }
         BigDecimal[] levels = Stream.concat(Arrays.stream(hardScores), Arrays.stream(softScores))
                 .toArray(BigDecimal[]::new);

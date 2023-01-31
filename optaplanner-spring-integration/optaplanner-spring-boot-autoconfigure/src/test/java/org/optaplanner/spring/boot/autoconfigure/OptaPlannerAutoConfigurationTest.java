@@ -278,7 +278,7 @@ class OptaPlannerAutoConfigurationTest {
                     SolverJob<TestdataSpringSolution, Long> solverJob = solverManager.solve(1L, problem);
                     TestdataSpringSolution solution = solverJob.getFinalBestSolution();
                     assertThat(solution).isNotNull();
-                    assertThat(solution.getScore().getScore()).isGreaterThanOrEqualTo(0);
+                    assertThat(solution.getScore().score()).isGreaterThanOrEqualTo(0);
                 });
     }
 
@@ -299,7 +299,7 @@ class OptaPlannerAutoConfigurationTest {
                     SolverJob<TestdataSpringSolution, Long> solverJob = solverManager.solve(1L, problem);
                     TestdataSpringSolution solution = solverJob.getFinalBestSolution();
                     assertThat(solution).isNotNull();
-                    assertThat(solution.getScore().getScore()).isGreaterThanOrEqualTo(0);
+                    assertThat(solution.getScore().score()).isGreaterThanOrEqualTo(0);
                 });
     }
 

@@ -103,7 +103,7 @@ public abstract class AbstractConstraintStreamTest {
                 }
             }
         }
-        assertThat(score.getScore()).isEqualTo(scoreTotal);
+        assertThat(score.score()).isEqualTo(scoreTotal);
     }
 
     protected static AssertableMatch assertMatch(Object... justifications) {
@@ -135,7 +135,7 @@ public abstract class AbstractConstraintStreamTest {
         }
 
         public boolean isEqualTo(ConstraintMatch<?> constraintMatch) {
-            if (score != ((SimpleScore) constraintMatch.getScore()).getScore()) {
+            if (score != ((SimpleScore) constraintMatch.getScore()).score()) {
                 return false;
             }
             if (!constraintName.equals(constraintMatch.getConstraintName())) {

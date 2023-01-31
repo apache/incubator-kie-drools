@@ -19,11 +19,11 @@ final class HardSoftLongScoreInliner extends AbstractScoreInliner<HardSoftLongSc
         HardSoftLongScoreContext context =
                 new HardSoftLongScoreContext(this, constraint, constraintWeight,
                         impact -> this.hardScore += impact, impact -> this.softScore += impact);
-        if (constraintWeight.getSoftScore() == 0L) {
+        if (constraintWeight.softScore() == 0L) {
             return WeightedScoreImpacter.of(context,
                     (HardSoftLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
                             .changeHardScoreBy(matchWeight, justificationsSupplier));
-        } else if (constraintWeight.getHardScore() == 0L) {
+        } else if (constraintWeight.hardScore() == 0L) {
             return WeightedScoreImpacter.of(context,
                     (HardSoftLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
                             .changeSoftScoreBy(matchWeight, justificationsSupplier));

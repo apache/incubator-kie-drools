@@ -470,7 +470,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 nextHeaderCell("Unassigned variables");
                 nextCell();
                 nextCell();
-                nextCell().setCellValue(score.getInitScore());
+                nextCell().setCellValue(score.initScore());
             }
             Comparator<ConstraintMatchTotal<Score_>> constraintWeightComparator = Comparator.comparing(
                     ConstraintMatchTotal::getConstraintWeight, Comparator.nullsLast(Comparator.reverseOrder()));

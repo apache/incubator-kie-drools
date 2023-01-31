@@ -5,7 +5,7 @@ import static org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFac
 import java.lang.reflect.Member;
 
 import org.optaplanner.core.api.domain.solution.PlanningScore;
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
@@ -122,7 +122,7 @@ public class ScoreDescriptor {
             return ConfigUtils.newInstance(() -> scoreMemberAccessor + " with @" + PlanningScore.class.getSimpleName(),
                     "scoreDefinitionClass", scoreDefinitionClass);
         }
-        if (!AbstractBendableScore.class.isAssignableFrom(scoreType)) {
+        if (!IBendableScore.class.isAssignableFrom(scoreType)) {
             if (bendableHardLevelsSize != PlanningScore.NO_LEVEL_SIZE
                     || bendableSoftLevelsSize != PlanningScore.NO_LEVEL_SIZE) {
                 throw new IllegalArgumentException("The solutionClass (" + solutionClass

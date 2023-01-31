@@ -49,6 +49,289 @@
           "oldValue": "{\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\", \"maximumSubPillarSize\"}",
           "newValue": "{\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\"}",
           "justification": "Duplicate field name, no impact."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.bendable.BendableScore",
+          "new": "field org.optaplanner.core.api.score.buildin.bendable.BendableScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendable.BendableScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendable.BendableScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendable.BendableScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendable.BendableScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore",
+          "new": "field org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore",
+          "new": "field org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore",
+          "new": "class org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore",
+          "new": "field org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore",
+          "new": "class org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.simple.SimpleScore",
+          "new": "field org.optaplanner.core.api.score.buildin.simple.SimpleScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.simple.SimpleScore",
+          "new": "class org.optaplanner.core.api.score.buildin.simple.SimpleScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore",
+          "new": "field org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore",
+          "new": "class org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.field.visibilityReduced",
+          "old": "field org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>.initScore @ org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
+          "new": "field org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore.initScore",
+          "oldVisibility": "protected",
+          "newVisibility": "private",
+          "justification": "Not an issue, as the class was final anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.noLongerInheritsFromClass",
+          "old": "class org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
+          "new": "class org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
+          "justification": "Not an issue, as all the public API uses referred to the interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.class.defaultSerializationChanged",
+          "old": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
+          "justification": "Serialization is deprecated, should not be used and many places in the solver don't support it anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simple.SimpleScore org.optaplanner.core.api.score.buildin.simple.SimpleScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simple.SimpleScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
+          "justification": "Implementation moved to a default method on an interface."
         }
       ]
     }

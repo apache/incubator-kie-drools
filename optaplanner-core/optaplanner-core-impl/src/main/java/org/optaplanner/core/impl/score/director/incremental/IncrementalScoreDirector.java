@@ -68,7 +68,7 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
             throw new IllegalStateException("The incrementalScoreCalculator (" + incrementalScoreCalculator.getClass()
                     + ") must return a non-null score (" + score + ") in the method calculateScore().");
         } else if (!score.isSolutionInitialized()) {
-            throw new IllegalStateException("The score (" + this + ")'s initScore (" + score.getInitScore()
+            throw new IllegalStateException("The score (" + this + ")'s initScore (" + score.initScore()
                     + ") should be 0.\n"
                     + "Maybe the score calculator (" + incrementalScoreCalculator.getClass() + ") is calculating "
                     + "the initScore too, although it's the score director's responsibility.");

@@ -63,12 +63,12 @@ final class BendableBigDecimalScoreContext extends ScoreContext<BendableBigDecim
         BigDecimal[] hardImpacts = new BigDecimal[hardScoreLevelCount];
         BigDecimal[] softImpacts = new BigDecimal[softScoreLevelCount];
         for (int hardScoreLevel = 0; hardScoreLevel < hardScoreLevelCount; hardScoreLevel++) {
-            BigDecimal hardImpact = constraintWeight.getHardScore(hardScoreLevel).multiply(matchWeight);
+            BigDecimal hardImpact = constraintWeight.hardScore(hardScoreLevel).multiply(matchWeight);
             hardImpacts[hardScoreLevel] = hardImpact;
             hardScoreLevelUpdater.accept(hardScoreLevel, hardImpact);
         }
         for (int softScoreLevel = 0; softScoreLevel < softScoreLevelCount; softScoreLevel++) {
-            BigDecimal softImpact = constraintWeight.getSoftScore(softScoreLevel).multiply(matchWeight);
+            BigDecimal softImpact = constraintWeight.softScore(softScoreLevel).multiply(matchWeight);
             softImpacts[softScoreLevel] = softImpact;
             softScoreLevelUpdater.accept(softScoreLevel, softImpact);
         }

@@ -53,29 +53,29 @@ public final class HardMediumSoftLongScoreHolderImpl extends AbstractScoreHolder
         if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
-        } else if (constraintWeight.getMediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
+        } else if (constraintWeight.mediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addHardConstraintMatch(kcontext,
-                            constraintWeight.getHardScore() * matchWeight);
-        } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getSoftScore() == 0) {
+                            constraintWeight.hardScore() * matchWeight);
+        } else if (constraintWeight.hardScore() == 0 && constraintWeight.getSoftScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addMediumConstraintMatch(kcontext,
-                            constraintWeight.getMediumScore() * matchWeight);
-        } else if (constraintWeight.getHardScore() == 0 && constraintWeight.getMediumScore() == 0) {
+                            constraintWeight.mediumScore() * matchWeight);
+        } else if (constraintWeight.hardScore() == 0 && constraintWeight.mediumScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addSoftConstraintMatch(kcontext,
                             constraintWeight.getSoftScore() * matchWeight);
         } else {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addMultiConstraintMatch(kcontext,
-                            constraintWeight.getHardScore() * matchWeight, constraintWeight.getMediumScore() * matchWeight,
+                            constraintWeight.hardScore() * matchWeight, constraintWeight.mediumScore() * matchWeight,
                             constraintWeight.getSoftScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardMediumSoftLongScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
-                        constraintWeight.getHardScore() * weightMultiplier.getHardScore(),
-                        constraintWeight.getMediumScore() * weightMultiplier.getMediumScore(),
+                        constraintWeight.hardScore() * weightMultiplier.hardScore(),
+                        constraintWeight.mediumScore() * weightMultiplier.mediumScore(),
                         constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
     }
 

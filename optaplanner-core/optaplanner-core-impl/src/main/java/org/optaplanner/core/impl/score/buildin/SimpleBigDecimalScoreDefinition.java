@@ -75,10 +75,10 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     @Override
     public SimpleBigDecimalScore divideBySanitizedDivisor(SimpleBigDecimalScore dividend,
             SimpleBigDecimalScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        BigDecimal dividendScore = dividend.getScore();
-        BigDecimal divisorScore = sanitize(divisor.getScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        BigDecimal dividendScore = dividend.score();
+        BigDecimal divisorScore = sanitize(divisor.score());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

@@ -37,7 +37,7 @@ class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.of(-1L));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
         assertThat(optimisticBound.getScore()).isEqualTo(Long.MAX_VALUE);
     }
 
@@ -47,7 +47,7 @@ class SimpleLongScoreDefinitionTest {
         SimpleLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.of(-1L));
-        assertThat(optimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(optimisticBound.initScore()).isEqualTo(0);
         assertThat(optimisticBound.getScore()).isEqualTo(-1L);
     }
 
@@ -57,7 +57,7 @@ class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 1),
                 SimpleLongScore.of(-1L));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
         assertThat(pessimisticBound.getScore()).isEqualTo(-1L);
     }
 
@@ -67,7 +67,7 @@ class SimpleLongScoreDefinitionTest {
         SimpleLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1),
                 SimpleLongScore.of(-1L));
-        assertThat(pessimisticBound.getInitScore()).isEqualTo(0);
+        assertThat(pessimisticBound.initScore()).isEqualTo(0);
         assertThat(pessimisticBound.getScore()).isEqualTo(Long.MIN_VALUE);
     }
 

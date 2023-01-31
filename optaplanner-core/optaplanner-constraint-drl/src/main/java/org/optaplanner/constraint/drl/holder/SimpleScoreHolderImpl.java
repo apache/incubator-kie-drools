@@ -41,7 +41,7 @@ public final class SimpleScoreHolderImpl extends AbstractScoreHolder<SimpleScore
             };
         } else {
             matchExecutor = (RuleContext kcontext, int matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore() * matchWeight);
+                    constraintWeight.score() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }

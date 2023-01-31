@@ -75,12 +75,12 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
     @Override
     public HardSoftBigDecimalScore divideBySanitizedDivisor(HardSoftBigDecimalScore dividend,
             HardSoftBigDecimalScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        BigDecimal dividendHardScore = dividend.getHardScore();
-        BigDecimal divisorHardScore = sanitize(divisor.getHardScore());
-        BigDecimal dividendSoftScore = dividend.getSoftScore();
-        BigDecimal divisorSoftScore = sanitize(divisor.getSoftScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        BigDecimal dividendHardScore = dividend.hardScore();
+        BigDecimal divisorHardScore = sanitize(divisor.hardScore());
+        BigDecimal dividendSoftScore = dividend.softScore();
+        BigDecimal divisorSoftScore = sanitize(divisor.softScore());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

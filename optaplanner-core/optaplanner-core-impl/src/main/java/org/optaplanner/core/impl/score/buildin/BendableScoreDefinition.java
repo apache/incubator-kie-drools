@@ -36,18 +36,18 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     @Override
     public BendableScore parseScore(String scoreString) {
         BendableScore score = BendableScore.parseScore(scoreString);
-        if (score.getHardLevelsSize() != hardLevelsSize) {
+        if (score.hardLevelsSize() != hardLevelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + BendableScore.class.getSimpleName()
                     + ") doesn't follow the correct pattern:"
-                    + " the hardLevelsSize (" + score.getHardLevelsSize()
+                    + " the hardLevelsSize (" + score.hardLevelsSize()
                     + ") doesn't match the scoreDefinition's hardLevelsSize (" + hardLevelsSize + ").");
         }
-        if (score.getSoftLevelsSize() != softLevelsSize) {
+        if (score.softLevelsSize() != softLevelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + BendableScore.class.getSimpleName()
                     + ") doesn't follow the correct pattern:"
-                    + " the softLevelsSize (" + score.getSoftLevelsSize()
+                    + " the softLevelsSize (" + score.softLevelsSize()
                     + ") doesn't match the scoreDefinition's softLevelsSize (" + softLevelsSize + ").");
         }
         return score;
@@ -92,13 +92,13 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getHardScore(i)
+                    ? score.hardScore(i)
                     : Integer.MAX_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
-                    ? score.getSoftScore(i)
+                    ? score.softScore(i)
                     : Integer.MAX_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
@@ -110,13 +110,13 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
             hardScores[i] = (trendLevels[i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getHardScore(i)
+                    ? score.hardScore(i)
                     : Integer.MIN_VALUE;
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
-                    ? score.getSoftScore(i)
+                    ? score.softScore(i)
                     : Integer.MIN_VALUE;
         }
         return BendableScore.ofUninitialized(0, hardScores, softScores);
@@ -124,15 +124,15 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
 
     @Override
     public BendableScore divideBySanitizedDivisor(BendableScore dividend, BendableScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
         int[] hardScores = new int[hardLevelsSize];
         for (int i = 0; i < hardLevelsSize; i++) {
-            hardScores[i] = divide(dividend.getHardScore(i), sanitize(divisor.getHardScore(i)));
+            hardScores[i] = divide(dividend.hardScore(i), sanitize(divisor.hardScore(i)));
         }
         int[] softScores = new int[softLevelsSize];
         for (int i = 0; i < softLevelsSize; i++) {
-            softScores[i] = divide(dividend.getSoftScore(i), sanitize(divisor.getSoftScore(i)));
+            softScores[i] = divide(dividend.softScore(i), sanitize(divisor.softScore(i)));
         }
         int[] levels = IntStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
         return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);

@@ -62,9 +62,9 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
             HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
-                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getMediumScore() : Integer.MAX_VALUE,
-                trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.hardScore() : Integer.MAX_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.mediumScore() : Integer.MAX_VALUE,
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.softScore() : Integer.MAX_VALUE);
     }
 
     @Override
@@ -72,21 +72,21 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
             HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
-                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getMediumScore() : Integer.MIN_VALUE,
-                trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.hardScore() : Integer.MIN_VALUE,
+                trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.mediumScore() : Integer.MIN_VALUE,
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.softScore() : Integer.MIN_VALUE);
     }
 
     @Override
     public HardMediumSoftScore divideBySanitizedDivisor(HardMediumSoftScore dividend, HardMediumSoftScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        int dividendHardScore = dividend.getHardScore();
-        int divisorHardScore = sanitize(divisor.getHardScore());
-        int dividendMediumScore = dividend.getMediumScore();
-        int divisorMediumScore = sanitize(divisor.getMediumScore());
-        int dividendSoftScore = dividend.getSoftScore();
-        int divisorSoftScore = sanitize(divisor.getSoftScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        int dividendHardScore = dividend.hardScore();
+        int divisorHardScore = sanitize(divisor.hardScore());
+        int dividendMediumScore = dividend.mediumScore();
+        int divisorMediumScore = sanitize(divisor.mediumScore());
+        int dividendSoftScore = dividend.softScore();
+        int divisorSoftScore = sanitize(divisor.softScore());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

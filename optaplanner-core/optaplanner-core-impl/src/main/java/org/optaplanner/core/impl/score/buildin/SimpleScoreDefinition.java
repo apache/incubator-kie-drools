@@ -60,22 +60,22 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     public SimpleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Integer.MAX_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.score() : Integer.MAX_VALUE);
     }
 
     @Override
     public SimpleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleScore.ofUninitialized(0,
-                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Integer.MIN_VALUE);
+                trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.score() : Integer.MIN_VALUE);
     }
 
     @Override
     public SimpleScore divideBySanitizedDivisor(SimpleScore dividend, SimpleScore divisor) {
-        int dividendInitScore = dividend.getInitScore();
-        int divisorInitScore = sanitize(divisor.getInitScore());
-        int dividendScore = dividend.getScore();
-        int divisorScore = sanitize(divisor.getScore());
+        int dividendInitScore = dividend.initScore();
+        int divisorInitScore = sanitize(divisor.initScore());
+        int dividendScore = dividend.score();
+        int divisorScore = sanitize(divisor.score());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

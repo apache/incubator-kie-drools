@@ -59,12 +59,12 @@ final class BendableLongScoreContext extends ScoreContext<BendableLongScore> {
         long[] hardImpacts = new long[hardScoreLevelCount];
         long[] softImpacts = new long[softScoreLevelCount];
         for (int hardScoreLevel = 0; hardScoreLevel < hardScoreLevelCount; hardScoreLevel++) {
-            long hardImpact = constraintWeight.getHardScore(hardScoreLevel) * matchWeight;
+            long hardImpact = constraintWeight.hardScore(hardScoreLevel) * matchWeight;
             hardImpacts[hardScoreLevel] = hardImpact;
             hardScoreLevelUpdater.accept(hardScoreLevel, hardImpact);
         }
         for (int softScoreLevel = 0; softScoreLevel < softScoreLevelCount; softScoreLevel++) {
-            long softImpact = constraintWeight.getSoftScore(softScoreLevel) * matchWeight;
+            long softImpact = constraintWeight.softScore(softScoreLevel) * matchWeight;
             softImpacts[softScoreLevel] = softImpact;
             softScoreLevelUpdater.accept(softScoreLevel, softImpact);
         }

@@ -43,7 +43,7 @@ public final class SimpleBigDecimalScoreHolderImpl extends AbstractScoreHolder<S
         } else {
             matchExecutor =
                     (RuleContext kcontext, BigDecimal matchWeight) -> addConstraintMatch(kcontext,
-                            constraintWeight.getScore().multiply(matchWeight));
+                            constraintWeight.score().multiply(matchWeight));
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }

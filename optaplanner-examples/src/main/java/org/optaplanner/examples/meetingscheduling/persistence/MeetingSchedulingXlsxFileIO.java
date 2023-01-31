@@ -513,30 +513,30 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             MeetingConstraintConfiguration constraintConfiguration = solution.getConstraintConfiguration();
 
             // TODO refactor this to allow setting pos/neg, weight and score level
-            writeIntConstraintParameterLine(ROOM_CONFLICT, constraintConfiguration.getRoomConflict().getHardScore(), "");
-            writeIntConstraintParameterLine(DONT_GO_IN_OVERTIME, constraintConfiguration.getDontGoInOvertime().getHardScore(),
+            writeIntConstraintParameterLine(ROOM_CONFLICT, constraintConfiguration.getRoomConflict().hardScore(), "");
+            writeIntConstraintParameterLine(DONT_GO_IN_OVERTIME, constraintConfiguration.getDontGoInOvertime().hardScore(),
                     "");
             writeIntConstraintParameterLine(REQUIRED_ATTENDANCE_CONFLICT,
-                    constraintConfiguration.getRequiredAttendanceConflict().getHardScore(), "");
+                    constraintConfiguration.getRequiredAttendanceConflict().hardScore(), "");
             writeIntConstraintParameterLine(REQUIRED_ROOM_CAPACITY,
-                    constraintConfiguration.getRequiredRoomCapacity().getHardScore(), "");
+                    constraintConfiguration.getRequiredRoomCapacity().hardScore(), "");
             writeIntConstraintParameterLine(START_AND_END_ON_SAME_DAY,
-                    constraintConfiguration.getStartAndEndOnSameDay().getHardScore(), "");
+                    constraintConfiguration.getStartAndEndOnSameDay().hardScore(), "");
             nextRow();
             writeIntConstraintParameterLine(REQUIRED_AND_PREFERRED_ATTENDANCE_CONFLICT,
-                    constraintConfiguration.getRequiredAndPreferredAttendanceConflict().getMediumScore(), "");
+                    constraintConfiguration.getRequiredAndPreferredAttendanceConflict().mediumScore(), "");
             writeIntConstraintParameterLine(PREFERRED_ATTENDANCE_CONFLICT,
-                    constraintConfiguration.getPreferredAttendanceConflict().getMediumScore(), "");
+                    constraintConfiguration.getPreferredAttendanceConflict().mediumScore(), "");
             nextRow();
             writeIntConstraintParameterLine(DO_ALL_MEETINGS_AS_SOON_AS_POSSIBLE,
-                    constraintConfiguration.getDoAllMeetingsAsSoonAsPossible().getSoftScore(), "");
+                    constraintConfiguration.getDoAllMeetingsAsSoonAsPossible().softScore(), "");
             writeIntConstraintParameterLine(ONE_TIME_GRAIN_BREAK_BETWEEN_TWO_CONSECUTIVE_MEETINGS,
-                    constraintConfiguration.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().getSoftScore(), "");
+                    constraintConfiguration.getOneTimeGrainBreakBetweenTwoConsecutiveMeetings().softScore(), "");
             writeIntConstraintParameterLine(OVERLAPPING_MEETINGS,
-                    constraintConfiguration.getOverlappingMeetings().getSoftScore(), "");
+                    constraintConfiguration.getOverlappingMeetings().softScore(), "");
             writeIntConstraintParameterLine(ASSIGN_LARGER_ROOMS_FIRST,
-                    constraintConfiguration.getAssignLargerRoomsFirst().getSoftScore(), "");
-            writeIntConstraintParameterLine(ROOM_STABILITY, constraintConfiguration.getRoomStability().getSoftScore(), "");
+                    constraintConfiguration.getAssignLargerRoomsFirst().softScore(), "");
+            writeIntConstraintParameterLine(ROOM_STABILITY, constraintConfiguration.getRoomStability().softScore(), "");
 
             autoSizeColumnsWithHeader();
         }
@@ -904,7 +904,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                             || filteredConstraintNames.contains(constraintMatch.getConstraintName()))
                     .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
-                    .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
+                    .filter(indictmentScore -> !(indictmentScore.hardScore() >= 0 && indictmentScore.softScore() >= 0))
                     .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
 
             XSSFCell cell = getXSSFCellOfScore(score);
@@ -971,9 +971,9 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             XSSFCell cell;
             if (!score.isFeasible()) {
                 cell = nextCell(hardPenaltyStyle);
-            } else if (score.getMediumScore() < 0) {
+            } else if (score.mediumScore() < 0) {
                 cell = nextCell(mediumPenaltyStyle);
-            } else if (score.getSoftScore() < 0) {
+            } else if (score.softScore() < 0) {
                 cell = nextCell(softPenaltyStyle);
             } else {
                 cell = nextCell(wrappedStyle);

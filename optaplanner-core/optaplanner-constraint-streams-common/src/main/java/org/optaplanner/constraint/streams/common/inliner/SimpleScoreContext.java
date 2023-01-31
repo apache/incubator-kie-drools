@@ -16,7 +16,7 @@ final class SimpleScoreContext extends ScoreContext<SimpleScore> {
     }
 
     public UndoScoreImpacter changeScoreBy(int matchWeight, JustificationsSupplier justificationsSupplier) {
-        int impact = constraintWeight.getScore() * matchWeight;
+        int impact = constraintWeight.score() * matchWeight;
         scoreUpdater.accept(impact);
         UndoScoreImpacter undoScoreImpact = () -> scoreUpdater.accept(-impact);
         if (!constraintMatchEnabled) {

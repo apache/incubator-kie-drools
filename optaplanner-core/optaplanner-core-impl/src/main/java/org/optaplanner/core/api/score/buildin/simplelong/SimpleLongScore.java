@@ -2,8 +2,8 @@ package org.optaplanner.core.api.score.buildin.simplelong;
 
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 1 level of long constraints.
@@ -12,15 +12,15 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
+public final class SimpleLongScore implements Score<SimpleLongScore> {
 
     public static final SimpleLongScore ZERO = new SimpleLongScore(0, 0L);
     public static final SimpleLongScore ONE = new SimpleLongScore(0, 1L);
 
     public static SimpleLongScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(SimpleLongScore.class, scoreString, "");
-        int initScore = parseInitScore(SimpleLongScore.class, scoreString, scoreTokens[0]);
-        long score = parseLevelAsLong(SimpleLongScore.class, scoreString, scoreTokens[1]);
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(SimpleLongScore.class, scoreString, "");
+        int initScore = ScoreUtil.parseInitScore(SimpleLongScore.class, scoreString, scoreTokens[0]);
+        long score = ScoreUtil.parseLevelAsLong(SimpleLongScore.class, scoreString, scoreTokens[1]);
         return ofUninitialized(initScore, score);
     }
 
@@ -36,6 +36,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final long score;
 
     /**
@@ -49,8 +50,13 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     }
 
     private SimpleLongScore(int initScore, long score) {
-        super(initScore);
+        this.initScore = initScore;
         this.score = score;
+    }
+
+    @Override
+    public int initScore() {
+        return initScore;
     }
 
     /**
@@ -60,6 +66,16 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
      *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
+    public long score() {
+        return score;
+    }
+
+    /**
+     * As defined by {@link #score()}.
+     *
+     * @deprecated Use {@link #score()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public long getScore() {
         return score;
     }
@@ -76,14 +92,14 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     @Override
     public SimpleLongScore add(SimpleLongScore addend) {
         return new SimpleLongScore(
-                initScore + addend.getInitScore(),
+                initScore + addend.initScore(),
                 score + addend.getScore());
     }
 
     @Override
     public SimpleLongScore subtract(SimpleLongScore subtrahend) {
         return new SimpleLongScore(
-                initScore - subtrahend.getInitScore(),
+                initScore - subtrahend.initScore(),
                 score - subtrahend.getScore());
     }
 
@@ -106,11 +122,6 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         return new SimpleLongScore(
                 (int) Math.floor(Math.pow(initScore, exponent)),
                 (long) Math.floor(Math.pow(score, exponent)));
-    }
-
-    @Override
-    public SimpleLongScore negate() {
-        return new SimpleLongScore(-initScore, -score);
     }
 
     @Override
@@ -139,7 +150,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
             return true;
         } else if (o instanceof SimpleLongScore) {
             SimpleLongScore other = (SimpleLongScore) o;
-            return initScore == other.getInitScore()
+            return initScore == other.initScore()
                     && score == other.getScore();
         } else {
             return false;
@@ -153,8 +164,8 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public int compareTo(SimpleLongScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         } else {
             return Long.compare(score, other.getScore());
         }
@@ -162,12 +173,12 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> n.longValue() != 0L, "");
+        return ScoreUtil.buildShortString(this, n -> n.longValue() != 0L, "");
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + score;
+        return ScoreUtil.getInitPrefix(initScore) + score;
     }
 
 }

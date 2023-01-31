@@ -47,24 +47,24 @@ public final class HardSoftLongScoreHolderImpl extends AbstractScoreHolder<HardS
         if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
-        } else if (constraintWeight.getSoftScore() == 0L) {
+        } else if (constraintWeight.softScore() == 0L) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addHardConstraintMatch(kcontext,
-                            constraintWeight.getHardScore() * matchWeight);
-        } else if (constraintWeight.getHardScore() == 0L) {
+                            constraintWeight.hardScore() * matchWeight);
+        } else if (constraintWeight.hardScore() == 0L) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.softScore() * matchWeight);
         } else {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addMultiConstraintMatch(kcontext,
-                            constraintWeight.getHardScore() * matchWeight, constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.hardScore() * matchWeight, constraintWeight.softScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardSoftLongScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
-                        constraintWeight.getHardScore() * weightMultiplier.getHardScore(),
-                        constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
+                        constraintWeight.hardScore() * weightMultiplier.hardScore(),
+                        constraintWeight.softScore() * weightMultiplier.softScore()));
     }
 
     // ************************************************************************
