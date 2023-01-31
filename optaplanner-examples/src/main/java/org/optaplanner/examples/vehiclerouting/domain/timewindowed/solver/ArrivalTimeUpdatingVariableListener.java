@@ -43,7 +43,9 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Veh
 
     @Override
     public void afterEntityRemoved(ScoreDirector<VehicleRoutingSolution> scoreDirector, Customer customer) {
-        // Do nothing
+        if (customer instanceof TimeWindowedCustomer) {
+            updateArrivalTime(scoreDirector, (TimeWindowedCustomer) customer);
+        }
     }
 
     protected void updateArrivalTime(ScoreDirector<VehicleRoutingSolution> scoreDirector,
