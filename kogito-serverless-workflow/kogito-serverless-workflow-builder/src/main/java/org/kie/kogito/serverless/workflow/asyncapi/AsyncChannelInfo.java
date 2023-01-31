@@ -20,7 +20,6 @@ public class AsyncChannelInfo {
     private final boolean isPublish;
 
     public AsyncChannelInfo(String name, boolean isPublish) {
-        super();
         this.name = name;
         this.isPublish = isPublish;
     }

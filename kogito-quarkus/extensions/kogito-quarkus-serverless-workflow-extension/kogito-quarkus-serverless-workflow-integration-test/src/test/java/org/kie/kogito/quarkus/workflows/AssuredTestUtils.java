@@ -37,14 +37,7 @@ class AssuredTestUtils {
     }
 
     static String startProcess(String flowName) {
-        String id = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
-                .post("/" + flowName)
-                .then()
-                .statusCode(201)
-                .extract().path("id");
+        String id = startProcessNoCheck(flowName);
 
         given()
                 .contentType(ContentType.JSON)
@@ -53,6 +46,17 @@ class AssuredTestUtils {
                 .then()
                 .statusCode(200);
         return id;
+    }
+
+    static String startProcessNoCheck(String flowName) {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("workflowdata", Collections.emptyMap()))
+                .post("/" + flowName)
+                .then()
+                .statusCode(201)
+                .extract().path("id");
     }
 
     static void waitForFinish(String flowName, String id, Duration duration) {

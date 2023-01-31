@@ -46,7 +46,7 @@ public class AsyncAPIInfoConverter implements AsyncInfoConverter {
     private static AsyncInfo from(AsyncAPI asyncApi) {
         Map<String, AsyncChannelInfo> map = new HashMap<>();
         for (Entry<String, ChannelItem> entry : asyncApi.getChannels().entrySet()) {
-            addChannel(map, entry.getValue().getPublish(), entry.getKey(), true);
+            addChannel(map, entry.getValue().getPublish(), entry.getKey() + "_out", true);
             addChannel(map, entry.getValue().getSubscribe(), entry.getKey(), false);
         }
         return new AsyncInfo(map);
