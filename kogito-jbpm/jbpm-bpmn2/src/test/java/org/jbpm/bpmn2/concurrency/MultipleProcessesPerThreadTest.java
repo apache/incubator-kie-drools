@@ -17,6 +17,7 @@ package org.jbpm.bpmn2.concurrency;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -107,7 +108,7 @@ public class MultipleProcessesPerThreadTest {
                 }
 
                 try {
-                    latch.await();
+                    latch.await(1, TimeUnit.MINUTES);
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }
@@ -179,7 +180,7 @@ public class MultipleProcessesPerThreadTest {
                 }
 
                 try {
-                    latch.await();
+                    latch.await(1, TimeUnit.MINUTES);
                 } catch (Throwable t) {
                     t.printStackTrace();
                 }

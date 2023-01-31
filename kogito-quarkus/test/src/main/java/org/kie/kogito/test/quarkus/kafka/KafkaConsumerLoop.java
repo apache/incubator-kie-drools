@@ -19,6 +19,7 @@ package org.kie.kogito.test.quarkus.kafka;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
@@ -103,7 +104,7 @@ public class KafkaConsumerLoop<T> implements Runnable {
     public void shutdown() {
         running.set(false);
         try {
-            shutdownLatch.await();
+            shutdownLatch.await(1, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
