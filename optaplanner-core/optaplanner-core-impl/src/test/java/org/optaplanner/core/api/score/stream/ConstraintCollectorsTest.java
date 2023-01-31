@@ -23,6 +23,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.asSortedS
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
@@ -1445,29 +1446,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void minComparableBi() {
-        BiConstraintCollector<Integer, Integer, ?, Integer> collector = min(
-                (BiFunction<Integer, Integer, Integer>) Integer::sum);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = min((Integer a, Integer b) -> baseLocalDateTime.plusMinutes(a + b));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the min
         int firstValueA = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValueA, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, becomes the new min
         int secondValueA = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValueA, 0);
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // add third value, same as the second, result does not change
         Runnable thirdRetractor = accumulate(collector, container, secondValueA, 0);
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract one instance of the second value; second value is still the min value, nothing should change
         secondRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract final instance of the second value; first value is now the min value
         thirdRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract last value; there are no values now
         firstRetractor.run();
         assertResult(collector, container, null);
@@ -1504,28 +1511,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void minComparableTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = min((a, b, c) -> a + b + c);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = min((Integer a, Integer b, Integer c) -> baseLocalDateTime.plusMinutes(a + b + c));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the min
-        int firstValue = 2;
-        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
-        assertResult(collector, container, 2);
+        int firstValueA = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, becomes the new min
-        int secondValue = 1;
-        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
-        assertResult(collector, container, 1);
+        int secondValueA = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // add third value, same as the second, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0);
-        assertResult(collector, container, 1);
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract one instance of the second value; second value is still the min value, nothing should change
         secondRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract final instance of the second value; first value is now the min value
         thirdRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract last value; there are no values now
         firstRetractor.run();
         assertResult(collector, container, null);
@@ -1563,28 +1577,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void minComparableQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = min((a, b, c, d) -> a + b + c + d);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = min((Integer a, Integer b, Integer c, Integer d) -> baseLocalDateTime.plusMinutes(a + b + c + d));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the min
-        int firstValue = 2;
-        Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
-        assertResult(collector, container, 2);
+        int firstValueA = 2;
+        Runnable firstRetractor = accumulate(collector, container, firstValueA, 0, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, becomes the new min
-        int secondValue = 1;
-        Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
-        assertResult(collector, container, 1);
+        int secondValueA = 1;
+        Runnable secondRetractor = accumulate(collector, container, secondValueA, 0, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // add third value, same as the second, result does not change
-        Runnable thirdRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
-        assertResult(collector, container, 1);
+        Runnable thirdRetractor = accumulate(collector, container, secondValueA, 0, 0, 0);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract one instance of the second value; second value is still the min value, nothing should change
         secondRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract final instance of the second value; first value is now the min value
         thirdRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract last value; there are no values now
         firstRetractor.run();
         assertResult(collector, container, null);
@@ -1684,29 +1705,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void maxComparableBi() {
-        BiConstraintCollector<Integer, Integer, ?, Integer> collector = max(
-                (BiFunction<Integer, Integer, Integer>) Integer::sum);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = max((Integer a, Integer b) -> baseLocalDateTime.plusMinutes(a + b));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the max
         int firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, result does not change
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
@@ -1743,28 +1770,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void maxComparableTri() {
-        TriConstraintCollector<Integer, Integer, Integer, ?, Integer> collector = max((a, b, c) -> a + b + c);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = max((Integer a, Integer b, Integer c) -> baseLocalDateTime.plusMinutes(a + b + c));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the max
         int firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, result does not change
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);
@@ -1802,28 +1836,35 @@ class ConstraintCollectorsTest {
 
     @Test
     void maxComparableQuad() {
-        QuadConstraintCollector<Integer, Integer, Integer, Integer, ?, Integer> collector = max((a, b, c, d) -> a + b + c + d);
-        Object container = collector.supplier().get();
+        /*
+         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
+         * Rather it implements Comparable<? super LocalDateTime>,
+         * exercising the PECS principle in our generics
+         * in a way that Integer would not.
+         */
+        var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
+        var collector = max((Integer a, Integer b, Integer c, Integer d) -> baseLocalDateTime.plusMinutes(a + b + c + d));
+        var container = collector.supplier().get();
 
         // Default state.
         assertResult(collector, container, null);
         // add first value, which becomes the max
         int firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add second value, lesser than the first, result does not change
         int secondValue = 1;
         Runnable secondRetractor = accumulate(collector, container, secondValue, 0, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // add third value, same as the first, result does not change
         Runnable thirdRetractor = accumulate(collector, container, firstValue, 0, 0, 0);
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract one instance of the first value; first value is still the max value, nothing should change
         firstRetractor.run();
-        assertResult(collector, container, 2);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(2));
         // retract final instance of the first value; second value is now the max value
         thirdRetractor.run();
-        assertResult(collector, container, 1);
+        assertResult(collector, container, baseLocalDateTime.plusMinutes(1));
         // retract last value; there are no values now
         secondRetractor.run();
         assertResult(collector, container, null);

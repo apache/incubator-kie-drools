@@ -332,6 +332,654 @@
           "old": "method org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore::negate()",
           "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
           "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, A> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.Comparator<A>===)",
+          "new": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, A> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.Comparator<? super A>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "new": "parameter <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.function.Function<A, Mapped>===)",
+          "new": "parameter <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===java.util.function.Function<A, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "new": "parameter <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::max(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, A> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.Comparator<A>===)",
+          "new": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, A> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.Comparator<? super A>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "new": "parameter <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.function.Function<A, Mapped>===)",
+          "new": "parameter <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===java.util.function.Function<A, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "new": "parameter <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, Mapped> org.optaplanner.core.api.score.stream.ConstraintCollectors::min(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "new": "parameter <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>)",
+          "new": "parameter <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "new": "parameter <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "new": "parameter <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, java.util.Set<Value>>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "parameter <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "parameter <A, B, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.BiFunction<? super A, ? super B, ? extends Key>===, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.BiFunction<? super A, ? super B, ? extends Key>, java.util.function.BiFunction<? super A, ? super B, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "parameter <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "parameter <A, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===java.util.function.Function<? super A, ? extends Key>===, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(java.util.function.Function<? super A, ? extends Key>, java.util.function.Function<? super A, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "parameter <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "parameter <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>===, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, C, D, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key>, org.optaplanner.core.api.function.QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "parameter <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, Value>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.BinaryOperator<Value>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "parameter <A, B, C, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(===org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>===, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Key extends java.lang.Comparable<Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "new": "method <A, B, C, Key extends java.lang.Comparable<? super Key>, Value, ValueSet extends java.util.Set<Value>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedMap<Key, ValueSet>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedMap(org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Key>, org.optaplanner.core.api.function.TriFunction<? super A, ? super B, ? super C, ? extends Value>, java.util.function.IntFunction<ValueSet>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<A>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.Comparator<A>===)",
+          "new": "parameter <A> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<A>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.Comparator<? super A>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, Mapped> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, Mapped> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<Mapped>===)",
+          "new": "parameter <A, B, C, Mapped> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>, ===java.util.Comparator<? super Mapped>===)",
+          "parameterIndex": "1",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "new": "parameter <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.function.BiFunction<A, B, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>)",
+          "new": "method <A, B, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.bi.BiConstraintCollector<A, B, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.BiFunction<A, B, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.function.Function<A, Mapped>===)",
+          "new": "parameter <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===java.util.function.Function<A, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>)",
+          "new": "method <A, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.uni.UniConstraintCollector<A, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(java.util.function.Function<A, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "new": "parameter <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, D, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "new": "method <A, B, C, D, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector<A, B, C, D, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.QuadFunction<A, B, C, D, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.parameterTypeParameterChanged",
+          "old": "parameter <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "new": "parameter <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(===org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>===)",
+          "parameterIndex": "0",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.generics.formalTypeParameterChanged",
+          "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
+          "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
         }
       ]
     }

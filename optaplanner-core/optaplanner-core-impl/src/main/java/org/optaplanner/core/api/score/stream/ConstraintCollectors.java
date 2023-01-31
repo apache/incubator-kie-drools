@@ -693,7 +693,7 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> min() {
-        return min(Comparator.<A> naturalOrder());
+        return min(Comparator.naturalOrder());
     }
 
     /**
@@ -715,7 +715,7 @@ public final class ConstraintCollectors {
      * @param groupValueMapping never null, maps facts from the matched type to the result type
      * @return never null
      */
-    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> min(
+    public static <A, Mapped extends Comparable<? super Mapped>> UniConstraintCollector<A, ?, Mapped> min(
             Function<A, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparator.naturalOrder());
     }
@@ -723,7 +723,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #min()}, only with a custom {@link Comparator}.
      */
-    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<A> comparator) {
+    public static <A> UniConstraintCollector<A, ?, A> min(Comparator<? super A> comparator) {
         return min(Function.identity(), comparator);
     }
 
@@ -731,14 +731,14 @@ public final class ConstraintCollectors {
      * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> min(Function<A, Mapped> groupValueMapping,
-            Comparator<Mapped> comparator) {
+            Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
     /**
      * As defined by {@link #min(Function)}.
      */
-    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
+    public static <A, B, Mapped extends Comparable<? super Mapped>> BiConstraintCollector<A, B, ?, Mapped> min(
             BiFunction<A, B, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparator.naturalOrder());
     }
@@ -747,14 +747,14 @@ public final class ConstraintCollectors {
      * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> min(BiFunction<A, B, Mapped> groupValueMapping,
-            Comparator<Mapped> comparator) {
+            Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
     /**
      * As defined by {@link #min(Function)}.
      */
-    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> min(
+    public static <A, B, C, Mapped extends Comparable<? super Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> min(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparator.naturalOrder());
     }
@@ -763,14 +763,14 @@ public final class ConstraintCollectors {
      * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> min(
-            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
     /**
      * As defined by {@link #min(Function)}.
      */
-    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
+    public static <A, B, C, D, Mapped extends Comparable<? super Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return min(groupValueMapping, Comparator.naturalOrder());
     }
@@ -779,7 +779,7 @@ public final class ConstraintCollectors {
      * As defined by {@link #min(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> min(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, true);
     }
 
@@ -808,7 +808,7 @@ public final class ConstraintCollectors {
      * @return never null
      */
     public static <A extends Comparable<A>> UniConstraintCollector<A, ?, A> max() {
-        return max(Comparator.<A> naturalOrder());
+        return max(Comparator.naturalOrder());
     }
 
     /**
@@ -830,7 +830,7 @@ public final class ConstraintCollectors {
      * @param groupValueMapping never null, maps facts from the matched type to the result type
      * @return never null
      */
-    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, Mapped> max(
+    public static <A, Mapped extends Comparable<? super Mapped>> UniConstraintCollector<A, ?, Mapped> max(
             Function<A, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparator.naturalOrder());
     }
@@ -838,7 +838,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #max()}, only with a custom {@link Comparator}.
      */
-    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<A> comparator) {
+    public static <A> UniConstraintCollector<A, ?, A> max(Comparator<? super A> comparator) {
         return max(Function.identity(), comparator);
     }
 
@@ -846,12 +846,12 @@ public final class ConstraintCollectors {
      * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, Mapped> max(Function<A, Mapped> groupValueMapping,
-            Comparator<Mapped> comparator) {
+            Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
     private static <A, Mapped> UniConstraintCollector<A, SortedMap<Mapped, MutableLong>, Mapped> minOrMax(
-            Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+            Function<A, Mapped> groupValueMapping, Comparator<? super Mapped> comparator, boolean min) {
         return new DefaultUniConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
@@ -872,7 +872,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #max(Function)}.
      */
-    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, Mapped> max(
+    public static <A, B, Mapped extends Comparable<? super Mapped>> BiConstraintCollector<A, B, ?, Mapped> max(
             BiFunction<A, B, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparator.naturalOrder());
     }
@@ -881,12 +881,12 @@ public final class ConstraintCollectors {
      * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Mapped> max(BiFunction<A, B, Mapped> groupValueMapping,
-            Comparator<Mapped> comparator) {
+            Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
     private static <A, B, Mapped> BiConstraintCollector<A, B, SortedMap<Mapped, MutableLong>, Mapped> minOrMax(
-            BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+            BiFunction<A, B, Mapped> groupValueMapping, Comparator<? super Mapped> comparator, boolean min) {
         return new DefaultBiConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
@@ -899,7 +899,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #max(Function)}.
      */
-    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> max(
+    public static <A, B, C, Mapped extends Comparable<? super Mapped>> TriConstraintCollector<A, B, C, ?, Mapped> max(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparator.naturalOrder());
     }
@@ -908,12 +908,12 @@ public final class ConstraintCollectors {
      * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Mapped> max(
-            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
     private static <A, B, C, Mapped> TriConstraintCollector<A, B, C, SortedMap<Mapped, MutableLong>, Mapped> minOrMax(
-            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<? super Mapped> comparator, boolean min) {
         return new DefaultTriConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
@@ -926,7 +926,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #max(Function)}.
      */
-    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
+    public static <A, B, C, D, Mapped extends Comparable<? super Mapped>> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return max(groupValueMapping, Comparator.naturalOrder());
     }
@@ -935,12 +935,12 @@ public final class ConstraintCollectors {
      * As defined by {@link #max(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Mapped> max(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return minOrMax(groupValueMapping, comparator, false);
     }
 
     private static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, SortedMap<Mapped, MutableLong>, Mapped> minOrMax(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator, boolean min) {
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<? super Mapped> comparator, boolean min) {
         return new DefaultQuadConstraintCollector<>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
@@ -1290,7 +1290,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedSet()}, only with a custom {@link Comparator}.
      */
-    public static <A> UniConstraintCollector<A, ?, SortedSet<A>> toSortedSet(Comparator<A> comparator) {
+    public static <A> UniConstraintCollector<A, ?, SortedSet<A>> toSortedSet(Comparator<? super A> comparator) {
         return toSortedSet(a -> a, comparator);
     }
 
@@ -1367,7 +1367,7 @@ public final class ConstraintCollectors {
      * @param <Mapped> type of elements in the resulting set
      * @return never null
      */
-    public static <A, Mapped extends Comparable<Mapped>> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
+    public static <A, Mapped extends Comparable<? super Mapped>> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
             Function<A, Mapped> groupValueMapping) {
         return toSortedSet(groupValueMapping, Comparator.naturalOrder());
     }
@@ -1376,7 +1376,7 @@ public final class ConstraintCollectors {
      * As defined by {@link #toSortedSet(Function)}, only with a custom {@link Comparator}.
      */
     public static <A, Mapped> UniConstraintCollector<A, ?, SortedSet<Mapped>> toSortedSet(
-            Function<A, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            Function<A, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return new DefaultUniConstraintCollector<A, TreeMap<Mapped, MutableLong>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a) -> {
@@ -1443,8 +1443,9 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedSet(Function)}.
      */
-    public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
-            BiFunction<A, B, Mapped> groupValueMapping) {
+    public static <A, B, Mapped extends Comparable<? super Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>>
+            toSortedSet(
+                    BiFunction<A, B, Mapped> groupValueMapping) {
         return toSortedSet(groupValueMapping, Comparator.naturalOrder());
     }
 
@@ -1452,7 +1453,7 @@ public final class ConstraintCollectors {
      * As defined by {@link #toSortedSet(Function, Comparator)}.
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
-            BiFunction<A, B, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            BiFunction<A, B, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return new DefaultBiConstraintCollector<A, B, TreeMap<Mapped, MutableLong>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b) -> {
@@ -1511,7 +1512,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedSet(Function)}.
      */
-    public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
+    public static <A, B, C, Mapped extends Comparable<? super Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
             toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
         return toSortedSet(groupValueMapping, Comparator.naturalOrder());
     }
@@ -1520,7 +1521,7 @@ public final class ConstraintCollectors {
      * As defined by {@link #toSortedSet(Function, Comparator)}.
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>> toSortedSet(
-            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            TriFunction<A, B, C, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return new DefaultTriConstraintCollector<A, B, C, TreeMap<Mapped, MutableLong>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c) -> {
@@ -1579,7 +1580,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedSet(Function)}.
      */
-    public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
+    public static <A, B, C, D, Mapped extends Comparable<? super Mapped>>
+            QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
             toSortedSet(QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
         return toSortedSet(groupValueMapping, Comparator.naturalOrder());
     }
@@ -1588,7 +1590,7 @@ public final class ConstraintCollectors {
      * As defined by {@link #toSortedSet(Function, Comparator)}.
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>> toSortedSet(
-            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<Mapped> comparator) {
+            QuadFunction<A, B, C, D, Mapped> groupValueMapping, Comparator<? super Mapped> comparator) {
         return new DefaultQuadConstraintCollector<A, B, C, D, TreeMap<Mapped, MutableLong>, SortedSet<Mapped>>(
                 () -> new TreeMap<>(comparator),
                 (resultContainer, a, b, c, d) -> {
@@ -1883,8 +1885,9 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, Key extends Comparable<Key>, Value> UniConstraintCollector<A, ?, SortedMap<Key, Set<Value>>> toSortedMap(
-            Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper) {
+    public static <A, Key extends Comparable<? super Key>, Value> UniConstraintCollector<A, ?, SortedMap<Key, Set<Value>>>
+            toSortedMap(
+                    Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
     }
 
@@ -1909,7 +1912,7 @@ public final class ConstraintCollectors {
      * @param <ValueSet> type of the value set
      * @return never null
      */
-    public static <A, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+    public static <A, Key extends Comparable<? super Key>, Value, ValueSet extends Set<Value>>
             UniConstraintCollector<A, ?, SortedMap<Key, ValueSet>> toSortedMap(
                     Function<? super A, ? extends Key> keyMapper,
                     Function<? super A, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
@@ -1936,9 +1939,10 @@ public final class ConstraintCollectors {
      * @param <Value> type of map value
      * @return never null
      */
-    public static <A, Key extends Comparable<Key>, Value> UniConstraintCollector<A, ?, SortedMap<Key, Value>> toSortedMap(
-            Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
-            BinaryOperator<Value> mergeFunction) {
+    public static <A, Key extends Comparable<? super Key>, Value> UniConstraintCollector<A, ?, SortedMap<Key, Value>>
+            toSortedMap(
+                    Function<? super A, ? extends Key> keyMapper, Function<? super A, ? extends Value> valueMapper,
+                    BinaryOperator<Value> mergeFunction) {
         return new DefaultUniConstraintCollector<>(
                 () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a),
@@ -1990,7 +1994,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
      */
-    public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>>
+    public static <A, B, Key extends Comparable<? super Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
                     BiFunction<? super A, ? super B, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
@@ -1999,7 +2003,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
      */
-    public static <A, B, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+    public static <A, B, Key extends Comparable<? super Key>, Value, ValueSet extends Set<Value>>
             BiConstraintCollector<A, B, ?, SortedMap<Key, ValueSet>> toSortedMap(
                     BiFunction<? super A, ? super B, ? extends Key> keyMapper,
                     BiFunction<? super A, ? super B, ? extends Value> valueMapper, IntFunction<ValueSet> valueSetFunction) {
@@ -2012,9 +2016,10 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
      */
-    public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Value>> toSortedMap(
-            BiFunction<? super A, ? super B, ? extends Key> keyMapper,
-            BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
+    public static <A, B, Key extends Comparable<? super Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Value>>
+            toSortedMap(
+                    BiFunction<? super A, ? super B, ? extends Key> keyMapper,
+                    BiFunction<? super A, ? super B, ? extends Value> valueMapper, BinaryOperator<Value> mergeFunction) {
         return new DefaultBiConstraintCollector<>(
                 () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a, b) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b),
@@ -2068,7 +2073,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>>
+    public static <A, B, C, Key extends Comparable<? super Key>, Value>
+            TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper) {
         return toSortedMap(keyMapper, valueMapper, (IntFunction<Set<Value>>) LinkedHashSet::new);
@@ -2077,7 +2083,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+    public static <A, B, C, Key extends Comparable<? super Key>, Value, ValueSet extends Set<Value>>
             TriConstraintCollector<A, B, C, ?, SortedMap<Key, ValueSet>> toSortedMap(
                     TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
@@ -2091,7 +2097,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
      */
-    public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>>
+    public static <A, B, C, Key extends Comparable<? super Key>, Value>
+            TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
                     TriFunction<? super A, ? super B, ? super C, ? extends Value> valueMapper,
                     BinaryOperator<Value> mergeFunction) {
@@ -2149,7 +2156,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value>
+    public static <A, B, C, D, Key extends Comparable<? super Key>, Value>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Set<Value>>> toSortedMap(
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper) {
@@ -2159,7 +2166,7 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
+    public static <A, B, C, D, Key extends Comparable<? super Key>, Value, ValueSet extends Set<Value>>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, ValueSet>> toSortedMap(
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
@@ -2173,7 +2180,8 @@ public final class ConstraintCollectors {
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
      */
-    public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>>
+    public static <A, B, C, D, Key extends Comparable<? super Key>, Value>
+            QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>>
             toSortedMap(QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
                     QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Value> valueMapper,
                     BinaryOperator<Value> mergeFunction) {
