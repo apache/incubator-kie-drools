@@ -7,17 +7,17 @@
     {
       "name": "visaApprovedEvent",
       "source": "",
-      "type": "visa_approved_in"
+      "type": "visa_approved_in_condition_end"
     },
     {
       "name": "visaDeniedEvent",
       "source": "",
-      "type": "visa_denied_in"
+      "type": "visa_denied_in_condition_end"
     },
     {
       "name": "sendProcessResultEvent",
       "kind": "produced",
-      "type": "process_result_event"
+      "type": "process_result_event_condition_end"
     }
   ],
   "states": [
