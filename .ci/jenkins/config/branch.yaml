@@ -6,11 +6,12 @@ environments:
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
-  mandrel:
+  native-lts:
     env_vars:
       NATIVE: true
+      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
+      QUARKUS_BRANCH: '2.13'
       ADDITIONAL_TIMEOUT: 720
     ids:
     - native
@@ -44,18 +45,6 @@ environments:
     - quarkus
     - lts
     - prod
-  mandrel-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
-    - lts
   sonarcloud:
     auto_generation: false
     ids:
