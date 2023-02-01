@@ -25,14 +25,14 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
 
     public static <Solution_> EntitySelectorConfig getDefaultEntitySelectorConfigForEntity(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         Class<?> entityClass = entityDescriptor.getEntityClass();
-        entitySelectorConfig.setId(entityClass.getName());
-        entitySelectorConfig.setEntityClass(entityClass);
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withId(entityClass.getName())
+                .withEntityClass(entityClass);
         if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-            entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            entitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
+            entitySelectorConfig = entitySelectorConfig.withCacheType(SelectionCacheType.PHASE)
+                    .withSelectionOrder(SelectionOrder.SORTED)
+                    .withSorterManner(configPolicy.getEntitySorterManner());
         }
         return entitySelectorConfig;
     }

@@ -24,8 +24,8 @@ class ChangeMoveSelectorFactoryTest {
     @Test
     void deducibleMultiVar() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
         MoveSelector moveSelector =
                 MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
@@ -36,8 +36,8 @@ class ChangeMoveSelectorFactoryTest {
     @Test
     void undeducibleMultiVar() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("nonExistingValue"));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(new ValueSelectorConfig("nonExistingValue"));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,
@@ -59,8 +59,8 @@ class ChangeMoveSelectorFactoryTest {
     @Test
     void deducibleMultiEntity() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataHerdEntity.class));
         MoveSelector moveSelector =
                 MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
@@ -71,8 +71,8 @@ class ChangeMoveSelectorFactoryTest {
     @Test
     void undeducibleMultiEntity() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setEntitySelectorConfig(new EntitySelectorConfig(TestdataEntity.class));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataEntity.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,

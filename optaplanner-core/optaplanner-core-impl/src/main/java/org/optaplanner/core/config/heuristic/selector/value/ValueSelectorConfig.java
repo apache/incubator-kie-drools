@@ -200,6 +200,90 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         this.selectedCountLimit = selectedCountLimit;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ValueSelectorConfig withId(String id) {
+        this.setId(id);
+        return this;
+    }
+
+    public ValueSelectorConfig withMimicSelectorRef(String mimicSelectorRef) {
+        this.setMimicSelectorRef(mimicSelectorRef);
+        return this;
+    }
+
+    public ValueSelectorConfig withDowncastEntityClass(Class<?> entityClass) {
+        this.setDowncastEntityClass(entityClass);
+        return this;
+    }
+
+    public ValueSelectorConfig withVariableName(String variableName) {
+        this.setVariableName(variableName);
+        return this;
+    }
+
+    public ValueSelectorConfig withCacheType(SelectionCacheType cacheType) {
+        this.setCacheType(cacheType);
+        return this;
+    }
+
+    public ValueSelectorConfig withSelectionOrder(SelectionOrder selectionOrder) {
+        this.setSelectionOrder(selectionOrder);
+        return this;
+    }
+
+    public ValueSelectorConfig withNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
+        this.setNearbySelectionConfig(nearbySelectionConfig);
+        return this;
+    }
+
+    public ValueSelectorConfig withFilterClass(Class<? extends SelectionFilter> filterClass) {
+        this.setFilterClass(filterClass);
+        return this;
+    }
+
+    public ValueSelectorConfig withSorterManner(ValueSorterManner sorterManner) {
+        this.setSorterManner(sorterManner);
+        return this;
+    }
+
+    public ValueSelectorConfig withSorterComparatorClass(Class<? extends Comparator> comparatorClass) {
+        this.setSorterComparatorClass(comparatorClass);
+        return this;
+    }
+
+    public ValueSelectorConfig withSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> weightFactoryClass) {
+        this.setSorterWeightFactoryClass(weightFactoryClass);
+        return this;
+    }
+
+    public ValueSelectorConfig withSorterOrder(SelectionSorterOrder sorterOrder) {
+        this.setSorterOrder(sorterOrder);
+        return this;
+    }
+
+    public ValueSelectorConfig withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+        this.setSorterClass(sorterClass);
+        return this;
+    }
+
+    public ValueSelectorConfig
+            withProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> factoryClass) {
+        this.setProbabilityWeightFactoryClass(factoryClass);
+        return this;
+    }
+
+    public ValueSelectorConfig withSelectedCountLimit(long selectedCountLimit) {
+        this.setSelectedCountLimit(selectedCountLimit);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     @Override
     public ValueSelectorConfig inherit(ValueSelectorConfig inheritedConfig) {
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());

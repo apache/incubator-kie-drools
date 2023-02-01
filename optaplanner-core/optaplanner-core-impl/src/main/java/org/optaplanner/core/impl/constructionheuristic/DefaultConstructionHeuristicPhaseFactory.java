@@ -146,28 +146,26 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         String mimicSelectorId = variableDescriptor.getVariableName();
 
         // Prepare recording ValueSelector config.
-        ValueSelectorConfig mimicRecordingValueSelectorConfig = new ValueSelectorConfig(variableDescriptor.getVariableName());
-        mimicRecordingValueSelectorConfig.setId(mimicSelectorId);
+        ValueSelectorConfig mimicRecordingValueSelectorConfig = new ValueSelectorConfig(variableDescriptor.getVariableName())
+                .withId(mimicSelectorId);
         if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-            mimicRecordingValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            mimicRecordingValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            mimicRecordingValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
+            mimicRecordingValueSelectorConfig = mimicRecordingValueSelectorConfig.withCacheType(SelectionCacheType.PHASE)
+                    .withSelectionOrder(SelectionOrder.SORTED)
+                    .withSorterManner(configPolicy.getValueSorterManner());
         }
         // Prepare replaying ValueSelector config.
-        ValueSelectorConfig mimicReplayingValueSelectorConfig = new ValueSelectorConfig();
-        mimicReplayingValueSelectorConfig.setMimicSelectorRef(mimicSelectorId);
+        ValueSelectorConfig mimicReplayingValueSelectorConfig = new ValueSelectorConfig()
+                .withMimicSelectorRef(mimicSelectorId);
 
         // ChangeMoveSelector uses the replaying ValueSelector.
-        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        changeMoveSelectorConfig.setValueSelectorConfig(mimicReplayingValueSelectorConfig);
+        ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(mimicReplayingValueSelectorConfig);
 
         // Finally, QueuedValuePlacer uses the recording ValueSelector and a ChangeMoveSelector.
         // The ChangeMoveSelector's replaying ValueSelector mimics the QueuedValuePlacer's recording ValueSelector.
-        QueuedValuePlacerConfig queuedValuePlacerConfig = new QueuedValuePlacerConfig();
-        queuedValuePlacerConfig.setValueSelectorConfig(mimicRecordingValueSelectorConfig);
-        queuedValuePlacerConfig.setMoveSelectorConfig(changeMoveSelectorConfig);
-
-        return queuedValuePlacerConfig;
+        return new QueuedValuePlacerConfig()
+                .withValueSelectorConfig(mimicRecordingValueSelectorConfig)
+                .withMoveSelectorConfig(changeMoveSelectorConfig);
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,

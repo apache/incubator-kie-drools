@@ -40,6 +40,24 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
         this.valueSelectorConfig = valueSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public ChangeMoveSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
+    public ChangeMoveSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     @Override
     public ChangeMoveSelectorConfig inherit(ChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

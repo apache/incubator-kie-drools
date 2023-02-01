@@ -1,5 +1,6 @@
 package org.optaplanner.core.config.constructionheuristic.placer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -72,14 +73,22 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     // ************************************************************************
 
     public QueuedEntityPlacerConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
-        this.entitySelectorConfig = entitySelectorConfig;
+        this.setEntitySelectorConfig(entitySelectorConfig);
         return this;
     }
 
     public QueuedEntityPlacerConfig withMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
-        this.moveSelectorConfigList = moveSelectorConfigList;
+        this.setMoveSelectorConfigList(moveSelectorConfigList);
         return this;
     }
+
+    public QueuedEntityPlacerConfig withMoveSelectorConfigs(MoveSelectorConfig... moveSelectorConfigs) {
+        return this.withMoveSelectorConfigList(Arrays.asList(moveSelectorConfigs));
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
 
     @Override
     public QueuedEntityPlacerConfig inherit(QueuedEntityPlacerConfig inheritedConfig) {

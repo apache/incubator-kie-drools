@@ -1,5 +1,6 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -52,6 +53,29 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     public void setVariableNameIncludeList(List<String> variableNameIncludeList) {
         this.variableNameIncludeList = variableNameIncludeList;
     }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SwapMoveSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
+    public SwapMoveSelectorConfig withSecondaryEntitySelectorConfig(EntitySelectorConfig secondaryEntitySelectorConfig) {
+        this.setSecondaryEntitySelectorConfig(secondaryEntitySelectorConfig);
+        return this;
+    }
+
+    public SwapMoveSelectorConfig withVariableNameIncludes(String... variableNameIncludes) {
+        this.setVariableNameIncludeList(Arrays.asList(variableNameIncludes));
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
 
     @Override
     public SwapMoveSelectorConfig inherit(SwapMoveSelectorConfig inheritedConfig) {

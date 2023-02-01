@@ -77,12 +77,35 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         this.moveSelectorConfig = moveSelectorConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public QueuedValuePlacerConfig withEntityClass(Class<?> entityClass) {
+        this.setEntityClass(entityClass);
+        return this;
+    }
+
+    public QueuedValuePlacerConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
+        this.setValueSelectorConfig(valueSelectorConfig);
+        return this;
+    }
+
+    public QueuedValuePlacerConfig withMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
+        this.setMoveSelectorConfig(moveSelectorConfig);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     @Override
     public QueuedValuePlacerConfig inherit(QueuedValuePlacerConfig inheritedConfig) {
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
-        setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
-                getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
+        setMoveSelectorConfig(
+                ConfigUtils.inheritOverwritableProperty(getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
         return this;
     }
 

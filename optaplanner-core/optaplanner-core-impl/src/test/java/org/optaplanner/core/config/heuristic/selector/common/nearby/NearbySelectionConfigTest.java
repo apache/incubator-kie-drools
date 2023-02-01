@@ -42,9 +42,8 @@ class NearbySelectionConfigTest {
 
     @Test
     void withNoDistanceMeter() {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
-
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withId(ENTITY_SELECTOR_ID);
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         nearbySelectionConfig
                 .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
@@ -57,10 +56,9 @@ class NearbySelectionConfigTest {
 
     @Test
     void withWrongSelectionOrder() {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
-        entitySelectorConfig.setSelectionOrder(SORTED);
-
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withId(ENTITY_SELECTOR_ID)
+                .withSelectionOrder(SORTED);
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         nearbySelectionConfig
                 .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
@@ -74,11 +72,10 @@ class NearbySelectionConfigTest {
 
     @Test
     void withCachedResolvedCachedType() {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setId(ENTITY_SELECTOR_ID);
-        entitySelectorConfig.setSelectionOrder(ORIGINAL);
-        entitySelectorConfig.setCacheType(STEP);
-
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withId(ENTITY_SELECTOR_ID)
+                .withSelectionOrder(ORIGINAL)
+                .withCacheType(STEP);
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         nearbySelectionConfig
                 .setOriginEntitySelectorConfig(EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));

@@ -39,9 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setMimicSelectorRef(mimicSelectorRef);
-        return entitySelectorConfig;
+        return new EntitySelectorConfig()
+                .withMimicSelectorRef(mimicSelectorRef);
     }
 
     @XmlAttribute
@@ -194,6 +193,85 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     public void setSelectedCountLimit(Long selectedCountLimit) {
         this.selectedCountLimit = selectedCountLimit;
     }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public EntitySelectorConfig withId(String id) {
+        this.setId(id);
+        return this;
+    }
+
+    public EntitySelectorConfig withMimicSelectorRef(String mimicSelectorRef) {
+        this.setMimicSelectorRef(mimicSelectorRef);
+        return this;
+    }
+
+    public EntitySelectorConfig withEntityClass(Class<?> entityClass) {
+        this.setEntityClass(entityClass);
+        return this;
+    }
+
+    public EntitySelectorConfig withCacheType(SelectionCacheType cacheType) {
+        this.setCacheType(cacheType);
+        return this;
+    }
+
+    public EntitySelectorConfig withSelectionOrder(SelectionOrder selectionOrder) {
+        this.setSelectionOrder(selectionOrder);
+        return this;
+    }
+
+    public EntitySelectorConfig withNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
+        this.setNearbySelectionConfig(nearbySelectionConfig);
+        return this;
+    }
+
+    public EntitySelectorConfig withFilterClass(Class<? extends SelectionFilter> filterClass) {
+        this.setFilterClass(filterClass);
+        return this;
+    }
+
+    public EntitySelectorConfig withSorterManner(EntitySorterManner sorterManner) {
+        this.setSorterManner(sorterManner);
+        return this;
+    }
+
+    public EntitySelectorConfig withSorterComparatorClass(Class<? extends Comparator> comparatorClass) {
+        this.setSorterComparatorClass(comparatorClass);
+        return this;
+    }
+
+    public EntitySelectorConfig withSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> weightFactoryClass) {
+        this.setSorterWeightFactoryClass(weightFactoryClass);
+        return this;
+    }
+
+    public EntitySelectorConfig withSorterOrder(SelectionSorterOrder sorterOrder) {
+        this.setSorterOrder(sorterOrder);
+        return this;
+    }
+
+    public EntitySelectorConfig withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+        this.setSorterClass(sorterClass);
+        return this;
+    }
+
+    public EntitySelectorConfig
+            withProbabilityWeightFactoryClass(Class<? extends SelectionProbabilityWeightFactory> factoryClass) {
+        this.setProbabilityWeightFactoryClass(factoryClass);
+        return this;
+    }
+
+    public EntitySelectorConfig withSelectedCountLimit(long selectedCountLimit) {
+        this.setSelectedCountLimit(selectedCountLimit);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
 
     @Override
     public EntitySelectorConfig inherit(EntitySelectorConfig inheritedConfig) {

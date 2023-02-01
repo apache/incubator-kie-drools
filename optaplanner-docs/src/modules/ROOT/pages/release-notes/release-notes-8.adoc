@@ -27,6 +27,13 @@ With the aforementioned performance improvements,
 failing to follow this requirement will result in subtle bugs and score corruption
 as the solver will now reuse these instances as it sees fit.
 
+==== OptaPlanner configuration becomes even more fluent
+
+Various configuration classes, such as `EntitySelectorConfig` and `ValueSelectorConfig`,
+received new builder methods which make it easier than ever
+to replace XML-based solver config with fluent Java code.
+
+
 [[releaseNotes-8.33.0.Final]]
 === OptaPlanner 8.33.0.Final
 

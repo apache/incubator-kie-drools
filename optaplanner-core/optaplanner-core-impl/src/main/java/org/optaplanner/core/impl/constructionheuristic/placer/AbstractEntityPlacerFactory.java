@@ -1,7 +1,9 @@
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.PHASE;
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.STEP;
+
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
@@ -22,18 +24,14 @@ abstract class AbstractEntityPlacerFactory<Solution_, EntityPlacerConfig_ extend
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
         changeMoveSelectorConfig.setEntitySelectorConfig(
                 EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));
-        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-        changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig()
+                .withVariableName(variableDescriptor.getVariableName());
         if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-            if (variableDescriptor.isValueRangeEntityIndependent()) {
-                changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            } else {
-                changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-            }
-            changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
+            changeValueSelectorConfig = changeValueSelectorConfig
+                    .withCacheType(variableDescriptor.isValueRangeEntityIndependent() ? PHASE : STEP)
+                    .withSelectionOrder(SelectionOrder.SORTED)
+                    .withSorterManner(configPolicy.getValueSorterManner());
         }
-        changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
-        return changeMoveSelectorConfig;
+        return changeMoveSelectorConfig.withValueSelectorConfig(changeValueSelectorConfig);
     }
 }
