@@ -17,7 +17,9 @@
 package org.drools.core.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,7 +106,9 @@ public class ObjectStoreWrapper implements Collection {
 
     private List asList() {
         List list = new ArrayList();
-        list.addAll(this);
+        for (Object o : this) {
+            list.add(o);
+        }
         return list;
     }
 

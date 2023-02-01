@@ -26,6 +26,7 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;

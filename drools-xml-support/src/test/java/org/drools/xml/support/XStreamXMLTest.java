@@ -138,7 +138,7 @@ public class XStreamXMLTest {
 
         FactHandle factHandle = DefaultFactHandle.createFromExternalFormat("0:1:10:10:20:null:NON_TRAIT:null");
 
-        ModifyCommand cmd = new ModifyCommand(factHandle, List.of(new SetterImpl("name", "value")));
+        ModifyCommand cmd = new ModifyCommand(factHandle, Arrays.asList(new SetterImpl("name", "value")));
         String xmlString = xstream.toXML( cmd );
         assertThat(xmlString).isEqualTo("<modify fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\">\n" +
                 "  <set accessor=\"name\" value=\"value\"/>\n" +

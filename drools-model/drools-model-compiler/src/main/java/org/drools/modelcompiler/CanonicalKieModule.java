@@ -500,8 +500,7 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private Set<String> findGeneratedClassNamesWithDependencies() {
-        Set<String> generatedClassNames = new HashSet<>();
-        generatedClassNames.addAll(findGeneratedClassNames(internalKieModule));
+        Set<String> generatedClassNames = new HashSet<>(findGeneratedClassNames(internalKieModule));
 
         Map<ReleaseId, InternalKieModule> kieDependencies = internalKieModule.getKieDependencies();
         kieDependencies.values().forEach(depKieModule -> {

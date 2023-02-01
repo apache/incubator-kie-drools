@@ -256,7 +256,7 @@ public class CompiledFEELSemanticMappings {
     @SuppressWarnings("varargs")
     public static <T> List<T> list(T... a) {
         if (a == null) {
-            return List.of(null);
+            return Collections.singletonList(null);
         }
         return Arrays.asList(a);
     }

@@ -677,9 +677,8 @@ public class ConstraintParser {
         Expression thenExpr = conditionalExpr.getThenExpr();
         Expression elseExpr = conditionalExpr.getElseExpr();
 
-        List<String> usedDeclarations = new ArrayList<>();
         TypedExpressionResult conditionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(condition);
-        usedDeclarations.addAll(conditionResult.getUsedDeclarations());
+        List<String> usedDeclarations = new ArrayList<>(conditionResult.getUsedDeclarations());
 
         SingleDrlxParseSuccess conditionParseResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, condition, hasBind, isPositional);
         Expression parsedCondition = conditionParseResult.getExpr();
