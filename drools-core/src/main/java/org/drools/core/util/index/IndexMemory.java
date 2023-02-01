@@ -48,7 +48,7 @@ public class IndexMemory {
     private static ComparisonMemoryType COMPARISON_MEMORY_TYPE; // did not set this as final, as some tests need to change this
 
     static {
-        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(System.getProperty("org.drools.equalitymemory", INTERNAL_INDEX));
+        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(System.getProperty("org.drools.equalitymemory", FASTUTIL_INDEX));
         COMPARISON_MEMORY_TYPE = ComparisonMemoryType.get(System.getProperty("org.drools.comparisonmemory", FASTUTIL_INDEX));
     }
 
