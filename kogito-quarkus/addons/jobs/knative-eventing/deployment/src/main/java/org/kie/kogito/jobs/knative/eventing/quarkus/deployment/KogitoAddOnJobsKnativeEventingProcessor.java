@@ -34,7 +34,7 @@ import org.kie.kogito.jobs.api.event.JobCloudEvent;
 import org.kie.kogito.jobs.api.event.ProcessInstanceContextJobCloudEvent;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
-import org.kie.kogito.quarkus.extensions.spi.deployment.HasProcessExtension;
+import org.kie.kogito.quarkus.extensions.spi.deployment.HasWorkflowExtension;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 
 import io.quarkus.deployment.IsTest;
@@ -68,7 +68,7 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
                 CancelJobRequestEvent.JobId.class.getName());
     }
 
-    @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasProcessExtension.class)
+    @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasWorkflowExtension.class)
     public void buildCloudEventsMetadata(List<KogitoProcessContainerGeneratorBuildItem> processContainerBuildItem,
             BuildProducer<KogitoCloudEventsBuildItem> cloudEventsBuildItemProducer) {
         final Set<CloudEventMeta> cloudEvents = new LinkedHashSet<>();
