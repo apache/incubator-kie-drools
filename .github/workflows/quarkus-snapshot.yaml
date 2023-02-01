@@ -23,7 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     if: github.actor == 'quarkusbot'
-
+    env:
+      INTEGRATION_BRANCH: main-integration-quarkus-main
     steps:
       - name: Install yq
         run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y
@@ -33,18 +34,18 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       
-      - name: Checkout Drools repository on main
+      - name: Checkout Drools repository on integration branch
         uses: actions/checkout@v3
         with:
           repository: kiegroup/drools
           path: drools
-          ref: main
+          ref: ${{ env.INTEGRATION_BRANCH }}
       
-      - name: Checkout current repository on main
+      - name: Checkout current repository on integration branch
         uses: actions/checkout@v3
         with:
           path: current-repo
-          ref: main
+          ref: ${{ env.INTEGRATION_BRANCH }}
 
       - name: Checkout Ecosystem
         uses: actions/checkout@v3
@@ -62,6 +63,8 @@ jobs:
     name: "Build against latest Quarkus LTS"
     runs-on: ubuntu-latest
     if: github.actor == 'quarkusbot'
+    env:
+      INTEGRATION_BRANCH: main-integration-quarkus-lts
     steps:
       - name: Install yq
         run: sudo add-apt-repository ppa:rmescandon/yq && sudo apt update && sudo apt install yq -y
@@ -71,18 +74,18 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Checkout drools repository
+      - name: Checkout drools repository on integration branch
         uses: actions/checkout@v3
         with:
           repository: kiegroup/drools
           path: drools
-          ref: main
+          ref: ${{ env.INTEGRATION_BRANCH }}
 
-      - name: Checkout current repository on main
+      - name: Checkout current repository on integration branch
         uses: actions/checkout@v3
         with:
           path: current-repo
-          ref: main
+          ref: ${{ env.INTEGRATION_BRANCH }}
 
       - name: Checkout Ecosystem
         uses: actions/checkout@v3
