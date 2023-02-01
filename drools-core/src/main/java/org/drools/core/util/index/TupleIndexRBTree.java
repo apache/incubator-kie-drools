@@ -165,6 +165,9 @@ public class TupleIndexRBTree extends AbstractTupleIndexTree implements External
     }
 
     private Tuple getNextRight(Comparable key, boolean first) {
+        if (key == null) {
+            return null;
+        }
         key = coerceType(index, tree.root != null ? tree.root.key : null, key);
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {

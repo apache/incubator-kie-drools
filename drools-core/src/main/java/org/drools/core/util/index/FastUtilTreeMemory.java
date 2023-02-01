@@ -20,6 +20,8 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
     private TreeFastFullIterator fullFastIterator;
 
+    private TupleList nullTupleList;
+
     public static class HolderEntry implements Object2ObjectMap.Entry<Comparable, TupleList> {
         static HolderEntry INSTANCE = new HolderEntry();
 
@@ -58,6 +60,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
         fastIterator = new TreeFastIterator(this);
         fullFastIterator = new TreeFastFullIterator(this);
+        nullTupleList = new TupleList();
     }
 
     @Override
@@ -71,7 +74,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         tupleList.remove( tuple );
 
         // bucket is empty so remove.
-        if ( tupleList.getFirst() == null ) {
+        if ( tupleList.getFirst() == null && tupleList != nullTupleList) {
             tree.remove(tupleList.key());
         }
 
@@ -89,6 +92,9 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
     private TupleList getOrCreate(Tuple tuple) {
         Comparable key = TupleIndexRBTree.coerceType(index, !tree.isEmpty() ? tree.firstKey() : null, getIndexedValue(tuple, left));
+        if (key == null) {
+            return nullTupleList;
+        }
         TupleList entry = tree.compute(key, (newKey, tupleList) -> {
            if (tupleList == null) {
                tupleList = new IndexTupleList(key);
@@ -107,7 +113,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         memory.remove( tuple );
         this.factSize--;
 
-        if ( memory.getFirst() == null ) {
+        if ( memory.getFirst() == null && memory != nullTupleList ) {
             tree.remove(memory.key());
         }
         tuple.clear();
@@ -232,6 +238,17 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
         public Tuple getFirst(Tuple tuple) {
             key = TupleIndexRBTree.coerceType(treeMemory.index, !treeMemory.tree.isEmpty() ? treeMemory.tree.firstKey() : null, treeMemory.getIndexedValue(tuple, !treeMemory.left));
+
+            if (key == null) {
+                switch (constraintType) {
+                    case EQUAL:
+                    case GREATER_OR_EQUAL:
+                    case LESS_OR_EQUAL:
+                        return treeMemory.nullTupleList.getFirst();
+                    default:
+                        return null;
+                }
+            }
 
             HolderEntry from = HolderEntry.getInstance().setKey(key);
 
