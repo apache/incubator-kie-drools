@@ -67,7 +67,8 @@ void createProjectSetupBranchJob() {
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -84,9 +85,11 @@ void setupProjectNightlyJob() {
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -105,6 +108,7 @@ void setupProjectReleaseJob() {
 
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -135,6 +139,7 @@ void setupProjectPostReleaseJob() {
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
         GITHUB_CLI_VERSION: '0.11.1',
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -245,7 +250,8 @@ void createSetupBranchJob() {
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
-        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -273,6 +279,7 @@ void setupDeployJob(Folder jobFolder) {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     if (jobFolder.isPullRequest()) {
         jobParams.env.putAll([
@@ -358,6 +365,7 @@ void setupPromoteJob(Folder jobFolder) {
 
         PROPERTIES_FILE_NAME: 'deployment.properties',
         GITHUB_CLI_VERSION: '0.11.1',
+        OPTAPLANNER_LATEST_STREAM: getOptaPlannerLatestStream()
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -396,5 +404,17 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
         }
+    }
+}
+
+String getOptaPlannerLatestStream() {
+    String gitMainBranch = "${GIT_MAIN_BRANCH}"
+
+    if (gitMainBranch == 'main') {
+        return '8'
+    } else if (gitMainBranch == '9.x') {
+        return '9'
+    } else {
+        return gitMainBranch
     }
 }

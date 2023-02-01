@@ -57,6 +57,10 @@ pipeline {
         }
 
         stage('Reset Quickstarts stable branch') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     dir(quickstartsRepository) {
@@ -69,6 +73,10 @@ pipeline {
         }
 
         stage('Upload OptaPlanner distribution from Quickstarts') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     dir(optaplannerRepository) {
@@ -83,6 +91,10 @@ pipeline {
         }
 
         stage('Update OptaPlanner website') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     final String websiteRepository = 'optaplanner-website'
@@ -363,4 +375,12 @@ void assertGithubCLI(String ghPath) {
     else {
         error "gh not found at $ghPath"
     }
+}
+
+boolean isStream8() {
+    return env.OPTAPLANNER_LATEST_STREAM == '8'
+}
+
+boolean isStream9() {
+    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }

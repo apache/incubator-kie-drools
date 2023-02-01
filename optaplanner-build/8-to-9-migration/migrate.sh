@@ -13,7 +13,7 @@ project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -Dfor
 ${mvn_cmd} rewrite:run \
   -Drewrite.configLocation="${optaplanner_file}" \
   -Drewrite.recipeArtifactCoordinates=org.optaplanner:optaplanner-migration:"$project_version" \
-  -Drewrite.exclusions=optaplanner-operator/** \
+  -Drewrite.exclusions=optaplanner-operator/**,optaplanner-examples/data/** \
   -Drewrite.activeRecipes=org.optaplanner.openrewrite.Quarkus3 \
   -Dfull \
   -Dquickly \
@@ -29,6 +29,8 @@ ${mvn_cmd} versions:set \
   -DallowSnapshots=true \
   -DgenerateBackupPoms=false \
   -DnewVersion="${new_project_version}" \
+
+${mvn_cmd} process-test-sources
 
 # Commit the changes.
 git status

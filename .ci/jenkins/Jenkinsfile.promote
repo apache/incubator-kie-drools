@@ -82,7 +82,8 @@ pipeline {
 
         stage('Merge Optaweb Vehicle Routing deploy PR and tag') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after optaweb will have been migrated.
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -97,7 +98,8 @@ pipeline {
 
         stage('Merge OptaPlanner Quickstarts PR and tag') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -112,11 +114,16 @@ pipeline {
 
         stage('Upload OptaPlanner documentation') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
-                    getMavenCommand().inDirectory(optaplannerRepository).skipTests(true).withProperty('full').run('clean install')
+                    getMavenCommand()
+                            .inDirectory(optaplannerRepository)
+                            .skipTests(true)
+                            .withProperty('full')
+                            .run('clean install')
                     uploadDistribution(optaplannerRepository)
                 }
             }
@@ -124,11 +131,15 @@ pipeline {
 
         stage('Upload Vehicle Routing documentation and distribution') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
-                    getMavenCommand().inDirectory(vehicleRoutingRepository).skipTests(true).run('clean install')
+                    getMavenCommand()
+                            .inDirectory(vehicleRoutingRepository)
+                            .skipTests(true)
+                            .run('clean install')
                     uploadDistribution(vehicleRoutingRepository)
                 }
             }
@@ -162,7 +173,8 @@ pipeline {
 
         stage('Set Optaweb Vehicle Routing next snapshot version') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isRelease() && isStream8()  }
             }
             steps {
                 script {
@@ -185,7 +197,8 @@ pipeline {
 
         stage('Set Quickstarts next snapshot version') {
             when {
-                expression { return isRelease() }
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -208,7 +221,7 @@ pipeline {
 
         stage('Push the final OptaPlanner operator image') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -497,4 +510,12 @@ void removeOperatorImageTemporaryTag() {
         error "Cannot remove the OptaPlanner Operator temporary image tag (${temporaryImageName}) from quay.io. "
                 + "The tag should be removed manually."
     }
+}
+
+boolean isStream8() {
+    return env.OPTAPLANNER_LATEST_STREAM == '8'
+}
+
+boolean isStream9() {
+    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }

@@ -1,6 +1,10 @@
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
+String optaPlannerRepository = 'optaplanner'
+String optaPlannerMainBranch = 'main'
+String optaPlanner9xBranch = '9.x'
+
 // Deploy jobs
 OPTAPLANNER_DEPLOY = 'optaplanner-deploy'
 
@@ -49,13 +53,28 @@ pipeline {
             }
         }
 
+        // Applies only to the 9.x branch build. The 9.?.x release branches must remain intact.
+        stage('Migrate to 9') {
+            when {
+                expression { return getBuildBranch() == optaPlanner9xBranch }
+            }
+            steps {
+                script {
+                    checkoutNewBranch(optaPlannerRepository, optaPlannerMainBranch, optaPlanner9xBranch)
+                    callMigrationScript(optaPlannerRepository)
+                    forcePushBranch(optaPlannerRepository, optaPlanner9xBranch)
+                }
+            }
+        }
+
         stage('Build & Deploy OptaPlanner') {
             steps {
                 script {
                     def buildParams = getDefaultBuildParams(getBuildBranch())
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
-                    def quickstartsBranch = getBuildBranch() == 'main' ? 'development' : getBuildBranch()
+                    def quickstartsBranch = getBuildBranch() == 'main' || getBuildBranch() == '9.x'
+                            ? 'development' : getBuildBranch()
                     addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', quickstartsBranch)
 
                     buildJob(OPTAPLANNER_DEPLOY, buildParams)
@@ -168,4 +187,34 @@ String getBuildBranch() {
 
 String getGitAuthor() {
     return env.GIT_AUTHOR
+}
+
+String getGitAuthorCredsID() {
+    return env.AUTHOR_CREDS_ID
+}
+
+void checkoutNewBranch(String repo, String originBranch, String newBranch, String dirName = repo) {
+    dir(dirName) {
+        deleteDir()
+        checkoutRepo(optaPlannerRepository, originBranch)
+        sh "git checkout -b ${newBranch}"
+    }
+}
+
+void forcePushBranch(String dirName, String branch) {
+    dir(dirName) {
+        withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+            // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
+            sh """
+            git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
+            git push origin ${branch} --force
+        """
+        }
+    }
+}
+
+void callMigrationScript(String dirName) {
+    dir(dirName) {
+        sh "./build/8-to-9-migration/migrate.sh"
+    }
 }
