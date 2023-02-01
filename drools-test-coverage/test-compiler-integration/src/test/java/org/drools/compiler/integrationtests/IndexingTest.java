@@ -44,8 +44,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.TupleIndexHashTable;
-import org.drools.core.util.index.TupleList;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -203,43 +201,43 @@ public class IndexingTest {
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             c = (SingleBetaConstraints) j3.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j3);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             c = (SingleBetaConstraints) j4.getRawConstraints();
             assertThat(c.isIndexed()).isFalse();
             bm = (BetaMemory) wm.getNodeMemory(j4);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isFalse();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isFalse();
 
             c = (SingleBetaConstraints) j5.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j5);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             c = (SingleBetaConstraints) j6.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             bm = (BetaMemory) wm.getNodeMemory(j6);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             c = (SingleBetaConstraints) j7.getRawConstraints();
             assertThat(c.isIndexed()).isFalse();
             bm = (BetaMemory) wm.getNodeMemory(j7);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isFalse();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isFalse();
 
             assertThat(j8.getRawConstraints()).isInstanceOf(EmptyBetaConstraints.class);
             bm = (BetaMemory) wm.getNodeMemory(j8);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleList).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleList).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isFalse();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isFalse();
         } finally {
             wm.dispose();
         }
@@ -274,8 +272,8 @@ public class IndexingTest {
             final TripleNonIndexSkipBetaConstraints c = (TripleNonIndexSkipBetaConstraints) j.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(j);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
         } finally {
             wm.dispose();
         }
@@ -312,8 +310,8 @@ public class IndexingTest {
             final DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(n);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             final Map<String, Integer> map = new HashMap<>();
             map.put("inserted", 0);
@@ -445,8 +443,8 @@ public class IndexingTest {
             final DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             final BetaMemory bm = (BetaMemory) wm.getNodeMemory(n);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
 
             wm.openLiveQuery("peeps", new Object[]{Variable.v, 99}, new ViewChangedEventListener() {
                 @Override
@@ -482,7 +480,7 @@ public class IndexingTest {
             // check we can resume from each entry in the list above.
             for (int i = 0; i < 100; i++) {
                 final RightTuple rightTuple = list.get(i);
-                it = n.getRightIterator(bm.getRightTupleMemory(), rightTuple); // resumes from the current rightTuple
+                it = bm.getRightTupleMemory().fullFastIterator(rightTuple); // resumes from the current rightTuple
                 int j = i + 1;
                 for (RightTuple rt = (RightTuple) it.next(rightTuple); rt != null; rt = (RightTuple) it.next(rt)) {
                     assertThat(rt).isSameAs(list.get(j));
@@ -870,8 +868,8 @@ public class IndexingTest {
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
             assertThat(c.isIndexed()).isTrue();
             BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
-            assertThat(bm.getLeftTupleMemory() instanceof TupleIndexHashTable).isTrue();
-            assertThat(bm.getRightTupleMemory() instanceof TupleIndexHashTable).isTrue();
+            assertThat(bm.getLeftTupleMemory().isIndexed()).isTrue();
+            assertThat(bm.getRightTupleMemory().isIndexed()).isTrue();
         } finally {
             wm.dispose();
         }

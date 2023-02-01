@@ -116,7 +116,7 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
-        Entry[] entries = new Entry[10];
+        TupleList[] entries = new TupleList[10];
         entries[0] = mock(TupleList.class);
         entries[5] = mock(TupleList.class);
         entries[9] = mock(TupleList.class);
@@ -125,13 +125,13 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
 
         // set return values for methods
         when(entries[0].getNext()).thenReturn(null);
-        when(((TupleList) entries[0]).getFirst()).thenReturn(tuples[0]);
+        when((entries[0]).getFirst()).thenReturn(tuples[0]);
 
         when(entries[5].getNext()).thenReturn(null);
-        when(((TupleList) entries[5]).getFirst()).thenReturn(tuples[1]);
+        when((entries[5]).getFirst()).thenReturn(tuples[1]);
 
         when(entries[9].getNext()).thenReturn(null);
-        when(((TupleList) entries[9]).getFirst()).thenReturn(tuples[2]);
+        when((entries[9]).getFirst()).thenReturn(tuples[2]);
 
         // create the mock table for the iterator
         AbstractHashTable table = mock(AbstractHashTable.class);

@@ -256,7 +256,6 @@ public class PhreakAccumulateNode {
                         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
                             trgLeftTuples.addUpdate( leftTuple );
                         }
-
                     }
                 }
             }

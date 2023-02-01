@@ -93,7 +93,7 @@ public class TripleBasedTypes extends TripleBasedStruct {
 
 
     public Object put( String key, Object value ) {
-        store.put( tripleFactory.newTriple( key, TripleStore.PROXY, value ), false );
+        store.put( tripleFactory.newTriple( key, TripleStore.PROXY, value ) );
         Object ret =  store.add( property( TripleStore.TYPE, key ) );
         return ret;
     }

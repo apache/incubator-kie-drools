@@ -57,6 +57,7 @@
     <version.io.micrometer>1.10.2</version.io.micrometer>
     <version.io.quarkus>2.16.0.Final</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.1.1</version.io.smallrye.openapi.core>
+    <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.antlr>2.7.7</version.antlr>
@@ -1337,6 +1338,12 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>it.unimi.dsi</groupId>
+        <artifactId>fastutil</artifactId>
+        <version>${version.it.unimi.dsi.fastutil}</version>
       </dependency>
 
     </dependencies>

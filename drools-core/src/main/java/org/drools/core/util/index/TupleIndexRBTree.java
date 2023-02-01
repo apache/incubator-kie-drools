@@ -27,6 +27,7 @@ import org.drools.core.base.CoercionUtil;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -34,16 +35,9 @@ import org.drools.core.util.TupleRBTree;
 import org.drools.core.util.TupleRBTree.Boundary;
 import org.drools.core.util.TupleRBTree.Node;
 
-public class TupleIndexRBTree implements Externalizable, TupleMemory {
+public class TupleIndexRBTree extends AbstractTupleIndexTree implements Externalizable, TupleMemory {
 
     private TupleRBTree<Comparable<Comparable>> tree;
-
-    private AbstractHashTable.FieldIndex index;
-    private IndexUtil.ConstraintType constraintType;
-
-    private int size;
-
-    private boolean left;
 
     public TupleIndexRBTree() {
         // constructor for serialisation
@@ -60,7 +54,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         out.writeObject( tree );
         out.writeObject( index );
         out.writeObject( constraintType );
-        out.writeInt(size);
+        out.writeInt(factSize);
         out.writeBoolean( left );
     }
 
@@ -68,15 +62,15 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         tree = (TupleRBTree<Comparable<Comparable>>) in.readObject();
         index = (AbstractHashTable.FieldIndex) in.readObject();
         constraintType = (IndexUtil.ConstraintType) in.readObject();
-        size = in.readInt();
+        factSize = in.readInt();
         left = in.readBoolean();
     }
 
     public void add(Tuple tuple) {
-        Comparable key = getLeftIndexedValue( tuple );
+        Comparable key = getIndexedValue(tuple, left);
         TupleList list = tree.insert(key);
         list.add(tuple);
-        size++;
+        factSize++;
     }
 
     public void remove(Tuple tuple) {
@@ -85,7 +79,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         if (list.getFirst() == null) {
             tree.delete(((Node<Comparable<Comparable>>)list).key);
         }
-        size--;
+        factSize--;
     }
 
     public void removeAdd(Tuple tuple) {
@@ -93,29 +87,25 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         add(tuple);
     }
 
-    public boolean isIndexed() {
-        return true;
-    }
-
     public int size() {
-        return size;
+        return factSize;
     }
 
-    public Entry[] toArray() {
-        FastIterator it = tree.fastIterator();
+    public Tuple[] toArray() {
+        Iterator<Node<Comparable<Comparable>>> it = tree.iterator();
         if (it == null) {
-            return new Entry[0];
+            return new Tuple[0];
         }
 
         List<Comparable> toBeRemoved = new ArrayList<>();
         List<Tuple> result = new ArrayList<>();
 
-        TupleList list = null;
-        while ( (list = (TupleList) it.next( list )) != null ) {
+        Node<Comparable<Comparable>> list = null;
+        while ( (list = it.next( )) != null ) {
             Tuple entry = list.getFirst();
             while (entry != null) {
                 result.add(entry);
-                entry = (Tuple) entry.getNext();
+                entry = entry.getNext();
             }
         }
 
@@ -123,8 +113,8 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     public Tuple getFirst(Tuple rightTuple) {
-        Comparable key = getRightIndexedValue( rightTuple );
-        return (Tuple)getNext(key, true);
+        Comparable key = getIndexedValue( rightTuple, !left );
+        return getNext(key, true);
     }
 
     public Iterator<Tuple> iterator() {
@@ -133,38 +123,19 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
-    public boolean contains(Tuple leftTuple) {
-        Comparable key = getLeftIndexedValue( leftTuple );
-        return tree.lookup(key) != null;
-    }
-
-    public FastIterator fastIterator() {
+    public FastIterator<Tuple> fastIterator() {
         return new TupleFastIterator();
     }
 
-    public FastIterator fullFastIterator() {
+    public FastIterator<Tuple> fullFastIterator() {
         return new TupleFastIterator();
     }
 
-    public FastIterator fullFastIterator(Tuple leftTuple) {
+    public FastIterator<Tuple> fullFastIterator(Tuple leftTuple) {
         FastIterator fastIterator = fullFastIterator();
-        Comparable key = getLeftIndexedValue( leftTuple );
+        Comparable key = getLeftIndexedValue(leftTuple);
         fastIterator.next(getNext(key, true));
         return fastIterator;
-    }
-
-    private Comparable getLeftIndexedValue( Tuple tuple ) {
-        return getIndexedValue( tuple, left );
-    }
-
-    private Comparable getRightIndexedValue( Tuple tuple ) {
-        return getIndexedValue( tuple, !left );
-    }
-
-    private Comparable getIndexedValue( Tuple tuple, boolean left ) {
-        return left ?
-               (Comparable) index.getLeftExtractor().getValue( tuple ) :
-               (Comparable) index.getRightExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
     private Tuple getNext(Comparable key, boolean first) {
@@ -172,7 +143,7 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     private Tuple getNextLeft(Comparable key, boolean first) {
-        key = coerceType(key);
+        key = coerceType(index, tree.root != null ? tree.root.key : null, key);
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -194,7 +165,10 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     private Tuple getNextRight(Comparable key, boolean first) {
-        key = coerceType(key);
+        if (key == null) {
+            return null;
+        }
+        key = coerceType(index, tree.root != null ? tree.root.key : null, key);
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -215,30 +189,29 @@ public class TupleIndexRBTree implements Externalizable, TupleMemory {
         return firstNode == null ? null : firstNode.getFirst();
     }
 
-    private Comparable coerceType(Comparable key) {
+    public static Comparable coerceType(FieldIndex index, Comparable treeRootKey, Comparable key) {
         // We don't do dynamic coercion other than Numbers. See IndexUtil.areRangeIndexCompatibleOperands().
-        if (index.requiresCoercion() && key != null && tree.root != null && !key.getClass().equals(tree.root.key.getClass())) {
-            if (tree.root.key instanceof Number && key instanceof Number) {
-                key = (Comparable) CoercionUtil.coerceToNumber((Number) key, (Class<?>) tree.root.key.getClass());
+        if (index.requiresCoercion() && key != null && treeRootKey != null && !key.getClass().equals(treeRootKey.getClass())) {
+            if (treeRootKey instanceof Number && key instanceof Number) {
+                key = (Comparable) CoercionUtil.coerceToNumber((Number) key, (Class<?>) treeRootKey.getClass());
             } else {
-                throw new RuntimeException("Not possible to coerce [" + key + "] from class " + key.getClass() + " to class " + tree.root.key.getClass());
+                throw new RuntimeException("Not possible to coerce [" + key + "] from class " + key.getClass() + " to class " + treeRootKey.getClass());
             }
         }
         return key;
     }
 
-    public class TupleFastIterator implements FastIterator {
-        public Entry next(Entry object) {
-            if (object == null) {
+    public class TupleFastIterator implements FastIterator<Tuple> {
+        public Tuple next(Tuple tuple) {
+            if (tuple == null) {
                 Node<Comparable<Comparable>> firstNode = tree.first();
                 return firstNode == null ? null : firstNode.getFirst();
             }
-            Tuple tuple = (Tuple) object;
-            Tuple next = (Tuple) tuple.getNext();
+            Tuple next = tuple.getNext();
             if (next != null) {
                 return next;
             }
-            Comparable key = getLeftIndexedValue( tuple );
+            Comparable key = getLeftIndexedValue(tuple);
             return getNext(key, false);
         }
 

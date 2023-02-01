@@ -156,10 +156,6 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         return tuple;
     }
 
-    public boolean contains(final Tuple tuple) {
-        return get( tuple ) != null;
-    }
-
     public Tuple get(final Tuple tuple) {
         Tuple current = this.first;
         while ( current != null ) {
@@ -203,16 +199,16 @@ public class TupleList<C> implements TupleMemory, Entry<TupleList<C>>, Serializa
         return TupleMemory.IndexType.NONE;
     }
 
-    public FastIterator fastIterator() {
+    public FastIterator<Tuple> fastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
     
-    public FastIterator fullFastIterator() {
+    public FastIterator<Tuple> fullFastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
     
 
-    public FastIterator fullFastIterator(Tuple tuple) {
+    public FastIterator<Tuple> fullFastIterator(Tuple tuple) {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }    
 

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
@@ -37,7 +38,6 @@ import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.drools.model.functions.Predicate1;
 import org.drools.modelcompiler.util.EvaluationUtil;
@@ -148,7 +148,7 @@ public abstract class BaseBetaConstraintsTest {
 
         if ( indexedPositions.length > 0 ) {
             if (((IndexableConstraint)constraints[indexedPositions[0]]).getConstraintType() == ConstraintType.EQUAL) {
-                TupleIndexHashTable tupleHashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
+                TupleMemory tupleHashTable = betaMemory.getLeftTupleMemory();
                 assertThat(tupleHashTable.isIndexed()).isTrue();
                 Index index = tupleHashTable.getIndex();
 
@@ -157,7 +157,7 @@ public abstract class BaseBetaConstraintsTest {
                                                  index.getFieldIndex( i ) );
                 }
 
-                TupleIndexHashTable factHashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
+                TupleMemory factHashTable = betaMemory.getRightTupleMemory();
                 assertThat(factHashTable.isIndexed()).isTrue();
                 index = factHashTable.getIndex();
 

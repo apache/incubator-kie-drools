@@ -28,12 +28,12 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
 
     private DefeasibilityStatus status;
     private String[]            defeats;
-    private M                   rootDefeated;
-    private M                   tailDefeated;
+    private M                    rootDefeated;
+    private M                    tailDefeated;
 
     //    private int                         attacks;
 
-    private DefeasibleMode<M>   defeatedBy;
+    private M    defeatedBy;
 
     private boolean isDefeater;
 
@@ -73,8 +73,8 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         }
     }
 
-    public void addDefeated( M defeated ) {
-        defeated.setDefeatedBy( this );
+    public void addDefeated( M  defeated ) {
+        defeated.setDefeatedBy((M) this);
         if (rootDefeated == null) {
             rootDefeated = defeated;
         } else {
@@ -84,14 +84,14 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         tailDefeated = defeated;
     }
 
-    public void removeDefeated( DefeasibleMode<M> defeated ) {
+    public void removeDefeated( M  defeated ) {
         defeated.setDefeatedBy( null );
         if (this.rootDefeated == defeated) {
             removeFirst();
         } else if (this.tailDefeated == defeated) {
             removeLast();
         } else {
-            DefeasibleMode<M> entry = this.rootDefeated;
+            M  entry = this.rootDefeated;
             while ( entry != defeated ) {
                 entry = entry.getNext();
             }
@@ -102,11 +102,11 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         }
     }
 
-    public DefeasibleMode<M> removeFirst() {
+    public M  removeFirst() {
         if (this.rootDefeated == null) {
             return null;
         }
-        final DefeasibleMode<M> node = this.rootDefeated;
+        final M  node = this.rootDefeated;
         this.rootDefeated = node.getNext();
         node.setNext(null);
         if (this.rootDefeated != null) {
@@ -117,11 +117,11 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         return node;
     }
 
-    public DefeasibleMode<M> removeLast() {
+    public M  removeLast() {
         if (this.tailDefeated == null) {
             return null;
         }
-        final DefeasibleMode<M> node = this.tailDefeated;
+        final M  node = this.tailDefeated;
         this.tailDefeated = node.getPrevious();
         node.setPrevious(null);
         if (this.tailDefeated != null) {
@@ -132,11 +132,11 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         return node;
     }
 
-    public M getRootDefeated() {
+    public M  getRootDefeated() {
         return this.rootDefeated;
     }
 
-    public M getTailDefeated() {
+    public M  getTailDefeated() {
         return this.tailDefeated;
     }
 
@@ -144,11 +144,11 @@ public class DefeasibleMode<M extends DefeasibleMode<M>> extends JTMSMode<M> { /
         return this.defeats;
     }
 
-    public DefeasibleMode<M> getDefeatedBy() {
+    public M  getDefeatedBy() {
         return defeatedBy;
     }
 
-    public void setDefeatedBy(DefeasibleMode<M> defeatedBy) {
+    public void setDefeatedBy(M  defeatedBy) {
         this.defeatedBy = defeatedBy;
     }
 

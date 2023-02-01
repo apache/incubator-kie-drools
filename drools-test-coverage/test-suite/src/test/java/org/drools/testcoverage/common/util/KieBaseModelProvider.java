@@ -28,7 +28,7 @@ import org.kie.api.conf.KieBaseOption;
  * Basic provider class for KieBaseModel instances.
  */
 public interface KieBaseModelProvider {
-    int IDENTITY = 1 << 0;
+    int IDENTITY = 1;
     int STREAM_MODE = 1 << 1;
     int ALPHA_NETWORK_COMPILER = 1 << 2;
     int IMMUTABLE = 1 << 3;

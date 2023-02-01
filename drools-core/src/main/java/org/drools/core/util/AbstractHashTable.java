@@ -33,15 +33,13 @@ public abstract class AbstractHashTable
     Externalizable {
     static final int           MAX_CAPACITY = 1 << 30;
 
-    public static final int                           PRIME            = 31;
+    public static final int    PRIME            = 31;
 
     protected int              size;
     protected int              threshold;
     protected float            loadFactor;
 
-    protected ObjectComparator comparator;
-
-    protected Entry<TupleList>[] table;
+    protected TupleList[]      table;
 
     private HashTableIterator  iterator;
 
@@ -54,21 +52,19 @@ public abstract class AbstractHashTable
                              final float loadFactor) {
         this.loadFactor = loadFactor;
         this.threshold = (int) (capacity * loadFactor);
-        this.table = new Entry[capacity];
-        this.comparator = EqualityEquals.getInstance();
+        this.table = new TupleList[capacity];
     }
 
-    public AbstractHashTable(final Entry[] table) {
+    public AbstractHashTable(final TupleList[] table) {
         this( 0.75f,
               table );
     }
 
     public AbstractHashTable(final float loadFactor,
-                             final Entry[] table) {
+                             final TupleList[] table) {
         this.loadFactor = loadFactor;
         this.threshold = (int) (table.length * loadFactor);
         this.table = table;
-        this.comparator = EqualityEquals.getInstance();
     }
 
     @Override
@@ -77,8 +73,7 @@ public abstract class AbstractHashTable
         size = in.readInt();
         threshold = in.readInt();
         loadFactor = in.readFloat();
-        comparator = (ObjectComparator) in.readObject();
-        table = (Entry[]) in.readObject();
+        table = (TupleList[]) in.readObject();
         iterator = (HashTableIterator) in.readObject();
     }
 
@@ -87,7 +82,6 @@ public abstract class AbstractHashTable
         out.writeInt( size );
         out.writeInt( threshold );
         out.writeFloat( loadFactor );
-        out.writeObject( comparator );
         out.writeObject( table );
         out.writeObject( iterator );
     }
@@ -105,10 +99,6 @@ public abstract class AbstractHashTable
         return new HashTableIterator( this );
     }
 
-    public void setComparator(final ObjectComparator comparator) {
-        this.comparator = comparator;
-    }
-
     public void ensureCapacity(int itemsToBeAdded) {
         int newCapacity = this.size + itemsToBeAdded;
         if (newCapacity > this.threshold) {
@@ -121,23 +111,23 @@ public abstract class AbstractHashTable
     }
 
     protected void resize(final int newCapacity) {
-        final Entry[] oldTable = this.table;
+        final TupleList[] oldTable = this.table;
         final int oldCapacity = oldTable.length;
         if ( oldCapacity == AbstractHashTable.MAX_CAPACITY ) {
             this.threshold = Integer.MAX_VALUE;
             return;
         }
 
-        final Entry[] newTable = new Entry[newCapacity];
+        final TupleList[] newTable = new TupleList[newCapacity];
 
         for ( int i = 0; i < this.table.length; i++ ) {
-            Entry entry = this.table[i];
+            TupleList entry = this.table[i];
             if ( entry == null ) {
                 continue;
             }
             this.table[i] = null;
             while ( entry != null ) {
-                Entry next = entry.getNext();
+                TupleList next = entry.getNext();
                                 
                 // we must use getResizeHashcode as some sub classes cache the hashcode and some don't
                 // otherwise we end up rehashing a cached hashcode that has already been rehashed.
@@ -155,22 +145,9 @@ public abstract class AbstractHashTable
         this.threshold = (int) (newCapacity * this.loadFactor);
     }
     
-    public abstract int getResizeHashcode(Entry entry);
+    public abstract int getResizeHashcode(TupleList entry);
 
-    public Entry[] toArray() {
-        Entry[] result = new Entry[this.size];
-        int index = 0;
-        for ( int i = 0; i < this.table.length; i++ ) {
-            Entry entry = this.table[i];
-            while ( entry != null ) {
-                result[index++] = entry;
-                entry = entry.getNext();
-            }
-        }
-        return result;
-    }
-
-    public Entry<TupleList>[] getTable() {
+    public TupleList<TupleList>[] getTable() {
         return this.table;
     }
 
@@ -190,11 +167,6 @@ public abstract class AbstractHashTable
     protected static int indexOf(final int hashCode,
                           final int dataSize) {
         return hashCode & (dataSize - 1);
-    }      
-
-    public interface ObjectComparator extends Externalizable {
-        int hashCodeOf(Object object);
-        boolean areEqual(Object object1, Object object2);
     }
     
     @Override
@@ -202,7 +174,7 @@ public abstract class AbstractHashTable
         StringBuilder sbuilder = new StringBuilder();
         Iterator it = newIterator();
         boolean isFirst = true;
-        for (Entry entry = ( Entry ) it.next(); entry != null; entry = ( Entry ) it.next() ) {
+        for (TupleList entry = ( TupleList ) it.next(); entry != null; entry = ( TupleList ) it.next() ) {
             sbuilder.append( entry.toString() );
             if ( !isFirst ) {
                 sbuilder.append( ", " );
@@ -211,84 +183,6 @@ public abstract class AbstractHashTable
         }
         
         return sbuilder.toString();
-    }
-
-    public abstract static class AbstractObjectComparator implements ObjectComparator {
-    }
-
-    public static class InstanceEquals
-        extends
-        AbstractObjectComparator {
-
-        private static final long            serialVersionUID = 510l;
-        public static final ObjectComparator INSTANCE         = new InstanceEquals();
-
-        @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public static ObjectComparator getInstance() {
-            return InstanceEquals.INSTANCE;
-        }
-
-        public InstanceEquals() {
-
-        }
-        
-        @Override
-        public int hashCodeOf(final Object obj) {
-            return rehash( System.identityHashCode( obj ) );
-        }        
-
-        @Override
-        public boolean areEqual(final Object object1,
-                                final Object object2) {
-            return object1 == object2;
-        }
-    }
-
-    public static class EqualityEquals
-        extends
-        AbstractObjectComparator {
-
-        private static final long            serialVersionUID = 510l;
-        public static final ObjectComparator INSTANCE         = new EqualityEquals();
-
-        @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-        }
-
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
-
-        public static ObjectComparator getInstance() {
-            return EqualityEquals.INSTANCE;
-        }
-
-        public EqualityEquals() {
-
-        }
-        
-        @Override
-        public int hashCodeOf(final Object key) {
-            return rehash( key.hashCode() );
-        }        
-
-        @Override
-        public boolean areEqual(final Object object1,
-                                final Object object2) {
-            if ( object1 == null ) {
-                return object2 == null;
-            }
-            return object1.equals( object2 );
-        }
     }
 
     public static class FieldIndex implements Externalizable {
@@ -359,6 +253,8 @@ public abstract class AbstractHashTable
 
         private int                  startResult;
 
+        private SingleHashEntry hashEntry = new SingleHashEntry();
+
         public SingleIndex() {
 
         }
@@ -392,11 +288,11 @@ public abstract class AbstractHashTable
 
         @Override
         public HashEntry hashCodeOf(Tuple tuple, boolean left) {
-            return new SingleHashEntry( startResult, index.indexedValueOf( tuple, left ) );
+            return hashEntry.set(startResult, index.indexedValueOf( tuple, left ) );
         }
     }
 
-    public static class IndexTupleList extends TupleList {
+    public static class IndexTupleList extends TupleList implements HashEntry {
         private HashEntry hashEntry;
         private Index index;
         private int hashCode;
@@ -432,6 +328,11 @@ public abstract class AbstractHashTable
         public HashEntry getHashEntry() {
             return hashEntry;
         }
+
+        @Override
+        public HashEntry clone() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static class DoubleCompositeIndex implements Index {
@@ -442,6 +343,8 @@ public abstract class AbstractHashTable
         private FieldIndex index2;
 
         private int startResult;
+
+        private DoubleHashEntry hashEntry = new DoubleHashEntry();
 
         public DoubleCompositeIndex() {
 
@@ -484,7 +387,7 @@ public abstract class AbstractHashTable
 
         @Override
         public HashEntry hashCodeOf(Tuple tuple, boolean left) {
-            return new DoubleHashEntry( startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ) );
+            return hashEntry.set(startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ) );
         }
     }
 
@@ -496,7 +399,9 @@ public abstract class AbstractHashTable
         private FieldIndex index2;
         private FieldIndex index3;
 
-        private int               startResult;
+        private int             startResult;
+
+        private TripleHashEntry hashEntry = new TripleHashEntry();
 
         public TripleCompositeIndex() {
 
@@ -544,28 +449,38 @@ public abstract class AbstractHashTable
 
         @Override
         public HashEntry hashCodeOf(Tuple tuple, boolean left) {
-            return new TripleHashEntry( startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ), index3.indexedValueOf( tuple, left ) );
+            return hashEntry.set(startResult, index1.indexedValueOf( tuple, left ), index2.indexedValueOf( tuple, left ), index3.indexedValueOf( tuple, left ) );
         }
     }
 
     public void clear() {
-        this.table = new Entry[Math.min( this.table.length,
+        this.table = new TupleList[Math.min( this.table.length,
                                          16 )];
         this.threshold = (int) (this.table.length * this.loadFactor);
         this.size = 0;
         this.iterator = null;
     }
 
-    public interface HashEntry { }
+    public interface HashEntry {
+        HashEntry clone();
+    }
 
     public static class SingleHashEntry implements HashEntry {
 
-        private final int hashCode;
-        private final Object obj1;
+        private int hashCode;
+        private Object obj1;
+
+        public SingleHashEntry() {
+        }
 
         public SingleHashEntry(int hashSeed, Object obj1) {
+            set(hashSeed, obj1);
+        }
+
+        public HashEntry set(int hashSeed, Object obj1) {
             this.obj1 = obj1;
             this.hashCode = rehash( PRIME * hashSeed + Objects.hashCode( obj1 ) );
+            return this;
         }
 
         @Override
@@ -580,18 +495,38 @@ public abstract class AbstractHashTable
             SingleHashEntry that = ( SingleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 );
         }
+
+        public HashEntry clone() {
+            SingleHashEntry singleEntry = new SingleHashEntry();
+            singleEntry.hashCode = hashCode;
+            singleEntry.obj1 = obj1;
+            return singleEntry;
+        }
+
+        @Override
+        public String toString() {
+            return "SingleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   '}';
+        }
     }
 
     public static class DoubleHashEntry implements HashEntry {
 
-        private final int hashCode;
-        private final Object obj1;
-        private final Object obj2;
+        private int hashCode;
+        private Object obj1;
+        private Object obj2;
 
-        public DoubleHashEntry(int hashSeed, Object obj1, Object obj2) {
+        public DoubleHashEntry() {
+
+        }
+
+        public HashEntry set(int hashSeed, Object obj1, Object obj2) {
             this.obj1 = obj1;
             this.obj2 = obj2;
             this.hashCode = hashCodeOf(hashSeed, obj1, obj2);
+            return this;
         }
 
         private int hashCodeOf(int hashSeed, Object obj1, Object obj2) {
@@ -613,20 +548,42 @@ public abstract class AbstractHashTable
             DoubleHashEntry that = ( DoubleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 );
         }
+
+        public HashEntry clone() {
+            DoubleHashEntry doubleEntry = new DoubleHashEntry();
+            doubleEntry.hashCode = hashCode;
+            doubleEntry.obj1 = obj1;
+            doubleEntry.obj2 = obj2;
+            return doubleEntry;
+        }
+
+        @Override
+        public String toString() {
+            return "DoubleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   ", obj2=" + obj2 +
+                   '}';
+        }
     }
 
     public static class TripleHashEntry implements HashEntry {
 
-        private final int hashCode;
-        private final Object obj1;
-        private final Object obj2;
-        private final Object obj3;
+        private int hashCode;
+        private Object obj1;
+        private Object obj2;
+        private Object obj3;
 
-        public TripleHashEntry(int hashSeed, Object obj1, Object obj2, Object obj3) {
+        public TripleHashEntry() {
+
+        }
+
+        public HashEntry set(int hashSeed, Object obj1, Object obj2, Object obj3) {
             this.obj1 = obj1;
             this.obj2 = obj2;
             this.obj3 = obj3;
             this.hashCode = hashCodeOf(hashSeed, obj1, obj2, obj3);
+            return this;
         }
 
         private int hashCodeOf(int hashSeed, Object obj1, Object obj2, Object obj3) {
@@ -648,6 +605,25 @@ public abstract class AbstractHashTable
             if ( o == null || getClass() != o.getClass() ) return false;
             TripleHashEntry that = ( TripleHashEntry ) o;
             return hashCode == that.hashCode && Objects.equals( obj1, that.obj1 ) && Objects.equals( obj2, that.obj2 ) && Objects.equals( obj3, that.obj3 );
+        }
+
+        public HashEntry clone() {
+            TripleHashEntry tripleEntry = new TripleHashEntry();
+            tripleEntry.hashCode = hashCode;
+            tripleEntry.obj1 = obj1;
+            tripleEntry.obj2 = obj2;
+            tripleEntry.obj3 = obj3;
+            return tripleEntry;
+        }
+
+        @Override
+        public String toString() {
+            return "TripleHashEntry{" +
+                   "hashCode=" + hashCode +
+                   ", obj1=" + obj1 +
+                   ", obj2=" + obj2 +
+                   ", obj3=" + obj3 +
+                   '}';
         }
     }
 }

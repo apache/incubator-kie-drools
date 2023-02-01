@@ -16,9 +16,13 @@
 
 package org.drools.tms;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.BiFunction;
 
+import it.unimi.dsi.fastutil.Hash.Strategy;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ClassAwareObjectStore;
@@ -31,8 +35,8 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.BeliefSystem;
@@ -47,7 +51,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
     private ObjectTypeConfigurationRegistry typeConfReg;
 
-    private ObjectHashMap equalityKeyMap;
+    private Map equalityKeyMap;
 
     private BeliefSystem defaultBeliefSystem;
 
@@ -62,20 +66,38 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
         typeConfReg = ep.getObjectTypeConfigurationRegistry();
 
-        this.equalityKeyMap = new ObjectHashMap();
-        this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
+        this.equalityKeyMap = new Object2ObjectOpenCustomHashMap(EqualityKeyStrategy.getInstance()) ;;
 
         defaultBeliefSystem = BeliefSystemFactory.createBeliefSystem(ep.getReteEvaluator().getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
+    public static class EqualityKeyStrategy implements Strategy {
+        private static EqualityKeyStrategy instance = new EqualityKeyStrategy();
+
+        public static EqualityKeyStrategy getInstance() {
+            return instance;
+        }
+
+        @Override
+        public int hashCode(Object o) {
+            return AbstractHashTable.rehash(o.hashCode());
+        }
+
+        @Override
+        public boolean equals(Object a, Object b) {
+            // notice it switches it to always use b, the EqualityKey.
+            return (a == null || b == null ) ? (a == b) : (a == b) || b.equals( a );
+        }
+    }
+
     @Override
-    public ObjectHashMap getEqualityKeyMap() {
+    public Map getEqualityKeyMap() {
         return this.equalityKeyMap;
     }
 
     @Override
     public void put(final EqualityKey key) {
-        this.equalityKeyMap.put( key, key, false );
+        this.equalityKeyMap.put( key, key );
     }
 
     @Override

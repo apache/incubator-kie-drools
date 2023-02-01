@@ -28,6 +28,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.Iterator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -161,8 +162,8 @@ public class OOPathReactiveTest {
 
         final TupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
         assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(2);
-        Iterator<LeftTuple> it = tupleMemory.iterator();
-        for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
+        Iterator<Tuple> it = tupleMemory.iterator();
+        for ( Tuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
             assertThat(obj == charlie || obj == debbie).isTrue();
         }
@@ -174,7 +175,7 @@ public class OOPathReactiveTest {
         assertThat(list).hasSize(0);;
         assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(1);
         it = tupleMemory.iterator();
-        for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
+        for ( Tuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
             assertThat(obj == charlie).isTrue();
         }

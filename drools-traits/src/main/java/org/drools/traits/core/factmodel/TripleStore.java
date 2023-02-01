@@ -20,16 +20,20 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import org.drools.core.util.AbstractHashTable;
+import it.unimi.dsi.fastutil.Hash.Strategy;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.drools.core.util.Entry;
-import org.drools.core.util.Iterator;
 import org.kie.api.runtime.rule.Variable;
 
-public class TripleStore extends AbstractHashTable implements Externalizable {
+public class TripleStore implements Externalizable {
 
     public static final String TYPE = "rdfs:type";
     public static final String PROXY = "drools:proxy";
@@ -37,37 +41,28 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
 
     private String id;
 
+    private Map<Triple, Triple> map;
+
     public TripleStore() {
         super();
-        this.comparator = new TripleKeyComparator();
+        map = new Object2ObjectOpenCustomHashMap(TripleKeyComparator.getInstance());
     }
 
     public TripleStore(final int capacity,
                        final float loadFactor) {
-        super(capacity, loadFactor);
-        this.comparator = new TripleKeyComparator();
-    }
-
-    public TripleStore(final Entry[] table) {
-        super(table);
-        this.comparator = new TripleKeyComparator();
-    }
-
-    public TripleStore(final float loadFactor,
-                       final Entry[] table) {
-        super(loadFactor, table);
-        this.comparator = new TripleKeyComparator();
+        map = new Object2ObjectOpenCustomHashMap<Triple, Triple>(capacity, loadFactor, TripleKeyComparator.getInstance());
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
+        map = (Map) in.readObject();
         id = (String) in.readObject();
+
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
+        out.writeObject(map);
         out.writeObject(id);
     }
 
@@ -79,87 +74,50 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
         this.id = id;
     }
 
+    public boolean put(final Triple triple, boolean checkExists) {
+        return put(triple);
+    }
+
     public boolean put(final Triple triple) {
-        return put(triple, true);
+        final Object val = triple.getValue();
+        ((TripleImpl) triple).setValue(Variable.v);
+
+        Object prev = map.compute(triple, (key, existing) -> {
+            if (existing != null) {
+                ((TripleImpl)existing).setValue(val);
+                return existing;
+            }
+            return key;
+        });
+
+        ((TripleImpl) triple).setValue(val);
+
+        return prev != triple;
     }
 
     public boolean add(final Triple triple) {
-        return put(triple, false);
-    }
-
-    public boolean put(final Triple triple,
-                       final boolean checkExists) {
-        final int hashCode = this.comparator.hashCodeOf(triple);
-        final int index = indexOf(hashCode,
-                                  this.table.length);
-
-        // scan the linked entries to see if it exists
-        if (checkExists) {
-            Object val = triple.getValue();
-            ((TripleImpl) triple).setValue(Variable.v);
-            TripleImpl current = (TripleImpl) this.table[index];
-            while (current != null) {
-                if (hashCode == this.comparator.hashCodeOf(current) && this.comparator.areEqual(triple,
-                                                                                                current)) {
-                    current.setValue(val);
-                    return true;
-                }
-                current = (TripleImpl) current.getNext();
-            }
-            ((TripleImpl) triple).setValue(val);
-        }
-
-        // We aren't checking the key exists, or it didn't find the key
-        TripleImpl timpl = (TripleImpl) triple;
-        timpl.setNext(this.table[index]);
-        this.table[index] = timpl;
-
-        if (this.size++ >= this.threshold) {
-            resize(2 * this.table.length);
-        }
+        map.put(triple, triple);
         return false;
     }
 
     public Triple get(final Triple triple) {
-        final int hashCode = this.comparator.hashCodeOf(triple);
-        final int index = indexOf(hashCode,
-                                  this.table.length);
-
-        // scan the linked entries to see if it exists
-        TripleImpl current = (TripleImpl) this.table[index];
-        while (current != null) {
-            if (hashCode == this.comparator.hashCodeOf(current) && this.comparator.areEqual(triple,
-                                                                                            current)) {
-                return current;
-            }
-            current = (TripleImpl) current.getNext();
-        }
-
-        return null;
+        return map.get(triple);
     }
 
     public Collection<Triple> getAll(final Triple triple) {
         List<Triple> list = new ArrayList<>();
 
         if (triple.getInstance() != Variable.v && triple.getProperty() != Variable.v) {
-            Triple t = get(triple);
-            if (t != null) {
-
-                Triple current = t;
-                while (current != null) {
-                    if (this.comparator.areEqual(triple, current)) {
-                        list.add(current);
-                    }
-                    current = (Triple) current.getNext();
-                }
-            }
+            Triple collector = new TripleCollector(list, triple);
+            map.get(collector);
             return list;
         }
 
-        Iterator iter = this.iterator();
+        Iterator<Triple> iter = map.values().iterator();
         Triple tx;
-        while ((tx = ((Triple) iter.next())) != null) {
-            if (this.comparator.areEqual(triple, tx)) {
+        while (iter.hasNext()) {
+            tx = iter.next();
+            if (TripleKeyComparator.getInstance().equals(triple, tx)) {
                 list.add(tx);
             }
         }
@@ -179,86 +137,48 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
     }
 
     public boolean remove(final Triple triple) {
-        final int hashCode = this.comparator.hashCodeOf(triple);
-        final int index = indexOf(hashCode,
-                                  this.table.length);
-
-        TripleImpl previous = (TripleImpl) this.table[index];
-        TripleImpl current = previous;
-
-        Triple key = new TripleImpl(triple.getInstance(), triple.getProperty(), Variable.v);
-
-        while (current != null) {
-            final TripleImpl next = (TripleImpl) current.getNext();
-            if (hashCode == this.comparator.hashCodeOf(current)
-                    && this.comparator.areEqual(key, current) &&
-                    ((current.getValue() == null && triple.getValue() == null)
-                            || (current.getValue() != null && current.getValue().equals(triple.getValue())))) {
-                if (previous == current) {
-                    this.table[index] = next;
-                } else {
-                    previous.setNext(next);
-                }
-                current.setNext(null);
-                this.size--;
-                return true;
-            }
-            previous = current;
-            current = next;
-        }
-        return false;
+        return map.remove(triple) != null;
     }
 
     public boolean contains(final Triple triple) {
-        final int hashCode = this.comparator.hashCodeOf(triple);
-        final int index = indexOf(hashCode,
-                                  this.table.length);
-
-        // scan the linked entries to see if it exists
-        TripleImpl current = (TripleImpl) this.table[index];
-        while (current != null) {
-            if (hashCode == this.comparator.hashCodeOf(current) && this.comparator.areEqual(triple, current)) {
-                return true;
-            }
-            current = (TripleImpl) current.getNext();
-        }
-        return false;
+        return map.containsKey(triple);
     }
 
-    @Override
-    public int getResizeHashcode(Entry entry) {
-        // TripleStore never caches the hashcode, so it must be recomputed, which is also rehashed.
-        return this.comparator.hashCodeOf(entry);
+    public int size() {
+        return map.size();
     }
 
-    public static class TripleKeyComparator implements ObjectComparator {
 
-        @Override
-        public void writeExternal(ObjectOutput out) throws IOException {
+    public static class TripleKeyComparator implements Strategy, Serializable {
+        private static TripleKeyComparator INSTANCE = new TripleKeyComparator();
+
+        public static TripleKeyComparator getInstance() {
+            return INSTANCE;
         }
 
         @Override
-        public void readExternal(ObjectInput in) throws IOException,
-                ClassNotFoundException {
-        }
-
-        @Override
-        public int hashCodeOf(Object object) {
+        public int hashCode(Object object) {
             Triple t = (Triple) object;
             final int prime = 31;
             int result = 1;
             result = prime * result + t.getInstance().hashCode();
             result = prime * result + t.getProperty().hashCode();
+
+
+            if (t instanceof TripleImpl) {
+                ((TripleImpl)t).hash = result;
+            }
+
             return result;
         }
 
-        public int rehash(int h) {
-            throw new UnsupportedOperationException();
-        }
-
         @Override
-        public boolean areEqual(Object object1,
-                                Object object2) {
+        public boolean equals(Object object1,
+                              Object object2) {
+            if (object1 == null || object2 == null ) {
+                return object1 == object2;
+            }
+
             Triple t1 = (Triple) object1;
             Triple t2 = (Triple) object2;
 
@@ -284,7 +204,50 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
                     return t1.getValue().equals(t2.getValue());
                 }
             }
+
+            if (t1.getClass() == TripleCollector.class) {
+                ((TripleCollector)t1).list.add(t2);
+                return false;
+            }
+
             return true;
         }
+    }
+
+    public class TripleCollector implements Triple {
+        List<Triple> list;
+
+        private Triple triple;
+
+        public TripleCollector(List<Triple> list, Triple triple) {
+            this.list = list;
+            this.triple = triple;
+        }
+
+        @Override
+        public void setNext(Entry next) {
+
+        }
+
+        @Override
+        public Entry getNext() {
+            return null;
+        }
+
+        @Override
+        public Object getInstance() {
+            return triple.getInstance();
+        }
+
+        @Override
+        public Object getProperty() {
+            return triple.getProperty();
+        }
+
+        @Override
+        public Object getValue() {
+            return Variable.v;
+        }
+
     }
 }

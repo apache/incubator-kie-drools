@@ -16,11 +16,11 @@
 
 package org.drools.core.common;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.consequence.Activation;
-import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -32,7 +32,7 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 public interface TruthMaintenanceSystem {
 
-    ObjectHashMap getEqualityKeyMap();
+    Map<EqualityKey, EqualityKey> getEqualityKeyMap();
 
     void put(final EqualityKey key);
     EqualityKey get(Object object);

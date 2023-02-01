@@ -17,20 +17,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
-import org.drools.drl.parser.impl.Operator;
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.rule.accessor.ReadAccessor;
+import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.Entry;
+import org.drools.core.util.index.IndexMemory;
 import org.drools.core.util.index.TupleIndexHashTable;
+import org.drools.drl.parser.impl.Operator;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.modelcompiler.util.EvaluationUtil;
+import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -42,6 +45,28 @@ public abstract class BaseTupleIndexHashTableIteratorTest {
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
     protected boolean useLambdaConstraint;
+
+    private IndexMemory.EqualityMemoryType originalMemoryImpl;
+
+    @Before
+    public void before() {
+        try {
+            originalMemoryImpl = IndexMemory.getEqualityMemoryType();
+            IndexMemory.setEqualityMemoryType(IndexMemory.EqualityMemoryType.INTERNAL);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    @After
+    public void after() {
+        try {
+            IndexMemory.setEqualityMemoryType(originalMemoryImpl);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     @Parameterized.Parameters(name = "useLambdaConstraint={0}")
     public static Collection<Object[]> getParameters() {

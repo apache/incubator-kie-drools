@@ -202,7 +202,7 @@ public class NegativePatternsTest {
 
         int count = 0;
 
-        for (; count < LOOPS / 2;) {
+        while (count < LOOPS / 2) {
             entryPoint.insert(new TestEvent(count, "EventA"));
             ksession.fireAllRules();
             count++;
@@ -223,7 +223,7 @@ public class NegativePatternsTest {
         ksession.fireAllRules();
         // it shouldn't fire because event A is gone out of window
 
-        for (; count < LOOPS;) {
+        while (count < LOOPS) {
             entryPoint.insert(new TestEvent(count, "EventA"));
             ksession.fireAllRules();
             count++;

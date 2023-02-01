@@ -23,16 +23,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ObjectType;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
-import org.drools.core.base.ObjectType;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.index.IndexFactory;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
@@ -213,7 +213,7 @@ public class DefaultBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType ) {
-        return IndexUtil.Factory.createBetaMemory(config, nodeType, constraints);
+        return IndexFactory.createBetaMemory(config, nodeType, constraints);
     }
 
     public int hashCode() {
