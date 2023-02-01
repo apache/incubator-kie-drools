@@ -37,7 +37,7 @@ public class MaterializedLambdaExtractorTest {
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaExtractor21AAE52EFBB7AF9CCB4D4DE81BBECA33 implements org.drools.model.functions.Function1<org.drools.model.codegen.execmodel.domain.Person, java.lang.String>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum LambdaExtractor217E0777029653C7CDBC9BB1C80E36A2 implements org.drools.model.functions.Function1<org.drools.model.codegen.execmodel.domain.Person, java.lang.String>, org.drools.model.functions.HashedExpression  {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"3346D1DB33D0928AC9890D01D89B5615\";" +
                 "    public java.lang.String getExpressionHash() {\n" +

@@ -21,17 +21,23 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.ForNodeLink;
 import guru.nidi.graphviz.attribute.Rank;
 import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.engine.EngineResult;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.engine.GraphvizCmdLineEngine;
+import guru.nidi.graphviz.engine.GraphvizEngine;
+import guru.nidi.graphviz.engine.GraphvizException;
 import guru.nidi.graphviz.engine.GraphvizJdkEngine;
 import guru.nidi.graphviz.engine.GraphvizV8Engine;
+import guru.nidi.graphviz.engine.Options;
+import guru.nidi.graphviz.engine.Rasterizer;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
@@ -50,6 +56,11 @@ public class GraphImageGenerator {
 
     private static final PortablePath DEFAULT_OUTPUT_DIR = PortablePath.of("target/graph-output");
 
+    private static final String RENDER_FAILURE_WARN = "graphviz-java failed to render an image. Solutions would be:\n" +
+                                                      "1. Install graphviz tools in your local machine. graphviz-java will use graphviz command line binary (e.g. /usr/bin/dot) if available.\n" +
+                                                      "2. Consider generating a graph in DOT format and then visualize it with an external tool.";
+
+    private boolean renderEngineFailed = false;
     private String graphName;
     private int width = 0; // when 0, auto-sized
     private int height = 0; // when 0, auto-sized
@@ -63,6 +74,35 @@ public class GraphImageGenerator {
     public GraphImageGenerator(String graphName) {
         this.graphName = graphName;
         initEngines();
+    }
+
+    // test purpose method to simulate an environment where rendering engine is not available
+    public static GraphImageGenerator getGraphImageGeneratorWithErrorGraphvizEngine(String graphName) {
+        GraphImageGenerator generator = new GraphImageGenerator();
+        generator.graphName = graphName;
+        Graphviz.useEngine(new GraphvizEngine() {
+
+            @Override
+            public void close() throws Exception {
+                // not used
+            }
+
+            @Override
+            public void init(Consumer<GraphvizEngine> onOk, Consumer<GraphvizEngine> onError) {
+                onError.accept(this); // results in putting ErrorGraphvizEngine into Graphviz.engineQueue
+            }
+
+            @Override
+            public EngineResult execute(String src, Options options, Rasterizer rasterizer) {
+                return null;
+            }
+
+        });
+        return generator;
+    }
+
+    private GraphImageGenerator() {
+        // test purpose
     }
 
     public GraphImageGenerator(String graphName, int width, int height, int cmdLineEngineTimeout) {
@@ -167,37 +207,44 @@ public class GraphImageGenerator {
         return graph;
     }
 
-    public void generateDot(Graph g) {
+    public String generateDot(Graph g) {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir.asString() + "/" + graphName + ".dot";
+            String filePath = outputDir.asString() + File.separator + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
-            logger.info("--- Graph dot format is generated to " + filePath);
+            logger.info("--- Graph dot format is generated to {}", filePath);
+            return filePath;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    public void generatePng(Graph g) {
-        guru.nidi.graphviz.model.Graph graph = convertGraph(g);
-
-        try {
-            String filePath = outputDir.asString() + "/" + graphName + ".png";
-            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
-            logger.info("--- Graph png image is generated to " + filePath);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public String generatePng(Graph g) {
+        return generateImage(g, Format.PNG);
     }
 
-    public void generateSvg(Graph g) {
+    public String generateSvg(Graph g) {
+        return generateImage(g, Format.SVG);
+    }
+
+    private String generateImage(Graph g, Format format) {
+        if (renderEngineFailed) {
+            logger.warn(RENDER_FAILURE_WARN);
+            return null;
+        }
+
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir.asString() + "/" + graphName + ".svg";
-            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
-            logger.info("--- Graph svg image is generated to " + filePath);
+            String filePath = outputDir.asString() + File.separator + graphName + "." + format.fileExtension;
+            Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(format).toFile(new File(filePath));
+            logger.info("--- Graph {} image is generated to {}", format.fileExtension, filePath);
+            return filePath;
+        } catch (GraphvizException e) {
+            logger.warn(RENDER_FAILURE_WARN, e);
+            renderEngineFailed = true;
+            return null;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

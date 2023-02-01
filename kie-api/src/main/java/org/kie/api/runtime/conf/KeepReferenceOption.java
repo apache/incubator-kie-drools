@@ -39,7 +39,7 @@ public enum KeepReferenceOption implements SingleValueKieSessionOption {
      * Private constructor to enforce the use of the factory method
      * @param keepReference
      */
-    private KeepReferenceOption( final boolean keepReference ) {
+    KeepReferenceOption( final boolean keepReference ) {
         this.keepReference = keepReference;
     }
 

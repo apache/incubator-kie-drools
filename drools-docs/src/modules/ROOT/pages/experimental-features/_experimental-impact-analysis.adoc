@@ -108,3 +108,14 @@ StatusCheck_11[+]
 StatusCheck_12[+]
 StatusCheck_13[+]
 ----
+
+== Troubleshooting
+
+If you get the warning message when rendering SVG or PNG:
+----
+graphviz-java failed to render an image. Solutions would be:
+1. Install graphviz tools in your local machine. graphviz-java will use graphviz command line binary (e.g. /usr/bin/dot) if available.
+2. Consider generating a graph in DOT format and then visualize it with an external tool.
+----
+
+You would need to install graphviz tools in your local machine. If not possible, you would need to generate the graph in DOT format so that you can render it with another tool later on.

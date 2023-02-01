@@ -20,7 +20,7 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
     private static final SessionConfiguration sessionConfiguration = ruleBase.getSessionConfiguration();
 
     static {
-        sessionConfiguration.setClockType($ClockType$);
+        sessionConfiguration.setOption( $ClockType$ );
     }
 
     public CLASS_NAME() {

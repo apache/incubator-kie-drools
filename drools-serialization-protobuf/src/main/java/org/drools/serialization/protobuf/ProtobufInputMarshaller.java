@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
@@ -142,7 +142,7 @@ public class ProtobufInputMarshaller {
         return readSession( context,
                             id,
                             EnvironmentFactory.newEnvironment(),
-                            new SessionConfigurationImpl() );
+                            new SessionConfiguration() );
     }
 
     public static ReadSessionResult readSession( ProtobufMarshallerReaderContext context, int id,

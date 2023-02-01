@@ -21,13 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.core.BeliefSystemType;
-import org.drools.core.SessionConfiguration;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -43,6 +42,7 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -77,8 +77,8 @@ public class JTMSTest {
         }
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
-        
+        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.JTMS.getId()) );;
+
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
@@ -87,7 +87,7 @@ public class JTMSTest {
         KieBase kBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, ruleFile);
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
+        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.JTMS.getId()) );;
         
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;

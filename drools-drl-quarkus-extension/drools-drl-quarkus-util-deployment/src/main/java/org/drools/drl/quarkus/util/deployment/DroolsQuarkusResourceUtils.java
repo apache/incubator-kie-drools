@@ -25,12 +25,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
-import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
-import io.quarkus.maven.dependency.ResolvedDependency;
-import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.GeneratedFile;
@@ -46,6 +40,13 @@ import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
+import io.quarkus.deployment.annotations.BuildProducer;
+import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
+import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
 
 import static org.kie.memorycompiler.KieMemoryCompiler.compileNoLoad;
 
@@ -83,7 +84,7 @@ public class DroolsQuarkusResourceUtils {
     public static DroolsModelBuildContext createDroolsBuildContext(Path outputTarget, Iterable<Path> paths, IndexView index) {
         // scan and parse paths
         AppPaths.BuildTool buildTool = AppPaths.BuildTool.findBuildTool();
-        AppPaths appPaths = AppPaths.fromQuarkus(outputTarget, paths, buildTool);
+        AppPaths appPaths = QuarkusAppPaths.from(outputTarget, paths, buildTool);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DroolsModelBuildContext context = QuarkusDroolsModelBuildContext.builder()
                 .withClassLoader(classLoader)
@@ -140,8 +141,8 @@ public class DroolsQuarkusResourceUtils {
         }
     }
 
-    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources( DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies,
-                                                                              Collection<GeneratedFile> generatedFiles, boolean useDebugSymbols) {
+    public static Collection<GeneratedBeanBuildItem> compileGeneratedSources(DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies,
+            Collection<GeneratedFile> generatedFiles, boolean useDebugSymbols) {
         Map<String, String> sourcesMap = getSourceMap(generatedFiles);
         if (sourcesMap.isEmpty()) {
             LOGGER.info("No Java source to compile");
@@ -150,7 +151,7 @@ public class DroolsQuarkusResourceUtils {
 
         JavaCompilerSettings compilerSettings = createJavaCompilerSettings(context, dependencies, useDebugSymbols);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return makeBuildItems( compileNoLoad(sourcesMap, classLoader, compilerSettings) );
+        return makeBuildItems(compileNoLoad(sourcesMap, classLoader, compilerSettings));
     }
 
     private static JavaCompilerSettings createJavaCompilerSettings(DroolsModelBuildContext context, Collection<ResolvedDependency> dependencies, boolean useDebugSymbols) {
@@ -222,19 +223,19 @@ public class DroolsQuarkusResourceUtils {
 
     private static final String RULE_UNIT_DEF_PRODUCER =
             "import javax.enterprise.context.Dependent;\n" +
-            "import javax.enterprise.inject.Produces;\n" +
-            "\n" +
-            "import org.drools.ruleunits.api.RuleUnit;\n" +
-            "import org.drools.ruleunits.api.RuleUnitProvider;\n" +
-            "\n" +
-            "@Dependent\n" +
-            "public class $RULE_UNIT_NAME$Producer {\n" +
-            "\n" +
-            "    @Produces\n" +
-            "    public RuleUnit<$RULE_UNIT_NAME$> produceRuleUnit() {\n" +
-            "        return RuleUnitProvider.get().getRuleUnit(new $RULE_UNIT_NAME$());\n" +
-            "    }\n" +
-            "}\n";
+                    "import javax.enterprise.inject.Produces;\n" +
+                    "\n" +
+                    "import org.drools.ruleunits.api.RuleUnit;\n" +
+                    "import org.drools.ruleunits.api.RuleUnitProvider;\n" +
+                    "\n" +
+                    "@Dependent\n" +
+                    "public class $RULE_UNIT_NAME$Producer {\n" +
+                    "\n" +
+                    "    @Produces\n" +
+                    "    public RuleUnit<$RULE_UNIT_NAME$> produceRuleUnit() {\n" +
+                    "        return RuleUnitProvider.get().getRuleUnit(new $RULE_UNIT_NAME$());\n" +
+                    "    }\n" +
+                    "}\n";
 
     private static GeneratedFile generateRuleUnitDefProducerSource(DotName ruleUnitDefName) {
         String source = "package " + ruleUnitDefName.packagePrefix() + ";\n\n" +

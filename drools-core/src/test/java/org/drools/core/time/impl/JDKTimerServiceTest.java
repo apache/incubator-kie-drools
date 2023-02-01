@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
-import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
@@ -39,6 +38,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.Trigger;
 import org.junit.Test;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,8 +46,8 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testSingleExecutionJob() throws Exception {
-        SessionConfiguration config = SessionConfiguration.newInstance();
-        config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setOption( ClockTypeOption.REALTIME );
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
@@ -59,8 +59,8 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJob() throws Exception {
-        SessionConfiguration config = SessionConfiguration.newInstance();
-        config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setOption( ClockTypeOption.REALTIME );
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
@@ -73,8 +73,8 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJobWithRemove() throws Exception {
-        SessionConfiguration config = SessionConfiguration.newInstance();
-        config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setOption( ClockTypeOption.REALTIME );
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] {100, 100, 100, 100, 100, 100, 100, 100} ); 
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);

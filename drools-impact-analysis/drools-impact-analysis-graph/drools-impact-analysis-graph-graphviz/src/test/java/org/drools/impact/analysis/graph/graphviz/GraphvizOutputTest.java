@@ -16,14 +16,21 @@
 
 package org.drools.impact.analysis.graph.graphviz;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import guru.nidi.graphviz.engine.Graphviz;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.model.Rule;
+import org.junit.After;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.linesOf;
 
 /**
  * 
@@ -34,13 +41,31 @@ import org.junit.Test;
  */
 public class GraphvizOutputTest {
 
+    @After
+    public void tearDown() {
+        Graphviz.releaseEngine();
+    }
+
     @Test
-    public void testSimpleGraph() {
-        Node node1 = new Node(new Rule("org.example", "rule1", "dummy"));
-        Node node2 = new Node(new Rule("org.example", "rule2", "dummy"));
-        Node node3 = new Node(new Rule("org.example", "rule3", "dummy"));
-        Node node4 = new Node(new Rule("org.example", "rule4", "dummy"));
-        Node node5 = new Node(new Rule("org.example", "rule5", "dummy"));
+    public void generate_simpleGraph() throws URISyntaxException {
+        Graph graph = createSimpleGraph();
+
+        GraphImageGenerator generator = new GraphImageGenerator("simple");
+        String filePath = generator.generateDot(graph);
+        File actual = new File(filePath);
+        File expected = new File(this.getClass().getResource("simple.dot").toURI());
+        assertThat(linesOf(actual)).containsExactlyInAnyOrderElementsOf(linesOf(expected));
+
+        generator.generateSvg(graph); // no assertion because graphviz-java may fail to render SVG depending on environments
+        generator.generatePng(graph); // no assertion because graphviz-java may fail to render PNG depending on environments
+    }
+
+    private Graph createSimpleGraph() {
+        Node node1 = new Node(new Rule("org.example", "rule1", "example"));
+        Node node2 = new Node(new Rule("org.example", "rule2", "example"));
+        Node node3 = new Node(new Rule("org.example", "rule3", "example"));
+        Node node4 = new Node(new Rule("org.example", "rule4", "example"));
+        Node node5 = new Node(new Rule("org.example", "rule5", "example"));
 
         Node.linkNodes(node1, node2, ReactivityType.POSITIVE);
         Node.linkNodes(node1, node3, ReactivityType.NEGATIVE);
@@ -55,10 +80,23 @@ public class GraphvizOutputTest {
         nodeMap.put(node5.getFqdn(), node5);
 
         Graph graph = new Graph(nodeMap);
+        return graph;
+    }
 
-        GraphImageGenerator generator = new GraphImageGenerator("simple");
-        generator.generateDot(graph);
-        generator.generateSvg(graph);
-        generator.generatePng(graph);
+    @Test
+    public void generate_simulateEngineFailure() throws URISyntaxException {
+        Graph graph = createSimpleGraph();
+
+        GraphImageGenerator generator = GraphImageGenerator.getGraphImageGeneratorWithErrorGraphvizEngine("simple"); // initialize with a failing render engine without fallback
+        String filePathDot = generator.generateDot(graph);
+        File actual = new File(filePathDot);
+        File expected = new File(this.getClass().getResource("simple.dot").toURI());
+        assertThat(linesOf(actual)).containsExactlyInAnyOrderElementsOf(linesOf(expected)); // DOT works as usual
+
+        String filePathSvg = generator.generateSvg(graph); // Raises WARN but this test doesn't fail
+        assertThat(filePathSvg).isNull();
+
+        String filePathPng = generator.generatePng(graph); // Raises WARN but this test doesn't fail
+        assertThat(filePathPng).isNull();
     }
 }

@@ -10,12 +10,92 @@
 
 import org.kie.jenkins.jobdsl.model.JenkinsFolder
 import org.kie.jenkins.jobdsl.model.JobType
+import org.kie.jenkins.jobdsl.utils.EnvUtils
 import org.kie.jenkins.jobdsl.utils.JobParamsUtils
 import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Whole Drools project jobs
+///////////////////////////////////////////////////////////////////////////////////////////
+
+jenkins_path_project = "${jenkins_path}/project"
+
+// Init branch
+createProjectSetupBranchJob()
+
+// Nightly jobs
+setupProjectNightlyJob()
+
+// Release jobs
+setupProjectReleaseJob()
+
+// Tools
+KogitoJobUtils.createQuarkusPlatformUpdateToolsJob(this, 'drools')
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this,
+        [ 'drools' ],
+        [ 'mariofusco', 'danielezonca']
+)
+
+void createProjectSetupBranchJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-setup-branch', JobType.SETUP_BRANCH, "${jenkins_path_project}/Jenkinsfile.setup-branch", 'Drools Setup Branch')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+
+        IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DROOLS_VERSION', '', 'Drools version')
+        }
+    }
+}
+
+void setupProjectNightlyJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-nightly', JobType.NIGHTLY, "${jenkins_path_project}/Jenkinsfile.nightly", 'Drools Nightly')
+    jobParams.triggers = [cron : '@midnight']
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupProjectReleaseJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-kogito-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Drools/Kogito Artifacts Release')
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
+
+            stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
+
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Drools repository only project jobs
+///////////////////////////////////////////////////////////////////////////////////////////
 
 Map getMultijobPRConfig(JenkinsFolder jobFolder) {
     def jobConfig = [
@@ -29,33 +109,30 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    // Setup full build if not prod profile
+                    BUILD_MVN_OPTS_CURRENT: EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') ? '' : '-Dfull',
                 ]
             ], [
                 id: 'kogito-runtimes',
-                dependsOn: 'drools',
                 repository: 'kogito-runtimes'
             ], [
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
-                dependsOn: 'kogito-runtimes',
             ], [
                 id: 'kogito-quarkus-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
                 ],
             ], [
                 id: 'kogito-springboot-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
                 ],
             ], [
                 id: 'serverless-workflow-examples',
                 repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
                 env : [
                     KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
                 ],
@@ -79,10 +156,10 @@ setupSpecificBuildChainNightlyJob('native')
 setupSpecificBuildChainNightlyJob('mandrel')
 
 // Jobs with integration branch
-setupSpecificNightlyJob('quarkus-main', true)
-setupSpecificNightlyJob('quarkus-branch', true)
-setupSpecificNightlyJob('quarkus-lts', true)
-setupSpecificNightlyJob('mandrel-lts', true)
+setupQuarkusIntegrationJob('quarkus-main')
+setupQuarkusIntegrationJob('quarkus-branch')
+setupQuarkusIntegrationJob('quarkus-lts')
+setupQuarkusIntegrationJob('mandrel-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -99,22 +176,8 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupSpecificNightlyJob(String envName, boolean useIntegrationBranch = false) {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, "drools${useIntegrationBranch ? '-integration-branch' : ''}", JobType.NIGHTLY, envName, "${jenkins_path}/Jenkinsfile.specific_nightly", "Drools Nightly ${envName}")
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.triggers = [ cron : '@midnight' ]
-    jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        NOTIFICATION_JOB_NAME: "${envName} check",
-        USE_INTEGRATION_BRANCH : useIntegrationBranch,
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-            stringParam('GIT_AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}", 'Set the Git author creds id')
-        }
-    }
+void setupQuarkusIntegrationJob(String envName) {
+    KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
 }
 
 void setupSpecificBuildChainNightlyJob(String envName) {

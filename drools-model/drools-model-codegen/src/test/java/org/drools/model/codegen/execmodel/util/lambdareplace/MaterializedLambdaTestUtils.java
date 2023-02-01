@@ -16,7 +16,6 @@
 
 package org.drools.model.codegen.execmodel.util.lambdareplace;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,11 +28,7 @@ public class MaterializedLambdaTestUtils {
 
 
     public static void verifyCreatedClass(CreatedClass aClass, String expectedResult) {
-        try {
-            assertThat(aClass.getCompilationUnitAsString()).isEqualToIgnoringWhitespace(expectedResult);
-        } catch (AssertionError e) {
-        	assertThat(StaticJavaParser.parse(expectedResult)).isEqualTo(aClass.getCompilationUnit());
-        }
+        assertThat(aClass.getContents()).isEqualToIgnoringWhitespace(expectedResult);
     }
 
     public static void verifyCreatedClass(MethodDeclaration expected, MethodDeclaration actual) {

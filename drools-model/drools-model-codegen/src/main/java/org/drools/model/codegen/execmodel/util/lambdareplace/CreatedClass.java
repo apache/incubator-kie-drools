@@ -19,32 +19,28 @@ package org.drools.model.codegen.execmodel.util.lambdareplace;
 
 import java.util.Objects;
 
-import com.github.javaparser.ast.CompilationUnit;
-
-import static org.drools.model.codegen.execmodel.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
-
 public class CreatedClass {
 
-    private final CompilationUnit compilationUnit;
+    private final String contents;
     private final String className;
     private final String packageName;
+    private final String canonicalName;
+    private final String sourcePath;
 
-    public CreatedClass(CompilationUnit compilationUnit, String className, String packageName) {
-        this.compilationUnit = compilationUnit;
+    public CreatedClass(String contents, String className, String packageName) {
         this.className = className;
         this.packageName = packageName;
-    }
-
-    public String getCompilationUnitAsString() {
-        return MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit);
+        this.contents = contents;
+        this.canonicalName = packageName + "." + className;
+        this.sourcePath = this.canonicalName.replace('.', '/') + ".java";
     }
 
     public String getClassNameWithPackage() {
-        return String.format("%s.%s", packageName, className);
+        return canonicalName;
     }
 
     public String getClassNamePath() {
-        return String.format("%s/%s.java", packageName.replace(".", "/"), className);
+        return sourcePath;
     }
 
     @Override
@@ -56,17 +52,17 @@ public class CreatedClass {
             return false;
         }
         CreatedClass that = (CreatedClass) o;
-        return compilationUnit.equals(that.compilationUnit) &&
+        return contents.equals(that.contents) &&
                 className.equals(that.className) &&
                 packageName.equals(that.packageName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(compilationUnit, className, packageName);
+        return Objects.hash(contents, className, packageName);
     }
 
-    public CompilationUnit getCompilationUnit() {
-        return compilationUnit;
+    public String getContents() {
+        return contents;
     }
 }

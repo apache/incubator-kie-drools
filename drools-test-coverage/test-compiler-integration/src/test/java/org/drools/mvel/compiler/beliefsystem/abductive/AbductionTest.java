@@ -23,13 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.QueryResultsImpl;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -53,6 +52,7 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
@@ -79,7 +79,7 @@ public class AbductionTest {
         KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, options);
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
+        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()) );;
         return kbase.newKieSession( ksConf, null );
     }
 
