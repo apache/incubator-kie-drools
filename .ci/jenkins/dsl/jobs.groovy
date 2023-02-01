@@ -30,35 +30,6 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
-            ], [
-                id: 'kogito-runtimes',
-                dependsOn: 'drools',
-                repository: 'kogito-runtimes'
-            ], [
-                id: 'kogito-apps',
-                repository: 'kogito-apps',
-                dependsOn: 'kogito-runtimes',
-            ], [
-                id: 'kogito-quarkus-examples',
-                repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-quarkus-examples/',
-                ],
-            ], [
-                id: 'kogito-springboot-examples',
-                repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'kogito-springboot-examples/',
-                ],
-            ], [
-                id: 'serverless-workflow-examples',
-                repository: 'kogito-examples',
-                dependsOn: 'kogito-apps',
-                env : [
-                    KOGITO_EXAMPLES_SUBFOLDER_POM: 'serverless-workflow-examples/',
-                ],
             ]
         ]
     ]
