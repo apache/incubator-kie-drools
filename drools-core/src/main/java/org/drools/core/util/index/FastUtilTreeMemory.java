@@ -8,7 +8,6 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -224,8 +223,11 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
         Comparable key;
 
+        ConstraintType constraintType;
+
         public TreeFastIterator(FastUtilTreeMemory treeMemory) {
             this.treeMemory = treeMemory;
+            constraintType = !treeMemory.left ? treeMemory.constraintType : treeMemory.constraintType.negate();
         }
 
         public Tuple getFirst(Tuple tuple) {
@@ -233,8 +235,8 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
             HolderEntry from = HolderEntry.getInstance().setKey(key);
 
-            if (treeMemory.constraintType == ConstraintType.LESS_THAN ||
-                treeMemory.constraintType == ConstraintType.LESS_OR_EQUAL) {
+            if (constraintType == ConstraintType.LESS_THAN ||
+                constraintType == ConstraintType.LESS_OR_EQUAL) {
                 it =  treeMemory.tree.object2ObjectEntrySet().iterator();
             } else {
                 it = treeMemory.tree.object2ObjectEntrySet().iterator(from);
@@ -244,7 +246,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
 
             // adjust for >=, as fastutils is it.next() is always returning the first that is >
             if (it.hasNext()) {
-                switch (treeMemory.constraintType) {
+                switch (constraintType) {
                     case LESS_THAN: {
                         Object2ObjectMap.Entry<Comparable, TupleList> tempKey = it.next();
                         if (tempKey.getKey().compareTo(key) < 0) {
@@ -289,12 +291,13 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         @Override
         public Tuple next(Tuple tuple) {
             Tuple next = tuple.getNext();
+
             if (next == null && it.hasNext()) {
                 Object2ObjectMap.Entry<Comparable, TupleList> entry = it.next();
                 TupleList list = entry.getValue();
 
                 // check if we need to finish now, of so return null;
-                switch (treeMemory.constraintType) {
+                switch (constraintType) {
                     case LESS_THAN: {
                         if (entry.getKey().compareTo(key) < 0) {
                             next = list.getFirst();

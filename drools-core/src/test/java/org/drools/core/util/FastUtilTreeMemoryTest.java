@@ -32,7 +32,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testGreaterThan() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, true);
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -64,7 +64,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testGreaterOrEqual() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_OR_EQUAL, fieldIndex, true);
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -96,7 +96,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testLessOrEqual() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_OR_EQUAL, fieldIndex, true);
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_OR_EQUAL, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -150,7 +150,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testLessThan() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_THAN, fieldIndex, true);
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.LESS_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
@@ -201,7 +201,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testSharedFirstBucket() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory  treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, true);
+        FastUtilTreeMemory  treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10_1 = getLeftTuple(10);
         Tuple tuple10_2 = getLeftTuple(10);
@@ -247,7 +247,7 @@ public class FastUtilTreeMemoryTest {
     @Test
     public void testSharedLastBucket() {
         AbstractHashTable.FieldIndex fieldIndex = new AbstractHashTable.FieldIndex(getRightExtractor(), getTupleValueExtractor());
-        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, true);
+        FastUtilTreeMemory treeMemory = new FastUtilTreeMemory(ConstraintType.GREATER_THAN, fieldIndex, !true);
 
         Tuple tuple10 = getLeftTuple(10);
         Tuple tuple20 = getLeftTuple(20);
