@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import io.cloudevents.CloudEvent;
 
+@Deprecated
 public abstract class AbstractJobCloudEventBuilder<B extends AbstractJobCloudEventBuilder<B, T, E>, T, E extends JobCloudEvent<T>> {
 
     protected E event;

@@ -30,6 +30,7 @@ import io.cloudevents.CloudEventData;
 
 import static org.kie.kogito.jobs.api.event.serialization.JobCloudEventSerializer.DEFAULT_OBJECT_MAPPER;
 
+@Deprecated
 public class JobCloudEventDeserializer {
 
     private final ObjectMapper objectMapper;

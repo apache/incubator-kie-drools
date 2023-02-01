@@ -23,6 +23,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.jackson.JsonFormat;
 
+@Deprecated
 public class JobCloudEventSerializer {
 
     /**

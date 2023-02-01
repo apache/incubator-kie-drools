@@ -20,6 +20,7 @@ import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Deprecated
 public abstract class ProcessInstanceContextJobCloudEvent<T> extends JobCloudEvent<T> {
 
     //Process context extensions

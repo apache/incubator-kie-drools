@@ -22,6 +22,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@Deprecated
 public abstract class JobCloudEvent<T> {
 
     static final String SPEC_VERSION = "1.0";

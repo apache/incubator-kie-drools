@@ -17,6 +17,10 @@
 package org.kie.kogito.jobs.api;
 
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 /**
  * Common definitions for add-ons implementations based on the Jobs Service to Runtime rest callback pattern.
@@ -26,6 +30,12 @@ public class JobCallbackResourceDef {
     public static final String PROCESS_ID = "processId";
 
     public static final String PROCESS_INSTANCE_ID = "processInstanceId";
+
+    public static final String ROOT_PROCESS_ID = "rootProcessId";
+
+    public static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
+
+    public static final String NODE_INSTANCE_ID = "nodeInstanceId";
 
     public static final String TIMER_ID = "timerId";
 
@@ -51,19 +61,33 @@ public class JobCallbackResourceDef {
                 .toString();
     }
 
-    public static Job buildCallbackPatternJob(ProcessInstanceJobDescription description, String callback) {
-        return JobBuilder.builder()
+    public static org.kie.kogito.jobs.service.api.Job buildCallbackPatternJob(ProcessInstanceJobDescription description, String callback) {
+        return org.kie.kogito.jobs.service.api.Job.builder()
                 .id(description.id())
-                .expirationTime(description.expirationTime().get())
-                .repeatInterval(description.expirationTime().repeatInterval())
-                .repeatLimit(description.expirationTime().repeatLimit())
-                .priority(0)
-                .callbackEndpoint(callback)
-                .processId(description.processId())
-                .processInstanceId(description.processInstanceId())
-                .rootProcessId(description.rootProcessId())
-                .rootProcessInstanceId(description.rootProcessInstanceId())
-                .nodeInstanceId(description.nodeInstanceId())
+                .correlationId(description.id())
+                .recipient(buildRecipient(description, callback))
+                .schedule(buildSchedule(description))
+                .build();
+    }
+
+    private static HttpRecipient<HttpRecipientStringPayloadData> buildRecipient(ProcessInstanceJobDescription description, String callback) {
+        return HttpRecipient.builder()
+                .forStringPayload()
+                .url(callback)
+                .header(PROCESS_ID, description.processId())
+                .header(PROCESS_INSTANCE_ID, description.processInstanceId())
+                .header(ROOT_PROCESS_ID, description.rootProcessId())
+                .header(ROOT_PROCESS_INSTANCE_ID, description.rootProcessInstanceId())
+                .header(NODE_INSTANCE_ID, description.nodeInstanceId())
+                .build();
+    }
+
+    private static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {
+        return TimerSchedule.builder()
+                .startTime(description.expirationTime().get().toOffsetDateTime())
+                .repeatCount(description.expirationTime().repeatLimit())
+                .delay(description.expirationTime().repeatInterval())
+                .delayUnit(TemporalUnit.MILLIS)
                 .build();
     }
 }

@@ -169,6 +169,10 @@ public class HttpRecipient<T extends HttpRecipientPayloadData<?>> extends Recipi
         public Builder<HttpRecipientBinaryPayloadData> forBinaryPayload() {
             return new HttpRecipient.Builder<>(new HttpRecipient<>());
         }
+
+        public Builder<HttpRecipientJsonPayloadData> forJsonPayload() {
+            return new HttpRecipient.Builder<>(new HttpRecipient<>());
+        }
     }
 
     public static class Builder<P extends HttpRecipientPayloadData<?>> {

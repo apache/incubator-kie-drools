@@ -33,6 +33,10 @@
       <artifactId>kogito-events-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jobs-service-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>

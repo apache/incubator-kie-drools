@@ -31,9 +31,13 @@ import org.kie.kogito.jobs.JobsServiceException;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.TimerJobId;
-import org.kie.kogito.jobs.api.Job;
-import org.kie.kogito.jobs.api.event.CancelJobRequestEvent;
-import org.kie.kogito.jobs.api.event.CreateProcessInstanceJobRequestEvent;
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.JobLookupId;
+import org.kie.kogito.jobs.service.api.TemporalUnit;
+import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
+import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -60,15 +64,12 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected static final Integer PRIORITY = 0;
     protected static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     protected static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
-    protected static final TimerJobId JOB_ID = new TimerJobId(1L);
+    protected static final TimerJobId TIMER_JOB_ID = new TimerJobId(1L);
     protected static final String SERIALIZED_EVENT = "SERIALIZED_EVENT";
     protected static final String SERIALIZED_SECOND_EVENT = "SERIALIZED_SECOND_EVENT";
-
     protected static final String JOB_ID_STRING = "JOB_ID_STRING";
-
     private static final String CALLBACK_ENDPOINT = SERVICE_URI + "/management/jobs/" + PROCESS_ID
-            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + JOB_ID.encode();
-
+            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + TIMER_JOB_ID.encode();
     protected static final String ERROR = "ERROR";
     protected static final String FATAL_ERROR = "FATAL_ERROR";
 
@@ -81,10 +82,10 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     protected ObjectMapper objectMapper;
 
     @Captor
-    protected ArgumentCaptor<CreateProcessInstanceJobRequestEvent> createEventCaptor;
+    protected ArgumentCaptor<CreateJobEvent> createEventCaptor;
 
     @Captor
-    protected ArgumentCaptor<CancelJobRequestEvent> cancelEventCaptor;
+    protected ArgumentCaptor<DeleteJobEvent> deleteEventCaptor;
 
     protected T jobsService;
 
@@ -99,42 +100,42 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     @Test
     protected void scheduleProcessInstanceJobSuccessful() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
-        CreateProcessInstanceJobRequestEvent expectedEvent = mockExpectedCreateProcessInstanceJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateProcessInstanceJobRequestEvent.class));
+        CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
 
         jobsService.scheduleProcessInstanceJob(description);
 
-        verifyCreateProcessInstanceJobRequestWasCreated(1, expectedEvent);
+        verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void scheduleProcessInstanceJobWithFailure() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
-        CreateProcessInstanceJobRequestEvent expectedEvent = mockExpectedCreateProcessInstanceJobRequestEvent();
+        CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         executeScheduleProcessInstanceJobWithFailure(description);
-        verifyCreateProcessInstanceJobRequestWasCreated(1, expectedEvent);
+        verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void scheduleProcessInstanceJobWithFailureAndContinue() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
-        CreateProcessInstanceJobRequestEvent expectedEvent = mockExpectedCreateProcessInstanceJobRequestEvent();
+        CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         // First execution fails
         executeScheduleProcessInstanceJobWithFailure(description);
 
         // Clear the errors and produce a second execution that must work fine.
         eventsEmitter.clearErrors();
-        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateProcessInstanceJobRequestEvent.class));
+        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
         jobsService.scheduleProcessInstanceJob(description);
 
-        verifyCreateProcessInstanceJobRequestWasCreated(2, expectedEvent, expectedEvent);
+        verifyCreateJobEventWasCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
     }
 
     protected void executeScheduleProcessInstanceJobWithFailure(ProcessInstanceJobDescription description) throws Exception {
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateProcessInstanceJobRequestEvent.class));
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
         RuntimeException nackError = new RuntimeException(ERROR);
         eventsEmitter.setNackError(nackError);
         // ensure the execution failed as programmed
@@ -147,30 +148,30 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     @Test
     protected void scheduleProcessInstanceJobWithFatalFailure() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
-        CreateProcessInstanceJobRequestEvent expectedEvent = mockExpectedCreateProcessInstanceJobRequestEvent();
+        CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         executeScheduleProcessInstanceJobWithFataFailure(description);
-        verifyCreateProcessInstanceJobRequestWasCreated(1, expectedEvent);
+        verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void scheduleProcessInstanceJobWithFatalFailureAndContinue() throws Exception {
         ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
-        CreateProcessInstanceJobRequestEvent expectedEvent = mockExpectedCreateProcessInstanceJobRequestEvent();
+        CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         // First execution fails
         executeScheduleProcessInstanceJobWithFataFailure(description);
 
         // Clear the errors and produce a second execution that must work fine.
         eventsEmitter.clearErrors();
-        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateProcessInstanceJobRequestEvent.class));
+        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
         jobsService.scheduleProcessInstanceJob(description);
 
-        verifyCreateProcessInstanceJobRequestWasCreated(2, expectedEvent, expectedEvent);
+        verifyCreateJobEventWasCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
     }
 
     protected void executeScheduleProcessInstanceJobWithFataFailure(ProcessInstanceJobDescription description) throws Exception {
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateProcessInstanceJobRequestEvent.class));
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
         RuntimeException fatalError = new RuntimeException(FATAL_ERROR);
         eventsEmitter.setFatalError(fatalError);
         // ensure the execution failed as programmed
@@ -182,38 +183,38 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
 
     @Test
     protected void cancelJobSuccessful() throws Exception {
-        CancelJobRequestEvent expectedEvent = mockExpectedCancelJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        DeleteJobEvent expectedEvent = mockExpectedDeleteJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
 
         jobsService.cancelJob(JOB_ID_STRING);
 
-        verifyCancelJobRequestWasCreated(1, expectedEvent);
+        verifyDeleteJobEventCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void cancelJobWithFailure() throws Exception {
-        CancelJobRequestEvent expectedEvent = mockExpectedCancelJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        DeleteJobEvent expectedEvent = mockExpectedDeleteJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
 
         executeCancelJobWithFailure(JOB_ID_STRING);
 
-        verifyCancelJobRequestWasCreated(1, expectedEvent);
+        verifyDeleteJobEventCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void cancelJobWithFailureAndContinue() throws Exception {
-        CancelJobRequestEvent expectedEvent = mockExpectedCancelJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        DeleteJobEvent expectedEvent = mockExpectedDeleteJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
 
         executeCancelJobWithFailure(JOB_ID_STRING);
 
         eventsEmitter.clearErrors();
-        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
         jobsService.cancelJob(JOB_ID_STRING);
 
-        verifyCancelJobRequestWasCreated(2, expectedEvent, expectedEvent);
+        verifyDeleteJobEventCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
     }
 
@@ -229,27 +230,27 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
 
     @Test
     protected void cancelJobWithFatalFailure() throws Exception {
-        CancelJobRequestEvent expectedEvent = mockExpectedCancelJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        DeleteJobEvent expectedEvent = mockExpectedDeleteJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
 
         executeCancelJobWithFatalFailure(JOB_ID_STRING);
 
-        verifyCancelJobRequestWasCreated(1, expectedEvent);
+        verifyDeleteJobEventCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
     }
 
     @Test
     protected void cancelJobWithFatalFailureAndContinue() throws Exception {
-        CancelJobRequestEvent expectedEvent = mockExpectedCancelJobRequestEvent();
-        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        DeleteJobEvent expectedEvent = mockExpectedDeleteJobEvent();
+        doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
 
         executeCancelJobWithFailure(JOB_ID_STRING);
 
         eventsEmitter.clearErrors();
-        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CancelJobRequestEvent.class));
+        doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(DeleteJobEvent.class));
         jobsService.cancelJob(JOB_ID_STRING);
 
-        verifyCancelJobRequestWasCreated(2, expectedEvent, expectedEvent);
+        verifyDeleteJobEventCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
     }
 
@@ -271,7 +272,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
     }
 
     protected ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
-        return ProcessInstanceJobDescription.of(JOB_ID,
+        return ProcessInstanceJobDescription.of(TIMER_JOB_ID,
                 EXPIRATION_TIME,
                 PRIORITY,
                 PROCESS_INSTANCE_ID,
@@ -280,70 +281,84 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
                 NODE_INSTANCE_ID);
     }
 
-    protected CreateProcessInstanceJobRequestEvent mockExpectedCreateProcessInstanceJobRequestEvent() {
-        return CreateProcessInstanceJobRequestEvent.builder()
-                .processInstanceId(PROCESS_INSTANCE_ID)
-                .processId(PROCESS_ID)
-                .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
-                .rootProcessId(ROOT_PROCESS_ID)
+    protected CreateJobEvent mockExpectedCreateJobEvent() {
+        Job job = Job.builder()
+                .id(TIMER_JOB_ID.encode())
+                .retry(null)
+                .schedule(TimerSchedule.builder()
+                        .startTime(EXPIRATION_TIME.get().toOffsetDateTime())
+                        .repeatCount(EXPIRATION_TIME.repeatLimit())
+                        .delay(EXPIRATION_TIME.repeatInterval())
+                        .delayUnit(TemporalUnit.MILLIS)
+                        .build())
+                .recipient(HttpRecipient.builder().forStringPayload()
+                        .url(CALLBACK_ENDPOINT)
+                        .header("processInstanceId", PROCESS_INSTANCE_ID)
+                        .header("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
+                        .header("processId", PROCESS_ID)
+                        .header("rootProcessId", ROOT_PROCESS_ID)
+                        .header("nodeInstanceId", NODE_INSTANCE_ID)
+                        .build())
+                .build();
+
+        return CreateJobEvent.builder()
                 .source(SERVICE_URI)
-                .job(new Job(JOB_ID.encode(),
-                        EXPIRATION_TIME.get(),
-                        PRIORITY,
-                        CALLBACK_ENDPOINT,
-                        PROCESS_INSTANCE_ID,
-                        ROOT_PROCESS_INSTANCE_ID,
-                        PROCESS_ID,
-                        ROOT_PROCESS_ID,
-                        null,
-                        0,
-                        NODE_INSTANCE_ID))
+                .job(job)
                 .build();
     }
 
-    protected CancelJobRequestEvent mockExpectedCancelJobRequestEvent() {
-        return CancelJobRequestEvent.builder()
-                .jobId(JOB_ID_STRING)
+    protected DeleteJobEvent mockExpectedDeleteJobEvent() {
+        return DeleteJobEvent.builder()
+                .lookupId(JobLookupId.fromId(JOB_ID_STRING))
                 .source(SERVICE_URI)
                 .build();
     }
 
-    protected void assertEquals(CreateProcessInstanceJobRequestEvent event, CreateProcessInstanceJobRequestEvent expected) {
+    protected void assertEquals(CreateJobEvent event, CreateJobEvent expected) {
         assertThat(event).isNotNull();
         assertThat(expected).isNotNull();
-        assertThat(event.getProcessInstanceId()).isEqualTo(expected.getProcessInstanceId());
-        assertThat(event.getProcessId()).isEqualTo(expected.getProcessId());
-        assertThat(event.getRootProcessInstanceId()).isEqualTo(expected.getRootProcessInstanceId());
-        assertThat(event.getRootProcessId()).isEqualTo(expected.getRootProcessId());
         assertThat(event.getSource()).isEqualTo(expected.getSource());
         Job job = event.getData();
-        assertThat(job).isNotNull();
-        Job expectedJob = expected.getData();
-        assertThat(expectedJob).isNotNull();
-        assertThat(job).isEqualTo(expectedJob);
+        assertThat(job.getRetry()).isNull();
+        assertThat(job.getId()).isEqualTo(expected.getData().getId());
+
+        assertThat(job.getRecipient()).hasSameClassAs(expected.getData().getRecipient());
+        HttpRecipient recipient = (HttpRecipient) job.getRecipient();
+        HttpRecipient expectedRecipient = (HttpRecipient) expected.getData().getRecipient();
+        assertThat(recipient.getUrl()).isEqualTo(expectedRecipient.getUrl());
+        assertThat(recipient.getMethod()).isEqualTo(expectedRecipient.getMethod());
+        assertThat(recipient.getPayload()).isEqualTo(expectedRecipient.getPayload());
+        assertThat(recipient.getQueryParams()).isEqualTo(expectedRecipient.getQueryParams());
+        assertThat(recipient.getHeaders()).isEqualTo(expectedRecipient.getHeaders());
+
+        assertThat(job.getSchedule()).hasSameClassAs(expected.getData().getSchedule());
+        TimerSchedule schedule = (TimerSchedule) job.getSchedule();
+        TimerSchedule expectedSchedule = (TimerSchedule) expected.getData().getSchedule();
+        assertThat(schedule.getStartTime()).isEqualTo(expectedSchedule.getStartTime());
+        assertThat(schedule.getRepeatCount()).isEqualTo(expectedSchedule.getRepeatCount());
+        assertThat(schedule.getDelay()).isEqualTo(expectedSchedule.getDelay());
+        assertThat(schedule.getDelayUnit()).isEqualTo(expectedSchedule.getDelayUnit());
     }
 
-    protected void assertEquals(CancelJobRequestEvent event, CancelJobRequestEvent expected) {
+    protected void assertEquals(DeleteJobEvent event, DeleteJobEvent expected) {
         assertThat(event).isNotNull();
         assertThat(expected).isNotNull();
-        assertThat(event.getProcessInstanceId()).isEqualTo(expected.getProcessInstanceId());
-        assertThat(event.getProcessId()).isEqualTo(expected.getProcessId());
-        assertThat(event.getRootProcessInstanceId()).isEqualTo(expected.getRootProcessInstanceId());
-        assertThat(event.getRootProcessId()).isEqualTo(expected.getRootProcessId());
+        assertThat(event.getData()).isNotNull();
         assertThat(event.getSource()).isEqualTo(expected.getSource());
+        assertThat(event.getData().getId()).isEqualTo(expected.getData().getId());
     }
 
-    protected void verifyCreateProcessInstanceJobRequestWasCreated(int times, CreateProcessInstanceJobRequestEvent... expectedEvents) throws Exception {
+    protected void verifyCreateJobEventWasCreated(int times, CreateJobEvent... expectedEvents) throws Exception {
         verify(objectMapper, times(times)).writeValueAsString(createEventCaptor.capture());
-        List<CreateProcessInstanceJobRequestEvent> events = createEventCaptor.getAllValues();
+        List<CreateJobEvent> events = createEventCaptor.getAllValues();
         for (int i = 0; i < times; i++) {
             assertEquals(events.get(i), expectedEvents[i]);
         }
     }
 
-    protected void verifyCancelJobRequestWasCreated(int times, CancelJobRequestEvent... expectedEvents) throws Exception {
-        verify(objectMapper, times(times)).writeValueAsString(cancelEventCaptor.capture());
-        List<CancelJobRequestEvent> events = cancelEventCaptor.getAllValues();
+    protected void verifyDeleteJobEventCreated(int times, DeleteJobEvent... expectedEvents) throws Exception {
+        verify(objectMapper, times(times)).writeValueAsString(deleteEventCaptor.capture());
+        List<DeleteJobEvent> events = deleteEventCaptor.getAllValues();
         for (int i = 0; i < times; i++) {
             assertEquals(events.get(i), expectedEvents[i]);
         }

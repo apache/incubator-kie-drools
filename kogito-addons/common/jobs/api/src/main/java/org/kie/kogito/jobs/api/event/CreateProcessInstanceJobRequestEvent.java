@@ -17,6 +17,7 @@ package org.kie.kogito.jobs.api.event;
 
 import org.kie.kogito.jobs.api.Job;
 
+@Deprecated
 public class CreateProcessInstanceJobRequestEvent extends ProcessInstanceContextJobCloudEvent<Job> {
 
     public static final String CREATE_PROCESS_INSTANCE_JOB_REQUEST = "CreateProcessInstanceJobRequest";
@@ -41,6 +42,7 @@ public class CreateProcessInstanceJobRequestEvent extends ProcessInstanceContext
         return "CreateProcessInstanceJobRequestEvent{} " + super.toString();
     }
 
+    @Deprecated
     public static class Builder extends AbstractProcessInstanceContextJobCloudEventBuilder<Builder, Job, CreateProcessInstanceJobRequestEvent> {
 
         private Builder(CreateProcessInstanceJobRequestEvent current) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.api.event.serialization;
 
-@Deprecated
-public class SerializationException extends RuntimeException {
+package org.kie.kogito.jobs.management.springboot;
 
-    public SerializationException(String message) {
-        super(message);
-    }
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 
-    public SerializationException(String message, Throwable cause) {
-        super(message, cause);
+import static org.assertj.core.api.Assertions.assertThat;
+
+class AddonObjectMapperBuilderCustomizerTest {
+    @Test
+    void customizer() {
+        Jackson2ObjectMapperBuilderCustomizer customizer = new AddonObjectMapperBuilderCustomizer().customizer();
+        assertThat(customizer).isNotNull();
     }
 }

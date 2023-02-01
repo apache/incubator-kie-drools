@@ -16,49 +16,39 @@
 
 package org.kie.kogito.jobs.service.api.event.serialization;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.JobLookupId;
-import org.kie.kogito.jobs.service.api.Retry;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
-import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
-import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
-import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.CORRELATION_ID;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.ID;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.JOB_ID;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_HEADER_1;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_HEADER_1_VALUE;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_METHOD;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_PAYLOAD;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_QUERY_PARAM_1;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_QUERY_PARAM_1_VALUE;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_QUERY_PARAM_2;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_QUERY_PARAM_2_VALUE;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RECIPIENT_URL;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RETRY_DELAY;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RETRY_DELAY_UNIT;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RETRY_DURATION_UNIT;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RETRY_MAX_DURATION;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.RETRY_MAX_RETRIES;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SCHEDULE_DELAY;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SCHEDULE_DELAY_UNIT;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SCHEDULE_REPEAT_COUNT;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SCHEDULE_START_TIME;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SOURCE;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SPEC_VERSION;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.SUBJECT;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.TIME;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.CORRELATION_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.JOB_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_METHOD;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_PAYLOAD;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_1;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_1_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_2;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_2_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_URL;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_DELAY;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_DELAY_UNIT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_REPEAT_COUNT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_START_TIME;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SOURCE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SPEC_VERSION;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SUBJECT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.TIME;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.buildJob;
 
 class JobCloudEventSerializerTest {
 
@@ -73,38 +63,12 @@ class JobCloudEventSerializerTest {
 
     @Test
     void serializeCreateJobEvent() throws Exception {
-        Job job = Job.builder()
-                .correlationId(CORRELATION_ID)
-                .retry(Retry.builder()
-                        .maxRetries(RETRY_MAX_RETRIES)
-                        .delay(RETRY_DELAY)
-                        .delayUnit(RETRY_DELAY_UNIT)
-                        .maxDuration(RETRY_MAX_DURATION)
-                        .durationUnit(RETRY_DURATION_UNIT)
-                        .build())
-                .schedule(TimerSchedule.builder()
-                        .startTime(SCHEDULE_START_TIME)
-                        .repeatCount(SCHEDULE_REPEAT_COUNT)
-                        .delay(SCHEDULE_DELAY)
-                        .delayUnit(SCHEDULE_DELAY_UNIT)
-                        .build())
-                .recipient(HttpRecipient.builder()
-                        .forBinaryPayload()
-                        .payload(HttpRecipientBinaryPayloadData.from(RECIPIENT_PAYLOAD))
-                        .url(RECIPIENT_URL)
-                        .method(RECIPIENT_METHOD)
-                        .header(RECIPIENT_HEADER_1, RECIPIENT_HEADER_1_VALUE)
-                        .queryParam(RECIPIENT_QUERY_PARAM_1, RECIPIENT_QUERY_PARAM_1_VALUE)
-                        .queryParam(RECIPIENT_QUERY_PARAM_2, RECIPIENT_QUERY_PARAM_2_VALUE)
-                        .build())
-                .build();
-
         CreateJobEvent event = CreateJobEvent.builder()
                 .id(ID)
                 .source(SOURCE)
                 .time(TIME)
                 .subject(SUBJECT)
-                .job(job)
+                .job(buildJob())
                 .build();
 
         String json = serializer.serialize(event);
@@ -126,7 +90,7 @@ class JobCloudEventSerializerTest {
         assertThat(scheduleJsonNode).isNotNull();
         assertHasTotalFields(scheduleJsonNode, 5);
         assertHasFieldWithValue(scheduleJsonNode, "type", "timer");
-        assertHasFieldWithValue(scheduleJsonNode, "startTime", SCHEDULE_START_TIME.format(DateTimeFormatter.ISO_DATE_TIME));
+        assertHasFieldWithValue(scheduleJsonNode, "startTime", SCHEDULE_START_TIME.toString());
         assertHasFieldWithValue(scheduleJsonNode, "repeatCount", String.valueOf(SCHEDULE_REPEAT_COUNT));
         assertHasFieldWithValue(scheduleJsonNode, "delay", String.valueOf(SCHEDULE_DELAY));
         assertHasFieldWithValue(scheduleJsonNode, "delayUnit", String.valueOf(SCHEDULE_DELAY_UNIT));
@@ -137,8 +101,8 @@ class JobCloudEventSerializerTest {
         assertHasFieldWithValue(recipientJsonNode, "type", "http");
         assertHasFieldWithValue(recipientJsonNode, "url", RECIPIENT_URL);
         assertHasFieldWithValue(recipientJsonNode, "method", RECIPIENT_METHOD);
+
         JsonNode payloadJsonNode = recipientJsonNode.get("payload");
-        assertThat(payloadJsonNode).isNotNull();
         assertHasFieldWithValue(payloadJsonNode, "type", "binary");
         assertHasFieldWithValue(payloadJsonNode, "data", Base64.getEncoder().encodeToString(RECIPIENT_PAYLOAD));
 

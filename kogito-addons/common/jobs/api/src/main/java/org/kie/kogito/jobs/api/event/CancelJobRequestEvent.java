@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.jobs.api.event;
 
+@Deprecated
 public class CancelJobRequestEvent extends ProcessInstanceContextJobCloudEvent<CancelJobRequestEvent.JobId> {
 
     public static final String CANCEL_JOB_REQUEST = "CancelJobRequest";
@@ -56,6 +57,7 @@ public class CancelJobRequestEvent extends ProcessInstanceContextJobCloudEvent<C
         return "CancelJobRequestEvent{} " + super.toString();
     }
 
+    @Deprecated
     public static class Builder extends AbstractProcessInstanceContextJobCloudEventBuilder<Builder, JobId, CancelJobRequestEvent> {
 
         private Builder(CancelJobRequestEvent event) {

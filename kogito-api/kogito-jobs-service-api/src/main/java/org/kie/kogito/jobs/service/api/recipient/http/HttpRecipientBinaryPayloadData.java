@@ -16,6 +16,8 @@
 
 package org.kie.kogito.jobs.service.api.recipient.http;
 
+import java.util.Arrays;
+
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,5 +43,22 @@ public class HttpRecipientBinaryPayloadData extends HttpRecipientPayloadData<byt
 
     public static HttpRecipientBinaryPayloadData from(byte[] data) {
         return new HttpRecipientBinaryPayloadData(data);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof HttpRecipientBinaryPayloadData)) {
+            return false;
+        }
+        HttpRecipientBinaryPayloadData that = (HttpRecipientBinaryPayloadData) o;
+        return Arrays.equals(dataBytes, that.dataBytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(dataBytes);
     }
 }

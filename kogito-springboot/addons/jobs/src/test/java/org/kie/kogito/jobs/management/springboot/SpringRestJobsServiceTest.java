@@ -17,22 +17,22 @@ package org.kie.kogito.jobs.management.springboot;
 
 import java.net.URI;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.jobs.TimerJobId;
-import org.kie.kogito.jobs.api.Job;
+import org.kie.kogito.jobs.management.RestJobsServiceTest;
+import org.kie.kogito.jobs.service.api.Job;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,50 +40,40 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SpringRestJobsServiceTest {
-
-    public static final String CALLBACK_URL = "http://localhost";
-    public static final String JOB_SERVICE_URL = "http://localhost:8085";
-
-    private SpringRestJobsService tested;
+class SpringRestJobsServiceTest extends RestJobsServiceTest<SpringRestJobsService> {
 
     @Mock
     private RestTemplate restTemplate;
 
-    @BeforeEach
-    void setUp() {
-        this.tested = new SpringRestJobsService(JOB_SERVICE_URL, CALLBACK_URL, restTemplate);
-        tested.initialize();
+    private ObjectMapper objectMapper;
+
+    @Override
+    public SpringRestJobsService createJobService(String jobServiceUrl, String callbackUrl) {
+        this.objectMapper = new Jackson2ObjectMapperBuilder().build();
+        registerDescriptors(objectMapper);
+        SpringRestJobsService jobsService = new SpringRestJobsService(jobServiceUrl, callbackUrl, restTemplate, objectMapper);
+        jobsService.initialize();
+        return jobsService;
     }
 
     @Test
-    void testScheduleProcessJob() {
-        ProcessJobDescription processJobDescription = ProcessJobDescription.of(ExactExpirationTime.now(),
-                1,
-                "processId");
-        assertThatThrownBy(() -> tested.scheduleProcessJob(processJobDescription))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
-
-    @Test
-    void testScheduleProcessInstanceJob() {
-        when(restTemplate.postForEntity(any(URI.class), any(Job.class), eq(String.class))).thenReturn(ResponseEntity.ok().build());
-        ProcessInstanceJobDescription processInstanceJobDescription = ProcessInstanceJobDescription.of(new TimerJobId(123l),
-                ExactExpirationTime.now(),
-                "processInstanceId",
-                "processId");
+    void scheduleProcessInstanceJob() throws Exception {
+        when(restTemplate.postForEntity(any(URI.class), any(HttpEntity.class), eq(String.class))).thenReturn(ResponseEntity.ok().build());
+        ProcessInstanceJobDescription processInstanceJobDescription = buildProcessInstanceJobDescription();
         tested.scheduleProcessInstanceJob(processInstanceJobDescription);
-        ArgumentCaptor<Job> jobArgumentCaptor = forClass(Job.class);
+        ArgumentCaptor<HttpEntity<String>> jobArgumentCaptor = forClass(HttpEntity.class);
         verify(restTemplate).postForEntity(eq(tested.getJobsServiceUri()),
                 jobArgumentCaptor.capture(),
                 eq(String.class));
-        Job job = jobArgumentCaptor.getValue();
-        assertThat(job.getId()).isEqualTo(processInstanceJobDescription.id());
+        HttpEntity<String> request = jobArgumentCaptor.getValue();
+        String json = request.getBody();
+        Job job = objectMapper.readValue(json, Job.class);
+        assertExpectedJob(job, processInstanceJobDescription.id());
     }
 
     @Test
-    void testCancelJob() {
-        tested.cancelJob("123");
-        verify(restTemplate).delete(tested.getJobsServiceUri() + "/{id}", "123");
+    void cancelJob() {
+        tested.cancelJob(JOB_ID);
+        verify(restTemplate).delete(tested.getJobsServiceUri() + "/{id}", JOB_ID);
     }
 }

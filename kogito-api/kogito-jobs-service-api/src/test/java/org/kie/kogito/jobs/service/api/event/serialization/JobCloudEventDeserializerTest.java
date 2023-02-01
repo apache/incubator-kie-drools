@@ -32,6 +32,7 @@ import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
 import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import io.cloudevents.CloudEvent;
@@ -39,7 +40,7 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationTestConstants.*;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.*;
 
 class JobCloudEventDeserializerTest {
 
@@ -135,9 +136,11 @@ class JobCloudEventDeserializerTest {
 
         assertThat(job.getRecipient()).isInstanceOf(HttpRecipient.class);
         HttpRecipient<?> recipient = (HttpRecipient<?>) job.getRecipient();
-        assertThat(recipient.getPayload()).isInstanceOf(HttpRecipientBinaryPayloadData.class);
-        HttpRecipientBinaryPayloadData payload = (HttpRecipientBinaryPayloadData) recipient.getPayload();
-        assertThat(payload.getData()).isEqualTo(RECIPIENT_PAYLOAD);
+        HttpRecipientPayloadData<?> payloadData = recipient.getPayload();
+        assertThat(payloadData)
+                .isNotNull()
+                .isExactlyInstanceOf(HttpRecipientBinaryPayloadData.class);
+        assertThat(recipient.getPayload().getData()).isEqualTo(RECIPIENT_PAYLOAD);
         assertThat(recipient.getUrl()).isEqualTo(RECIPIENT_URL);
         assertThat(recipient.getMethod()).isEqualTo(RECIPIENT_METHOD);
         assertThat(recipient.getHeaders())

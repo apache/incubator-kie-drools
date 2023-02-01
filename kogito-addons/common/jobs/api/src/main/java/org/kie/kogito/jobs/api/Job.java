@@ -154,6 +154,10 @@ public class Job {
         return nodeInstanceId;
     }
 
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

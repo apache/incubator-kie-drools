@@ -35,10 +35,18 @@ import org.kie.kogito.codegen.process.ProcessGenerator;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.jobs.api.event.CancelJobRequestEvent;
-import org.kie.kogito.jobs.api.event.CreateProcessInstanceJobRequestEvent;
-import org.kie.kogito.jobs.api.event.JobCloudEvent;
-import org.kie.kogito.jobs.api.event.ProcessInstanceContextJobCloudEvent;
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.JobLookupId;
+import org.kie.kogito.jobs.service.api.Recipient;
+import org.kie.kogito.jobs.service.api.Schedule;
+import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
+import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
+import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -124,12 +132,19 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
     void eventsApiReflection() {
         ReflectiveClassBuildItem reflectiveClassBuildItem = new KogitoAddOnJobsKnativeEventingProcessor().eventsApiReflection();
         assertThat(reflectiveClassBuildItem.getClassNames())
-                .hasSize(5)
-                .containsExactlyInAnyOrder(JobCloudEvent.class.getName(),
-                        ProcessInstanceContextJobCloudEvent.class.getName(),
-                        CreateProcessInstanceJobRequestEvent.class.getName(),
-                        CancelJobRequestEvent.class.getName(),
-                        CancelJobRequestEvent.JobId.class.getName());
+                .hasSize(12)
+                .containsExactlyInAnyOrder(SpecVersionSerializer.class.getName(),
+                        SpecVersionDeserializer.class.getName(),
+                        Job.class.getName(),
+                        JobLookupId.class.getName(),
+                        Recipient.class.getName(),
+                        HttpRecipient.class.getName(),
+                        Schedule.class.getName(),
+                        TimerSchedule.class.getName(),
+                        CronSchedule.class.getName(),
+                        JobCloudEvent.class.getName(),
+                        CreateJobEvent.class.getName(),
+                        DeleteJobEvent.class.getName());
     }
 
     @Test
@@ -183,13 +198,13 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
     }
 
     private static void assertProcessWasIncluded(String processId, Set<? extends CloudEventMeta> cloudEvents) {
-        assertThat(findCloudEventMeta(cloudEvents, CreateProcessInstanceJobRequestEvent.CREATE_PROCESS_INSTANCE_JOB_REQUEST, "/process/" + processId, EventKind.PRODUCED)).isTrue();
-        assertThat(findCloudEventMeta(cloudEvents, CancelJobRequestEvent.CANCEL_JOB_REQUEST, "/process/" + processId, EventKind.PRODUCED)).isTrue();
+        assertThat(findCloudEventMeta(cloudEvents, CreateJobEvent.TYPE, "/process/" + processId, EventKind.PRODUCED)).isTrue();
+        assertThat(findCloudEventMeta(cloudEvents, DeleteJobEvent.TYPE, "/process/" + processId, EventKind.PRODUCED)).isTrue();
     }
 
     private static void assertProcessWasNotIncluded(String processId, Set<? extends CloudEventMeta> cloudEvents) {
-        assertThat(findCloudEventMeta(cloudEvents, CreateProcessInstanceJobRequestEvent.CREATE_PROCESS_INSTANCE_JOB_REQUEST, "/process/" + processId, EventKind.PRODUCED)).isFalse();
-        assertThat(findCloudEventMeta(cloudEvents, CancelJobRequestEvent.CANCEL_JOB_REQUEST, "/process/" + processId, EventKind.PRODUCED)).isFalse();
+        assertThat(findCloudEventMeta(cloudEvents, CreateJobEvent.TYPE, "/process/" + processId, EventKind.PRODUCED)).isFalse();
+        assertThat(findCloudEventMeta(cloudEvents, DeleteJobEvent.TYPE, "/process/" + processId, EventKind.PRODUCED)).isFalse();
     }
 
     private static boolean findCloudEventMeta(Set<? extends CloudEventMeta> cloudEvents, String type, String source, EventKind kind) {

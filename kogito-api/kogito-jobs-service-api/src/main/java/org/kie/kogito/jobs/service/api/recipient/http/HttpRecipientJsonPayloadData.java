@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,27 +21,29 @@ import java.util.Objects;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Schema(allOf = { HttpRecipientPayloadData.class })
-public class HttpRecipientStringPayloadData extends HttpRecipientPayloadData<String> {
+public class HttpRecipientJsonPayloadData extends HttpRecipientPayloadData<JsonNode> {
 
     @JsonProperty("data")
-    private String dataString;
+    private JsonNode dataJson;
 
-    public HttpRecipientStringPayloadData() {
+    public HttpRecipientJsonPayloadData() {
         // Marshalling constructor.
     }
 
-    private HttpRecipientStringPayloadData(String data) {
-        this.dataString = data;
+    private HttpRecipientJsonPayloadData(JsonNode data) {
+        this.dataJson = data;
     }
 
-    public String getData() {
-        return dataString;
+    @Override
+    public JsonNode getData() {
+        return dataJson;
     }
 
-    public static HttpRecipientStringPayloadData from(String data) {
-        return new HttpRecipientStringPayloadData(data);
+    public static HttpRecipientJsonPayloadData from(JsonNode data) {
+        return new HttpRecipientJsonPayloadData(data);
     }
 
     @Override
@@ -49,15 +51,15 @@ public class HttpRecipientStringPayloadData extends HttpRecipientPayloadData<Str
         if (this == o) {
             return true;
         }
-        if (!(o instanceof HttpRecipientStringPayloadData)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HttpRecipientStringPayloadData that = (HttpRecipientStringPayloadData) o;
-        return Objects.equals(dataString, that.dataString);
+        HttpRecipientJsonPayloadData that = (HttpRecipientJsonPayloadData) o;
+        return Objects.equals(dataJson, that.dataJson);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataString);
+        return Objects.hash(dataJson);
     }
 }

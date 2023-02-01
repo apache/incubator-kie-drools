@@ -25,18 +25,21 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
-import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.management.RestJobsService;
+import org.kie.kogito.jobs.service.api.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+
+import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
 
 @ApplicationScoped
 public class VertxJobsService extends RestJobsService {
@@ -65,15 +68,8 @@ public class VertxJobsService extends RestJobsService {
 
     @PostConstruct
     void initialize() {
-        DatabindCodec.mapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        DatabindCodec.mapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        DatabindCodec.mapper().registerModule(new JavaTimeModule());
-        DatabindCodec.mapper().findAndRegisterModules();
-
-        DatabindCodec.prettyMapper().registerModule(new JavaTimeModule());
-        DatabindCodec.prettyMapper().findAndRegisterModules();
-        DatabindCodec.prettyMapper().disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        DatabindCodec.prettyMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        configureMapper(DatabindCodec.mapper());
+        configureMapper(DatabindCodec.prettyMapper());
 
         if (providedWebClient.isResolvable()) {
             this.client = providedWebClient.get();
@@ -120,5 +116,13 @@ public class VertxJobsService extends RestJobsService {
         });
 
         return true;
+    }
+
+    private void configureMapper(ObjectMapper mapper) {
+        mapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.registerModule(new JavaTimeModule());
+        registerDescriptors(mapper);
+        mapper.findAndRegisterModules();
     }
 }

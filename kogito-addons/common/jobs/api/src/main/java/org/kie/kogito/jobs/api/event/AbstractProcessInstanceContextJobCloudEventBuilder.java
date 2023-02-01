@@ -22,6 +22,7 @@ import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
 
 import io.cloudevents.CloudEvent;
 
+@Deprecated
 public abstract class AbstractProcessInstanceContextJobCloudEventBuilder<B extends AbstractProcessInstanceContextJobCloudEventBuilder<B, T, E>, T, E extends ProcessInstanceContextJobCloudEvent<T>>
         extends AbstractJobCloudEventBuilder<B, T, E> {
 

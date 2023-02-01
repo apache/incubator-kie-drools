@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.jobs.api.event.serialization;
 
+@Deprecated
 public class DeserializationException extends RuntimeException {
 
     public DeserializationException(String message) {

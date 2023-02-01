@@ -28,10 +28,18 @@ import org.kie.kogito.codegen.process.ProcessGenerator;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.event.cloudevents.CloudEventMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.jobs.api.event.CancelJobRequestEvent;
-import org.kie.kogito.jobs.api.event.CreateProcessInstanceJobRequestEvent;
-import org.kie.kogito.jobs.api.event.JobCloudEvent;
-import org.kie.kogito.jobs.api.event.ProcessInstanceContextJobCloudEvent;
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.JobLookupId;
+import org.kie.kogito.jobs.service.api.Recipient;
+import org.kie.kogito.jobs.service.api.Schedule;
+import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
+import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
+import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 import org.kie.kogito.quarkus.extensions.spi.deployment.HasWorkflowExtension;
@@ -61,11 +69,18 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
         return new ReflectiveClassBuildItem(true,
                 true,
                 true,
+                SpecVersionSerializer.class.getName(),
+                SpecVersionDeserializer.class.getName(),
+                Job.class.getName(),
+                JobLookupId.class.getName(),
+                Recipient.class.getName(),
+                HttpRecipient.class.getName(),
+                Schedule.class.getName(),
+                TimerSchedule.class.getName(),
+                CronSchedule.class.getName(),
                 JobCloudEvent.class.getName(),
-                ProcessInstanceContextJobCloudEvent.class.getName(),
-                CreateProcessInstanceJobRequestEvent.class.getName(),
-                CancelJobRequestEvent.class.getName(),
-                CancelJobRequestEvent.JobId.class.getName());
+                CreateJobEvent.class.getName(),
+                DeleteJobEvent.class.getName());
     }
 
     @BuildStep(onlyIfNot = IsTest.class, onlyIf = HasWorkflowExtension.class)
@@ -84,8 +99,8 @@ public class KogitoAddOnJobsKnativeEventingProcessor extends OneOfCapabilityKogi
                     .map(TimerNode.class::cast)
                     .forEach(timer -> {
                         String eventSource = "/process/" + process.getId();
-                        cloudEvents.add(new CloudEventMeta(CreateProcessInstanceJobRequestEvent.CREATE_PROCESS_INSTANCE_JOB_REQUEST, eventSource, EventKind.PRODUCED));
-                        cloudEvents.add(new CloudEventMeta(CancelJobRequestEvent.CANCEL_JOB_REQUEST, eventSource, EventKind.PRODUCED));
+                        cloudEvents.add(new CloudEventMeta(CreateJobEvent.TYPE, eventSource, EventKind.PRODUCED));
+                        cloudEvents.add(new CloudEventMeta(DeleteJobEvent.TYPE, eventSource, EventKind.PRODUCED));
                     });
         }
         if (!cloudEvents.isEmpty()) {

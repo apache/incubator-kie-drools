@@ -23,6 +23,8 @@ import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.TimerJobId;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,18 +52,28 @@ class JobCallbackResourceDefTest {
 
     @Test
     void buildCallbackPatternJob() {
-        Job job = JobCallbackResourceDef.buildCallbackPatternJob(mockProcessInstanceJobDescription(), CALLBACK);
+        org.kie.kogito.jobs.service.api.Job job = JobCallbackResourceDef.buildCallbackPatternJob(mockProcessInstanceJobDescription(), CALLBACK);
         assertThat(job).isNotNull();
         assertThat(job.getId()).isEqualTo(JOB_ID.encode());
-        assertThat(job.getExpirationTime()).isEqualTo(EXPIRATION_TIME.get());
-        assertThat(job.getRepeatLimit()).isZero();
-        assertThat(job.getRepeatInterval()).isNull();
-        assertThat(job.getPriority()).isEqualTo(PRIORITY);
-        assertThat(job.getCallbackEndpoint()).isEqualTo(CALLBACK);
-        assertThat(job.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
-        assertThat(job.getProcessId()).isEqualTo(PROCESS_ID);
-        assertThat(job.getRootProcessInstanceId()).isEqualTo(ROOT_PROCESS_INSTANCE_ID);
-        assertThat(job.getRootProcessId()).isEqualTo(ROOT_PROCESS_ID);
+        assertThat(job.getRecipient())
+                .isNotNull()
+                .isInstanceOf(HttpRecipient.class);
+        HttpRecipient<?> httpRecipient = (HttpRecipient<?>) job.getRecipient();
+        assertThat(httpRecipient.getMethod()).isEqualTo("POST");
+        assertThat(httpRecipient.getUrl()).isEqualTo(CALLBACK);
+        assertThat(httpRecipient.getHeaders())
+                .hasSize(5)
+                .containsEntry("processId", PROCESS_ID)
+                .containsEntry("processInstanceId", PROCESS_INSTANCE_ID)
+                .containsEntry("rootProcessId", ROOT_PROCESS_ID)
+                .containsEntry("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
+                .containsEntry("nodeInstanceId", NODE_INSTANCE_ID);
+        assertThat(httpRecipient.getPayload()).isNull();
+        assertThat(job.getSchedule())
+                .isNotNull()
+                .isInstanceOf(TimerSchedule.class);
+        TimerSchedule timerSchedule = (TimerSchedule) job.getSchedule();
+        assertThat(timerSchedule.getStartTime()).isEqualTo(EXPIRATION_TIME.get().toOffsetDateTime());
     }
 
     private ProcessInstanceJobDescription mockProcessInstanceJobDescription() {

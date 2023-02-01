@@ -16,54 +16,109 @@
 package org.kie.kogito.jobs.management;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.TimerJobId;
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class RestJobsServiceTest {
+public abstract class RestJobsServiceTest<T extends RestJobsService> {
 
-    public static final String CALLBACK_URL = "http://localhost";
+    public static final String CALLBACK_URL = "http://localhost:8080";
     public static final String JOB_SERVICE_URL = "http://localhost:8085";
-    private final RestJobsService tested;
+    public static final String JOB_ID = "456";
+    public static final long TIMER_ID = 123;
+    public static final String PROCESS_ID = "PROCESS_ID";
+    public static final String PROCESS_INSTANCE_ID = "PROCESS_INSTANCE_ID";
+    public static final String ROOT_PROCESS_ID = "ROOT_PROCESS_ID";
+    public static final String ROOT_PROCESS_INSTANCE_ID = "ROOT_PROCESS_INSTANCE_ID";
+    public static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
+    public static final ZonedDateTime EXPIRATION_TIME = ZonedDateTime.parse("2023-01-13T10:20:30.000001+01:00[Europe/Madrid]");
 
-    public RestJobsServiceTest() {
-        this.tested = new RestJobsService(JOB_SERVICE_URL, CALLBACK_URL) {
-            @Override
-            public String scheduleProcessJob(ProcessJobDescription description) {
-                return null;
-            }
+    protected T tested;
 
-            @Override
-            public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
-                return null;
-            }
-
-            @Override
-            public boolean cancelJob(String id) {
-                return false;
-            }
-        };
+    @BeforeEach
+    void setUp() {
+        tested = createJobService(JOB_SERVICE_URL, CALLBACK_URL);
     }
+
+    public abstract T createJobService(String jobServiceUrl, String callbackUrl);
 
     @Test
     void testGetCallbackEndpoint() {
         ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(new TimerJobId(),
                 ExactExpirationTime.now(),
-                "processInstanceId",
-                "processId");
+                PROCESS_INSTANCE_ID,
+                PROCESS_ID);
         String callbackEndpoint = tested.getCallbackEndpoint(description);
         assertThat(callbackEndpoint)
-                .isEqualTo("http://localhost:80/management/jobs/processId/instances/processInstanceId/timers/" + description.id());
+                .isEqualTo("%s/management/jobs/%s/instances/%s/timers/%s",
+                        CALLBACK_URL,
+                        PROCESS_ID,
+                        PROCESS_INSTANCE_ID,
+                        description.id());
     }
 
     @Test
     void testGetJobsServiceUri() {
         URI jobsServiceUri = tested.getJobsServiceUri();
-        assertThat(jobsServiceUri).hasToString(JOB_SERVICE_URL + "/jobs");
+        assertThat(jobsServiceUri).hasToString(JOB_SERVICE_URL + "/v2/jobs");
+    }
+
+    @Test
+    void testScheduleProcessJob() {
+        ProcessJobDescription processJobDescription = ProcessJobDescription.of(ExactExpirationTime.of(EXPIRATION_TIME),
+                1,
+                PROCESS_ID);
+        assertThatThrownBy(() -> tested.scheduleProcessJob(processJobDescription))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    protected ProcessInstanceJobDescription buildProcessInstanceJobDescription() {
+        return ProcessInstanceJobDescription.of(new TimerJobId(TIMER_ID),
+                ExactExpirationTime.of(EXPIRATION_TIME),
+                PROCESS_INSTANCE_ID,
+                ROOT_PROCESS_INSTANCE_ID,
+                PROCESS_ID,
+                ROOT_PROCESS_ID,
+                NODE_INSTANCE_ID);
+    }
+
+    protected void assertExpectedJob(Job job, String expectedJobId) {
+        assertThat(job).isNotNull();
+        assertThat(job.getId()).isEqualTo(expectedJobId);
+        assertThat(job.getId()).contains(Long.toString(TIMER_ID));
+        assertThat(job.getRecipient())
+                .isNotNull()
+                .isInstanceOf(HttpRecipient.class);
+        HttpRecipient<?> httpRecipient = (HttpRecipient<?>) job.getRecipient();
+        assertThat(httpRecipient.getMethod()).isEqualTo("POST");
+        assertThat(httpRecipient.getUrl()).isEqualTo("%s/management/jobs/%s/instances/%s/timers/%s",
+                CALLBACK_URL,
+                PROCESS_ID,
+                PROCESS_INSTANCE_ID,
+                expectedJobId);
+        assertThat(httpRecipient.getHeaders())
+                .hasSize(5)
+                .containsEntry("processId", PROCESS_ID)
+                .containsEntry("processInstanceId", PROCESS_INSTANCE_ID)
+                .containsEntry("rootProcessId", ROOT_PROCESS_ID)
+                .containsEntry("rootProcessInstanceId", ROOT_PROCESS_INSTANCE_ID)
+                .containsEntry("nodeInstanceId", NODE_INSTANCE_ID);
+        assertThat(httpRecipient.getPayload()).isNull();
+        assertThat(job.getSchedule())
+                .isNotNull()
+                .isInstanceOf(TimerSchedule.class);
+        TimerSchedule timerSchedule = (TimerSchedule) job.getSchedule();
+        assertThat(timerSchedule.getStartTime()).isEqualTo(EXPIRATION_TIME.toOffsetDateTime());
     }
 }

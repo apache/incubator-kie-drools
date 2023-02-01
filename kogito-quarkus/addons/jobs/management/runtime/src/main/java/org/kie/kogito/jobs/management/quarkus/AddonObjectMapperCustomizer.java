@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs.api.event.serialization;
 
-@Deprecated
-public class SerializationException extends RuntimeException {
+package org.kie.kogito.jobs.management.quarkus;
 
-    public SerializationException(String message) {
-        super(message);
-    }
+import javax.enterprise.context.ApplicationScoped;
 
-    public SerializationException(String message, Throwable cause) {
-        super(message, cause);
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.quarkus.jackson.ObjectMapperCustomizer;
+
+import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
+
+@ApplicationScoped
+public class AddonObjectMapperCustomizer implements ObjectMapperCustomizer {
+    @Override
+    public void customize(ObjectMapper objectMapper) {
+        registerDescriptors(objectMapper);
     }
 }

@@ -20,8 +20,8 @@ import java.util.Objects;
 
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.URIBuilder;
+import org.kie.kogito.jobs.service.api.Job;
 
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackPatternJob;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackURI;
@@ -29,7 +29,7 @@ import static org.kie.kogito.jobs.api.JobCallbackResourceDef.buildCallbackURI;
 public abstract class RestJobsService implements JobsService {
 
     @SuppressWarnings("squid:S1075")
-    public static final String JOBS_PATH = "/jobs";
+    public static final String JOBS_PATH = "/v2/jobs";
 
     private URI jobsServiceUri;
     private String callbackEndpoint;
