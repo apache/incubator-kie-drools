@@ -1812,7 +1812,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        ksession.insert( new Long( 6 ) );
+        ksession.insert( Long.valueOf( 6 ) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
@@ -1875,13 +1875,13 @@ public class Misc2Test {
         Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, str2).getKiePackages();
         ksession.insert( kpkgs );
 
-        ksession.insert( new Integer( 1 ) );
+        ksession.insert( Integer.valueOf( 1 ) );
         ksession.fireAllRules();
 
         ksession.insert( "go" );
         ksession.fireAllRules();
 
-        ksession.insert( new Integer( 2 ) );
+        ksession.insert( Integer.valueOf( 2 ) );
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -1915,7 +1915,7 @@ public class Misc2Test {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        ksession.insert( new Integer( 1 ) );
+        ksession.insert( Integer.valueOf( 1 ) );
         ksession.fireAllRules();
     }
 
@@ -2701,7 +2701,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "context", new ArrayList() {{
-            add( new Long( 0 ) );
+            add( Long.valueOf( 0 ) );
         }} );
 
         Foo foo = new Foo();
@@ -3196,7 +3196,7 @@ public class Misc2Test {
         new Thread(ks::fireUntilHalt).start();
         try {
             for ( int j = 0; j < N; j++ ) {
-                ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+                ks.getEntryPoint( "x" ).insert( Integer.valueOf( j ) );
             }
 
             Thread.sleep( 1000 );
@@ -5590,7 +5590,7 @@ public class Misc2Test {
         KieSession session = kbase.newKieSession();
 
         session.insert( "hello" );
-        session.insert( new Integer( 42 ) );
+        session.insert( Integer.valueOf( 42 ) );
 
         // set the agenda groups in reverse order so that stack is preserved
         session.getAgenda().getAgendaGroup( "End" ).setFocus();

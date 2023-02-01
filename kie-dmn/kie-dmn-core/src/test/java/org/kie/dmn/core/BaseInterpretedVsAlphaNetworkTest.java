@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.core.compiler.AlphaNetworkOption;
-import org.kie.dmn.core.compiler.ExecModelCompilerOption;
 
 @RunWith(Parameterized.class)
 public abstract class BaseInterpretedVsAlphaNetworkTest {

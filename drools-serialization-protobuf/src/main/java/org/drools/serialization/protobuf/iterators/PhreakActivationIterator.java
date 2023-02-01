@@ -25,7 +25,6 @@ import java.util.Set;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;

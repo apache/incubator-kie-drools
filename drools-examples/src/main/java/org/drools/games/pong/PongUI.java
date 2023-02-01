@@ -21,8 +21,6 @@ import java.awt.event.WindowEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 
-import javax.swing.*;
-
 import org.drools.games.GameConfiguration;
 import org.drools.games.GameUI;
 import org.kie.api.runtime.KieSession;

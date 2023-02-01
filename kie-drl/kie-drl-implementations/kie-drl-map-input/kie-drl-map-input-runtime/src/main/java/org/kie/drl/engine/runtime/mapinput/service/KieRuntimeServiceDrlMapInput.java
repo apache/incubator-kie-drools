@@ -15,7 +15,6 @@
  */
 package org.kie.drl.engine.runtime.mapinput.service;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 

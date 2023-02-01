@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import org.drools.compiler.builder.impl.AssetFilter;
 import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;

@@ -17,7 +17,6 @@ package org.kie.drl.engine.testingmodule.compilation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -33,7 +32,6 @@ import org.kie.drl.engine.compilation.model.DrlCompilationContext;
 import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
 

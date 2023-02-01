@@ -30,7 +30,6 @@ import org.kie.internal.builder.ResultSeverity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;

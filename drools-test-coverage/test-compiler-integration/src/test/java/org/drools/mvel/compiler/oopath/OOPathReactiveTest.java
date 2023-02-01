@@ -25,7 +25,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.Tuple;

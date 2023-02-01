@@ -19,7 +19,6 @@ package org.drools.impact.analysis.integrationtests;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.ReactivityType;
-import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;

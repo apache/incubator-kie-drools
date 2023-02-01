@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.function.Function;
 
 import org.drools.scenariosimulation.api.model.FactMappingValue;
-import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioResult;
 import org.junit.Test;
