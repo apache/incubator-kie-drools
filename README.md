@@ -14,3 +14,20 @@ It solves all known pitfalls that can disrupt your development.
 It also describes all guidelines, tips and tricks.
 If you want your pull requests (or patches) to be merged, please respect those guidelines.
 
+
+Test execution tip
+==================
+
+Some test are meant to be executed on machine with _en_US_ locale.
+A specific profile is provided to execute them on machines with different locale, namely `test-en`.
+There are two ways to activate such profile during maven build:
+1. `-Ptest-en` (profile-id based)
+2. `-DTestEn` (property based)
+
+The following two commands will execute tests on machine with locale different than _en_US_:
+
+1. `mvn clean verify -Ptest-en`
+2. `mvn clean verify -DTestEn`
+
+
+
