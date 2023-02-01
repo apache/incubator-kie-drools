@@ -25,10 +25,13 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
+import org.drools.mvelcompiler.ast.TransformedTypeExpression;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -53,6 +56,17 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
     @Override
     public Optional<TypedExpression> defaultMethod(Node n, Void context) {
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<TypedExpression> visit(UnaryExpr n, Void arg) {
+        return n.getExpression().accept(this, null).map( e -> new TransformedTypeExpression(e, node -> {
+            if (node instanceof ObjectCreationExpr) {
+                UnaryExpr constructorArg = new UnaryExpr(((ObjectCreationExpr) node).getArgument(0), n.getOperator());
+                return ((ObjectCreationExpr) node).setArgument(0, constructorArg);
+            }
+            return node;
+        }));
     }
 
     @Override
