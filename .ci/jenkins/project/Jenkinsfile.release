@@ -136,11 +136,7 @@ def buildJob(String jobName, List buildParams, boolean shouldWait = true) {
     if (!hasJob(jobName) || (getJobResult(jobName) != 'SUCCESS' && getJobDecision(jobName) == 'retry')) {
         sendStageNotification()
         echo "Build ${jobName} with shouldWait=${shouldWait} and params ${buildParams}"
-        // def job = build(job: "./${jobName}", wait: shouldWait, parameters: buildParams, propagate: false)
-        def job = [
-            result: 'SUCCESS',
-            absoluteUrl: 'URL',
-        ]
+        def job = build(job: "./${jobName}", wait: shouldWait, parameters: buildParams, propagate: false)
         removeJobDecision(jobName)
         registerJobExecution(jobName, job.result, job.absoluteUrl)
     } else {

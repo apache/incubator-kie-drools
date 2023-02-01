@@ -50,7 +50,6 @@ pipeline {
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
 
-                    // images and operator deploy testing will use older working artifacts if that one fails
                     buildJob(DROOLS_DEPLOY, buildParams)
                 }
             }
@@ -71,11 +70,7 @@ pipeline {
 def buildJob(String jobName, List buildParams, String jobKey = jobName) {
     echo "[${jobKey}] Build ${jobName} with params ${buildParams}"
 
-    // def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
-    def job = [
-        result: 'SUCCESS',
-        absoluteUrl: 'URL',
-    ]
+    def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
     JOBS[jobKey] = job
 
     // Set Unstable if job did not succeed
