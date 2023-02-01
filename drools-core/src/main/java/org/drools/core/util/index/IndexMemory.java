@@ -7,6 +7,8 @@ public class IndexMemory {
     private static final String INTERNAL_INDEX = "internal";
     private static final String FASTUTIL_INDEX = "fastutil";
 
+    private static final String DEFAULT_INDEX = INTERNAL_INDEX;
+
     public enum EqualityMemoryType {
         INTERNAL, FASTUTIL;
 
@@ -48,8 +50,8 @@ public class IndexMemory {
     private static ComparisonMemoryType COMPARISON_MEMORY_TYPE; // did not set this as final, as some tests need to change this
 
     static {
-        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(System.getProperty("org.drools.equalitymemory", FASTUTIL_INDEX));
-        COMPARISON_MEMORY_TYPE = ComparisonMemoryType.get(System.getProperty("org.drools.comparisonmemory", FASTUTIL_INDEX));
+        EQUALITY_MEMORY_TYPE = EqualityMemoryType.get(System.getProperty("org.drools.equalitymemory", DEFAULT_INDEX));
+        COMPARISON_MEMORY_TYPE = ComparisonMemoryType.get(System.getProperty("org.drools.comparisonmemory", DEFAULT_INDEX));
     }
 
     public static EqualityMemoryType getEqualityMemoryType() {
