@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.executor.JobExecutor;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.ManageableJobHandle;
-import org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter;
+import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Trigger;
@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.reactivestreams.Publisher;
 
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.jobs.service.model.JobStatus.CANCELED;
@@ -83,6 +84,8 @@ public abstract class BaseTimerJobSchedulerTest {
 
     public JobExecutionResponse errorResponse;
 
+    public JobExecutionResponse successResponse;
+
     public ZonedDateTime expirationTime;
 
     public Trigger trigger;
@@ -93,19 +96,23 @@ public abstract class BaseTimerJobSchedulerTest {
         tested().forceExecuteExpiredJobs = Optional.of(Boolean.FALSE);
         //expiration on the current scheduler chunk
         expirationTime = DateUtil.now().plusMinutes(tested().schedulerChunkInMinutes - 1);
+        errorResponse = JobExecutionResponse.builder()
+                .jobId(JOB_ID)
+                .message("error")
+                .now()
+                .build();
+        successResponse = JobExecutionResponse.builder()
+                .jobId(JOB_ID)
+                .message("sucess")
+                .now()
+                .build();
 
         trigger = new PointInTimeTrigger(expirationTime.toInstant().toEpochMilli(), null, null);
         scheduledJob = JobDetails.builder().id(JOB_ID).trigger(trigger).status(SCHEDULED).build();
         scheduled = CompletableFuture.completedFuture(scheduledJob);
         lenient().when(jobRepository.get(JOB_ID)).thenReturn(scheduled);
         lenient().when(jobRepository.save(any(JobDetails.class))).thenAnswer(a -> CompletableFuture.completedFuture(a.getArgument(0)));
-        lenient().when(jobExecutor.execute(any())).thenReturn(scheduled);
-
-        errorResponse = JobExecutionResponse.builder()
-                .jobId(JOB_ID)
-                .message("error")
-                .now()
-                .build();
+        lenient().when(jobExecutor.execute(any())).thenReturn(Uni.createFrom().item(successResponse));
     }
 
     public abstract BaseTimerJobScheduler tested();
@@ -117,7 +124,7 @@ public abstract class BaseTimerJobSchedulerTest {
         verify(tested(), never()).doSchedule(eq(scheduledJob), delayCaptor.capture());
         subscribeOn(schedule);
         verify(tested()).doSchedule(eq(scheduledJob), delayCaptor.capture());
-        verify(jobRepository).save(scheduleCaptor.capture());
+        verify(jobRepository, times(2)).save(scheduleCaptor.capture());
         JobDetails scheduledJob = scheduleCaptor.getValue();
         assertThat(scheduledJob.getScheduledId()).isEqualTo(SCHEDULED_ID);
         assertThat(scheduledJob.getId()).isEqualTo(JOB_ID);
@@ -327,7 +334,7 @@ public abstract class BaseTimerJobSchedulerTest {
         subscribeOn(tested().schedule(scheduledJob));
 
         verify(tested()).doSchedule(eq(scheduledJob), delayCaptor.capture());
-        verify(jobRepository).save(scheduleCaptor.capture());
+        verify(jobRepository, times(2)).save(scheduleCaptor.capture());
         JobDetails current = scheduleCaptor.getValue();
         assertThat(current.getId()).isEqualTo(JOB_ID);
         assertThat(current.getStatus()).isEqualTo(SCHEDULED);

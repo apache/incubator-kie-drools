@@ -28,10 +28,12 @@ import org.bson.conversions.Bson;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobDetailsBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.JobDetailsBuilder;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.repository.marshaller.JobDetailsMarshaller;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
@@ -134,7 +136,7 @@ class MongoDBJobRepositoryTest {
 
         ZonedDateTime time = ZonedDateTime.now(DEFAULT_ZONE);
         PointInTimeTrigger trigger = new PointInTimeTrigger(time.toInstant().getEpochSecond(), null, null);
-        Recipient recipient = new Recipient.HTTPRecipient("test");
+        Recipient recipient = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("test").build());
         unmarshalled = new JobDetailsBuilder().id("test").trigger(trigger).recipient(recipient).build();
         marshalled = new JsonObject().put("id", "test");
 

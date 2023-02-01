@@ -19,8 +19,8 @@ import java.time.ZonedDateTime;
 import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
 
 public interface ReactiveJobRepository {
 

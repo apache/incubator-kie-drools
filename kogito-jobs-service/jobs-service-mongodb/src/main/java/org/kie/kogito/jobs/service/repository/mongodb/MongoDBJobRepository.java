@@ -27,8 +27,8 @@ import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.impl.BaseReactiveJobRepository;
 import org.kie.kogito.jobs.service.repository.marshaller.JobDetailsMarshaller;
@@ -66,7 +66,7 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
 
     static final String ID = "_id";
 
-    static final String JOB_DETAILS_COLLECTION = "jobDetails";
+    static final String JOB_DETAILS_COLLECTION = "jobDetails.v2";
 
     static final String STATUS_COLUMN = "status";
 

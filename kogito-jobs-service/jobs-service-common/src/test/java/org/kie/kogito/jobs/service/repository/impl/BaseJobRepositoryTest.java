@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,13 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
@@ -71,9 +74,12 @@ public abstract class BaseJobRepositoryTest {
     private void createAndSaveJob(String id) throws Exception {
         job = JobDetails.builder()
                 .id(id)
-                .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))//
+                .trigger(new PointInTimeTrigger(System.currentTimeMillis(), null, null))
                 .priority(1)
-                .recipient(new Recipient.HTTPRecipient("url"))
+                .recipient(new RecipientInstance(HttpRecipient.builder()
+                        .forStringPayload().url("url")
+                        .payload(HttpRecipientStringPayloadData.from("payload test"))
+                        .build()))
                 .build();
         tested().save(job).toCompletableFuture().get();
     }
@@ -108,7 +114,6 @@ public abstract class BaseJobRepositoryTest {
                         .status(JobStatus.SCHEDULED)
                         .id(String.valueOf(id))
                         .priority(id)
-                        .payload("{\"payload\": \"test\"}")
                         .trigger(new PointInTimeTrigger(DateUtil.now().plusMinutes(id).toInstant().toEpochMilli(), null, null))
                         .priority(id)
                         .build())
@@ -155,7 +160,7 @@ public abstract class BaseJobRepositoryTest {
         String id = UUID.randomUUID().toString();
         createAndSaveJob(id);
         final String newCallbackEndpoint = "http://localhost/newcallback";
-        final Recipient.HTTPRecipient recipient = new Recipient.HTTPRecipient(newCallbackEndpoint);
+        final Recipient recipient = new RecipientInstance(HttpRecipient.builder().forStringPayload().url(newCallbackEndpoint).build());
         final JobDetails toMerge = JobDetails.builder()
                 .id(id)
                 .recipient(recipient)

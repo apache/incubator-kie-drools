@@ -32,7 +32,7 @@ import io.cloudevents.CloudEvent;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
-public class KnativeReactiveMessagingEventConsumer extends ReactiveMessagingEventConsumer {
+public class KnativeReactiveMessagingEventConsumer extends MessagingConsumer {
 
     private static final String KOGITO_JOB_SERVICE_JOB_REQUEST_EVENTS_KNATIVE = "kogito-job-service-job-request-events-knative";
 
@@ -50,4 +50,5 @@ public class KnativeReactiveMessagingEventConsumer extends ReactiveMessagingEven
     public Uni<Void> onKogitoServiceRequest(Message<CloudEvent> message) {
         return super.onKogitoServiceRequest(message);
     }
+
 }

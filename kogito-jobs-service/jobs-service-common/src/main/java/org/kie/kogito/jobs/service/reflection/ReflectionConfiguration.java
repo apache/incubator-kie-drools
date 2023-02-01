@@ -28,7 +28,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
                 "org.kie.kogito.event.AbstractDataEvent",
                 "org.kie.kogito.jobs.service.events.JobDataEvent",
                 "org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller$HTTPRecipientAccessor",
-                "org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter$ProcessPayload",
+                "org.kie.kogito.jobs.service.job.model.ScheduledJobAdapter$ProcessPayload",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$PointInTimeTriggerAccessor",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$IntervalTriggerAccessor",
                 "org.kie.kogito.jobs.api.event.CancelJobRequestEvent$JobId" })

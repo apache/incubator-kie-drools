@@ -20,9 +20,10 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
 import org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller;
 import org.kie.kogito.timer.Trigger;
@@ -34,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.jobs.service.utils.DateUtil.DEFAULT_ZONE;
 
 class MongoDBJobDetailsMarshallerTest {
-
     MongoDBJobDetailsMarshaller mongoDBJobDetailsMarshaller = new MongoDBJobDetailsMarshaller(new TriggerMarshaller(), new RecipientMarshaller());
 
     @Test
@@ -48,10 +48,9 @@ class MongoDBJobDetailsMarshallerTest {
         Integer priority = 3;
         Integer executionCounter = 4;
         String scheduledId = "testScheduledId";
-        Object payload = new JsonObject().put("payload", "test");
-        Recipient.HTTPRecipient recipient = new Recipient.HTTPRecipient("testEndpoint");
+        Object payload = new JsonObject().put("payload", "test").encode();
+        RecipientInstance recipient = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("testEndpoint").build());
         Trigger trigger = new PointInTimeTrigger(new Date().toInstant().toEpochMilli(), null, null);
-        JobDetails.Type type = JobDetails.Type.HTTP;
 
         JobDetails jobDetails = JobDetails.builder()
                 .id(id)
@@ -61,8 +60,6 @@ class MongoDBJobDetailsMarshallerTest {
                 .retries(retries)
                 .executionCounter(executionCounter)
                 .scheduledId(scheduledId)
-                .payload(payload)
-                .type(type)
                 .priority(priority)
                 .recipient(recipient)
                 .trigger(trigger)
@@ -77,12 +74,10 @@ class MongoDBJobDetailsMarshallerTest {
                 .put("retries", retries)
                 .put("executionCounter", executionCounter)
                 .put("scheduledId", scheduledId)
-                .put("payload", payload)
-                .put("type", type.name())
                 .put("priority", priority)
-                .put("recipient", new JsonObject()
-                        .put("endpoint", recipient.getEndpoint())
-                        .put("classType", Recipient.HTTPRecipient.class.getName()))
+                .put("recipient", JsonObject
+                        .mapFrom(HttpRecipient.builder().forStringPayload().url("testEndpoint").build())
+                        .put("classType", HttpRecipient.class.getName()))
                 .put("trigger", new JsonObject()
                         .put("nextFireTime", trigger.hasNextFireTime().getTime())
                         .put("classType", PointInTimeTrigger.class.getName()));

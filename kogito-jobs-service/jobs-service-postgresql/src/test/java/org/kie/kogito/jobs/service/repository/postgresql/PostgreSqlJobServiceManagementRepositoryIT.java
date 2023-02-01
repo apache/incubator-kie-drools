@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
+import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -88,7 +89,7 @@ class PostgreSqlJobServiceManagementRepositoryIT {
 
         JobServiceManagementInfo updated = tested.heartbeat(created).await().indefinitely();
         assertThat(updated.getLastHeartbeat()).isNotNull();
-        assertThat(updated.getLastHeartbeat()).isBeforeOrEqualTo(OffsetDateTime.now());
+        assertThat(updated.getLastHeartbeat()).isBefore(DateUtil.now().plusSeconds(1).toOffsetDateTime());
     }
 
     @Test

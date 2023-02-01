@@ -49,7 +49,7 @@ public class InfinispanConfiguration {
 
         }
 
-        public static final String JOB_DETAILS = "JOB_DETAILS";
+        public static final String JOB_DETAILS = "JOB_DETAILS_V2";
     }
 
     @Produces

@@ -20,12 +20,12 @@ import java.time.Duration;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 
-@QuarkusIntegrationTest
+@QuarkusTest
 class JobServiceManagementResourceIT {
 
     private static final String HEALTH_ENDPOINT = "/q/health/ready";

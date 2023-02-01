@@ -24,11 +24,13 @@ import org.eclipse.microprofile.reactive.messaging.Metadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.events.JobDataEvent;
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.Recipient;
 import org.kie.kogito.timer.Trigger;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
@@ -61,10 +63,8 @@ abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
     private static final Integer EXECUTION_COUNTER = 1;
     private static final String SCHEDULE_ID = "SCHEDULE_ID";
 
-    private static final Recipient RECIPIENT = new Recipient.HTTPRecipient("http://recipient");
+    private static final Recipient RECIPIENT = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("http://recipient").build());
     private static final Trigger TRIGGER = new PointInTimeTrigger();
-    private static final JobDetails.Type TYPE = JobDetails.Type.HTTP;
-
     @Captor
     ArgumentCaptor<Message<String>> messageCaptor;
 
@@ -162,7 +162,6 @@ abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
                 .scheduledId(SCHEDULE_ID)
                 .recipient(RECIPIENT)
                 .trigger(TRIGGER)
-                .type(TYPE)
                 .build();
 
     }

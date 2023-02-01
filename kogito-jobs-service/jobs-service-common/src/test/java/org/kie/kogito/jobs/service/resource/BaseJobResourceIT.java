@@ -20,76 +20,34 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
 import org.kie.kogito.jobs.service.model.ScheduledJob;
-import org.kie.kogito.jobs.service.scheduler.impl.TimerDelegateJobScheduler;
-import org.kie.kogito.jobs.service.scheduler.impl.VertxTimerServiceScheduler;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public abstract class BaseJobResourceIT {
+public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
 
-    public static final String HEALTH_ENDPOINT = "/q/health";
-    private static final String CALLBACK_ENDPOINT = "http://localhost:%d/callback";
-    public static final String PROCESS_ID = "processId";
-    public static final String PROCESS_INSTANCE_ID = "processInstanceId";
-    public static final String ROOT_PROCESS_ID = "rootProcessId";
-    public static final String ROOT_PROCESS_INSTANCE_ID = "rootProcessInstanceId";
-    public static final String NODE_INSTANCE_ID = "nodeInstanceId";
-    public static final int PRIORITY = 1;
-    public static final int BAD_REQUEST = 400;
-    public static final int OK = 200;
-
-    @ConfigProperty(name = "quarkus.http.test-port")
-    int port;
-
-    @Inject
-    ObjectMapper objectMapper;
-
-    @Inject
-    TimerDelegateJobScheduler scheduler;
-
-    @Inject
-    VertxTimerServiceScheduler timer;
-
-    @BeforeEach
-    void init() {
-        //health check - wait to be ready
-        await()
-                .atMost(1, MINUTES)
-                .pollInterval(1, SECONDS)
-                .untilAsserted(() -> given()
-                        .contentType(ContentType.JSON)
-                        .accept(ContentType.JSON)
-                        .get(HEALTH_ENDPOINT)
-                        .then()
-                        .statusCode(OK));
+    @Override
+    protected String getCreatePath() {
+        return RestApiConstants.JOBS_PATH;
     }
 
-    @AfterEach
-    void tearDown() {
-        scheduler.setForceExecuteExpiredJobs(false);
+    @Override
+    protected String getGetJobQuery(String jobId) {
+        return String.format(RestApiConstants.JOBS_PATH + "/%s", jobId);
     }
 
     @Test
@@ -111,19 +69,6 @@ public abstract class BaseJobResourceIT {
                 .build();
         create(jobToJson(job))
                 .statusCode(BAD_REQUEST);
-    }
-
-    private String getCallbackEndpoint() {
-        return String.format(CALLBACK_ENDPOINT, port);
-    }
-
-    private ValidatableResponse create(String body) {
-        return given()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .when()
-                .post(JobResource.JOBS_PATH)
-                .then();
     }
 
     private String jobToJson(Job job) throws JsonProcessingException {
@@ -162,7 +107,7 @@ public abstract class BaseJobResourceIT {
         create(jobToJson(job));
         final ScheduledJob response = given().pathParam("id", id)
                 .when()
-                .delete(JobResource.JOBS_PATH + "/{id}")
+                .delete(RestApiConstants.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(OK)
                 .contentType(ContentType.JSON)
@@ -256,7 +201,7 @@ public abstract class BaseJobResourceIT {
         given()
                 .pathParam("id", id)
                 .when()
-                .get(JobResource.JOBS_PATH + "/{id}")
+                .get(RestApiConstants.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(404);
     }
@@ -265,7 +210,7 @@ public abstract class BaseJobResourceIT {
         ScheduledJob scheduledJob = given()
                 .pathParam("id", id)
                 .when()
-                .delete(JobResource.JOBS_PATH + "/{id}")
+                .delete(RestApiConstants.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(OK)
                 .contentType(ContentType.JSON)
@@ -287,7 +232,7 @@ public abstract class BaseJobResourceIT {
         ScheduledJob scheduledJob = given()
                 .pathParam("id", id)
                 .when()
-                .get(JobResource.JOBS_PATH + "/{id}")
+                .get(RestApiConstants.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(OK)
                 .contentType(ContentType.JSON)
@@ -351,18 +296,6 @@ public abstract class BaseJobResourceIT {
 
         assertPatch(id, toPatch, BAD_REQUEST);
 
-        toPatch = JobBuilder.builder().processId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, BAD_REQUEST);
-
-        toPatch = JobBuilder.builder().rootProcessId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, BAD_REQUEST);
-
-        toPatch = JobBuilder.builder().rootProcessInstanceId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, BAD_REQUEST);
-
-        toPatch = JobBuilder.builder().processInstanceId(UUID.randomUUID().toString()).build();
-        assertPatch(id, toPatch, BAD_REQUEST);
-
         toPatch = JobBuilder.builder().priority(10).build();
         assertPatch(id, toPatch, BAD_REQUEST);
 
@@ -376,7 +309,7 @@ public abstract class BaseJobResourceIT {
                 .contentType(ContentType.JSON)
                 .body(jobToJson(toPatch))
                 .when()
-                .patch(JobResource.JOBS_PATH + "/{id}")
+                .patch(RestApiConstants.JOBS_PATH + "/{id}")
                 .then()
                 .statusCode(i);
     }

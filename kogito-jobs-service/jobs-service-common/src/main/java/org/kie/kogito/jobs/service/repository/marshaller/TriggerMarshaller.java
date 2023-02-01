@@ -28,10 +28,11 @@ import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
-public class TriggerMarshaller {
+public class TriggerMarshaller implements Marshaller<Trigger, JsonObject> {
 
     private static final String CLASS_TYPE = "classType";
 
+    @Override
     public JsonObject marshall(Trigger trigger) {
         if (trigger instanceof IntervalTrigger) {
             return JsonObject.mapFrom(new IntervalTriggerAccessor((IntervalTrigger) trigger))
@@ -44,6 +45,7 @@ public class TriggerMarshaller {
         return null;
     }
 
+    @Override
     public Trigger unmarshall(JsonObject jsonObject) {
         String classType = Optional.ofNullable(jsonObject).map(o -> (String) o.remove(CLASS_TYPE)).orElse(null);
         if (IntervalTrigger.class.getName().equals(classType)) {

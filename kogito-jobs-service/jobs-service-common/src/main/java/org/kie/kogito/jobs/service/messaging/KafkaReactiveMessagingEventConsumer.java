@@ -32,7 +32,7 @@ import io.cloudevents.CloudEvent;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
-public class KafkaReactiveMessagingEventConsumer extends ReactiveMessagingEventConsumer {
+public class KafkaReactiveMessagingEventConsumer extends MessagingConsumer {
 
     private static final String KOGITO_JOB_SERVICE_JOB_REQUEST_EVENTS = "kogito-job-service-job-request-events";
 

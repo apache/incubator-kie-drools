@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 package org.kie.kogito.jobs.service.scheduler.impl;
 
 import java.time.ZonedDateTime;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.service.executor.HttpJobExecutor;
-import org.kie.kogito.jobs.service.model.job.HttpJob;
-import org.kie.kogito.jobs.service.model.job.HttpJobContext;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.ManageableJobHandle;
+import org.kie.kogito.jobs.service.executor.JobExecutorResolver;
+import org.kie.kogito.jobs.service.job.DelegateJob;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobDetailsContext;
+import org.kie.kogito.jobs.service.model.ManageableJobHandle;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.Job;
 import org.kie.kogito.timer.JobContext;
@@ -56,10 +56,13 @@ class VertxTimerServiceSchedulerTest {
     private JobDetails jobDetails;
 
     @Mock
-    private HttpJobExecutor executor;
+    private JobExecutorResolver jobExecutorResolver;
+
+    @Mock
+    private JobStreams jobStreams;
 
     @Captor
-    private ArgumentCaptor<CompletionStage<JobDetails>> jobCaptor;
+    private ArgumentCaptor<JobDetails> jobCaptor;
 
     @Captor
     private ArgumentCaptor<Long> timeCaptor;
@@ -77,11 +80,11 @@ class VertxTimerServiceSchedulerTest {
         ZonedDateTime time = DateUtil.now().plusSeconds(1);
         final ManageableJobHandle handle = schedule(time);
         verify(vertx).setTimer(timeCaptor.capture(), any());
-        assertThat(timeCaptor.getValue()).isGreaterThan(time.toInstant().minusMillis(System.currentTimeMillis()).toEpochMilli());
+        assertThat(timeCaptor.getValue()).isGreaterThanOrEqualTo(time.toInstant().minusMillis(System.currentTimeMillis()).toEpochMilli());
         given().await()
                 .atMost(2, TimeUnit.SECONDS)
-                .untilAsserted(() -> verify(executor).execute(jobCaptor.capture()));
-        assertThat(jobCaptor.getValue().toCompletableFuture().getNow(null)).isEqualTo(jobDetails);
+                .untilAsserted(() -> verify(jobExecutorResolver).get(jobCaptor.capture()));
+        assertThat(jobCaptor.getValue()).isEqualTo(jobDetails);
         assertThat(handle.isCancel()).isFalse();
         assertThat(handle.getScheduledTime()).isNotNull();
     }
@@ -103,8 +106,8 @@ class VertxTimerServiceSchedulerTest {
         final long timestamp = time.toInstant().toEpochMilli();
         trigger = new PointInTimeTrigger(timestamp, null, null);
         jobDetails = JobDetails.builder().build();
-        context = new HttpJobContext(jobDetails);
-        job = new HttpJob(executor);
+        context = new JobDetailsContext(jobDetails);
+        job = new DelegateJob(jobExecutorResolver, jobStreams);
         return tested.scheduleJob(job, context, trigger);
     }
 

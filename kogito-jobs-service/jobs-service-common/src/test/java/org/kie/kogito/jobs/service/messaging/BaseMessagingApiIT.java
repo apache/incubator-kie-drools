@@ -47,7 +47,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.kie.kogito.jobs.service.resource.BaseJobResourceIT.HEALTH_ENDPOINT;
+import static org.kie.kogito.jobs.service.health.HealthCheckUtils.awaitReadyHealthCheck;
 
 public abstract class BaseMessagingApiIT {
 
@@ -87,15 +87,7 @@ public abstract class BaseMessagingApiIT {
     @BeforeEach
     void init() throws Exception {
         //health check - wait to be ready
-        await()
-                .atMost(2, MINUTES)
-                .pollInterval(1, SECONDS)
-                .untilAsserted(() -> given()
-                        .contentType(ContentType.JSON)
-                        .accept(ContentType.JSON)
-                        .get(HEALTH_ENDPOINT)
-                        .then()
-                        .statusCode(200));
+        awaitReadyHealthCheck(2, MINUTES);
     }
 
     @Test

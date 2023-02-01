@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.jobs.service.repository.marshaller;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 
 import io.vertx.core.json.JsonObject;
 
@@ -30,12 +31,15 @@ class RecipientMarshallerTest {
 
     @Test
     void marshall() {
-        Recipient recipient = new Recipient.HTTPRecipient("test");
+        Recipient recipient = new RecipientInstance(HttpRecipient.builder().forStringPayload().url("test").build());
         JsonObject jsonObject = marshaller.marshall(recipient);
-        assertEquals(new JsonObject()
-                .put("endpoint", "test")
-                .put("classType", Recipient.HTTPRecipient.class.getName()),
-                jsonObject);
+        assertEquals(buildRecipient(), jsonObject);
+    }
+
+    private static JsonObject buildRecipient() {
+        return JsonObject
+                .mapFrom(HttpRecipient.builder().forStringPayload().url("test").build())
+                .put(RecipientMarshaller.CLASS_TYPE, HttpRecipient.class.getName());
     }
 
     @Test
@@ -46,16 +50,14 @@ class RecipientMarshallerTest {
 
     @Test
     void unmarshall() {
-        JsonObject jsonObject = new JsonObject()
-                .put("endpoint", "test")
-                .put("classType", Recipient.HTTPRecipient.class.getName());
+        JsonObject jsonObject = buildRecipient();
         Recipient recipient = marshaller.unmarshall(jsonObject);
-        assertEquals(new Recipient.HTTPRecipient("test"), recipient);
+        assertEquals(HttpRecipient.builder().forStringPayload().url("test").build(), recipient.getRecipient());
     }
 
     @Test
     void unmarshallInvalid() {
-        JsonObject jsonObject = new JsonObject().put("endpoint", "test");
+        JsonObject jsonObject = new JsonObject();
         Recipient recipient = marshaller.unmarshall(jsonObject);
         assertNull(recipient);
     }

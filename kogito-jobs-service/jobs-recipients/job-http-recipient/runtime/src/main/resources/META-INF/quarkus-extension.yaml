@@ -1,0 +1,5 @@
+name: Job Http Recipient extension
+description: Handle HTTP requests based on information from the job recipient.
+metadata:
+  keywords:
+    - HTTP, HTTPRecipient

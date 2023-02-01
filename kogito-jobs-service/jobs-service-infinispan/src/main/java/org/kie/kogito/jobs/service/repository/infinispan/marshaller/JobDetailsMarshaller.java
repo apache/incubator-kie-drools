@@ -19,15 +19,24 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller;
 import org.kie.kogito.timer.Trigger;
+
+import io.vertx.core.json.JsonObject;
 
 import static org.kie.kogito.jobs.service.utils.DateUtil.instantToZonedDateTime;
 import static org.kie.kogito.jobs.service.utils.DateUtil.zonedDateTimeToInstant;
 
 public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
+
+    private RecipientMarshaller recipientMarshaller;
+
+    public JobDetailsMarshaller(RecipientMarshaller recipientMarshaller) {
+        this.recipientMarshaller = recipientMarshaller;
+    }
 
     @Override
     public String getTypeName() {
@@ -49,10 +58,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         writer.writeInt("priority", job.getPriority());
         writer.writeInt("executionCounter", job.getExecutionCounter());
         writer.writeString("scheduledId", job.getScheduledId());
-        writer.writeString("payload", String.valueOf(job.getPayload()));
-        writer.writeObject("recipient", job.getRecipient(), getInterface(job.getRecipient()));
+        writer.writeString("recipient", Optional.ofNullable(job.getRecipient()).map(r -> recipientMarshaller.marshall(r).encode()).orElse(null));
         writer.writeObject("trigger", job.getTrigger(), getInterface(job.getTrigger()));
-        writer.writeString("type", mapEnum(job.getType()));
     }
 
     public Class<?> getInterface(Object object) {
@@ -73,10 +80,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
         Integer priority = reader.readInt("priority");
         Integer executionCounter = reader.readInt("executionCounter");
         String scheduledId = reader.readString("scheduledId");
-        String payload = reader.readString("payload");//serialize payload
-        Recipient recipient = reader.readObject("recipient", Recipient.class);
+        Recipient recipient = Optional.ofNullable(reader.readString("recipient")).map(r -> recipientMarshaller.unmarshall(new JsonObject(r))).orElse(null);
         Trigger trigger = reader.readObject("trigger", Trigger.class);
-        JobDetails.Type type = mapString(reader.readString("type"), JobDetails.Type.class);
 
         return JobDetails.builder()
                 .id(id)
@@ -87,10 +92,8 @@ public class JobDetailsMarshaller extends BaseMarshaller<JobDetails> {
                 .priority(priority)
                 .executionCounter(executionCounter)
                 .scheduledId(scheduledId)
-                .payload(payload)
                 .recipient(recipient)
                 .trigger(trigger)
-                .type(type)
                 .build();
     }
 }

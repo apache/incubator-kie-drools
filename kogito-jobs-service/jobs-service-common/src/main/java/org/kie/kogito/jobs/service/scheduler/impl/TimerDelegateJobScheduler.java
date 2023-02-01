@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,16 @@ import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.kie.kogito.jobs.service.executor.HttpJobExecutor;
+import org.kie.kogito.jobs.service.executor.JobExecutorResolver;
+import org.kie.kogito.jobs.service.job.DelegateJob;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobDetailsContext;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
-import org.kie.kogito.jobs.service.model.job.HttpJob;
-import org.kie.kogito.jobs.service.model.job.HttpJobContext;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.ManageableJobHandle;
+import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
 import org.kie.kogito.jobs.service.scheduler.BaseTimerJobScheduler;
 import org.kie.kogito.jobs.service.stream.AvailableStreams;
+import org.kie.kogito.jobs.service.stream.JobStreams;
 import org.kie.kogito.jobs.service.utils.ErrorHandling;
 import org.kie.kogito.timer.Trigger;
 import org.reactivestreams.Publisher;
@@ -50,9 +51,11 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimerDelegateJobScheduler.class);
 
-    private HttpJobExecutor httpJobExecutor;
+    private JobExecutorResolver jobExecutorResolver;
 
     private VertxTimerServiceScheduler delegate;
+
+    private JobStreams jobStreams;
 
     protected TimerDelegateJobScheduler() {
     }
@@ -63,10 +66,12 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
             @ConfigProperty(name = "kogito.jobs-service.maxIntervalLimitToRetryMillis") long maxIntervalLimitToRetryMillis,
             @ConfigProperty(name = "kogito.jobs-service.schedulerChunkInMinutes") long schedulerChunkInMinutes,
             @ConfigProperty(name = "kogito.jobs-service.forceExecuteExpiredJobs") boolean forceExecuteExpiredJobs,
-            HttpJobExecutor httpJobExecutor, VertxTimerServiceScheduler delegate) {
+            JobExecutorResolver jobExecutorResolver, VertxTimerServiceScheduler delegate,
+            JobStreams jobStreams) {
         super(jobRepository, backoffRetryMillis, maxIntervalLimitToRetryMillis, schedulerChunkInMinutes, forceExecuteExpiredJobs);
-        this.httpJobExecutor = httpJobExecutor;
+        this.jobExecutorResolver = jobExecutorResolver;
         this.delegate = delegate;
+        this.jobStreams = jobStreams;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class TimerDelegateJobScheduler extends BaseTimerJobScheduler {
         LOGGER.debug("Job Scheduling {}", job);
         return ReactiveStreams
                 .of(job)
-                .map(j -> delegate.scheduleJob(new HttpJob(httpJobExecutor), new HttpJobContext(j),
+                .map(j -> delegate.scheduleJob(new DelegateJob(jobExecutorResolver, jobStreams), new JobDetailsContext(j),
                         trigger.orElse(j.getTrigger())));
     }
 

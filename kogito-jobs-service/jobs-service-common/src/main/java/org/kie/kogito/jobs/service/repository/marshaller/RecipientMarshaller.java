@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,60 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.jobs.service.repository.marshaller;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.kogito.jobs.service.model.job.Recipient;
-import org.kie.kogito.jobs.service.model.job.Recipient.HTTPRecipient;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 
 import io.vertx.core.json.JsonObject;
 
 @ApplicationScoped
-public class RecipientMarshaller {
+public class RecipientMarshaller implements Marshaller<Recipient, JsonObject> {
 
-    private static final String CLASS_TYPE = "classType";
+    public static final String CLASS_TYPE = "classType";
 
+    @Override
     public JsonObject marshall(Recipient recipient) {
-        if (recipient instanceof HTTPRecipient) {
-            return JsonObject.mapFrom(new HTTPRecipientAccessor((HTTPRecipient) recipient))
-                    .put(CLASS_TYPE, recipient.getClass().getName());
+        if (Objects.isNull(recipient)) {
+            return null;
         }
-        return null;
+        return JsonObject
+                .mapFrom(recipient.getRecipient())
+                .put(CLASS_TYPE, recipient.getRecipient().getClass().getName());
     }
 
+    @Override
     public Recipient unmarshall(JsonObject jsonObject) {
+        if (Objects.isNull(jsonObject)) {
+            return null;
+        }
         String classType = Optional.ofNullable(jsonObject).map(o -> (String) o.remove(CLASS_TYPE)).orElse(null);
-        if (HTTPRecipient.class.getName().equals(classType)) {
-            return jsonObject.mapTo(HTTPRecipientAccessor.class).to();
+        if (Objects.isNull(classType)) {
+            return null;
         }
-        return null;
-    }
-
-    static class HTTPRecipientAccessor {
-
-        private String endpoint;
-
-        public HTTPRecipientAccessor() {
-        }
-
-        public HTTPRecipientAccessor(HTTPRecipient recipient) {
-            this.endpoint = recipient.getEndpoint();
-        }
-
-        public HTTPRecipient to() {
-            return new HTTPRecipient(this.endpoint);
-        }
-
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
+        try {
+            return new RecipientInstance((org.kie.kogito.jobs.service.api.Recipient<?>) jsonObject.mapTo(Class.forName(classType)));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

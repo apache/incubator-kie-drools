@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.kogito.jobs.service.model.job.ManageableJobHandle;
+import org.kie.kogito.jobs.service.model.ManageableJobHandle;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 import org.kie.kogito.timer.InternalSchedulerService;
 import org.kie.kogito.timer.Job;

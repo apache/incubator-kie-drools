@@ -21,10 +21,10 @@ import java.util.concurrent.CompletionStage;
 
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.events.JobDataEvent;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.ScheduledJobAdapter;
-import org.kie.kogito.jobs.service.resource.JobResource;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.resource.RestApiConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +59,8 @@ public abstract class AbstractJobStreams {
             try {
                 JobDataEvent event = JobDataEvent
                         .builder()
-                        .source(url + JobResource.JOBS_PATH)
-                        .data(ScheduledJobAdapter.of(job))
+                        .source(url + RestApiConstants.JOBS_PATH)
+                        .data(ScheduledJobAdapter.of(job))//this should support jobs crated with V1 and V2
                         .build();
                 String json = objectMapper.writeValueAsString(event);
                 emitter.send(decorate(ContextAwareMessage.of(json)

@@ -12,15 +12,10 @@ message JobDetails {
   optional int32 priority = 6;
   optional int32 executionCounter = 7;
   optional string scheduledId = 8;
-  optional string payload = 9; //serialized as json to be generic
-  optional Recipient recipient = 10; //serialized as json to be generic
+  optional string recipient = 9; //serialized as json to be generic
   /* @Field(store = Store.YES) */
-  optional Trigger trigger = 11; //serialized as json to be generic
-  optional string type = 12;//enum
-}
-
-message Recipient {
-  optional string endpoint = 1;
+  optional Trigger trigger = 10; //serialized as json to be generic
+  optional string type = 11;//enum
 }
 
 /* @Indexed */

@@ -15,10 +15,14 @@
  */
 package org.kie.kogito.jobs.service.validator;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.jobs.service.model.job.JobDetails;
-import org.kie.kogito.jobs.service.model.job.JobDetailsBuilder;
-import org.kie.kogito.jobs.service.model.job.Recipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
+import org.kie.kogito.jobs.service.model.JobDetails;
+import org.kie.kogito.jobs.service.model.JobDetailsBuilder;
+import org.kie.kogito.jobs.service.model.Recipient;
+import org.kie.kogito.jobs.service.model.RecipientInstance;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,37 +33,46 @@ class JobDetailsValidatorTest {
     private static final String CALLBACK_ENDPOINT = "http://localhost:8080/callback";
     private static final String ID = "id";
 
+    private JobDetailsValidator jobDetailsValidator;
+    private Recipient recipient;
+
+    @BeforeEach
+    void setUp() {
+        jobDetailsValidator = new JobDetailsValidator(new RecipientInstanceValidator(null));
+        recipient = new RecipientInstance(HttpRecipient.builder()
+                .forStringPayload().url(CALLBACK_ENDPOINT)
+                .payload(HttpRecipientStringPayloadData.from("{\"name\":\"Arthur\"}"))
+                .build());
+    }
+
     @Test
     void testValidateSuccess() {
         JobDetails job = new JobDetailsBuilder()
                 .id(ID)
                 .correlationId(ID)
-                .payload("{\"name\":\"Arthur\"}")
-                .recipient(new Recipient.HTTPRecipient(CALLBACK_ENDPOINT))
+                .recipient(recipient)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThat(JobDetailsValidator.validateToCreate(job)).isEqualTo(job);
+        assertThat(jobDetailsValidator.validateToCreate(job)).isEqualTo(job);
     }
 
     @Test
     void testValidateMissingId() {
         JobDetails job = new JobDetailsBuilder()
-                .id(ID)
                 .correlationId(ID)
-                .recipient(new Recipient.HTTPRecipient(CALLBACK_ENDPOINT))
+                .recipient(recipient)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void testValidateMissingPayload() {
         JobDetails job = new JobDetailsBuilder()
-                .payload("{\"name\":\"Arthur\"}")
-                .recipient(new Recipient.HTTPRecipient(CALLBACK_ENDPOINT))
+                .recipient(recipient)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -67,10 +80,9 @@ class JobDetailsValidatorTest {
         JobDetails job = new JobDetailsBuilder()
                 .id(ID)
                 .correlationId(ID)
-                .payload("{\"name\":\"Arthur\"}")
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -78,11 +90,10 @@ class JobDetailsValidatorTest {
         JobDetails job = new JobDetailsBuilder()
                 .id(ID)
                 .correlationId(ID)
-                .payload("{\"name\":\"Arthur\"}")
-                .recipient(new Recipient.HTTPRecipient(null))
+                .recipient(null)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -90,10 +101,9 @@ class JobDetailsValidatorTest {
         JobDetails job = new JobDetailsBuilder()
                 .id(ID)
                 .correlationId(ID)
-                .payload("{\"name\":\"Arthur\"}")
-                .recipient(new Recipient.HTTPRecipient(CALLBACK_ENDPOINT))
+                .recipient(recipient)
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToCreate(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -101,7 +111,7 @@ class JobDetailsValidatorTest {
         JobDetails job = new JobDetailsBuilder()
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThat(JobDetailsValidator.validateToMerge(job)).isEqualTo(job);
+        assertThat(jobDetailsValidator.validateToMerge(job)).isEqualTo(job);
     }
 
     @Test
@@ -111,24 +121,15 @@ class JobDetailsValidatorTest {
                 .correlationId(ID)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToMerge(job)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void testValidateToMergeWithPayload() {
-        JobDetails job = new JobDetailsBuilder()
-                .payload("{\"name\":\"Arthur\"}")
-                .trigger(new PointInTimeTrigger())
-                .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToMerge(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToMerge(job)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void testValidateToMergeWithRecipient() {
         JobDetails job = new JobDetailsBuilder()
-                .recipient(new Recipient.HTTPRecipient(CALLBACK_ENDPOINT))
+                .recipient(recipient)
                 .trigger(new PointInTimeTrigger())
                 .build();
-        assertThatThrownBy(() -> JobDetailsValidator.validateToMerge(job)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> jobDetailsValidator.validateToMerge(job)).isInstanceOf(IllegalArgumentException.class);
     }
 }
