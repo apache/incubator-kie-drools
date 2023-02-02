@@ -550,4 +550,29 @@ public class BigDecimalTest extends BaseModelTest {
 
         assertThat(result).containsExactly(new BigDecimal("0"));
     }
+
+    @Test
+    public void testModifyWithNegativeBigDecimal() {
+        // DROOLS-7324
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + BdHolder.class.getCanonicalName() + ";\n" +
+                "global java.util.List result;\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $bd : BdHolder(bd1 > 5)\n" +
+                "then\n" +
+                "    modify($bd) { bd1 = -1 }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<BigDecimal> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        BdHolder holder = new BdHolder();
+        holder.setBd1(new BigDecimal("10"));
+        ksession.insert(holder);
+        int fires = ksession.fireAllRules();
+
+        assertThat(fires).isEqualTo(1);
+    }
 }
