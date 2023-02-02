@@ -2,7 +2,7 @@
 
 script_dir_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 
-mvn_cmd="mvn ${BUILD_MVN_OPTS:-}"
+mvn_cmd="mvn -B ${BUILD_MVN_OPTS:-}"
 optaplanner_file="${script_dir_path}/optaplanner-quarkus3.yaml"
 
 # Install artifacts locally.
@@ -22,17 +22,19 @@ ${mvn_cmd} rewrite:run \
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
-# 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
-new_project_version="9${project_version:1}"
-${mvn_cmd} versions:set \
-  -Dfull \
-  -DallowSnapshots=true \
-  -DgenerateBackupPoms=false \
-  -DnewVersion="${new_project_version}" \
+if [[ ! "$1" == "test" ]]; then
+  # 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
+  new_project_version="9${project_version:1}"
+  ${mvn_cmd} versions:set \
+    -Dfull \
+    -DallowSnapshots=true \
+    -DgenerateBackupPoms=false \
+    -DnewVersion="${new_project_version}" \
 
-${mvn_cmd} process-test-sources
+  ${mvn_cmd} process-test-sources
 
-# Commit the changes.
-git status
-git add -u
-git commit -m "Migrate to OptaPlanner 9"
+  # Commit the changes.
+  git status
+  git add -u
+  git commit -m "Migrate to OptaPlanner 9"
+fi
