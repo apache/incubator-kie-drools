@@ -24,6 +24,7 @@ import org.drools.io.DescrResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.io.IOException;
 
@@ -43,12 +44,11 @@ public class DrlResourceHandler extends ResourceHandler {
 
     public PackageDescr process(Resource resource, ResourceConfiguration resourceConfig) throws DroolsParserException, IOException {
         PackageDescr pkg;
-        this.results.clear();
         boolean hasErrors = false;
         if (resource instanceof DescrResource) {
             pkg = (PackageDescr) ((DescrResource) resource).getDescr();
         } else {
-            final DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
+            final DrlParser parser = new DrlParser(this.configuration.getOption(LanguageLevelOption.KEY));
             pkg = parser.parse(resource);
             this.results.addAll(parser.getErrors());
             if (pkg == null) {

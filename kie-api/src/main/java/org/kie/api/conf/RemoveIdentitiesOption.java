@@ -24,7 +24,7 @@ package org.kie.api.conf;
  *
  * DEFAULT = false
  */
-public enum RemoveIdentitiesOption implements SingleValueKieBaseOption {
+public enum RemoveIdentitiesOption implements SingleValueRuleBaseOption {
 
     YES(true),
     NO(false);
@@ -33,6 +33,8 @@ public enum RemoveIdentitiesOption implements SingleValueKieBaseOption {
      * The property name for the remove identities option
      */
     public static final String PROPERTY_NAME = "drools.removeIdentities";
+
+    public static OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

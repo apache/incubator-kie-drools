@@ -16,7 +16,6 @@
 
 package org.kie.api.runtime;
 
-import org.kie.api.PropertiesConfiguration;
 import org.kie.api.runtime.conf.KieSessionOptionsConfiguration;
 
 /**
@@ -35,8 +34,7 @@ import org.kie.api.runtime.conf.KieSessionOptionsConfiguration;
  * mutable again. This is to avoid inconsistent behaviour inside KieSession.
  */
 public interface KieSessionConfiguration
-    extends
-    PropertiesConfiguration,
-    KieSessionOptionsConfiguration {
+        extends
+        KieSessionOptionsConfiguration {
 
 }

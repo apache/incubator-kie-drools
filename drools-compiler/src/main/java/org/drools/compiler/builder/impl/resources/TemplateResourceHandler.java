@@ -48,7 +48,6 @@ public class TemplateResourceHandler extends ResourceHandler {
 
     @Override
     public PackageDescr process(Resource resource, ResourceConfiguration configuration) throws DroolsParserException, IOException {
-        this.results.clear();
         GuidedRuleTemplateProvider guidedRuleTemplateProvider = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider();
         if (guidedRuleTemplateProvider == null) {
             throw new MissingImplementationException(resource, "drools-workbench-models-guided-template");

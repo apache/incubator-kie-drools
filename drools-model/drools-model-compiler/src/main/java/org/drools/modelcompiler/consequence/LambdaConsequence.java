@@ -122,7 +122,7 @@ public class LambdaConsequence implements Consequence {
 
         Object[] facts;
         FactHandleLookup fhLookup = null;
-        if (reteEvaluator.getSessionConfiguration().isThreadSafe()) {
+        if (reteEvaluator.getRuleSessionConfiguration().isThreadSafe()) {
             if ( consequence.isUsingDrools() ) {
                 facts = new Object[consequence.getVariables().length + 1];
                 fhLookup = FactHandleLookup.create( factSuppliers.length );
@@ -214,7 +214,7 @@ public class LambdaConsequence implements Consequence {
         this.globalSuppliers = globalSuppliers.isEmpty() ? null : globalSuppliers.toArray( new GlobalSupplier[globalSuppliers.size()] );
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
 
-        if (!reteEvaluator.getSessionConfiguration().isThreadSafe()) {
+        if (!reteEvaluator.getRuleSessionConfiguration().isThreadSafe()) {
             this.facts = facts;
             this.fhLookup = fhLookup;
         }

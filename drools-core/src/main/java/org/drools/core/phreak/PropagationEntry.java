@@ -225,7 +225,7 @@ public interface PropagationEntry {
         }
 
         private static boolean isOrphanHandle(InternalFactHandle handle, ReteEvaluator reteEvaluator) {
-            return !handle.hasMatches() && !reteEvaluator.getKnowledgeBase().getConfiguration().isMutabilityEnabled();
+            return !handle.hasMatches() && !reteEvaluator.getKnowledgeBase().getKieBaseConfiguration().isMutabilityEnabled();
         }
 
         public void execute( ReteEvaluator reteEvaluator ) {

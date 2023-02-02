@@ -58,6 +58,7 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.builder.MVELExprAnalyzer;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 import static org.drools.mvel.java.JavaRuleBuilderHelper.createVariableContext;
 import static org.drools.mvel.java.JavaRuleBuilderHelper.generateTemplates;
@@ -234,7 +235,7 @@ public class JavaAccumulateBuilder
         String functionName = AccumulateUtil.getFunctionName(() -> MVELExprAnalyzer.getExpressionType(context, declCls, source, fc.getParams()[0]), fc.getFunction());
 
         // find the corresponding function
-        AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
+        AccumulateFunction function = context.getConfiguration().getOption(AccumulateFunctionOption.KEY, functionName).getFunction();
         if( function == null ) {
             // might have been imported in the package
             function = context.getPkg().getAccumulateFunctions().get( functionName );

@@ -27,8 +27,8 @@ public interface PropertiesConfiguration {
      * @param name name
      * @param value value
      */
-    public void setProperty(String name,
-                            String value);
+    public boolean setProperty(String name,
+                               String value);
 
     /**
      * Gets a property value

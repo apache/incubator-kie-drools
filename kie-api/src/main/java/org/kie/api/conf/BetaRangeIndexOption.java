@@ -28,7 +28,7 @@ package org.kie.api.conf;
  * <b>DEFAULT = false</b>
  *
  */
-public enum BetaRangeIndexOption implements SingleValueKieBaseOption {
+public enum BetaRangeIndexOption implements SingleValueRuleBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -37,6 +37,8 @@ public enum BetaRangeIndexOption implements SingleValueKieBaseOption {
      * The property name for beta node range index option
      */
     public static final String PROPERTY_NAME = "drools.betaNodeRangeIndexEnabled";
+
+    public static OptionKey<BetaRangeIndexOption> KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

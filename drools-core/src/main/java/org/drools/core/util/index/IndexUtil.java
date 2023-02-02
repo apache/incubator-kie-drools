@@ -23,6 +23,8 @@ import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.rule.constraint.Constraint;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.BetaRangeIndexOption;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
 public class IndexUtil {
@@ -58,16 +60,16 @@ public class IndexUtil {
         return (firstUnification == -1);
     }
 
-    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType, RuleBaseConfiguration config) {
+    public static boolean isIndexable(BetaNodeFieldConstraint constraint, short nodeType, KieBaseConfiguration config) {
         return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable(nodeType, config);
     }
 
-    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
+    private static boolean canHaveRangeIndex(short nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
         return canHaveRangeIndexForNodeType(nodeType, config) && areRangeIndexCompatibleOperands(constraint);
     }
 
-    private static boolean canHaveRangeIndexForNodeType(short nodeType, RuleBaseConfiguration config) {
-        if (USE_COMPARISON_INDEX_JOIN && config.isBetaNodeRangeIndexEnabled()) {
+    private static boolean canHaveRangeIndexForNodeType(short nodeType, KieBaseConfiguration config) {
+        if (USE_COMPARISON_INDEX_JOIN && config.getOption(BetaRangeIndexOption.KEY).isBetaRangeIndexEnabled()) {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode || nodeType == NodeTypeEnums.JoinNode);
         } else {
             return USE_COMPARISON_INDEX && (nodeType == NodeTypeEnums.NotNode || nodeType == NodeTypeEnums.ExistsNode);
@@ -246,7 +248,7 @@ public class IndexUtil {
             return this.operator;
         }
 
-        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint, RuleBaseConfiguration config) {
+        public boolean isIndexableForNode(short nodeType, IndexableConstraint constraint, KieBaseConfiguration config) {
             switch (this) {
                 case EQUAL:
                     return true;

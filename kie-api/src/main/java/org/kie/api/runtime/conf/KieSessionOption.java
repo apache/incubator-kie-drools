@@ -22,7 +22,11 @@ import org.kie.api.conf.Option;
  * A markup interface for KieSessionConfiguration options
  */
 public interface KieSessionOption
-    extends
-    Option {
+        extends
+        Option {
+    static String TYPE = "Base";
 
+    default String type() {
+        return TYPE;
+    }
 }

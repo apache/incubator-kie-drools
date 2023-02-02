@@ -16,7 +16,9 @@
 
 package org.kie.internal.conf;
 
+import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * An Enum for Index Precedence option.
@@ -28,7 +30,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
  *
  * DEFAULT = equality
  */
-public enum IndexPrecedenceOption implements SingleValueKieBaseOption {
+public enum IndexPrecedenceOption implements SingleValueRuleBaseOption {
 
     PATTERN_ORDER("pattern"),
     EQUALITY_PRIORITY("equality");
@@ -37,6 +39,8 @@ public enum IndexPrecedenceOption implements SingleValueKieBaseOption {
      * The property name for the index precedence option
      */
     public static final String PROPERTY_NAME = "drools.indexPrecedence";
+
+    public static OptionKey<IndexPrecedenceOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private String             string;
 

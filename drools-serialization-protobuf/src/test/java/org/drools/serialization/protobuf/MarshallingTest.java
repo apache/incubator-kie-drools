@@ -149,7 +149,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
+        assertThat(list.get(0)).isEqualTo(Integer.valueOf( 4 ));
 
         // need to create a new collection or otherwise the collection will be identity based
         List< ? > objects = new ArrayList<Object>( ksession.getObjects() );
@@ -199,7 +199,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
+        assertThat(list.get(0)).isEqualTo(Integer.valueOf( 4 ));
 
         assertThat(session.getObjects().size()).isEqualTo(2);
         assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
@@ -247,7 +247,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
+        assertThat(list.get(0)).isEqualTo(Integer.valueOf( 4 ));
 
         assertThat(session.getObjects().size()).isEqualTo(2);
         assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
@@ -295,7 +295,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
+        assertThat(list.get(0)).isEqualTo(Integer.valueOf( 4 ));
 
         assertThat(session.getObjects().size()).isEqualTo(2);
         assertThat(IteratorToList.convert(session.getObjects().iterator()).contains(bob)).isTrue();
@@ -2067,8 +2067,8 @@ public class MarshallingTest extends CommonTestMethodBase {
         impl.addRule( rule );
 
         knowledgeBase.addPackages( Collections.singleton( impl ) );
-        SessionConfiguration config = new SessionConfiguration();
-        config.setOption( ClockTypeOption.PSEUDO );
+        SessionConfiguration config = KieServices.get().newKieSessionConfiguration().as(SessionConfiguration.KEY);
+        config.setClockType( ClockType.PSEUDO_CLOCK );
         KieSession ksession = knowledgeBase.newKieSession( config, KieServices.get().newEnvironment() );
         PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.getSessionClock();
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase );
@@ -2430,7 +2430,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         assertThat(list.size()).isEqualTo(3);
         // because of agenda-groups
-        assertThat(list.get(0)).isEqualTo(new Integer( 4 ));
+        assertThat(list.get(0)).isEqualTo(Integer.valueOf( 4 ));
 
         Collection<? extends Object> facts = ksession.getObjects();
         System.out.println( new ArrayList( facts ) );

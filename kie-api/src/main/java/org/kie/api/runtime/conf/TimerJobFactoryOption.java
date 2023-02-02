@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * A class for the timer job factory manager configuration.
  */
@@ -27,6 +29,8 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
      * The property name for the timer job factory manager configuration
      */
     public static final String PROPERTY_NAME = "drools.timerJobFactory";
+
+    public static OptionKey<TimerJobFactoryOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * Timer Job Type

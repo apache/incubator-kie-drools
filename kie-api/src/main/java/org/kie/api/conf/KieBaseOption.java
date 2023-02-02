@@ -17,10 +17,14 @@
 package org.kie.api.conf;
 
 /**
- * A markup interface for {@link org.kie.api.KieBaseConfiguration} options.
+ * A markup interface for {@link KieBaseConfiguration} options.
  */
 public interface KieBaseOption
-    extends
-    Option {
+        extends
+        Option {
+    static String TYPE = "Base";
 
+    default String type() {
+        return TYPE;
+    }
 }

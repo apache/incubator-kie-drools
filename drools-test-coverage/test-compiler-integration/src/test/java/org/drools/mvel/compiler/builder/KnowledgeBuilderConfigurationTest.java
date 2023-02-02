@@ -61,9 +61,9 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( DefaultDialectOption.get( "mvel" ) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DefaultDialectOption.class)).isEqualTo(DefaultDialectOption.get("mvel"));
+        assertThat(config.getOption(DefaultDialectOption.KEY)).isEqualTo(DefaultDialectOption.get("mvel"));
         // checking string conversion
-        assertThat(config.getOption(DefaultDialectOption.class).getName()).isEqualTo("mvel");
+        assertThat(config.getOption(DefaultDialectOption.KEY).dialectName()).isEqualTo("mvel");
         // checking the string based getProperty() method
         assertThat(config.getProperty(DefaultDialectOption.PROPERTY_NAME)).isEqualTo("mvel");
 
@@ -72,10 +72,10 @@ public class KnowledgeBuilderConfigurationTest {
                             "java" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DefaultDialectOption.class)).isEqualTo(DefaultDialectOption.get("java"));
-        assertThat(config.getOption(DefaultDialectOption.class).toString()).isEqualTo("DefaultDialectOption( name=java )");
+        assertThat(config.getOption(DefaultDialectOption.KEY)).isEqualTo(DefaultDialectOption.get("java"));
+        assertThat(config.getOption(DefaultDialectOption.KEY).toString()).isEqualTo("DefaultDialectOption( name=java )");
         // checking string conversion
-        assertThat(config.getOption(DefaultDialectOption.class).getName()).isEqualTo("java");
+        assertThat(config.getOption(DefaultDialectOption.KEY).dialectName()).isEqualTo("java");
         // checking the string based getProperty() method
         assertThat(config.getProperty(DefaultDialectOption.PROPERTY_NAME)).isEqualTo("java");
     }
@@ -86,9 +86,9 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( LanguageLevelOption.DRL5 );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(LanguageLevelOption.class)).isEqualTo(LanguageLevelOption.DRL5);
+        assertThat(config.getOption(LanguageLevelOption.KEY)).isEqualTo(LanguageLevelOption.DRL5);
         // checking string conversion
-        assertThat(config.getOption(LanguageLevelOption.class)).isEqualTo(LanguageLevelOption.DRL5);
+        assertThat(config.getOption(LanguageLevelOption.KEY)).isEqualTo(LanguageLevelOption.DRL5);
         // checking the string based getProperty() method
         assertThat(config.getProperty(LanguageLevelOption.PROPERTY_NAME)).isEqualTo("DRL5");
 
@@ -97,10 +97,10 @@ public class KnowledgeBuilderConfigurationTest {
                             "DRL6" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(LanguageLevelOption.class)).isEqualTo(LanguageLevelOption.DRL6);
-        assertThat(config.getOption(LanguageLevelOption.class).toString()).isEqualTo("DRL6");
+        assertThat(config.getOption(LanguageLevelOption.KEY)).isEqualTo(LanguageLevelOption.DRL6);
+        assertThat(config.getOption(LanguageLevelOption.KEY).toString()).isEqualTo("DRL6");
         // checking string conversion
-        assertThat(config.getOption(LanguageLevelOption.class)).isEqualTo(LanguageLevelOption.DRL6);
+        assertThat(config.getOption(LanguageLevelOption.KEY)).isEqualTo(LanguageLevelOption.DRL6);
         // checking the string based getProperty() method
         assertThat(config.getProperty(LanguageLevelOption.PROPERTY_NAME)).isEqualTo("DRL6");
     }
@@ -118,15 +118,15 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( option );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AccumulateFunctionOption.class, "avg")).isEqualTo(option);
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "avg")).isEqualTo(option);
         // checking string conversion
-        assertThat(config.getOption(AccumulateFunctionOption.class, "avg").getName()).isEqualTo("avg");
-        assertThat(config.getOption(AccumulateFunctionOption.class, "avg").getFunction()).isEqualTo(function);
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "avg").getName()).isEqualTo("avg");
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "avg").getFunction()).isEqualTo(function);
         // checking the string based getProperty() method
         assertThat(config.getProperty(AccumulateFunctionOption.PROPERTY_NAME + "avg")).isEqualTo(AverageAccumulateFunction.class.getName());
         // check the key set
         keySet.add( "avg" );
-        assertThat(config.getOptionKeys(AccumulateFunctionOption.class).contains("avg")).isTrue();
+        assertThat(config.getOptionSubKeys(AccumulateFunctionOption.KEY).contains("avg")).isTrue();
 
         // wiring the accumulate function using the string based setProperty() method
         config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum",
@@ -134,31 +134,31 @@ public class KnowledgeBuilderConfigurationTest {
         
         MaxAccumulateFunction max = new MaxAccumulateFunction();
         // checking the type safe getOption() method
-        assertThat(config.getOption(AccumulateFunctionOption.class, "maximum")).isEqualTo(AccumulateFunctionOption.get("maximum", max));
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "maximum")).isEqualTo(AccumulateFunctionOption.get("maximum", max));
         // checking string conversion
-        assertThat(config.getOption(AccumulateFunctionOption.class, "maximum").getName()).isEqualTo("maximum");
-        assertThat(config.getOption(AccumulateFunctionOption.class, "maximum").getFunction().getClass().getName()).isEqualTo(max.getClass().getName());
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "maximum").getName()).isEqualTo("maximum");
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "maximum").getFunction().getClass().getName()).isEqualTo(max.getClass().getName());
         // checking the string based getProperty() method
         assertThat(config.getProperty(AccumulateFunctionOption.PROPERTY_NAME + "maximum")).isEqualTo(MaxAccumulateFunction.class.getName());
         keySet.add( "avg" );
         
         // wiring the inner class accumulate function using the string based setProperty() method
         config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"inner",
-                            InnerAccumulateFuncion.class.getName() );
+                            InnerAccumulateFunction.class.getName());
         
-        InnerAccumulateFuncion inner = new InnerAccumulateFuncion();
+        InnerAccumulateFunction inner = new InnerAccumulateFunction();
         // checking the type safe getOption() method
-        assertThat(config.getOption(AccumulateFunctionOption.class, "inner")).isEqualTo(AccumulateFunctionOption.get("inner", inner));
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "inner")).isEqualTo(AccumulateFunctionOption.get("inner", inner));
         // checking string conversion
-        assertThat(config.getOption(AccumulateFunctionOption.class, "inner").getName()).isEqualTo("inner");
-        assertThat(config.getOption(AccumulateFunctionOption.class, "inner").getFunction().getClass().getName()).isEqualTo(inner.getClass().getName());
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "inner").getName()).isEqualTo("inner");
+        assertThat(config.getOption(AccumulateFunctionOption.KEY, "inner").getFunction().getClass().getName()).isEqualTo(inner.getClass().getName());
         // checking the string based getProperty() method
-        assertThat(config.getProperty(AccumulateFunctionOption.PROPERTY_NAME + "inner")).isEqualTo(InnerAccumulateFuncion.class.getName());
+        assertThat(config.getProperty(AccumulateFunctionOption.PROPERTY_NAME + "inner")).isEqualTo(InnerAccumulateFunction.class.getName());
         keySet.add( "avg" );
 
-        assertThat(config.getOptionKeys(AccumulateFunctionOption.class).containsAll(keySet)).isTrue();
-//        for( String key: config.getOptionKeys(AccumulateFunctionOption.class ) ){
-//            System.out.println( key + "->" + config.getOption(AccumulateFunctionOption.class, key).getClass().getName() );
+        assertThat(config.getOptionSubKeys(AccumulateFunctionOption.KEY).containsAll(keySet)).isTrue();
+//        for( String key: config.getOptionKeys(AccumulateFunctionOption.KEY ) ){
+//            System.out.println( key + "->" + config.getOption(AccumulateFunctionOption.KEY, key).getClass().getName() );
 //        }
     }
     
@@ -169,9 +169,9 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( DumpDirOption.get( dumpDir ) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DumpDirOption.class)).isEqualTo(DumpDirOption.get(dumpDir));
+        assertThat(config.getOption(DumpDirOption.KEY)).isEqualTo(DumpDirOption.get(dumpDir));
         // checking string conversion
-        assertThat(config.getOption(DumpDirOption.class).getDirectory()).isEqualTo(dumpDir);
+        assertThat(config.getOption(DumpDirOption.KEY).getDirectory()).isEqualTo(dumpDir);
         // checking the string based getProperty() method
         assertThat(config.getProperty(DumpDirOption.PROPERTY_NAME)).isEqualTo(dumpDir.toString());
 
@@ -181,9 +181,9 @@ public class KnowledgeBuilderConfigurationTest {
                             System.getProperty( "java.io.tmpdir" ) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DumpDirOption.class)).isEqualTo(DumpDirOption.get(dumpDir));
+        assertThat(config.getOption(DumpDirOption.KEY)).isEqualTo(DumpDirOption.get(dumpDir));
         // checking string conversion
-        assertThat(config.getOption(DumpDirOption.class).getDirectory()).isEqualTo(dumpDir);
+        assertThat(config.getOption(DumpDirOption.KEY).getDirectory()).isEqualTo(dumpDir);
         // checking the string based getProperty() method
         assertThat(config.getProperty(DumpDirOption.PROPERTY_NAME)).isEqualTo(dumpDir.toString());
     }
@@ -201,10 +201,10 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( option );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(EvaluatorOption.class, "after")).isEqualTo(option);
+        assertThat(config.getOption(EvaluatorOption.KEY, "after")).isEqualTo(option);
         // checking string conversion
-        assertThat(config.getOption(EvaluatorOption.class, "after").getName()).isEqualTo("after");
-        assertThat(config.getOption(EvaluatorOption.class, "after").getEvaluatorDefinition()).isEqualTo(afterDef);
+        assertThat(config.getOption(EvaluatorOption.KEY, "after").getName()).isEqualTo("after");
+        assertThat(config.getOption(EvaluatorOption.KEY, "after").getEvaluatorDefinition()).isEqualTo(afterDef);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EvaluatorOption.PROPERTY_NAME + "after")).isEqualTo(AfterEvaluatorDefinition.class.getName());
 
@@ -214,10 +214,10 @@ public class KnowledgeBuilderConfigurationTest {
         
         BeforeEvaluatorDefinition beforeDef = new BeforeEvaluatorDefinition();
         // checking the type safe getOption() method
-        assertThat(config.getOption(EvaluatorOption.class, "before")).isEqualTo(EvaluatorOption.get("before", beforeDef));
+        assertThat(config.getOption(EvaluatorOption.KEY, "before")).isEqualTo(EvaluatorOption.get("before", beforeDef));
         // checking string conversion
-        assertThat(config.getOption(EvaluatorOption.class, "before").getName()).isEqualTo("before");
-        assertThat(config.getOption(EvaluatorOption.class, "before").getEvaluatorDefinition().getClass().getName()).isEqualTo(beforeDef.getClass().getName());
+        assertThat(config.getOption(EvaluatorOption.KEY, "before").getName()).isEqualTo("before");
+        assertThat(config.getOption(EvaluatorOption.KEY, "before").getEvaluatorDefinition().getClass().getName()).isEqualTo(beforeDef.getClass().getName());
         // checking the string based getProperty() method
         assertThat(config.getProperty(EvaluatorOption.PROPERTY_NAME + "before")).isEqualTo(beforeDef.getClass().getName());
     }
@@ -228,7 +228,7 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( ProcessStringEscapesOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ProcessStringEscapesOption.class)).isEqualTo(ProcessStringEscapesOption.YES);
+        assertThat(config.getOption(ProcessStringEscapesOption.KEY)).isEqualTo(ProcessStringEscapesOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ProcessStringEscapesOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -237,7 +237,7 @@ public class KnowledgeBuilderConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ProcessStringEscapesOption.class)).isEqualTo(ProcessStringEscapesOption.NO);
+        assertThat(config.getOption(ProcessStringEscapesOption.KEY)).isEqualTo(ProcessStringEscapesOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ProcessStringEscapesOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -248,9 +248,9 @@ public class KnowledgeBuilderConfigurationTest {
         config.setOption( DefaultPackageNameOption.get( "org.drools.mvel.compiler.test" ) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DefaultPackageNameOption.class)).isEqualTo(DefaultPackageNameOption.get("org.drools.mvel.compiler.test"));
+        assertThat(config.getOption(DefaultPackageNameOption.KEY)).isEqualTo(DefaultPackageNameOption.get("org.drools.mvel.compiler.test"));
         // checking string conversion
-        assertThat(config.getOption(DefaultPackageNameOption.class).getPackageName()).isEqualTo("org.drools.mvel.compiler.test");
+        assertThat(config.getOption(DefaultPackageNameOption.KEY).getPackageName()).isEqualTo("org.drools.mvel.compiler.test");
         // checking the string based getProperty() method
         assertThat(config.getProperty(DefaultPackageNameOption.PROPERTY_NAME)).isEqualTo("org.drools.mvel.compiler.test");
 
@@ -259,9 +259,9 @@ public class KnowledgeBuilderConfigurationTest {
                             "org.drools" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(DefaultPackageNameOption.class)).isEqualTo(DefaultPackageNameOption.get("org.drools"));
+        assertThat(config.getOption(DefaultPackageNameOption.KEY)).isEqualTo(DefaultPackageNameOption.get("org.drools"));
         // checking string conversion
-        assertThat(config.getOption(DefaultPackageNameOption.class).getPackageName()).isEqualTo("org.drools");
+        assertThat(config.getOption(DefaultPackageNameOption.KEY).getPackageName()).isEqualTo("org.drools");
         // checking the string based getProperty() method
         assertThat(config.getProperty(DefaultPackageNameOption.PROPERTY_NAME)).isEqualTo("org.drools");
     }
@@ -269,7 +269,7 @@ public class KnowledgeBuilderConfigurationTest {
     /**
      * an accumulate function implemented as an inner class
      */
-    public static class InnerAccumulateFuncion implements AccumulateFunction {
+    public static class InnerAccumulateFunction implements AccumulateFunction {
 
         public void accumulate(Serializable context,
                                Object value) {

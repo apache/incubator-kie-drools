@@ -36,6 +36,8 @@ public enum KieBaseMutabilityOption implements SingleValueKieBaseOption {
      */
     public static final String PROPERTY_NAME = "drools.kieBaseMutability";
 
+    public static OptionKey<KieBaseMutabilityOption> KEY = new OptionKey(TYPE, PROPERTY_NAME);
+
     /**
      * {@inheritDoc}
      */
@@ -50,5 +52,9 @@ public enum KieBaseMutabilityOption implements SingleValueKieBaseOption {
             return DISABLED;
         }
         throw new IllegalArgumentException( "Illegal enum value '" + option + "' for KieBaseMutabilityOption" );
+    }
+
+    public boolean isMutabilityEnabled() {
+        return this == ALLOWED;
     }
 }

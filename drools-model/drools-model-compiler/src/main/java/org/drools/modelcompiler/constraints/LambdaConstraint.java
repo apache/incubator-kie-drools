@@ -51,6 +51,7 @@ import org.drools.model.functions.Function2;
 import org.drools.model.functions.Function3;
 import org.drools.model.functions.Function4;
 import org.drools.model.functions.PredicateInformation;
+import org.kie.api.KieBaseConfiguration;
 
 import static org.drools.core.base.ValueType.determineValueType;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
@@ -211,7 +212,7 @@ public class LambdaConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
+    public boolean isIndexable( short nodeType, KieBaseConfiguration config) {
         return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 

@@ -17,7 +17,7 @@ public class CLASS_NAME extends AbstractRuleUnit<RULE_UNIT_CLASS> {
 
     private static final RuleBase ruleBase = KieBaseBuilder.createKieBaseFromModel( new RULE_UNIT_MODEL(), $KieBaseOptions$ );
 
-    private static final SessionConfiguration sessionConfiguration = ruleBase.getSessionConfiguration();
+    private static final SessionConfiguration sessionConfiguration = ruleBase.getSessionConfiguration().as(SessionConfiguration.KEY);
 
     static {
         sessionConfiguration.setOption( $ClockType$ );

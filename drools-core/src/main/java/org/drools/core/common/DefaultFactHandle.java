@@ -366,7 +366,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     protected void setLinkedTuples( RuleBase kbase ) {
-        linkedTuples = kbase != null && kbase.getConfiguration().isMultithreadEvaluation() ?
+        linkedTuples = kbase != null && kbase.getRuleBaseConfiguration().isMultithreadEvaluation() ?
                        new CompositeLinkedTuples() :
                        new SingleLinkedTuples();
     }

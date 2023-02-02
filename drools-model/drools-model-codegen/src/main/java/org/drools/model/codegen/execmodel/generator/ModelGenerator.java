@@ -67,6 +67,7 @@ import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTy
 import org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyperContext;
 import org.drools.model.codegen.execmodel.generator.visitor.ModelGeneratorVisitor;
 import org.drools.util.TypeResolver;
+import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -181,7 +182,7 @@ public class ModelGenerator {
             }
         }
 
-        int parallelRulesBuildThreshold = typeDeclarationContext.getBuilderConfiguration().getParallelRulesBuildThreshold();
+        int parallelRulesBuildThreshold = typeDeclarationContext.getBuilderConfiguration().getOption(ParallelRulesBuildThresholdOption.KEY).getParallelRulesBuildThreshold();
         boolean parallelRulesBuild = parallelRulesBuildThreshold != -1 && ruleDescrs.size() > parallelRulesBuildThreshold;
 
         if (parallelRulesBuild) {

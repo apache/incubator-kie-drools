@@ -45,7 +45,7 @@ public class KnowledgeSessionConfigurationTest {
         config.setOption( ClockTypeOption.PSEUDO );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ClockTypeOption.class)).isEqualTo(ClockTypeOption.PSEUDO);
+        assertThat(config.getOption(ClockTypeOption.KEY)).isEqualTo(ClockTypeOption.PSEUDO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ClockTypeOption.PROPERTY_NAME)).isEqualTo("pseudo");
 
@@ -54,7 +54,7 @@ public class KnowledgeSessionConfigurationTest {
                             "realtime" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ClockTypeOption.class)).isEqualTo(ClockTypeOption.REALTIME);
+        assertThat(config.getOption(ClockTypeOption.KEY)).isEqualTo(ClockTypeOption.REALTIME);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ClockTypeOption.PROPERTY_NAME)).isEqualTo("realtime");
     }
@@ -64,7 +64,7 @@ public class KnowledgeSessionConfigurationTest {
     public void testBeliefSystemType() {
         config.setOption( BeliefSystemTypeOption.get( BeliefSystemType.JTMS.toString() ) );
 
-        assertThat(config.getOption(BeliefSystemTypeOption.class)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.JTMS.toString()));
+        assertThat(config.getOption(BeliefSystemTypeOption.KEY)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.JTMS.toString()));
 
         // checking the string based getProperty() method
         assertThat(config.getProperty(BeliefSystemTypeOption.PROPERTY_NAME)).isEqualTo(BeliefSystemType.JTMS.getId());
@@ -74,7 +74,7 @@ public class KnowledgeSessionConfigurationTest {
                             BeliefSystemType.DEFEASIBLE.getId() );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(BeliefSystemTypeOption.class)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()));
+        assertThat(config.getOption(BeliefSystemTypeOption.KEY)).isEqualTo(BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()));
         // checking the string based getProperty() method
         assertThat(config.getProperty(BeliefSystemTypeOption.PROPERTY_NAME)).isEqualTo(BeliefSystemType.DEFEASIBLE.getId());
     }
@@ -82,12 +82,12 @@ public class KnowledgeSessionConfigurationTest {
     @Test
     public void testAccumulateNullPropagation() {
         // false by default
-        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.NO);
+        assertThat(config.getOption(AccumulateNullPropagationOption.KEY)).isEqualTo(AccumulateNullPropagationOption.NO);
         assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("false");
 
         config.setOption(AccumulateNullPropagationOption.YES);
 
-        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.YES);
+        assertThat(config.getOption(AccumulateNullPropagationOption.KEY)).isEqualTo(AccumulateNullPropagationOption.YES);
 
         // checking the string based getProperty() method
         assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("true");
@@ -97,7 +97,7 @@ public class KnowledgeSessionConfigurationTest {
                            "false");
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AccumulateNullPropagationOption.class)).isEqualTo(AccumulateNullPropagationOption.NO);
+        assertThat(config.getOption(AccumulateNullPropagationOption.KEY)).isEqualTo(AccumulateNullPropagationOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME)).isEqualTo("false");
     }

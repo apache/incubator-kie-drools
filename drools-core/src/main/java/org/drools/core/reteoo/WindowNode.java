@@ -82,10 +82,10 @@ public class WindowNode extends ObjectSource
                       final BuildContext context) {
         super(id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               objectSource,
-              context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
-              context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
         // needs to be cloned as the list is managed externally
         this.constraints = new ArrayList<>(constraints);
         this.behavior = new BehaviorManager(behaviors);

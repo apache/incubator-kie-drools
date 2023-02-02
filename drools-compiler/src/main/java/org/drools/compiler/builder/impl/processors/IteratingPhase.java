@@ -32,18 +32,13 @@ import java.util.Collection;
  *
  */
 public class IteratingPhase implements CompilationPhase {
-    private final String name;
     private final Collection<CompositePackageDescr> packages;
     private final PackageRegistryManager pkgRegistryManager;
     private final SinglePackagePhaseFactory phaseFactory;
+
     private final BuildResultCollectorImpl results = new BuildResultCollectorImpl();
 
-    public IteratingPhase(
-            String name,
-            Collection<CompositePackageDescr> packages,
-            PackageRegistryManager pkgRegistryManager,
-            SinglePackagePhaseFactory phaseFactory) {
-        this.name = name;
+    public IteratingPhase(Collection<CompositePackageDescr> packages, PackageRegistryManager pkgRegistryManager, SinglePackagePhaseFactory phaseFactory) {
         this.packages = packages;
         this.pkgRegistryManager = pkgRegistryManager;
         this.phaseFactory = phaseFactory;
@@ -67,10 +62,5 @@ public class IteratingPhase implements CompilationPhase {
     @Override
     public Collection<? extends KnowledgeBuilderResult> getResults() {
         return results.getAllResults();
-    }
-
-    @Override
-    public String toString() {
-        return "IteratingPhase(" + name + ')';
     }
 }

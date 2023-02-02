@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -356,7 +357,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                     final EvaluatorDefinition.Target left,
                                     final EvaluatorDefinition.Target right ) {
 
-        final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
+        final EvaluatorDefinition def = context.getConfiguration().as(KnowledgeBuilderRulesConfigurationImpl.KEY).getEvaluatorRegistry().getEvaluatorDefinition(evaluatorString);
         if ( def == null ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,

@@ -683,7 +683,7 @@ public class PatternTest {
             ksession.fireAllRules();
 
             // selects p1 and p3
-            if (((RuleBase) kbase).getConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
+            if (((RuleBase) kbase).getRuleBaseConfiguration().getAssertBehaviour().equals( RuleBaseConfiguration.AssertBehaviour.IDENTITY )) {
                 assertThat(list.size()).isEqualTo(2);
                 assertThat(list.get(0)).isSameAs(p1);
                 assertThat(list.get(1)).isSameAs(p3);

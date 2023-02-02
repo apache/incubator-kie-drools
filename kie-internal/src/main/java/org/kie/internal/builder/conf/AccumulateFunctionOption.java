@@ -16,12 +16,13 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * A class for the accumulate function configuration.
  */
-public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOption {
+public class AccumulateFunctionOption implements MultiValueRuleBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -29,6 +30,8 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
      * The prefix for the property name for accumulate functions
      */
     public static final String PROPERTY_NAME = "drools.accumulate.function.";
+
+    public static OptionKey<AccumulateFunctionOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * accumulate function name
@@ -66,7 +69,7 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
      * {@inheritDoc}
      */
     public String getPropertyName() {
-        return PROPERTY_NAME+name;
+        return PROPERTY_NAME;
     }
 
     /**

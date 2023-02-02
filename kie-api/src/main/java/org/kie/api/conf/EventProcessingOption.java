@@ -36,7 +36,7 @@ package org.kie.api.conf;
  * </ul>
  */
 public enum EventProcessingOption
-        implements SingleValueKieBaseOption {
+        implements SingleValueRuleBaseOption {
 
     CLOUD("cloud"),
     STREAM("stream");
@@ -45,6 +45,8 @@ public enum EventProcessingOption
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.eventProcessingMode";
+
+    public static OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     private String             string;
 

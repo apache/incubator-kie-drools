@@ -34,13 +34,13 @@ public class DefaultAgendaFactory implements AgendaFactory, Serializable {
     private DefaultAgendaFactory() { }
 
     public InternalAgenda createAgenda(RuleBase kBase, boolean initMain) {
-        return kBase.getConfiguration().isMultithreadEvaluation() ?
+        return kBase.getRuleBaseConfiguration().isMultithreadEvaluation() ?
                new CompositeDefaultAgenda( kBase, initMain ) :
                new DefaultAgenda( kBase, initMain );
     }
 
     public InternalAgenda createAgenda(RuleBase kBase) {
-        return kBase.getConfiguration().isMultithreadEvaluation() ?
+        return kBase.getRuleBaseConfiguration().isMultithreadEvaluation() ?
                new CompositeDefaultAgenda( kBase ) :
                new DefaultAgenda( kBase );
     }

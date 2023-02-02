@@ -16,13 +16,14 @@
 
 package org.kie.internal.conf;
 
-import org.kie.api.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * An option to define after how many evaluations in interpreted mode (with mvel)
  * a constraint should be jitted (translated in bytecode)
  */
-public class ConstraintJittingThresholdOption implements SingleValueKieBaseOption {
+public class ConstraintJittingThresholdOption implements SingleValueRuleBaseOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -30,6 +31,8 @@ public class ConstraintJittingThresholdOption implements SingleValueKieBaseOptio
      * The property name for the constraint jitting option
      */
     public static final String PROPERTY_NAME = "drools.jittingThreshold";
+
+    public static OptionKey<ConstraintJittingThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * The defualt value for this option

@@ -61,13 +61,13 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
     public TruthMaintenanceSystemImpl(InternalWorkingMemoryEntryPoint ep) {
         this.ep = ep;
 
-        assertBehaviour = ep.getKnowledgeBase().getConfiguration().getAssertBehaviour();
+        assertBehaviour = ep.getKnowledgeBase().getRuleBaseConfiguration().getAssertBehaviour();
 
         typeConfReg = ep.getObjectTypeConfigurationRegistry();
 
         this.equalityKeyMap = new Object2ObjectOpenCustomHashMap(EqualityKeyStrategy.getInstance()) ;;
 
-        defaultBeliefSystem = BeliefSystemFactory.createBeliefSystem(ep.getReteEvaluator().getSessionConfiguration().getBeliefSystemType(), ep, this);
+        defaultBeliefSystem = BeliefSystemFactory.createBeliefSystem(ep.getReteEvaluator().getRuleSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public static class EqualityKeyStrategy implements Strategy {

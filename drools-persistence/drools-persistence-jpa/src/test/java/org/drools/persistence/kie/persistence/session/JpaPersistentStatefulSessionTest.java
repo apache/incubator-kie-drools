@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.commands.impl.FireAllRulesInterceptor;
@@ -404,7 +405,7 @@ public class JpaPersistentStatefulSessionTest {
         KieSessionConfiguration config = ks.newKieSessionConfiguration(properties);
 
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, config, env );
-        SessionConfiguration sessionConfig = (SessionConfiguration)ksession.getSessionConfiguration();
+        FlowSessionConfiguration sessionConfig = ksession.getSessionConfiguration().as(FlowSessionConfiguration.KEY);
 
         assertThat(sessionConfig.getProcessInstanceManagerFactory()).isEqualTo("com.example.CustomJPAProcessInstanceManagerFactory");
     }
@@ -812,7 +813,7 @@ public class JpaPersistentStatefulSessionTest {
         KieContainer kcontainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
 
         KieSessionConfiguration conf = kcontainer.getKieSessionConfiguration( "ksession1" );
-        assertThat(conf.getOption(ClockTypeOption.class).getClockType()).isEqualTo("pseudo");
+        assertThat(conf.getOption(ClockTypeOption.KEY).getClockType()).isEqualTo("pseudo");
 
         KieSession ksession = ks.getStoreServices().newKieSession( kcontainer.getKieBase("kbase1"), conf, env );
         assertThat(ksession.getSessionClock() instanceof SessionPseudoClock).isTrue();

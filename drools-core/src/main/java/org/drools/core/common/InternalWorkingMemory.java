@@ -154,6 +154,6 @@ public interface InternalWorkingMemory
     void cancelActivation(Activation activation, boolean declarativeAgenda);
 
     default boolean isThreadSafe() {
-        return getSessionConfiguration().isThreadSafe();
+        return getRuleSessionConfiguration().isThreadSafe();
     }
 }

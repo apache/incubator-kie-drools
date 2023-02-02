@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.EntryPointsManager;
 import org.drools.core.QueryResultsImpl;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -110,7 +111,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     private RuleUnits ruleUnits;
 
     public RuleUnitExecutorImpl(RuleBase knowledgeBase) {
-        this(knowledgeBase, knowledgeBase.getSessionConfiguration());
+        this(knowledgeBase, knowledgeBase.getSessionConfiguration().as(SessionConfiguration.KEY));
     }
 
     public RuleUnitExecutorImpl(RuleBase knowledgeBase, SessionConfiguration sessionConfiguration) {
@@ -212,6 +213,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     @Override
     public SessionConfiguration getSessionConfiguration() {
         return sessionConfiguration;
+    }
+
+    @Override
+    public RuleSessionConfiguration getRuleSessionConfiguration() {
+        return sessionConfiguration.as(RuleSessionConfiguration.KEY);
     }
 
     @Override

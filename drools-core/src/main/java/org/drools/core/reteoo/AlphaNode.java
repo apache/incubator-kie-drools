@@ -72,10 +72,10 @@ public class AlphaNode extends ObjectSource
                      final BuildContext context) {
         super(id,
                 context.getPartitionId(),
-                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+                context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
                 objectSource,
-                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
-                context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
+                context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
+                context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
 
         this.constraint = constraint.cloneIfInUse();
         this.constraint.registerEvaluationContext(context);

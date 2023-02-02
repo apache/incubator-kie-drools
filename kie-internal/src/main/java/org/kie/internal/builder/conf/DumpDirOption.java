@@ -18,12 +18,14 @@ package org.kie.internal.builder.conf;
 
 import java.io.File;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * A class for the dump directory configuration. I.e., for the directory
  * where Drools will dump generated code for debugging purposes. If this
  * option is not set, drools will generate and compile all code in memory.
  */
-public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
+public class DumpDirOption implements SingleValueKieBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -31,6 +33,8 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
      * The property name for the drools dump directory configuration
      */
     public static final String PROPERTY_NAME = "drools.dump.dir";
+
+    public static OptionKey<DumpDirOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * directory reference

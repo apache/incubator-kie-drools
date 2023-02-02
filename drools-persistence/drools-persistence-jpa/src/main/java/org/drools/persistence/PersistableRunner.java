@@ -50,6 +50,7 @@ import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.serialization.protobuf.marshalling.KieSessionInitializer;
 import org.drools.serialization.protobuf.marshalling.MarshallingConfigurationImpl;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -92,7 +93,7 @@ public class PersistableRunner implements SingleSessionCommandService {
                               KieSessionConfiguration conf,
                               Environment env ) {
         if ( conf == null ) {
-            conf = new SessionConfiguration();
+            conf = KieServices.get().newKieSessionConfiguration();
         }
         this.env = env;
 
@@ -168,7 +169,7 @@ public class PersistableRunner implements SingleSessionCommandService {
                               KieSessionConfiguration conf,
                               Environment env ) {
         if ( conf == null ) {
-            conf = new SessionConfiguration();
+            conf = KieServices.get().newKieSessionConfiguration();
         }
 
         this.env = env;

@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.Mode;
@@ -534,6 +535,10 @@ public class StatefulKnowledgeSessionForRHS
 
     public Object getObject(FactHandle handle) {
         return delegate.getObject(handle);
+    }
+
+    public RuleSessionConfiguration getRuleSessionConfiguration() {
+        return delegate.getRuleSessionConfiguration();
     }
 
     public SessionConfiguration getSessionConfiguration() {

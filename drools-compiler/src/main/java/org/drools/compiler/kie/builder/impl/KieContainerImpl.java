@@ -37,7 +37,6 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.management.DroolsManagementAgent;
@@ -285,7 +284,7 @@ public class KieContainerImpl
                 compositeUpdater.add(kieBaseUpdater);
 
                 KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
-                        AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
+                        AlphaNetworkCompilerOption.class, builderConfiguration.getOption(AlphaNetworkCompilerOption.KEY)));
 
                 KieBaseUpdaters updaters = KieService.load(KieBaseUpdaters.class);
                 updaters.getChildren()
@@ -543,7 +542,7 @@ public class KieContainerImpl
         }
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKieBaseFromKieSessionModel( kSessionModel );
         return kBase == null ? null : new StatefulSessionPool(kBase, initialSize, () -> {
-            SessionConfiguration sessConf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
+            SessionConfiguration sessConf = conf != null ? conf.as(SessionConfiguration.KEY) : kBase.getSessionConfiguration().as(SessionConfiguration.KEY);
             StatefulKnowledgeSessionImpl kSession = stateless ?
                     ((StatefulKnowledgeSessionImpl) RuntimeComponentFactory.get().createStatefulSession(kBase, env, sessConf, false)).setStateless( true ) :
                     (StatefulKnowledgeSessionImpl) kBase.newKieSession( sessConf, env );
@@ -718,7 +717,7 @@ public class KieContainerImpl
 
     private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
         KieSessionConfiguration ksConf = sessionConfsCache.computeIfAbsent(kSessionModel.getName(),
-                                                                           k -> new SessionConfiguration( null, kProject.getClassLoader() ) );
+                                                                           k -> new KieServicesImpl().newKieSessionConfiguration(null, kProject.getClassLoader()) );
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;

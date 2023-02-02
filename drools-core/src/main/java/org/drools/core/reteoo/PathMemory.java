@@ -57,7 +57,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     protected boolean isRuleDataDriven( ReteEvaluator reteEvaluator, RuleImpl rule ) {
         return rule != null &&
-               ( rule.isDataDriven() || ( reteEvaluator != null && reteEvaluator.getSessionConfiguration().getForceEagerActivationFilter().accept(rule) ));
+               ( rule.isDataDriven() || ( reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().getForceEagerActivationFilter().accept(rule) ));
     }
 
     public PathEndNode getPathEndNode() {

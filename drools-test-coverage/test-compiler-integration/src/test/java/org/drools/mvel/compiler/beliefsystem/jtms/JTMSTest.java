@@ -22,10 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.BeliefSystemType;
+import org.drools.core.RuleSessionConfiguration;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.EqualityKey;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
@@ -77,8 +78,7 @@ public class JTMSTest {
         }
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.JTMS.getId()) );;
-
+        ksConf.as(RuleSessionConfiguration.KEY).setBeliefSystemType(BeliefSystemType.JTMS);
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
@@ -87,7 +87,7 @@ public class JTMSTest {
         KieBase kBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, ruleFile);
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.JTMS.getId()) );;
+        ksConf.as(RuleSessionConfiguration.KEY).setBeliefSystemType(BeliefSystemType.JTMS);
         
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;

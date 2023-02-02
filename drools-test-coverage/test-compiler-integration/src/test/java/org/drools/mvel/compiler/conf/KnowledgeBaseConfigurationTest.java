@@ -37,7 +37,6 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
@@ -62,7 +61,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( SequentialOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(SequentialOption.class)).isEqualTo(SequentialOption.YES);
+        assertThat(config.getOption(SequentialOption.KEY)).isEqualTo(SequentialOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(SequentialOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -71,7 +70,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(SequentialOption.class)).isEqualTo(SequentialOption.NO);
+        assertThat(config.getOption(SequentialOption.KEY)).isEqualTo(SequentialOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(SequentialOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -82,7 +81,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( RemoveIdentitiesOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(RemoveIdentitiesOption.class)).isEqualTo(RemoveIdentitiesOption.YES);
+        assertThat(config.getOption(RemoveIdentitiesOption.KEY)).isEqualTo(RemoveIdentitiesOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(RemoveIdentitiesOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -91,7 +90,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(RemoveIdentitiesOption.class)).isEqualTo(RemoveIdentitiesOption.NO);
+        assertThat(config.getOption(RemoveIdentitiesOption.KEY)).isEqualTo(RemoveIdentitiesOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(RemoveIdentitiesOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -102,7 +101,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( ShareAlphaNodesOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ShareAlphaNodesOption.class)).isEqualTo(ShareAlphaNodesOption.YES);
+        assertThat(config.getOption(ShareAlphaNodesOption.KEY)).isEqualTo(ShareAlphaNodesOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ShareAlphaNodesOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -111,7 +110,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ShareAlphaNodesOption.class)).isEqualTo(ShareAlphaNodesOption.NO);
+        assertThat(config.getOption(ShareAlphaNodesOption.KEY)).isEqualTo(ShareAlphaNodesOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ShareAlphaNodesOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -122,7 +121,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( ShareBetaNodesOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ShareBetaNodesOption.class)).isEqualTo(ShareBetaNodesOption.YES);
+        assertThat(config.getOption(ShareBetaNodesOption.KEY)).isEqualTo(ShareBetaNodesOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ShareBetaNodesOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -131,7 +130,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ShareBetaNodesOption.class)).isEqualTo(ShareBetaNodesOption.NO);
+        assertThat(config.getOption(ShareBetaNodesOption.KEY)).isEqualTo(ShareBetaNodesOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(ShareBetaNodesOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -142,7 +141,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( IndexLeftBetaMemoryOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexLeftBetaMemoryOption.class)).isEqualTo(IndexLeftBetaMemoryOption.YES);
+        assertThat(config.getOption(IndexLeftBetaMemoryOption.KEY)).isEqualTo(IndexLeftBetaMemoryOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexLeftBetaMemoryOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -151,7 +150,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexLeftBetaMemoryOption.class)).isEqualTo(IndexLeftBetaMemoryOption.NO);
+        assertThat(config.getOption(IndexLeftBetaMemoryOption.KEY)).isEqualTo(IndexLeftBetaMemoryOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexLeftBetaMemoryOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -162,7 +161,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( IndexRightBetaMemoryOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexRightBetaMemoryOption.class)).isEqualTo(IndexRightBetaMemoryOption.YES);
+        assertThat(config.getOption(IndexRightBetaMemoryOption.KEY)).isEqualTo(IndexRightBetaMemoryOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexRightBetaMemoryOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -171,7 +170,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexRightBetaMemoryOption.class)).isEqualTo(IndexRightBetaMemoryOption.NO);
+        assertThat(config.getOption(IndexRightBetaMemoryOption.KEY)).isEqualTo(IndexRightBetaMemoryOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexRightBetaMemoryOption.PROPERTY_NAME)).isEqualTo("false");
     }
@@ -182,7 +181,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( IndexPrecedenceOption.PATTERN_ORDER );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexPrecedenceOption.class)).isEqualTo(IndexPrecedenceOption.PATTERN_ORDER);
+        assertThat(config.getOption(IndexPrecedenceOption.KEY)).isEqualTo(IndexPrecedenceOption.PATTERN_ORDER);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexPrecedenceOption.PROPERTY_NAME)).isEqualTo("pattern");
 
@@ -191,7 +190,7 @@ public class KnowledgeBaseConfigurationTest {
                 "equality" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(IndexPrecedenceOption.class)).isEqualTo(IndexPrecedenceOption.EQUALITY_PRIORITY);
+        assertThat(config.getOption(IndexPrecedenceOption.KEY)).isEqualTo(IndexPrecedenceOption.EQUALITY_PRIORITY);
         // checking the string based getProperty() method
         assertThat(config.getProperty(IndexPrecedenceOption.PROPERTY_NAME)).isEqualTo("equality");
     }
@@ -202,7 +201,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( EqualityBehaviorOption.EQUALITY );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(EqualityBehaviorOption.class)).isEqualTo(EqualityBehaviorOption.EQUALITY);
+        assertThat(config.getOption(EqualityBehaviorOption.KEY)).isEqualTo(EqualityBehaviorOption.EQUALITY);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EqualityBehaviorOption.PROPERTY_NAME)).isEqualTo("equality");
 
@@ -211,7 +210,7 @@ public class KnowledgeBaseConfigurationTest {
                             "identity" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(EqualityBehaviorOption.class)).isEqualTo(EqualityBehaviorOption.IDENTITY);
+        assertThat(config.getOption(EqualityBehaviorOption.KEY)).isEqualTo(EqualityBehaviorOption.IDENTITY);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EqualityBehaviorOption.PROPERTY_NAME)).isEqualTo("identity");
     }
@@ -222,7 +221,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( SequentialAgendaOption.DYNAMIC );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(SequentialAgendaOption.class)).isEqualTo(SequentialAgendaOption.DYNAMIC);
+        assertThat(config.getOption(SequentialAgendaOption.KEY)).isEqualTo(SequentialAgendaOption.DYNAMIC);
         // checking the string based getProperty() method
         assertThat(config.getProperty(SequentialAgendaOption.PROPERTY_NAME)).isEqualTo("dynamic");
 
@@ -231,7 +230,7 @@ public class KnowledgeBaseConfigurationTest {
                             "sequential" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(SequentialAgendaOption.class)).isEqualTo(SequentialAgendaOption.SEQUENTIAL);
+        assertThat(config.getOption(SequentialAgendaOption.KEY)).isEqualTo(SequentialAgendaOption.SEQUENTIAL);
         // checking the string based getProperty() method
         assertThat(config.getProperty(SequentialAgendaOption.PROPERTY_NAME)).isEqualTo("sequential");
     }
@@ -242,7 +241,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( AlphaThresholdOption.get(5) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AlphaThresholdOption.class)).isEqualTo(AlphaThresholdOption.get(5));
+        assertThat(config.getOption(AlphaThresholdOption.KEY)).isEqualTo(AlphaThresholdOption.get(5));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaThresholdOption.PROPERTY_NAME)).isEqualTo("5");
 
@@ -251,7 +250,7 @@ public class KnowledgeBaseConfigurationTest {
                             "7" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AlphaThresholdOption.class)).isEqualTo(AlphaThresholdOption.get(7));
+        assertThat(config.getOption(AlphaThresholdOption.KEY)).isEqualTo(AlphaThresholdOption.get(7));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaThresholdOption.PROPERTY_NAME)).isEqualTo("7");
     }
@@ -262,7 +261,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( AlphaRangeIndexThresholdOption.get(5) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AlphaRangeIndexThresholdOption.class)).isEqualTo(AlphaRangeIndexThresholdOption.get(5));
+        assertThat(config.getOption(AlphaRangeIndexThresholdOption.KEY)).isEqualTo(AlphaRangeIndexThresholdOption.get(5));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME)).isEqualTo("5");
 
@@ -271,7 +270,7 @@ public class KnowledgeBaseConfigurationTest {
                             "7" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AlphaRangeIndexThresholdOption.class)).isEqualTo(AlphaRangeIndexThresholdOption.get(7));
+        assertThat(config.getOption(AlphaRangeIndexThresholdOption.KEY)).isEqualTo(AlphaRangeIndexThresholdOption.get(7));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME)).isEqualTo("7");
 
@@ -280,7 +279,7 @@ public class KnowledgeBaseConfigurationTest {
                             "" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(AlphaRangeIndexThresholdOption.class)).isEqualTo(AlphaRangeIndexThresholdOption.get(AlphaRangeIndexThresholdOption.DEFAULT_VALUE));
+        assertThat(config.getOption(AlphaRangeIndexThresholdOption.KEY)).isEqualTo(AlphaRangeIndexThresholdOption.get(AlphaRangeIndexThresholdOption.DEFAULT_VALUE));
         // checking the string based getProperty() method
         assertThat(config.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME)).isEqualTo(String.valueOf(AlphaRangeIndexThresholdOption.DEFAULT_VALUE));
     }
@@ -291,7 +290,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( BetaRangeIndexOption.ENABLED );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(BetaRangeIndexOption.class)).isEqualTo(BetaRangeIndexOption.ENABLED);
+        assertThat(config.getOption(BetaRangeIndexOption.KEY)).isEqualTo(BetaRangeIndexOption.ENABLED);
         // checking the string based getProperty() method
         assertThat(config.getProperty(BetaRangeIndexOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -300,30 +299,9 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(BetaRangeIndexOption.class)).isEqualTo(BetaRangeIndexOption.DISABLED);
+        assertThat(config.getOption(BetaRangeIndexOption.KEY)).isEqualTo(BetaRangeIndexOption.DISABLED);
         // checking the string based getProperty() method
         assertThat(config.getProperty(BetaRangeIndexOption.PROPERTY_NAME)).isEqualTo("false");
-    }
-
-    @Test
-    public void testPermGenThresholdConfiguration() {
-        Assume.assumeTrue("JVM with perm gen", MemoryUtil.hasPermGen());
-        // setting the option using the type safe method
-        config.setOption( PermGenThresholdOption.get(85) );
-
-        // checking the type safe getOption() method
-        assertThat(config.getOption(PermGenThresholdOption.class)).isEqualTo(PermGenThresholdOption.get(85));
-        // checking the string based getProperty() method
-        assertThat(config.getProperty(PermGenThresholdOption.PROPERTY_NAME)).isEqualTo("85");
-
-        // setting the options using the string based setProperty() method
-        config.setProperty( PermGenThresholdOption.PROPERTY_NAME,
-                "87" );
-
-        // checking the type safe getOption() method
-        assertThat(config.getOption(PermGenThresholdOption.class)).isEqualTo(PermGenThresholdOption.get(87));
-        // checking the string based getProperty() method
-        assertThat(config.getProperty(PermGenThresholdOption.PROPERTY_NAME)).isEqualTo("87");
     }
 
     @Test
@@ -332,7 +310,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( CompositeKeyDepthOption.get(1) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(CompositeKeyDepthOption.class)).isEqualTo(CompositeKeyDepthOption.get(1));
+        assertThat(config.getOption(CompositeKeyDepthOption.KEY)).isEqualTo(CompositeKeyDepthOption.get(1));
         // checking the string based getProperty() method
         assertThat(config.getProperty(CompositeKeyDepthOption.PROPERTY_NAME)).isEqualTo("1");
 
@@ -341,7 +319,7 @@ public class KnowledgeBaseConfigurationTest {
                             "2" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(CompositeKeyDepthOption.class)).isEqualTo(CompositeKeyDepthOption.get(2));
+        assertThat(config.getOption(CompositeKeyDepthOption.KEY)).isEqualTo(CompositeKeyDepthOption.get(2));
         // checking the string based getProperty() method
         assertThat(config.getProperty(CompositeKeyDepthOption.PROPERTY_NAME)).isEqualTo("2");
     }
@@ -353,7 +331,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( ConsequenceExceptionHandlerOption.get(handler) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ConsequenceExceptionHandlerOption.class)).isEqualTo(ConsequenceExceptionHandlerOption.get(handler));
+        assertThat(config.getOption(ConsequenceExceptionHandlerOption.KEY)).isEqualTo(ConsequenceExceptionHandlerOption.get(handler));
         // checking the string based getProperty() method
         assertThat(config.getProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME)).isEqualTo(handler.getName());
 
@@ -362,7 +340,7 @@ public class KnowledgeBaseConfigurationTest {
                             handler.getName() );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(ConsequenceExceptionHandlerOption.class).getHandler().getName()).isEqualTo(handler.getName());
+        assertThat(config.getOption(ConsequenceExceptionHandlerOption.KEY).getHandler().getName()).isEqualTo(handler.getName());
         // checking the string based getProperty() method
         assertThat(config.getProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME)).isEqualTo(handler.getName());
     }
@@ -373,7 +351,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( EventProcessingOption.STREAM );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(EventProcessingOption.class)).isEqualTo(EventProcessingOption.STREAM);
+        assertThat(config.getOption(EventProcessingOption.KEY)).isEqualTo(EventProcessingOption.STREAM);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EventProcessingOption.PROPERTY_NAME)).isEqualTo("stream");
 
@@ -382,7 +360,7 @@ public class KnowledgeBaseConfigurationTest {
                             "cloud" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(EventProcessingOption.class)).isEqualTo(EventProcessingOption.CLOUD);
+        assertThat(config.getOption(EventProcessingOption.KEY)).isEqualTo(EventProcessingOption.CLOUD);
         // checking the string based getProperty() method
         assertThat(config.getProperty(EventProcessingOption.PROPERTY_NAME)).isEqualTo("cloud");
     }
@@ -393,7 +371,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( MaxThreadsOption.get(5) );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MaxThreadsOption.class)).isEqualTo(MaxThreadsOption.get(5));
+        assertThat(config.getOption(MaxThreadsOption.KEY)).isEqualTo(MaxThreadsOption.get(5));
         // checking the string based getProperty() method
         assertThat(config.getProperty(MaxThreadsOption.PROPERTY_NAME)).isEqualTo("5");
 
@@ -402,7 +380,7 @@ public class KnowledgeBaseConfigurationTest {
                             "8" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MaxThreadsOption.class)).isEqualTo(MaxThreadsOption.get(8));
+        assertThat(config.getOption(MaxThreadsOption.KEY)).isEqualTo(MaxThreadsOption.get(8));
         // checking the string based getProperty() method
         assertThat(config.getProperty(MaxThreadsOption.PROPERTY_NAME)).isEqualTo("8");
     }
@@ -413,7 +391,7 @@ public class KnowledgeBaseConfigurationTest {
         config.setOption( MultithreadEvaluationOption.YES );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MultithreadEvaluationOption.class)).isEqualTo(MultithreadEvaluationOption.YES);
+        assertThat(config.getOption(MultithreadEvaluationOption.KEY)).isEqualTo(MultithreadEvaluationOption.YES);
         // checking the string based getProperty() method
         assertThat(config.getProperty(MultithreadEvaluationOption.PROPERTY_NAME)).isEqualTo("true");
 
@@ -422,7 +400,7 @@ public class KnowledgeBaseConfigurationTest {
                             "false" );
 
         // checking the type safe getOption() method
-        assertThat(config.getOption(MultithreadEvaluationOption.class)).isEqualTo(MultithreadEvaluationOption.NO);
+        assertThat(config.getOption(MultithreadEvaluationOption.KEY)).isEqualTo(MultithreadEvaluationOption.NO);
         // checking the string based getProperty() method
         assertThat(config.getProperty(MultithreadEvaluationOption.PROPERTY_NAME)).isEqualTo("false");
     }

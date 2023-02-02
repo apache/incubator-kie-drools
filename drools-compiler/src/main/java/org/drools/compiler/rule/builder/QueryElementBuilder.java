@@ -46,6 +46,7 @@ import org.drools.drl.parser.DrlExprParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.ClassUtils;
 import org.drools.util.StringUtils;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.drools.core.rule.LogicTransformer.toIntArray;
 import static org.drools.util.StringUtils.isDereferencingIdentifier;
@@ -260,7 +261,7 @@ public class QueryElementBuilder
             } else {
                 // it must be a literal/expression
                 // it's an expression and thus an input
-                DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
+                DrlExprParser parser = new DrlExprParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
                 ConstraintConnectiveDescr bresult = parser.parse( bind.getExpression() );
                 if ( parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
@@ -391,7 +392,7 @@ public class QueryElementBuilder
     private ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                        final PatternDescr patternDescr,
                                                        final String expression ) {
-        DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
+        DrlExprParser parser = new DrlExprParser( context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse( expression );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {

@@ -22,12 +22,13 @@ import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
+import org.kie.api.KieBaseConfiguration;
 
 public interface IndexableConstraint extends Constraint {
 
     boolean isUnification();
 
-    boolean isIndexable(short nodeType, RuleBaseConfiguration config);
+    boolean isIndexable(short nodeType, KieBaseConfiguration config);
 
     IndexUtil.ConstraintType getConstraintType();
 

@@ -67,6 +67,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
@@ -110,25 +111,25 @@ public class PackageBuilderConfigurationTest {
 
     @Test
     public void testProgrammaticProperties() {
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         assertThat(cfg.getDefaultDialect().equals("java")).isTrue();
 
         Properties properties = new Properties();
         properties.setProperty("drools.dialect.default",
                                "mvel");
-        KnowledgeBuilderConfigurationImpl cfg1 = new KnowledgeBuilderConfigurationImpl(properties);
+        KnowledgeBuilderConfigurationImpl cfg1 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(properties, null).as(KnowledgeBuilderConfigurationImpl.KEY);
         assertThat(cfg1.getDefaultDialect()).isEqualTo("mvel");
 
-        final KnowledgeBuilderConfigurationImpl cfg2 = new KnowledgeBuilderConfigurationImpl(properties);
+        KnowledgeBuilderConfigurationImpl cfg2 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(properties, null).as(KnowledgeBuilderConfigurationImpl.KEY);
         assertThat(cfg2.getDefaultDialect().getClass()).isEqualTo(cfg1.getDefaultDialect().getClass());
     }
 
     @Test
     public void testProgramaticProperties2() {
         JavaForMvelDialectConfiguration javaConf = new JavaForMvelDialectConfiguration();
-        javaConf.init(new KnowledgeBuilderConfigurationImpl());
+        javaConf.init(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY));
         javaConf.setCompiler( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE);
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         cfg.setDialectConfiguration("java",
                                     javaConf);
         JavaForMvelDialectConfiguration javaConf2 = ( JavaForMvelDialectConfiguration ) cfg.getDialectConfiguration("java");
@@ -140,27 +141,27 @@ public class PackageBuilderConfigurationTest {
     public void testResultSeverity() {
         System.setProperty("drools.kbuilder.severity." + DuplicateFunction.KEY,
                            "ERROR");
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        assertThat(1).isEqualTo(cfg.getOptionKeys(KBuilderSeverityOption.class).size());
-        assertThat(ResultSeverity.ERROR).isEqualTo(cfg.getOption(KBuilderSeverityOption.class,
-                DuplicateFunction.KEY).getSeverity());
+        KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
+        assertThat(1).isEqualTo(cfg.getOptionSubKeys(KBuilderSeverityOption.KEY).size());
+        assertThat(ResultSeverity.ERROR).isEqualTo(cfg.getOption(KBuilderSeverityOption.KEY,
+                                                                 DuplicateFunction.KEY).getSeverity());
     }
 
     @Test
     public void testResultSeverityNonExistingValueDefaultToInfo() {
         System.setProperty("drools.kbuilder.severity." + DuplicateFunction.KEY,
                            "FOO");
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        assertThat(1).isEqualTo(cfg.getOptionKeys(KBuilderSeverityOption.class).size());
-        assertThat(ResultSeverity.INFO).isEqualTo(cfg.getOption(KBuilderSeverityOption.class,
-                DuplicateFunction.KEY).getSeverity());
+        KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
+        assertThat(1).isEqualTo(cfg.getOptionSubKeys(KBuilderSeverityOption.KEY).size());
+        assertThat(ResultSeverity.INFO).isEqualTo(cfg.getOption(KBuilderSeverityOption.KEY,
+                                                                DuplicateFunction.KEY).getSeverity());
     }
 
     @Test
     public void testMockDialect() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("org.pkg1");
 
-        KnowledgeBuilderConfigurationImpl cfg1 = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl cfg1 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         MockDialectConfiguration mockConf = new MockDialectConfiguration();
         //        cfg1.buildDialectRegistry().addDialect( "mock",
         //                                                mockConf.getDialect() );

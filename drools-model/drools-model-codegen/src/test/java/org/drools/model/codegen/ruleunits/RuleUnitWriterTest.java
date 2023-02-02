@@ -26,6 +26,7 @@ import org.drools.codegen.common.DroolsModelBuildContext;
 import org.drools.codegen.common.context.JavaDroolsModelBuildContext;
 import org.drools.codegen.common.context.QuarkusDroolsModelBuildContext;
 import org.drools.codegen.common.context.SpringBootDroolsModelBuildContext;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationFactories;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -37,6 +38,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.internal.ruleunit.RuleUnitVariable;
 
@@ -63,7 +65,7 @@ public class RuleUnitWriterTest {
     }
 
     private RuleUnitWriter createRuleUnitWriterWithTestParameters(DroolsModelBuildContext.Builder contextBuilder) {
-        PackageModel packageModel = new PackageModel("org.example:test:1.0.0", "test", new KnowledgeBuilderConfigurationImpl(), new DialectCompiletimeRegistry(), new DRLIdGenerator());
+        PackageModel packageModel = new PackageModel("org.example:test:1.0.0", "test", KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY), new DialectCompiletimeRegistry(), new DRLIdGenerator());
         packageModel.setContext(contextBuilder.build());
         CompilationUnit cu = new CompilationUnit();
         PackageModel.RuleSourceResult ruleSourceResult = new PackageModel.RuleSourceResult(cu);

@@ -72,7 +72,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         this.startTimestamp = timestamp;
         this.duration = duration;
 
-        if ( wmEntryPoint.getKnowledgeBase() != null && wmEntryPoint.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ) {
+        if ( wmEntryPoint.getKnowledgeBase() != null && wmEntryPoint.getKnowledgeBase().getRuleBaseConfiguration().isMultithreadEvaluation() ) {
             notExpiredPartitions = new AtomicInteger( RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER );
         }
     }

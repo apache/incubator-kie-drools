@@ -23,7 +23,7 @@ package org.kie.api.conf;
  *
  * DEFAULT = false
  */
-public enum SequentialOption implements SingleValueKieBaseOption {
+public enum SequentialOption implements SingleValueRuleBaseOption {
 
     YES(true),
     NO(false);
@@ -32,6 +32,8 @@ public enum SequentialOption implements SingleValueKieBaseOption {
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.sequential";
+
+    public static OptionKey<SequentialOption> KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

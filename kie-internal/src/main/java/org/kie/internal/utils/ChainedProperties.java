@@ -61,7 +61,8 @@ public class ChainedProperties
     private List<Properties> props = new ArrayList<>();
     private List<Properties> defaultProps = new ArrayList<>();
 
-    public ChainedProperties() { }
+    public ChainedProperties() {
+    }
 
     public static ChainedProperties getChainedProperties( ClassLoader classLoader ) {
         return getChainedProperties( "properties.conf", classLoader );
@@ -136,8 +137,11 @@ public class ChainedProperties
     /**
      * Specifically added properties take priority, so they go to the front of the list.
      */
-    public void addProperties(Properties properties) {
-        this.props.add( 0, properties );
+    public ChainedProperties addProperties(Properties properties) {
+        if (properties != null && !properties.isEmpty()) {
+            this.props.add(0, properties);
+        }
+        return this;
     }
 
     public String getProperty(String key,

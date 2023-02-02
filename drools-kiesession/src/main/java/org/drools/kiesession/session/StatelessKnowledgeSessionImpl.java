@@ -81,7 +81,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     public StatelessKnowledgeSessionImpl(InternalKnowledgeBase kBase,
                                          KieSessionConfiguration conf) {
         this.kBase = kBase;
-        this.conf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
+        this.conf = conf != null ? conf.as(SessionConfiguration.KEY) : kBase.getSessionConfiguration().as(SessionConfiguration.KEY);
         this.environment = EnvironmentFactory.newEnvironment();
         this.pool = null;
         wmCreated = new AtomicLong(0);
@@ -90,7 +90,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     public StatelessKnowledgeSessionImpl(KieSessionConfiguration conf,
                                          StatefulSessionPool pool) {
         this.kBase = pool.getKieBase();
-        this.conf = conf != null ? (SessionConfiguration) conf : kBase.getSessionConfiguration();
+        this.conf = conf != null ? conf.as(SessionConfiguration.KEY) : kBase.getSessionConfiguration().as(SessionConfiguration.KEY);
         this.environment = null;
         this.pool = pool;
         wmCreated = new AtomicLong(1);
@@ -128,7 +128,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime implements St
     }
 
     public void initMBeans(String containerId, String kbaseId, String ksessionName) {
-        if (kBase.getConfiguration() != null && kBase.getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+        if (kBase.getConfiguration() != null && kBase.getKieBaseConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey(containerId, kbaseId, ksessionName);
             DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
         }

@@ -106,7 +106,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             // it was not created yet
             Memory memory = this.memories.get( node.getMemoryId() );
             if( memory == null ) {
-                memory = node.createMemory( this.ruleBase.getConfiguration(), reteEvaluator );
+                memory = node.createMemory( this.ruleBase.getRuleBaseConfiguration(), reteEvaluator );
 
                 if( !this.memories.compareAndSet( node.getMemoryId(), null, memory ) ) {
                     memory = this.memories.get( node.getMemoryId() );

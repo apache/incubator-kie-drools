@@ -24,7 +24,7 @@ package org.kie.api.conf;
  *
  * DEFAULT = identity
  */
-public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
+public enum EqualityBehaviorOption implements SingleValueRuleBaseOption {
 
     IDENTITY,
     EQUALITY;
@@ -33,6 +33,8 @@ public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.equalityBehavior";
+
+    public static final OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     /**
      * {@inheritDoc}

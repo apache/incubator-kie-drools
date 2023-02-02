@@ -30,6 +30,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.printer.DefaultPrettyPrinter;
 import org.drools.model.codegen.execmodel.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.drools.model.codegen.execmodel.util.lambdareplace.NonExternalisedLambdaFoundException;
+import org.kie.internal.builder.conf.ExternaliseCanonicalModelLambdaOption;
 
 import static org.drools.model.codegen.execmodel.JavaParserCompiler.getPrettyPrinter;
 
@@ -78,7 +79,7 @@ public class RuleWriter {
 
                 String addFileName = classOptional.get().getNameAsString();
 
-                if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().isExternaliseCanonicalModelLambda()) {
+                if (EXTERNALIZE_LAMBDAS && pkgModel.getConfiguration().getOption(ExternaliseCanonicalModelLambdaOption.KEY).isCanonicalModelLambdaExternalized()) {
                     new ExecModelLambdaPostProcessor(pkgModel, cu).convertLambdas();
                     if (checkNonExternalisedLambda) {
                         checkNonExternalisedLambda(cu);

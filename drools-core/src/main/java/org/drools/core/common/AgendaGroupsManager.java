@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.consequence.Activation;
 import org.kie.api.event.rule.MatchCancelledCause;
 
@@ -93,7 +94,7 @@ public interface AgendaGroupsManager extends Externalizable {
         public SimpleAgendaGroupsManager() { }
 
         public SimpleAgendaGroupsManager(RuleBase kBase) {
-            this.mainAgendaGroup = kBase.getConfiguration().getAgendaGroupFactory().createAgendaGroup( InternalAgendaGroup.MAIN, kBase);
+            this.mainAgendaGroup = RuntimeComponentFactory.get().getAgendaGroupFactory().createAgendaGroup(InternalAgendaGroup.MAIN, kBase);
         }
 
         public SimpleAgendaGroupsManager(ReteEvaluator reteEvaluator) {
@@ -268,7 +269,7 @@ public interface AgendaGroupsManager extends Externalizable {
         public StackedAgendaGroupsManager() { }
 
         public StackedAgendaGroupsManager(RuleBase kBase, boolean initMain) {
-            this.agendaGroupFactory = kBase.getConfiguration().getAgendaGroupFactory();
+            this.agendaGroupFactory = RuntimeComponentFactory.get().getAgendaGroupFactory();
             if (initMain) {
                 initMainAgendaGroup(kBase);
             }

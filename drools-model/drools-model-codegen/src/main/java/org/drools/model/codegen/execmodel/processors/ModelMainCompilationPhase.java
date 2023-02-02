@@ -85,17 +85,17 @@ public class ModelMainCompilationPhase<T> implements CompilationPhase {
     @Override
     public void process() {
         List<CompilationPhase> phases = new ArrayList<>();
-        phases.add(iteratingPhase("AccumulateFunctionCompilationPhase", AccumulateFunctionCompilationPhase::new));
+        phases.add(iteratingPhase(AccumulateFunctionCompilationPhase::new));
         if (hasMvel) {
-            phases.add(iteratingPhase("WindowDeclarationCompilationPhase", (reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
+            phases.add(iteratingPhase((reg, acc) -> new WindowDeclarationCompilationPhase(reg, acc, typeDeclarationContext)));
         }
-        phases.add(iteratingPhase("FunctionCompilationPhase", (reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
-        phases.add(iteratingPhase("GlobalCompilationPhase", (reg, acc) -> GlobalCompilationPhase.of(reg, acc, kBase, globalVariableContext, acc.getFilter())));
+        phases.add(iteratingPhase((reg, acc) -> new FunctionCompilationPhase(reg, acc, configuration)));
+        phases.add(iteratingPhase((reg, acc) -> GlobalCompilationPhase.of(reg, acc, kBase, globalVariableContext, acc.getFilter())));
         phases.add(new DeclaredTypeDeregistrationPhase(packages, pkgRegistryManager));
 
-        phases.add(iteratingPhase("RuleValidator", (reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
-        phases.add(iteratingPhase("ModelGeneratorPhase", (reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModels.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
-        phases.add(iteratingPhase("SourceCodeGenerationPhase", (reg, acc) -> new SourceCodeGenerationPhase<>(
+        phases.add(iteratingPhase((reg, acc) -> new RuleValidator(reg, acc, configuration))); // validateUniqueRuleNames
+        phases.add(iteratingPhase((reg, acc) -> new ModelGeneratorPhase(reg, acc, packageModels.getPackageModel(acc, reg, acc.getName()), typeDeclarationContext))); // validateUniqueRuleNames
+        phases.add(iteratingPhase((reg, acc) -> new SourceCodeGenerationPhase<>(
                 packageModels.getPackageModel(acc, reg, acc.getName()), packageSourceManager, sourceGenerator, oneClassPerRule))); // validateUniqueRuleNames
 
 
@@ -115,7 +115,7 @@ public class ModelMainCompilationPhase<T> implements CompilationPhase {
         return this.results.getAllResults();
     }
 
-    private IteratingPhase iteratingPhase(String name, SinglePackagePhaseFactory phaseFactory) {
-        return new IteratingPhase(name, packages, pkgRegistryManager, phaseFactory);
+    private IteratingPhase iteratingPhase(SinglePackagePhaseFactory phaseFactory) {
+        return new IteratingPhase(packages, pkgRegistryManager, phaseFactory);
     }
 }

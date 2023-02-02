@@ -16,12 +16,13 @@
 
 package org.kie.internal.conf;
 
-import org.kie.api.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * A class for the max threads configuration.
  */
-public class MaxThreadsOption implements SingleValueKieBaseOption {
+public class MaxThreadsOption implements SingleValueRuleBaseOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -29,6 +30,8 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
      * The property name for the max threads
      */
     public static final String PROPERTY_NAME = "drools.maxThreads";
+
+    public static OptionKey<MaxThreadsOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * max threads

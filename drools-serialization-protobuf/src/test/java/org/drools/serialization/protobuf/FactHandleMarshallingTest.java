@@ -86,7 +86,7 @@ public class FactHandleMarshallingTest {
         // WorkingMemoryEntryPoint
         KieSessionConfiguration ksconf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.PSEUDO );
-        SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
+        SessionConfiguration sessionConf = ksconf.as(SessionConfiguration.KEY);
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl(1L, kBase, true, sessionConf, EnvironmentFactory.newEnvironment());
         
         return wm;

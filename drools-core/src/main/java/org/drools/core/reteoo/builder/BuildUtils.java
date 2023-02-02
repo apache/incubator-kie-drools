@@ -174,9 +174,9 @@ public class BuildUtils {
      */
     private boolean isSharingEnabledForNode(BuildContext context, BaseNode node) {
         if ( NodeTypeEnums.isLeftTupleSource( node )) {
-            return context.getRuleBase().getConfiguration().isShareBetaNodes();
+            return context.getRuleBase().getRuleBaseConfiguration().isShareBetaNodes();
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
-            return context.getRuleBase().getConfiguration().isShareAlphaNodes();
+            return context.getRuleBase().getRuleBaseConfiguration().isShareAlphaNodes();
         }
         return false;
     }
@@ -210,27 +210,27 @@ public class BuildUtils {
                 break;
             case 1 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createSingleBetaConstraints( list.get( 0 ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getRuleBase().getRuleBaseConfiguration(),
                                                          disableIndexing );
                 break;
             case 2 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createDoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getRuleBase().getRuleBaseConfiguration(),
                                                          disableIndexing );
                 break;
             case 3 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createTripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration(),
+                                                         context.getRuleBase().getRuleBaseConfiguration(),
                                                          disableIndexing );
                 break;
             case 4 :
                 constraints = BetaNodeConstraintFactory.Factory.get().createQuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                             context.getRuleBase().getConfiguration(),
+                                                             context.getRuleBase().getRuleBaseConfiguration(),
                                                              disableIndexing );
                 break;
             default :
                 constraints = BetaNodeConstraintFactory.Factory.get().createDefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                          context.getRuleBase().getConfiguration(),
+                                                          context.getRuleBase().getRuleBaseConfiguration(),
                                                           disableIndexing );
         }
         return constraints;

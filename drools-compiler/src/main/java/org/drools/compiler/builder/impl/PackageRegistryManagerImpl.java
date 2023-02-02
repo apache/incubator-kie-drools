@@ -23,7 +23,10 @@ import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.ImportDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.conf.DefaultDialectOption;
+import org.kie.internal.builder.conf.DefaultPackageNameOption;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +41,7 @@ import java.util.concurrent.ExecutionException;
 import static org.drools.util.StringUtils.isEmpty;
 
 public class PackageRegistryManagerImpl implements PackageRegistryManager, PackageRegistryCompiler, PackageDescrManager {
-    private final KnowledgeBuilderConfigurationImpl configuration;
+    private final KnowledgeBuilderConfiguration configuration;
     private final RootClassLoaderProvider rootClassLoaderProvider;
     private final InternalKnowledgeBaseProvider kBaseProvider;
 
@@ -50,7 +53,7 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
     private final Map<String, List<PackageDescr>> packages = new ConcurrentHashMap<>();
 
     public PackageRegistryManagerImpl(
-            KnowledgeBuilderConfigurationImpl configuration,
+            KnowledgeBuilderConfiguration configuration,
             RootClassLoaderProvider rootClassLoaderProvider,
             InternalKnowledgeBaseProvider kBaseProvider) {
         this.configuration = configuration;
@@ -74,7 +77,7 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
 
     public void registerPackage(PackageDescr packageDescr) {
         if (isEmpty(packageDescr.getNamespace())) {
-            packageDescr.setNamespace(this.configuration.getDefaultDialect());
+            packageDescr.setNamespace(this.configuration.getOption(DefaultDialectOption.KEY).dialectName());
         }
         initPackage(packageDescr);
     }
@@ -89,7 +92,7 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
             return null;
         }
         if (isEmpty(packageDescr.getNamespace())) {
-            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
+            packageDescr.setNamespace(this.configuration.getOption(DefaultPackageNameOption.KEY).packageName());
         }
         return pkgRegistryMap.computeIfAbsent(packageDescr.getName(), name -> createPackageRegistry(packageDescr));
     }
@@ -175,7 +178,7 @@ public class PackageRegistryManagerImpl implements PackageRegistryManager, Packa
     }
 
     private String getPackageDialect(PackageDescr packageDescr) {
-        String dialectName = this.configuration.getDefaultDialect();
+        String dialectName = this.configuration.getOption(DefaultDialectOption.KEY).dialectName();
         // see if this packageDescr overrides the current default dialect
         for (AttributeDescr value : packageDescr.getAttributes()) {
             if ("dialect".equals(value.getName())) {

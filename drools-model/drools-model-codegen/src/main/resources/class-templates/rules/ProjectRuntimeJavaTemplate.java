@@ -17,6 +17,7 @@ package org.drools.project.model;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.SessionConfiguration;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieRuntimeBuilder;
@@ -69,7 +70,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
     }
 
     private org.kie.api.runtime.KieSessionConfiguration getConfForSession(String sessionName) {
-        org.drools.core.SessionConfiguration conf = new org.drools.core.SessionConfiguration();
+        org.drools.core.SessionConfiguration conf = org.drools.core.impl.RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);
         switch(sessionName) {
             // populated via codegen
         }

@@ -109,10 +109,10 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
                           final BuildContext context) {
         super(id,
               RuleBasePartitionId.MAIN_PARTITION,
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               source,
-              context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold(),
-              context.getRuleBase().getConfiguration().getAlphaNodeRangeIndexThreshold());
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeHashingThreshold(),
+              context.getRuleBase().getRuleBaseConfiguration().getAlphaNodeRangeIndexThreshold());
         this.objectType = objectType;
         idGenerator = new IdGenerator(id);
 
@@ -126,7 +126,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink, MemoryFa
 
         hashcode = calculateHashCode();
 
-        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getRuleBase().getConfiguration().isMultithreadEvaluation()) {
+        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation()) {
             this.sink = new CompositePartitionAwareObjectSinkAdapter();
         }
 

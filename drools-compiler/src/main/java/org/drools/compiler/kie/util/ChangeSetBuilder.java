@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.drl.ast.descr.BaseDescr;
@@ -43,8 +44,10 @@ import org.drools.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +274,8 @@ public class ChangeSetBuilder {
 
     private static String getDefaultPackageName() {
         if (defaultPackageName == null) {
-            defaultPackageName = new KnowledgeBuilderConfigurationImpl().getDefaultPackageName();
+            KnowledgeBuilderConfiguration conf = new KnowledgeBuilderFactoryServiceImpl().newKnowledgeBuilderConfiguration();
+            defaultPackageName = conf.getOption(DefaultPackageNameOption.KEY).packageName();
         }
         return defaultPackageName;
     }

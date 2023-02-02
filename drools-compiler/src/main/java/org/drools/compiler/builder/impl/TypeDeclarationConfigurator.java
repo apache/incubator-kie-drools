@@ -31,6 +31,7 @@ import org.drools.drl.ast.descr.BaseDescr;
 import org.kie.api.definition.type.Duration;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static org.drools.compiler.rule.builder.util.AnnotationFactory.toAnnotated;
 import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
@@ -97,7 +98,7 @@ public class TypeDeclarationConfigurator {
 
         Annotated annotatedType = toAnnotated(typeDescr);
         processMvelBasedAccessors(context, results, pkgRegistry, annotatedType, type );
-        processTypeAnnotations( type, annotatedType, context.getBuilderConfiguration().getPropertySpecificOption());
+        processTypeAnnotations( type, annotatedType, context.getBuilderConfiguration().getOption(PropertySpecificOption.KEY));
         return true;
     }
 

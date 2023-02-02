@@ -31,6 +31,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Index;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
+import org.kie.api.KieBaseConfiguration;
 
 public class UnificationConstraint extends MutableTypeConstraint implements IndexableConstraint {
 
@@ -66,7 +67,7 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
     }
 
     @Override
-    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
+    public boolean isIndexable( short nodeType, KieBaseConfiguration config) {
         return true;
     }
 

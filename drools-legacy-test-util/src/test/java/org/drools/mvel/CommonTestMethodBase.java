@@ -206,7 +206,7 @@ public class CommonTestMethodBase {
         Collection<KiePackage> knowledgePackages;
         if ( serialize ) {
             try {
-                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  ((KnowledgeBuilderConfigurationImpl)kbuilderConf).getClassLoader() );
+                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  kbuilderConf.getClassLoader() );
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

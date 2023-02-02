@@ -55,6 +55,7 @@ import org.drools.mvel.expr.MVELAccumulatorFunctionExecutor;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 /**
  * A builder for the java dialect accumulate version
@@ -194,7 +195,7 @@ public class MVELAccumulateBuilder
                                                                                         source,
                                                                                         func.getParams()[0]);
             String functionName = AccumulateUtil.getFunctionName(classSupplier, func.getFunction());
-            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
+            AccumulateFunction function = context.getConfiguration().getOption(AccumulateFunctionOption.KEY, functionName).getFunction();
             if( function == null ) {
                 // might have been imported in the package
                 function = context.getPkg().getAccumulateFunctions().get(func.getFunction());

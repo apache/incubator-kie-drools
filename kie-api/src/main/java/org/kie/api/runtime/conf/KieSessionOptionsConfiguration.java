@@ -16,41 +16,11 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionsConfiguration;
+
 /**
  * A base interface for type safe configurations
  */
-public interface KieSessionOptionsConfiguration {
+public interface KieSessionOptionsConfiguration extends OptionsConfiguration<KieSessionOption, SingleValueKieSessionOption, MultiValueKieSessionOption> {
 
-    /**
-     * Sets an option
-     *
-     * @param option the option to be set. As options are type safe, the option
-     *               itself contains the option key, and so a single parameter
-     *               is enough.
-     */
-    <T extends KieSessionOption> void setOption( T option );
-
-    /**
-     * Gets an option value
-     *
-     * @param option the option class for the option being requested
-     *
-     * @return the Option value for the given option. Returns null if option is
-     *         not configured.
-     */
-    <T extends SingleValueKieSessionOption> T getOption( Class<T> option );
-
-
-    /**
-     * Gets an option value for the given option + key. This method should
-     * be used for multi-value options where one option has multiple values,
-     * distinguished by a sub-key.
-     *
-     * @param option the option class for the option being requested
-     * @param key the key for the option being requested
-     *
-     * @return the Option value for the given option + key. Returns null if option is
-     *         not configured.
-     */
-    <T extends MultiValueKieSessionOption> T getOption( Class<T> option, String key );
 }

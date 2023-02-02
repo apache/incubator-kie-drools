@@ -34,8 +34,6 @@ public interface KieBaseConfigurationMonitorMBean {
     @Deprecated
     public String getSequentialAgenda();
 
-    public boolean isAdvancedProcessRuleIntegration();
-
     @Deprecated
     public boolean isIndexLeftBetaMemory();
 

@@ -70,10 +70,8 @@ public class PatternTest {
         assertThat(ext.getExtractToClass()).isEqualTo(Fact.class);
 
         final Fact stilton = cheese.createFact();
-        stilton.set( "name",
-                               "stilton" );
-        stilton.set( "price",
-                               new Integer( 200 ) );
+        stilton.set( "name", "stilton" );
+        stilton.set( "price", Integer.valueOf( 200 ) );
 
         assertThat(dec.getValue(null, stilton)).isEqualTo(stilton);
     }

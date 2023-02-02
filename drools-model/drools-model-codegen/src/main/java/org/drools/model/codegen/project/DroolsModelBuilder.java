@@ -82,7 +82,7 @@ public class DroolsModelBuilder {
     }
 
     private static KnowledgeBuilderConfigurationImpl configFromContext(DroolsModelBuildContext buildContext) {
-        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(buildContext.getClassLoader());
+        KnowledgeBuilderConfigurationImpl conf = newKnowledgeBuilderConfiguration(buildContext.getClassLoader()).as(KnowledgeBuilderConfigurationImpl.KEY);
         for (String prop : buildContext.getApplicationProperties()) {
             if (prop.startsWith("drools")) {
                 conf.setProperty(prop, buildContext.getApplicationProperty(prop).orElseThrow());

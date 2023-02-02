@@ -54,7 +54,7 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
 
     @Override
     protected TimerService createTimerService() {
-        return RuleUnitTimerServiceFactory.getTimerService(this.config);
+        return RuleUnitTimerServiceFactory.getTimerService(this.config.as(SessionConfiguration.KEY));
     }
 
     @Override

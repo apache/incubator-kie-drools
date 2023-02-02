@@ -78,7 +78,7 @@ public class ProtobufMarshaller
     public ProtobufMarshaller(KieBase kbase,
                               MarshallingConfiguration marshallingConfig) {
         this.kbase = kbase;
-        this.ruleBaseConfig = RuleBaseConfiguration.getDefaultInstance();
+        this.ruleBaseConfig = ((InternalKnowledgeBase)kbase).getRuleBaseConfiguration();
         this.marshallingConfig = marshallingConfig;
         this.strategyStore = this.marshallingConfig.getObjectMarshallingStrategyStore();
     }
@@ -143,10 +143,10 @@ public class ProtobufMarshaller
         ReadSessionResult readSessionResult = ProtobufInputMarshaller.readSession(context,
                                                                                   id,
                                                                                   environment,
-                                                                                  (SessionConfiguration) config,
+                                                                                  config.as(SessionConfiguration.KEY),
                                                                                   initializer);
         context.close();
-        if ( ((SessionConfiguration) config).isKeepReference() ) {
+        if ( (config.as(SessionConfiguration.KEY)).isKeepReference() ) {
             ((InternalKnowledgeBase) this.kbase).addStatefulSession(readSessionResult.getSession());
         }
         return readSessionResult;

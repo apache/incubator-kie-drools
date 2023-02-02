@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.commands.runtime.rule.InsertElementsCommand;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -3674,7 +3675,7 @@ public class AccumulateTest {
 
         kieSession.delete( fh );
         // changed by DROOLS-6064
-        if (((SessionConfiguration)kieSession.getSessionConfiguration()).isAccumulateNullPropagation()) {
+        if ((kieSession.getSessionConfiguration().as(RuleSessionConfiguration.KEY)).isAccumulateNullPropagation()) {
             assertThat(kieSession.fireAllRules()).isEqualTo(1);
             assertThat(list.size()).isEqualTo(1);
             assertThat(list.get(0)).isNull();

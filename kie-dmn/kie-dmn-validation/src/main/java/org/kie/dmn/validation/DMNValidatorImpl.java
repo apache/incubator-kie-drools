@@ -151,7 +151,7 @@ public class DMNValidatorImpl implements DMNValidator {
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V11_MODEL));
         kb12 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V12_MODEL));
-        ChainedProperties localChainedProperties = new ChainedProperties();
+        ChainedProperties localChainedProperties = ChainedProperties.getChainedProperties(cl);
         if (p != null) {
             localChainedProperties.addProperties(p);
         }

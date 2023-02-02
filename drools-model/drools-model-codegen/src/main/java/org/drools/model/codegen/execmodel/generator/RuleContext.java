@@ -42,6 +42,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.BuildResultCollector;
+import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
@@ -184,7 +185,7 @@ public class RuleContext {
     }
 
     public EvaluatorDefinition getEvaluatorDefinition(String opName) {
-        return typeDeclarationContext.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+        return typeDeclarationContext.getBuilderConfiguration().as(KnowledgeBuilderRulesConfigurationImpl.KEY).getEvaluatorRegistry().getEvaluatorDefinition(opName);
     }
 
     public void addCompilationError( KnowledgeBuilderResult error ) {
@@ -531,7 +532,7 @@ public class RuleContext {
     }
 
     public boolean isPropertyReactive( Class<?> patternClass) {
-        PropertySpecificOption propertySpecificOption = typeDeclarationContext.getBuilderConfiguration().getPropertySpecificOption();
+        PropertySpecificOption propertySpecificOption = typeDeclarationContext.getBuilderConfiguration().getOption(PropertySpecificOption.KEY);
         return propertySpecificOption.isPropSpecific( patternClass.getAnnotation( PropertyReactive.class ) != null,
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }

@@ -32,6 +32,7 @@ import org.drools.core.rule.accessor.FieldValue;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
+import org.kie.api.KieBaseConfiguration;
 
 public class QueryNameConstraint implements
         AlphaNodeFieldConstraint,
@@ -58,7 +59,7 @@ public class QueryNameConstraint implements
         return false;
     }
 
-    public boolean isIndexable(short nodeType, RuleBaseConfiguration config) {
+    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
         return true;
     }
 

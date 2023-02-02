@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.runtime.KieSession;
@@ -766,7 +767,7 @@ public class ExpirationTest {
                 "	  System.out.println(\"R is fired\");  \n" +
                 " end\n";
 
-        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
+        final KieSessionConfiguration sessionConfig = KieServices.get().newKieSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
@@ -853,8 +854,7 @@ public class ExpirationTest {
                 " then \n" +
                 "    System.out.println(\"R2 Fired\"); \n" +
                 " end\n";
-
-        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
+        final KieSessionConfiguration sessionConfig = KieServices.get().newKieSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -950,7 +950,7 @@ public class ExpirationTest {
                         "     System.out.println(\"R2 is fired\");\n"+
                         " end";
 
-        final KieSessionConfiguration sessionConfig = new SessionConfiguration();
+        final KieSessionConfiguration sessionConfig = KieServices.get().newKieSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
