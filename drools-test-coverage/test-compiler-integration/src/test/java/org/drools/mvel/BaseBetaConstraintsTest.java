@@ -78,7 +78,7 @@ public abstract class BaseBetaConstraintsTest {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterOrEqual(_this.getType(), identifier));
             } else if (operator == Operator.BuiltInOperator.LESS.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessThan(_this.getType(), identifier));
-            } else if (operator == Operator.BuiltInOperator.GREATER_OR_EQUAL.getOperator()) {
+            } else if (operator == Operator.BuiltInOperator.LESS_OR_EQUAL.getOperator()) {
                 predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessOrEqual(_this.getType(), identifier));
             } else {
                 throw new RuntimeException(operator + " is not supported");

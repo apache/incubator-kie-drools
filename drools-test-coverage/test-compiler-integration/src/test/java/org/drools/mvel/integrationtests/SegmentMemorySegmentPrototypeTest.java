@@ -195,14 +195,14 @@ public class SegmentMemorySegmentPrototypeTest {
 
         KieSession ksession = kbase.newKieSession( conf, null );
         try {
-            ksession.insert( asList(new Person() ) );
+            ksession.insert(List.of(new Person()));
             ksession.insert("test");
             assertThat(ksession.fireAllRules()).isEqualTo(1);
         } finally {
             ksession.dispose();
             try {
                 ksession = kbase.newKieSession( conf, null );
-                ksession.insert( asList(new Person() ) );
+                ksession.insert(List.of(new Person()));
                 ksession.insert("test");
                 assertThat(ksession.fireAllRules()).isEqualTo(1);
             } finally {

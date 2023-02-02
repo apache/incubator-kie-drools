@@ -699,7 +699,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
             for (int i = 0; i < sinks.length; i++) {
                 BetaNode beta = (BetaNode)sinks[i];
                 RuleTerminalNode rtn = (RuleTerminalNode)beta.getSinkPropagator().getSinks()[0];
-                pathMemories[i] =  ( PathMemory ) reteEvaluator.getNodeMemory(rtn);
+                pathMemories[i] = reteEvaluator.getNodeMemory(rtn);
             }
         }
     }

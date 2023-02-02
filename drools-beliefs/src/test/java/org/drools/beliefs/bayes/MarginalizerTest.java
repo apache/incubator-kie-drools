@@ -56,7 +56,7 @@ public class MarginalizerTest {
         for ( int i = 0; i <srcDistribution.length; i++ ) {
             System.out.print(srcDistribution[i] + " ");
         }
-        System.out.println("");
+        System.out.println();
 
 //        public void Marginalizer(BayesVariable[]  srcVars, double[] srcPotentials, BayesVariable var,
 //        double[] varDistribution,  BayesVariable[]  trgVars) {
@@ -67,6 +67,6 @@ public class MarginalizerTest {
         for ( int i = 0; i <trgDistribution.length; i++ ) {
             System.out.print(trgDistribution[i] + " ");
         }
-        System.out.println("");
+        System.out.println();
     }
 }

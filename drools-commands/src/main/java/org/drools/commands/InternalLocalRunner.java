@@ -38,10 +38,10 @@ public interface InternalLocalRunner extends ExecutableRunner<RequestContext> {
     }
 
     default <T> T execute( Command<T> command ) {
-        Context ctx = execute( new SingleCommandExecutable( command ) );
+        RequestContext ctx = execute(new SingleCommandExecutable(command ));
         return command instanceof BatchExecutionCommand ?
                (T) ( (RegistryContext) ctx ).lookup( ExecutionResults.class ) :
-               (T) ( (RequestContext) ctx ).getResult();
+               (T) ctx.getResult();
     }
 
     default <T> T execute( Command<T> command, Context ctx ) {

@@ -86,7 +86,7 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
     public InlineCastExpr setExpression(final Expression expression) {
     	assertNotNull(expression);
         if (expression == this.expression) {
-            return (InlineCastExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.EXPRESSION, this.expression, expression);
         if (this.expression != null) {
@@ -101,7 +101,7 @@ public class InlineCastExpr extends Expression implements NodeWithType<InlineCas
     public InlineCastExpr setType(final Type type) {
         assertNotNull(type);
         if (type == this.type) {
-            return (InlineCastExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.TYPE, this.type, type);
         if (this.type != null) {

@@ -64,9 +64,9 @@ public class GroupElementTest {
                                               "y"  );
         and1.addChild( pattern2 );
         
-        Declaration x1 = ( Declaration ) and1.getInnerDeclarations().get( "x" );
-        Declaration y1 = ( Declaration ) and1.getInnerDeclarations().get( "y" );
-        Declaration z1 = ( Declaration ) and1.getInnerDeclarations().get( "z" );
+        Declaration x1 = and1.getInnerDeclarations().get("x");
+        Declaration y1 = and1.getInnerDeclarations().get("y");
+        Declaration z1 = and1.getInnerDeclarations().get("z");
         assertThat(x1).isNotNull();
         assertThat(y1).isNotNull();
         assertThat(z1).isNull();
@@ -89,9 +89,9 @@ public class GroupElementTest {
         assertThat(and2.getChildren().get(1)).isSameAs(pattern2);
         assertThat(and2.getChildren().get(2)).isSameAs(pattern3);        
         
-        Declaration x2 = ( Declaration ) and2.getInnerDeclarations().get( "x" );
-        Declaration y2 = ( Declaration ) and2.getInnerDeclarations().get( "y" );
-        Declaration z2 = ( Declaration ) and2.getInnerDeclarations().get( "z" );
+        Declaration x2 = and2.getInnerDeclarations().get("x");
+        Declaration y2 = and2.getInnerDeclarations().get("y");
+        Declaration z2 = and2.getInnerDeclarations().get("z");
         assertThat(x2).isNotNull();        
         assertThat(y2).isNotNull();
         assertThat(z2).isNull();    

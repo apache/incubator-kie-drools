@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -54,7 +55,7 @@ public class UnmarshalMarshalTest {
 
     private static final StreamSource DMN13_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN13.xsd").getFile());
     private static final StreamSource DMN13_EXT_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/org/kie/dmn/trisotech/validation/extension/TrisotechDMN13.xsd").getFile());
-    private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller(Arrays.asList(new TrisotechBoxedExtensionRegister()));
+    private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller(List.of(new TrisotechBoxedExtensionRegister()));
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
@@ -150,19 +151,17 @@ public class UnmarshalMarshalTest {
         <xsd:attribute name="isCollapsed" type="xsd:boolean" use="optional" default="false"/>
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
-        attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
-                                                             new QName("expressionLanguage"),
-                                                             new QName("typeLanguage"),
-                                                             new QName("isCollection"),
-                                                             new QName("hitPolicy"),
-                                                             new QName("preferredOrientation"),
-                                                             new QName("kind"),
-                                                             new QName("textFormat"),
-                                                             new QName("associationDirection"),
-                                                             new QName("isCollapsed")
-        }));
+        attrWhichCanDefault.addAll(Arrays.asList(new QName("expressionLanguage"),
+                                                 new QName("typeLanguage"),
+                                                 new QName("isCollection"),
+                                                 new QName("hitPolicy"),
+                                                 new QName("preferredOrientation"),
+                                                 new QName("kind"),
+                                                 new QName("textFormat"),
+                                                 new QName("associationDirection"),
+                                                 new QName("isCollapsed")));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
-        nodeHavingDefaultableAttr.addAll(Arrays.asList(new String[]{"definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape"}));
+        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape"));
         Diff checkSimilar = DiffBuilder
                                        .compare(control)
                                        .withTest(test)
@@ -197,7 +196,6 @@ public class UnmarshalMarshalTest {
                                                                                                            if (check) {
                                                                                                                testIsDefaulableAttribute = true;
                                                                                                                whichDefaultableAttr = a;
-                                                                                                               continue;
                                                                                                            }
                                                                                                        }
                                                                                                    }

@@ -15,7 +15,6 @@
 
 package org.drools.beliefs.bayes.integration;
 
-import org.drools.beliefs.PropertyChangeMask;
 import org.drools.beliefs.bayes.BayesFact;
 import org.drools.beliefs.bayes.BayesInstance;
 import org.drools.beliefs.bayes.BayesVariableConstructor;

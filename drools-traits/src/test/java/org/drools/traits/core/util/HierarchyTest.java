@@ -40,8 +40,8 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "B" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("B"));
         encoder.encode( "D", Arrays.asList( "B", "C" ) );
 
         System.out.println( encoder );
@@ -82,8 +82,8 @@ public class HierarchyTest {
         HierarchyEncoderImpl encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "A" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("A"));
         encoder.encode( "D", Arrays.asList( "B", "C" ) );
         encoder.encode( "E", Collections.EMPTY_LIST );
 
@@ -117,7 +117,7 @@ public class HierarchyTest {
 
         encoder.encode( "A", Collections.EMPTY_LIST );
         for ( int j = 1; j < N; j++ ) {
-            encoder.encode( "X" + j, Arrays.asList( "A" ) );
+            encoder.encode( "X" + j, List.of("A"));
         }
 
         assertThat(encoder.size()).isEqualTo(N);
@@ -133,12 +133,12 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "A" ) );
-        encoder.encode( "D", Arrays.asList( "B" ) );
-        encoder.encode( "E", Arrays.asList( "B" ) );
-        encoder.encode( "F", Arrays.asList( "C" ) );
-        encoder.encode( "G", Arrays.asList( "C" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("A"));
+        encoder.encode("D", List.of("B"));
+        encoder.encode("E", List.of("B"));
+        encoder.encode("F", List.of("C"));
+        encoder.encode("G", List.of("C"));
 
         System.out.println( encoder );
 
@@ -159,12 +159,12 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "R", Collections.EMPTY_LIST );
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B2", "B3" ) );
@@ -193,17 +193,17 @@ public class HierarchyTest {
 
         encoder.encode( "R", Collections.EMPTY_LIST );
 
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B2", "B3" ) );
         encoder.encode( "B7", Arrays.asList( "B4", "B5", "B6" ) );
 
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
 
         System.out.println( encoder );
 
@@ -232,12 +232,12 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "R", Collections.EMPTY_LIST );
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2", "B3" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B2", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B1", "B2", "B3" ) );
@@ -263,16 +263,16 @@ public class HierarchyTest {
 
         encoder.encode( "R", Collections.EMPTY_LIST );
 
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2", "B3" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B2", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B1", "B2", "B3" ) );
 
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
 
         System.out.println( encoder );
 
@@ -295,8 +295,8 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "T", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "T" ) );
-        encoder.encode( "B", Arrays.asList( "T" ) );
+        encoder.encode("A", List.of("T"));
+        encoder.encode("B", List.of("T"));
         encoder.encode( "C", Arrays.asList( "A", "B" ) );
         encoder.encode( "D", Arrays.asList( "A", "B" ) );
 
@@ -318,13 +318,13 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "A" ) );
-        encoder.encode( "D", Arrays.asList( "B" ) );
-        encoder.encode( "E", Arrays.asList( "B" ) );
-        encoder.encode( "F", Arrays.asList( "C" ) );
-        encoder.encode( "G", Arrays.asList( "C" ) );
-        encoder.encode( "H", Arrays.asList( "E" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("A"));
+        encoder.encode("D", List.of("B"));
+        encoder.encode("E", List.of("B"));
+        encoder.encode("F", List.of("C"));
+        encoder.encode("G", List.of("C"));
+        encoder.encode("H", List.of("E"));
 
 
         System.out.println( encoder );
@@ -361,15 +361,15 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "A" ) );
-        encoder.encode( "D", Arrays.asList( "B" ) );
-        encoder.encode( "E", Arrays.asList( "B" ) );
-        encoder.encode( "F", Arrays.asList( "C" ) );
-        encoder.encode( "G", Arrays.asList( "C" ) );
-        encoder.encode( "H", Arrays.asList( "E" ) );
-        encoder.encode( "J", Arrays.asList( "F" ) );
-        encoder.encode( "K", Arrays.asList( "J" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("A"));
+        encoder.encode("D", List.of("B"));
+        encoder.encode("E", List.of("B"));
+        encoder.encode("F", List.of("C"));
+        encoder.encode("G", List.of("C"));
+        encoder.encode("H", List.of("E"));
+        encoder.encode("J", List.of("F"));
+        encoder.encode("K", List.of("J"));
 
 
         System.out.println( encoder );
@@ -391,21 +391,21 @@ public class HierarchyTest {
 
         encoder.encode( "R", Collections.EMPTY_LIST );
 
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B2", "B3" ) );
         encoder.encode( "B7", Arrays.asList( "B4", "B5", "B6" ) );
 
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
         encoder.encode( "A4", Arrays.asList( "A1", "A2", "A3" ) );
-        encoder.encode( "A5", Arrays.asList( "A4" ) );
-        encoder.encode( "A6", Arrays.asList( "A4" ) );
-        encoder.encode( "A7", Arrays.asList( "A4" ) );
+        encoder.encode("A5", List.of("A4"));
+        encoder.encode("A6", List.of("A4"));
+        encoder.encode("A7", List.of("A4"));
 
 
         System.out.println( encoder );
@@ -434,17 +434,17 @@ public class HierarchyTest {
 
         encoder.encode( "R", Collections.EMPTY_LIST );
 
-        encoder.encode( "A1", Arrays.asList( "R" ) );
-        encoder.encode( "A2", Arrays.asList( "R" ) );
-        encoder.encode( "A3", Arrays.asList( "R" ) );
+        encoder.encode("A1", List.of("R"));
+        encoder.encode("A2", List.of("R"));
+        encoder.encode("A3", List.of("R"));
         encoder.encode( "A4", Arrays.asList( "A1", "A2", "A3" ) );
-        encoder.encode( "A5", Arrays.asList( "A4" ) );
-        encoder.encode( "A6", Arrays.asList( "A4" ) );
-        encoder.encode( "A7", Arrays.asList( "A4" ) );
+        encoder.encode("A5", List.of("A4"));
+        encoder.encode("A6", List.of("A4"));
+        encoder.encode("A7", List.of("A4"));
 
-        encoder.encode( "B1", Arrays.asList( "R" ) );
-        encoder.encode( "B2", Arrays.asList( "R" ) );
-        encoder.encode( "B3", Arrays.asList( "R" ) );
+        encoder.encode("B1", List.of("R"));
+        encoder.encode("B2", List.of("R"));
+        encoder.encode("B3", List.of("R"));
         encoder.encode( "B4", Arrays.asList( "B1", "B2" ) );
         encoder.encode( "B5", Arrays.asList( "B1", "B3" ) );
         encoder.encode( "B6", Arrays.asList( "B2", "B3" ) );
@@ -492,28 +492,28 @@ public class HierarchyTest {
         encoder.encode( "A", Collections.EMPTY_LIST );
         checkHier( encoder, 'A' );
 
-        encoder.encode( "B", Arrays.asList( "A" ) );
+        encoder.encode("B", List.of("A"));
         checkHier( encoder, 'B' );
 
-        encoder.encode( "C", Arrays.asList( "A" ) );
+        encoder.encode("C", List.of("A"));
         checkHier( encoder, 'C' );
 
-        encoder.encode( "D", Arrays.asList( "B" ) );
+        encoder.encode("D", List.of("B"));
         checkHier( encoder, 'D' );
 
-        encoder.encode( "E", Arrays.asList( "B" ) );
+        encoder.encode("E", List.of("B"));
         checkHier( encoder, 'E' );
 
-        encoder.encode( "F", Arrays.asList( "C" ) );
+        encoder.encode("F", List.of("C"));
         checkHier( encoder, 'F' );
 
-        encoder.encode( "G", Arrays.asList( "C" ) );
+        encoder.encode("G", List.of("C"));
         checkHier( encoder, 'G' );
 
-        encoder.encode( "H", Arrays.asList( "D" ) );
+        encoder.encode("H", List.of("D"));
         checkHier( encoder, 'H' );
 
-        encoder.encode( "I", Arrays.asList( "D" ) );
+        encoder.encode("I", List.of("D"));
         checkHier( encoder, 'I' );
 //
         encoder.encode( "J", Arrays.asList( "E", "F" ) );
@@ -522,10 +522,10 @@ public class HierarchyTest {
         encoder.encode( "K", Arrays.asList( "E", "F" ) );
         checkHier( encoder, 'K' );
 
-        encoder.encode( "L", Arrays.asList( "G" ) );
+        encoder.encode("L", List.of("G"));
         checkHier( encoder, 'L' );
 
-        encoder.encode( "M", Arrays.asList( "G" ) );
+        encoder.encode("M", List.of("G"));
         checkHier( encoder, 'M' );
 
         encoder.encode( "N", Arrays.asList( "I", "L" ) );
@@ -549,7 +549,7 @@ public class HierarchyTest {
     }
 
     private Long toLong( BitSet ns ) {
-        Long l = 0L;
+        long l = 0L;
         for ( int j = 0; j < ns.length(); j++ ) {
             if ( ns.get( j ) ) {
                 l += ( 1 << j );
@@ -599,16 +599,16 @@ public class HierarchyTest {
         HierarchyEncoderImpl encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A" ) );
-        encoder.encode( "C", Arrays.asList( "A" ) );
-        encoder.encode( "D", Arrays.asList( "A" ) );
-        encoder.encode( "E", Arrays.asList( "B" ) );
-        encoder.encode( "F", Arrays.asList( "C" ) );
-        encoder.encode( "G", Arrays.asList( "D" ) );
-        encoder.encode( "H", Arrays.asList( "D" ) );
-        encoder.encode( "I", Arrays.asList( "E" ) );
-        encoder.encode( "J", Arrays.asList( "F" ) );
-        encoder.encode( "K", Arrays.asList( "G" ) );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("A"));
+        encoder.encode("D", List.of("A"));
+        encoder.encode("E", List.of("B"));
+        encoder.encode("F", List.of("C"));
+        encoder.encode("G", List.of("D"));
+        encoder.encode("H", List.of("D"));
+        encoder.encode("I", List.of("E"));
+        encoder.encode("J", List.of("F"));
+        encoder.encode("K", List.of("G"));
         encoder.encode( "L", Arrays.asList( "I", "J" ) );
 
         List<String>[] sups = new List[ ] {
@@ -655,10 +655,10 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "T", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "T" ) );
-        encoder.encode( "B", Arrays.asList( "T" ) );
-        encoder.encode( "C", Arrays.asList( "T" ) );
-        encoder.encode( "D", Arrays.asList( "C" ) );
+        encoder.encode("A", List.of("T"));
+        encoder.encode("B", List.of("T"));
+        encoder.encode("C", List.of("T"));
+        encoder.encode("D", List.of("C"));
         encoder.encode( "F", Arrays.asList( "B", "C" ) );
 
 
@@ -681,15 +681,15 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "Thing", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "Thing" ) );
-        encoder.encode( "Z", Arrays.asList( "Thing" ) );
+        encoder.encode("A", List.of("Thing"));
+        encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
         encoder.encode( "C", Arrays.asList( "A", "Z" ) );
         encoder.encode( "N", Arrays.asList( "B", "C" ) );
-        encoder.encode( "P", Arrays.asList( "Thing" ) );
-        encoder.encode( "Q", Arrays.asList( "Thing" ) );
-        encoder.encode( "R", Arrays.asList( "Thing" ) );
-        encoder.encode( "S", Arrays.asList( "R" ) );
+        encoder.encode("P", List.of("Thing"));
+        encoder.encode("Q", List.of("Thing"));
+        encoder.encode("R", List.of("Thing"));
+        encoder.encode("S", List.of("R"));
         encoder.encode( "T", Arrays.asList( "C", "Q" ) );
         encoder.encode( "M", Arrays.asList( "R", "Q" ) );
         encoder.encode( "O", Arrays.asList( "M", "P" ) );
@@ -787,15 +787,15 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "Thing", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "Thing" ) );
-        encoder.encode( "Z", Arrays.asList( "Thing" ) );
+        encoder.encode("A", List.of("Thing"));
+        encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
         encoder.encode( "C", Arrays.asList( "A", "Z" ) );
         encoder.encode( "N", Arrays.asList( "B", "C" ) );
-        encoder.encode( "P", Arrays.asList( "Thing" ) );
-        encoder.encode( "Q", Arrays.asList( "Thing" ) );
-        encoder.encode( "R", Arrays.asList( "Thing" ) );
-        encoder.encode( "S", Arrays.asList( "R" ) );
+        encoder.encode("P", List.of("Thing"));
+        encoder.encode("Q", List.of("Thing"));
+        encoder.encode("R", List.of("Thing"));
+        encoder.encode("S", List.of("R"));
         encoder.encode( "T", Arrays.asList( "C", "Q" ) );
         encoder.encode( "M", Arrays.asList( "R", "Q" ) );
         encoder.encode( "O", Arrays.asList( "M", "P" ) );
@@ -883,15 +883,15 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "Thing", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "Thing" ) );
-        encoder.encode( "Z", Arrays.asList( "Thing" ) );
+        encoder.encode("A", List.of("Thing"));
+        encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
         encoder.encode( "C", Arrays.asList( "A", "Z" ) );
         encoder.encode( "N", Arrays.asList( "B", "C" ) );
-        encoder.encode( "P", Arrays.asList( "Thing" ) );
-        encoder.encode( "Q", Arrays.asList( "Thing" ) );
-        encoder.encode( "R", Arrays.asList( "Thing" ) );
-        encoder.encode( "S", Arrays.asList( "R" ) );
+        encoder.encode("P", List.of("Thing"));
+        encoder.encode("Q", List.of("Thing"));
+        encoder.encode("R", List.of("Thing"));
+        encoder.encode("S", List.of("R"));
         encoder.encode( "T", Arrays.asList( "C", "Q" ) );
         encoder.encode( "M", Arrays.asList( "R", "Q" ) );
         encoder.encode( "O", Arrays.asList( "M", "P" ) );
@@ -900,12 +900,12 @@ public class HierarchyTest {
 
         Collection x;
 
-        x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "B" ) ) );
+        x = encoder.lowerBorder( encoder.metMembersCode(List.of("B")));
         System.out.println( "GCS " + x );
         assertThat(x.size()).isEqualTo(1);
         assertThat(x.contains("B")).isTrue();
 
-        x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "B" ) ) );
+        x = encoder.immediateChildren( encoder.metMembersCode(List.of("B")));
         System.out.println( "GCS " + x );
         assertThat(x.size()).isEqualTo(1);
         assertThat(x.contains("N")).isTrue();
@@ -944,13 +944,13 @@ public class HierarchyTest {
 
 
 
-        x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "Thing" ) ) );
+        x = encoder.lowerBorder( encoder.metMembersCode(List.of("Thing")));
         System.out.println( "GCS " + x );
 
         assertThat(x.size()).isEqualTo(1);
         assertThat(x.contains("Thing")).isTrue();
 
-        x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "Thing" ) ) );
+        x = encoder.immediateChildren( encoder.metMembersCode(List.of("Thing")));
         System.out.println( "GCS " + x );
 
         assertThat(x.size()).isEqualTo(5);
@@ -969,15 +969,15 @@ public class HierarchyTest {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
 
         encoder.encode( "Thing", Collections.EMPTY_LIST );
-        encoder.encode( "A", Arrays.asList( "Thing" ) );
-        encoder.encode( "Z", Arrays.asList( "Thing" ) );
+        encoder.encode("A", List.of("Thing"));
+        encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
         encoder.encode( "C", Arrays.asList( "A", "Z" ) );
         encoder.encode( "N", Arrays.asList( "B", "C" ) );
-        encoder.encode( "P", Arrays.asList( "Thing" ) );
-        encoder.encode( "Q", Arrays.asList( "Thing" ) );
-        encoder.encode( "R", Arrays.asList( "Thing" ) );
-        encoder.encode( "S", Arrays.asList( "R" ) );
+        encoder.encode("P", List.of("Thing"));
+        encoder.encode("Q", List.of("Thing"));
+        encoder.encode("R", List.of("Thing"));
+        encoder.encode("S", List.of("R"));
         encoder.encode( "T", Arrays.asList( "C", "Q" ) );
         encoder.encode( "M", Arrays.asList( "R", "Q" ) );
         encoder.encode( "O", Arrays.asList( "M", "P" ) );
@@ -986,12 +986,12 @@ public class HierarchyTest {
 
         Collection x;
 
-        x = encoder.upperBorder( encoder.metMembersCode( Arrays.asList( "B" ) ) );
+        x = encoder.upperBorder( encoder.metMembersCode(List.of("B")));
         System.out.println( "LCS " + x );
         assertThat(x.size()).isEqualTo(1);
         assertThat(x.contains("B")).isTrue();
 
-        x = encoder.immediateParents( encoder.metMembersCode( Arrays.asList( "B" ) ) );
+        x = encoder.immediateParents( encoder.metMembersCode(List.of("B")));
         System.out.println( "LCS " + x );
         assertThat(x.size()).isEqualTo(2);
         assertThat(x.contains("A")).isTrue();
@@ -1028,13 +1028,13 @@ public class HierarchyTest {
         assertThat(x.contains("Z")).isTrue();
 
 
-        x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "T" ) ) );
+        x = encoder.upperBorder( encoder.jointMembersCode(List.of("T")));
         System.out.println( "LCS " + x );
 
         assertThat(x.size()).isEqualTo(1);
         assertThat(x.contains("T")).isTrue();
 
-        x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "T" ) ) );
+        x = encoder.immediateParents( encoder.jointMembersCode(List.of("T")));
         System.out.println( "LCS " + x );
 
         assertThat(x.size()).isEqualTo(2);
@@ -1054,18 +1054,18 @@ public class HierarchyTest {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
         BitSet ak = encoder.encode( "A", Collections.EMPTY_LIST );
-        BitSet bk = encoder.encode( "B", Arrays.asList( "A" ) );
-        BitSet ck = encoder.encode( "C", Arrays.asList( "A" ) );
-        BitSet dk = encoder.encode( "D", Arrays.asList( "B" ) );
-        BitSet ek = encoder.encode( "E", Arrays.asList( "B" ) );
-        BitSet fk = encoder.encode( "F", Arrays.asList( "C" ) );
-        BitSet gk = encoder.encode( "G", Arrays.asList( "C" ) );
-        BitSet hk = encoder.encode( "H", Arrays.asList( "D" ) );
-        BitSet ik = encoder.encode( "I", Arrays.asList( "D" ) );
+        BitSet bk = encoder.encode("B", List.of("A"));
+        BitSet ck = encoder.encode("C", List.of("A"));
+        BitSet dk = encoder.encode("D", List.of("B"));
+        BitSet ek = encoder.encode("E", List.of("B"));
+        BitSet fk = encoder.encode("F", List.of("C"));
+        BitSet gk = encoder.encode("G", List.of("C"));
+        BitSet hk = encoder.encode("H", List.of("D"));
+        BitSet ik = encoder.encode("I", List.of("D"));
         BitSet jk = encoder.encode( "J", Arrays.asList( "E", "F" ) );
         BitSet kk = encoder.encode( "K", Arrays.asList( "E", "F" ) );
-        BitSet lk = encoder.encode( "L", Arrays.asList( "G" ) );
-        BitSet mk = encoder.encode( "M", Arrays.asList( "G" ) );
+        BitSet lk = encoder.encode("L", List.of("G"));
+        BitSet mk = encoder.encode("M", List.of("G"));
         BitSet nk = encoder.encode( "N", Arrays.asList( "I", "L" ) );
         BitSet ok = encoder.encode( "O", Arrays.asList( "H", "M" ) );
 
@@ -1088,32 +1088,32 @@ public class HierarchyTest {
         assertThat(types.children("A")).isEqualTo(Arrays.asList("c", "h"));
         assertThat(types.children("c")).isEqualTo(Arrays.asList("f", "n", "o"));
         assertThat(types.children("f")).isEqualTo(Arrays.asList("j", "k"));
-        assertThat(types.children("j")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("k")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("n")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("o")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("h")).isEqualTo(Arrays.asList("o"));
-        assertThat(types.children("ZZZZ")).isEqualTo(Arrays.asList());
+        assertThat(types.children("j")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("k")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("n")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("o")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("h")).isEqualTo(List.of("o"));
+        assertThat(types.children("ZZZZ")).isEqualTo(List.of());
 
-        assertThat(types.parents("a")).isEqualTo(Arrays.asList());
-        assertThat(types.parents("c")).isEqualTo(Arrays.asList("A"));
-        assertThat(types.parents("f")).isEqualTo(Arrays.asList("c"));
-        assertThat(types.parents("j")).isEqualTo(Arrays.asList("f"));
-        assertThat(types.parents("k")).isEqualTo(Arrays.asList("f"));
-        assertThat(types.parents("n")).isEqualTo(Arrays.asList("c"));
+        assertThat(types.parents("a")).isEqualTo(List.of());
+        assertThat(types.parents("c")).isEqualTo(List.of("A"));
+        assertThat(types.parents("f")).isEqualTo(List.of("c"));
+        assertThat(types.parents("j")).isEqualTo(List.of("f"));
+        assertThat(types.parents("k")).isEqualTo(List.of("f"));
+        assertThat(types.parents("n")).isEqualTo(List.of("c"));
         assertThat(types.parents("o")).isEqualTo(Arrays.asList("c", "h"));
-        assertThat(types.parents("h")).isEqualTo(Arrays.asList("A"));
+        assertThat(types.parents("h")).isEqualTo(List.of("A"));
         assertThat(types.parents("ZZZZ")).isEqualTo(Arrays.asList("j", "k", "n", "o"));
 
 
-        BitSet pk = encoder.encode( "P", Arrays.asList( "O" ) );
+        BitSet pk = encoder.encode("P", List.of("O"));
         types.addMember( "p", pk );
 
         System.out.println( types );
 
-        assertThat(types.parents("p")).isEqualTo(Arrays.asList("o"));
+        assertThat(types.parents("p")).isEqualTo(List.of("o"));
         assertThat(types.parents("ZZZZ")).isEqualTo(Arrays.asList("j", "k", "n", "p"));
-        assertThat(types.children("p")).isEqualTo(Arrays.asList("ZZZZ"));
+        assertThat(types.children("p")).isEqualTo(List.of("ZZZZ"));
 
 
         types.removeMember( "o" );
@@ -1123,9 +1123,9 @@ public class HierarchyTest {
         assertThat(types.parents("p")).isEqualTo(Arrays.asList("c", "h"));
         assertThat(types.children("c")).isEqualTo(Arrays.asList("f", "n", "p"));
         assertThat(types.children("f")).isEqualTo(Arrays.asList("j", "k"));
-        assertThat(types.children("n")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("p")).isEqualTo(Arrays.asList("ZZZZ"));
-        assertThat(types.children("h")).isEqualTo(Arrays.asList("p"));
+        assertThat(types.children("n")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("p")).isEqualTo(List.of("ZZZZ"));
+        assertThat(types.children("h")).isEqualTo(List.of("p"));
 
     }
 
@@ -1136,19 +1136,19 @@ public class HierarchyTest {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
         BitSet ak = encoder.encode( "A", Collections.EMPTY_LIST );
-        BitSet ck = encoder.encode( "C", Arrays.asList( "A" ) );
-        BitSet dk = encoder.encode( "D", Arrays.asList( "A" ) );
+        BitSet ck = encoder.encode("C", List.of("A"));
+        BitSet dk = encoder.encode("D", List.of("A"));
         BitSet gk = encoder.encode( "G", Arrays.asList( "C", "D" ) );
-        BitSet bk = encoder.encode( "B", Arrays.asList( "A" ) );
-        BitSet ek = encoder.encode( "E", Arrays.asList( "B" ) );
+        BitSet bk = encoder.encode("B", List.of("A"));
+        BitSet ek = encoder.encode("E", List.of("B"));
         BitSet ik = encoder.encode( "I", Arrays.asList( "E", "C" ) );
         BitSet fk = encoder.encode( "F", Arrays.asList( "B", "C" ) );
         BitSet jk = encoder.encode( "J", Arrays.asList( "F", "D" ) );
-        BitSet lk = encoder.encode( "L", Arrays.asList( "J" ) );
+        BitSet lk = encoder.encode("L", List.of("J"));
 
         assertThat(encoder.getCode("L")).isNotNull();
 
-        BitSet ok = encoder.encode( "O", Arrays.asList( "L" ) );
+        BitSet ok = encoder.encode("O", List.of("L"));
 
         assertThat(encoder.getCode("L")).isNotNull();
 
@@ -1160,15 +1160,15 @@ public class HierarchyTest {
 
         assertThat(encoder.getCode("L")).isNotNull();
 
-        BitSet nk = encoder.encode( "N", Arrays.asList( "K" ) );
+        BitSet nk = encoder.encode("N", List.of("K"));
 
         assertThat(encoder.getCode("L")).isNotNull();
 
-        BitSet hk = encoder.encode( "H", Arrays.asList( "F" ) );
+        BitSet hk = encoder.encode("H", List.of("F"));
 
         assertThat(encoder.getCode("L")).isNotNull();
 
-        BitSet pk = encoder.encode( "P", Arrays.asList( "A" ) );
+        BitSet pk = encoder.encode("P", List.of("A"));
 
         assertThat(encoder.getCode("L")).isNotNull();
 
@@ -1184,23 +1184,23 @@ public class HierarchyTest {
 
         encoder.encode( "A", Collections.EMPTY_LIST );
 
-        encoder.encode( "B", Arrays.asList( "A" ) );
+        encoder.encode("B", List.of("A"));
 
-        encoder.encode( "C", Arrays.asList( "A" ) );
-        encoder.encode( "D", Arrays.asList( "C" ) );
-        encoder.encode( "E", Arrays.asList( "D" ) );
-        encoder.encode( "F", Arrays.asList( "D" ) );
-        encoder.encode( "G", Arrays.asList( "C" ) );
-        encoder.encode( "H", Arrays.asList( "G" ) );
-        encoder.encode( "I", Arrays.asList( "G" ) );
-        encoder.encode( "J", Arrays.asList( "C" ) );
-        encoder.encode( "K", Arrays.asList( "C" ) );
+        encoder.encode("C", List.of("A"));
+        encoder.encode("D", List.of("C"));
+        encoder.encode("E", List.of("D"));
+        encoder.encode("F", List.of("D"));
+        encoder.encode("G", List.of("C"));
+        encoder.encode("H", List.of("G"));
+        encoder.encode("I", List.of("G"));
+        encoder.encode("J", List.of("C"));
+        encoder.encode("K", List.of("C"));
 
-        encoder.encode( "L", Arrays.asList( "B" ) );
-        encoder.encode( "M", Arrays.asList( "B" ) );
+        encoder.encode("L", List.of("B"));
+        encoder.encode("M", List.of("B"));
 
-        encoder.encode( "N", Arrays.asList( "A" ) );
-        encoder.encode( "O", Arrays.asList( "N" ) );
+        encoder.encode("N", List.of("A"));
+        encoder.encode("O", List.of("N"));
 
 
 
@@ -1216,29 +1216,29 @@ public class HierarchyTest {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
         encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Arrays.asList( "A") );
-        encoder.encode( "C", Arrays.asList( "B") );
-        encoder.encode( "D", Arrays.asList( "B") );
-        encoder.encode( "E", Arrays.asList( "D") );
-        encoder.encode( "F", Arrays.asList( "E") );
-        encoder.encode( "G", Arrays.asList( "E") );
-        encoder.encode( "H", Arrays.asList( "G") );
-        encoder.encode( "I", Arrays.asList( "H") );
-        encoder.encode( "J", Arrays.asList( "E") );
-        encoder.encode( "K", Arrays.asList( "J") );
-        encoder.encode( "L", Arrays.asList( "K") );
-        encoder.encode( "M", Arrays.asList( "J") );
-        encoder.encode( "N", Arrays.asList( "M") );
-        encoder.encode( "O", Arrays.asList( "J") );
-        encoder.encode( "P", Arrays.asList( "O") );
-        encoder.encode( "Q", Arrays.asList( "J") );
-        encoder.encode( "R", Arrays.asList( "Q") );
-        encoder.encode( "S", Arrays.asList( "B") );
-        encoder.encode( "T", Arrays.asList( "S") );
-        encoder.encode( "U", Arrays.asList( "T") );
-        encoder.encode( "V", Arrays.asList( "B") );
-        encoder.encode( "W", Arrays.asList( "V") );
-        encoder.encode( "X", Arrays.asList( "W") );
+        encoder.encode("B", List.of("A"));
+        encoder.encode("C", List.of("B"));
+        encoder.encode("D", List.of("B"));
+        encoder.encode("E", List.of("D"));
+        encoder.encode("F", List.of("E"));
+        encoder.encode("G", List.of("E"));
+        encoder.encode("H", List.of("G"));
+        encoder.encode("I", List.of("H"));
+        encoder.encode("J", List.of("E"));
+        encoder.encode("K", List.of("J"));
+        encoder.encode("L", List.of("K"));
+        encoder.encode("M", List.of("J"));
+        encoder.encode("N", List.of("M"));
+        encoder.encode("O", List.of("J"));
+        encoder.encode("P", List.of("O"));
+        encoder.encode("Q", List.of("J"));
+        encoder.encode("R", List.of("Q"));
+        encoder.encode("S", List.of("B"));
+        encoder.encode("T", List.of("S"));
+        encoder.encode("U", List.of("T"));
+        encoder.encode("V", List.of("B"));
+        encoder.encode("W", List.of("V"));
+        encoder.encode("X", List.of("W"));
 
         System.out.println( encoder );
 

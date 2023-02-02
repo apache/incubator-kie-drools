@@ -110,6 +110,6 @@ public class ReturnValueGenerator {
             }
         });
         
-        stub.setReturnValue(generator.<ReturnValueExpression>newInstance());
+        stub.setReturnValue(generator.newInstance());
     }
 }

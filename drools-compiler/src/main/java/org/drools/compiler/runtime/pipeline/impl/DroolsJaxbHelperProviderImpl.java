@@ -173,7 +173,7 @@ public class DroolsJaxbHelperProviderImpl
                                                                        srcNames,
                                                                        src);
             for (String className : classNames) {
-                Class<?> clazz = null;
+                Class<?> clazz;
                 try {
                     clazz = Class.forName( className, true, kBuilder.getRootClassLoader() );
                 } catch (ClassNotFoundException e) {
@@ -194,7 +194,7 @@ public class DroolsJaxbHelperProviderImpl
     }
 
     public static JAXBContext createDroolsJaxbContext(List<String> classNames, Map<String, ?> properties) throws ClassNotFoundException, JAXBException {
-        int i = 0;
+        int i;
         Class<?>[] classes = new Class[classNames.size() + JAXB_ANNOTATED_CMD.length];
 
         for (i = 0; i < classNames.size(); i++) {
@@ -218,7 +218,7 @@ public class DroolsJaxbHelperProviderImpl
     public JAXBContext newJAXBContext(String[] classNames,
                                           KieBase kbase) throws JAXBException {
         return newJAXBContext( classNames,
-                            Collections.<String, Object> emptyMap(),
+                            Collections.emptyMap(),
                             kbase );
     }
 
@@ -248,8 +248,8 @@ public class DroolsJaxbHelperProviderImpl
         int lastDot = string.lastIndexOf( '.' );
         return string.substring( 0,
                                  lastDot ).replace( '.',
-                                                    '/' ) + string.substring( lastDot,
-                                                                              string.length() );
+                                                    '/' ) + string.substring( lastDot
+                                                                            );
     }
 
     public static class MapVfsCodeWriter extends CodeWriter {
@@ -337,7 +337,7 @@ public class DroolsJaxbHelperProviderImpl
         public int read(char[] cbuf,
                         int off,
                         int len) throws IOException {
-            int value = 0;
+            int value;
             if ( this.cache == null ) {
                 value = this.source.read( cbuf,
                                           off,

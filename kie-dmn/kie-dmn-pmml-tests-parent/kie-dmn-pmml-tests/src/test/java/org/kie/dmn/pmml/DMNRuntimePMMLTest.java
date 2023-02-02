@@ -19,6 +19,7 @@ package org.kie.dmn.pmml;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -83,7 +84,7 @@ public abstract class DMNRuntimePMMLTest {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                                                  .setRelativeImportResolver((ns, n, uri) -> new InputStreamReader(DMNRuntimePMMLTest.class.getResourceAsStream(uri)))
                                                  .buildConfiguration()
-                                                 .fromResources(Arrays.asList(ResourceFactory.newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class)))
+                                                 .fromResources(Collections.singletonList(ResourceFactory.newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class)))
                                                  .getOrElseThrow(e -> new RuntimeException("Error compiling DMN model(s)", e));
         runDMNModelInvokingPMML(dmnRuntime);
     }

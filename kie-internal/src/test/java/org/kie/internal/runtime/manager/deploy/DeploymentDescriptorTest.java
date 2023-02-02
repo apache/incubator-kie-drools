@@ -43,9 +43,8 @@ public class DeploymentDescriptorTest {
 
         descriptor.getBuilder()
                   .addMarshalingStrategy(new ObjectModel("org.jbpm.testCustomStrategy",
-                                                         new Object[]{
-                                                                      new ObjectModel("java.lang.String", new Object[]{"param1"}),
-                                                                      "param2"}))
+                                                         new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                                                         "param2"))
                   .addRequiredRole("experts");
 
         String deploymentDescriptorXml = descriptor.toXml();
@@ -143,9 +142,8 @@ public class DeploymentDescriptorTest {
 
         List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
         marshallingStrategies.add(new ObjectModel("org.jbpm.testCustomStrategy",
-                                                  new Object[]{
-                                                               new ObjectModel("java.lang.String", new Object[]{"param1"}),
-                                                               "param2"}));
+                                                  new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                                                  "param2"));
         descriptor.setMarshallingStrategies(marshallingStrategies);
 
         List<String> roles = new ArrayList<String>();
@@ -223,9 +221,8 @@ public class DeploymentDescriptorTest {
 
         List<ObjectModel> marshallingStrategies = new ArrayList<ObjectModel>();
         marshallingStrategies.add(new ObjectModel("org.jbpm.testCustomStrategy",
-                                                  new Object[]{
-                                                               new ObjectModel("java.lang.String", new Object[]{"param1"}),
-                                                               "param2"}));
+                                                  new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                                                  "param2"));
         descriptor.setMarshallingStrategies(marshallingStrategies);
 
         List<String> roles = new ArrayList<String>();
@@ -282,9 +279,8 @@ public class DeploymentDescriptorTest {
 
         descriptor.getBuilder()
                   .addMarshalingStrategy(new TransientObjectModel("org.jbpm.testCustomStrategy",
-                                                                  new Object[]{
-                                                                               new ObjectModel("java.lang.String", new Object[]{"param1"}),
-                                                                               "param2"}))
+                                                                  new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                                                                  "param2"))
                   .addWorkItemHandler(new TransientNamedObjectModel("mvel", "Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()"))
                   .addRequiredRole("experts");
 
@@ -317,9 +313,8 @@ public class DeploymentDescriptorTest {
 
         descriptor.getBuilder()
                   .addMarshalingStrategy(new ObjectModel("org.jbpm.testCustomStrategy",
-                                                         new Object[]{
-                                                                      new ObjectModel("java.lang.String", new Object[]{"param1"}),
-                                                                      "param2"}))
+                                                         new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                                                         "param2"))
                   .addRequiredRole("experts");
 
         assertThat(descriptor.isEmpty()).isFalse();

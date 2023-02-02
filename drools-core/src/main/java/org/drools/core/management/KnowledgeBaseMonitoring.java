@@ -194,7 +194,7 @@ public class KnowledgeBaseMonitoring
     @SuppressWarnings("unchecked")
     public TabularData getGlobals() throws OpenDataException {
         TabularDataSupport globalsTable = new TabularDataSupport( globalsTableType );
-        for ( Map.Entry<String, Type> global : ((Map<String, Type>) kbase.getGlobals()).entrySet() ) {
+        for ( Map.Entry<String, Type> global : kbase.getGlobals().entrySet() ) {
             Object[] itemValues = {global.getKey(), global.getValue().getTypeName()};
             CompositeData result = new CompositeDataSupport( globalsType,
                                                              globalsColNames,
@@ -231,7 +231,7 @@ public class KnowledgeBaseMonitoring
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
                 try {
                     final StandardMBean adapter = new StandardMBean(otnm, ObjectTypeNodeMonitorMBean.class);
-                    ObjectName name = DroolsManagementAgent.createObjectName( this.name.toString() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
+                    ObjectName name = DroolsManagementAgent.createObjectName( this.name.toString() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + otn.getObjectType().getClassName());
                     DroolsManagementAgent.getInstance().registerMBean( kbase,
                                                                        adapter,
                                                                        name );

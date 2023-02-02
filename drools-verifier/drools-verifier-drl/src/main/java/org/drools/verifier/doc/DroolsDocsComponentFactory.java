@@ -203,7 +203,7 @@ public class DroolsDocsComponentFactory {
     private static String[] splitFirst(String source, String splitter) {
         java.util.List<String> rv = new ArrayList<>();
         int last = 0;
-        int next = 0;
+        int next;
 
         next = source.indexOf(splitter, last);
         if (next != -1)
@@ -214,9 +214,9 @@ public class DroolsDocsComponentFactory {
 
         if (last < source.length())
         {
-          rv.add(source.substring(last, source.length()));
+          rv.add(source.substring(last));
         }
-        return (String[]) rv.toArray(new String[rv.size()]);
+        return rv.toArray(new String[rv.size()]);
       }
 
 

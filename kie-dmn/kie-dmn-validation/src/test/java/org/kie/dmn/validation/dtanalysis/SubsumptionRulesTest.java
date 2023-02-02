@@ -80,7 +80,7 @@ public class SubsumptionRulesTest extends AbstractDTAnalysisTest {
 
         // Subsumption count.
         assertThat(analysis.getSubsumptions()).hasSize(1);
-        List<Subsumption> results = Arrays.asList(new Subsumption(2, 4));
+        List<Subsumption> results = List.of(new Subsumption(2, 4));
         assertThat(results).hasSize(1);
         assertThat(analysis.getSubsumptions()).containsAll(results);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE))).as("It should contain at least 1 DMNMessage for the Subsumtption").isTrue();

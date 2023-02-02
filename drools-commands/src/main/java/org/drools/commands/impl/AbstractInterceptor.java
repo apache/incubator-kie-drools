@@ -36,6 +36,6 @@ public abstract class AbstractInterceptor extends PseudoClockRunner implements C
     }
 
     protected void executeNext( Executable executable, Context ctx ) {
-        next.execute(executable, ( (RequestContext) ctx ) );
+        next.execute(executable, ctx);
     }
 }

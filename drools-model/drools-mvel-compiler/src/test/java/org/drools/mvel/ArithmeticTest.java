@@ -373,7 +373,7 @@ public class ArithmeticTest {
     map.put("y", 50);
     map.put("z", 60);
 
-    assertThat(executeExpression(expression, map)).isEqualTo((Object) result);
+    assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
 
@@ -391,7 +391,7 @@ public class ArithmeticTest {
     map.put("y", 50);
     map.put("z", 60);
 
-    assertThat(executeExpression(expression, map)).isEqualTo((Object) result);
+    assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
   @Ignore("DROOLS-6572 - Rounding error")
@@ -408,7 +408,7 @@ public class ArithmeticTest {
     map.put("y", 50);
     map.put("z", 60);
 
-    assertThat(executeExpression(expression, map)).isEqualTo((Object) result);
+    assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
   @Ignore("DROOLS-6572 - Rounding error")
@@ -425,7 +425,7 @@ public class ArithmeticTest {
     map.put("y", 2);
     map.put("z", 60);
 
-    assertThat(executeExpression(expression, map)).isEqualTo((Object) result);
+    assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
   @Ignore("DROOLS-6572 - Rounding error")

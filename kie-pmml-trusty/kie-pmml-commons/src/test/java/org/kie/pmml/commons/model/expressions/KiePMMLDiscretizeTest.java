@@ -78,19 +78,19 @@ public class KiePMMLDiscretizeTest {
     void evaluateDefaultValue() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
 
-        ProcessingDTO processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
+        ProcessingDTO processingDTO = getProcessingDTO(List.of(new KiePMMLNameValue(NAME, 20)));
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertThat(retrieved).isNull();
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, DEFAULTVALUE);
-        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
+        processingDTO = getProcessingDTO(List.of(new KiePMMLNameValue(NAME, 20)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(DEFAULTVALUE);
-        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 21)));
+        processingDTO = getProcessingDTO(List.of(new KiePMMLNameValue(NAME, 21)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(DEFAULTVALUE);
-        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 40)));
+        processingDTO = getProcessingDTO(List.of(new KiePMMLNameValue(NAME, 40)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isEqualTo(DEFAULTVALUE);

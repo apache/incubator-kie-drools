@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.impl;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +51,7 @@ public class TemporalConstantFoldingParserTest {
     public String expression;
 
     static final FEEL FEEL_STRICT = FEEL.newInstance();
-    static final FEEL FEEL_KIE = FEEL.newInstance(Arrays.asList(new KieExtendedFEELProfile()));
+    static final FEEL FEEL_KIE = FEEL.newInstance(List.of(new KieExtendedFEELProfile()));
 
     @Test
     public void testStrict() {

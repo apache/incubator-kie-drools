@@ -26,6 +26,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.runners.Parameterized;
 
@@ -302,10 +303,10 @@ public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
                 {"zip([\"a\"], [1], [2])", null, ERROR},
                 {"zip([\"a\"], 1)", null, ERROR},
                 {"zip([\"a\", \"b\"], [1, 2, 3], [2])", null, ERROR},
-                {"remove([\"item1\", \"item2\"], \"item1\")", Arrays.asList("item2"), null},
+                {"remove([\"item1\", \"item2\"], \"item1\")", List.of("item2"), null},
                 {"remove(null, \"item1\")", null, ERROR},
                 {"remove([\"item1\", \"item2\"], null)", null, ERROR},
-                {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", Arrays.asList("item3"), null},
+                {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", List.of("item3"), null},
                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item0\"])", Arrays.asList("item2", "item3"), null},
                 {"removeAll(null, [\"item1\", \"item0\"])", null, ERROR},
                 {"avg([3,5])", new BigDecimal("4"), null},

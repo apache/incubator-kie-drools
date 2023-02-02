@@ -56,7 +56,7 @@ public class ByteArrayResourceToStringTest {
                         "UTF-8",
                         "ByteArrayResource[bytes=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100, ...], encoding=UTF-8]"
                 },
-        }));
+                }));
     }
 
     // using List<Byte> instead of directly byte[] to make sure the bytes are printed as part of the test name

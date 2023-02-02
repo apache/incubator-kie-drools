@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TestingModelFactory implements KiePMMLModelFactory {
 
-    private static final List<KiePMMLModel> KIE_PMML_MODELS = Arrays.asList(TestMod.getModel());
+    private static final List<KiePMMLModel> KIE_PMML_MODELS = Collections.singletonList(TestMod.getModel());
 
     @Override
     public List<KiePMMLModel> getKiePMMLModels() {

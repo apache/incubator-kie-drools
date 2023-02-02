@@ -230,7 +230,7 @@ public class RuleTest extends CommonTestMethodBase {
         assertThat(list.get(0).intValue()).isEqualTo(2);
         assertThat(list.get(1).intValue()).isEqualTo(2);
         
-        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(ksession);
     }
     
     @Test

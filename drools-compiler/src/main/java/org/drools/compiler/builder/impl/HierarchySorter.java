@@ -133,9 +133,7 @@ public class HierarchySorter<K> {
 
         public void accept(List<T> list) {
             if ( this.data != null ) {
-                if ( list.contains( this.data ) ) {
-                    list.remove( this.data );
-                }
+                list.remove( this.data );
                 list.add( this.data );
             }
 

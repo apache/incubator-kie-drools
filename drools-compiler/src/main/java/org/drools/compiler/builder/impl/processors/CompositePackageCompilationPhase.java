@@ -34,7 +34,6 @@ import org.kie.internal.builder.ResultSeverity;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 

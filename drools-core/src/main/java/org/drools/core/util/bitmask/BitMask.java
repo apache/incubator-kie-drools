@@ -16,6 +16,7 @@
 package org.drools.core.util.bitmask;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public interface BitMask extends Serializable, Cloneable {
 
@@ -46,9 +47,7 @@ public interface BitMask extends Serializable, Cloneable {
         }
         int nWords = (numBits / 64) + 1;
         long[] bits = new long[nWords];
-        for (int i = 0; i < bits.length; i++) {
-            bits[i] = -1L;
-        }
+        Arrays.fill(bits, -1L);
         return new OpenBitSet(bits, nWords);
     }
 

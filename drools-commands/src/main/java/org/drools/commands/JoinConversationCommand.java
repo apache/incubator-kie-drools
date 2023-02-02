@@ -17,6 +17,6 @@ public class JoinConversationCommand<Void> implements ExecutableCommand<Void> {
         ConversationContextManager cvnManager = reqContext.getConversationManager();
         cvnManager.joinConversation(reqContext, conversationId);
 
-        return (Void) null;
+        return null;
     }
 }

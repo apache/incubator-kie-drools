@@ -31,7 +31,7 @@ public class EvalConditionNodeVisitor extends AbstractNetworkNodeVisitor {
     protected void doVisit(NetworkNode node,
                            Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo(node);
         ni.setMemoryEnabled( false );
     }
 

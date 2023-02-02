@@ -36,7 +36,7 @@ public class ConfFileUtils {
      * @return
      */
     public static URL getURL(String confName, ClassLoader classLoader, Class cls) {
-        URL url = null;
+        URL url;
         
         // User home 
         String userHome = PortablePath.of( System.getProperty( "user.home" ) ).asString();

@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.extended.ContextPutFunction;
 

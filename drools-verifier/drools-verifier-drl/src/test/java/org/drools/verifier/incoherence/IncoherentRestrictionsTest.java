@@ -105,7 +105,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -142,7 +142,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -178,7 +178,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -215,7 +215,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -251,7 +251,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -287,7 +287,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());
@@ -325,7 +325,7 @@ public class IncoherentRestrictionsTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 Pattern pattern = (Pattern) ((VerifierMessage) o).getFaulty();
                 rulesThatHadErrors.add(pattern.getRuleName());

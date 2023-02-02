@@ -44,9 +44,7 @@ public class VerifierRangeCheckMessage extends VerifierMessageBase {
 
     public Collection<Cause> getCauses() {
         Collection<Cause> causes = new ArrayList<>();
-        for ( Cause cause : this.causes ) {
-            causes.add( cause );
-        }
+        causes.addAll(this.causes);
         return causes;
     }
 

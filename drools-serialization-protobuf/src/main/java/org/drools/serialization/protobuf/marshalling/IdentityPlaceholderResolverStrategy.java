@@ -70,7 +70,7 @@ public class IdentityPlaceholderResolverStrategy
 
     public void write(ObjectOutputStream os,
                       Object object) throws IOException {
-        Integer id = ( Integer ) objects.get( object );
+        Integer id = objects.get(object);
         if ( id == null ) {
             id = ids.size();
             ids.put( id, object );
@@ -86,7 +86,7 @@ public class IdentityPlaceholderResolverStrategy
     public byte[] marshal(Context context,
                           ObjectOutputStream os,
                           Object object) {
-        Integer id = ( Integer ) objects.get( object );
+        Integer id = objects.get(object);
         if ( id == null ) {
             id = ids.size();
             ids.put( id, object );

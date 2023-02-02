@@ -178,7 +178,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         session.insert( bob );
         ((InternalWorkingMemory)session).flushPropagations();
 
-        org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
+        org.kie.api.definition.rule.Rule[] rules = kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0]);
 
         assertThat(rules.length).isEqualTo(4);
 
@@ -226,7 +226,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         session.insert( bob );
         ((InternalWorkingMemory)session).flushPropagations();
 
-        org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
+        org.kie.api.definition.rule.Rule[] rules = kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0]);
 
         assertThat(rules.length).isEqualTo(4);
 
@@ -273,7 +273,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         // now try serialising with a fully populated wm from a serialised rulebase
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
 
-        org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
+        org.kie.api.definition.rule.Rule[] rules = kBase.getPackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0]);
 
         assertThat(rules.length).isEqualTo(4);
 
@@ -358,7 +358,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackages(kpkgs);
 
-        org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
+        org.kie.api.definition.rule.Rule[] rules = kBase.getPackage("org.drools.compiler").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
         assertThat(rules.length).isEqualTo(3);
 
         KieSession session = kBase.newKieSession();
@@ -369,7 +369,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         final Primitives p = new Primitives();
         p.setBytePrimitive( (byte) 1 );
         p.setShortPrimitive( (short) 2 );
-        p.setIntPrimitive( (int) 3 );
+        p.setIntPrimitive(3);
         session.insert( p );
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
@@ -971,7 +971,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) loadKnowledgeBaseFromString( rule1 );
 
         // Make sure the rete node map is created correctly
-        Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
+        Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap(kBase);
 
         // Make sure the rete node map is created correctly
         assertThat(nodes.size()).isEqualTo(2);
@@ -1914,7 +1914,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         Person deserializedBob = (Person) in.readObject();
         kbase = (InternalKnowledgeBase) in.readObject();
         marshaller = createSerializableMarshaller( kbase );
-        session = (StatefulKnowledgeSession) marshaller.unmarshall( in );
+        session = marshaller.unmarshall(in);
 
         assertThat(deserializedBob).as("these two object references should be same").isSameAs(session.getObjects().iterator().next());
         in.close();
@@ -1953,11 +1953,11 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
         marshaller = createSerializableMarshaller( kbase );
-        ksession = (StatefulKnowledgeSession) marshaller.unmarshall( in );
+        ksession = marshaller.unmarshall(in);
         in.close();
 
         // setting the global again, since it is not serialized with the session
-        List<List> results = (List<List>) new ArrayList<List>();
+        List<List> results = new ArrayList<List>();
         ksession.setGlobal( "results",
                             results );
         assertThat(results).isNotNull();
@@ -2070,7 +2070,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         SessionConfiguration config = new SessionConfiguration();
         config.setOption( ClockTypeOption.PSEUDO );
         KieSession ksession = knowledgeBase.newKieSession( config, KieServices.get().newEnvironment() );
-        PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.getSessionClock();
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase );
 
         ksession.insert( "cheese" );
@@ -2197,7 +2197,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         cep = ksession.getEntryPoint( "c-ep" );
         assertThat(cep.getFactHandles().size()).isEqualTo(1);
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 11, TimeUnit.SECONDS );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2257,7 +2257,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 3, TimeUnit.SECONDS );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2318,7 +2318,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(2);
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 15, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2335,7 +2335,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = marsallStatefulKnowledgeSession( ksession );
         assertThat(((List) list.get(0)).size()).isEqualTo(4);
 
-        timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        timeService = (PseudoClockScheduler) ksession.getSessionClock();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2674,7 +2674,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                                         .build( EventProcessingOption.STREAM );
         KieSession ksession = kbase1.newKieSession( ksconf, null );
 
-        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.getSessionClock();
 
         List list = new ArrayList();
         ksession.setGlobal("list", list);
@@ -2694,7 +2694,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.setGlobal("list", list);
         ksession.setGlobal("list2", list2);
 
-        PseudoClockScheduler timeService2 = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+        PseudoClockScheduler timeService2 = (PseudoClockScheduler) ksession.getSessionClock();
 
         ksession.fireAllRules();
 
@@ -2774,7 +2774,7 @@ public class MarshallingTest extends CommonTestMethodBase {
             marshaller = MarshallerFactory.newMarshaller( kbase );
             ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
             baos.close();
-            ksession = (StatefulKnowledgeSession) marshaller.unmarshall( bais );
+            ksession = marshaller.unmarshall(bais);
             bais.close();
         } catch (Exception e) {
             e.printStackTrace();

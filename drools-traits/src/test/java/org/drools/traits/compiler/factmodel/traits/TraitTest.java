@@ -1935,7 +1935,7 @@ public class TraitTest extends CommonTraitTest {
             TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
             Thing thing = traitBuilder.getProxy(imp, Thing.class);
 
-            TraitableBean core = (TraitableBean) proxy.getObject();
+            TraitableBean core = proxy.getObject();
 
 
             TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
@@ -2974,7 +2974,7 @@ public class TraitTest extends CommonTraitTest {
         assertThat(hard.isEmpty()).isTrue();
         assertThat(soft.isEmpty()).isTrue();
         assertThat(Arrays.asList(1, 2, 3)).isEqualTo(more);
-        assertThat(Arrays.asList(42)).isEqualTo(otra);
+        assertThat(List.of(42)).isEqualTo(otra);
 
         assertThat(list.contains(3)).isTrue();
         assertThat(list.contains(0.421)).isTrue();
@@ -4422,7 +4422,7 @@ public class TraitTest extends CommonTraitTest {
         ks.insert( "go3" );
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(100));
+        assertThat(list).isEqualTo(List.of(100));
 
         ks.dispose();
     }
@@ -4791,7 +4791,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(0));
+        assertThat(list).isEqualTo(List.of(0));
 
         assertThat(cwm.getdeletes()).isEqualTo(0);
         assertThat(cwm.getInserts()).isEqualTo(3);
@@ -4934,7 +4934,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
+        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "shed" );
         knowledgeSession.fireAllRules();
@@ -5012,13 +5012,13 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
+        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "shed1" );
         knowledgeSession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy"));
+        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
 
         knowledgeSession.insert( "don2" );
         knowledgeSession.fireAllRules();
@@ -5139,7 +5139,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
@@ -5197,7 +5197,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
 
     }
 
@@ -5805,7 +5805,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert( "hello" );
 
         assertThat(knowledgeSession.fireAllRules()).isEqualTo(1);
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
 

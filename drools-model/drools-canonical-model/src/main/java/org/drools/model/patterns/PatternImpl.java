@@ -126,9 +126,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
         if (watchedProps == null) {
             watchedProps = new LinkedHashSet<>();
         }
-        for (String prop : props) {
-            watchedProps.add(prop);
-        }
+        Collections.addAll(watchedProps, props);
     }
 
     @Override
@@ -152,9 +150,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
 
     private void collectInputVariables(Constraint constraint, Set<Variable> varSet) {
         if (constraint instanceof SingleConstraint) {
-            for (Variable var : ((SingleConstraint)constraint).getVariables()) {
-                varSet.add(var);
-            }
+            Collections.addAll(varSet, ((SingleConstraint) constraint).getVariables());
         } else {
             for (Constraint child : constraint.getChildren()) {
                 collectInputVariables(child, varSet);

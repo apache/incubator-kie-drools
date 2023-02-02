@@ -35,7 +35,7 @@ public class TrisotechDMNProfile implements DMNProfile {
 
     @Override
     public List<DMNExtensionRegister> getExtensionRegisters() {
-        return Arrays.asList(new TrisotechBoxedExtensionRegister());
+        return List.of(new TrisotechBoxedExtensionRegister());
     }
 
     @Override

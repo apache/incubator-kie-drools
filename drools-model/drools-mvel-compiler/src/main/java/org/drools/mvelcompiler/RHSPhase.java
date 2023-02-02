@@ -132,7 +132,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(SimpleName n, Context arg) {
-        if (!arg.scope.isPresent()) { // first node
+        if (arg.scope.isEmpty()) { // first node
             return simpleNameAsFirstNode(n);
         } else {
             return simpleNameAsField(n, arg);
@@ -238,7 +238,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> optTypeLeft = left.getType();
         Optional<Type> optTypeRight = right.getType();
 
-        if (!optTypeLeft.isPresent() || !optTypeRight.isPresent()) { // coerce only when types are known
+        if (optTypeLeft.isEmpty() || optTypeRight.isEmpty()) { // coerce only when types are known
             return new BinaryExprT(left, right, operator);
         }
 

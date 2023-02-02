@@ -1,9 +1,6 @@
 package org.kie.drl.engine.mapinput.compilation.model.test.PE0;
 
-import static org.kie.drl.engine.mapinput.compilation.model.test.RulesED2A293F9C55BB1943AA9A6A1A8BF64C.*;
 import org.kie.drl.engine.mapinput.compilation.model.test.*;
-import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
-import org.drools.modelcompiler.dsl.pattern.D;
 
 @org.drools.compiler.kie.builder.MaterializedLambda()
 public enum LambdaConsequenceE0E2A00590319D790395C8D009E4D36A implements org.drools.model.functions.Block2<org.drools.model.Drools, org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication>, org.drools.model.functions.HashedExpression {

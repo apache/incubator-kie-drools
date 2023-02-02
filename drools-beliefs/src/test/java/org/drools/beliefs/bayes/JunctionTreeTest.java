@@ -235,12 +235,12 @@ public class JunctionTreeTest {
             for ( int i = 0; i <expected.length; i++ ) {
                 System.err.format("%.7f ", expected[i]);
             }
-            System.err.println("");
+            System.err.println();
             System.err.print( "actual " );
             for ( int i = 0; i <actual.length; i++ ) {
                 System.err.format("%.7f ", actual[i]);
             }
-            System.err.println("");
+            System.err.println();
             throw new AssertionFailedError("Arrays are not Equal");
         }
     }

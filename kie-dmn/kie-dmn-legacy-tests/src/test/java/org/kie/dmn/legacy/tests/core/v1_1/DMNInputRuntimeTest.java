@@ -162,7 +162,7 @@ public class DMNInputRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         assertThat(dmnResult.getDecisionResults()).hasSize(1);
-        assertThat(dmnResult.getDecisionResultByName( "Employment Status Statement" ).getResult()).isEqualTo((String) null);
+        assertThat(dmnResult.getDecisionResultByName( "Employment Status Statement" ).getResult()).isEqualTo(null);
         assertThat(dmnResult.getMessages()).hasSize(1);
         assertThat(dmnResult.getMessages().get(0).getSeverity()).isEqualTo(DMNMessage.Severity.ERROR);
         assertThat(dmnResult.getDecisionResults().get(0).getMessages()).hasSize(1);
@@ -227,7 +227,7 @@ public class DMNInputRuntimeTest extends BaseDMN1_1VariantTest {
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         assertThat(dmnResult.getDecisionResults()).hasSize(1);
-        assertThat(dmnResult.getDecisionResultByName("Greeting Message").getResult()).isEqualTo((String) null);
+        assertThat(dmnResult.getDecisionResultByName("Greeting Message").getResult()).isEqualTo(null);
         assertThat(dmnResult.getMessages()).hasSize(1);
         assertThat(dmnResult.getMessages().get(0).getSeverity()).isEqualTo(DMNMessage.Severity.ERROR);
         assertThat(dmnResult.getDecisionResults().get(0).getMessages()).hasSize(1);

@@ -187,7 +187,7 @@ public class AddRuleTest {
         JoinNode c1Node = (JoinNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode c2Node = (JoinNode) bNode.getSinkPropagator().getLastLeftTupleSink();
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
@@ -251,7 +251,7 @@ public class AddRuleTest {
         JoinNode c1Node = (JoinNode) e2.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode c2Node = (JoinNode) e2.getSinkPropagator().getLastLeftTupleSink();
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        LiaNodeMemory lm = wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
 
         BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
@@ -360,7 +360,7 @@ public class AddRuleTest {
         JoinNode eNode = (JoinNode) eotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode ) eNode.getSinkPropagator().getLastLeftTupleSink();
 
-        PathMemory pm = (PathMemory) wm.getNodeMemory(rtn);
+        PathMemory pm = wm.getNodeMemory(rtn);
         SegmentMemory sm = pm.getSegmentMemory();
         assertThat(sm.getStagedLeftTuples().getInsertFirst()).isNotNull();
         assertThat((Tuple) sm.getStagedLeftTuples().getInsertFirst().getStagedNext()).isNotNull();
@@ -429,7 +429,7 @@ public class AddRuleTest {
         RuleTerminalNode rtn3 = getRtn( "org.kie.r3", kbase1 );
         RuleTerminalNode rtn4 = getRtn( "org.kie.r4", kbase1 );
 
-        PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
+        PathMemory pm1 = wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
         assertThat(smems.length).isEqualTo(4);
         assertThat(smems[0]).isNull();
@@ -488,7 +488,7 @@ public class AddRuleTest {
         RuleTerminalNode rtn3 = getRtn( "org.kie.r3", kbase1 );
         RuleTerminalNode rtn4 = getRtn( "org.kie.r4", kbase1 );
 
-        PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
+        PathMemory pm1 = wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
         assertThat(smems.length).isEqualTo(4);
         assertThat(smems[0]).isNull();
@@ -499,7 +499,7 @@ public class AddRuleTest {
         assertThat(sm.getSegmentPosMaskBit()).isEqualTo(2);
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(2);
 
-        PathMemory pm3 = (PathMemory) wm.getNodeMemory(rtn3);
+        PathMemory pm3 = wm.getNodeMemory(rtn3);
         SegmentMemory[] smemsP3 = pm3.getSegmentMemories();
         assertThat(smemsP3.length).isEqualTo(3);
         assertThat(smemsP3[0]).isNull();
@@ -565,7 +565,7 @@ public class AddRuleTest {
 
         RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
 
-        PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
+        PathMemory pm1 = wm.getNodeMemory(rtn1);
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(2);
         SegmentMemory[] smems = pm1.getSegmentMemories();
         assertThat(smems.length).isEqualTo(4);
@@ -595,7 +595,7 @@ public class AddRuleTest {
         assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
 
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
-        PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
+        PathMemory pm5 = wm.getNodeMemory(rtn5);
         assertThat(pm5.getLinkedSegmentMask()).isEqualTo(6);
 
         smems = pm5.getSegmentMemories();

@@ -19,6 +19,7 @@ package org.kie.dmn.trisotech.core;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -211,7 +212,7 @@ public class DMN14ExpressionsTest {
         assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(Arrays.asList(6, 7, 8, 9, 10).toString());
 
         results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 11)), "Match by Fnct");
-        assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(Arrays.asList().toString());
+        assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(List.of().toString());
 
     }
 }

@@ -90,7 +90,7 @@ public class LambdaConstraintTestUtil {
         // Typical LambdaConstraint used in drools-test-coverage. indexId is required when the test uses hashKey
         Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
         Predicate1<Cheese> predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getCharType(), rightValue));
-        AlphaIndexImpl<Cheese, Character> index = new AlphaIndexImpl<Cheese, Character>(Character.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getCharType(), (char) rightValue);
+        AlphaIndexImpl<Cheese, Character> index = new AlphaIndexImpl<Cheese, Character>(Character.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getCharType(), rightValue);
         return LambdaConstraintTestUtil.createLambdaConstraint1(Cheese.class, pattern, predicate, index);
     }
 
@@ -98,7 +98,7 @@ public class LambdaConstraintTestUtil {
         // Typical LambdaConstraint used in drools-test-coverage. indexId is required when the test uses hashKey
         Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
         Predicate1<Cheese> predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getCharObjectType(), rightValue));
-        AlphaIndexImpl<Cheese, Character> index = new AlphaIndexImpl<Cheese, Character>(Character.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getCharObjectType(), (char) rightValue);
+        AlphaIndexImpl<Cheese, Character> index = new AlphaIndexImpl<Cheese, Character>(Character.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getCharObjectType(), rightValue);
         return LambdaConstraintTestUtil.createLambdaConstraint1(Cheese.class, pattern, predicate, index);
     }
 }

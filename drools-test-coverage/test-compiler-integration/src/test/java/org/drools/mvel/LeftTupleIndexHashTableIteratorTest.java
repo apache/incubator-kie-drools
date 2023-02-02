@@ -54,7 +54,7 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
 
-        BetaConstraints betaConstraints = null;
+        BetaConstraints betaConstraints;
 
         betaConstraints = new SingleBetaConstraints(constraints, config);
 

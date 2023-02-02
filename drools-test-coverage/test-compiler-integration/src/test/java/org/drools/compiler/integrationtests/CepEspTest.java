@@ -2688,7 +2688,7 @@ public class CepEspTest extends AbstractCepEspTest {
 
     public static class ProbeEvent {
 
-        private int value = 1;
+        private int value;
 
         public int getValue() {
             return value;
@@ -5727,7 +5727,7 @@ public class CepEspTest extends AbstractCepEspTest {
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
 
-            SessionPseudoClock clock = (( SessionPseudoClock ) ksession.getSessionClock());
+            SessionPseudoClock clock = ksession.getSessionClock();
 
             ksession.insert(1);
             clock.advanceTime(2, TimeUnit.HOURS);
@@ -5763,7 +5763,7 @@ public class CepEspTest extends AbstractCepEspTest {
         // Create a session and fire rules
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
-        SessionPseudoClock clock = (( SessionPseudoClock ) ksession.getSessionClock());
+        SessionPseudoClock clock = ksession.getSessionClock();
 
         FactHandle fh1 = ksession.insert(new EventA(new Date(6000), 1));
         ksession.fireAllRules();

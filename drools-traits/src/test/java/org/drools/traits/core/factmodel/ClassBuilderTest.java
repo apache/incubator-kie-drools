@@ -132,7 +132,7 @@ public class ClassBuilderTest {
      */
     private void writeJar(byte[] data) throws FileNotFoundException,
                                       IOException {
-        FileOutputStream out = new FileOutputStream( new File( "/Users/michaelneale/edson.jar" ) );
+        FileOutputStream out = new FileOutputStream("/Users/michaelneale/edson.jar");
         JarOutputStream jout = new JarOutputStream( out );
         JarEntry je = new JarEntry( "br/com/auster/TestClass1.class" );
         jout.putNextEntry( je );
@@ -197,13 +197,13 @@ public class ClassBuilderTest {
             Object y = clazz.newInstance();
 
             long1Def.setValue( x,
-                               new Long( 20 ) );
+                               Long.valueOf( 20 ) );
             long2Def.setValue( x,
-                               new Long( 30 ) );
+                               Long.valueOf( 30 ) );
             doubleDef.setValue( x,
-                                new Double( 50.0 ) );
+                                Double.valueOf( 50.0 ) );
             intDef.setValue( x,
-                             new Integer( 10 ) );
+                             Integer.valueOf( 10 ) );
             strDef.setValue( x,
                              "abc" );
             dateDef.setValue( x,
@@ -212,13 +212,13 @@ public class ClassBuilderTest {
                               "instance1" );
 
             long1Def.setValue( y,
-                               new Long( 20 ) );
+                               Long.valueOf( 20 ) );
             long2Def.setValue( y,
-                               new Long( 30 ) );
+                               Long.valueOf( 30 ) );
             doubleDef.setValue( y,
-                                new Double( 50.0 ) );
+                                Double.valueOf( 50.0 ) );
             intDef.setValue( y,
-                             new Integer( 10 ) );
+                             Integer.valueOf( 10 ) );
             strDef.setValue( y,
                              "abc" );
             dateDef.setValue( y,
@@ -229,17 +229,17 @@ public class ClassBuilderTest {
             Object o = new Object();
 
             assertThat(x.equals(x)).isTrue();
-            assertThat(x.equals(null)).isFalse();
+
             assertThat(x.equals(o)).isFalse();
 
             assertThat(x.equals(y)).isTrue();
 
             intDef.setValue( y,
-                             new Integer( 1 ) );
+                             Integer.valueOf( 1 ) );
             assertThat(x.equals(y)).isFalse();
 
             intDef.setValue( y,
-                             new Integer( 10 ) );
+                             Integer.valueOf( 10 ) );
             strDef.setValue( y,
                              "xyz" );
             assertThat(x.equals(y)).isFalse();

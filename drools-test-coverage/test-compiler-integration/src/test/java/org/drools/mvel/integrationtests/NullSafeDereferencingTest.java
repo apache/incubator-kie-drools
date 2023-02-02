@@ -365,7 +365,7 @@ public class NullSafeDereferencingTest {
 
        assertThat(ksession.fireAllRules()).isEqualTo(1);
       ksession.dispose();
-       assertThat(list).isEqualTo(Arrays.asList("123456"));
+       assertThat(list).isEqualTo(List.of("123456"));
    }
 
 }

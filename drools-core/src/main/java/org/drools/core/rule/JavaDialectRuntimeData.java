@@ -72,7 +72,7 @@ public class JavaDialectRuntimeData implements DialectRuntimeData, Externalizabl
 
     private boolean                        dirty;
 
-    private List<String>                   wireList         = Collections.<String> emptyList();
+    private List<String>                   wireList         = Collections.emptyList();
 
     public JavaDialectRuntimeData() {
         this.dirty = false;

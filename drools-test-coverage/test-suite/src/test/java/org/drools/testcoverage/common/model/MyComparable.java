@@ -54,7 +54,7 @@ public class MyComparable implements Comparable<MyComparable> {
 
     @Override
     public int compareTo(MyComparable o) {
-        MyComparable other = (MyComparable) o;
+        MyComparable other = o;
         int result = this.strValue.compareTo(other.strValue);
         if (result != 0) {
             return result;

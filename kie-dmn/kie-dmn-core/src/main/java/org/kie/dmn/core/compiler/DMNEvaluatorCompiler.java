@@ -208,7 +208,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
         String[] fnameParts = functionName.split("\\.");
-        Optional<DMNNode> findAsDep = Optional.empty();
+        Optional<DMNNode> findAsDep;
         if (fnameParts.length > 1) {
             findAsDep = node.getDependencies().values().stream()
                     .filter(dmnNode -> dmnNode.getModelImportAliasFor(dmnNode.getModelNamespace(), dmnNode.getModelName()).map(alias -> Objects.equals(functionName, alias + "." + dmnNode.getName())).orElse(false)
@@ -219,7 +219,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         boolean findAsBuiltin = RootExecutionFrame.INSTANCE.getValue(functionName) != null;
         boolean findAsCustomFunction = ctx.getFeelHelper().newCompilerContext().getFEELFunctions().stream().anyMatch(f -> f.getName().equals(functionName));
         boolean findInContext = ctx.getVariables().get(functionName) != null;
-        if (!findAsDep.isPresent() && !findAsBuiltin && !findAsCustomFunction && !findInContext) {
+        if (findAsDep.isEmpty() && !findAsBuiltin && !findAsCustomFunction && !findInContext) {
             MsgUtil.reportMessage(logger,
                                   DMNMessage.Severity.WARN,
                                   invocation,
@@ -789,7 +789,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
                     parameterNames.add(depEntry.getKey()); // this dependency is from this model, adding parameter name as-is.
                 } else {
                     Optional<String> importAlias = model.getImportAliasFor(depEntry.getValue().getModelNamespace(), depEntry.getValue().getModelName());
-                    if (!importAlias.isPresent()) {
+                    if (importAlias.isEmpty()) {
                         MsgUtil.reportMessage(logger,
                                               DMNMessage.Severity.ERROR,
                                               dt.getParent(),
@@ -974,8 +974,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             return null;
         }
 
-        DMNExpressionEvaluator inEvaluator = null;
-        DMNExpressionEvaluator returnEvaluator = null;
+        DMNExpressionEvaluator inEvaluator;
+        DMNExpressionEvaluator returnEvaluator;
 
         inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn().getExpression());
 

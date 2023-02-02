@@ -18,7 +18,6 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;

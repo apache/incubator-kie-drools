@@ -234,7 +234,7 @@ public class ConstraintParser {
             drlxExpr = (( DrlxExpression ) drlxExpr).getExpr();
         }
 
-        if (drlxExpr instanceof MethodCallExpr && !(( MethodCallExpr ) drlxExpr).getScope().isPresent() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals( "eval" )) {
+        if (drlxExpr instanceof MethodCallExpr && (( MethodCallExpr ) drlxExpr).getScope().isEmpty() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals("eval")) {
             drlxExpr = (( MethodCallExpr ) drlxExpr).getArgument( 0 );
         }
 
@@ -296,7 +296,7 @@ public class ConstraintParser {
             ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, isPositional, expressionTyperContext);
             TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(drlxExpr);
             Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-            if ( !optLeft.isPresent() ) {
+            if (optLeft.isEmpty()) {
                 return new DrlxParseFail();
             }
             TypedExpression left = optLeft.get();
@@ -321,7 +321,7 @@ public class ConstraintParser {
 
             TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(drlxExpr);
             Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-            if ( !optLeft.isPresent() ) {
+            if (optLeft.isEmpty()) {
                 return new DrlxParseFail();
             }
 
@@ -409,7 +409,7 @@ public class ConstraintParser {
 
             TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(ooPathExpr);
             Optional<TypedExpression> typedExpression = typedExpressionResult.getTypedExpression();
-            if (!typedExpression.isPresent()) {
+            if (typedExpression.isEmpty()) {
                 return new DrlxParseFail();
             }
             exprType = typedExpression.get().getType();
@@ -423,7 +423,7 @@ public class ConstraintParser {
         final ExpressionTyper expressionTyper = new ExpressionTyper(context, patternType, bindingId, false, expressionTyperContext);
 
         Optional<TypedExpression> typedExpressionResult = expressionTyper.toTypedExpression(nameExpr).getTypedExpression();
-        if ( !typedExpressionResult.isPresent() ) {
+        if (typedExpressionResult.isEmpty()) {
             return new DrlxParseFail();
         }
 
@@ -454,7 +454,7 @@ public class ConstraintParser {
 
         TypedExpressionResult typedExpressionResult = expressionTyper.toTypedExpression(fieldCallExpr);
         Optional<TypedExpression> typedExpression = typedExpressionResult.getTypedExpression();
-        if ( !typedExpression.isPresent() ) {
+        if (typedExpression.isEmpty()) {
             return new DrlxParseFail();
         }
 
@@ -509,7 +509,7 @@ public class ConstraintParser {
                                             boolean hasBind, boolean isPositional) {
         TypedExpressionResult typedExpressionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(unaryExpr);
         Optional<TypedExpression> opt = typedExpressionResult.getTypedExpression();
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
         }
         TypedExpression typedExpression = opt.get();
@@ -569,7 +569,7 @@ public class ConstraintParser {
 
         TypedExpressionResult leftTypedExpressionResult = expressionTyper.toTypedExpression(binaryExpr.getLeft());
         Optional<TypedExpression> optLeft = leftTypedExpressionResult.getTypedExpression();
-        if ( !optLeft.isPresent() ) {
+        if (optLeft.isEmpty()) {
             return new DrlxParseFail();
         }
 
@@ -593,7 +593,7 @@ public class ConstraintParser {
         } else {
             TypedExpressionResult rightExpressionResult = expressionTyper.toTypedExpression( binaryExpr.getRight() );
             Optional<TypedExpression> optRight = rightExpressionResult.getTypedExpression();
-            if ( !optRight.isPresent() ) {
+            if (optRight.isEmpty()) {
                 return new DrlxParseFail( new ParseExpressionErrorResult( drlxExpr ) );
             }
             right = optRight.get();
@@ -677,9 +677,8 @@ public class ConstraintParser {
         Expression thenExpr = conditionalExpr.getThenExpr();
         Expression elseExpr = conditionalExpr.getElseExpr();
 
-        List<String> usedDeclarations = new ArrayList<>();
         TypedExpressionResult conditionResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(condition);
-        usedDeclarations.addAll(conditionResult.getUsedDeclarations());
+        List<String> usedDeclarations = new ArrayList<>(conditionResult.getUsedDeclarations());
 
         SingleDrlxParseSuccess conditionParseResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, condition, hasBind, isPositional);
         Expression parsedCondition = conditionParseResult.getExpr();
@@ -687,7 +686,7 @@ public class ConstraintParser {
 
         TypedExpressionResult thenExprResult = new ExpressionTyper(context, patternType, bindingId, isPositional).toTypedExpression(thenExpr);
         Optional<TypedExpression> opt = thenExprResult.getTypedExpression();
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             return new DrlxParseFail(new ParseExpressionErrorResult(conditionalExpr));
         }
         TypedExpression typedExpression = opt.get();

@@ -118,7 +118,7 @@ public class CsvParser implements DecisionTableParser {
 
             int startMergeCol = DataListener.NON_MERGED;
             for (int col = 0; col < cells.size(); col++) {
-                String cell = (String) cells.get(col);
+                String cell = cells.get(col);
 
                 startMergeCol = calcStartMerge(startMergeCol, col, cell);
 

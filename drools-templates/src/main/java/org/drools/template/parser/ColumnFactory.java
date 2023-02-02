@@ -56,8 +56,8 @@ public class ColumnFactory {
                                 String type) {
         try {
             Class<Column> klass = (Class<Column>) Class.forName(this.getClass().getPackage().getName() + "." + type + "Column");
-            Constructor<Column> constructor = klass.getConstructor(new Class[]{String.class});
-            return constructor.newInstance(new Object[]{name});
+            Constructor<Column> constructor = klass.getConstructor(String.class);
+            return constructor.newInstance(name);
         } catch (SecurityException e) {
             LOG.error("Exception", e);
             throw new RuntimeException(e);

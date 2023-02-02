@@ -132,8 +132,8 @@ public class ArrayElementReader
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( getNativeReadMethodName(),
-                                                      new Class[]{ReteEvaluator.class, Object.class} );
+            return this.getClass().getDeclaredMethod(getNativeReadMethodName(),
+                                                     ReteEvaluator.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

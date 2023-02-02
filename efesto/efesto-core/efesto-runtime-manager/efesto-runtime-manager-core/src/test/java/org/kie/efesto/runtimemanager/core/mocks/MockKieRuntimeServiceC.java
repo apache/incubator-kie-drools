@@ -15,8 +15,6 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
-import java.util.Collections;
-
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;

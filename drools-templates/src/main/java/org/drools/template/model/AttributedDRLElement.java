@@ -118,7 +118,7 @@ public abstract class AttributedDRLElement extends DRLElement {
     }
 
     public String getAttribute(String name) {
-        return this._attr2value.get(name).toString();
+        return this._attr2value.get(name);
     }
 
     public String getSalience() {

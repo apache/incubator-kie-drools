@@ -43,7 +43,7 @@ public class EvalCondition extends ConditionalElement
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
 
-    private List<EvalCondition>        cloned             = Collections.<EvalCondition> emptyList();
+    private List<EvalCondition>        cloned             = Collections.emptyList();
 
     private Map<String, Declaration> outerDeclarations = Collections.EMPTY_MAP;
 
@@ -128,7 +128,7 @@ public class EvalCondition extends ConditionalElement
 
     public EvalCondition clone() {
         final EvalCondition clone = new EvalCondition( this.expression.clone(),
-                                                       (Declaration[]) this.requiredDeclarations.clone() );
+                                                       this.requiredDeclarations.clone());
 
         if ( this.cloned == Collections.EMPTY_LIST ) {
             this.cloned = new ArrayList<>( 1 );

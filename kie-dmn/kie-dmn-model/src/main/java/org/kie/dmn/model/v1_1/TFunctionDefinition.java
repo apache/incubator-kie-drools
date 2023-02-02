@@ -84,12 +84,11 @@ public class TFunctionDefinition extends TExpression implements FunctionDefiniti
             return FunctionKind.FEEL;
         } else {
             switch (kindValueOnV11) {
-                case "F":
-                    return FunctionKind.FEEL;
                 case "J":
                     return FunctionKind.JAVA;
                 case "P":
                     return FunctionKind.PMML;
+                case "F":
                 default:
                     return FunctionKind.FEEL;
             }

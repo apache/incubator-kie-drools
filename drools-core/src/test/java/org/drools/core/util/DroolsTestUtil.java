@@ -39,9 +39,7 @@ public class DroolsTestUtil {
     public static Map<String, Rule> rulestoMap( KieBase kbase ) {
         List<Rule> rules = new ArrayList();
         for ( KiePackage pkg : ((RuleBase)kbase).getPackages() ) {
-            for ( Rule rule : pkg.getRules() ) {
-                rules.add(rule);
-            }
+            rules.addAll(pkg.getRules());
         }
 
         return rulestoMap( rules );

@@ -28,7 +28,7 @@ public class RuleSolver extends Solver {
 
     public RuleSolver(VerifierRule rule) {
         super( OperatorDescrType.OR );
-        this.rule = (VerifierRule) rule;
+        this.rule = rule;
     }
 
     public VerifierRule getRule() {

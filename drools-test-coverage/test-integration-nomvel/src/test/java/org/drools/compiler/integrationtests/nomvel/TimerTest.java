@@ -54,7 +54,7 @@ public class TimerTest {
 
         List list = new ArrayList();
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
         timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
 
         ksession.setGlobal("list", list);

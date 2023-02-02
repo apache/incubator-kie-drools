@@ -89,7 +89,7 @@ public class TextReporter {
 
         for (Link link : node.getOutgoingLinks()) {
             Node target = link.getTarget();
-            if (!g.getNodeMap().values().contains(target)) {
+            if (!g.getNodeMap().containsValue(target)) {
                 continue;
             }
             if (pickedNodeSet.contains(target)) {

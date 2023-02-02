@@ -126,7 +126,7 @@ public class HierNode<T> implements LatticeElement<T>,Comparable<HierNode<T>>, E
         BitSet yset = hierNode.bitMask;
         int lx = bitMask.length();
         int ly = yset.length();
-        int l = lx > ly ? lx : ly;
+        int l = Math.max(lx, ly);
 
         for ( int j = l; j >= 0; j-- ) {
             boolean x = bitMask.get( j );

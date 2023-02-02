@@ -545,7 +545,7 @@ public class DrlxParseUtil {
     }
 
     private static boolean canResolveAllParameterTypes(Collection<String> usedDeclarations, boolean skipFirstParamAsThis, Optional<Class<?>> patternClass, RuleContext ruleContext) {
-        if (!skipFirstParamAsThis && !patternClass.isPresent()) {
+        if (!skipFirstParamAsThis && patternClass.isEmpty()) {
             return false;
         }
         if (usedDeclarations.isEmpty()) {

@@ -28,7 +28,6 @@ import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.TupleRBTree;

@@ -41,7 +41,7 @@ public class DefaultKieSessionFromByteArrayExampleTest {
         go(ps);
         ps.close();
 
-        String actual = new String(baos.toByteArray());
+        String actual = baos.toString();
         String expected = "" +
                           "Dave: Hello, HAL. Do you read me, HAL?" + NL +
                           "HAL: Dave. I read you." + NL;

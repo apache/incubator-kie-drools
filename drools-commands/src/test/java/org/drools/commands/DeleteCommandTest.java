@@ -55,7 +55,7 @@ public class DeleteCommandTest {
         // DROOLS-7056
         String fact = "fact";
         InsertObjectCommand insertObjectCommand = new InsertObjectCommand(fact);
-        FactHandle handle = (FactHandle) runner.execute(insertObjectCommand, context);
+        FactHandle handle = runner.execute(insertObjectCommand, context);
 
         DeleteCommand deleteCommand1 = new DeleteCommand(handle);
         runner.execute(deleteCommand1, context);

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalId;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
 
 class LocalPredictionIdTest {

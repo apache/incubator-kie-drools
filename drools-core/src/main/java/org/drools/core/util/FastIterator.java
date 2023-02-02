@@ -15,8 +15,6 @@
 
 package org.drools.core.util;
 
-import org.drools.core.reteoo.Tuple;
-
 public interface FastIterator<T> {
     public class NullFastIterator<T> implements FastIterator<T> {
         public static final NullFastIterator INSTANCE = new NullFastIterator();

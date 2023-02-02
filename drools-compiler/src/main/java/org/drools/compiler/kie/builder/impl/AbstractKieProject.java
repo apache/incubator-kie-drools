@@ -201,7 +201,7 @@ public abstract class AbstractKieProject implements KieProject {
         if (kBaseModel == null) {
             return;
         }
-        Set<String> incs = ((KieBaseModelImpl)kBaseModel).getIncludes();
+        Set<String> incs = kBaseModel.getIncludes();
         if (incs != null && !incs.isEmpty()) {
             for (String inc : incs) {
                 if (!includes.contains(inc)) {
@@ -306,7 +306,7 @@ public abstract class AbstractKieProject implements KieProject {
         if (modelProp == null) {
             modelProp = System.getProperty( GroupDRLsInKieBasesByFolderOption.PROPERTY_NAME );
         }
-        return modelProp != null && modelProp.toString().equalsIgnoreCase( "true" );
+        return modelProp != null && modelProp.equalsIgnoreCase("true");
     }
 
     protected boolean compileIncludedKieBases() {

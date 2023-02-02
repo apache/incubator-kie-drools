@@ -42,7 +42,7 @@ public class EliminationCandidate implements Comparable<EliminationCandidate> {
     public void update() {
         // must use the adjacency matrix, and not the vertex.getEdges() for connections,
         // as it gets updated with new connections, during elimination
-        weightRequired = (int) Math.abs(v.getContent().getOutcomes().length);
+        weightRequired = Math.abs(v.getContent().getOutcomes().length);
         newEdgesRequired = 0;
 
         cliqueBitSet = new OpenBitSet(adjMatrix.length);

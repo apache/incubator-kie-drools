@@ -458,7 +458,7 @@ public class ExecutionFlowControlTest {
         final Person mark = new Person( "mark" );
         mark.setCheese( brie );
 
-        final FactHandle brieHandle = ( FactHandle ) ksession.insert( brie );
+        final FactHandle brieHandle = ksession.insert(brie);
         ksession.insert( bob );
         ksession.insert( mic );
         ksession.insert( mark );
@@ -514,7 +514,7 @@ public class ExecutionFlowControlTest {
             handles[row] = new FactHandle[size];
             for ( int col = 0; col < size; col++ ) {
                 cells[row][col] = new Cell( Cell.DEAD, row, col );
-                handles[row][col] = (FactHandle) ksession.insert( cells[row][col] );
+                handles[row][col] = ksession.insert(cells[row][col]);
                 if ( row >= 1 && col >= 1 ) {
                     // northwest
                     ksession.insert( new Neighbor( cells[row - 1][col - 1],
@@ -972,7 +972,7 @@ public class ExecutionFlowControlTest {
         KieSession ksession = kbase.newKieSession();
 
         Person p = new Person( "darth", 36 );
-        FactHandle fh = (FactHandle) ksession.insert( p );
+        FactHandle fh = ksession.insert(p);
 
         ksession.getAgenda().getAgendaGroup( "g1" ).setFocus();
 

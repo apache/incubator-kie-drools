@@ -82,7 +82,7 @@ public class PMMLMiningModelEvaluatorTest {
                                                                                           WEIGHTED_SUM,
                                                                                           WEIGHTED_MEDIAN,
                                                                                           WEIGHTED_AVERAGE);
-    private final static List<MULTIPLE_MODEL_METHOD> NOT_IMPLEMENTED_METHODS = Arrays.asList(WEIGHTED_MAJORITY_VOTE);
+    private final static List<MULTIPLE_MODEL_METHOD> NOT_IMPLEMENTED_METHODS = List.of(WEIGHTED_MAJORITY_VOTE);
     private PMMLMiningModelEvaluator evaluator;
 
     @BeforeEach

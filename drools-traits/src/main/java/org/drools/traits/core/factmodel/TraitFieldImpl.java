@@ -154,7 +154,7 @@ public class TraitFieldImpl implements Serializable, Externalizable,
         if ( value instanceof TraitableBean ) {
             obj = (TraitableBean) value;
         } else if ( value instanceof TraitProxyImpl) {
-            obj = (TraitableBean) ( (TraitProxyImpl) value ).getObject();
+            obj = ( (TraitProxyImpl) value ).getObject();
         }
         if ( obj == null ) {
             return false;
@@ -211,7 +211,7 @@ public class TraitFieldImpl implements Serializable, Externalizable,
                 } else if ( value instanceof TraitProxyImpl) {
                     // dual case : the field's original type is a trait,
                     // we need to consider the current proxy's core and see if it is compatible
-                    TraitableBean core = (TraitableBean) ( (TraitProxyImpl) value ).getObject();
+                    TraitableBean core = ( (TraitProxyImpl) value ).getObject();
                     return donTraitable( core, klass, logical, wm );
 
                 } else {

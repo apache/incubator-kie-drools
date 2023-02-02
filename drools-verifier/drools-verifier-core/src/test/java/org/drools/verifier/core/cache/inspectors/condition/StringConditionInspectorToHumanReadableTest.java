@@ -52,8 +52,8 @@ public class StringConditionInspectorToHumanReadableTest {
 
     public static Collection<Object[]> testData() {
         // not sure if '== null' and '!= null' from OperatorsOracle.STRING_OPERATORS make much sense here
-        ArrayList<Object> data = new ArrayList<Object>(Arrays.asList(new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"}));
-        data.addAll(Arrays.asList(new String[]{"in", "not in"}));
+        ArrayList<Object> data = new ArrayList<Object>(Arrays.asList("==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"));
+        data.addAll(Arrays.asList("in", "not in"));
         Collection<Object[]> data2 = new ArrayList<Object[]>();
         for (Object operator : data) {
             data2.add(new Object[]{operator});

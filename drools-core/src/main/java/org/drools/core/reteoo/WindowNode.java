@@ -253,7 +253,7 @@ public class WindowNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof WindowNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof WindowNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
         WindowNode other = (WindowNode) object;

@@ -18,8 +18,6 @@ package org.drools.decisiontable.parser.csv;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

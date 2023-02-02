@@ -293,25 +293,25 @@ public class ModelToGraphConverter {
                     return ReactivityType.NEGATIVE;
                 }
             case GREATER_THAN:
-                if (((Comparable) modifiedValue).compareTo((Comparable) value) > 0) {
+                if (((Comparable) modifiedValue).compareTo(value) > 0) {
                     return ReactivityType.POSITIVE;
                 } else {
                     return ReactivityType.NEGATIVE;
                 }
             case GREATER_OR_EQUAL:
-                if (((Comparable) modifiedValue).compareTo((Comparable) value) >= 0) {
+                if (((Comparable) modifiedValue).compareTo(value) >= 0) {
                     return ReactivityType.POSITIVE;
                 } else {
                     return ReactivityType.NEGATIVE;
                 }
             case LESS_THAN:
-                if (((Comparable) modifiedValue).compareTo((Comparable) value) < 0) {
+                if (((Comparable) modifiedValue).compareTo(value) < 0) {
                     return ReactivityType.POSITIVE;
                 } else {
                     return ReactivityType.NEGATIVE;
                 }
             case LESS_OR_EQUAL:
-                if (((Comparable) modifiedValue).compareTo((Comparable) value) <= 0) {
+                if (((Comparable) modifiedValue).compareTo(value) <= 0) {
                     return ReactivityType.POSITIVE;
                 } else {
                     return ReactivityType.NEGATIVE;

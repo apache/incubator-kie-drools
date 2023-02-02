@@ -107,7 +107,7 @@ public abstract class EqualityKey extends LinkedList<DefaultFactHandle> implemen
                 str = "JUSTIFIED";
                 break;
         }
-        return "[FactStatus status=" + this.status + "]";
+        return "[FactStatus status=" + str + "]";
     }
 
     /**

@@ -31,12 +31,12 @@ public class ClassLoaderTest {
     @Test(timeout = 20000)
     public void testParallelClassLoading() {
 
-        final Integer THREAD_COUNT = 100;
+        final int THREAD_COUNT = 100;
 
-        final ClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
-        final ClassLoader internalTypesClassLoader = (ClassLoader) ((ProjectClassLoader) projectClassLoader).makeClassLoader();
+        final ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
+        final ClassLoader internalTypesClassLoader = (ClassLoader) projectClassLoader.makeClassLoader();
 
-        ((ProjectClassLoader) projectClassLoader).setInternalClassLoader((ProjectClassLoader.InternalTypesClassLoader) internalTypesClassLoader);
+        projectClassLoader.setInternalClassLoader((ProjectClassLoader.InternalTypesClassLoader) internalTypesClassLoader);
 
         final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
         try {

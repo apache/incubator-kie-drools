@@ -63,7 +63,7 @@ public abstract class BaseFloatClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setFloatValue( bean,
-                       (float) value );
+                       value);
     }
 
     public void setCharValue(final Object bean,
@@ -95,13 +95,13 @@ public abstract class BaseFloatClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setFloatValue( bean,
-                       (float) value );
+                       value);
     }
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setFloatValue",
-                                                      new Class[]{Object.class, float.class} );
+            return this.getClass().getDeclaredMethod("setFloatValue",
+                                                     Object.class, float.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

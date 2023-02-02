@@ -69,7 +69,7 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
             return listenersMap.values().stream()
                                .map(this::loadEventListener)
-                               .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                               .flatMap(o -> o.stream())
                                .collect(Collectors.toList());
         } else {
             logger.warn("No DMNRuntime Listener can be provided, as created without a reference to KnowledgeBase");
@@ -98,7 +98,7 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
         knowledgeBase.getKiePackages().forEach( kpkg -> {
             DMNPackage dmnPkg = (DMNPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get( ResourceType.DMN );
             if( dmnPkg != null ) {
-                dmnPkg.getAllModels().values().forEach( model -> models.add( model ) );
+                models.addAll(dmnPkg.getAllModels().values());
             }
         } );
         return models;

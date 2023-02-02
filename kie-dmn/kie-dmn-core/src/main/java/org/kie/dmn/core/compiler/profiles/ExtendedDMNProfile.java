@@ -12,7 +12,7 @@ import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 
 public final class ExtendedDMNProfile extends KieExtendedFEELProfile implements DMNProfile {
 
-    private static final List<DMNExtensionRegister> EXTENSION_REGISTERS = Arrays.asList(new DecisionServicesExtensionRegister());
+    private static final List<DMNExtensionRegister> EXTENSION_REGISTERS = List.of(new DecisionServicesExtensionRegister());
 
     @Override
     public List<DMNExtensionRegister> getExtensionRegisters() {

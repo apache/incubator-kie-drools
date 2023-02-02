@@ -37,7 +37,7 @@ public class ParserTest {
     @Test
     public void testSprinklerLoadBif() {
 
-        Bif bif = (Bif) XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
+        Bif bif = XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
         Network network = bif.getNetwork();
         assertThat(network.getName()).isEqualTo("Garden");
         assertThat(network.getProperties().get(0)).isEqualTo("package = org.drools.beliefs.bayes.integration");
@@ -48,25 +48,25 @@ public class ParserTest {
         Variable var = varMap.get("WetGrass");
         assertThat(var.getName()).isEqualTo("WetGrass");
         assertThat(var.getOutComes().size()).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"false", "true"})).isEqualTo(var.getOutComes());
+        assertThat(Arrays.asList("false", "true")).isEqualTo(var.getOutComes());
         assertThat(var.getProperties().get(0)).isEqualTo("position = (0,10)");
 
         var = varMap.get("Cloudy");
         assertThat(var.getName()).isEqualTo("Cloudy");
         assertThat(var.getOutComes().size()).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"false", "true"})).isEqualTo(var.getOutComes());
+        assertThat(Arrays.asList("false", "true")).isEqualTo(var.getOutComes());
         assertThat(var.getProperties().get(0)).isEqualTo("position = (0,-10)");
 
         var = varMap.get("Sprinkler");
         assertThat(var.getName()).isEqualTo("Sprinkler");
         assertThat(var.getOutComes().size()).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"false", "true"})).isEqualTo(var.getOutComes());
+        assertThat(Arrays.asList("false", "true")).isEqualTo(var.getOutComes());
         assertThat(var.getProperties().get(0)).isEqualTo("position = (13,0)");
 
         var = varMap.get("Rain");
         assertThat(var.getName()).isEqualTo("Rain");
         assertThat(var.getOutComes().size()).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"false", "true"})).isEqualTo(var.getOutComes());
+        assertThat(Arrays.asList("false", "true")).isEqualTo(var.getOutComes());
         assertThat(var.getProperties().get(0)).isEqualTo("position = (-12,0)");
 
         Map<String, Definition> defMap = defToMap( network.getDefinitions() );
@@ -75,7 +75,7 @@ public class ParserTest {
         Definition def = defMap.get( "WetGrass");
         assertThat(def.getName()).isEqualTo("WetGrass");
         assertThat(def.getGiven().size()).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"Sprinkler", "Rain"})).isEqualTo(def.getGiven());
+        assertThat(Arrays.asList("Sprinkler", "Rain")).isEqualTo(def.getGiven());
         assertThat(def.getProbabilities()).isEqualTo("1.0 0.0 0.1 0.9 0.1 0.9 0.01 0.99");
 
         def = defMap.get( "Cloudy");
@@ -97,34 +97,34 @@ public class ParserTest {
 
     @Test
     public void testSprinklerBuildBayesNework() {
-        Bif bif = (Bif) XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
+        Bif bif = XmlBifParser.loadBif(ParserTest.class.getResource("Garden.xmlbif"));
 
         BayesNetwork network = XmlBifParser.buildBayesNetwork( bif );
         Map<String, GraphNode<BayesVariable>> map = nodeToMap(network);
 
         GraphNode<BayesVariable> node = map.get( "WetGrass" );
         BayesVariable wetGrass = node.getContent();
-        assertThat(Arrays.asList(wetGrass.getOutcomes())).isEqualTo(Arrays.asList(new String[]{"false", "true"}));
+        assertThat(Arrays.asList(wetGrass.getOutcomes())).isEqualTo(Arrays.asList("false", "true"));
         assertThat(wetGrass.getGiven().length).isEqualTo(2);
-        assertThat(Arrays.asList(new String[]{"Sprinkler", "Rain"})).isEqualTo(Arrays.asList(wetGrass.getGiven()));
+        assertThat(Arrays.asList("Sprinkler", "Rain")).isEqualTo(Arrays.asList(wetGrass.getGiven()));
         assertThat(Arrays.deepEquals(new double[][]{{1.0, 0.0}, {0.1, 0.9}, {0.1, 0.9}, {0.01, 0.99}}, wetGrass.getProbabilityTable())).isTrue();
 
         node = map.get( "Sprinkler" );
         BayesVariable sprinkler = node.getContent();
-        assertThat(Arrays.asList(sprinkler.getOutcomes())).isEqualTo(Arrays.asList(new String[]{"false", "true"}));
+        assertThat(Arrays.asList(sprinkler.getOutcomes())).isEqualTo(Arrays.asList("false", "true"));
         assertThat(sprinkler.getGiven().length).isEqualTo(1);
         assertThat(sprinkler.getGiven()[0]).isEqualTo("Cloudy");
         assertThat(Arrays.deepEquals(new double[][]{{0.5, 0.5}, {0.9, 0.1}}, sprinkler.getProbabilityTable())).isTrue();
 
         node = map.get( "Cloudy" );
         BayesVariable cloudy = node.getContent();
-        assertThat(Arrays.asList(cloudy.getOutcomes())).isEqualTo(Arrays.asList(new String[]{"false", "true"}));
+        assertThat(Arrays.asList(cloudy.getOutcomes())).isEqualTo(Arrays.asList("false", "true"));
         assertThat(cloudy.getGiven().length).isEqualTo(0);
         assertThat(Arrays.deepEquals(new double[][]{{0.5, 0.5}}, cloudy.getProbabilityTable())).isTrue();
 
         node = map.get( "Rain" );
         BayesVariable rain = node.getContent();
-        assertThat(Arrays.asList(rain.getOutcomes())).isEqualTo(Arrays.asList(new String[]{"false", "true"}));
+        assertThat(Arrays.asList(rain.getOutcomes())).isEqualTo(Arrays.asList("false", "true"));
         assertThat(rain.getGiven().length).isEqualTo(0);
         assertThat(Arrays.deepEquals(new double[][]{{0.5, 0.5}}, rain.getProbabilityTable())).isTrue();
     }

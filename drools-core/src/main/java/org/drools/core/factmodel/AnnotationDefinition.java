@@ -115,9 +115,7 @@ public class AnnotationDefinition implements Externalizable,
         HashMap<String, AnnotationPropertyVal> values = new HashMap<>();
         for (Map.Entry<String, Object> valueMapEntry : valueMap.entrySet()) {
             AnnotationPropertyVal value = rebuild(valueMapEntry.getKey(), annotationClass, valueMapEntry.getValue(), resolver);
-            if (value != null) {
-                values.put(valueMapEntry.getKey(), value);
-            }
+            values.put(valueMapEntry.getKey(), value);
         }
         annotationDefinition.values = Collections.unmodifiableMap(values);
         return annotationDefinition;

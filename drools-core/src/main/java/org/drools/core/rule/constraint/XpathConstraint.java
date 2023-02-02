@@ -221,7 +221,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || !(obj instanceof SingleChunkXpathEvaluator)) {
+            if (!(obj instanceof SingleChunkXpathEvaluator)) {
                 return false;
             }
 
@@ -453,7 +453,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || !(obj instanceof XpathChunk)) {
+            if (!(obj instanceof XpathChunk)) {
                 return false;
             }
 
@@ -538,7 +538,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (this == obj) {
                 return true;
             }
-            if (obj == null || !(obj instanceof XpathChunk)){
+            if (!(obj instanceof XpathChunk)){
                 return false;
             }
 

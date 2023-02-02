@@ -63,7 +63,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
 
     }
 
@@ -87,7 +87,7 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setIntValue(final Object bean,
                             final int value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
     }
 
     public abstract void setLongValue(final Object object,
@@ -96,13 +96,13 @@ public abstract class BaseLongClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setLongValue( bean,
-                      (long) value );
+                      value);
     }
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setLongValue",
-                                                      new Class[]{Object.class, long.class} );
+            return this.getClass().getDeclaredMethod("setLongValue",
+                                                     Object.class, long.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

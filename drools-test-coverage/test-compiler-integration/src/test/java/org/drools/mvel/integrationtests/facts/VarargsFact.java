@@ -40,10 +40,10 @@ public class VarargsFact {
     }
 
     public void setOneWrapperValue(Long value) {
-        valueList = Arrays.asList(new Long[]{value});
+        valueList = Arrays.asList(value);
     }
 
     public void setOnePrimitiveValue(long value) {
-        valueList = Arrays.asList(new Long[]{value});
+        valueList = Arrays.asList(value);
     }
 }

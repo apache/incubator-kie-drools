@@ -133,7 +133,7 @@ public class KieScannerMemoryTest {
         final StringBuilder builder = new StringBuilder();
         builder.append("Measured used memory: ");
         for (int i = 1; i <= memoryMeasurements.size(); i++) {
-            final Long measurement = memoryMeasurements.get(i - 1) / 1024 / 1024;
+            final long measurement = memoryMeasurements.get(i - 1) / 1024 / 1024;
             builder.append(i + ": " + measurement + " MB; ");
         }
         return builder.toString();

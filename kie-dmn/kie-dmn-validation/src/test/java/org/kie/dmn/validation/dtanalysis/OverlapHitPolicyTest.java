@@ -85,15 +85,15 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
-                                                                         3),
-                                                           new Hyperrectangle(1,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("30"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(new BigDecimal("30"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(2,
+                                                                   3),
+                                                     new Hyperrectangle(1,
+                                                                        List.of(Interval.newFromBounds(new Bound(new BigDecimal("30"),
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null),
+                                                                                                       new Bound(new BigDecimal("30"),
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null))))));
         assertThat(overlaps).hasSize(1);
 
         // Assert OVERLAPs same values

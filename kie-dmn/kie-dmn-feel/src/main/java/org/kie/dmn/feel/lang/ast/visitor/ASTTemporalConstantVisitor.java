@@ -21,6 +21,7 @@ package org.kie.dmn.feel.lang.ast.visitor;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -200,11 +201,11 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
             if (fn == DurationFunction.INSTANCE) {
                 FEELFnResult<TemporalAmount> invoke = DurationFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, DurationFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, DurationFunction.INSTANCE, Collections.singletonList(p0)));
             } else if (fn == org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE) {
                 FEELFnResult<TemporalAmount> invoke = org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE, Collections.singletonList(p0)));
             }
         }
         return null;
@@ -217,11 +218,11 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
             if (fn == TimeFunction.INSTANCE) {
                 FEELFnResult<TemporalAccessor> invoke = TimeFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, TimeFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, TimeFunction.INSTANCE, Collections.singletonList(p0)));
             } else if (fn == org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE) {
                 FEELFnResult<TemporalAccessor> invoke = org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE, Collections.singletonList(p0)));
             }
         } else if (ps.size() == 3 && ps.get(0) instanceof NumberNode && ps.get(1) instanceof NumberNode && ps.get(2) instanceof NumberNode) {
             int p0 = ((NumberNode) ps.get(0)).getValue().intValueExact();
@@ -247,7 +248,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
             if (fn == DateAndTimeFunction.INSTANCE) {
                 FEELFnResult<TemporalAccessor> invoke = DateAndTimeFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, DateAndTimeFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, DateAndTimeFunction.INSTANCE, Collections.singletonList(p0)));
             }
         }
         return null;
@@ -260,11 +261,11 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
             if (fn == DateFunction.INSTANCE) {
                 FEELFnResult<TemporalAccessor> invoke = DateFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, DateFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, DateFunction.INSTANCE, Collections.singletonList(p0)));
             } else if (fn == org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE) {
                 FEELFnResult<TemporalAccessor> invoke = org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE, Arrays.asList(p0)));
+                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE, Collections.singletonList(p0)));
             }
         } else if (ps.size() == 3 && ps.get(0) instanceof NumberNode && ps.get(1) instanceof NumberNode && ps.get(2) instanceof NumberNode) {
             int p0 = ((NumberNode) ps.get(0)).getValue().intValueExact();

@@ -69,8 +69,8 @@ public class DateAndTimeFunction extends BaseFEELFunction {
             if (val.contains("T")) {
                 return FEELFnResult.ofResult(FEEL_DATE_TIME.parseBest(val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from));
             } else {
-                TemporalAccessor value = DateTimeFormatter.ISO_DATE.parse(val, LocalDate::from);
-                return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) value, LocalTime.of(0, 0)));
+                LocalDate value = DateTimeFormatter.ISO_DATE.parse(val, LocalDate::from);
+                return FEELFnResult.ofResult(LocalDateTime.of(value, LocalTime.of(0, 0)));
             }
         } catch (final Exception e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));

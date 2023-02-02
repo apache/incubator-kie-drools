@@ -109,7 +109,7 @@ public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable
     public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
         switchObjectOnDataHandle(dh, (T) obj);
         entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
-        subscribers.forEach(s -> s.update(dh, (T) obj));
+        subscribers.forEach(s -> s.update(dh, obj));
     }
 
     private void switchObjectOnDataHandle(DataHandle handle, T object) {

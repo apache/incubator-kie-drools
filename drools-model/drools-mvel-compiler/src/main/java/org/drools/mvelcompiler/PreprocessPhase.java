@@ -174,7 +174,7 @@ public class PreprocessPhase {
         if (expr.isMethodCallExpr()) {
             MethodCallExpr mcExpr = expr.asMethodCallExpr();
             Optional<Expression> opt = mcExpr.getScope();
-            if (!opt.isPresent()) {
+            if (opt.isEmpty()) {
                 return mcExpr; // return MethodCallExpr if no scope
             } else {
                 scope = opt.get();

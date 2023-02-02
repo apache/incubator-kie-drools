@@ -65,11 +65,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
                 KiePMMLCompoundPredicateWithAccumulationASTFactory.declareRuleFromCompoundPredicateSurrogate(predicateASTFactoryData, agendaActivationGroup, toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
             case AND:
-                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
-                break;
             case OR:
-                declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
-                break;
             case XOR:
                 declareRuleFromCompoundPredicateAndOrXor(toAccumulate, statusToSet, reasonCodeAndValue, isLastCharacteristic);
                 break;
@@ -93,11 +89,7 @@ public class KiePMMLCompoundPredicateASTFactory extends KiePMMLAbstractPredicate
                 KiePMMLCompoundPredicateWithResultASTFactory.declareRuleFromCompoundPredicateSurrogate(predicateASTFactoryData, agendaActivationGroup, result, isFinalLeaf);
                 break;
             case AND:
-                declareRuleFromCompoundPredicateAndOrXor(result, isFinalLeaf);
-                break;
             case OR:
-                declareRuleFromCompoundPredicateAndOrXor(result, isFinalLeaf);
-                break;
             case XOR:
                 declareRuleFromCompoundPredicateAndOrXor(result, isFinalLeaf);
                 break;

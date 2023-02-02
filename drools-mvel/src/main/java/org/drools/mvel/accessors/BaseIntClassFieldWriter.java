@@ -63,7 +63,7 @@ public abstract class BaseIntClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setIntValue( bean,
-                     (int) value );
+                     value);
 
     }
 
@@ -96,13 +96,13 @@ public abstract class BaseIntClassFieldWriter extends BaseClassFieldWriter {
     public void setShortValue(final Object bean,
                               final short value) {
         setIntValue( bean,
-                     (int) value );
+                     value);
     }
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setIntValue",
-                                                      new Class[]{Object.class, int.class} );
+            return this.getClass().getDeclaredMethod("setIntValue",
+                                                     Object.class, int.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

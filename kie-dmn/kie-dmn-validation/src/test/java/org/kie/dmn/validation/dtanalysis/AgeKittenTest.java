@@ -65,12 +65,12 @@ public class AgeKittenTest extends AbstractDTAnalysisTest {
         
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("12"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))),
+                                                                     List.of(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound(new BigDecimal("12"),
+                                                                                                              RangeBoundary.OPEN,
+                                                                                                              null)))),
                                                   new Hyperrectangle(2,
                                                                      Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("15"),
                                                                                                                     RangeBoundary.CLOSED,

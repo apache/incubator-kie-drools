@@ -93,17 +93,8 @@ public class GameEngine {
                                List cmdList) {
         try {
             Class<Command> cls = (Class<Command>) cmdList.get(0);
-            Class[] constructorParamTypes = new Class[cmdList.size()-1];
-            for ( int i = 1; i < cmdList.size(); i++) {
-                constructorParamTypes[i-1] = cmdList.get(i).getClass();
-            }
 
             Object[] args = cmdList.subList(1, cmdList.size() ).toArray();
-
-            Class[] params = new Class[args.length];
-            for ( int i = 0; i < params.length; i++ ) {
-                params[i] = args[i].getClass();
-            }
 
             Command cmd = (Command) ParseTools.getBestConstructorCandidate(args, cls, true).newInstance(args);
             cmd.setSession( session );

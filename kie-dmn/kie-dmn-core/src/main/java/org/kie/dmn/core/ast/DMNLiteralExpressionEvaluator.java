@@ -81,7 +81,7 @@ public class DMNLiteralExpressionEvaluator
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         LiteralInvocationListener liListener = new LiteralInvocationListener();
-        EvaluationContextImpl ectx = feelInstance.newEvaluationContext(Arrays.asList(liListener), result.getContext().getAll());
+        EvaluationContextImpl ectx = feelInstance.newEvaluationContext(List.of(liListener), result.getContext().getAll());
         ectx.setDMNRuntime(dmrem.getRuntime());
         // in case an exception is thrown, the parent node will report it
         Object val = feelInstance.evaluate(expression, ectx);

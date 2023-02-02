@@ -71,7 +71,7 @@ public class GetObjectsInEntryPointCommand
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
 
-        Collection col = null;
+        Collection col;
 
         if ( filter != null ) {
 

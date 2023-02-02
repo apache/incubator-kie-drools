@@ -62,7 +62,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DroolsMvelParserTest {
 
     private static final Collection<String> operators = new HashSet<>();
-    {
+    static {
         operators.addAll(Arrays.asList("after", "before", "in", "matches", "includes"));
     }
 

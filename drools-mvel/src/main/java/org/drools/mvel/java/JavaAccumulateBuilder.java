@@ -203,20 +203,20 @@ public class JavaAccumulateBuilder
                                                            "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
                 } else {
                     Declaration inner = context.getDeclarationResolver().getDeclaration( fc.getBind() );
-                    Constraint c = new MVELConstraint( Collections.singletonList( context.getPkg().getName() ),
+                    MutableTypeConstraint c = new MVELConstraint(Collections.singletonList(context.getPkg().getName()),
                                                        index >= 0
                                                             ? "this[ " + index + " ] == " + fc.getBind()
                                                             : "this == " + fc.getBind(),
-                                                       new Declaration[] { inner },
-                                                       null,
-                                                       null,
-                                                       IndexUtil.ConstraintType.EQUAL,
-                                                       context.getDeclarationResolver().getDeclaration( fc.getBind() ),
+                                                                 new Declaration[] { inner },
+                                                                 null,
+                                                                 null,
+                                                                 IndexUtil.ConstraintType.EQUAL,
+                                                                 context.getDeclarationResolver().getDeclaration( fc.getBind() ),
                                                        index >= 0
                                                             ? new ArrayElementReader( readAccessor, index, resultType )
                                                             : readAccessor,
-                                                       true);
-                    (( MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
+                                                                 true);
+                    c.setType(Constraint.ConstraintType.BETA);
                     pattern.addConstraint( c );
                 }
             } else {
@@ -454,9 +454,7 @@ public class JavaAccumulateBuilder
             }
         } );
 
-        for ( JavaLocalDeclarationDescr local : analysis.getLocalVariablesMap().values() ) {
-            locals.add( local );
-        }
+        locals.addAll(analysis.getLocalVariablesMap().values());
 
         StringBuilder initCode = new StringBuilder();
         int lastAdded = 0;

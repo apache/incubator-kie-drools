@@ -72,7 +72,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object firedObject = result.getValue("fired");
-        assertThat(firedObject != null && firedObject instanceof Integer).as("Retrieved object is null or incorrect!").isTrue();
+        assertThat(firedObject instanceof Integer).as("Retrieved object is null or incorrect!").isTrue();
         assertThat(firedObject).isEqualTo(4);
 
         list = (List<?>) ksession.getGlobal("list");
@@ -105,7 +105,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         assertThat(result).as("Batch execution result is null!").isNotNull();
 
         Object queryResultsObject = result.getValue("numStinkyCheeses");
-        assertThat(queryResultsObject != null && queryResultsObject instanceof QueryResults).as("Retrieved object is null or incorrect!").isTrue();
+        assertThat(queryResultsObject instanceof QueryResults).as("Retrieved object is null or incorrect!").isTrue();
 
         assertThat(((QueryResults) queryResultsObject).size()).isEqualTo(1);
     }

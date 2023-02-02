@@ -33,7 +33,6 @@ import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;

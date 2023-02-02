@@ -120,7 +120,7 @@ public class CreateProcessInstanceCommand implements ExecutableCommand<ProcessIn
                 ksession.insert(o);
             }
         }
-        ProcessInstance processInstance = (ProcessInstance) ksession.createProcessInstance(processId, parameters);
+        ProcessInstance processInstance = ksession.createProcessInstance(processId, parameters);
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, processInstance.getId());
         }

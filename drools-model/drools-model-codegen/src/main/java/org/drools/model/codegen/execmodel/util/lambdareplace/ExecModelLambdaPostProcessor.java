@@ -200,7 +200,7 @@ public class ExecModelLambdaPostProcessor {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
                 Optional<MaterializedLambdaExtractor> extractorOpt = createMaterializedLambdaExtractor(lambdaExpr);
-                if (!extractorOpt.isPresent()) {
+                if (extractorOpt.isEmpty()) {
                     logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
                 } else {
                     MaterializedLambdaExtractor extractor = extractorOpt.get();
@@ -234,7 +234,7 @@ public class ExecModelLambdaPostProcessor {
         Optional<MethodCallExpr> ancestor = mc.findAncestor(MethodCallExpr.class)
                 .filter(a -> a.getNameAsString().equals(EXECUTE_CALL));
 
-        return !ancestor.isPresent() && EXECUTE_CALL.equals(mc.getNameAsString());
+        return ancestor.isEmpty() && EXECUTE_CALL.equals(mc.getNameAsString());
     }
 
     private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
@@ -270,7 +270,7 @@ public class ExecModelLambdaPostProcessor {
         }
 
         Optional<Type> optReturnType = findVariableType((NameExpr) argument);
-        if (!optReturnType.isPresent()) {
+        if (optReturnType.isEmpty()) {
             logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
             return;
         }
@@ -280,13 +280,13 @@ public class ExecModelLambdaPostProcessor {
 
     private void convertFromCall(MethodCallExpr methodCallExpr) {
         Optional<LambdaExpr> lambdaOpt = methodCallExpr.getArguments().stream().filter(Expression::isLambdaExpr).map(Expression::asLambdaExpr).findFirst();
-        if (!lambdaOpt.isPresent()) {
+        if (lambdaOpt.isEmpty()) {
             return; // Don't need to handle. e.g. D.from(var_$children)
         }
         LambdaExpr lambdaExpr = lambdaOpt.get();
 
         Optional<MaterializedLambdaExtractor> extractorOpt = createMaterializedLambdaExtractor(lambdaExpr);
-        if (!extractorOpt.isPresent()) {
+        if (extractorOpt.isEmpty()) {
             logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
             return;
         }

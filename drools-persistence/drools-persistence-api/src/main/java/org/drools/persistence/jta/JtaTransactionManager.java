@@ -96,7 +96,7 @@ public class JtaTransactionManager
             return (javax.transaction.TransactionManager) ut;
         }
 
-        InitialContext context = null;
+        InitialContext context;
 
         try {
             context = new InitialContext();

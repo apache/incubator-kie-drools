@@ -130,9 +130,7 @@ public class ExampleMCDCTest extends AbstractDTAnalysisTest {
         Set<Record> mcdcRecords = new LinkedHashSet<>();
         for (PosNegBlock b : mcdcSelectedBlocks) {
             mcdcRecords.add(b.posRecord);
-            for (Record negRecord : b.negRecords) {
-                mcdcRecords.add(negRecord);
-            }
+            mcdcRecords.addAll(b.negRecords);
         }
         return mcdcRecords;
     }

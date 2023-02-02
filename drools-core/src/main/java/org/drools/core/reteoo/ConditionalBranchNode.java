@@ -92,7 +92,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
             return true;
         }
 
-        if ( object == null || !(object instanceof ConditionalBranchNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof ConditionalBranchNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

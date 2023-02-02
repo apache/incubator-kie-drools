@@ -394,7 +394,6 @@ public class DMNCompilerImpl implements DMNCompiler {
                 if ( dc.accept( e ) ) {
                     foundIt = true;
                     dc.compileNode(e, this, model);
-                    continue;
                 }
             }  
             if ( !foundIt ) {
@@ -430,7 +429,6 @@ public class DMNCompilerImpl implements DMNCompiler {
                         if (dc.accept(ds)) {
                             foundIt = true;
                             dc.compileNode(ds, this, model);
-                            continue;
                         }
                     }
                 }
@@ -594,7 +592,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param topLevel null if it is a top level ItemDefinition
      */
     private DMNType buildTypeDef(DMNCompilerContext ctx, DMNModelImpl dmnModel, DMNNode node, ItemDefinition itemDef, DMNType topLevel) {
-        BaseDMNTypeImpl type = null;
+        BaseDMNTypeImpl type;
         if ( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
             type = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, itemDef.getTypeRef());
@@ -641,7 +639,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         type = new SimpleTypeImpl(namespace, name, id, isCollection, av, baseType, baseFEELType);
                     }
                     if (topLevel != null) {
-                        ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                        type.setBelongingType(topLevel);
                     }
                 }
                 if (topLevel == null) {
@@ -666,7 +664,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             } else {
                 DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
                 type = new CompositeTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection());
-                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                type.setBelongingType(topLevel);
             }
             // second, add fields to located composite
             for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
@@ -701,8 +699,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                                       itemDef.getName());
             }
         } else {
-            DMNType unknown = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, null);
-            type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, ((BaseDMNTypeImpl) unknown).getFeelType());
+            BaseDMNTypeImpl unknown = (BaseDMNTypeImpl) resolveTypeRef(dmnModel, itemDef, itemDef, null);
+            type = new SimpleTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection(), null, unknown, unknown.getFeelType());
             if (topLevel == null) {
                 DMNType registered = dmnModel.getTypeRegistry().registerType(type);
                 if (registered != type) {
@@ -716,7 +714,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                           itemDef.getName());
                 }
             } else {
-                ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
+                type.setBelongingType(topLevel);
             }
         }
         return type;

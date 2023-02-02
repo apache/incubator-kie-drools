@@ -40,7 +40,7 @@ public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
             info.assign( snode, rule );
         }
 
-        final DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        final DefaultNodeInfo ni = info.getNodeInfo(node);
         ni.setMemoryEnabled( false );
 
     }

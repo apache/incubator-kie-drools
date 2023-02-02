@@ -53,9 +53,7 @@ public class GetProcessInstancesCommand
         Collection<ProcessInstance> instances = ksession.getProcessInstances();
         Collection<ProcessInstance> result = new ArrayList<>();
 
-        for ( ProcessInstance instance : instances ) {
-            result.add( instance );
-        }
+        result.addAll(instances);
 
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup(ExecutionResults.class).setResult(this.outIdentifier, new ArrayList<>(result));

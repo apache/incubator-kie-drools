@@ -130,10 +130,9 @@ public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHiera
     }
 
     protected Set<HierNode<T>> ancestorNodes( HierNode<T> x ) {
-        Set<HierNode<T>> ancestors = new HashSet<>();
 
         Collection<HierNode<T>> parents = x.getParents();
-        ancestors.addAll( parents );
+        Set<HierNode<T>> ancestors = new HashSet<>(parents);
         for ( HierNode<T> p : parents ) {
             ancestors.addAll( ancestorNodes( p ) );
         }

@@ -2,7 +2,7 @@ package org.kie.drl.engine.mapinput.compilation.model.test;
 
 import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.model.Index.ConstraintType;
-import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
+
 import static org.kie.drl.engine.mapinput.compilation.model.test.RulesED2A293F9C55BB1943AA9A6A1A8BF64C.*;
 
 public class RulesED2A293F9C55BB1943AA9A6A1A8BF64CRuleMethods0 {

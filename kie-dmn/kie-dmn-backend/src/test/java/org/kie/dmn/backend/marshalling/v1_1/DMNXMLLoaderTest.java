@@ -19,6 +19,7 @@ package org.kie.dmn.backend.marshalling.v1_1;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.XMLConstants;
 
@@ -79,7 +80,7 @@ public class DMNXMLLoaderTest {
 
     @Test
     public void testLoadingDecisionServices() {
-        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
 
         final InputStream is = this.getClass().getResourceAsStream("0004-decision-services.dmn");
         final InputStreamReader isr = new InputStreamReader(is);
@@ -111,7 +112,7 @@ public class DMNXMLLoaderTest {
 
     @Test
     public void testLoadingWithNoDecisionServices() {
-        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
 
         final InputStream is = this.getClass().getResourceAsStream("0001-input-data-string.dmn");
         final InputStreamReader isr = new InputStreamReader(is);
@@ -122,7 +123,7 @@ public class DMNXMLLoaderTest {
 
     @Test
     public void test0004_multiple_extensions() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
 
         final InputStream is = this.getClass().getResourceAsStream("0004-decision-services_multiple_extensions.dmn");
         final InputStreamReader isr = new InputStreamReader(is);
@@ -138,9 +139,9 @@ public class DMNXMLLoaderTest {
 
         final InputStream is = this.getClass().getResourceAsStream("ch11example.xml");
         final InputStreamReader isr = new InputStreamReader( is );
-        final Object o = DMNMarshaller.unmarshal( isr );
+        final Definitions o = DMNMarshaller.unmarshal(isr);
 
-        final Definitions root = (Definitions) o;
+        final Definitions root = o;
 
         assertThat(root).isNotNull();
     }
@@ -151,9 +152,9 @@ public class DMNXMLLoaderTest {
 
         final InputStream is = this.getClass().getResourceAsStream("dish-decision.xml");
         final InputStreamReader isr = new InputStreamReader( is );
-        final Object o = DMNMarshaller.unmarshal( isr );
+        final Definitions o = DMNMarshaller.unmarshal(isr);
 
-        final Definitions root = (Definitions) o;
+        final Definitions root = o;
 
         assertThat(root).isNotNull();
     }

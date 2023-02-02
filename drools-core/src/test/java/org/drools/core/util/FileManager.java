@@ -208,7 +208,7 @@ public class FileManager {
         StringBuffer fileData = new StringBuffer(1000);
         BufferedReader reader = new BufferedReader(in);
         char[] buf = new char[1024];
-        int numRead = 0;
+        int numRead;
         while ((numRead = reader.read(buf)) != -1) {
             String readData = String.valueOf(buf, 0, numRead);
             fileData.append(readData);

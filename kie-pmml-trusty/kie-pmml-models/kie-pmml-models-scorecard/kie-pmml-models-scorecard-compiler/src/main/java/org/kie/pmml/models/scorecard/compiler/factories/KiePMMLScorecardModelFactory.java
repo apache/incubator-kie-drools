@@ -32,7 +32,6 @@ import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.compiler.ScorecardCompilationDTO;
-import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

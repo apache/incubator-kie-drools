@@ -1,10 +1,5 @@
 package org.kie.drl.engine.mapinput.compilation.model.test.P4C;
 
-import static org.kie.drl.engine.mapinput.compilation.model.test.RulesED2A293F9C55BB1943AA9A6A1A8BF64C.*;
-import org.kie.drl.engine.mapinput.compilation.model.test.*;
-import org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication;
-import org.drools.modelcompiler.dsl.pattern.D;
-
 @org.drools.compiler.kie.builder.MaterializedLambda()
 public enum LambdaPredicate4C9797236624848F80F1DAA0797F33AF implements org.drools.model.functions.Predicate1<org.kie.drl.engine.mapinput.compilation.model.test.LoanApplication>, org.drools.model.functions.HashedExpression {
 

@@ -31,7 +31,7 @@ public class DataId extends LocalUriId implements LocalId {
     }
 
     public DataSourceId dataSourceId() {
-        return dataSourceId();
+        return parent;
     }
 
     public String dataId() {

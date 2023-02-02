@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.ruleunits.api.DataSource.createBufferedStream;
 
 public class BufferedDataStreamTest {
 

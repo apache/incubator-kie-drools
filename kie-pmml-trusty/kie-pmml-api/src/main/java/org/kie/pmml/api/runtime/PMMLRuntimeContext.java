@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.api.pmml.PMMLRequestData;
-import org.kie.api.runtime.Context;
 import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.pmml.api.PMMLContext;
 

@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class JavaFunction
 
     @Override
     public List<List<Param>> getParameters() {
-        return Arrays.asList( parameters );
+        return Collections.singletonList(parameters);
     }
 
     public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params) {
@@ -58,7 +59,7 @@ public class JavaFunction
             return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
         }
         
-        FEELEvent capturedException = null;
+        FEELEvent capturedException;
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {

@@ -236,7 +236,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
-        final PackageDescr back = (PackageDescr) SerializationHelper.serializeObject( packageDescr );
+        final PackageDescr back = SerializationHelper.serializeObject(packageDescr);
         assertThat(back).isNotNull();
         assertThat(back.getName()).isEqualTo("p1");
 
@@ -599,14 +599,14 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         // Make sure we can't accessa  variable bound inside the not node
-        RuleImpl rule = createRule( new NotDescr(),
-                                builder,
-                                "update(stilton);" );
+        createRule( new NotDescr(),
+                    builder,
+                    "update(stilton);" );
 
         assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();
-        rule = createRule( new NotDescr(),
+        RuleImpl rule = createRule( new NotDescr(),
                            builder,
                            "" );
         assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
@@ -626,14 +626,14 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 
         // Make sure we can't accessa  variable bound inside the not node
-        RuleImpl rule = createRule( new ExistsDescr(),
-                                builder,
-                                "update(stilton);" );
+        createRule( new ExistsDescr(),
+                    builder,
+                    "update(stilton);" );
 
         assertThat(builder.hasErrors()).isTrue();
 
         builder = new KnowledgeBuilderImpl();
-        rule = createRule( new ExistsDescr(),
+        RuleImpl rule = createRule( new ExistsDescr(),
                            builder,
                            "" );
         assertThat(builder.getErrors().getErrors().length).isEqualTo(0);
@@ -954,13 +954,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         PackageDescr pkgDescr = new PackageDescr( "org.drools.mvel.compiler.test" );
         builder.addPackage( pkgDescr );
-        DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
 
         final Field dialectField = builder.getClass().getDeclaredField( "defaultDialect" );
         dialectField.setAccessible( true );
         String dialectName = (String) dialectField.get( builder );
 
-        reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
+        DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
         Dialect dialect = reg.getDialect( dialectName );
 
         final Field compilerField = dialect.getClass().getDeclaredField( "compiler" );

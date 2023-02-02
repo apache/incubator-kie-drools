@@ -40,7 +40,6 @@ import org.drools.model.codegen.execmodel.generator.drlxparse.SingleDrlxParseSuc
 import static java.util.Optional.of;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.findLastMethodInChain;
-import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
@@ -100,7 +99,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private void setScopeToAscendantExpr(MethodCallExpr targetExpr, MethodCallExpr newScope) {
         Optional<Expression> optCurrentScope = targetExpr.getScope();
-        if (!optCurrentScope.isPresent()) {
+        if (optCurrentScope.isEmpty()) {
             targetExpr.setScope(newScope);
         } else {
             Expression currentScope = optCurrentScope.get();

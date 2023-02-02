@@ -37,7 +37,7 @@ public class SeparatorSet implements Comparable<SeparatorSet> {
         this.clique2 = clique2;
         this.id2 = id2;
 
-        intersection = (OpenBitSet) clique1.clone();
+        intersection = clique1.clone();
         intersection.and(clique2);
 
         mass = (int) intersection.cardinality();

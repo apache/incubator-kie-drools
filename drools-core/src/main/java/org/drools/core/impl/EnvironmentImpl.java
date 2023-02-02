@@ -78,11 +78,11 @@ public class EnvironmentImpl implements Environment {
         }
 
         public V get(Object key) {
-            Object value = super.get(key);
+            V value = super.get(key);
             if (value == NULL) {
                 return null;
             }
-            return (V) value;
+            return value;
         }
         
         public boolean containsValue(Object value) { 

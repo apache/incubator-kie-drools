@@ -123,7 +123,7 @@ public class TimerNode extends LeftTupleSource
             return true;
         }
 
-        if ( object == null || !(object instanceof TimerNode) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof TimerNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

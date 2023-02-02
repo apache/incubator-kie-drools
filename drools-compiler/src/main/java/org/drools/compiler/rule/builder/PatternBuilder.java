@@ -296,7 +296,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
 
     private boolean isPassivePattern(PatternDescr patternDescr, RuleBuildContext context) {
         // when the source is a FromDesc also check that it isn't the datasource of a ruleunit
-        return patternDescr.isQuery() || ( patternDescr.getSource() instanceof FromDescr && !context.getEntryPointId( ( (FromDescr) patternDescr.getSource() ).getDataSource().getText() ).isPresent() );
+        return patternDescr.isQuery() || (patternDescr.getSource() instanceof FromDescr && context.getEntryPointId(( (FromDescr) patternDescr.getSource() ).getDataSource().getText()).isEmpty());
     }
 
     private void processClassObjectType(RuleBuildContext context, ObjectType objectType, Pattern pattern) {

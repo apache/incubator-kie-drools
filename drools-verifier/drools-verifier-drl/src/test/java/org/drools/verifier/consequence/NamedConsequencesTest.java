@@ -61,7 +61,7 @@ public class NamedConsequencesTest extends TestBaseOld {
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 VerifierMessage message = (VerifierMessage) o;
                 rulesThatHadErrors.addAll(message.getImpactedRules().values());

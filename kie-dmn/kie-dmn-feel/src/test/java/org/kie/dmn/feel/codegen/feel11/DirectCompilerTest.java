@@ -315,8 +315,8 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("date( -0105, 8, 2 )")).isEqualTo(LocalDate.of(-105, 8, 2));
         assertThat(parseCompileEvaluate("string(null)")).isNull();
         assertThat(parseCompileEvaluate("[ null ]")).asList().containsExactly(new Object[]{null});
-        assertThat(parseCompileEvaluate("[ null, null ]")).asList().containsExactly(new Object[]{null, null});
-        assertThat(parseCompileEvaluate("[ null, 47, null ]")).asList().containsExactly(new Object[]{null, BigDecimal.valueOf(47), null});
+        assertThat(parseCompileEvaluate("[ null, null ]")).asList().containsExactly(null, null);
+        assertThat(parseCompileEvaluate("[ null, 47, null ]")).asList().containsExactly(null, BigDecimal.valueOf(47), null);
     }
 
     @Test

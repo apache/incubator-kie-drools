@@ -15,6 +15,8 @@
  */
 package org.drools.examples.sudoku;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -35,9 +37,7 @@ public abstract class SetOfNine {
      */
     public void blockExcept(Integer... values) {
         free.clear();
-        for( Integer value: values ){
-            free.add(value);
-        }
+        Collections.addAll(free, values);
     }
 
     /**

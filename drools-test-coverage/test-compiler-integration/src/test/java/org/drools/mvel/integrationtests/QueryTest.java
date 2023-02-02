@@ -414,8 +414,8 @@ public class QueryTest {
 
         Object retractedWorker = null;
         for ( int i = 0; i < 100; i++ ) {
-            retractedWorker = (Object) ksession.getQueryResults( "getWorker",
-                                                                 new Object[]{workerId} );
+            retractedWorker = ksession.getQueryResults("getWorker",
+                                                       new Object[]{workerId});
         }
 
         assertThat(retractedWorker).isNotNull();
@@ -437,7 +437,7 @@ public class QueryTest {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).iterator();
+        Iterator<InternalFactHandle> it = sessionImpl.getNodeMemory( droolsQueryNode ).iterator();
         assertThat(it.hasNext()).isFalse();
     }
 
@@ -471,7 +471,7 @@ public class QueryTest {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        QueryResults results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
+        QueryResults results = getQueryResults(ksession, "peeps", Variable.v, Variable.v, Variable.v);
         assertThat(results.size()).isEqualTo(4);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -483,7 +483,7 @@ public class QueryTest {
         assertThat(names.contains("bobba")).isTrue();
         assertThat(names.contains("darth")).isTrue();
 
-        results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, 300} );
+        results = getQueryResults(ksession, "peeps", Variable.v, Variable.v, 300);
         assertThat(results.size()).isEqualTo(3);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -494,7 +494,7 @@ public class QueryTest {
         assertThat(names.contains("yoda")).isTrue();
         assertThat(names.contains("bobba")).isTrue();
 
-        results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, "stilton", 300} );
+        results = getQueryResults(ksession, "peeps", Variable.v, "stilton", 300);
         assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -503,8 +503,8 @@ public class QueryTest {
         assertThat(names.size()).isEqualTo(1);
         assertThat(names.contains("yoda")).isTrue();
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.v, "stilton", Variable.v} );
+        results = ksession.getQueryResults("peeps",
+                                           Variable.v, "stilton", Variable.v);
         assertThat(results.size()).isEqualTo(2);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -514,8 +514,8 @@ public class QueryTest {
         assertThat(names.contains("yoda")).isTrue();
         assertThat(names.contains("darth")).isTrue();
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{"darth", Variable.v, Variable.v} );
+        results = ksession.getQueryResults("peeps",
+                                           "darth", Variable.v, Variable.v);
         assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -555,8 +555,8 @@ public class QueryTest {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.v, Variable.v, Variable.v, Variable.v} );
+        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults("peeps",
+                                                                                 Variable.v, Variable.v, Variable.v, Variable.v);
         assertThat(results.size()).isEqualTo(4);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -568,8 +568,8 @@ public class QueryTest {
         assertThat(names.contains("bobba")).isTrue();
         assertThat(names.contains("darth")).isTrue();
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{p1, Variable.v, Variable.v, Variable.v} );
+        results = ksession.getQueryResults("peeps",
+                                           p1, Variable.v, Variable.v, Variable.v);
         assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -604,7 +604,7 @@ public class QueryTest {
         ksession.insert( p1 );
         ksession.insert( p2 );
 
-        QueryResults results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
+        QueryResults results = getQueryResults(ksession, "peeps", Variable.v, Variable.v, Variable.v);
         assertThat(results.size()).isEqualTo(2);
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -613,7 +613,7 @@ public class QueryTest {
         assertThat(names.contains("yoda")).isTrue();
         assertThat(names.contains("darth")).isTrue();
 
-        results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, "s1"} );
+        results = getQueryResults(ksession, "peeps", Variable.v, Variable.v, "s1");
         assertThat(results.size()).isEqualTo(1);
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
@@ -815,7 +815,7 @@ public class QueryTest {
         List<Cheese> cheeses;
         for ( int i = 0; i < 100; i++ ) {
             org.kie.api.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
-                                                                                          new Object[]{"stilton"} );
+                                                                                           "stilton");
             cheeses = new ArrayList<Cheese>();
             for ( QueryResultsRow row : queryResults ) {
                 cheeses.add( (Cheese) row.get( "$cheese" ) );
@@ -955,7 +955,7 @@ public class QueryTest {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("Hello World"));
+        assertThat(list).isEqualTo(List.of("Hello World"));
     }
 
 
@@ -1029,7 +1029,7 @@ public class QueryTest {
         ks.insert( "Hello" );
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("Bye"));
+        assertThat(list).isEqualTo(List.of("Bye"));
     }
 
     @Test
@@ -1333,7 +1333,7 @@ public class QueryTest {
                 "end\n";
 
         final Thing smartphone = new Thing("smartphone");
-        final List<String> itemList = Arrays.asList(new String[] { "display", "keyboard", "processor" });
+        final List<String> itemList = Arrays.asList("display", "keyboard", "processor");
         itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -1343,7 +1343,7 @@ public class QueryTest {
 
         ksession.insert(smartphone);
 
-        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", new Object[] { smartphone, Variable.v });
+        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", smartphone, Variable.v);
         final List<String> resultList = StreamSupport.stream(queryResults.spliterator(), false)
                 .map(row -> ((Thing) row.get("$y")).getName()).collect(Collectors.toList());
         assertThat(resultList).as("Query does not contain all items").containsAll(itemList);

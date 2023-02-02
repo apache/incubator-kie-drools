@@ -213,7 +213,7 @@ public class OOPathTest {
         ksession.fireAllRules();
 
         assertThat(list).hasSize(4);
-        assertThat(list).isEqualTo(Arrays.asList(new String[]{"t2:12:t2", "t1:12:t1", "t4:8:t4", "t3:8:t3"}));
+        assertThat(list).isEqualTo(Arrays.asList("t2:12:t2", "t1:12:t1", "t4:8:t4", "t3:8:t3"));
     }
     
     @Test   

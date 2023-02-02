@@ -106,7 +106,7 @@ public class Cheese
             return true;
         }
 
-        if ( object == null || !(object instanceof Cheese) ) {
+        if (!(object instanceof Cheese)) {
             return false;
         }
 

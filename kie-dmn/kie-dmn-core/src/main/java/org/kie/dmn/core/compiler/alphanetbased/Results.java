@@ -64,7 +64,7 @@ public class Results {
         }
 
         public boolean hasNoIndexes() {
-            return !indexes().findAny().isPresent();
+            return indexes().findAny().isEmpty();
         }
 
         public List<Object> evaluateResults(EvaluationContext evaluationContext) {

@@ -17,6 +17,7 @@
 package org.kie.dmn.ruleset2dmn;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
@@ -36,7 +37,7 @@ public class ChurnRulesFromSPSSModelerTest {
         // Files.write(new File("src/test/resources/ChurnSPSS.dmn").toPath(), dmnXml.getBytes());
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                 .buildConfiguration()
-                .fromResources(Arrays.asList(ResourceFactory.newByteArrayResource(dmnXml.getBytes())))
+                .fromResources(Collections.singletonList(ResourceFactory.newByteArrayResource(dmnXml.getBytes())))
                 .getOrElseThrow(RuntimeException::new);
         dmnRuntime.addListener(new TestDMNRuntimeEventListener());
         final DMNModel modelUnderTest = dmnRuntime.getModels().get(0);

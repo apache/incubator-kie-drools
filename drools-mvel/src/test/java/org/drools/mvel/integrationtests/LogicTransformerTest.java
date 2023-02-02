@@ -622,7 +622,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         or2.addChild( g );
         or2.addChild( h );
 
-        final GroupElement cloned = (GroupElement) and.clone();
+        final GroupElement cloned = and.clone();
 
         assertThat(cloned).isEqualTo(and);
 

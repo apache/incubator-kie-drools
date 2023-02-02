@@ -197,7 +197,7 @@ public class DMNFEELHelper {
                                 msgParams[0],
                                 msgParams[1] );
                     } else if ( msg instanceof Msg.Message3 ) {
-                        Object message3 = null;
+                        Object message3;
                         if ( msgParams.length == 3 ) {
                             message3 = msgParams[2];
                         } else {
@@ -215,7 +215,7 @@ public class DMNFEELHelper {
                                 msgParams[1],
                                 message3 );
                     } else if ( msg instanceof Msg.Message4 ) {
-                        String message = null;
+                        String message;
                         if (event instanceof ASTHeuristicCheckEvent) {
                             message = event.getMessage();
                         } else if (event.getOffendingSymbol() == null) {

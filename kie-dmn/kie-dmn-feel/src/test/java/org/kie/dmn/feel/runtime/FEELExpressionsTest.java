@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -89,7 +90,7 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ someNestedList : { theList : [1, 2, 3] } , x : 47, result : x in someNestedList.theList }.result", Boolean.FALSE , null},
                 {"{ exp: 2, v: 3, r: exp**v}.r", BigDecimal.valueOf(8), null},
                 {"{Principal: 12, Rate: 1, Fees: 1, Term: -1, R: (Principal*Rate/12)/(1-(1+Rate/12)**-Term)+Fees}.R", new BigDecimal("-11.00000000000000000000000000000005"), null},
-                {"3[item > 2]", Arrays.asList(new BigDecimal(3)), null},
+                {"3[item > 2]", List.of(new BigDecimal(3)), null},
                 {"contains([\"foobar\"], \"of\")", Boolean.FALSE, null},
 
         };

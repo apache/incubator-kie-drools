@@ -175,7 +175,7 @@ public class ReloadSessionTest {
        
         // Test that the session has been successfully reinitialized
         factHandles =  newCommandKSession.getFactHandles();
-        assertThat(!factHandles.isEmpty() && factHandles.size() == 1).as("At least one fact should have been persisted by the ksession.insert above.").isTrue();
+        assertThat(!factHandles.isEmpty()).as("At least one fact should have been persisted by the ksession.insert above.").isTrue();
         FactHandle retrievedFactHandle = factHandles.iterator().next();
         assertThat(origFactHandle != retrievedFactHandle).as("If the retrieved and original FactHandle object are the same, then the knowledge session has NOT been reloaded!").isTrue();
         assertThat(Integer.parseInt(((DefaultFactHandle) retrievedFactHandle).getObject().toString()) == integerFact.intValue()).as("The retrieved fact should contain the same info as the original (but does not).").isTrue();

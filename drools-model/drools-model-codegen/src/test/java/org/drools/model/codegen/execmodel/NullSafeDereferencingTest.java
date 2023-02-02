@@ -418,7 +418,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         Person p1 = new MysteriousMan("Bob", 24);
         Person p2 = new Person("Alice", 24, (Address) null);
-        Person p3 = new Person("John", 24, new Address((String) null));
+        Person p3 = new Person("John", 24, new Address(null));
         Person p4 = new Person("Paul", 24, new Address("Milan"));
 
         ksession.insert(p1);

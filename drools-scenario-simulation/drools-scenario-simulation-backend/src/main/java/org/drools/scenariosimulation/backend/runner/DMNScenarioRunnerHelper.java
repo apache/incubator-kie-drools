@@ -123,7 +123,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
             }
         }
 
-        importedInputValues.forEach(inputValues::put);
+        inputValues.putAll(importedInputValues);
         return inputValues;
     }
 

@@ -132,7 +132,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
         rule.setAgendaGroup( this._currentAgendaGroup );
         rule.addCondition( this._currentPrecondition );
         rule.addCondition( _currentVerticalCondition );
-        rule.addCondition( (Condition) _horizontalConditions.get( column - (ruleTableColumn + 1) ) );
+        rule.addCondition(_horizontalConditions.get(column - (ruleTableColumn + 1)));
         rule.addConsequence( consequence );
     }
 

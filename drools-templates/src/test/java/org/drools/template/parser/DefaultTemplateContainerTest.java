@@ -39,7 +39,7 @@ public class DefaultTemplateContainerTest {
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        TemplateColumn column = columns.get(0);
         assertThat(column.getName()).isEqualTo("name");
         String contents = template.getContents();
         assertThat(contents.startsWith("rule \"How cool is @{name} @{row.rowNumber}\"")).isTrue();
@@ -59,7 +59,7 @@ public class DefaultTemplateContainerTest {
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        TemplateColumn column = columns.get(0);
         assertThat(column.getName()).isEqualTo("name");
         String contents = template.getContents();
         assertThat(contents.startsWith("rule \"Rule_@{row.rowNumber}\"")).isTrue();
@@ -80,7 +80,7 @@ public class DefaultTemplateContainerTest {
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        TemplateColumn column = columns.get(0);
         assertThat(column.getName()).isEqualTo("name");
         String contents = template.getContents();
         assertThat(contents.startsWith("rule \"Rule_@{row.rowNumber}\"")).isTrue();
@@ -101,7 +101,7 @@ public class DefaultTemplateContainerTest {
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        TemplateColumn column = columns.get(0);
         assertThat(column.getName()).isEqualTo("name");
         String contents = template.getContents();
         assertThat(contents.startsWith("rule \"Rule_@{row.rowNumber}\"")).isTrue();
@@ -136,11 +136,11 @@ public class DefaultTemplateContainerTest {
         assertThat(t.getColumns()[0].getName()).isEqualTo("name");
         Map<String, RuleTemplate> templates = t.getTemplates();
         assertThat(templates.size()).isEqualTo(1);
-        RuleTemplate template = (RuleTemplate) templates.get( "template1" );
+        RuleTemplate template = templates.get("template1");
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn templateColumn = (TemplateColumn) columns.get( 0 );
+        TemplateColumn templateColumn = columns.get(0);
         assertThat(templateColumn.getName()).isEqualTo("name");
         assertThat(templateColumn.getCondition()).isEqualTo("== \"name1\"");
         String contents = template.getContents();
@@ -226,24 +226,24 @@ public class DefaultTemplateContainerTest {
         Map<String, RuleTemplate> templates = t.getTemplates();
         assertThat(templates.size()).isEqualTo(2);
 
-        RuleTemplate template = (RuleTemplate) templates.get( "template1" );
+        RuleTemplate template = templates.get("template1");
         assertThat(template).isNotNull();
         List<TemplateColumn> columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(1);
-        TemplateColumn column = (TemplateColumn) columns.get( 0 );
+        TemplateColumn column = columns.get(0);
         assertThat(column.getName()).isEqualTo("first_name");
 
         String contents = template.getContents();
         assertThat(contents.startsWith("rule \"How cool is @{first_name} @{row.rowNumber}\"")).isTrue();
         assertThat(contents.endsWith("then\nend\n")).isTrue();
 
-        template = (RuleTemplate) templates.get( "template2" );
+        template = templates.get("template2");
         assertThat(template).isNotNull();
         columns = template.getColumns();
         assertThat(columns.size()).isEqualTo(2);
-        column = (TemplateColumn) columns.get( 0 );
+        column = columns.get(0);
         assertThat(column.getName()).isEqualTo("first_name");
-        TemplateColumn column2 = (TemplateColumn) columns.get( 1 );
+        TemplateColumn column2 = columns.get(1);
         assertThat(column2.getName()).isEqualTo("last_name");
         contents = template.getContents();
         assertThat(contents.startsWith("rule \"How uncool is @{first_name} @{row.rowNumber}\"")).isTrue();
@@ -256,9 +256,9 @@ public class DefaultTemplateContainerTest {
         InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_with_comment.drl" );
         DefaultTemplateContainer t = new DefaultTemplateContainer( is );
         Map<String, RuleTemplate> templates = t.getTemplates();
-        RuleTemplate template = (RuleTemplate) templates.get( "template1" );
+        RuleTemplate template = templates.get("template1");
         List<TemplateColumn> columns = template.getColumns();
-        TemplateColumn templateColumn = (TemplateColumn) columns.get( 0 );
+        TemplateColumn templateColumn = columns.get(0);
         String contents = template.getContents();
         assertThat(contents.contains("@{name}")).isTrue();
         assertThat(contents.contains("@{invalidName}")).isFalse();

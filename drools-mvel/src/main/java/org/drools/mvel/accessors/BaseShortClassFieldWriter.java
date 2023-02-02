@@ -63,7 +63,7 @@ public abstract class BaseShortClassFieldWriter extends BaseClassFieldWriter {
     public void setByteValue(final Object bean,
                              final byte value) {
         setShortValue( bean,
-                       (short) value );
+                       value);
 
     }
 
@@ -101,8 +101,8 @@ public abstract class BaseShortClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setShortValue",
-                                                      new Class[]{Object.class, short.class} );
+            return this.getClass().getDeclaredMethod("setShortValue",
+                                                     Object.class, short.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

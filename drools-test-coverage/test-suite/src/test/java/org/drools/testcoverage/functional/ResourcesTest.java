@@ -61,8 +61,8 @@ public class ResourcesTest {
                 "aggregation.drl");
 
         // since 6.2.x java.lang is also returned as a package
-        if(!kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
-            assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo((long) 3);
+        if(kieBaseTestConfiguration.getExecutableModelProjectClass().isEmpty()) {
+            assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo(3);
         }
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 4);
         verifyPackageWithImports(kbase, TestConstants.PACKAGE_TESTCOVERAGE_MODEL);
@@ -74,7 +74,7 @@ public class ResourcesTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
                 "sample.dsl", "sample.dslr");
 
-        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo((long) 1);
+        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of KiePackages").isEqualTo(1);
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 1);
     }
 
@@ -83,7 +83,7 @@ public class ResourcesTest {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
                 "sample.drl.xls");
 
-        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
+        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo(2);
 
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 3);
         verifyPackageWithImports(kbase, TestConstants.PACKAGE_TESTCOVERAGE_MODEL);
@@ -95,7 +95,7 @@ public class ResourcesTest {
                 ResourceUtil.getDecisionTableResourceFromClasspath("sample.drl.csv", getClass(), DecisionTableInputType.CSV);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
-        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
+        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo(2);
 
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 3);
         verifyPackageWithImports(kbase, TestConstants.PACKAGE_TESTCOVERAGE_MODEL);
@@ -116,7 +116,7 @@ public class ResourcesTest {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, res);
 
-        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
+        assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo(2);
 
         verifyPackageWithRules(kbase, TestConstants.PACKAGE_FUNCTIONAL, 2);
         verifyPackageWithImports(kbase, TestConstants.PACKAGE_TESTCOVERAGE_MODEL);
@@ -145,7 +145,7 @@ public class ResourcesTest {
 
         assertThat(pack).as("KiePackage with given name not found in KieBase").isNotNull();
         assertThat(pack.getName()).as("Unexpected package name").isEqualTo(packageName);
-        assertThat((long) pack.getRules().size()).as("Unexpected number of rules").isEqualTo((long) expectedRules);
+        assertThat((long) pack.getRules().size()).as("Unexpected number of rules").isEqualTo(expectedRules);
     }
 
     private void verifyPackageWithImports(final KieBase kbase, final String packageName) {
@@ -154,6 +154,6 @@ public class ResourcesTest {
 
         assertThat(pack).as("KiePackage with given name not found in KieBase").isNotNull();
         assertThat(pack.getName()).as("Unexpected package name").isEqualTo(packageName);
-        assertThat((long) pack.getRules().size()).as("Package with import should contain no rules").isEqualTo((long) 0);
+        assertThat((long) pack.getRules().size()).as("Package with import should contain no rules").isEqualTo(0);
     }
 }

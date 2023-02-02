@@ -15,7 +15,9 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -143,7 +145,7 @@ public class VarargsTest {
         public B(int value) { this.value = value; }
         public B(String value) { this.value = Integer.parseInt(value); }
         public int getValue() { return value; }
-        public boolean equals(Object other) { return other != null && other instanceof B && value == ((B)other).value; };
+        public boolean equals(Object other) { return other instanceof B && value == ((B) other).value; };
     }
 
     @PropertyReactive
@@ -165,9 +167,7 @@ public class VarargsTest {
 
         @Modifies("processed")
         public void add( String... strings ){
-            for( String s: strings ){
-                set.add( s );
-            }
+            Collections.addAll(set, strings);
         }
 
         public boolean contains( String s ){

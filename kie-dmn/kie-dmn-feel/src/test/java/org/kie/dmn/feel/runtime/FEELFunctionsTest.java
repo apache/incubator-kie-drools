@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -170,9 +171,9 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
                 { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) , null},
-                { "get entries({key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
-                { "get entries( m: {key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
-                { "get entries({key0 : \"value0\", key1 : \"value1\"})[key=\"key1\"].value", Arrays.asList("value1") , null},
+                {"get entries({key1 : \"value1\"})[key=\"key1\"].value", List.of("value1"), null},
+                {"get entries( m: {key1 : \"value1\"})[key=\"key1\"].value", List.of("value1"), null},
+                {"get entries({key0 : \"value0\", key1 : \"value1\"})[key=\"key1\"].value", List.of("value1"), null},
                 { "get value({key0 : \"value0\", key1 : \"value1\"}, \"key1\")", "value1" , null},
                 { "get value( key: \"key1\", m: {key0 : \"value0\", key1 : \"value1\"})", "value1" , null},
                 { "get value({key0 : \"value0\", key1 : \"value1\"}, \"unexistent-key\")", null, null}, // no error.

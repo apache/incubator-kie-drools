@@ -65,7 +65,7 @@ public class SubsumptantSubPatternsTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 //                System.out.println( " ** " + ((SubPattern) ((Subsumption) object).getLeft()).getItems() + " - " + ((SubPattern) ((Subsumption) object).getRight()).getItems() );
                 count++;
             }
@@ -105,7 +105,7 @@ public class SubsumptantSubPatternsTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
@@ -144,7 +144,7 @@ public class SubsumptantSubPatternsTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
@@ -184,7 +184,7 @@ public class SubsumptantSubPatternsTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }
@@ -223,7 +223,7 @@ public class SubsumptantSubPatternsTest {
         int count = 0;
         for (Object object : subsumptionList) {
             //            System.out.println( " * " + ((Subsumption) object) );
-            if (((VerifierComponent) ((Subsumption) object).getLeft()).getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
+            if (((Subsumption) object).getLeft().getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 count++;
             }
         }

@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -65,7 +66,7 @@ public class UnmarshalMarshalTest {
 
     @Test
     public void testV13_ch11example_asFromOMG() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving.
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving.
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_3/", "Chapter 11 Example.dmn", marshaller, DMN13_SCHEMA_SOURCE);
     }
 
@@ -183,19 +184,17 @@ DMNDIv1.2:
 <xsd:attribute name="isCollapsed" type="xsd:boolean" use="optional" default="false"/>
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
-        attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
-                new QName("expressionLanguage"),
-                new QName("typeLanguage"),
-                new QName("isCollection"),
-                new QName("hitPolicy"),
-                new QName("preferredOrientation"),
-                new QName("kind"),
-                new QName("textFormat"),
-                new QName("associationDirection"),
-                new QName("isCollapsed")
-        }));
+        attrWhichCanDefault.addAll(Arrays.asList(new QName("expressionLanguage"),
+                                                 new QName("typeLanguage"),
+                                                 new QName("isCollection"),
+                                                 new QName("hitPolicy"),
+                                                 new QName("preferredOrientation"),
+                                                 new QName("kind"),
+                                                 new QName("textFormat"),
+                                                 new QName("associationDirection"),
+                                                 new QName("isCollapsed")));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
-        nodeHavingDefaultableAttr.addAll(Arrays.asList(new String[]{"definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape"}));
+        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent", "encapsulatedLogic", "textAnnotation", "association", "DMNShape"));
         Diff checkSimilar = DiffBuilder
                 .compare(control)
                 .withTest(test)
@@ -225,7 +224,6 @@ DMNDIv1.2:
                                                                    if (check) {
                                                                        testIsDefaulableAttribute = true;
                                                                        whichDefaultableAttr = a;
-                                                                       continue;
                                                                    }
                                                                }
                                                            }

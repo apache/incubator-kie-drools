@@ -51,9 +51,9 @@ public class KieFunctionsTest {
         assertThat(KieFunctions.equalsTo((Integer) null, null)).isTrue();
         assertThat(KieFunctions.equalsTo((Integer) null, "1")).isFalse();
 
-        assertThat(KieFunctions.equalsToIgnoreCase((String) null, null)).isTrue();
+        assertThat(KieFunctions.equalsToIgnoreCase(null, null)).isTrue();
         assertThat(KieFunctions.equalsToIgnoreCase("TEST", "test")).isTrue();
-        assertThat(KieFunctions.equalsToIgnoreCase((String) null, "a")).isFalse();
+        assertThat(KieFunctions.equalsToIgnoreCase(null, "a")).isFalse();
         assertThat(KieFunctions.equalsToIgnoreCase("f", null)).isFalse();
 
         boolean comparitionFailed = false;

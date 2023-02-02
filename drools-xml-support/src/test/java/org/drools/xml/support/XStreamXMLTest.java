@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
+import org.drools.commands.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.commands.runtime.process.StartProcessCommand;
 import org.drools.commands.runtime.rule.AgendaGroupSetFocusCommand;
@@ -137,7 +138,7 @@ public class XStreamXMLTest {
 
         FactHandle factHandle = DefaultFactHandle.createFromExternalFormat("0:1:10:10:20:null:NON_TRAIT:null");
 
-        ModifyCommand cmd = new ModifyCommand(factHandle, Arrays.asList(new ModifyCommand.SetterImpl("name", "value")));
+        ModifyCommand cmd = new ModifyCommand(factHandle, Arrays.asList(new SetterImpl("name", "value")));
         String xmlString = xstream.toXML( cmd );
         assertThat(xmlString).isEqualTo("<modify fact-handle=\"0:1:10:10:20:null:NON_TRAIT:null\">\n" +
                 "  <set accessor=\"name\" value=\"value\"/>\n" +

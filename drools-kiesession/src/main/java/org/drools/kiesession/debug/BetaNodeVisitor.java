@@ -34,7 +34,7 @@ public class BetaNodeVisitor extends AbstractNetworkNodeVisitor {
                            Collection<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         BetaNode bn = (BetaNode) node;
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo(node);
         final BetaMemory memory = (BetaMemory) info.getSession().getNodeMemory( bn );
         
         ni.setMemoryEnabled( true );

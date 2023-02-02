@@ -592,7 +592,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
     private static MVELAnalysisResult analyzeExpression(String expr,
                                                         ParserConfiguration conf,
                                                         BoundIdentifiers availableIdentifiers) {
-        if ( expr.trim().length() <= 0 ) {
+        if (expr.trim().length() == 0) {
             MVELAnalysisResult result = analyze( (Set<String> ) Collections.EMPTY_SET, availableIdentifiers );
             result.setMvelVariables( new HashMap<>() );
             result.setTypesafe( true );
@@ -725,7 +725,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                     objectType.getClassName(),
                     fieldName,
                     context.isTypesafe(),
-                    (( MVELAnalysisResult ) analysis).getReturnType());
+                    analysis.getReturnType());
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData("mvel");
             (( MVELCompileable ) reader).compile(data, context.getRule());

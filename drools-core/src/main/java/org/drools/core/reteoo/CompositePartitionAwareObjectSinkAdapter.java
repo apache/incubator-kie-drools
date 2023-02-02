@@ -109,7 +109,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     public void propagateAssertObject( InternalFactHandle factHandle, PropagationContext context, ReteEvaluator reteEvaluator ) {
         ActivationsManager compositeAgenda = reteEvaluator.getActivationsManager();
         if (hashed) {
-            AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new CompositeObjectSinkAdapter.HashKey( fieldIndex, factHandle.getObject() ) );
+            AlphaNode sink = this.hashedSinkMap.get(new CompositeObjectSinkAdapter.HashKey(fieldIndex, factHandle.getObject() ));
             if ( sink != null ) {
                 compositeAgenda.getPartitionedAgenda( sink.getPartitionId().getParallelEvaluationSlot() )
                                .addPropagation( new HashedInsert( sink, factHandle, context ) );

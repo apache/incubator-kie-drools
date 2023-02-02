@@ -22,7 +22,7 @@ public class FEELProfileTest {
     public void testFeelProfileFunctionsAndValues() {
 
         // Instantiate a new FEEL with the profile to try the method that uses the data cache
-        FEEL feel = FEEL.newInstance(Arrays.asList(new TestFEELProfile()));
+        FEEL feel = FEEL.newInstance(List.of(new TestFEELProfile()));
 
         assertThat(feel.evaluate("use cache(\"val 1\")")).isEqualTo("1");
         assertThat(feel.evaluate("use cache(\"val 3\")")).isEqualTo("3");
@@ -36,7 +36,7 @@ public class FEELProfileTest {
 
         @Override
         public List<FEELFunction> getFEELFunctions() {
-            return Arrays.asList(new UseCacheFunction());
+            return List.of(new UseCacheFunction());
         }
 
         @Override

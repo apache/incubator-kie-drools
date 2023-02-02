@@ -138,10 +138,9 @@ public class EvalHelper {
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
-        if (value == null ||
-                !(value instanceof Number
-                        || value instanceof String)
-                || (value instanceof Double
+        if (!(value instanceof Number
+              || value instanceof String)
+            || (value instanceof Double
                 && (value.toString().equals("NaN") || value.toString().equals("Infinity") || value.toString().equals("-Infinity")))) {
             return null;
         }
@@ -177,7 +176,7 @@ public class EvalHelper {
     }
 
     public static Boolean getBooleanOrNull(final Object value) {
-        if (value == null || !(value instanceof Boolean)) {
+        if (!(value instanceof Boolean)) {
             return null;
         }
         return (Boolean) value;
@@ -475,9 +474,9 @@ public class EvalHelper {
 
         final String methodName = accessor.getName();
         if (methodName.startsWith("get")) {
-            return Optional.of(lcFirst(methodName.substring(3, methodName.length())));
+            return Optional.of(lcFirst(methodName.substring(3)));
         } else if (methodName.startsWith("is")) {
-            return Optional.of(lcFirst(methodName.substring(2, methodName.length())));
+            return Optional.of(lcFirst(methodName.substring(2)));
         } else {
             return Optional.of(lcFirst(methodName));
         }

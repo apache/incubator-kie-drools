@@ -137,14 +137,12 @@ public class DMNMessageImpl implements DMNMessage {
     @Override
     public Level getLevel() {
         switch (severity) {
-            case ERROR:
-                return Level.ERROR;
             case INFO:
-                return Level.INFO;
             case TRACE:
                 return Level.INFO;
             case WARN:
                 return Level.WARNING;
+            case ERROR:
             default:
                 return Level.ERROR;
         }

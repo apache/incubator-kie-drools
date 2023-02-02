@@ -73,7 +73,7 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
                     Object object = readItem(reader, context, null);
                     if (object instanceof DMNModelInstrumentedBase) {
                         ((KieDMNModelInstrumentedBase) object).setParent(obj);
-                        ((KieDMNModelInstrumentedBase) obj).addChildren((KieDMNModelInstrumentedBase) object);
+                        obj.addChildren((KieDMNModelInstrumentedBase) object);
                     }
                     assignChildElement(obj, nodeName, object);
                 } catch (CannotResolveClassException e) {

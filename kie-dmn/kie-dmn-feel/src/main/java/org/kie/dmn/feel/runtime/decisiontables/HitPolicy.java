@@ -473,8 +473,8 @@ public enum HitPolicy {
                     if ( !(a instanceof Number && b instanceof Number) ) {
                         return null;
                     } else {
-                        BigDecimal aB = new BigDecimal( ((Number) a).toString() );
-                        BigDecimal bB = new BigDecimal( ((Number) b).toString() );
+                        BigDecimal aB = new BigDecimal( a.toString() );
+                        BigDecimal bB = new BigDecimal( b.toString() );
                         return aB.add( bB );
                     }
                 } ) );

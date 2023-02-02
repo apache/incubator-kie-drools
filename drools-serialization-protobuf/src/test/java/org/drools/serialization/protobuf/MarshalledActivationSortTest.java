@@ -104,7 +104,7 @@ public class MarshalledActivationSortTest {
         when(a.getRule()).thenReturn(rule);
         when(a.toString()).thenReturn(line.toString());
 
-        Tuple tuple1 = null, tuple2 = null, tuple3 = null, tuple4 = null;
+        Tuple tuple1 = null, tuple2 = null, tuple3 = null, tuple4;
         if (line.ids.size() >= 1) {
             tuple1 = mockTuple(line.ids.get(0));
             when(a.getTuple()).thenReturn(tuple1);

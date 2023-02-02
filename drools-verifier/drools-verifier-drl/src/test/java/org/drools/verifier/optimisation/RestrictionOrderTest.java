@@ -67,7 +67,7 @@ public class RestrictionOrderTest extends TestBaseOld {
 
         Collection<String> ruleNames = new ArrayList<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 String name = ((VerifierMessage) o).getCauses().toArray(new Restriction[2])[0].getRuleName();
 
@@ -104,7 +104,7 @@ public class RestrictionOrderTest extends TestBaseOld {
 
         Collection<String> ruleNames = new ArrayList<String>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof VerifierMessage) {
                 String name = ((VerifierMessage) o).getCauses().toArray(new RuleComponent[2])[0].getRuleName();
 

@@ -196,7 +196,7 @@ public abstract class BaseFEELFunction
                 continue;
             }
 
-            Object[] actualParams = null;
+            Object[] actualParams;
             boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
             if( injectCtx ) {
                 actualParams = new Object[ params.length + 1 ];
@@ -387,7 +387,7 @@ public abstract class BaseFEELFunction
     @GwtIncompatible
     private static class CandidateMethod {
         private Method   apply         = null;
-        private Object[] actualParams  = null;
+        private Object[] actualParams;
         private Class[]  actualClasses = null;
         private int score;
 

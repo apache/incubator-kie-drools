@@ -36,8 +36,8 @@ public class BeforeFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( beforeFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( beforeFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(beforeFunction.invoke((Comparable) null, "b"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(beforeFunction.invoke("a", (Comparable) null), InvalidParametersEvent.class);
     }
 
     @Test

@@ -466,7 +466,7 @@ public class DMNModelImpl
     }
 
     public void setImportAliasForNS(String iAlias, String iNS, String iModelName) {
-        if (!getImportAliasFor(iNS, iModelName).isPresent()) {
+        if (getImportAliasFor(iNS, iModelName).isEmpty()) {
             this.importAliases.put(iAlias, new QName(iNS, iModelName));
         }
     }
@@ -542,7 +542,7 @@ public class DMNModelImpl
             }
             if (alias != null) {
                 Collection<List<String>> allPrefixesUnderMyNamespace = result.computeIfAbsent(node.getNamespace(), k -> new ArrayList<>());
-                allPrefixesUnderMyNamespace.add(Arrays.asList(alias));
+                allPrefixesUnderMyNamespace.add(List.of(alias));
             }
             return result;
         }

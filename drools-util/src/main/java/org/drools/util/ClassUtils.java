@@ -74,10 +74,6 @@ public final class ClassUtils {
         m.put("double", "D");
         m.put("char", "C");
         m.put("void", "V");
-        final Map<String, String> r = new HashMap<>();
-        for (final Map.Entry<String, String> e : m.entrySet()) {
-            r.put(e.getValue(), e.getKey());
-        }
         abbreviationMap = Collections.unmodifiableMap(m);
 
         final Map<String, Class<?>> m2 = new HashMap<>();
@@ -395,7 +391,7 @@ public final class ClassUtils {
         Map<String, Integer> accessorPriorityMap = accessorPriorityMap(field);
         List<Method> accessors = accessorPriorityMap.keySet()
                                                     .stream()
-                                                    .map(methodName -> getMethod(clazz, methodName, new Class<?>[0]))
+                                                    .map(methodName -> getMethod(clazz, methodName))
                                                     .filter(Optional::isPresent)
                                                     .map(Optional::get)
                                                     .filter(method -> !(method.getName().startsWith("is") && !method.getReturnType().equals(boolean.class)))

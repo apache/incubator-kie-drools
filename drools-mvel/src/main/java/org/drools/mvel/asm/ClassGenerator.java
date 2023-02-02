@@ -588,7 +588,7 @@ public class ClassGenerator {
             if (type == String.class || type == Object.class) {
                 mv.visitLdcInsn(obj);
             } else if (type == char.class) {
-                mv.visitIntInsn(BIPUSH, (int) ((Character) obj).charValue());
+                mv.visitIntInsn(BIPUSH, ((Character) obj).charValue());
             } else if (type.isPrimitive()) {
                 if (obj instanceof String) {
                     obj = coerceStringToPrimitive(type, (String) obj);

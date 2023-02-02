@@ -31,7 +31,7 @@ public class WaltzUtil {
     }
 
     private static int get_x(int val) {
-        return (int) (val / MOD_NUM);
+        return val / MOD_NUM;
     }
 
     /***************************************************************************

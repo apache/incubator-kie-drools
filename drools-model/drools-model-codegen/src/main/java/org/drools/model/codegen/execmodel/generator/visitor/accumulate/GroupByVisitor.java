@@ -52,7 +52,7 @@ public class GroupByVisitor extends AccumulateVisitor {
         Expression expr = parseExpression(groupByDescr.getGroupingFunction());
         TypedExpressionResult result = new ExpressionTyper(context).toTypedExpression(expr);
         Optional<TypedExpression> optResult = result.getTypedExpression();
-        if ( !optResult.isPresent() ) {
+        if (optResult.isEmpty()) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse grouping expression: " + groupByDescr.getGroupingFunction() ) );
             return;
         }

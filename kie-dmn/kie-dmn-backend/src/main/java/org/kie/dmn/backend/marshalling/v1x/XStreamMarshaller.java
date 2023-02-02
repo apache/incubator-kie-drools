@@ -77,10 +77,8 @@ public class XStreamMarshaller implements DMNMarshaller {
                 case DMN_v1_3:
                     result = xstream13.unmarshal(secondStringReader);
                     break;
-                case DMN_v1_4:
-                    result = xstream14.unmarshal(secondStringReader);
-                    break;
                 case UNKNOWN:
+                case DMN_v1_4:
                 default:
                     result = xstream14.unmarshal(secondStringReader);
                     break;

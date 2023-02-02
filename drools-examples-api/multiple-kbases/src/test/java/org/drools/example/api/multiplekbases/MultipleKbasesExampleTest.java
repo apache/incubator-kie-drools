@@ -48,7 +48,7 @@ public class MultipleKbasesExampleTest {
         List<Integer> list = useKieSession("ksession2");
         // import package org.some.pkg
         assertEquals(1, list.size());
-        assertTrue(list.containsAll(asList(1)));
+        assertTrue(list.containsAll(List.of(1)));
     }
 
     @Test

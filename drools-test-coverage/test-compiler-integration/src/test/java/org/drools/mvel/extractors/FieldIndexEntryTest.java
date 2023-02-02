@@ -110,7 +110,7 @@ public class FieldIndexEntryTest {
         index.add( h1RightTuple );
         index.add( h2RightTuple );
         assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
-        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
+        assertThat(index.getFirst().getNext().getFactHandle()).isEqualTo(h2);
 
         // test get
         assertThat(index.get(h1).getFactHandle()).isEqualTo(h1);
@@ -164,8 +164,8 @@ public class FieldIndexEntryTest {
         index.add( h2RightTuple );
         index.add( h3RightTuple );
         assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
-        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
-        assertThat(((RightTuple) index.getFirst().getNext().getNext()).getFactHandle()).isEqualTo(h3);
+        assertThat(index.getFirst().getNext().getFactHandle()).isEqualTo(h2);
+        assertThat(index.getFirst().getNext().getNext().getFactHandle()).isEqualTo(h3);
 
         // test get
         assertThat(index.get(h1).getFactHandle()).isEqualTo(h1);
@@ -176,17 +176,17 @@ public class FieldIndexEntryTest {
         //remove first
         index.remove( h3RightTuple );
         assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
-        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
+        assertThat(index.getFirst().getNext().getFactHandle()).isEqualTo(h2);
 
         index.add( h3RightTuple );
         index.remove( h2RightTuple );
         assertThat(index.getFirst().getFactHandle()).isEqualTo(h1);
-        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h3);
+        assertThat(index.getFirst().getNext().getFactHandle()).isEqualTo(h3);
 
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
         assertThat(index.getFirst().getFactHandle()).isEqualTo(h3);
-        assertThat(((RightTuple) index.getFirst().getNext()).getFactHandle()).isEqualTo(h2);
+        assertThat(index.getFirst().getNext().getFactHandle()).isEqualTo(h2);
 
         index.remove( index.getFirst() );
         // check index type does not change, as this fact is removed

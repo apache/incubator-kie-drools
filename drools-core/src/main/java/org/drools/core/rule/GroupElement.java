@@ -42,7 +42,7 @@ public class GroupElement extends ConditionalElement
     public static final Type  NOT                  = Type.NOT;
     public static final Type  EXISTS               = Type.EXISTS;
 
-    private Type              type                 = null;
+    private Type              type;
 
     private List<RuleConditionElement> children    = new ArrayList<>();
 
@@ -243,7 +243,7 @@ public class GroupElement extends ConditionalElement
 
     public boolean equals(final Object object) {
         // Return false if its null or not an instance of ConditionalElement
-        if ( object == null || !(object instanceof GroupElement) ) {
+        if (!(object instanceof GroupElement)) {
             return false;
         }
 

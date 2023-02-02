@@ -39,7 +39,7 @@ public enum BaseExpressionOperator {
 
         @Override
         protected boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            if (!match(rawValue).isPresent()) {
+            if (match(rawValue).isEmpty()) {
                 return false;
             }
             String[] expressionParts = rawValue.split(symbols.get(0));
@@ -63,7 +63,7 @@ public enum BaseExpressionOperator {
         }
 
         private List<String> getValues(String rawValue) {
-            if (!match(rawValue).isPresent()) {
+            if (match(rawValue).isEmpty()) {
                 return Collections.emptyList();
             }
             if (!rawValue.endsWith("]")) {
@@ -115,7 +115,7 @@ public enum BaseExpressionOperator {
     RANGE(4, "<", ">", "<=", ">=") {
         @Override
         public boolean eval(String rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            if (!match(rawValue).isPresent()) {
+            if (match(rawValue).isEmpty()) {
                 return false;
             }
 

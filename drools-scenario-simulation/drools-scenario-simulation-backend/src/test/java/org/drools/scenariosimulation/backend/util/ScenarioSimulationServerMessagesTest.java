@@ -17,6 +17,7 @@ package org.drools.scenariosimulation.backend.util;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -46,9 +47,9 @@ public class ScenarioSimulationServerMessagesTest {
         String wrongValue = "value";
         String testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Collections.emptyList(), wrongValue);
         assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Impossible to find elements in the collection to satisfy the conditions.");
-        testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Arrays.asList("Item #2"), wrongValue);
+        testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, List.of("Item #2"), wrongValue);
         assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Value \"value\" is wrong in \"Item #2\"");
-        testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, Arrays.asList("Item #2"), null);
+        testResult = ScenarioSimulationServerMessages.getCollectionFactExceptionMessage(factName, List.of("Item #2"), null);
         assertThat(testResult).isEqualTo("Failed in \"Fact.name\": Wrong in \"Item #2\"");
 
     }

@@ -49,7 +49,7 @@ public class ColumnReplaceTest {
             System.out.println(kbuilder.getErrors());
             fail("Knowledge builder cannot compile package!");
         }
-        System.out.println(DecisionTableFactory.loadFromInputStream(new FileInputStream(new File("src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv")), dTableConfiguration));
+        System.out.println(DecisionTableFactory.loadFromInputStream(new FileInputStream("src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv"), dTableConfiguration));
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addPackages(kbuilder.getKnowledgePackages());
 

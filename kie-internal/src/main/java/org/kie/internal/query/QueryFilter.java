@@ -47,12 +47,10 @@ public class QueryFilter extends QueryContext {
     }
 
     public QueryFilter(QueryFilter orig) {
-        super((QueryContext) orig);
+        super(orig);
         this.language = orig.language;
         this.filterParams = orig.filterParams;
-        for( Entry<String, Object> entry : params.entrySet() ) {
-           params.put(entry.getKey(), entry.getValue());
-        }
+        params.putAll(params);
     }
 
     public QueryFilter(int offset, int count) {

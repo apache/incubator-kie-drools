@@ -18,6 +18,7 @@ package org.kie.dmn.xls2dmn.cli;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,7 +50,7 @@ public class TestUtils {
 
         Either<Exception, DMNRuntime> fromResources = DMNRuntimeBuilder.fromDefaults()
                                                                        .buildConfiguration()
-                                                                       .fromResources(Arrays.asList(ResourceFactory.newFileResource(outFile)));
+                                                                       .fromResources(Collections.singletonList(ResourceFactory.newFileResource(outFile)));
 
         LOG.info("{}", System.getProperty("java.io.tmpdir"));
         LOG.info("{}", outFile);

@@ -50,7 +50,7 @@ public class LeftBuilder {
 
     public LeftBuilder update(Object... objects) {
         for ( Object object : objects ) {
-            InternalFactHandle fh = (InternalFactHandle) wm.getFactHandle( object );
+            InternalFactHandle fh = wm.getFactHandle(object);
             LeftTuple leftTuple = fh.getFirstLeftTuple();
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addUpdate( leftTuple );
@@ -60,7 +60,7 @@ public class LeftBuilder {
 
     public LeftBuilder delete(Object... objects) {
         for ( Object object : objects ) {
-            InternalFactHandle fh = (InternalFactHandle) wm.getFactHandle( object );
+            InternalFactHandle fh = wm.getFactHandle(object);
             LeftTuple leftTuple = fh.getFirstLeftTuple();
             leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addDelete( leftTuple );

@@ -19,7 +19,6 @@ package org.kie.dmn.feel.runtime.functions;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;

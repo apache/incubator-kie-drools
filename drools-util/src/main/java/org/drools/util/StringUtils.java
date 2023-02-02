@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -456,9 +457,7 @@ public class StringUtils {
             throw new IndexOutOfBoundsException( "Cannot pad a negative amount: " + repeat );
         }
         final char[] buf = new char[repeat];
-        for ( int i = 0; i < buf.length; i++ ) {
-            buf[i] = padChar;
-        }
+        Arrays.fill(buf, padChar);
         return new String( buf );
     }
 

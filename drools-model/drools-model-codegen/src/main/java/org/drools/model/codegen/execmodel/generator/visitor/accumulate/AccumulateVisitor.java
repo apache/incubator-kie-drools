@@ -233,7 +233,7 @@ public class AccumulateVisitor {
     private void nameExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, Expression accumulateFunctionParameter) {
         String nameExpr = ((DrlNameExpr) accumulateFunctionParameter).getName().asString();
         Optional<DeclarationSpec> declaration = context.getDeclarationById(nameExpr);
-        if ( !declaration.isPresent() ) {
+        if (declaration.isEmpty()) {
             String name = nameExpr;
             declaration = context.getAllDeclarations().stream().filter( d -> d.getVariableName().map( n -> n.equals( name ) ).orElse( false ) ).findFirst();
             if ( declaration.isPresent() ) {

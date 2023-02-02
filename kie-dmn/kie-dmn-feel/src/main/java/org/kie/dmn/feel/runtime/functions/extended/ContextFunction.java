@@ -49,8 +49,8 @@ public class ContextFunction extends BaseFEELFunction {
             final int h_index = i + 1;
             if (entries.get(i) instanceof Map) {
                 Map<?, ?> map = (Map<?, ?>) entries.get(i);
-                String key = null;
-                Object value = null;
+                String key;
+                Object value;
                 if (map.get("key") instanceof String) {
                     key = (String) map.get("key");
                 } else {

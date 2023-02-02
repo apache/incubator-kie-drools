@@ -17,7 +17,9 @@ package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +83,7 @@ public class PropertySpecificTest {
 
     public static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {
         ObjectType objectType = objectTypeNode.getObjectType();
-        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+        return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
 
     @Test
@@ -1873,11 +1875,7 @@ public class PropertySpecificTest {
     }    
 
     <T> List<T> list(T... items) {
-        List<T> list = new ArrayList<T>();
-        for ( T item : items ) {
-            list.add( item);
-        }
-        return list;
+        return Arrays.asList(items);
     }
 
     public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {

@@ -94,7 +94,7 @@ public abstract class DMNTypeRegistryAbstract implements DMNTypeRegistry, FEELTy
     protected void registerAsFEELType(DMNType dmnType) {
         Optional<String> optAliasKey = keyfromNS(dmnType.getNamespace());
         Type feelType = ((BaseDMNTypeImpl) dmnType).getFeelType();
-        if (!optAliasKey.isPresent()) {
+        if (optAliasKey.isEmpty()) {
             feelTypesScope.define(new TypeSymbol(dmnType.getName(), feelType));
         } else {
             String aliasKey = optAliasKey.get();

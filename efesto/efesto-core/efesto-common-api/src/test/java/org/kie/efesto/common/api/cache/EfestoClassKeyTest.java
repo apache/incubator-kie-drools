@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

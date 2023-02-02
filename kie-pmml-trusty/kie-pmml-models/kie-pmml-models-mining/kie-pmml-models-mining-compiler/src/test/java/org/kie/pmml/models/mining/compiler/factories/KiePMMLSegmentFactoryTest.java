@@ -50,7 +50,6 @@ import org.xml.sax.SAXException;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;

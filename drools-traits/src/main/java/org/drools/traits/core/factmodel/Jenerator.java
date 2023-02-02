@@ -84,7 +84,7 @@ public class Jenerator {
     }
 
     public Fact[] loadMetaModel(JarInputStream jis) throws Exception {
-        JarEntry entry = null;
+        JarEntry entry;
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if (entry.getName().equals("factmodel.xml")) {
                 return fromXML(jis);

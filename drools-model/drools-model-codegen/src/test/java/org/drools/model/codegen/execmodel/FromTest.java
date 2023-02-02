@@ -351,9 +351,9 @@ public class FromTest extends BaseModelTest {
 
     public static class Setting {
 
-        private int rowNo = 0;
-        private int colNo = 0;
-        private Integer value = null;
+        private int rowNo;
+        private int colNo;
+        private Integer value;
 
         public Setting(int rowNo, int colNo, Integer value) {
             this.rowNo = rowNo;
@@ -389,9 +389,9 @@ public class FromTest extends BaseModelTest {
 
     public static class Cell {
 
-        private int rowNo = 0;
-        private int colNo = 0;
-        private Integer value = null;
+        private int rowNo;
+        private int colNo;
+        private Integer value;
         private Set<Cell> exCells;
         private Set<Integer> free;
 
@@ -462,7 +462,7 @@ public class FromTest extends BaseModelTest {
 
     public static class Counter {
 
-        private int count = 0;
+        private int count;
 
         public Counter(int count) {
             super();

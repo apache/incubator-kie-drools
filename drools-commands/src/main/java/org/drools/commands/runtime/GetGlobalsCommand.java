@@ -28,7 +28,7 @@ public class GetGlobalsCommand
 
     public Globals execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        return (Globals) ksession.getGlobals();
+        return ksession.getGlobals();
     }
 
     public String toString() {

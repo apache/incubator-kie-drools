@@ -101,8 +101,8 @@ public abstract class BaseCharClassFieldWriter extends BaseClassFieldWriter {
 
     public Method getNativeWriteMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "setCharValue",
-                                                      new Class[]{Object.class, char.class} );
+            return this.getClass().getDeclaredMethod("setCharValue",
+                                                     Object.class, char.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

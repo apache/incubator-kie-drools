@@ -49,15 +49,15 @@ public class YearAddFunction
         }
 
         try {
-            Object r = null;
+            TemporalAccessor r = null;
             if( datetime.contains( "T" ) ) {
                 r = BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( datetime ).cata( BuiltInType.justNull(), Function.identity() );
             } else {
                 r = BuiltInFunctions.getFunction( DateFunction.class ).invoke( datetime ).cata( BuiltInType.justNull(), Function.identity() );
             }
 
-            if ( r != null && r instanceof TemporalAccessor ) {
-                return invoke( (TemporalAccessor) r, years );
+            if (r instanceof TemporalAccessor) {
+                return invoke(r, years);
             } else {
                 return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datestring", "date-parsing exception" ) );
             }

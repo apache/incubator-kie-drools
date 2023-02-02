@@ -297,7 +297,7 @@ public class DTAnalysis {
                                                                        c.feelText,
                                                                        c.rule,
                                                                        c.column),
-                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), Arrays.asList(c.rule)));
+                                                 Msg.DTANALYSIS_2NDNFVIOLATION.getType(), List.of(c.rule)));
         }
         return results;
     }
@@ -581,7 +581,7 @@ public class DTAnalysis {
                         if (ddtaInputClause.isDiscreteDomain()) {
                             flatten = Interval.normalizeDiscrete(flatten, ddtaInputClause.getDiscreteValues());
                         }
-                        Contraction contraction = new Contraction(ruleId, Arrays.asList(otherRuleId), detectedAdjacentOrOverlap, flatten);
+                        Contraction contraction = new Contraction(ruleId, List.of(otherRuleId), detectedAdjacentOrOverlap, flatten);
                         LOG.debug("NEW CONTRACTION: {}", contraction);
                         contractions.add(contraction);
                     } else {
