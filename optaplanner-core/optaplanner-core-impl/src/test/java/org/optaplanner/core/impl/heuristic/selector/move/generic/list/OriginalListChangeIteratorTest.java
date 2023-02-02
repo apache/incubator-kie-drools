@@ -15,6 +15,7 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
@@ -36,13 +37,19 @@ class OriginalListChangeIteratorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
-        OriginalListChangeIterator<TestdataListSolution> listSwapIterator = new OriginalListChangeIterator<>(
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockEntityIndependentValueSelector(values.toArray());
+        OriginalListChangeIterator<TestdataListSolution> listChangeIterator = new OriginalListChangeIterator<>(
                 listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
-                mockEntityIndependentValueSelector(values.toArray()),
-                mockEntitySelector(entities.toArray()));
+                valueSelector,
+                new ElementDestinationSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(entities.toArray()),
+                        valueSelector,
+                        false));
 
-        assertThat(listSwapIterator).isExhausted();
+        assertThat(listChangeIterator).isExhausted();
     }
 }

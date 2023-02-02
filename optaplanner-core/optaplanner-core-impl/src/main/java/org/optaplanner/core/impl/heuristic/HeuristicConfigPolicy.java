@@ -33,6 +33,7 @@ public class HeuristicConfigPolicy<Solution_> {
     private final ClassInstanceCache classInstanceCache;
     private final boolean reinitializeVariableFilterEnabled;
     private final boolean initializedChainedValueFilterEnabled;
+    private final boolean unassignedValuesAllowed;
 
     private final Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
     private final Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
@@ -50,6 +51,7 @@ public class HeuristicConfigPolicy<Solution_> {
         this.classInstanceCache = builder.classInstanceCache;
         this.reinitializeVariableFilterEnabled = builder.reinitializeVariableFilterEnabled;
         this.initializedChainedValueFilterEnabled = builder.initializedChainedValueFilterEnabled;
+        this.unassignedValuesAllowed = builder.unassignedValuesAllowed;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -98,6 +100,10 @@ public class HeuristicConfigPolicy<Solution_> {
 
     public boolean isInitializedChainedValueFilterEnabled() {
         return initializedChainedValueFilterEnabled;
+    }
+
+    public boolean isUnassignedValuesAllowed() {
+        return unassignedValuesAllowed;
     }
 
     // ************************************************************************
@@ -188,6 +194,7 @@ public class HeuristicConfigPolicy<Solution_> {
 
         private boolean reinitializeVariableFilterEnabled = false;
         private boolean initializedChainedValueFilterEnabled = false;
+        private boolean unassignedValuesAllowed = false;
 
         public Builder(EnvironmentMode environmentMode, Integer moveThreadCount, Integer moveThreadBufferSize,
                 Class<? extends ThreadFactory> threadFactoryClass, InitializingScoreTrend initializingScoreTrend,
@@ -223,6 +230,11 @@ public class HeuristicConfigPolicy<Solution_> {
 
         public Builder<Solution_> withInitializedChainedValueFilterEnabled(boolean initializedChainedValueFilterEnabled) {
             this.initializedChainedValueFilterEnabled = initializedChainedValueFilterEnabled;
+            return this;
+        }
+
+        public Builder<Solution_> withUnassignedValuesAllowed(boolean unassignedValuesAllowed) {
+            this.unassignedValuesAllowed = unassignedValuesAllowed;
             return this;
         }
 

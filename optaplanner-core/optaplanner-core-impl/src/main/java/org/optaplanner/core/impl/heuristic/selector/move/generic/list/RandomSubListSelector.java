@@ -73,17 +73,19 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
 
     @Override
     public long getSize() {
-        long size = 0;
+        long subListCount = 0;
         for (Object entity : ((Iterable<Object>) entitySelector::endingIterator)) {
             int listSize = listVariableDescriptor.getListSize(entity);
+            // Add subLists bigger than minimum subList size.
             if (listSize >= minimumSubListSize) {
-                size += TriangularNumbers.nthTriangle(listSize - minimumSubListSize + 1);
+                subListCount += TriangularNumbers.nthTriangle(listSize - minimumSubListSize + 1);
+                // Subtract moves with subLists bigger than maximum subList size.
                 if (listSize > maximumSubListSize) {
-                    size -= TriangularNumbers.nthTriangle(listSize - maximumSubListSize);
+                    subListCount -= TriangularNumbers.nthTriangle(listSize - maximumSubListSize);
                 }
             }
         }
-        return size;
+        return subListCount;
     }
 
     @Override
@@ -134,6 +136,14 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
 
             return new SubList(sourceEntity, sourceIndex, subListLength);
         }
+    }
+
+    public int getMinimumSubListSize() {
+        return minimumSubListSize;
+    }
+
+    public int getMaximumSubListSize() {
+        return maximumSubListSize;
     }
 
     @Override

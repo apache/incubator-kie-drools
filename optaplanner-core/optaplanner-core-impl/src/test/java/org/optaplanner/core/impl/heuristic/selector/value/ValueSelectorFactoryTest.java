@@ -2,13 +2,19 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -20,14 +26,21 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.AssignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.UnassignedValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
 class ValueSelectorFactoryTest {
 
@@ -246,6 +259,39 @@ class ValueSelectorFactoryTest {
                 .withMessageContaining("has another property");
     }
 
+    static Stream<Arguments> applyListValueFiltering() {
+        return Stream.of(
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED, AssignedValueSelector.class),
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.ACCEPT_UNASSIGNED, UnassignedValueSelector.class),
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.NONE,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.ACCEPT_UNASSIGNED,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.NONE,
+                        DummyEntityIndependentValueSelector.class));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void applyListValueFiltering(
+            boolean isUnassignedValuesAllowed,
+            ValueSelectorFactory.ListValueFilteringType listValueFilteringType,
+            Class<? extends ValueSelector> expectedValueSelectorClass) {
+        HeuristicConfigPolicy<TestdataListSolution> configPolicy = mock(HeuristicConfigPolicy.class);
+        when(configPolicy.isUnassignedValuesAllowed()).thenReturn(isUnassignedValuesAllowed);
+
+        DummyEntityIndependentValueSelector baseValueSelector = new DummyEntityIndependentValueSelector();
+        GenuineVariableDescriptor<TestdataListSolution> variableDescriptor = baseValueSelector.getVariableDescriptor();
+
+        ValueSelector<TestdataListSolution> valueSelector =
+                ValueSelectorFactory.<TestdataListSolution> create(new ValueSelectorConfig())
+                        .applyListValueFiltering(configPolicy, listValueFilteringType, variableDescriptor, baseValueSelector);
+
+        assertThat(valueSelector).isExactlyInstanceOf(expectedValueSelectorClass);
+    }
+
     public static class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
         @Override
         public boolean accept(ScoreDirector<TestdataSolution> scoreDirector, TestdataValue selection) {
@@ -274,6 +320,84 @@ class ValueSelectorFactoryTest {
         @Override
         public int compare(TestdataValue testdataValue, TestdataValue testdataValue2) {
             return 0;
+        }
+    }
+
+    private static class DummyEntityIndependentValueSelector implements EntityIndependentValueSelector<TestdataListSolution> {
+
+        @Override
+        public long getSize() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isCountable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isNeverEnding() {
+            return false;
+        }
+
+        @Override
+        public SelectionCacheType getCacheType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GenuineVariableDescriptor<TestdataListSolution> getVariableDescriptor() {
+            return TestdataListEntity.buildVariableDescriptorForValueList();
+        }
+
+        @Override
+        public long getSize(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> iterator(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> endingIterator(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void phaseStarted(AbstractPhaseScope<TestdataListSolution> phaseScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stepStarted(AbstractStepScope<TestdataListSolution> stepScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stepEnded(AbstractStepScope<TestdataListSolution> stepScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void phaseEnded(AbstractPhaseScope<TestdataListSolution> phaseScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void solvingStarted(SolverScope<TestdataListSolution> solverScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void solvingEnded(SolverScope<TestdataListSolution> solverScope) {
+            throw new UnsupportedOperationException();
         }
     }
 }

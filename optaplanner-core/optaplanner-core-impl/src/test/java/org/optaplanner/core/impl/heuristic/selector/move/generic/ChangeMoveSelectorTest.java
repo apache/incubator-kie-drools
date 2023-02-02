@@ -85,7 +85,7 @@ class ChangeMoveSelectorTest {
 
         ChangeMoveSelector<TestdataSolution> moveSelector = new ChangeMoveSelector<>(entitySelector, valueSelector, false);
 
-        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector, null, null);
+        SolverScope<TestdataSolution> solverScope = solvingStarted(moveSelector);
         AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(moveSelector, solverScope);
 
         doInsideStep(moveSelector, phaseScopeA, PlannerAssert::assertAllCodesOfMoveSelector);

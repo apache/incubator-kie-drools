@@ -12,7 +12,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "maximumSubListSize",
         "selectReversingMoveToo"
 })
-public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListChangeMoveSelectorConfig> {
+public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListChangeMoveSelectorConfig>
+        implements SubListSelectorConfig {
 
     public static final String XML_ELEMENT_NAME = "subListChangeMoveSelector";
 
@@ -20,6 +21,7 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
     protected Integer maximumSubListSize = null;
     private Boolean selectReversingMoveToo = null;
 
+    @Override
     public Integer getMinimumSubListSize() {
         return minimumSubListSize;
     }
@@ -28,6 +30,7 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
         this.minimumSubListSize = minimumSubListSize;
     }
 
+    @Override
     public Integer getMaximumSubListSize() {
         return maximumSubListSize;
     }

@@ -36,9 +36,10 @@ public class QueuedValuePlacerFactory<Solution_>
         // TODO improve the ValueSelectorFactory API (avoid the boolean flags).
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
                 .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
-                        false, true);
+                        false, // override applyReinitializeVariableFiltering
+                        ValueSelectorFactory.ListValueFilteringType.ACCEPT_UNASSIGNED);
 
-        MoveSelectorConfig moveSelectorConfig_ = config.getMoveSelectorConfig() == null
+        MoveSelectorConfig<?> moveSelectorConfig_ = config.getMoveSelectorConfig() == null
                 ? buildChangeMoveSelectorConfig(configPolicy, valueSelectorConfig_.getId(),
                         valueSelector.getVariableDescriptor())
                 : config.getMoveSelectorConfig();

@@ -6,14 +6,17 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.sol
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
-import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.listSize;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockNeverEndingDestinationSelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockNeverEndingEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -42,26 +45,30 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
+        int subListCount = 10;
+        int destinationSize = 3; // arbitrary
 
+        // The number of subLists of [1, 2, 3, 4] is the 4th triangular number (10).
+        assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)));
+
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a, b),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b),
+                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
                 false);
 
-        final int destinationIndexRange = 6; // value count + entity count
-        final int b0 = destinationIndexRange - 1; // the last position
-        // Alternating subList and destination indexes.
-        TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 5, b0, 6, b0, 7, b0, 8, b0, 9, b0, 99, 99);
+        TestRandom random = new TestRandom(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
         // Every possible subList is selected.
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationSize,
                 "|4| {A[0..4]->B[0]}",
                 "|3| {A[0..3]->B[0]}",
                 "|3| {A[1..4]->B[0]}",
@@ -73,7 +80,7 @@ class RandomSubListChangeMoveSelectorTest {
                 "|1| {A[2..3]->B[0]}",
                 "|1| {A[3..4]->B[0]}");
 
-        random.assertIntBoundJustRequested(destinationIndexRange);
+        random.assertIntBoundJustRequested(subListCount);
     }
 
     @Test
@@ -90,38 +97,42 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
+        int subListCount = 10;
+        int destinationSize = 13; // arbitrary
+        // Selecting reversing moves doubles the total number of selected elements (move selector size).
+        int moveSelectorSize = 2 * subListCount * destinationSize;
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a, b),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b),
+                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
                 true);
 
-        final int destinationIndexRange = 6; // value count + entity count
-        final int b0 = destinationIndexRange - 1; // the last position
         // Each row is consumed by 1 createUpcomingSelection() call.
-        // Columns are: subList index, destination index, reversing flag.
+        // Columns are: subList index, reversing flag.
         TestRandom random = new TestRandom(
-                0, b0, 1, // reversing
-                1, b0, 0,
-                2, b0, 1, // reversing
-                3, b0, 1, // reversing
-                4, b0, 0,
-                5, b0, 1, // reversing
-                6, b0, 0,
-                7, b0, 1, // reversing
-                8, b0, 1, // reversing
-                9, b0, 0,
-                99, 99, 99);
+                0, 1, // reversing
+                1, 0,
+                2, 1, // reversing
+                3, 1, // reversing
+                4, 0,
+                5, 1, // reversing
+                6, 0,
+                7, 1, // reversing
+                8, 1, // reversing
+                9, 0,
+                -1, -1);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        // Every possible subList is selected.
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
+        // Every possible subList is selected; some moves are reversing.
+        assertCodesOfNeverEndingMoveSelector(moveSelector, moveSelectorSize,
                 "|4| {A[0..4]-reversing->B[0]}",
                 "|3| {A[0..3]->B[0]}",
                 "|3| {A[1..4]-reversing->B[0]}",
@@ -148,34 +159,34 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 3;
+        int subListCount = 5;
+        int destinationSize = 51; // arbitrary
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a, b),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b),
+                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
                 false);
 
-        final int destinationIndexRange = 6; // value count + entity count
-        final int b0 = destinationIndexRange - 1; // the last position
-
-        // Alternating subList and destination indexes.
-        TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 99, 99);
+        TestRandom random = new TestRandom(0, 1, 2, 3, 4, -1);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        // Every possible subList is selected.
-        assertCodesOfNeverEndingMoveSelector(moveSelector,
+        // Only subLists bigger than 1 and smaller than 4 are selected.
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationSize,
                 "|3| {A[0..3]->B[0]}",
                 "|3| {A[1..4]->B[0]}",
                 "|2| {A[0..2]->B[0]}",
                 "|2| {A[1..3]->B[0]}",
                 "|2| {A[2..4]->B[0]}");
 
-        random.assertIntBoundJustRequested(destinationIndexRange);
+        random.assertIntBoundJustRequested(subListCount);
     }
 
     @Test
@@ -191,19 +202,19 @@ class RandomSubListChangeMoveSelectorTest {
         int minimumSubListSize = 100;
         int maximumSubListSize = Integer.MAX_VALUE;
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a),
+                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(),
                 false);
 
-        TestRandom random = new TestRandom(new int[] {});
-
-        solvingStarted(moveSelector, scoreDirector, random);
+        solvingStarted(moveSelector, scoreDirector);
 
         assertEmptyNeverEndingMoveSelector(moveSelector);
     }
@@ -223,31 +234,31 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 2;
+        int subListCount = 2;
+        int destinationSize = 13; // arbitrary
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a, b, c),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v4, v1, v4, v1, v4, v1, v4),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b, c),
+                        mockNeverEndingEntityIndependentValueSelector(v4, v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
                 false);
 
-        final int destinationIndexRange = 7; // value count + entity count
-        final int b0 = 4;
-
-        // Alternating subList and destination indexes.
-        TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 99, 99);
+        TestRandom random = new TestRandom(0, 1, -1);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        // Every possible subList is selected.
+        // Only subLists of size 2 are selected.
         assertCodesOfNeverEndingMoveSelector(moveSelector,
                 "|2| {A[0..2]->B[0]}",
                 "|2| {A[1..3]->B[0]}");
 
-        random.assertIntBoundJustRequested(destinationIndexRange);
+        random.assertIntBoundJustRequested(subListCount);
     }
 
     @Test
@@ -264,31 +275,30 @@ class RandomSubListChangeMoveSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
-        int subListCount = 9;
-        assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)) + nthTriangle(listSize(c)));
-        int destinationIndexRange = 8; // value count + entity count
-
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
+        int subListCount = 9;
+        int destinationSize = 25; // arbitrary
 
+        assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)) + nthTriangle(listSize(c)));
+
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                // Selectors must be accurate; their sizes affect the moveSelector size.
-                mockEntitySelector(a, b, c),
-                mockEntityIndependentValueSelector(v1, v2, v3, v4, v5),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b, c), // affects subList calculation and the move selector size
+                        mockNeverEndingEntityIndependentValueSelector(v1, v2, v3, v4, v5),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, -1)),
                 false);
 
         TestRandom random = new TestRandom(0, 0);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationIndexRange);
-    }
-
-    static int listSize(TestdataListEntity entity) {
-        return entity.getValueList().size();
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationSize);
     }
 
     @Test
@@ -318,22 +328,25 @@ class RandomSubListChangeMoveSelectorTest {
         int minimumSubListSize = 3;
         int maximumSubListSize = 5;
         int subListCount = 16;
-        int destinationIndexRange = 18; // value count + entity count
+        int destinationSize = 7; // arbitrary
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                // Selectors must be accurate; their sizes affect the moveSelector size.
-                mockEntitySelector(a, b, c, d),
-                mockEntityIndependentValueSelector(v1, v2, v3, v4, v5, v6, v7, v11, v12, v13, v21, v22, v23, v24),
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(
+                        listVariableDescriptor,
+                        mockEntitySelector(a, b, c, d), // affects subList calculation and the move selector size
+                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
                 false);
 
-        TestRandom random = new TestRandom(0, 0);
+        TestRandom random = new TestRandom(0);
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationIndexRange);
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationSize);
     }
 
     @Test
@@ -342,21 +355,22 @@ class RandomSubListChangeMoveSelectorTest {
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                entitySelector,
-                valueSelector,
-                minimumSubListSize,
-                maximumSubListSize,
+                listVariableDescriptor,
+                new RandomSubListSelector<>(listVariableDescriptor,
+                        entitySelector,
+                        valueSelector,
+                        minimumSubListSize,
+                        maximumSubListSize),
+                mockNeverEndingDestinationSelector(),
                 false);
 
-        TestRandom random = new TestRandom(new int[] {});
-
-        SolverScope<TestdataListSolution> solverScope = solvingStarted(moveSelector, scoreDirector, random);
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(moveSelector, scoreDirector);
         AbstractPhaseScope<TestdataListSolution> phaseScope = phaseStarted(moveSelector, solverScope);
 
         AbstractStepScope<TestdataListSolution> stepScope1 = stepStarted(moveSelector, phaseScope);
@@ -368,10 +382,7 @@ class RandomSubListChangeMoveSelectorTest {
         moveSelector.phaseEnded(phaseScope);
         moveSelector.solvingEnded(solverScope);
 
-        // The invocation counts are doubled because both the move selector and its nested subList selector have
-        // their own phaseLifecycleSupport and both register the given entitySelector and valueSelector.
-        // TODO is it OK for the move selector and subList selector to share the same entitySelector and valueSelector instances?
-        verifyPhaseLifecycle(entitySelector, 2, 2, 4);
-        verifyPhaseLifecycle(valueSelector, 2, 2, 4);
+        verifyPhaseLifecycle(entitySelector, 1, 1, 2);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 2);
     }
 }

@@ -1,8 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
@@ -11,7 +9,6 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -19,8 +16,8 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final EntitySelector<Solution_> entitySelector;
-    private final EntityIndependentValueSelector<Solution_> valueSelector;
+    private final EntityIndependentValueSelector<Solution_> sourceValueSelector;
+    private final ElementDestinationSelector<Solution_> destinationSelector;
     private final boolean randomSelection;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -28,16 +25,16 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     public ListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            EntitySelector<Solution_> entitySelector,
-            EntityIndependentValueSelector<Solution_> valueSelector,
+            EntityIndependentValueSelector<Solution_> sourceValueSelector,
+            ElementDestinationSelector<Solution_> destinationSelector,
             boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
-        this.entitySelector = entitySelector;
-        this.valueSelector = valueSelector;
+        this.sourceValueSelector = sourceValueSelector;
+        this.destinationSelector = destinationSelector;
         this.randomSelection = randomSelection;
 
-        phaseLifecycleSupport.addEventListener(entitySelector);
-        phaseLifecycleSupport.addEventListener(valueSelector);
+        phaseLifecycleSupport.addEventListener(sourceValueSelector);
+        phaseLifecycleSupport.addEventListener(destinationSelector);
     }
 
     @Override
@@ -57,13 +54,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     @Override
     public long getSize() {
-        long entityCount = entitySelector.getSize();
-        long valueCount = valueSelector.getSize();
-        int assignedValueCount = StreamSupport
-                .stream(Spliterators.spliterator(entitySelector.endingIterator(), entitySelector.getSize(), 0), false)
-                .mapToInt(listVariableDescriptor::getListSize)
-                .sum();
-        return valueCount * (entityCount + assignedValueCount);
+        return sourceValueSelector.getSize() * destinationSelector.getSize();
     }
 
     @Override
@@ -73,31 +64,30 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
                     listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
-                    valueSelector,
-                    entitySelector,
-                    workingRandom);
+                    sourceValueSelector,
+                    destinationSelector);
         } else {
             return new OriginalListChangeIterator<>(
                     listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
-                    valueSelector,
-                    entitySelector);
+                    sourceValueSelector,
+                    destinationSelector);
         }
     }
 
     @Override
     public boolean isCountable() {
-        return entitySelector.isCountable() && valueSelector.isCountable();
+        return sourceValueSelector.isCountable() && destinationSelector.isCountable();
     }
 
     @Override
     public boolean isNeverEnding() {
-        return randomSelection || entitySelector.isNeverEnding() || valueSelector.isNeverEnding();
+        return randomSelection || sourceValueSelector.isNeverEnding() || destinationSelector.isNeverEnding();
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + entitySelector + ", " + valueSelector + ")";
+        return getClass().getSimpleName() + "(" + sourceValueSelector + ", " + destinationSelector + ")";
     }
 }

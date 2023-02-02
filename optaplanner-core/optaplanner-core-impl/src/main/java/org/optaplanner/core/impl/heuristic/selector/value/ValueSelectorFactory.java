@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandomFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.AssignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
@@ -82,13 +83,13 @@ public class ValueSelectorFactory<Solution_>
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder) {
         return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
-                configPolicy.isReinitializeVariableFilterEnabled(), false);
+                configPolicy.isReinitializeVariableFilterEnabled(), ListValueFilteringType.NONE);
     }
 
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
-            boolean applyUnassignedValueFiltering) {
+            ListValueFilteringType listValueFilteringType) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
                 downcastEntityDescriptor(configPolicy, entityDescriptor), config.getVariableName());
         if (config.getMimicSelectorRef() != null) {
@@ -127,7 +128,7 @@ public class ValueSelectorFactory<Solution_>
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
-        valueSelector = applyUnassignedValueFiltering(applyUnassignedValueFiltering, variableDescriptor, valueSelector);
+        valueSelector = applyListValueFiltering(configPolicy, listValueFilteringType, variableDescriptor, valueSelector);
         valueSelector = applyMimicRecording(configPolicy, valueSelector);
         valueSelector =
                 applyReinitializeVariableFiltering(applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
@@ -489,9 +490,11 @@ public class ValueSelectorFactory<Solution_>
         return valueSelector;
     }
 
-    private ValueSelector<Solution_> applyUnassignedValueFiltering(boolean applyUnassignedValueFiltering,
+    ValueSelector<Solution_> applyListValueFiltering(HeuristicConfigPolicy<?> configPolicy,
+            ListValueFilteringType listValueFilteringType,
             GenuineVariableDescriptor<Solution_> variableDescriptor, ValueSelector<Solution_> valueSelector) {
-        if (applyUnassignedValueFiltering && variableDescriptor.isListVariable()) {
+        if (variableDescriptor.isListVariable() && configPolicy.isUnassignedValuesAllowed()
+                && listValueFilteringType != ListValueFilteringType.NONE) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with id (" + config.getId()
@@ -499,7 +502,9 @@ public class ValueSelectorFactory<Solution_>
                         + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
-            valueSelector = new UnassignedValueSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
+            valueSelector = listValueFilteringType == ListValueFilteringType.ACCEPT_ASSIGNED
+                    ? new AssignedValueSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector))
+                    : new UnassignedValueSelector<>(((EntityIndependentValueSelector<Solution_>) valueSelector));
         }
         return valueSelector;
     }
@@ -517,5 +522,11 @@ public class ValueSelectorFactory<Solution_>
             valueSelector = new DowncastingValueSelector<>(valueSelector, config.getDowncastEntityClass());
         }
         return valueSelector;
+    }
+
+    public enum ListValueFilteringType {
+        NONE,
+        ACCEPT_ASSIGNED,
+        ACCEPT_UNASSIGNED,
     }
 }

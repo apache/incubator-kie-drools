@@ -62,6 +62,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.cloneBuilder()
                 .withReinitializeVariableFilterEnabled(true)
                 .withInitializedChainedValueFilterEnabled(true)
+                .withUnassignedValuesAllowed(true)
                 .withEntitySorterManner(entitySorterManner)
                 .withValueSorterManner(valueSorterManner)
                 .build();

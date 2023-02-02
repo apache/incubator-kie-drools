@@ -138,6 +138,7 @@ public class SelectorTestUtils {
         when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
+        when(valueSelector.spliterator()).thenAnswer(invocation -> valueList.spliterator());
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
@@ -192,9 +193,12 @@ public class SelectorTestUtils {
     // ************************************************************************
 
     public static <Solution_> SolverScope<Solution_> solvingStarted(PhaseLifecycleListener<Solution_> listener) {
-        SolverScope<Solution_> solverScope = mock(SolverScope.class);
-        listener.solvingStarted(solverScope);
-        return solverScope;
+        return solvingStarted(listener, null, null);
+    }
+
+    public static <Solution_, Score_ extends Score<Score_>> SolverScope<Solution_> solvingStarted(
+            PhaseLifecycleListener<Solution_> listener, InnerScoreDirector<Solution_, Score_> scoreDirector) {
+        return solvingStarted(listener, scoreDirector, null);
     }
 
     public static <Solution_, Score_ extends Score<Score_>> SolverScope<Solution_> solvingStarted(

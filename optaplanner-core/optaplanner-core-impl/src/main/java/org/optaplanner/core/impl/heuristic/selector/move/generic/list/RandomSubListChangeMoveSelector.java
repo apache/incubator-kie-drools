@@ -1,47 +1,39 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
-
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final EntitySelector<Solution_> entitySelector;
-    private final EntityIndependentValueSelector<Solution_> valueSelector;
-    private final int minimumSubListSize;
-    private final int maximumSubListSize;
-    private final boolean selectReversingMoveToo;
     private final RandomSubListSelector<Solution_> subListSelector;
+    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private final boolean selectReversingMoveToo;
 
     public RandomSubListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            EntitySelector<Solution_> entitySelector,
-            EntityIndependentValueSelector<Solution_> valueSelector,
-            int minimumSubListSize, int maximumSubListSize,
+            RandomSubListSelector<Solution_> subListSelector,
+            ElementDestinationSelector<Solution_> destinationSelector,
             boolean selectReversingMoveToo) {
         this.listVariableDescriptor = listVariableDescriptor;
-        this.entitySelector = entitySelector;
-        this.valueSelector = valueSelector;
-        this.minimumSubListSize = minimumSubListSize;
-        this.maximumSubListSize = maximumSubListSize;
+        this.subListSelector = subListSelector;
+        this.destinationSelector = destinationSelector;
         this.selectReversingMoveToo = selectReversingMoveToo;
-        subListSelector = new RandomSubListSelector<>(listVariableDescriptor, entitySelector, valueSelector,
-                minimumSubListSize, maximumSubListSize);
-        phaseLifecycleSupport.addEventListener(entitySelector);
-        phaseLifecycleSupport.addEventListener(valueSelector);
+
         phaseLifecycleSupport.addEventListener(subListSelector);
+        phaseLifecycleSupport.addEventListener(destinationSelector);
     }
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new RandomSubListChangeMoveIterator<>(listVariableDescriptor, subListSelector, entitySelector, workingRandom,
+        return new RandomSubListChangeMoveIterator<>(
+                listVariableDescriptor,
+                subListSelector,
+                destinationSelector,
+                workingRandom,
                 selectReversingMoveToo);
     }
 
@@ -57,21 +49,9 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public long getSize() {
-        long destinationRange = entitySelector.getSize() + valueSelector.getSize();
-        long subListCount = 0;
-        for (Object entity : (Iterable<?>) entitySelector::endingIterator) {
-            int listSize = listVariableDescriptor.getListSize(entity);
-            if (listSize < minimumSubListSize) {
-                continue;
-            }
-            // Add moves with subLists bigger than minimum subList size.
-            subListCount += nthTriangle(listSize - minimumSubListSize + 1);
-            if (listSize > maximumSubListSize) {
-                // Subtract moves with subLists bigger than maximum subList size.
-                subListCount -= nthTriangle(listSize - maximumSubListSize);
-            }
-        }
-        return subListCount * destinationRange;
+        long destinationCount = destinationSelector.getSize();
+        long subListCount = subListSelector.getSize();
+        return subListCount * destinationCount * (selectReversingMoveToo ? 2 : 1);
     }
 
     boolean isSelectReversingMoveToo() {
@@ -80,6 +60,6 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + subListSelector + ")";
+        return getClass().getSimpleName() + "(" + subListSelector + ", " + destinationSelector + ")";
     }
 }

@@ -6,9 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
-import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.listSize;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockNeverEndingEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
@@ -47,14 +49,12 @@ class RandomSubListSelectorTest {
         int subListCount = 10;
 
         // The number of subLists of [1, 2, 3, 4] is the 4th triangular number (10).
-        assertThat(TriangularNumbers.nthTriangle(a.getValueList().size())).isEqualTo(subListCount);
+        assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)));
 
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1, v1, v1, v1, v1, v1, v1, v1, v1),
+                mockNeverEndingEntityIndependentValueSelector(v1),
                 minimumSubListSize,
                 maximumSubListSize);
 
@@ -91,9 +91,7 @@ class RandomSubListSelectorTest {
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
-                // The value selector is longer than the number of expected codes because it is expected
-                // to be never ending, so it must not be exhausted after the last asserted code.
-                mockEntityIndependentValueSelector(v1, v1, v1, v1, v1, v1, v1, v1),
+                mockNeverEndingEntityIndependentValueSelector(v1),
                 minimumSubListSize,
                 maximumSubListSize);
 
@@ -124,13 +122,11 @@ class RandomSubListSelectorTest {
         RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a),
-                mockEntityIndependentValueSelector(),
+                mockNeverEndingEntityIndependentValueSelector(),
                 minimumSubListSize,
                 maximumSubListSize);
 
-        TestRandom random = new TestRandom(new int[] {});
-
-        solvingStarted(selector, scoreDirector, random);
+        solvingStarted(selector, scoreDirector);
 
         assertEmptyNeverEndingIterableSelector(selector, 0);
     }
@@ -141,7 +137,7 @@ class RandomSubListSelectorTest {
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
@@ -153,9 +149,7 @@ class RandomSubListSelectorTest {
                 minimumSubListSize,
                 maximumSubListSize);
 
-        TestRandom random = new TestRandom(new int[] {});
-
-        SolverScope<TestdataListSolution> solverScope = solvingStarted(selector, scoreDirector, random);
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(selector, scoreDirector);
         AbstractPhaseScope<TestdataListSolution> phaseScope = phaseStarted(selector, solverScope);
 
         AbstractStepScope<TestdataListSolution> stepScope1 = stepStarted(selector, phaseScope);
@@ -176,7 +170,7 @@ class RandomSubListSelectorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
 
         assertThatIllegalArgumentException().isThrownBy(() -> new RandomSubListSelector<>(
                 listVariableDescriptor, entitySelector, valueSelector, 0, 5))

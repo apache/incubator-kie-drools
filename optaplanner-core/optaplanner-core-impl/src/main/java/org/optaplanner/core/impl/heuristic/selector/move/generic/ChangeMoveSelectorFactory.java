@@ -20,6 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -47,24 +48,53 @@ public class ChangeMoveSelectorFactory<Solution_>
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
                         .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory
+        ValueSelector<Solution_> sourceValueSelector = ValueSelectorFactory
                 .<Solution_> create(config.getValueSelectorConfig())
                 .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
-        if (valueSelector.getVariableDescriptor().isListVariable()) {
-            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+        if (sourceValueSelector.getVariableDescriptor().isListVariable()) {
+            if (!(sourceValueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The changeMoveSelector (" + config
                         + ") for a list variable needs to be based on an "
-                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
+                        + EntityIndependentValueSelector.class.getSimpleName() + " (" + sourceValueSelector + ")."
                         + " Check your valueSelectorConfig.");
 
             }
-            return new ListChangeMoveSelector<>(
-                    (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor(),
+            ValueSelector<Solution_> destinationValueSelector = ValueSelectorFactory
+                    .<Solution_> create(new ValueSelectorConfig())
+                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                            // Do not override reinitializeVariableFilterEnabled.
+                            configPolicy.isReinitializeVariableFilterEnabled(),
+                            /*
+                             * Filter assigned values (but only if this filtering type is allowed by the configPolicy).
+                             *
+                             * The destination selector requires the child value selector to only select assign values.
+                             * To guarantee this during CH where not all values are assigned, the UnassignedValueSelector filter
+                             * must be applied.
+                             *
+                             * In the LS phase, not only is the filter redundant because there are no unassigned values,
+                             * but it would also crash if the base value selector inherits random selection order,
+                             * because the filter cannot work on a never-ending child value selector.
+                             * Therefore, it must not be applied even though it is requested here. This is accomplished by
+                             * the configPolicy that only allows this filtering type in the CH phase.
+                             */
+                            ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED);
+
+            ListVariableDescriptor<Solution_> listVariableDescriptor =
+                    (ListVariableDescriptor<Solution_>) sourceValueSelector.getVariableDescriptor();
+
+            ElementDestinationSelector<Solution_> destinationSelector = new ElementDestinationSelector<>(
+                    listVariableDescriptor,
                     entitySelector,
-                    (EntityIndependentValueSelector<Solution_>) valueSelector,
+                    ((EntityIndependentValueSelector<Solution_>) destinationValueSelector),
+                    randomSelection);
+
+            return new ListChangeMoveSelector<>(
+                    listVariableDescriptor,
+                    (EntityIndependentValueSelector<Solution_>) sourceValueSelector,
+                    destinationSelector,
                     randomSelection);
         }
-        return new ChangeMoveSelector<>(entitySelector, valueSelector, randomSelection);
+        return new ChangeMoveSelector<>(entitySelector, sourceValueSelector, randomSelection);
     }
 
     @Override

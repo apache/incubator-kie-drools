@@ -2,8 +2,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.PrimitiveIterator;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -11,7 +9,6 @@ import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 /**
@@ -24,13 +21,11 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
     private final Iterator<Object> valueIterator;
-    private final EntitySelector<Solution_> entitySelector;
-    private Iterator<Object> destinationEntityIterator;
-    private PrimitiveIterator.OfInt destinationIndexIterator;
+    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private Iterator<ElementRef> destinationIterator;
 
     private Object upcomingSourceEntity;
     private Integer upcomingSourceIndex;
-    private Object upcomingDestinationEntity;
     private Object upcomingValue;
 
     public OriginalListChangeIterator(
@@ -38,39 +33,36 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,
             EntityIndependentValueSelector<Solution_> valueSelector,
-            EntitySelector<Solution_> entitySelector) {
+            ElementDestinationSelector<Solution_> destinationSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.indexVariableSupply = indexVariableSupply;
         this.valueIterator = valueSelector.iterator();
-        this.entitySelector = entitySelector;
-        this.destinationEntityIterator = Collections.emptyIterator();
-        this.destinationIndexIterator = IntStream.empty().iterator();
+        this.destinationSelector = destinationSelector;
+        this.destinationIterator = Collections.emptyIterator();
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        if (!destinationIndexIterator.hasNext()) {
-            while (!destinationEntityIterator.hasNext()) {
-                if (!valueIterator.hasNext()) {
-                    return noUpcomingSelection();
-                }
-                upcomingValue = valueIterator.next();
-                upcomingSourceEntity = inverseVariableSupply.getInverseSingleton(upcomingValue);
-                upcomingSourceIndex = indexVariableSupply.getIndex(upcomingValue);
-
-                destinationEntityIterator = entitySelector.iterator();
+        while (!destinationIterator.hasNext()) {
+            if (!valueIterator.hasNext()) {
+                return noUpcomingSelection();
             }
-            upcomingDestinationEntity = destinationEntityIterator.next();
-            destinationIndexIterator = listIndexIterator(upcomingDestinationEntity);
+            upcomingValue = valueIterator.next();
+            upcomingSourceEntity = inverseVariableSupply.getInverseSingleton(upcomingValue);
+            upcomingSourceIndex = indexVariableSupply.getIndex(upcomingValue);
+
+            destinationIterator = destinationSelector.iterator();
         }
+
+        ElementRef destination = destinationIterator.next();
 
         if (upcomingSourceEntity == null && upcomingSourceIndex == null) {
             return new ListAssignMove<>(
                     listVariableDescriptor,
                     upcomingValue,
-                    upcomingDestinationEntity,
-                    destinationIndexIterator.nextInt());
+                    destination.getEntity(),
+                    destination.getIndex());
         }
 
         // No need to generate ListUnassignMove because they are only used as undo moves.
@@ -79,11 +71,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
                 listVariableDescriptor,
                 upcomingSourceEntity,
                 upcomingSourceIndex,
-                upcomingDestinationEntity,
-                destinationIndexIterator.nextInt());
-    }
-
-    private PrimitiveIterator.OfInt listIndexIterator(Object entity) {
-        return IntStream.rangeClosed(0, listVariableDescriptor.getListSize(entity)).iterator();
+                destination.getEntity(),
+                destination.getIndex());
     }
 }
