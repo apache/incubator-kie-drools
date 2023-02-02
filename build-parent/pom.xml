@@ -2529,6 +2529,36 @@
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
     </profile>
+    <!-- Forces en_US usage during test execution. Useful for machine with different locale -->
+    <profile>
+      <id>test-en</id>
+      <activation>
+        <property>
+          <name>TestEn</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>-Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=US</argLine>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration>
+                <argLine>-Xmx1024m -Dfile.encoding=UTF-8 -Duser.language=en -Duser.region=US</argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
     <profile>
       <id>run-code-coverage</id>
       <properties>

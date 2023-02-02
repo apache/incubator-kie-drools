@@ -98,7 +98,6 @@
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
           </excludes>
-          <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
         </configuration>
       </plugin>
       <plugin>
