@@ -46,7 +46,7 @@ jobs:
       - name: Productized Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
-          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/optaplanner/${BRANCH:main}/.ci/pull-request-config-rhbop.yaml
+          definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/optaplanner/8.33.x/.ci/pull-request-config-rhbop.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           starting-project: kiegroup/optaplanner
