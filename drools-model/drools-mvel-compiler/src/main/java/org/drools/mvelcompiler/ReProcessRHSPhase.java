@@ -25,13 +25,11 @@ import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
-import org.drools.mvelcompiler.ast.TransformedTypeExpression;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
@@ -39,10 +37,23 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 /**
  * Used when you need to reprocess the RHS after having processed the LHS
  */
-public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpression>, Void> {
+public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpression>, ReProcessRHSPhase.Context> {
 
     private TypedExpression lhs;
     private MvelCompilerContext mvelCompilerContext;
+
+    static class Context {
+        private UnaryExpr unaryExpr;
+
+        Context withUnaryExpr(UnaryExpr unaryExpr) {
+            this.unaryExpr = unaryExpr;
+            return this;
+        }
+
+        Optional<UnaryExpr> getUnaryExpr() {
+            return Optional.ofNullable(unaryExpr);
+        }
+    }
 
     ReProcessRHSPhase(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
@@ -50,55 +61,49 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
 
     public Optional<TypedExpression> invoke(TypedExpression rhs, TypedExpression lhs) {
         this.lhs = lhs;
-        return Optional.ofNullable(rhs).flatMap(r -> r.toJavaExpression().accept(this, null));
+        return Optional.ofNullable(rhs).flatMap(r -> r.toJavaExpression().accept(this, new Context()));
     }
 
     @Override
-    public Optional<TypedExpression> defaultMethod(Node n, Void context) {
+    public Optional<TypedExpression> defaultMethod(Node n, ReProcessRHSPhase.Context context) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<TypedExpression> visit(UnaryExpr n, Void arg) {
-        return n.getExpression().accept(this, null).map( e -> new TransformedTypeExpression(e, node -> {
-            if (node instanceof ObjectCreationExpr) {
-                UnaryExpr constructorArg = new UnaryExpr(((ObjectCreationExpr) node).getArgument(0), n.getOperator());
-                return ((ObjectCreationExpr) node).setArgument(0, constructorArg);
-            }
-            return node;
-        }));
+    public Optional<TypedExpression> visit(UnaryExpr n, ReProcessRHSPhase.Context context) {
+        return n.getExpression().accept(this, context.withUnaryExpr(n));
     }
 
     @Override
-    public Optional<TypedExpression> visit(BinaryExpr n, Void arg) {
-        return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n));
+    public Optional<TypedExpression> visit(BinaryExpr n, ReProcessRHSPhase.Context context) {
+        return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n), context);
     }
 
     @Override
-    public Optional<TypedExpression> visit(IntegerLiteralExpr n, Void arg) {
-        return convertWhenLHSISBigDecimal(() -> new IntegerLiteralExpressionT(n));
+    public Optional<TypedExpression> visit(IntegerLiteralExpr n, ReProcessRHSPhase.Context context) {
+        return convertWhenLHSISBigDecimal(() -> new IntegerLiteralExpressionT(n), context);
     }
 
     @Override
-    public Optional<TypedExpression> visit(LongLiteralExpr n, Void arg) {
-        return convertWhenLHSISBigDecimal(() -> new LongLiteralExpressionT(n));
+    public Optional<TypedExpression> visit(LongLiteralExpr n, ReProcessRHSPhase.Context context) {
+        return convertWhenLHSISBigDecimal(() -> new LongLiteralExpressionT(n), context);
     }
 
     @Override
-    public Optional<TypedExpression> visit(NameExpr n, Void arg) {
+    public Optional<TypedExpression> visit(NameExpr n, ReProcessRHSPhase.Context context) {
         if(mvelCompilerContext
                 .findDeclarations(n.toString())
                 .filter(d -> d.getClazz() != BigDecimal.class)
                 .isPresent()) { // avoid wrapping BigDecimal declarations
-            return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n));
+            return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n), context);
         } else {
             return Optional.empty();
         }
     }
 
-    private Optional<TypedExpression> convertWhenLHSISBigDecimal(Supplier<TypedExpression> conversionFunction) {
+    private Optional<TypedExpression> convertWhenLHSISBigDecimal(Supplier<TypedExpression> conversionFunction, ReProcessRHSPhase.Context context) {
         return lhs.getType()
                 .filter(BigDecimal.class::equals)
-                .flatMap(t -> Optional.of(new BigDecimalConvertedExprT(conversionFunction.get())));
+                .flatMap(t -> Optional.of(new BigDecimalConvertedExprT(conversionFunction.get(), context.getUnaryExpr())));
     }
 }
