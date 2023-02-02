@@ -481,33 +481,17 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
             boolean firstFilter = true;
             for (final AbstractSolutionImporter importer : solutionBusiness.getImporters()) {
-                FileFilter filter;
-                if (importer.isInputFileDirectory()) {
-                    filter = new FileFilter() {
-                        @Override
-                        public boolean accept(File file) {
-                            return file.isDirectory();
-                        }
+                FileFilter filter = new FileFilter() {
+                    @Override
+                    public boolean accept(File file) {
+                        return file.isDirectory() || importer.acceptInputFile(file);
+                    }
 
-                        @Override
-                        public String getDescription() {
-                            return "Import directory";
-                        }
-                    };
-                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                } else {
-                    filter = new FileFilter() {
-                        @Override
-                        public boolean accept(File file) {
-                            return file.isDirectory() || importer.acceptInputFile(file);
-                        }
-
-                        @Override
-                        public String getDescription() {
-                            return "Import files (*." + importer.getInputFileSuffix() + ")";
-                        }
-                    };
-                }
+                    @Override
+                    public String getDescription() {
+                        return "Import files (*." + importer.getInputFileSuffix() + ")";
+                    }
+                };
                 fileChooser.addChoosableFileFilter(filter);
                 if (firstFilter) {
                     fileChooser.setFileFilter(filter);

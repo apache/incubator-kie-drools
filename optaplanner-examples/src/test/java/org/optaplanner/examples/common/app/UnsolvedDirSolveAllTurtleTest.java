@@ -1,12 +1,9 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
@@ -22,10 +19,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
                     + ") does not exist.");
         } else {
             String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
-            List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(unsolvedDataDir, new String[] { inputFileExtension }, true));
-            fileList.sort(new ProblemFileComparator());
-            return fileList;
+            return getAllFilesRecursivelyAndSorted(unsolvedDataDir, file -> file.getName().endsWith(inputFileExtension));
         }
     }
 

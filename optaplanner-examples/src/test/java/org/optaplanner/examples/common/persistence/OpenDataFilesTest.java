@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -39,13 +38,12 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
                     + ") does not exist.");
         }
         String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
-        fileList.addAll(
-                FileUtils.listFiles(unsolvedDataDir, new String[] { inputFileExtension }, true));
+        fileList.addAll(getAllFilesRecursivelyAndSorted(unsolvedDataDir, file -> file.getName().endsWith(inputFileExtension)));
         File solvedDataDir = new File(dataDir, "solved");
         if (solvedDataDir.exists()) {
             String outputFileExtension = commonApp.createSolutionFileIO().getOutputFileExtension();
             fileList.addAll(
-                    FileUtils.listFiles(solvedDataDir, new String[] { outputFileExtension }, true));
+                    getAllFilesRecursivelyAndSorted(solvedDataDir, file -> file.getName().endsWith(outputFileExtension)));
         }
         fileList.sort(new ProblemFileComparator());
         return fileList;

@@ -13,14 +13,7 @@ import org.optaplanner.examples.common.app.LoggingMain;
 public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
 
     public boolean acceptInputFile(File inputFile) {
-        if (isInputFileDirectory()) {
-            return inputFile.isDirectory();
-        }
         return inputFile.getName().endsWith("." + getInputFileSuffix());
-    }
-
-    public boolean isInputFileDirectory() {
-        return false;
     }
 
     public abstract String getInputFileSuffix();

@@ -33,9 +33,7 @@ public class SolutionConverter<Solution_> extends LoggingMain {
                 throw new UnsupportedOperationException();
             }
         };
-        return new SolutionConverter<>(dataDirName,
-                inputSolutionFileIO, "import", importer.isInputFileDirectory(),
-                outputSolutionFileIO, "unsolved");
+        return new SolutionConverter<>(dataDirName, inputSolutionFileIO, "import", outputSolutionFileIO, "unsolved");
     }
 
     public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
@@ -61,22 +59,18 @@ public class SolutionConverter<Solution_> extends LoggingMain {
                 exporter.writeSolution(solution, outputSolutionFile);
             }
         };
-        return new SolutionConverter<>(dataDirName,
-                inputSolutionFileIO, "solved", false,
-                outputSolutionFileIO, "export");
+        return new SolutionConverter<>(dataDirName, inputSolutionFileIO, "solved", outputSolutionFileIO, "export");
     }
 
     protected SolutionFileIO<Solution_> inputSolutionFileIO;
     protected final File inputDir;
-    protected final boolean inputFileIsDirectory;
     protected SolutionFileIO<Solution_> outputSolutionFileIO;
     protected final File outputDir;
 
     private SolutionConverter(String dataDirName,
-            SolutionFileIO<Solution_> inputSolutionFileIO, String inputDirName, boolean inputFileIsDirectory,
+            SolutionFileIO<Solution_> inputSolutionFileIO, String inputDirName,
             SolutionFileIO<Solution_> outputSolutionFileIO, String outputDirName) {
         this.inputSolutionFileIO = inputSolutionFileIO;
-        this.inputFileIsDirectory = inputFileIsDirectory;
         this.outputSolutionFileIO = outputSolutionFileIO;
         File dataDir = CommonApp.determineDataDir(dataDirName);
         inputDir = new File(dataDir, inputDirName);
@@ -102,9 +96,6 @@ public class SolutionConverter<Solution_> extends LoggingMain {
     }
 
     public boolean acceptInputFile(File inputFile) {
-        if (inputFileIsDirectory) {
-            return inputFile.isDirectory();
-        }
         return inputFile.getName().endsWith("." + inputSolutionFileIO.getInputFileExtension());
     }
 

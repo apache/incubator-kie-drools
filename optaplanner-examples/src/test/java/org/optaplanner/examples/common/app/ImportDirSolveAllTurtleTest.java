@@ -1,13 +1,10 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 
 /**
@@ -22,11 +19,7 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
             throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            String inputFileSuffix = createSolutionImporter(commonApp).getInputFileSuffix();
-            List<File> fileList = new ArrayList<>(
-                    FileUtils.listFiles(importDataDir, new String[] { inputFileSuffix }, true));
-            fileList.sort(new ProblemFileComparator());
-            return fileList;
+            return getAllFilesRecursivelyAndSorted(importDataDir, createSolutionImporter(commonApp)::acceptInputFile);
         }
     }
 
