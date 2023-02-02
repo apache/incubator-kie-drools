@@ -25,6 +25,7 @@ jobs:
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    
     name: Maven Build
     steps:
       - name: Clean Disk Space
@@ -46,8 +47,10 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
         env:
           BUILD_MVN_OPTS_CURRENT: '-T 1.5C'
-      - name: Surefire Report
-        uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
+      - name: Upload surefire report
         if: ${{ always() }}
+        uses: actions/upload-artifact@v3
         with:
-          report_paths: '**/*-reports/TEST-*.xml'
+          name: surefire-reports.zip
+          path: '**/*-reports/TEST-*.xml'
+          retention-days: 1
