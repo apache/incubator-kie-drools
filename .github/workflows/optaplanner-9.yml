@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   optaplanner-9:
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }}
     strategy:
       matrix:
         os: [ ubuntu-latest ]
