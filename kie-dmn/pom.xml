@@ -40,17 +40,6 @@
 
   <profiles>
     <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>kie-dmn-feel-gwt-showcase</module>
-      </modules>
-    </profile>
-    <profile>
       <id>default</id>
       <activation>
         <property>
@@ -58,8 +47,6 @@
         </property>
       </activation>
       <modules>
-        <module>kie-dmn-feel-gwt-functions</module>
-        <module>kie-dmn-feel-gwt</module>
         <module>kie-dmn-openapi</module>
         <module>kie-dmn-tck</module>
         <module>kie-dmn-legacy-tests</module>

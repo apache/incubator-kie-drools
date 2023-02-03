@@ -20,12 +20,10 @@ import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-@GwtIncompatible
 public class SqrtFunction
         extends BaseFEELFunction {
     public static final SqrtFunction INSTANCE = new SqrtFunction();

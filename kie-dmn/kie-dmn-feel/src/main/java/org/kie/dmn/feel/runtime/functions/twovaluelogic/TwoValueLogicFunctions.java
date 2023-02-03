@@ -3,9 +3,6 @@ package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 import java.util.List;
 import java.util.function.Function;
 
-import org.kie.dmn.model.api.GwtIncompatible;
-
-@GwtIncompatible
 public class TwoValueLogicFunctions {
     private static NNAllFunction allFunction = NNAllFunction.INSTANCE;
     private static NNAnyFunction anyFunction = NNAnyFunction.INSTANCE;
@@ -17,7 +14,6 @@ public class TwoValueLogicFunctions {
     private static NNMedianFunction medianFunction = NNMedianFunction.INSTANCE;
     private static NNModeFunction modeFunction = NNModeFunction.INSTANCE;
 
-    @GwtIncompatible
     private static NNStddevFunction stddevFunction = NNStddevFunction.INSTANCE;
 
     public static Boolean all(List<Boolean> list) {
@@ -56,7 +52,6 @@ public class TwoValueLogicFunctions {
         return modeFunction.invoke(list).cata(e -> null, Function.identity());
     }
 
-    @GwtIncompatible
     public static Number stddev(List<Number> list) {
         return stddevFunction.invoke(list).cata(e -> null, Function.identity());
     }

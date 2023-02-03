@@ -51,7 +51,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
-import org.kie.dmn.model.api.GwtIncompatible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -450,7 +449,6 @@ public class EvalHelper {
      * @param field
      * @return
      */
-    @GwtIncompatible
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
@@ -477,7 +475,6 @@ public class EvalHelper {
      * @param field
      * @return
      */
-    @GwtIncompatible
     public static Method getAccessor(Class<?> clazz, String field) {
         LOG.trace( "getAccessor({}, {})", clazz, field );
         try {
