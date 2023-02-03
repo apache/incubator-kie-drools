@@ -39,6 +39,11 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     public static final String CompilerOptions_VERSION_10 = "10"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_11 = "11"; //$NON-NLS-1$
     public static final String CompilerOptions_VERSION_12 = "12"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_15 = "15"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_16 = "16"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_17 = "17"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_18 = "18"; //$NON-NLS-1$
+    public static final String CompilerOptions_VERSION_19 = "19"; //$NON-NLS-1$
 
     public static final String CompilerOptions_GENERATE = "generate";//$NON-NLS-1$
     public static final String CompilerOptions_DO_NOT_GENERATE = "do not generate"; //$NON-NLS-1$
@@ -96,6 +101,11 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         put("10", CompilerOptions_VERSION_10);
         put("11", CompilerOptions_VERSION_11);
         put("12", CompilerOptions_VERSION_12);
+        put("15", CompilerOptions_VERSION_15);
+        put("16", CompilerOptions_VERSION_16);
+        put("17", CompilerOptions_VERSION_17);
+        put("18", CompilerOptions_VERSION_18);
+        put("19", CompilerOptions_VERSION_19);
     }};
     
     private String toNativeVersion( final String pVersion ) {

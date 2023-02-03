@@ -3159,4 +3159,28 @@ public class CompilerTest extends BaseModelTest {
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("r1");
     }
+
+    @Test
+    public void testMultiLineStrings() {
+        final String str =
+                "package org.drools.mvel.compiler\n" +
+                "global java.util.List list;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule r1 when\n" +
+                "    $p : Person( )\n" +
+                "then\n" +
+                "  java.lang.String name = \"\"\"\n name\n with multi line content\n\"\"\";  " +
+                "  $p.setName(name);" +
+                "end\n";
+
+
+        KieSession ksession = getKieSession( str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        Person person = new Person("A");
+        ksession.insert(person);
+        int i = ksession.fireAllRules();
+        assertThat(person.getName()).isEqualTo(" name\n with multi line content\n");
+    }
 }

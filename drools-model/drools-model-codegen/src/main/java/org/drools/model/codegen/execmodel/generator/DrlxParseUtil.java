@@ -40,6 +40,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -488,7 +491,16 @@ public class DrlxParseUtil {
     }
 
     public static BlockStmt parseBlock(String ruleConsequenceAsBlock) {
-        return StaticJavaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock)); // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending
+        ParserConfiguration parserConfiguration = new ParserConfiguration();
+        parserConfiguration.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_15);
+        com.github.javaparser.JavaParser javaParser = new com.github.javaparser.JavaParser(parserConfiguration);
+
+        ParseResult<BlockStmt> blockStmtParseResult = javaParser.parseBlock(String.format("{%n%s%n}", ruleConsequenceAsBlock));
+
+        if (blockStmtParseResult.isSuccessful()) {
+            return blockStmtParseResult.getResult().get();  // if the RHS is composed only of a line of comment like `//do nothing.` then JavaParser would fail to recognize the ending
+        }
+        throw new ParseProblemException(blockStmtParseResult.getProblems());
     }
 
     public static Expression generateLambdaWithoutParameters(Collection<String> usedDeclarations, Expression expr) {

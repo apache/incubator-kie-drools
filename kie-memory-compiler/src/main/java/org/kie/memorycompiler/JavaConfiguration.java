@@ -36,7 +36,7 @@ import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 public class JavaConfiguration {
 
     // This should be in alphabetic order to search with BinarySearch
-    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "9"};
+    protected static final String[]  LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "9"};
 
     public static final String JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
     public static final String JAVA_LANG_LEVEL_PROPERTY = "drools.dialect.java.compiler.lnglevel";
@@ -81,19 +81,29 @@ public class JavaConfiguration {
         return findJavaVersion( System.getProperty( JAVA_LANG_LEVEL_PROPERTY, System.getProperty("java.version") ) );
     }
 
-    public static String findJavaVersion( String level ) {
-        if ( level.startsWith( "1.5" ) ) {
+    public static String findJavaVersion(String level) {
+        if (level.startsWith("1.5")) {
             return "1.5";
-        } else if ( level.startsWith( "1.6" ) ) {
+        } else if (level.startsWith("1.6")) {
             return "1.6";
-        } else if ( level.startsWith( "1.7" ) ) {
+        } else if (level.startsWith("1.7")) {
             return "1.7";
-        } else if ( level.startsWith( "1.8" ) ) {
+        } else if (level.startsWith("1.8")) {
             return "1.8";
-        } else if ( level.startsWith( "9" ) ) {
+        } else if (level.startsWith("9")) {
             return "9";
-        } else if ( level.startsWith( "10" ) ) {
+        } else if (level.startsWith("10")) {
             return "10";
+        } else if (level.startsWith("15")) {
+            return "15";
+        } else if (level.startsWith("16")) {
+            return "16";
+        } else if (level.startsWith("17")) {
+            return "17";
+        } else if (level.startsWith("18")) {
+            return "18";
+        } else if (level.startsWith("19")) {
+            return "19";
         }
 
         return "11";
