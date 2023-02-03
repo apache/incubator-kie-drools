@@ -51,7 +51,7 @@ public enum CacheManager implements AutoCloseable {
                 .dataLocation("tmp/cache/data")
                 .indexLocation("tmp/cache/index");
 
-        builder.clustering().cacheMode(CacheMode.DIST_SYNC);
+        builder.clustering().cacheMode(CacheMode.LOCAL);
         cacheConfiguration = builder.build();
     }
 

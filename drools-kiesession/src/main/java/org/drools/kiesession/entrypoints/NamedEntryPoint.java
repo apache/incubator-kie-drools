@@ -16,18 +16,6 @@
 
 package org.drools.kiesession.entrypoints;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.common.EqualityKey;
@@ -60,6 +48,18 @@ import org.drools.kiesession.session.SessionComponentsFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
@@ -112,9 +112,12 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
         boolean useClassAwareStore = isEqualityBehaviour || conf.isMutabilityEnabled();
         long id = reteEvaluator.getIdentifier();
+        String entryPointId = reteEvaluator.getSessionConfiguration().getPersistedSessionOption()!=null ?
+                "cacheSession_" + reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getSessionId() :
+                entryPoint.getEntryPointId();
         this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
-                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
+                SessionComponentsFactory.get().createClassAwareObjectStore(entryPointId, isEqualityBehaviour, lock) : //entryPoint.getEntryPointId()
+                SessionComponentsFactory.get().createIdentityObjectStore(entryPointId); //entryPoint.getEntryPointId()
     }
 
     @Override
