@@ -174,7 +174,7 @@ public class WindowTest {
             entryPoint.insert(event);
 
             assertThat(((Long) ksession.getQueryResults("TestLengthWindow")
-                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((i < 10 ? i : 10));
+                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((Math.min(i, 10)));
         }
     }
 
@@ -204,7 +204,7 @@ public class WindowTest {
             entryPoint.insert(event);
             assertThat(((Long) ksession
                     .getQueryResults("TestDeclaredLengthWindow")
-                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((i < 5 ? i : 5));
+                    .iterator().next().get("$eventCount")).intValue()).isEqualTo((Math.min(i, 5)));
         }
     }
 
@@ -237,7 +237,7 @@ public class WindowTest {
             entryPoint.insert(event);
             ksession.fireAllRules();
             assertThat(result.get(result.size() - 1)
-                    .longValue()).isEqualTo((i < 5 ? i : 5));
+                    .longValue()).isEqualTo((Math.min(i, 5)));
         }
     }
 

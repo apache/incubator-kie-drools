@@ -67,7 +67,7 @@ public class ForallDescr extends BaseDescr
             // becomes
             // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
             PatternDescr original = (PatternDescr) this.patterns.get( 0 );
-            PatternDescr base = (PatternDescr) original.clone();
+            PatternDescr base = original.clone();
             base.getDescrs().clear();
             base.setIdentifier( BASE_IDENTIFIER );
             base.setResource(original.getResource());
@@ -120,10 +120,10 @@ public class ForallDescr extends BaseDescr
             // becomes
             // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
             PatternDescr original = (PatternDescr) this.patterns.get( 0 );
-            PatternDescr remaining = (PatternDescr) original.clone();
+            PatternDescr remaining = original.clone();
             remaining.addConstraint( new ExprConstraintDescr( "this == " + BASE_IDENTIFIER ) );
             remaining.setResource(original.getResource());
-            return Collections.singletonList( (BaseDescr)remaining );
+            return Collections.singletonList(remaining);
         }
         return Collections.emptyList();
     }

@@ -40,7 +40,7 @@ public class PricingRuleDTExample {
         Driver driver = new Driver();
         Policy policy = new Policy();
 
-        ksession.execute( Arrays.asList( new Object[]{driver, policy} ) );
+        ksession.execute( Arrays.asList(driver, policy));
 
         System.out.println( "BASE PRICE IS: " + policy.getBasePrice() );
         System.out.println( "DISCOUNT IS: " + policy.getDiscountPercent() );

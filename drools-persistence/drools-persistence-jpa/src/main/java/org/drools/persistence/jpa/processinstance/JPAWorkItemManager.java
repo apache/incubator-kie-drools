@@ -64,7 +64,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         }
         workItems.put( workItem.getId(), workItemInfo );
 
-        WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+        WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if ( handler != null ) {
             handler.executeWorkItem( workItem, this );
         } else {
@@ -100,7 +100,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     private void retryWorkItem( WorkItem workItem ) {
         if ( workItem != null ) {
-            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if ( handler != null ) {
                 handler.executeWorkItem( workItem, this );
             } else {
@@ -116,7 +116,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         // work item may have been aborted
         if ( workItemInfo != null ) {
             WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
-            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if ( handler != null ) {
                 handler.abortWorkItem( workItem, this );
             } else {
@@ -194,7 +194,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
         // work item may have been aborted
         if ( workItemInfo != null ) {
-            WorkItem workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
+            WorkItem workItem = internalGetWorkItem(workItemInfo);
             ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
             workItem.setState( WorkItem.ABORTED );
             // process instance may have finished already

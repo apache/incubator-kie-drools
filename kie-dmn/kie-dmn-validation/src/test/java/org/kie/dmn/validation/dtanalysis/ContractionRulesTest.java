@@ -44,13 +44,13 @@ public class ContractionRulesTest extends AbstractDTAnalysisTest {
         // Contraction count.
         assertThat(analysis.getContractions()).hasSize(2);
         List<Contraction> results = Arrays.asList(new Contraction(4,
-                                                                  Arrays.asList(5),
+                                                                  List.of(5),
                                                                   2,
-                                                                  Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("0.35"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))),
-                                                  new Contraction(3, 
-                                                                  Arrays.asList(6),
+                                                                  List.of(new Interval(RangeBoundary.CLOSED, new BigDecimal("0.35"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))),
+                                                  new Contraction(3,
+                                                                  List.of(6),
                                                                   1,
-                                                                  Arrays.asList(new Interval(RangeBoundary.CLOSED, new BigDecimal("600"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))));
+                                                                  List.of(new Interval(RangeBoundary.CLOSED, new BigDecimal("600"), Interval.POS_INF, RangeBoundary.CLOSED, 0, 0))));
         assertThat(results).hasSize(2);
         assertThat(analysis.getContractions()).containsAll(results);
         assertThat(validate.stream().filter(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_CONTRACTION_RULE)).collect(Collectors.toList()))

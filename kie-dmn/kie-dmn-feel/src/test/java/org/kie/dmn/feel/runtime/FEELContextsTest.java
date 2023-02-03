@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -64,9 +65,9 @@ public class FEELContextsTest extends BaseFEELTest {
                 {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first name+\"!\"}.salutation", "Hello Bob!", null},
                 {"{ \"first name\" : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null},
                 {"{ \"a\" : 1, b : 2, \"c\": a+b}.c", BigDecimal.valueOf( 3 ), null},
-                {"[{a: {b: [1]}}, {a: {b: [2.1, 2.2]}}, {a: {b: [3]}}, {a: {b: [4, 5]}}].a.b", Arrays.asList(Arrays.asList(new BigDecimal( 1 )),
+                {"[{a: {b: [1]}}, {a: {b: [2.1, 2.2]}}, {a: {b: [3]}}, {a: {b: [4, 5]}}].a.b", Arrays.asList(List.of(new BigDecimal(1)),
                                                                                                              Arrays.asList(new BigDecimal( "2.1" ), new BigDecimal("2.2")),
-                                                                                                             Arrays.asList(new BigDecimal( 3 )),
+                                                                                                             List.of(new BigDecimal(3)),
                                                                                                              Arrays.asList(new BigDecimal( 4 ), new BigDecimal( 5 ))), null},
                 {"{a:{p:{x:10,y:5}},b : a.p.x*10+a.p.y*10}.b", BigDecimal.valueOf( 150 ), null},
                 {"{a:{p:{x:10,y:5}},b : a.p.y < a.p.x and a.p.x > a.p.y }.b", Boolean.TRUE, null},

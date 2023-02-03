@@ -214,7 +214,7 @@ public class InfixOpNode extends BaseNode {
         if (left == null || right == null) {
             return null;
         } else if (left instanceof String && right instanceof String) {
-            return ((String) left) + ((String) right);
+            return left + ((String) right);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             return new ComparablePeriod(((ChronoPeriod) left).plus((ChronoPeriod) right));
         } else if (left instanceof Duration && right instanceof Duration) {

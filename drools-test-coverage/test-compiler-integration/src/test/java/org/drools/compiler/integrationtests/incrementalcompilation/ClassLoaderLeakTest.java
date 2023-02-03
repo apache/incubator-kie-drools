@@ -140,10 +140,10 @@ public class ClassLoaderLeakTest {
 
             KieProject kp = (( KieContainerImpl ) kieContainer).getKieProject();
             ProjectClassLoader cl = (ProjectClassLoader) kp.getClassLoader();
-            System.out.println(String.format("ProjectClassLoader.store size: %d, " + "retained bytes: %d.",
-                    cl.getStore().size(),
-                    cl.getStore().values().stream()
-                            .map(b->b.length).reduce(0,Integer::sum)));
+            System.out.printf("ProjectClassLoader.store size: %d, " + "retained bytes: %d.%n",
+                              cl.getStore().size(),
+                              cl.getStore().values().stream()
+                            .map(b->b.length).reduce(0,Integer::sum));
 
             assertThat(cl.getStore().size() <= oldSize).isTrue();
             oldSize = cl.getStore().size();

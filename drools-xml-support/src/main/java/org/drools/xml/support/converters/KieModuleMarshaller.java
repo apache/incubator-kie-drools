@@ -73,7 +73,7 @@ public class KieModuleMarshaller implements XMLSupport.XmlMarshaller<KieModuleMo
     }
 
     public KieModuleModel fromXML( InputStream kModuleStream) {
-        byte[] bytes = null;
+        byte[] bytes;
         try {
             bytes = readBytesFromInputStream(kModuleStream);
         } catch (IOException e) {

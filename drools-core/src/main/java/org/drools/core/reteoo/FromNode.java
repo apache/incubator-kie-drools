@@ -114,7 +114,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             return true;
         }
 
-        if (object == null || !(object instanceof FromNode ) || this.hashCode() != object.hashCode() ) {
+        if (!(object instanceof FromNode) || this.hashCode() != object.hashCode()) {
             return false;
         }
 

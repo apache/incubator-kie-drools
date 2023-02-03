@@ -337,7 +337,7 @@ public class LinkingTest {
 
         BetaMemory bm = null;
 
-        LiaNodeMemory liam = ( LiaNodeMemory ) wm.getNodeMemory( liaNodeA );
+        LiaNodeMemory liam = wm.getNodeMemory(liaNodeA);
 
         BetaMemory bm1 = ( BetaMemory ) wm.getNodeMemory( joinNodeB );
         BetaMemory bm2 = ( BetaMemory ) wm.getNodeMemory( joinNodeC );
@@ -357,9 +357,9 @@ public class LinkingTest {
         assertThat(bm5.getNodePosMaskBit()).isEqualTo(2);
         assertThat(bm5.getSegmentMemory()).isSameAs(bm4.getSegmentMemory());
 
-        PathMemory rs1 = (PathMemory) wm.getNodeMemory( rtn1 );
-        PathMemory rs2 = (PathMemory)  wm.getNodeMemory( rtn2 );
-        PathMemory rs3 = (PathMemory)  wm.getNodeMemory( rtn3 );
+        PathMemory rs1 = wm.getNodeMemory(rtn1);
+        PathMemory rs2 = wm.getNodeMemory(rtn2);
+        PathMemory rs3 = wm.getNodeMemory(rtn3);
 
         assertThat(rs1.isRuleLinked()).isTrue();
         assertThat(rs2.isRuleLinked()).isTrue();
@@ -442,7 +442,7 @@ public class LinkingTest {
         wm.flushPropagations();
         assertThat(existsBm.getSegmentMemory().getLinkedNodeMask()).isEqualTo(0);
 
-        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = wm.getNodeMemory(rtn);
         assertThat(rs.isRuleLinked()).isFalse();
 
         wm.insert(  new A() );
@@ -565,7 +565,7 @@ public class LinkingTest {
 
         wm.insert(  new A() );
 
-        PathMemory pmem =  ( PathMemory ) wm.getNodeMemory(rtn);
+        PathMemory pmem = wm.getNodeMemory(rtn);
         assertThat(pmem.getSegmentMemories().length).isEqualTo(4);
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(11); // the exists eval segment does not need to be linked in
 
@@ -639,7 +639,7 @@ public class LinkingTest {
         wm.insert(  new F() );
         wm.insert(  new G() );
 
-        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = wm.getNodeMemory(rtn);
         assertThat(rs.isRuleLinked()).isFalse();
 
         FactHandle fhE1 = wm.insert(  new E() );
@@ -708,7 +708,7 @@ public class LinkingTest {
         wm.insert(  new G() );
         wm.flushPropagations();
 
-        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = wm.getNodeMemory(liaNode);
         BetaMemory bMem = ( BetaMemory )   wm.getNodeMemory( bNode );
         BetaMemory exists1Mem = ( BetaMemory ) wm.getNodeMemory( exists1n );
         BetaMemory cMem = ( BetaMemory )   wm.getNodeMemory( cNode );
@@ -718,10 +718,10 @@ public class LinkingTest {
         BetaMemory fMem = ( BetaMemory )   wm.getNodeMemory( fNode );
         BetaMemory gMem = ( BetaMemory )   wm.getNodeMemory( gNode );
 
-        RiaPathMemory riaMem1 = (RiaPathMemory) wm.getNodeMemory(riaNode1);
-        RiaPathMemory riaMem2 = (RiaPathMemory) wm.getNodeMemory(riaNode2);
+        RiaPathMemory riaMem1 = wm.getNodeMemory(riaNode1);
+        RiaPathMemory riaMem2 = wm.getNodeMemory(riaNode2);
 
-        PathMemory rs = (PathMemory) wm.getNodeMemory( rtn );
+        PathMemory rs = wm.getNodeMemory(rtn);
 
         assertThat(rs.isRuleLinked()).isFalse(); //E and F are not inserted yet, so rule is unlinked
 
@@ -871,7 +871,7 @@ public class LinkingTest {
         JoinNode bNode = ( JoinNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
-        LiaNodeMemory amem = ( LiaNodeMemory ) wm.getNodeMemory( aNode );
+        LiaNodeMemory amem = wm.getNodeMemory(aNode);
         BetaMemory bmem = ( BetaMemory ) wm.getNodeMemory( bNode );
         BetaMemory cmem = ( BetaMemory ) wm.getNodeMemory( cNode );
         
@@ -930,7 +930,7 @@ public class LinkingTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
+        wm = kbase.newKieSession();
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -981,7 +981,7 @@ public class LinkingTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
+        wm = kbase.newKieSession();
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1036,7 +1036,7 @@ public class LinkingTest {
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
         RuntimeSegmentUtilities.getOrCreateSegmentMemory(cNode, wm);
-        LiaNodeMemory amem = ( LiaNodeMemory ) wm.getNodeMemory( aNode );
+        LiaNodeMemory amem = wm.getNodeMemory(aNode);
 
         // Only NotNode is linked in
         assertThat(amem.getSegmentMemory().getLinkedNodeMask()).isEqualTo(2);
@@ -1112,7 +1112,7 @@ public class LinkingTest {
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
         RuntimeSegmentUtilities.getOrCreateSegmentMemory(cNode, wm);
-        LiaNodeMemory amem = ( LiaNodeMemory ) wm.getNodeMemory( aNode );
+        LiaNodeMemory amem = wm.getNodeMemory(aNode);
 
         // Only NotNode is linked in
         assertThat(amem.getSegmentMemory().getLinkedNodeMask()).isEqualTo(2);
@@ -1271,7 +1271,7 @@ public class LinkingTest {
         JoinNode cNode = ( JoinNode) notNode.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode ) cNode.getSinkPropagator().getSinks()[0];
 
-        PathMemory pmem =  ( PathMemory ) wm.getNodeMemory(rtn);
+        PathMemory pmem = wm.getNodeMemory(rtn);
         assertThat(pmem.getSegmentMemories().length).isEqualTo(1);
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(1);
 
@@ -1324,7 +1324,7 @@ public class LinkingTest {
         JoinNode cNode = ( JoinNode) notNode.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode ) cNode.getSinkPropagator().getSinks()[0];
 
-        PathMemory pmem =  ( PathMemory ) wm.getNodeMemory(rtn);
+        PathMemory pmem = wm.getNodeMemory(rtn);
         assertThat(pmem.getSegmentMemories().length).isEqualTo(1);
         assertThat(pmem.getAllLinkedMaskTest()).isEqualTo(1);
 
@@ -1386,7 +1386,7 @@ public class LinkingTest {
 //        wm.fireAllRules();        
 //        assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
+        wm = kbase.newKieSession();
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1479,7 +1479,7 @@ public class LinkingTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
+        wm = kbase.newKieSession();
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1534,7 +1534,7 @@ public class LinkingTest {
         wm.insert( new X() );
         wm.flushPropagations();
 
-        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+        InternalAgenda agenda = wm.getAgenda();
         InternalAgendaGroup group = agenda.getAgendaGroupsManager().getNextFocus();
         AgendaItem item = (AgendaItem) group.remove();
         RuleExecutor ruleExecutor = ((RuleAgendaItem)item).getRuleExecutor();

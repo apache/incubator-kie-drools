@@ -29,6 +29,7 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -2889,7 +2890,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
-        context.set("my data", new JavaPojoCharUtilDate("Doe", new Character('J'), new java.util.Date(2020, 0, 28, 10, 15)));
+        context.set("my data", new JavaPojoCharUtilDate("Doe", Character.valueOf('J'), new java.util.Date(2020, Calendar.JANUARY, 28, 10, 15)));
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
@@ -2992,9 +2993,9 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext context = DMNFactory.newContext();
         context.set("a person", mapOf(entry("age", new BigDecimal(47)),
                                       entry("name", "John Doe")));
-        context.set("reqs", Arrays.asList(mapOf(entry("description", "req1"),
-                                                entry("bounds", mapOf(entry("LB", new BigDecimal(18)),
-                                                                      entry("UB", new BigDecimal(99)))))));
+        context.set("reqs", List.of(mapOf(entry("description", "req1"),
+                                          entry("bounds", mapOf(entry("LB", new BigDecimal(18)),
+                                                                entry("UB", new BigDecimal(99)))))));
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
@@ -3107,7 +3108,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
 
         final DMNContext context = DMNFactory.newContext();
-        context.set("input", Arrays.asList(prototype(entry("Primary-Key", "k987"), entry("Value", "v47"))) );
+        context.set("input", List.of(prototype(entry("Primary-Key", "k987"), entry("Value", "v47"))));
         
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         LOG.debug("{}", dmnResult);
@@ -3116,7 +3117,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
          * input.Primary-Key is a list projection: take all elements, and Stream+map using the accessor
          * input[1].Primary-Key is picking the first element in the list, and using the accessor (only on the first element index=1)
          */
-        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("decision").getResult()).containsExactly(entry("correct", Arrays.asList("k987")),entry("incorrect", "k987"));
+        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("decision").getResult()).containsExactly(entry("correct", List.of("k987")), entry("incorrect", "k987"));
     }
     
     @Test

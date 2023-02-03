@@ -249,7 +249,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
         adjustCal.set(Calendar.MILLISECOND, 0);
         Date lastDate = adjustCal.getTime();
 
-        Date newDate = null;
+        Date newDate;
 
         //TODO: (QUARTZ-481) IMPROVE THIS! The following is a BAD solution to this problem. Performance will be very bad here, depending on the cron expression. It is, however A solution.
 
@@ -315,8 +315,8 @@ public class CronExpression extends KieCronExpression implements Cloneable {
                 return null;
             }
 
-            SortedSet st = null;
-            int t = 0;
+            SortedSet st;
+            int t;
 
             int sec = cl.get(Calendar.SECOND);
             int min = cl.get(Calendar.MINUTE);
@@ -728,29 +728,20 @@ public class CronExpression extends KieCronExpression implements Cloneable {
 
         switch (monthNum) {
             case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
                 return 31;
             case 2:
                 return (isLeapYear(year)) ? 29 : 28;
-            case 3:
-                return 31;
             case 4:
-                return 30;
-            case 5:
-                return 31;
             case 6:
-                return 30;
-            case 7:
-                return 31;
-            case 8:
-                return 31;
             case 9:
-                return 30;
-            case 10:
-                return 31;
             case 11:
                 return 30;
-            case 12:
-                return 31;
             default:
                 throw new IllegalArgumentException("Illegal month number: "
                         + monthNum);
@@ -769,7 +760,7 @@ public class CronExpression extends KieCronExpression implements Cloneable {
     }
 
     public Object clone() {
-        CronExpression copy = null;
+        CronExpression copy;
         try {
             copy = new CronExpression(getCronExpression());
             if(getTimeZone() != null)

@@ -1812,7 +1812,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
-        ksession.insert( new Long( 6 ) );
+        ksession.insert( Long.valueOf( 6 ) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
@@ -1875,13 +1875,13 @@ public class Misc2Test {
         Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, str2).getKiePackages();
         ksession.insert( kpkgs );
 
-        ksession.insert( new Integer( 1 ) );
+        ksession.insert( Integer.valueOf( 1 ) );
         ksession.fireAllRules();
 
         ksession.insert( "go" );
         ksession.fireAllRules();
 
-        ksession.insert( new Integer( 2 ) );
+        ksession.insert( Integer.valueOf( 2 ) );
         ksession.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -1915,7 +1915,7 @@ public class Misc2Test {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        ksession.insert( new Integer( 1 ) );
+        ksession.insert( Integer.valueOf( 1 ) );
         ksession.fireAllRules();
     }
 
@@ -2701,7 +2701,7 @@ public class Misc2Test {
         KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "context", new ArrayList() {{
-            add( new Long( 0 ) );
+            add( Long.valueOf( 0 ) );
         }} );
 
         Foo foo = new Foo();
@@ -2810,7 +2810,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test
@@ -2837,7 +2837,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test
@@ -2864,7 +2864,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(1));
+        assertThat(list).isEqualTo(List.of(1));
     }
 
     @Test(timeout = 10000)
@@ -3196,7 +3196,7 @@ public class Misc2Test {
         new Thread(ks::fireUntilHalt).start();
         try {
             for ( int j = 0; j < N; j++ ) {
-                ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+                ks.getEntryPoint( "x" ).insert( Integer.valueOf( j ) );
             }
 
             Thread.sleep( 1000 );
@@ -3303,7 +3303,7 @@ public class Misc2Test {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("ok"));
+        assertThat(list).isEqualTo(List.of("ok"));
     }
 
 
@@ -5590,7 +5590,7 @@ public class Misc2Test {
         KieSession session = kbase.newKieSession();
 
         session.insert( "hello" );
-        session.insert( new Integer( 42 ) );
+        session.insert( Integer.valueOf( 42 ) );
 
         // set the agenda groups in reverse order so that stack is preserved
         session.getAgenda().getAgendaGroup( "End" ).setFocus();
@@ -6468,7 +6468,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList(42));
+        assertThat(list).isEqualTo(List.of(42));
 
         kieSession.delete( handle );
 
@@ -6538,7 +6538,7 @@ public class Misc2Test {
         agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
-        assertThat(list).isEqualTo(Arrays.asList(42));
+        assertThat(list).isEqualTo(List.of(42));
 
         //kieSession.delete( iFH );
         kieSession.delete( sFH );
@@ -6568,12 +6568,12 @@ public class Misc2Test {
 
         InternalKnowledgePackage kPackage = CoreComponentFactory.get().createKnowledgePackage( "com.testfacttemplate" );
         FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", Integer.class );
-        FactTemplate factTemplate = new FactTemplateImpl( kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate} );
+        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", fieldTemplate);
 
-        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl( kPackage );
+        KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl(kPackage );
         StringReader rule = new StringReader( drl );
         try {
-            ( (KnowledgeBuilderImpl) kBuilder ).addPackageFromDrl( rule );
+            kBuilder.addPackageFromDrl(rule);
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
@@ -8125,7 +8125,7 @@ public class Misc2Test {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kbase.newKieSession();
 
-        kieSession.insert( asList("test") );
+        kieSession.insert(List.of("test"));
         kieSession.insert( new AtomicBoolean( true ) );
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
@@ -8623,15 +8623,11 @@ public class Misc2Test {
         Runnable task1 = () -> {
             synchronized(lock1) {
               try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock2) {
-              }
             }
         };
         Runnable task2 = () -> {
             synchronized(lock2) {
               try { Thread.sleep(50); } catch (InterruptedException e) {}
-              synchronized(lock1) {
-              }
             }
         };
         new Thread(task1).start();

@@ -33,7 +33,6 @@ import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.model.Address;
@@ -629,13 +628,13 @@ public class FromTest {
             final Map map = (Map) ((List) ksession.getGlobal("list")).get(1);
             assertThat(map.keySet().size()).isEqualTo(2);
 
-            assertThat(map.keySet().contains(bob)).isTrue();
+            assertThat(map.containsKey(bob)).isTrue();
             assertThat(map.get(bob)).isEqualTo(globalObject);
 
-            assertThat(map.keySet().contains("key1")).isTrue();
+            assertThat(map.containsKey("key1")).isTrue();
             final Map nestedMap = (Map) map.get("key1");
             assertThat(nestedMap.keySet().size()).isEqualTo(1);
-            assertThat(nestedMap.keySet().contains("key2")).isTrue();
+            assertThat(nestedMap.containsKey("key2")).isTrue();
             assertThat(nestedMap.get("key2")).isEqualTo("value2");
 
             assertThat(((List) ksession.getGlobal("list")).get(2)).isEqualTo(42);

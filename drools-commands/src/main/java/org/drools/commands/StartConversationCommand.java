@@ -14,6 +14,6 @@ public class StartConversationCommand<Void> implements ExecutableCommand<Void> {
         ConversationContextManager cvnManager = reqContext.getConversationManager();
         cvnManager.startConversation(reqContext);
 
-        return (Void) null;
+        return null;
     }
 }

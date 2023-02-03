@@ -46,7 +46,7 @@ public class IncompatibilityBase extends TestBaseOld {
 
         Map<Cause, Set<Cause>> map = new HashMap<Cause, Set<Cause>>();
         while (iter.hasNext()) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             if (o instanceof Incompatibility) {
                 Incompatibility r = (Incompatibility) o;
 

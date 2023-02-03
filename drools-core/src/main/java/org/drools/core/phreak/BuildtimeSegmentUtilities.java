@@ -64,8 +64,8 @@ public class BuildtimeSegmentUtilities {
 
         smems = createPathProtoMemories(tn, null, removingTn, rbase);
 
-        // smems are null, if there is no beta network. Which means it has an AlphaTerminalNode
-        if  (smems != null) {
+        // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
+        if  (smems.length > 0) {
             setSegments(tn, smems);
         }
     }

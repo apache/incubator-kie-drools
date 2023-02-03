@@ -18,6 +18,7 @@ package org.drools.model.codegen.execmodel;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.model.codegen.execmodel.domain.Result;
@@ -86,7 +87,7 @@ public class TypeDeclarationTest extends BaseModelTest {
 
         FactType nodeType = kbase.getFactType( "org.drools.compiler", "Node" );
         Object parent = nodeType.newInstance();
-        nodeType.set( parent, "values", Arrays.asList("test") );
+        nodeType.set(parent, "values", List.of("test"));
         ksession.insert( parent );
 
         int rules = ksession.fireAllRules();

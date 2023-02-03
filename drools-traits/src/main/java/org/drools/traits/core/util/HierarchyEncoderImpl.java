@@ -442,8 +442,9 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         t.and( y );
 
         switch ( t.cardinality() ) {
-            case 0 : return t;
-            case 1 : return t;
+            case 0 :
+            case 1 :
+                return t;
             default: return new BitSet();
         }
     }

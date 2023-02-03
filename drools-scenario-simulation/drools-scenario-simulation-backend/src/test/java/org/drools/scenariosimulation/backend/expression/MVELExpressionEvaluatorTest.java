@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import org.junit.Ignore;
@@ -81,7 +82,7 @@ public class MVELExpressionEvaluatorTest {
 
         assertThat(evaluator.evaluateLiteralExpression(mvelExpression("[\"Jim\"]"), ArrayList.class.getCanonicalName(),
                 Collections.emptyList()
-        )).isEqualTo(Arrays.asList("Jim"));
+        )).isEqualTo(List.of("Jim"));
 
         assertThat(evaluator.evaluateLiteralExpression(mvelExpression("[]"), ArrayList.class.getCanonicalName(),
                 Collections.emptyList()

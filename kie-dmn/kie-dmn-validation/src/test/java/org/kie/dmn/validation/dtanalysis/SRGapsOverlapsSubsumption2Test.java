@@ -43,19 +43,19 @@ public class SRGapsOverlapsSubsumption2Test extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(2,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("660"),
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null),
-                                                                                                          new Bound(Interval.POS_INF,
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)),
-                                                                                   Interval.newFromBounds(new Bound("Fair",
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound("Good",
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(2,
+                                                               Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("660"),
+                                                                                                              RangeBoundary.OPEN,
+                                                                                                              null),
+                                                                                                    new Bound(Interval.POS_INF,
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null)),
+                                                                             Interval.newFromBounds(new Bound("Fair",
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound("Good",
+                                                                                                              RangeBoundary.OPEN,
+                                                                                                              null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS
@@ -65,21 +65,21 @@ public class SRGapsOverlapsSubsumption2Test extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
-                                                                         4),
-                                                           new Hyperrectangle(2,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("660"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(new BigDecimal("660"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null)),
-                                                                                            Interval.newFromBounds(new Bound("Bad",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound("Fair",
-                                                                                                                             RangeBoundary.OPEN,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(2,
+                                                                   4),
+                                                     new Hyperrectangle(2,
+                                                                        Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("660"),
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound(new BigDecimal("660"),
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null)),
+                                                                                      Interval.newFromBounds(new Bound("Bad",
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound("Fair",
+                                                                                                                       RangeBoundary.OPEN,
+                                                                                                                       null))))));
         assertThat(overlaps).hasSize(1);
 
         // Assert OVERLAPs same values

@@ -63,7 +63,7 @@ public class IfExpressionNode
     public Object evaluate(EvaluationContext ctx) {
         // spec says: if FEEL(e1) is true then FEEL(e2) else FEEL(e3)
         Object cond = this.condition.evaluate( ctx );
-        if ( cond != null && cond instanceof Boolean && cond == Boolean.TRUE ) {
+        if (cond == Boolean.TRUE) {
             return this.thenExpression.evaluate( ctx );
         } else {
             return this.elseExpression.evaluate( ctx );

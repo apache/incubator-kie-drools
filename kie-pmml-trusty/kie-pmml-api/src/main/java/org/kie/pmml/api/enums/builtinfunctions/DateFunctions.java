@@ -97,7 +97,7 @@ public enum DateFunctions {
         checkLength(inputData, 2);
         checkDate(inputData[0]);
         checkInteger(inputData[1]);
-        Date yearDate = new GregorianCalendar((int)inputData[1], 0, 1).getTime();
+        Date yearDate = new GregorianCalendar((int)inputData[1], Calendar.JANUARY, 1).getTime();
         long diff = ((Date) inputData[0]).getTime() - yearDate.getTime();
         return (int) TimeUnit.SECONDS.convert(diff, TimeUnit.MILLISECONDS);
     }

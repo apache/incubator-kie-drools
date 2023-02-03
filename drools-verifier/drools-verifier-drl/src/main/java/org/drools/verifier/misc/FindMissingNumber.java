@@ -76,7 +76,7 @@ public class FindMissingNumber {
         if ( numbers == null || numbers.length < MIN_NUMBER_OF_RESTRICTIONS ) {
             return null;
         }
-        BigDecimal gap = null;
+        BigDecimal gap;
         Number missingNumber = null;
 
         BigDecimal a = numbers[0];
@@ -101,12 +101,14 @@ public class FindMissingNumber {
             BigDecimal first = numbers[i];
             BigDecimal second = numbers[i + 1];
 
-            if ( missingNumber == null && !second.subtract( first ).equals( gap ) ) {
-                missingNumber = second.subtract( gap );
-            } else if ( !second.subtract( first ).equals( gap ) && missingNumber != null ) {
-                // Happends if there is no pattern found, or more than 1
-                // missing number.
-                return null;
+            if (!second.subtract( first ).equals( gap )) {
+                if (missingNumber == null) {
+                    missingNumber = second.subtract(gap);
+                } else {
+                    // Happends if there is no pattern found, or more than 1
+                    // missing number.
+                    return null;
+                }
             }
         }
 
@@ -126,7 +128,7 @@ public class FindMissingNumber {
         }
         try {
 
-            BigDecimal gap = null;
+            BigDecimal gap;
             Number missingNumber = null;
 
             BigDecimal a = numbers[0];
@@ -147,18 +149,20 @@ public class FindMissingNumber {
                 return null;
             }
 
-            BigDecimal first = null;
-            BigDecimal second = null;
+            BigDecimal first;
+            BigDecimal second;
             for ( int i = 0; i < (numbers.length - 1); i++ ) {
                 first = numbers[i];
                 second = numbers[i + 1];
 
-                if ( missingNumber == null && !second.divide( first ).equals( gap ) ) {
-                    missingNumber = first.multiply( gap );
-                } else if ( !second.divide( first ).equals( gap ) && missingNumber != null ) {
-                    // Happends if there is no pattern found, or more than 1
-                    // missing number.
-                    return null;
+                if (!second.divide( first ).equals( gap )) {
+                    if (missingNumber == null) {
+                        missingNumber = first.multiply(gap);
+                    } else {
+                        // Happends if there is no pattern found, or more than 1
+                        // missing number.
+                        return null;
+                    }
                 }
             }
             return missingNumber;

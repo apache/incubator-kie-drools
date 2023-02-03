@@ -84,7 +84,7 @@ public class GetObjectsCommand
     public Collection execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
-        Collection col = null;
+        Collection col;
 
         if ( getFilter() != null ) {
             col =  ksession.getObjects( this.filter );

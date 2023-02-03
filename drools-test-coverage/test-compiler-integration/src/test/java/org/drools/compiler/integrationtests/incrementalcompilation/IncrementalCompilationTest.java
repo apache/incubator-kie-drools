@@ -299,7 +299,7 @@ public class IncrementalCompilationTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-delete", "1.0.1");
-        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, (String) null, drl2);
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, null, drl2);
         kieContainer.updateToVersion(releaseId2);
 
         // test with the old ksession ...

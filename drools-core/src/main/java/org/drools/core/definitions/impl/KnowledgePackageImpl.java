@@ -173,9 +173,7 @@ public class KnowledgePackageImpl
         }
         Collection<org.kie.api.definition.process.Process> processes = getRuleFlows().values();
         List<Process> list = new ArrayList<>(processes.size());
-        for (org.kie.api.definition.process.Process process : processes) {
-            list.add(process);
-        }
+        list.addAll(processes);
         return Collections.unmodifiableCollection(list);
     }
 

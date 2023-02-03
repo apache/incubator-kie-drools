@@ -37,8 +37,6 @@ public class Column
 
     public Column(final int columnIndex,
                   final AnalyzerConfiguration configuration) {
-        PortablePreconditions.checkNotNull("columnIndex",
-                                           columnIndex);
         this.indexKey = new UpdatableKey<>(IndexKey.INDEX_ID,
                                            columnIndex);
         this.uuidKey = configuration.getUUID(this);

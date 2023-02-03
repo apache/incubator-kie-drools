@@ -121,14 +121,14 @@ public class DefaultNodeInfo
         } else if ( node instanceof ObjectSource ) {
             List<NetworkNode> result = new ArrayList<>();
             for ( ObjectSink sink : ((ObjectSource)node).getObjectSinkPropagator().getSinks() ) {
-                result.add( (NetworkNode) sink );
+                result.add(sink);
             }
             return result;
         } else if ( node instanceof LeftTupleSource ) {
             List<NetworkNode> result = new ArrayList<>();
             LeftTupleSource source = (LeftTupleSource) node;
             for ( LeftTupleSink sink : source.getSinkPropagator().getSinks() ) {
-                result.add( (NetworkNode) sink );
+                result.add(sink);
             }
             return result;
         }

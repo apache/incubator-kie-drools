@@ -137,7 +137,7 @@ public class TraitHelperImpl implements Externalizable,
     }
 
     private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
-        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, traits, activation );
+        updateManyTraits(object, mask, Collections.singletonList(originator), modifiedClass, traits, activation);
     }
 
     private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
@@ -403,7 +403,6 @@ public class TraitHelperImpl implements Externalizable,
                     }
                 }
                 if ( found ) {
-                    continue;
                 }
             }
         }
@@ -469,7 +468,7 @@ public class TraitHelperImpl implements Externalizable,
         TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? builder.asTraitable( core, coreDef ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint(workingMemory) : ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint( "DEFAULT" );
+            WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint(workingMemory) : workingMemory.getEntryPoint("DEFAULT");
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
             ObjectTypeConf coreConf = reg.getOrCreateObjectTypeConf( ep.getEntryPoint(), core );
@@ -536,7 +535,7 @@ public class TraitHelperImpl implements Externalizable,
     protected <T> void configureTrait( T thing, Object value ) {
         if ( value instanceof Modify && thing instanceof Metadatable) {
             Modify modify = (Modify) value;
-            modify.call( (Metadatable) thing );
+            modify.call(thing);
         }
     }
 
@@ -544,7 +543,7 @@ public class TraitHelperImpl implements Externalizable,
         FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-            handle = (FactHandle) entryPoint.getFactHandle( object );
+            handle = entryPoint.getFactHandle(object);
         if ( handle != null ) {
         }
         return handle;

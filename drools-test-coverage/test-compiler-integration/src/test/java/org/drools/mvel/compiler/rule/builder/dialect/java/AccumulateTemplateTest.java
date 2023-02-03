@@ -66,7 +66,7 @@ public class AccumulateTemplateTest {
                                                                                                                  "price" ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
-        final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
+        final List globalTypes = Arrays.asList("String", "String");
 
         final Map map = new HashMap();
 
@@ -150,7 +150,7 @@ public class AccumulateTemplateTest {
                                                                                                                  "price" ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
-        final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
+        final List globalTypes = Arrays.asList("String", "String");
 
         final Map map = new HashMap();
 
@@ -234,7 +234,7 @@ public class AccumulateTemplateTest {
                                                                                                 new PatternExtractor( new ClassObjectType( Person.class ) ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
-        final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
+        final List globalTypes = Arrays.asList("String", "String");
 
         final Map map = new HashMap();
 

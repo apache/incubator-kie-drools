@@ -93,7 +93,7 @@ public class RuleBuilderTest {
         // not has no outer declarations
         assertThat(not.getOuterDeclarations().isEmpty()).isTrue();
         assertThat(not.getInnerDeclarations().size()).isEqualTo(1);
-        assertThat(not.getInnerDeclarations().keySet().contains("$state")).isTrue();
+        assertThat(not.getInnerDeclarations().containsKey("$state")).isTrue();
 
         // second not
         final GroupElement not2 = (GroupElement) ((GroupElement) not.getChildren().get( 0 )).getChildren().get( 1 );
@@ -101,7 +101,7 @@ public class RuleBuilderTest {
         // not has no outer declarations
         assertThat(not2.getOuterDeclarations().isEmpty()).isTrue();
         assertThat(not2.getInnerDeclarations().size()).isEqualTo(1);
-        assertThat(not2.getInnerDeclarations().keySet().contains("$likes")).isTrue();
+        assertThat(not2.getInnerDeclarations().containsKey("$likes")).isTrue();
     }
 
     @Test

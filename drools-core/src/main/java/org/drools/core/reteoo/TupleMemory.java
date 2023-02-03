@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 

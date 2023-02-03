@@ -565,7 +565,7 @@ public class ComplexRulesTest extends BaseModelTest {
 
     public static class ListContainer {
         public List<String> getList() {
-            return Arrays.asList("ciao");
+            return List.of("ciao");
         }
     }
 

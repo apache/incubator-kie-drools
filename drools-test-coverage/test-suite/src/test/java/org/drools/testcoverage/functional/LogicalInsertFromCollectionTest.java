@@ -70,13 +70,13 @@ public class LogicalInsertFromCollectionTest {
         for (int i = 5; i > 1; i--) {
 
             // before remove 5,4,3,2,1 facts
-            assertThat(ksession.getFactCount()).isEqualTo((long) i);
+            assertThat(ksession.getFactCount()).isEqualTo(i);
 
             collection.remove(collection.iterator().next());
             ksession.update(handle, collection);
             ksession.fireAllRules();
             // after removing 4,3,2,1,0 facts
-            assertThat(ksession.getFactCount()).isEqualTo((long) (i - 1));
+            assertThat(ksession.getFactCount()).isEqualTo(i - 1);
         }
 
     }
@@ -95,14 +95,14 @@ public class LogicalInsertFromCollectionTest {
         ksession.fireAllRules();
 
         // before adding 5 facts
-        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo(5);
 
         collection.add(42);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
         // after adding should be 6 facts
-        assertThat(ksession.getFactCount()).isEqualTo((long) 6);
+        assertThat(ksession.getFactCount()).isEqualTo(6);
     }
 
     @Test
@@ -119,20 +119,20 @@ public class LogicalInsertFromCollectionTest {
         ksession.fireAllRules();
 
         // before change - expecting 5 facts
-        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo(5);
 
         collection.iterator().next().setAge(80);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
         // after change - expecting 4 facts
-        assertThat(ksession.getFactCount()).isEqualTo((long) 4);
+        assertThat(ksession.getFactCount()).isEqualTo(4);
 
         collection.iterator().next().setAge(30);
         ksession.update(handle, collection);
         ksession.fireAllRules();
 
-        assertThat(ksession.getFactCount()).isEqualTo((long) 5);
+        assertThat(ksession.getFactCount()).isEqualTo(5);
 
     }
 

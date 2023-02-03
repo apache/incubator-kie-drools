@@ -17,11 +17,13 @@
 package org.kie.dmn.validation.dtanalysis;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.validation.dtanalysis.model.Bound;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
@@ -54,19 +56,19 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(2);
         @SuppressWarnings({"unchecked", "rawtypes"})
         List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(java.time.LocalDate.parse("2019-03-31"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(java.time.LocalDate.parse("2019-03-31"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))),
+                                                                     List.of(Interval.newFromBounds(new Bound(LocalDate.parse("2019-03-31"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound(LocalDate.parse("2019-03-31"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null)))),
                                                   new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(java.time.LocalDate.parse("2019-12-31"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(java.time.LocalDate.parse("2019-12-31"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+                                                                     List.of(Interval.newFromBounds(new Bound(LocalDate.parse("2019-12-31"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null),
+                                                                                                    new Bound(LocalDate.parse("2019-12-31"),
+                                                                                                              RangeBoundary.CLOSED,
+                                                                                                              null)))));
         assertThat(gaps).hasSize(2);
 
         // Assert GAPS same values
@@ -75,15 +77,15 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
-                                                                         3),
-                                                           new Hyperrectangle(1,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(java.time.LocalDate.parse("2019-06-30"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(java.time.LocalDate.parse("2019-06-30"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(2,
+                                                                   3),
+                                                     new Hyperrectangle(1,
+                                                                        List.of(Interval.newFromBounds(new Bound(LocalDate.parse("2019-06-30"),
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null),
+                                                                                                       new Bound(LocalDate.parse("2019-06-30"),
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null))))));
         assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps()).containsAll(overlaps);
@@ -96,13 +98,13 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
 
         assertThat(analysis.getGaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound(new BigDecimal("0"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS same values
@@ -119,13 +121,13 @@ public class BuiltinAndOtherValuesTest extends AbstractDTAnalysisTest {
 
         assertThat(analysis.getGaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse("P1M"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(org.kie.dmn.feel.lang.types.impl.ComparablePeriod.parse("P1M"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound(ComparablePeriod.parse("P1M"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound(ComparablePeriod.parse("P1M"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS same values

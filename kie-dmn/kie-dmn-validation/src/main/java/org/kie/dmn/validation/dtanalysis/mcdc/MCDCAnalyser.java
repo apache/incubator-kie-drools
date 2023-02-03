@@ -118,7 +118,7 @@ public class MCDCAnalyser {
     private void step4() {
         Set<List<Comparable<?>>> outYetToVisit = step4whichOutputYetToVisit();
         Optional<List<Comparable<?>>> findFirst = outYetToVisit.stream().findFirst();
-        if (!findFirst.isPresent()) {
+        if (findFirst.isEmpty()) {
             throw new IllegalArgumentException("step4 was invoked despite there are no longer output to visit.");
         }
         List<Comparable<?>> pickOutToVisit = findFirst.get();
@@ -154,8 +154,8 @@ public class MCDCAnalyser {
                 }
             }
         }
-        Optional<PosNegBlock> posNegBlockFirst = blocks.stream().sorted(Comparator.comparing(Entry::getValue)).map(Entry::getKey).findFirst();
-        if (!posNegBlockFirst.isPresent()) {
+        Optional<PosNegBlock> posNegBlockFirst = blocks.stream().sorted(Entry.comparingByValue()).map(Entry::getKey).findFirst();
+        if (posNegBlockFirst.isEmpty()) {
             throw new IllegalStateException("there is no candidable posNegBlocks.");
         }
         PosNegBlock posNegBlock = posNegBlockFirst.get();
@@ -212,7 +212,7 @@ public class MCDCAnalyser {
 
         Integer idxMostMatchingRules = idxMoreEnums.stream()
                                                    .map(i -> new SimpleEntry<Integer, Integer>(i, matchingRulesForInput(i, allEnumValues.get(i).get(0)).size()))
-                                                   .max(Comparator.comparing(Entry::getValue))
+                                                   .max(Entry.comparingByValue())
                                                    .map(Entry::getKey)
                                                    .orElseThrow(() -> new RuntimeException());
 
@@ -254,7 +254,7 @@ public class MCDCAnalyser {
         Set<List<Comparable<?>>> filter1outs = candidateBlocks.stream().map(b -> b.posRecord.output).collect(Collectors.toSet());
         LOG.trace("filter1outs {}", filter1outs);
 
-        if (filter1outs.stream().filter(not(getVisitedPositiveOutput()::contains)).count() > 0) {
+        if (filter1outs.stream().anyMatch(not(getVisitedPositiveOutput()::contains))) {
             LOG.trace("Trying to prioritize non-yet visited outputs...");
             Set<List<Comparable<?>>> hypo = new HashSet<>(filter1outs);
             hypo.removeAll(getVisitedPositiveOutput());
@@ -273,7 +273,7 @@ public class MCDCAnalyser {
 
         List<SimpleEntry<List<Comparable<?>>, Integer>> filter1outsMatchingRules = filter1outs.stream()
                                                                                               .map(out -> new SimpleEntry<>(out, (int) ddtaTable.getRule().stream().filter(r -> r.getOutputEntry().equals(out)).count()))
-                                                                                              .sorted(Comparator.comparing(Entry::getValue))
+                                                                                              .sorted(Entry.comparingByValue())
                                                                                               .collect(Collectors.toList());
         LOG.trace("3. of those blocks positive outputs, how many rule do they match? {}", filter1outsMatchingRules);
         
@@ -285,7 +285,7 @@ public class MCDCAnalyser {
 
         List<SimpleEntry<PosNegBlock, Integer>> blockWeighted = filter2.stream()
                                                                        .map(b -> new SimpleEntry<>(b, computeAdditionalWeightIntroBlock(b)))
-                                                                       .sorted(Comparator.comparing(Entry::getValue))
+                                                                       .sorted(Entry.comparingByValue())
                                                                        .collect(Collectors.toList());
         LOG.trace("3. blocks sorted by fewest new cases (natural weight order): \n{}", blockWeighted);
 
@@ -733,7 +733,7 @@ public class MCDCAnalyser {
 
     private void calculateElseRuleIdx() {
         if (dt.getHitPolicy() == HitPolicy.PRIORITY) {// calculate "else" rule if present.
-            for (int ruleIdx = ddtaTable.getRule().size() - 1; ruleIdx>=0 && !elseRuleIdx.isPresent(); ruleIdx--) {
+            for (int ruleIdx = ddtaTable.getRule().size() - 1; ruleIdx>=0 && elseRuleIdx.isEmpty(); ruleIdx--) {
                 DDTARule rule = ddtaTable.getRule().get(ruleIdx);
                 List<DDTAInputEntry> ie = rule.getInputEntry();
                 boolean checkAll = true;

@@ -46,7 +46,7 @@ public class TestBase {
     public void setUp() throws Exception {
         verifierData = VerifierReportFactory.newVerifierData();
         packageDescrVisitor = new PackageDescrVisitor(verifierData,
-                Collections.<JarInputStream>emptyList());
+                Collections.emptyList());
     }
 
     protected PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {

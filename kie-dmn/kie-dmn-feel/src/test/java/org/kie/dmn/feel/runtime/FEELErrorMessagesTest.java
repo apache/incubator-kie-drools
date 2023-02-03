@@ -48,7 +48,7 @@ public class FEELErrorMessagesTest {
 
         assertThat(captor.getAllValues()).hasSize(2);
         assertThat(captor.getAllValues().get(1)).isInstanceOf( UnknownVariableErrorEvent.class);
-        assertThat(((UnknownVariableErrorEvent)captor.getAllValues().get(1)).getOffendingSymbol()).isEqualTo("a variable name" );
+        assertThat(captor.getAllValues().get(1).getOffendingSymbol()).isEqualTo("a variable name");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class FEELErrorMessagesTest {
 
         assertThat(captor.getAllValues()).hasSize(1);
         assertThat(captor.getAllValues().get(0)).isInstanceOfAny(SyntaxErrorEvent.class);
-        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("Detected 'if' expression without 'else' part");
+        assertThat(captor.getAllValues().get(0).getMessage()).startsWith("Detected 'if' expression without 'else' part");
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FEELErrorMessagesTest {
 
         assertThat(captor.getAllValues()).hasSize(1);
         assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
-        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).isEqualTo("missing 'else' at '456'");
+        assertThat(captor.getAllValues().get(0).getMessage()).isEqualTo("missing 'else' at '456'");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class FEELErrorMessagesTest {
 
         assertThat(captor.getAllValues()).hasSize(1);
         assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
-        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("Detected 'if' expression without 'then' part");
+        assertThat(captor.getAllValues().get(0).getMessage()).startsWith("Detected 'if' expression without 'then' part");
     }
 
     @Test
@@ -116,9 +116,9 @@ public class FEELErrorMessagesTest {
 
         assertThat(captor.getAllValues()).hasSize(2);
         assertThat(captor.getAllValues().get(0)).isInstanceOf(SyntaxErrorEvent.class);
-        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(0)).getMessage()).startsWith("missing 'then' at '123'");
+        assertThat(captor.getAllValues().get(0).getMessage()).startsWith("missing 'then' at '123'");
         assertThat(captor.getAllValues().get(1)).isInstanceOf(SyntaxErrorEvent.class);
-        assertThat(((SyntaxErrorEvent) captor.getAllValues().get(1)).getMessage()).startsWith("Detected 'if' expression without 'then' part");
+        assertThat(captor.getAllValues().get(1).getMessage()).startsWith("Detected 'if' expression without 'then' part");
     }
 
 }

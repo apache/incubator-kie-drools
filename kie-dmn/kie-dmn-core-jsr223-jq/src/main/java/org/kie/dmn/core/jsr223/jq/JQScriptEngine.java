@@ -79,7 +79,7 @@ public class JQScriptEngine extends AbstractScriptEngine { // TODO evaluate impl
             final List<JsonNode> out = new ArrayList<>();
             q.apply(childScope, in, out::add);
             JsonNode outNode = out.get(0);
-            Object result = null;
+            Object result;
             if (!outNode.isValueNode()) {
                 result = MAPPER.treeToValue(outNode, Map.class);
             } else if (outNode.isArray()) {

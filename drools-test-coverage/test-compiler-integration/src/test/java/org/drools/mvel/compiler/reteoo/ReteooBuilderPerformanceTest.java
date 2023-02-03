@@ -17,7 +17,6 @@ package org.drools.mvel.compiler.reteoo;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collections;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;

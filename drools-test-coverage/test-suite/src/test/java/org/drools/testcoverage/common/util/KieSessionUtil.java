@@ -16,7 +16,6 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.io.StringReader;
 import java.util.Properties;
 
 import org.kie.api.KieServices;

@@ -659,7 +659,6 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }

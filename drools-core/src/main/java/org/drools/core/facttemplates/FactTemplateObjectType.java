@@ -162,7 +162,7 @@ public class FactTemplateObjectType
             return true;
         }
 
-        if ( object == null || !(object instanceof FactTemplateObjectType) ) {
+        if (!(object instanceof FactTemplateObjectType)) {
             return false;
         }
 

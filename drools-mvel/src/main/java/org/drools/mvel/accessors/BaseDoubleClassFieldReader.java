@@ -85,8 +85,8 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getDoubleValue",
-                                                      new Class[]{ReteEvaluator.class, Object.class} );
+            return this.getClass().getDeclaredMethod("getDoubleValue",
+                                                     ReteEvaluator.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

@@ -75,7 +75,7 @@ public class JavaAccumulateBuilderTest {
         RuleBuildContext context = new RuleBuildContext( pkgBuilder, ruleDescr, dialectRegistry, pkg, dialect);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
-        String generatedCode = (String) context.getMethods().get( 0 );
+        String generatedCode = context.getMethods().get(0);
 
         assertThat(generatedCode.contains("private int x;")).isTrue();
         assertThat(generatedCode.contains("private int y;")).isTrue();

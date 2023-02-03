@@ -103,7 +103,7 @@ public class NodeSegmentUnlinkingTest {
     }
 
     public void  setUp(int type) {
-        setUp(new int[] { type, type, type, type, type, type, type, type } );
+        setUp(type, type, type, type, type, type, type, type);
     }
     
     public void setUp(int... type) {
@@ -266,7 +266,7 @@ public class NodeSegmentUnlinkingTest {
         liaNode.assertObject((InternalFactHandle) ksession.insert("str"), context, ksession);
         
 
-        LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = ksession.getNodeMemory(liaNode);
         assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
         assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         
@@ -280,7 +280,7 @@ public class NodeSegmentUnlinkingTest {
         n1.assertObject( (InternalFactHandle) ksession.insert( "str" ), context, ksession );
         
 
-        liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
+        liaMem = ksession.getNodeMemory(liaNode);
         assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
         assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         
@@ -300,7 +300,7 @@ public class NodeSegmentUnlinkingTest {
         InternalFactHandle fh1 = (InternalFactHandle) ksession.insert( "str1" );
         n1.assertObject( fh1, context, ksession );
         
-        LiaNodeMemory liaMem = (LiaNodeMemory) ksession.getNodeMemory( liaNode );
+        LiaNodeMemory liaMem = ksession.getNodeMemory(liaNode);
         assertThat(liaMem.getNodePosMaskBit()).isEqualTo(1);
         assertThat(liaMem.getSegmentMemory().getAllLinkedMaskTest()).isEqualTo(3); 
         

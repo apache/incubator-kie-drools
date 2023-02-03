@@ -70,7 +70,7 @@ public class RhsBuilder implements SourceBuilder {
 
     public void addCellValue(int row, int column, String value) {
         hasValues = true;
-        String template = (String) this.templates.get(Integer.valueOf(column));
+        String template = this.templates.get(Integer.valueOf(column));
         if (template == null) {
             throw new DecisionTableParseException("No code snippet for " +
                                                           this.actionTypeCode + ", above cell " +

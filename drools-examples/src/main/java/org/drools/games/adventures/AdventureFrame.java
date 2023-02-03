@@ -896,7 +896,7 @@ public class AdventureFrame extends JFrame {
         public void send(Object object) {
             //textArea.insert( object.toString() + "\n", 0 );
             textArea.append( object.toString() + "\n" );
-            JScrollPane scrollPane = (JScrollPane) ((JViewport) textArea.getParent()).getParent();
+            JScrollPane scrollPane = (JScrollPane) textArea.getParent().getParent();
 
             // Can't get this to work :(
             //            JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();

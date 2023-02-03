@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -76,13 +77,13 @@ public class UnmarshalMarshalTest {
 
     @Test
     public void test0004() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services.dmn", marshaller);
     }
 
     @Test
     public void test0004_ns_other_location() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new DecisionServicesExtensionRegister()));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new DecisionServicesExtensionRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0004-decision-services_ns_other_location.dmn", marshaller);
     }
 
@@ -124,13 +125,13 @@ public class UnmarshalMarshalTest {
 
     @Test
     public void testHello_World_semantic_namespace_with_extensions() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new MyTestRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
     }
 
     @Test
     public void testHello_World_semantic_namespace_with_extensions_other_ns_location() throws Exception {
-        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList(new MyTestRegister()));
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new MyTestRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "Hello_World_semantic_namespace_with_extensions_other_ns_location.dmn", marshaller);
     }
 
@@ -231,15 +232,13 @@ public class UnmarshalMarshalTest {
 
          */
         Set<QName> attrWhichCanDefault = new HashSet<QName>();
-        attrWhichCanDefault.addAll(Arrays.asList(new QName[]{
-                new QName("expressionLanguage"),
-                new QName("typeLanguage"),
-                new QName("isCollection"),
-                new QName("hitPolicy"),
-                new QName("preferredOrientation")
-        }));
+        attrWhichCanDefault.addAll(Arrays.asList(new QName("expressionLanguage"),
+                                                 new QName("typeLanguage"),
+                                                 new QName("isCollection"),
+                                                 new QName("hitPolicy"),
+                                                 new QName("preferredOrientation")));
         Set<String> nodeHavingDefaultableAttr = new HashSet<>();
-        nodeHavingDefaultableAttr.addAll(Arrays.asList(new String[]{"definitions", "decisionTable", "itemDefinition", "itemComponent"}));
+        nodeHavingDefaultableAttr.addAll(Arrays.asList("definitions", "decisionTable", "itemDefinition", "itemComponent"));
         Diff checkSimilar = DiffBuilder
                 .compare(control)
                 .withTest(test)
@@ -261,7 +260,6 @@ public class UnmarshalMarshalTest {
                                                                    if (check) {
                                                                        testIsDefaulableAttribute = true;
                                                                        whichDefaultableAttr = a;
-                                                                       continue;
                                                                    }
                                                                }
                                                            }

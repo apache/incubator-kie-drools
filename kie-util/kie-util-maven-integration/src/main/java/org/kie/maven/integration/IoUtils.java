@@ -35,7 +35,7 @@ public class IoUtils {
     public static long copy( InputStream input, OutputStream output ) throws IOException {
         byte[] buffer = createBytesBuffer( input );
         long count = 0;
-        int n = 0;
+        int n;
         while ((n = input.read(buffer)) != -1) {
             output.write(buffer, 0, n);
             count += n;

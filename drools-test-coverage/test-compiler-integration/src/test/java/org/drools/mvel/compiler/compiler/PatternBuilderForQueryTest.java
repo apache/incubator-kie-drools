@@ -96,7 +96,7 @@ public class PatternBuilderForQueryTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ));
+        kbase.addPackages(Arrays.asList(builder.getPackage(packageDescr.getName())));
         final KieSession session = kbase.newKieSession();
 
         session.insert( new Person( "bobba",
@@ -153,7 +153,7 @@ public class PatternBuilderForQueryTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ) );
+        kbase.addPackages(Arrays.asList(builder.getPackage(packageDescr.getName())));
 
         final KieSession session = kbase.newKieSession();
 
@@ -169,13 +169,13 @@ public class PatternBuilderForQueryTest extends DroolsTestCase {
                 15 ));
 
         results = session.getQueryResults( "query1",
-                                           new Object[]{"cheddar"} );
+                                           "cheddar");
         assertThat(results.size()).isEqualTo(0);
 
         session.insert(new Cheese("dolcelatte",
                                   20));
-        results = session.getQueryResults( "query2",
-                                           new Object[]{} );
+        results = session.getQueryResults( "query2"
+                                         );
         assertThat(results.size()).isEqualTo(2);
     }
 }

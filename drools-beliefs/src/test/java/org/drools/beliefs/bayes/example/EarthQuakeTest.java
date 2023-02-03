@@ -17,7 +17,6 @@ package org.drools.beliefs.bayes.example;
 
 import org.drools.beliefs.bayes.BayesInstance;
 import org.drools.beliefs.bayes.BayesVariable;
-import org.drools.beliefs.bayes.BayesLikelyhood;
 import org.drools.beliefs.bayes.BayesNetwork;
 import org.drools.beliefs.bayes.BayesVariableState;
 import org.drools.beliefs.bayes.JunctionTree;

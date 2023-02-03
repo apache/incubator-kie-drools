@@ -93,7 +93,7 @@ public class IntegerFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !( object instanceof IntegerFieldImpl ) ) {
+        if (!(object instanceof IntegerFieldImpl)) {
             return false;
         }
         final IntegerFieldImpl other = (IntegerFieldImpl) object;

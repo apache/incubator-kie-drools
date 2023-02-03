@@ -120,7 +120,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                     if (formalParameter.getImportName() == null) {
                         dmnContext.set(formalParameter.name, performTypeCheckIfNeeded(params[i], i));
                     } else {
-                        Map<String, Object> importNameCtx = null;
+                        Map<String, Object> importNameCtx;
                         if (dmnContext.isDefined(formalParameter.getImportName())) {
                             importNameCtx = (Map) dmnContext.get(formalParameter.getImportName());
                         } else {

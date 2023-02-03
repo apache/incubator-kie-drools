@@ -107,7 +107,7 @@ public class MavenSettings {
 
         request.setSystemProperties( System.getProperties() );
 
-        Settings settings = null;
+        Settings settings;
         try {
             settings = settingsBuilder.build( request ).getEffectiveSettings();
         } catch ( SettingsBuildingException e ) {

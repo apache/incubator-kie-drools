@@ -109,7 +109,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     public NullSafeFieldAccessExpr setName(final SimpleName name) {
     	assertNotNull(name);
         if (name == this.name) {
-            return (NullSafeFieldAccessExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.NAME, this.name, name);
         if (this.name != null) {
@@ -160,7 +160,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     public NullSafeFieldAccessExpr setScope(final Expression scope) {
     	assertNotNull(scope);
         if (scope == this.scope) {
-            return (NullSafeFieldAccessExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.SCOPE, this.scope, scope);
         if (this.scope != null) {
@@ -185,7 +185,7 @@ public class NullSafeFieldAccessExpr extends Expression implements NodeWithSimpl
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeFieldAccessExpr setTypeArguments(final NodeList<Type> typeArguments) {
         if (typeArguments == this.typeArguments) {
-            return (NullSafeFieldAccessExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.TYPE_ARGUMENTS, this.typeArguments, typeArguments);
         if (this.typeArguments != null) {

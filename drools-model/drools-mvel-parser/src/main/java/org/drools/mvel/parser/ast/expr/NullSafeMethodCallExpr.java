@@ -141,7 +141,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     public NullSafeMethodCallExpr setArguments(final NodeList<Expression> arguments) {
     	assertNotNull(arguments);
         if (arguments == this.arguments) {
-            return (NullSafeMethodCallExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.ARGUMENTS, this.arguments, arguments);
         if (this.arguments != null) {
@@ -156,7 +156,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     public NullSafeMethodCallExpr setName(final SimpleName name) {
     	assertNotNull(name);
         if (name == this.name) {
-            return (NullSafeMethodCallExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.NAME, this.name, name);
         if (this.name != null) {
@@ -170,7 +170,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeMethodCallExpr setScope(final Expression scope) {
         if (scope == this.scope) {
-            return (NullSafeMethodCallExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.SCOPE, this.scope, scope);
         if (this.scope != null) {
@@ -195,7 +195,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
     @Generated("com.github.javaparser.generator.core.node.PropertyGenerator")
     public NullSafeMethodCallExpr setTypeArguments(final NodeList<Type> typeArguments) {
         if (typeArguments == this.typeArguments) {
-            return (NullSafeMethodCallExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.TYPE_ARGUMENTS, this.typeArguments, typeArguments);
         if (this.typeArguments != null) {
@@ -237,7 +237,7 @@ public class NullSafeMethodCallExpr extends Expression implements NodeWithTypeAr
 
     @Generated("com.github.javaparser.generator.core.node.RemoveMethodGenerator")
     public NullSafeMethodCallExpr removeScope() {
-        return setScope((Expression) null);
+        return setScope(null);
     }
 
     @Override

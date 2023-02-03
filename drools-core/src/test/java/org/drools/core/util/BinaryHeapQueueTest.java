@@ -153,7 +153,7 @@ public class BinaryHeapQueueTest {
         }
 
         public void add(final Item item) {
-            this.queue.enqueue( (Activation) item );
+            this.queue.enqueue(item);
         }
 
         public Item getNext() {
@@ -175,7 +175,7 @@ public class BinaryHeapQueueTest {
         }
 
         public boolean equal(final Object object) {
-            if ( (object == null) || !(object instanceof Group) ) {
+            if (!(object instanceof Group)) {
                 return false;
             }
 

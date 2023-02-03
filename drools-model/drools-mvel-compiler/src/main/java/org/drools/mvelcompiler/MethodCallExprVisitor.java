@@ -72,7 +72,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
 
         Optional<DeclaredFunction> optDeclaredFunction = mvelCompilerContext.findDeclaredFunction(n.getNameAsString());
 
-        if(!optDeclaredFunction.isPresent()) return Optional.empty();
+        if(optDeclaredFunction.isEmpty()) return Optional.empty();
 
         DeclaredFunction declaredFunction = optDeclaredFunction.get();
 
@@ -92,7 +92,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                 .<Class<?>>map(TypeUtils::classFromType)
                 .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
 
-        if(!method.isPresent()) {
+        if(method.isEmpty()) {
             method = mvelCompilerContext.getRootPattern()
                     .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
             if(method.isPresent()) {
@@ -100,7 +100,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
             }
         }
 
-        if(!method.isPresent()) {
+        if(method.isEmpty()) {
             method = mvelCompilerContext.findStaticMethod(n.getNameAsString());
         }
 

@@ -637,7 +637,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     WindowDeclarationDescrBuilder.class,
                     null);
 
-            String window = "";
+            String window;
 
             match(input,
                     DRL6Lexer.ID,
@@ -2087,7 +2087,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 lhsOr(lhs,
                         true);
                 if (lhs.getDescr() != null && lhs.getDescr() instanceof ConditionalElementDescr) {
-                    ConditionalElementDescr root = (ConditionalElementDescr) lhs.getDescr();
+                    ConditionalElementDescr root = lhs.getDescr();
                     BaseDescr[] descrs = root.getDescrs().toArray(new BaseDescr[root.getDescrs().size()]);
                     root.getDescrs().clear();
                     for (int i = 0; i < descrs.length; i++) {
@@ -2480,9 +2480,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr conditionalBranch(CEDescrBuilder<?, ?> ce, ConditionalBranchDescrBuilder<?> conditionalBranch) throws RecognitionException {
         if (conditionalBranch == null) {
-            conditionalBranch = helper.start((DescrBuilder<?, ?>) ce,
-                    ConditionalBranchDescrBuilder.class,
-                    null);
+            conditionalBranch = helper.start(ce,
+                                             ConditionalBranchDescrBuilder.class,
+                                             null);
         }
 
         try {
@@ -2543,9 +2543,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr namedConsequence(CEDescrBuilder<?, ?> ce, NamedConsequenceDescrBuilder<?> namedConsequence) throws RecognitionException {
         if (namedConsequence == null) {
-            namedConsequence = helper.start((DescrBuilder<?, ?>) ce,
-                    NamedConsequenceDescrBuilder.class,
-                    null);
+            namedConsequence = helper.start(ce,
+                                            NamedConsequenceDescrBuilder.class,
+                                            null);
         }
 
         try {
@@ -2594,9 +2594,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      */
     private BaseDescr breakingNamedConsequence(CEDescrBuilder<?, ?> ce, NamedConsequenceDescrBuilder<?> namedConsequence) throws RecognitionException {
         if (namedConsequence == null) {
-            namedConsequence = helper.start((DescrBuilder<?, ?>) ce,
-                    NamedConsequenceDescrBuilder.class,
-                    null);
+            namedConsequence = helper.start(ce,
+                                            NamedConsequenceDescrBuilder.class,
+                                            null);
         }
 
         try {
@@ -2997,7 +2997,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     @SuppressWarnings("unchecked")
     private BaseDescr lhsPatternBind(PatternContainerDescrBuilder<?, ?> ce,
             final boolean allowOr) throws RecognitionException {
-        PatternDescrBuilder<?> pattern = null;
+        PatternDescrBuilder<?> pattern;
         CEDescrBuilder<?, OrDescr> or = null;
         BaseDescr result = null;
 
@@ -3134,7 +3134,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private BaseDescr lhsAccumulate(PatternContainerDescrBuilder<?, ?> ce) throws RecognitionException {
-        PatternDescrBuilder<?> pattern = null;
+        PatternDescrBuilder<?> pattern;
         BaseDescr result = null;
 
         pattern = helper.start((DescrBuilder<?, ?>) ce,
@@ -3194,7 +3194,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         return null;
 
                     if (source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr) {
-                        ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                        ConditionalElementDescr root = source.getDescr();
                         BaseDescr[] descrs = root.getDescrs().toArray(new BaseDescr[root.getDescrs().size()]);
                         root.getDescrs().clear();
                         for (int i = 0; i < descrs.length; i++) {
@@ -3893,7 +3893,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void fromEntryPoint(PatternDescrBuilder<?> pattern) throws RecognitionException {
-        String ep = "";
+        String ep;
 
         match(input,
                 DRL6Lexer.ID,
@@ -3936,7 +3936,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @throws org.antlr.runtime.RecognitionException
      */
     private void fromWindow(PatternDescrBuilder<?> pattern) throws RecognitionException {
-        String window = "";
+        String window;
 
         match(input,
                 DRL6Lexer.ID,
@@ -4068,7 +4068,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     return;
 
                 if (source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr) {
-                    ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                    ConditionalElementDescr root = source.getDescr();
                     BaseDescr[] descrs = root.getDescrs().toArray(new BaseDescr[root.getDescrs().size()]);
                     root.getDescrs().clear();
                     for (int i = 0; i < descrs.length; i++) {
@@ -4916,7 +4916,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                  String text,
                  int[] follow,
                  DroolsEditorType etype ) throws RecognitionException {
-        Token matchedSymbol = null;
+        Token matchedSymbol;
         matchedSymbol = input.LT(1);
         if (input.LA(1) == ttype && (text == null || text.equals(matchedSymbol.getText()))) {
             input.consume();
@@ -4973,7 +4973,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             String text,
             int[] follow)
             throws RecognitionException {
-        RecognitionException e = null;
+        RecognitionException e;
         // if next token is what we are looking for then "delete" this token
         if (mismatchIsUnwantedToken(input,
                 ttype,

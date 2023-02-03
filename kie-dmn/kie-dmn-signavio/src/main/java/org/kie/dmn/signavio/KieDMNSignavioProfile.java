@@ -24,6 +24,7 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.DRGElementCompiler;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.signavio.MultiInstanceDecisionLogic.MultiInstanceDecisionNodeCompiler;
 import org.kie.dmn.signavio.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AppendAllFunction;
 import org.kie.dmn.signavio.feel.runtime.functions.AreElementsOfFunction;
@@ -82,13 +83,13 @@ import org.kie.dmn.signavio.feel.runtime.functions.ZipFunction;
 
 public class KieDMNSignavioProfile implements DMNProfile {
     
-    protected final static List<DMNExtensionRegister> EXT_REGISTERS = Collections.unmodifiableList(Arrays.asList(
+    protected final static List<DMNExtensionRegister> EXT_REGISTERS = Collections.unmodifiableList(List.of(
             new MultiInstanceDecisionLogicRegister()
-    ));
+                                                                                                          ));
     
-    protected final static List<DRGElementCompiler> COMPILATION_EXT = Collections.unmodifiableList(Arrays.asList(
-            new MultiInstanceDecisionLogic.MultiInstanceDecisionNodeCompiler()
-    ));
+    protected final static List<DRGElementCompiler> COMPILATION_EXT = Collections.unmodifiableList(List.of(
+            new MultiInstanceDecisionNodeCompiler()
+                                                                                                          ));
 
     @Override
     public List<DMNExtensionRegister> getExtensionRegisters() {

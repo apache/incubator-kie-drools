@@ -44,7 +44,7 @@ import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 public final class DrlNameExpr extends NameExpr implements NodeWithSimpleName<NameExpr>,
                                                            Resolvable<ResolvedValueDeclaration> {
 
-    private int backReferencesCount = 0;
+    private int backReferencesCount;
 
     public DrlNameExpr() {
         this(null, new SimpleName(), 0);

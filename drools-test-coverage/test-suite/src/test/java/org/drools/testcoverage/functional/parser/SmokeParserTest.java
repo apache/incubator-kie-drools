@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;

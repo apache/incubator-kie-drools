@@ -162,7 +162,7 @@ public class GraphAnalysis {
         public boolean removeAll( Collection<?> c ) {
             boolean result = false;
             for (Object o : c) {
-                if ( o instanceof AnalyzedRule && remove( (AnalyzedRule) o ) ) {
+                if ( o instanceof AnalyzedRule && remove(o) ) {
                     result = true;
                 }
             }

@@ -67,7 +67,7 @@ public class QueryResultsImpl
 
     public Map<String, Declaration> getDeclarations(int subruleIndex) {
         if ( this.declarations == null || this.declarations.length == 0 ) {
-            return Collections.<String, Declaration>emptyMap();
+            return Collections.emptyMap();
         } else {
             return this.declarations[subruleIndex];
         }
@@ -98,9 +98,7 @@ public class QueryResultsImpl
         }
 
         for ( Declaration declr : getDeclarations(0).values() ) {
-            if ( ! idSet.contains( declr.getIdentifier() ) ) {
-                idSet.add(declr.getIdentifier());
-            }
+            idSet.add(declr.getIdentifier());
         }
 
         identifiers = idSet.toArray(new String[idSet.size()]);

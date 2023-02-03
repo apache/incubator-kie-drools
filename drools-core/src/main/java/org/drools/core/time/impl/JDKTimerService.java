@@ -120,7 +120,7 @@ public class JDKTimerService
         JDKJobHandle jobHandle = (JDKJobHandle) timerJobInstance.getJobHandle();
         long then = date.getTime();
         long now = System.currentTimeMillis();
-        ScheduledFuture<Void> future = null;
+        ScheduledFuture<Void> future;
         if (then >= now) {
             future = scheduler.schedule(item,
                     then - now,

@@ -19,6 +19,7 @@ package org.kie.dmn.signavio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -254,7 +255,7 @@ public class MultiInstanceDecisionLogic {
                 if ( cycleOnRaw instanceof Collection ) {
                     cycleOn = (Collection<?>) cycleOnRaw;
                 } else {
-                    cycleOn = Arrays.asList(cycleOnRaw);
+                    cycleOn = Collections.singletonList(cycleOnRaw);
                 }
                 for ( Object cycledValue : cycleOn ) {
                     DMNContext nonCycledContext = result.getContext();

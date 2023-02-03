@@ -73,7 +73,7 @@ public abstract class SerializationTestSupport {
         
         ObjectInputStream ois = new ObjectInputStream(is);
         
-        Object obj = (Object)ois.readObject();
+        Object obj = ois.readObject();
 
         ois.close();
         is.close();

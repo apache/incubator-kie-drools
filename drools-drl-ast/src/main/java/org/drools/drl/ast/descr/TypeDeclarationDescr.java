@@ -72,7 +72,7 @@ public class TypeDeclarationDescr
     }
 
     public List<QualifiedName> getSuperTypes() {
-        return superTypes != null ? superTypes : Collections.<QualifiedName>emptyList();
+        return superTypes != null ? superTypes : Collections.emptyList();
     }
 
     public void addSuperType( String type ) {

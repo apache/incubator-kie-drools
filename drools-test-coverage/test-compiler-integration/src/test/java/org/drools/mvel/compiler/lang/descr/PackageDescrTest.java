@@ -61,8 +61,8 @@ public class PackageDescrTest {
         desc.afterRuleAdded( rule );
         
         Map<String, AttributeDescr> ruleAts = rule.getAttributes();
-        assertThat(((AttributeDescr) ruleAts.get("foo")).getValue()).isEqualTo("overridden");
-        assertThat(((AttributeDescr) ruleAts.get("foo2")).getValue()).isEqualTo("default");
+        assertThat(ruleAts.get("foo").getValue()).isEqualTo("overridden");
+        assertThat(ruleAts.get("foo2").getValue()).isEqualTo("default");
         
     }
 

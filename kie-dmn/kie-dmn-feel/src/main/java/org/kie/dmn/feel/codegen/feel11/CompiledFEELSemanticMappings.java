@@ -19,6 +19,8 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.math.MathContext;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -253,15 +255,10 @@ public class CompiledFEELSemanticMappings {
     @SafeVarargs
     @SuppressWarnings("varargs")
     public static <T> List<T> list(T... a) {
-        ArrayList<T> result = new ArrayList<>();
         if (a == null) {
-            result.add(null);
-            return result;
+            return Collections.singletonList(null);
         }
-        for (T elem : a) {
-            result.add(elem);
-        }
-        return result;
+        return Arrays.asList(a);
     }
 
     /**

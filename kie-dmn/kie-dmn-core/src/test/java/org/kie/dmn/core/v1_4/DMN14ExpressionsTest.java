@@ -20,6 +20,7 @@ package org.kie.dmn.core.v1_4;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -163,7 +164,7 @@ public class DMN14ExpressionsTest extends BaseVariantTest {
         assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(Arrays.asList(6, 7, 8, 9, 10).toString());
 
         results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 11)), "Match by Fnct");
-        assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(Arrays.asList().toString());
+        assertThat(results.getDecisionResultByName("Match by Fnct").getResult().toString()).isEqualTo(List.of().toString());
 
     }
 }

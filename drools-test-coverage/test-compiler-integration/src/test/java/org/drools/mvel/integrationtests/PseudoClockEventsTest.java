@@ -139,7 +139,7 @@ public class PseudoClockEventsTest {
         final KieSession ksession = kbase.newKieSession(ksessionConfig, null);
         ksession.addEventListener(agendaEventListener);
 
-        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
 
         Thread fireUntilHaltThread = new Thread(ksession::fireUntilHalt, "Engine's thread");
         fireUntilHaltThread.start();

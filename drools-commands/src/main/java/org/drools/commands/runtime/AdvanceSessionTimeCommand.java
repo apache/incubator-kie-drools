@@ -62,7 +62,7 @@ public class AdvanceSessionTimeCommand implements ExecutableCommand<Long>, Ident
     @Override
     public Long execute(Context context ) {
         KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
-        SessionPseudoClock sessionClock = ksession.<SessionPseudoClock>getSessionClock();
+        SessionPseudoClock sessionClock = ksession.getSessionClock();
 
         sessionClock.advanceTime( amount, unit );
         long result = sessionClock.getCurrentTime();

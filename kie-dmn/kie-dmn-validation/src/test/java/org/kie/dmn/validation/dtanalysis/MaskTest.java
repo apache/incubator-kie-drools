@@ -45,22 +45,22 @@ public class MaskTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
-                                                                         1),
-                                                           new Hyperrectangle(1,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("18"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(Interval.POS_INF,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(2,
+                                                                   1),
+                                                     new Hyperrectangle(1,
+                                                                        List.of(Interval.newFromBounds(new Bound(new BigDecimal("18"),
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null),
+                                                                                                       new Bound(Interval.POS_INF,
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null))))));
         assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MaskedRules count.
         assertThat(analysis.getMaskedRules()).hasSize(1);
-        List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(1, 2));
+        List<MaskedRule> maskedRules = List.of(new MaskedRule(1, 2));
         assertThat(maskedRules).hasSize(1);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain at least 1 DMNMessage for the MaskedRule").isTrue();
@@ -75,34 +75,34 @@ public class MaskTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(2,
-                                                                         1),
-                                                           new Hyperrectangle(3,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("18"),
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(Interval.POS_INF,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null)),
-                                                                                            Interval.newFromBounds(new Bound("L",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound("M",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null)),
-                                                                                            Interval.newFromBounds(new Bound(true,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(true,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(2,
+                                                                   1),
+                                                     new Hyperrectangle(3,
+                                                                        Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("18"),
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound(Interval.POS_INF,
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null)),
+                                                                                      Interval.newFromBounds(new Bound("L",
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound("M",
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null)),
+                                                                                      Interval.newFromBounds(new Bound(true,
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound(true,
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null))))));
         assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MaskedRules count.
         assertThat(analysis.getMaskedRules()).hasSize(1);
-        List<MaskedRule> maskedRules = Arrays.asList(new MaskedRule(1, 2));
+        List<MaskedRule> maskedRules = List.of(new MaskedRule(1, 2));
         assertThat(maskedRules).hasSize(1);
         assertThat(analysis.getMaskedRules()).containsAll(maskedRules);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MASKED_RULE))).as("It should contain at least 1 DMNMessage for the MaskedRule").isTrue();

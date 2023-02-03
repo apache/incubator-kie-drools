@@ -496,7 +496,7 @@ public class DMNScenarioRunnerHelperTest {
         AbstractMap.SimpleEntry<String, Object> givenImportedPersonFactData2 = new AbstractMap.SimpleEntry<>("age", 67);
         scenarioRunnerData.addGiven(new InstanceGiven(importedPersonFactIdentifier, instantiateMap(givenImportedPersonFactData, givenImportedPersonFactData2)));
 
-        List<String> expectedInputDataToLoad = asList(injectedPrefix);
+        List<String> expectedInputDataToLoad = List.of(injectedPrefix);
         int inputObjects = expectedInputDataToLoad.size();
 
         runnerHelper.executeScenario(kieContainerMock,

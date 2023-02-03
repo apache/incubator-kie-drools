@@ -132,7 +132,7 @@ public class AnnotatedBaseDescr extends BaseDescr implements Externalizable {
     }
     
     public Collection<AnnotationDescr> getAnnotations() {
-        return annotations != null ? annotations.values() : Collections.<AnnotationDescr>emptySet();
+        return annotations != null ? annotations.values() : Collections.emptySet();
     }
 
     public void indexByFQN(boolean isStrict) {

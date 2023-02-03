@@ -34,8 +34,8 @@ public class MeetsFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( meetsFunction.invoke((Range) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( meetsFunction.invoke((Range) new RangeImpl(), (Range) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(meetsFunction.invoke(null, new RangeImpl()), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meetsFunction.invoke(new RangeImpl(), null), InvalidParametersEvent.class);
     }
 
     @Test

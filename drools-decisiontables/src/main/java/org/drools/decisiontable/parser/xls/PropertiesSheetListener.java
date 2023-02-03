@@ -105,7 +105,7 @@ public class PropertiesSheetListener implements DataListener {
         }
         final Integer rowInt = Integer.valueOf( row );
         if ( this._rowProperties.containsKey( rowInt ) ) {
-            final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
+            final String[] keyValue = this._rowProperties.get(rowInt);
             if ( PropertiesSheetListener.EMPTY_STRING.equals( keyValue[1] ) ) {
                 keyValue[1] = value;
                 keyValue[2] = RuleSheetParserUtil.rc2name(row, column);

@@ -709,7 +709,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         Fact f1 = createMapBasedFact( prototype );
-        f1.set( "i", Arrays.asList(3) );
+        f1.set("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
@@ -743,7 +743,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         Fact f1 = createMapBasedFact( prototype );
-        f1.set( "i", Arrays.asList(3) );
+        f1.set("i", List.of(3));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 
@@ -777,7 +777,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         Fact f1 = createMapBasedFact( prototype );
-        f1.set( "i", Arrays.asList(Map.of("a", 3)) );
+        f1.set("i", List.of(Map.of("a", 3)));
         ksession.insert(f1);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
 

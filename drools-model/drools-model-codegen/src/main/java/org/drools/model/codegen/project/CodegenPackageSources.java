@@ -21,14 +21,12 @@ import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.PackageModelWriter;
 import org.drools.model.codegen.execmodel.PackageSources;
 import org.drools.model.codegen.execmodel.QueryModel;
-import org.drools.model.codegen.execmodel.RuleUnitWriter;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -124,8 +124,8 @@ public class FactTemplateFieldExtractor
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+            return this.getClass().getDeclaredMethod("getValue",
+                                                     InternalWorkingMemory.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

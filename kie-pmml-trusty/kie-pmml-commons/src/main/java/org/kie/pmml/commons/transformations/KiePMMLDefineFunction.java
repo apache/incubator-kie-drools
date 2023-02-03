@@ -39,7 +39,7 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
     private final OP_TYPE opType;
     private final List<KiePMMLParameterField> parameterFields;
     private final KiePMMLExpression kiePMMLExpression;
-    private DATA_TYPE dataType = null;
+    private DATA_TYPE dataType;
 
     public KiePMMLDefineFunction(String name,
                                  List<KiePMMLExtension> extensions,

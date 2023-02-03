@@ -988,7 +988,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         private boolean moreThanMaxRuleDefs = false;
 
         public void addContext(BuildContext buildContext) {
-            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().flatMap(Collection::stream).count() >= MAX_RULE_DEFS) {
+            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().mapToLong(Collection::size).sum() >= MAX_RULE_DEFS) {
                 moreThanMaxRuleDefs = true;
                 return;
             }
@@ -999,7 +999,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         public void mergeRuleNameMap(Map<String, Set<String>> otherMap) {
-            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().flatMap(Collection::stream).count() >= MAX_RULE_DEFS) {
+            if (moreThanMaxRuleDefs || ruleNameMap.values().stream().mapToLong(Collection::size).sum() >= MAX_RULE_DEFS) {
                 moreThanMaxRuleDefs = true;
                 return;
             }

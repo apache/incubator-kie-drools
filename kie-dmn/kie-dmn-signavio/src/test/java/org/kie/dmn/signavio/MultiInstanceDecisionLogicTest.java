@@ -17,6 +17,7 @@
 package org.kie.dmn.signavio;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,9 +67,9 @@ public class MultiInstanceDecisionLogicTest {
 		DMNBaseNode i2 = input("I2");
 		
 		connect(a, asList(b, c));
-		connect(b, asList(i1));
+		connect(b, Collections.singletonList(i1));
 		connect(c, asList(i1, d));
-		connect(d, asList(i2));
+		connect(d, Collections.singletonList(i2));
 	}
 	
 	

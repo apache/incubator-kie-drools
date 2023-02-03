@@ -1029,7 +1029,7 @@ public class XStreamXML {
                     for ( FactHandle factHandle : (Collection<FactHandle>) handle ) {
                         writer.startNode( "fact-handle" );
                         writer.addAttribute( "external-form",
-                                             ((FactHandle) factHandle).toExternalForm() );
+                                             factHandle.toExternalForm());
                         writer.endNode();
                     }
 
@@ -1099,7 +1099,7 @@ public class XStreamXML {
             QueryResults results = (QueryResults) object;
 
             // write out identifiers
-            List<String> originalIds = Arrays.asList( results.getIdentifiers() );
+            String[] originalIds = results.getIdentifiers();
             Set<String> actualIds = new HashSet<>();
             if ( results instanceof QueryResultsImpl) {
                 for ( String identifier : originalIds ) {
@@ -1115,9 +1115,9 @@ public class XStreamXML {
                 }
             } else if( results instanceof FlatQueryResults ) {
                 for( String identifier : results.getIdentifiers() ) {
-                    for( QueryResultsRow row : ((FlatQueryResults) results) ) {
+                    for( QueryResultsRow row : results) {
                        Object rowObj = row.get(identifier);
-                       if( rowObj != null && rowObj instanceof DroolsQuery ) {
+                       if(rowObj instanceof DroolsQuery) {
                           continue;
                        }
                        actualIds.add( identifier );
@@ -1150,7 +1150,7 @@ public class XStreamXML {
                     FactHandle factHandle = result.getFactHandle( id );
                     writer.startNode( "fact-handle" );
                     writer.addAttribute( "external-form",
-                                         ((FactHandle) factHandle).toExternalForm() );
+                                         factHandle.toExternalForm());
                     writer.endNode();
 
                     writer.endNode();
@@ -1171,9 +1171,7 @@ public class XStreamXML {
             reader.moveUp();
 
             Set<String> identifiers = new TreeSet<>();
-            for ( int i = 0; i < list.size(); i++ ) {
-                identifiers.add( list.get( i ) );
-            }
+            identifiers.addAll(list);
 
             ArrayList<Map<String, Object>> results = new ArrayList<>();
             ArrayList<Map<String, FactHandle>> resultHandles = new ArrayList<>();

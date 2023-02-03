@@ -94,10 +94,8 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         
         Collection<? extends Object> factList = ksession.getObjects();
         assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
-        for( Object fact : factList ) { 
-           if( expectedList.contains(fact) ) { 
-               expectedList.remove(fact);
-           }
+        for( Object fact : factList ) {
+            expectedList.remove(fact);
         }
         assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }
@@ -125,10 +123,8 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         
         Collection<? extends Object> factList = ksession.getObjects();
         assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
-        for( Object fact : factList ) { 
-           if( expectedList.contains(fact) ) { 
-               expectedList.remove(fact);
-           }
+        for( Object fact : factList ) {
+            expectedList.remove(fact);
         }
         assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }
@@ -230,10 +226,8 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Object [] expectedArr = {expected_1, expected_2};
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         assertThat(factList.size() == expectedList.size()).as("Expected " + expectedList.size() + " objects but retrieved " + factList.size()).isTrue();
-        for( Object fact : factList ) { 
-           if( expectedList.contains(fact) ) { 
-               expectedList.remove(fact);
-           }
+        for( Object fact : factList ) {
+            expectedList.remove(fact);
         }
         assertThat(expectedList.isEmpty()).as("Retrieved object list did not contain expected objects.").isTrue();
     }

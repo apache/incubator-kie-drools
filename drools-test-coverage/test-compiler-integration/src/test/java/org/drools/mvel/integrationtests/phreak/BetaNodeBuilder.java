@@ -104,7 +104,7 @@ public class BetaNodeBuilder {
         Pattern pattern = new Pattern(0, new ClassObjectType(leftType));
 
         //BetaNodeFieldConstraint betaConstraint = null;
-        BetaConstraints betaConstraints = null;
+        BetaConstraints betaConstraints;
         if (constraintFieldName != null) {
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) reteTesterHelper.getStore();
 

@@ -81,7 +81,7 @@ public abstract class BaseEvaluator implements MvelEvaluator, Externalizable {
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof BaseEvaluator) ) {
+        if (!(object instanceof BaseEvaluator)) {
             return false;
         }
 

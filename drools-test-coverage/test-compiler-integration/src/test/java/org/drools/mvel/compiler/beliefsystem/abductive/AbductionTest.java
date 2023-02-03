@@ -370,7 +370,7 @@ public class AbductionTest {
 
             Bean bean = (Bean) o;
 
-            if ( id != bean.id ) return false;
+            if (!id.equals(bean.id)) return false;
 
             return true;
         }
@@ -1153,7 +1153,7 @@ public class AbductionTest {
             System.out.println( ">>> " + o );
         }
 
-        assertThat(list).isEqualTo(Arrays.asList("Apple"));
+        assertThat(list).isEqualTo(List.of("Apple"));
     }
 
 }

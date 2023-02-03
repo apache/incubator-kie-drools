@@ -120,7 +120,7 @@ public class XmlBifParser {
     private static BayesVariable buildVariable(Definition def, Network network, int id) {
         List<String> outcomes = new ArrayList();
         getOutcomesByVariable(network, def.getName(), outcomes);
-        List<String> given = (def.getGiven() == null) ? Collections.<String>emptyList() : def.getGiven();
+        List<String> given = (def.getGiven() == null) ? Collections.emptyList() : def.getGiven();
 
         return new BayesVariable<String>(def.getName(), id, outcomes.toArray( new String[ outcomes.size()] ),
                                          getProbabilities(def.getProbabilities(), outcomes), given.toArray(new String[given.size()]) );
@@ -129,9 +129,7 @@ public class XmlBifParser {
     private static void getOutcomesByVariable(Network network, String nameDefinition, List<String> outcomes) {
         for (Variable var : network.getVariables()) {
             if (var.getName().equals(nameDefinition)) {
-                for (String outcome : var.getOutComes()) {
-                    outcomes.add(outcome);
-                }
+                outcomes.addAll(var.getOutComes());
             }
         }
     }

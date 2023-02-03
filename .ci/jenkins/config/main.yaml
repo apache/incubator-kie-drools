@@ -1,5 +1,5 @@
 ecosystem:
-  main_project: kogito
+  main_project: drools
   projects:
   - name: drools
     regexs:

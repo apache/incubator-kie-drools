@@ -17,7 +17,6 @@
 
 package org.drools.model.codegen.execmodel.processors;
 
-import org.drools.compiler.builder.impl.BuildResultCollector;
 import org.drools.compiler.builder.impl.BuildResultCollectorImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationContext;
 import org.drools.compiler.builder.impl.processors.AbstractPackageCompilationPhase;

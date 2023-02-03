@@ -17,7 +17,6 @@ package org.kie.efesto.compilationmanager.core.mocks;
 
 import java.util.List;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.compilationmanager.api.model.AbstractEfestoCallableCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;

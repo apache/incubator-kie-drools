@@ -186,11 +186,11 @@ public class DynamicDMNContextBuilder {
                 case DATE_TIME:
                     return new DateAndTimeFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 case BOOLEAN:
-                    return (Boolean) value;
+                    return value;
                 case NUMBER:
-                    return EvalHelper.getBigDecimalOrNull((Number) value);
+                    return EvalHelper.getBigDecimalOrNull(value);
                 case STRING:
-                    return (String) value;
+                    return value;
                 case DURATION:
                     return new DurationFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 default:

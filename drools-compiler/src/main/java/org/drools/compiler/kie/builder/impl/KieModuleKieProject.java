@@ -116,7 +116,7 @@ public class KieModuleKieProject extends AbstractKieProject {
         if (currentReleaseId.getGroupId().equals(updatingReleaseId.getGroupId()) &&
             currentReleaseId.getArtifactId().equals(updatingReleaseId.getArtifactId())) {
             this.kieModule = updatedKieModule;
-        } else if (this.kieModule.getKieDependencies().keySet().contains(updatingReleaseId)) {
+        } else if (this.kieModule.getKieDependencies().containsKey(updatingReleaseId)) {
             this.kieModule.addKieDependency(updatedKieModule);
         }
 

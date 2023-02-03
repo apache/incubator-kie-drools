@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -62,13 +63,13 @@ public class FilterExpressionNode
         }
         Object value = expression.evaluate( ctx );
         // spec determines single values should be treated as lists of one element
-        List list = value instanceof List ? (List) value : Arrays.asList( value );
+        List list = value instanceof List ? (List) value : Collections.singletonList(value);
 
         try {
             if( filter.getResultType() != BuiltInType.BOOLEAN ) {
                 // check if index
                 Object f = filter.evaluate(new SilentWrappingEvaluationContextImpl(ctx)); // I need to try evaluate filter first, ignoring errors; only if evaluation fails, or is not a Number, it delegates to try `evaluateExpressionsInContext`
-                if (f != null && f instanceof Number) {
+                if (f instanceof Number) {
                     // what to do if Number is not an integer??
                     int i = ((Number) f).intValue();
                     if ( i > 0 && i <= list.size() ) {
@@ -113,7 +114,7 @@ public class FilterExpressionNode
             // In case any element fails in there or the filter expression returns null, it will only exclude the element, but will continue to process the list.
             // In case all elements fail, the result will be an empty list.
             Object r = this.filter.evaluate(new SilentWrappingEvaluationContextImpl(ctx)); // evaluate filter, ignoring errors 
-            if( r instanceof Boolean && ((Boolean)r) == Boolean.TRUE ) {
+            if( r instanceof Boolean && r == Boolean.TRUE ) {
                 results.add( v );
             }
         } finally {

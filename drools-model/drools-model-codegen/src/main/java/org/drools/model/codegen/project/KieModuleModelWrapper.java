@@ -16,12 +16,8 @@
 package org.drools.model.codegen.project;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.io.ByteArrayResource;
-import org.drools.io.InternalResource;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -29,17 +25,12 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.util.IoUtils.readBytesFromInputStream;
-import static org.kie.api.io.ResourceType.determineResourceType;
 
 /**
  * Utility class to discover/interact with KieModuleModel.

@@ -15,8 +15,6 @@
 
 package org.drools.decisiontable.parser;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

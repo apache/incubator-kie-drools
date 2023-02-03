@@ -15,6 +15,7 @@
 package org.drools.mvel.asm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -135,9 +136,7 @@ public final class GeneratorHelper {
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
             Set<String> imports = new HashSet<>();
-            for (String imp : stub.getPackageImports()) {
-                imports.add(imp);
-            }
+            Collections.addAll(imports, stub.getPackageImports());
             typeResolver = new ClassTypeResolver(imports, classLoader, stub.getPackageName());
         }
         return typeResolver;

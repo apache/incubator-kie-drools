@@ -120,7 +120,7 @@ public class KeyTreeMapTest {
     void testUpdateAge() throws
             Exception {
         final MultiMapChangeHandler changeHandler = mock(MultiMapChangeHandler.class);
-        ((ChangeHandledMultiMap) map.get(AGE)).addChangeListener(changeHandler);
+        map.get(AGE).addChangeListener(changeHandler);
 
         toni.setAge(10);
 

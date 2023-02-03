@@ -372,7 +372,7 @@ public class RuleScenarioRunnerHelperTest extends AbstractRuleCoverageTest {
             assertThat(exception.getMessage()).isEqualTo(ScenarioSimulationServerMessages.getGenericScenarioExceptionMessage(exceptionMessage));
         }
 
-        List<String> pathToValue = Arrays.asList("Item #2");
+        List<String> pathToValue = List.of("Item #2");
         amountNameExpectedFactMappingValue.resetStatus();
         amountNameExpectedFactMappingValue.setCollectionPathToValue(pathToValue);
         scenarioFailResult.add(new ScenarioResult(amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));

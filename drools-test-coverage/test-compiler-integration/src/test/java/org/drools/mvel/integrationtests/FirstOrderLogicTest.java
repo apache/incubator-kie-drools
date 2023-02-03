@@ -176,9 +176,9 @@ public class FirstOrderLogicTest {
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] = (FactHandle) wm.insert( cheese[i] );
+            cheeseHandles[i] = wm.insert(cheese[i]);
         }
-        final FactHandle bobHandle = (FactHandle) wm.insert( bob );
+        final FactHandle bobHandle = wm.insert(bob);
 
         // ---------------- 1st scenario 
         int fireCount = 0;
@@ -280,10 +280,10 @@ public class FirstOrderLogicTest {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = (FactHandle) wm.insert( stilton );
+        final FactHandle stiltonHandle = wm.insert(stilton);
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = (FactHandle) wm.insert( cheddar );
+        final FactHandle cheddarHandle = wm.insert(cheddar);
         wm.fireAllRules();
 
         assertThat(list.size()).isEqualTo(0);
@@ -310,10 +310,10 @@ public class FirstOrderLogicTest {
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = (FactHandle) wm.insert( stilton );
+        final FactHandle stiltonHandle = wm.insert(stilton);
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = (FactHandle) wm.insert( cheddar );
+        final FactHandle cheddarHandle = wm.insert(cheddar);
 
         final PersonInterface paul = new Person( "paul",
                                                  "stilton",
@@ -340,21 +340,21 @@ public class FirstOrderLogicTest {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            7 );
-        final FactHandle cheddarHandle = (FactHandle) wm.insert( cheddar );
+        final FactHandle cheddarHandle = wm.insert(cheddar);
         wm.fireAllRules();
 
         assertThat(list.size()).isEqualTo(0);
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        final FactHandle stiltonHandle = (FactHandle) wm.insert( stilton );
+        final FactHandle stiltonHandle = wm.insert(stilton);
         wm.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
-        final FactHandle brieHandle = (FactHandle) wm.insert( brie );
+        final FactHandle brieHandle = wm.insert(brie);
         wm.fireAllRules();
 
         assertThat(list.size()).isEqualTo(1);
@@ -486,10 +486,10 @@ public class FirstOrderLogicTest {
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             6 );
-        final FactHandle stilton1Handle = (FactHandle) workingMemory.insert( stilton1 );
+        final FactHandle stilton1Handle = workingMemory.insert(stilton1);
         final Cheese stilton2 = new Cheese( "stilton",
                                             7 );
-        final FactHandle stilton2Handle =  (FactHandle) workingMemory.insert( stilton2 );
+        final FactHandle stilton2Handle = workingMemory.insert(stilton2);
 
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
@@ -562,7 +562,7 @@ public class FirstOrderLogicTest {
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] =  (FactHandle) wm.insert( cheese[i] );
+            cheeseHandles[i] = wm.insert(cheese[i]);
         }
 
         // ---------------- 1st scenario 
@@ -607,14 +607,14 @@ public class FirstOrderLogicTest {
         assertThat(list.size()).isEqualTo(++fired);
 
         // only stilton, so should not fire again 
-        FactHandle stilton1 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
-                                                                10 ) );
+        FactHandle stilton1 = workingMemory.insert(new Cheese("stilton",
+                                                              10 ));
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(fired);
 
         // only stilton, so should not fire again 
-        FactHandle stilton2 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
-                                                                11 ) );
+        FactHandle stilton2 = workingMemory.insert(new Cheese("stilton",
+                                                              11 ));
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(fired);
 
@@ -624,8 +624,8 @@ public class FirstOrderLogicTest {
         assertThat(list.size()).isEqualTo(fired);
 
         // there is a brie, so should not fire  
-        FactHandle brie = (FactHandle) workingMemory.insert( new Cheese( "brie",
-                                                            10 ) );
+        FactHandle brie = workingMemory.insert(new Cheese("brie",
+                                                          10 ));
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(fired);
 
@@ -767,7 +767,7 @@ public class FirstOrderLogicTest {
         cheesery.addCheese( cheddar );
         cheesery.addCheese( provolone );
 
-        FactHandle handle = (FactHandle) workingMemory.insert( cheesery );
+        FactHandle handle = workingMemory.insert(cheesery);
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(0);
 
@@ -799,10 +799,10 @@ public class FirstOrderLogicTest {
         final Person mark = new Person( "mark",
                                         "stilton" );
 
-        FactHandle ch = (FactHandle) workingMemory.insert( cheddar );
-        FactHandle ph = (FactHandle) workingMemory.insert( provolone );
-        FactHandle bh = (FactHandle) workingMemory.insert( brie );
-        FactHandle markh = (FactHandle) workingMemory.insert( mark );
+        FactHandle ch = workingMemory.insert(cheddar);
+        FactHandle ph = workingMemory.insert(provolone);
+        FactHandle bh = workingMemory.insert(brie);
+        FactHandle markh = workingMemory.insert(mark);
 
         workingMemory.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
@@ -1026,7 +1026,7 @@ public class FirstOrderLogicTest {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), streamConfig, "test_ForallSlidingWindow.drl");
         KieSession ksession = kbase.newKieSession(conf, null);
 
-        final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        final SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -1263,7 +1263,7 @@ public class FirstOrderLogicTest {
         }
         
         public int intValue() {
-            Integer intValue = Integer.valueOf(value);
+            int intValue = Integer.parseInt(value);
             return intValue;
         }
     }    

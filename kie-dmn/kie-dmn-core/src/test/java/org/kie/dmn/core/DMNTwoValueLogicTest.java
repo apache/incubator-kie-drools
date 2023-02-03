@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -113,7 +114,7 @@ public class DMNTwoValueLogicTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testFunctionMode() {
-        runTest("Test mode", Arrays.asList( new BigDecimal(20, MathContext.DECIMAL128 ) ) );
+        runTest("Test mode", List.of(new BigDecimal(20, MathContext.DECIMAL128)));
     }
 
     @Test

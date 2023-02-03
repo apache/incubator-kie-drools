@@ -83,8 +83,6 @@ public class DumpMethodVisitor extends MethodVisitor {
                 sb.append("const 0F\n");
                 break;
             case FCONST_1:
-                sb.append("const 2F\n");
-                break;
             case FCONST_2:
                 sb.append("const 2F\n");
                 break;

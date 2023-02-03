@@ -120,7 +120,7 @@ public class IoUtils {
     public static long copy( InputStream input, OutputStream output ) throws IOException {
         byte[] buffer = createBytesBuffer( input );
         long count = 0;
-        int n = 0;
+        int n;
         while ((n = input.read(buffer)) != -1) {
             output.write(buffer, 0, n);
             count += n;
@@ -186,7 +186,7 @@ public class IoUtils {
             byte[] buffer = createBytesBuffer( input );
             ByteArrayOutputStream output = new ByteArrayOutputStream( buffer.length );
 
-            int n = 0;
+            int n;
             while ( -1 != ( n = input.read( buffer ) ) ) {
                 output.write( buffer, 0, n );
             }

@@ -52,7 +52,7 @@ public class ErrorsParserTest {
         assertThat(parser.hasErrors()).isTrue();
 
         assertThat(parser.getErrors().size()).isEqualTo(1);
-        DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
+        DroolsParserException err = parser.getErrors().get(0);
         assertThat(err.getLineNumber()).isEqualTo(6);
     }
 
@@ -153,7 +153,7 @@ public class ErrorsParserTest {
         final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
-        int len = 0;
+        int len;
 
         while ( (len = reader.read( buf )) >= 0 ) {
             text.append( buf,

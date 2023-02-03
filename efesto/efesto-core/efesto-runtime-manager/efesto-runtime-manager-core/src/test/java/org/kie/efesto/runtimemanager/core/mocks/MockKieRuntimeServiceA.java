@@ -15,7 +15,6 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

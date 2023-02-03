@@ -17,7 +17,6 @@
 package org.drools.core.util;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;

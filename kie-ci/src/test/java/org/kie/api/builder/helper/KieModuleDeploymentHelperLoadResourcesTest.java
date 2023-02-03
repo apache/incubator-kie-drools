@@ -30,7 +30,7 @@ public class KieModuleDeploymentHelperLoadResourcesTest {
 
     @Test
     public void testInternalLoadResources() throws Exception {
-        List<KJarResource> resources = null;
+        List<KJarResource> resources;
         // local
         String path = "/builder/simple_query_test.drl";
         resources = internalLoadResources(path, false);

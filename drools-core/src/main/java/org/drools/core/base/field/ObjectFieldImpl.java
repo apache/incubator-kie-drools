@@ -57,7 +57,7 @@ public class ObjectFieldImpl
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         fieldName = (String) in.readObject();
         if ( fieldName == null ) {
-            value = (Serializable) in.readObject();
+            value = in.readObject();
         }
         setBooleans();
     }
@@ -161,7 +161,7 @@ public class ObjectFieldImpl
         if ( this == object ) {
             return true;
         }
-        if ( object == null || !(object instanceof ObjectFieldImpl) ) {
+        if (!(object instanceof ObjectFieldImpl)) {
             return false;
         }
         final ObjectFieldImpl other = (ObjectFieldImpl) object;

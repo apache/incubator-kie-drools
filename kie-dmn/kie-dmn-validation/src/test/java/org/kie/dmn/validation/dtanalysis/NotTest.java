@@ -42,13 +42,13 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound("i",
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound("o",
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound("i",
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound("o",
+                                                                                                        RangeBoundary.OPEN,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS
@@ -58,15 +58,15 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(1,
-                                                                         2),
-                                                           new Hyperrectangle(1,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound("o",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound("u",
-                                                                                                                             RangeBoundary.OPEN,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(1,
+                                                                   2),
+                                                     new Hyperrectangle(1,
+                                                                        List.of(Interval.newFromBounds(new Bound("o",
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null),
+                                                                                                       new Bound("u",
+                                                                                                                 RangeBoundary.OPEN,
+                                                                                                                 null))))));
         assertThat(overlaps).hasSize(1);
 
         // Assert OVERLAPs same values
@@ -81,13 +81,13 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound("i",
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound("o",
-                                                                                                                    RangeBoundary.OPEN,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound("i",
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound("o",
+                                                                                                        RangeBoundary.OPEN,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS
@@ -133,13 +133,13 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("0"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound(new BigDecimal("0"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS
@@ -149,15 +149,15 @@ public class NotTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getOverlaps()).hasSize(1);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(1,
-                                                                         2),
-                                                           new Hyperrectangle(1,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("0"),
-                                                                                                                             RangeBoundary.OPEN,
-                                                                                                                             null),
-                                                                                                                   new Bound(Interval.POS_INF,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(1,
+                                                                   2),
+                                                     new Hyperrectangle(1,
+                                                                        List.of(Interval.newFromBounds(new Bound(new BigDecimal("0"),
+                                                                                                                 RangeBoundary.OPEN,
+                                                                                                                 null),
+                                                                                                       new Bound(Interval.POS_INF,
+                                                                                                                 RangeBoundary.CLOSED,
+                                                                                                                 null))))));
         assertThat(overlaps).hasSize(1);
 
         // Assert OVERLAPs same values

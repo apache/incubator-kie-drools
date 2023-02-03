@@ -44,28 +44,28 @@ public class MisleadingRulesTest extends AbstractDTAnalysisTest {
         // assert OVERLAPs count.
         assertThat(analysis.getOverlaps()).hasSize(1);
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Overlap> overlaps = Arrays.asList(new Overlap(Arrays.asList(4,
-                                                                         2),
-                                                           new Hyperrectangle(2,
-                                                                              Arrays.asList(Interval.newFromBounds(new Bound(false,
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound(true,
-                                                                                                                             RangeBoundary.OPEN,
-                                                                                                                             null)),
-                                                                                            Interval.newFromBounds(new Bound("M",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null),
-                                                                                                                   new Bound("M",
-                                                                                                                             RangeBoundary.CLOSED,
-                                                                                                                             null))))));
+        List<Overlap> overlaps = List.of(new Overlap(Arrays.asList(4,
+                                                                   2),
+                                                     new Hyperrectangle(2,
+                                                                        Arrays.asList(Interval.newFromBounds(new Bound(false,
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound(true,
+                                                                                                                       RangeBoundary.OPEN,
+                                                                                                                       null)),
+                                                                                      Interval.newFromBounds(new Bound("M",
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null),
+                                                                                                             new Bound("M",
+                                                                                                                       RangeBoundary.CLOSED,
+                                                                                                                       null))))));
         assertThat(overlaps).hasSize(1);
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps()).containsAll(overlaps);
 
         // MisleadingRules count.
         assertThat(analysis.getMisleadingRules()).hasSize(1);
-        List<MisleadingRule> misleadingRules = Arrays.asList(new MisleadingRule(4, 2));
+        List<MisleadingRule> misleadingRules = List.of(new MisleadingRule(4, 2));
         assertThat(misleadingRules).hasSize(1);
         assertThat(analysis.getMisleadingRules()).containsAll(misleadingRules);
         assertThat(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_MISLEADING_RULE))).as("It should contain at least 1 DMNMessage for the MisleadingRule").isTrue();

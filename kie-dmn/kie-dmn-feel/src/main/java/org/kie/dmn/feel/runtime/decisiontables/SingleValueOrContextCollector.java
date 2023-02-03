@@ -1,7 +1,5 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

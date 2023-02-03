@@ -21,13 +21,9 @@ import org.junit.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
-import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNCountFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class AfterFunctionTest {
 
@@ -40,8 +36,8 @@ public class AfterFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( afterFunction.invoke((Comparable) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( afterFunction.invoke((Comparable) "a", (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(afterFunction.invoke((Comparable) null, "b"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(afterFunction.invoke("a", (Comparable) null), InvalidParametersEvent.class);
     }
 
     @Test

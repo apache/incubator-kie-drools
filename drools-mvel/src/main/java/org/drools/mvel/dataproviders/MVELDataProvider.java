@@ -64,7 +64,7 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
             return true;
         }
 
-        if (obj == null || !(obj instanceof MVELDataProvider)) {
+        if (!(obj instanceof MVELDataProvider)) {
             return false;
         }
 

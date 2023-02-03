@@ -155,11 +155,7 @@ public class ExprConstraintDescrVisitor {
                 solvers.endOperator();
                 break;
             case XOR:
-                // TODO: Generated code -Rikkola-
-                break;
             case INC_OR:
-                // TODO: Generated code -Rikkola-
-                break;
             case INC_AND:
                 // TODO: Generated code -Rikkola-
                 break;

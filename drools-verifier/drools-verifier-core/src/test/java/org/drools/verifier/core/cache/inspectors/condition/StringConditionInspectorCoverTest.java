@@ -110,8 +110,8 @@ public class StringConditionInspectorCoverTest {
         assertThat(a.covers(value2.iterator()
                 .next())).as(getAssertDescription(a,
                 covers,
-                (String) value2.iterator()
-                        .next())).isEqualTo(covers);
+                                                  value2.iterator()
+                                                          .next())).isEqualTo(covers);
     }
 
     private StringConditionInspector getCondition(final Values<String> values,

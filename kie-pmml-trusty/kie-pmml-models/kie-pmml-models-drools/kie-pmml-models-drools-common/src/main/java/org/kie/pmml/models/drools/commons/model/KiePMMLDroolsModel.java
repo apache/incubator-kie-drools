@@ -90,7 +90,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         logger.trace("evaluate {}", requestData);
         final PMML4Result toReturn = getPMML4Result(targetField);
 
-        List<Object> inserts = Arrays.asList(new KiePMMLStatusHolder());
+        List<Object> inserts = List.of(new KiePMMLStatusHolder());
         final Map<String, Object> globals = new HashMap<>();
         globals.put(PMML4_RESULT_IDENTIFIER, toReturn);
         globals.put(OUTPUTFIELDS_MAP_IDENTIFIER, context.getOutputFieldsMap());
@@ -112,7 +112,7 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
                                                                                       darMapInputDTO);
 
         Optional<RuntimeManager> runtimeManager = getRuntimeManager(true);
-        if (!runtimeManager.isPresent()) {
+        if (runtimeManager.isEmpty()) {
             throw new KieRuntimeServiceException("Cannot find RuntimeManager");
         }
 

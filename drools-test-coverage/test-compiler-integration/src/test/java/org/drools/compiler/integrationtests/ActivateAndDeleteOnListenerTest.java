@@ -282,7 +282,7 @@ public class ActivateAndDeleteOnListenerTest {
             }
         };
 
-        KieSession ksession = null;
+        KieSession ksession;
 
         // scenario 1
         ksession = kbase.newKieSession(conf, null);
@@ -365,7 +365,7 @@ public class ActivateAndDeleteOnListenerTest {
             }
         };
 
-        KieSession ksession = null;
+        KieSession ksession;
 
         // scenario 1 - Only insert the Integer side of 'or'
         ksession = kbase.newKieSession(conf, null);
@@ -439,7 +439,7 @@ public class ActivateAndDeleteOnListenerTest {
             }
         };
 
-        KieSession ksession = null;
+        KieSession ksession;
 
         // scenario 1 - Add Integer, then Long (with no change), then delete Integer and check not holds. Then delete Long
         ksession = kbase.newKieSession(conf, null);

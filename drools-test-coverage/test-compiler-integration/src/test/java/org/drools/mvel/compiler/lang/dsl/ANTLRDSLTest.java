@@ -28,7 +28,7 @@ public class ANTLRDSLTest {
 
     @Test
     public void testMe() throws Exception{
-        DSLTokenizedMappingFile tokenizedFile = null;
+        DSLTokenizedMappingFile tokenizedFile;
         final String filename = "test_antlr.dsl";
         final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
         tokenizedFile = new DSLTokenizedMappingFile();

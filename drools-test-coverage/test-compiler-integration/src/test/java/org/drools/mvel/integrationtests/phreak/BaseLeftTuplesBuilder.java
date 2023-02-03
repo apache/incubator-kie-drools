@@ -61,16 +61,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
         for ( int i = 0; i < objects.length; i++ ) {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( o1 );
+                InternalFactHandle fh1 = wm.getFactHandle(o1);
                 LeftTuple leftTuple = new LeftTupleImpl( fh1, sink, true );
                 leftTuples.addInsert( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( p.getO1() );
+                InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
                 LeftTuple leftTuple1 = new LeftTupleImpl( fh1, sink, true );
                 
-                InternalFactHandle fh2 = (InternalFactHandle) wm.getFactHandle(  p.getO2()  );
+                InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
                 LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
 
                 leftTuples.addInsert( leftTuple2 );                
@@ -89,16 +89,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
         for ( int i = 0; i < objects.length; i++ ) {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( o1 );
+                InternalFactHandle fh1 = wm.getFactHandle(o1);
                 LeftTuple leftTuple = new LeftTupleImpl( fh1, sink, true );
                 leftTuples.addDelete( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( p.getO1() );
+                InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
                 LeftTuple leftTuple1 = new LeftTupleImpl( fh1, sink, true );
                 
-                InternalFactHandle fh2 = (InternalFactHandle) wm.getFactHandle(  p.getO2()  );
+                InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
                 LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
 
                 leftTuples.addDelete( leftTuple2 );                
@@ -117,16 +117,16 @@ public class BaseLeftTuplesBuilder<T extends BaseLeftTuplesBuilder> {
         for ( int i = 0; i < objects.length; i++ ) {
             if ( !(objects[i] instanceof Pair) ) {
                 Object o1 = objects[i];
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( o1 );
+                InternalFactHandle fh1 = wm.getFactHandle(o1);
                 LeftTuple leftTuple = new LeftTupleImpl( fh1, sink, true );
                 leftTuples.addUpdate( leftTuple );
             } else {
                 Pair p = (Pair )objects[i];
                 
-                InternalFactHandle fh1 = (InternalFactHandle) wm.getFactHandle( p.getO1() );
+                InternalFactHandle fh1 = wm.getFactHandle(p.getO1());
                 LeftTuple leftTuple1 = new LeftTupleImpl( fh1, sink, true );
                 
-                InternalFactHandle fh2 = (InternalFactHandle) wm.getFactHandle(  p.getO2()  );
+                InternalFactHandle fh2 = wm.getFactHandle(p.getO2());
                 LeftTuple leftTuple2 = sink.createLeftTuple( leftTuple1, new RightTupleImpl( fh2 ), sink );
 
                 leftTuples.addUpdate( leftTuple2 );                

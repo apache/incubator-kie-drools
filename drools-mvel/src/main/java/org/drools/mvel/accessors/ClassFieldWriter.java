@@ -88,7 +88,7 @@ public class ClassFieldWriter
             return true;
         }
 
-        if ( object == null || !(object instanceof ClassFieldWriter) ) {
+        if (!(object instanceof ClassFieldWriter)) {
             return false;
         }
 

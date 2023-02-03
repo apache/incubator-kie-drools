@@ -959,7 +959,7 @@ public class DynamicRulesTest {
 
             // Build it using the current context
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-            Collection<KiePackage> kpkgs = null;
+            Collection<KiePackage> kpkgs;
             try {
                 Thread.currentThread().setContextClassLoader( loader1 );
                 // create a builder with the given classloader

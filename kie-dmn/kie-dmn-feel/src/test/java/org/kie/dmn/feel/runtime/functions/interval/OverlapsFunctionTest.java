@@ -23,8 +23,6 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import java.math.BigDecimal;
-
 public class OverlapsFunctionTest {
 
     private OverlapsFunction overlapsFunction;
@@ -36,8 +34,8 @@ public class OverlapsFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) null, (Range) new RangeImpl() ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( overlapsFunction.invoke((Range) new RangeImpl(), (Range) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(overlapsFunction.invoke(null, new RangeImpl()), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(overlapsFunction.invoke(new RangeImpl(), null), InvalidParametersEvent.class);
     }
 
     @Test

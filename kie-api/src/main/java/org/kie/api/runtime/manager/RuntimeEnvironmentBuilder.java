@@ -76,47 +76,47 @@ public interface RuntimeEnvironmentBuilder {
 
         @Override
         public RuntimeEnvironmentBuilder newEmptyBuilder() {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newEmptyBuilder();
+            return get().newEmptyBuilder();
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultBuilder() {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultBuilder();
+            return get().newDefaultBuilder();
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultInMemoryBuilder() {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultInMemoryBuilder();
+            return get().newDefaultInMemoryBuilder();
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultBuilder(String groupId, String artifactId, String version) {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultBuilder(groupId, artifactId, version);
+            return get().newDefaultBuilder(groupId, artifactId, version);
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultBuilder(String groupId, String artifactId, String version, String kbaseName, String ksessionName) {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultBuilder(groupId, artifactId, version, kbaseName, ksessionName);
+            return get().newDefaultBuilder(groupId, artifactId, version, kbaseName, ksessionName);
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultBuilder(ReleaseId releaseId) {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultBuilder(releaseId);
+            return get().newDefaultBuilder(releaseId);
         }
 
         @Override
         public RuntimeEnvironmentBuilder newDefaultBuilder(ReleaseId releaseId, String kbaseName, String ksessionName) {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newDefaultBuilder(releaseId, kbaseName, ksessionName);
+            return get().newDefaultBuilder(releaseId, kbaseName, ksessionName);
         }
 
         @Override
         public RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder() {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newClasspathKmoduleDefaultBuilder();
+            return get().newClasspathKmoduleDefaultBuilder();
         }
 
         @Override
         public RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder(String kbaseName, String ksessionName) {
-            return ((RuntimeEnvironmentBuilderFactory) get()).newClasspathKmoduleDefaultBuilder(kbaseName, ksessionName);
+            return get().newClasspathKmoduleDefaultBuilder(kbaseName, ksessionName);
         }
 
 

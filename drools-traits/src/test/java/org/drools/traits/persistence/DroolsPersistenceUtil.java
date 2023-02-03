@@ -26,7 +26,6 @@ import org.kie.test.util.db.PersistenceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.kie.api.runtime.EnvironmentName.GLOBALS;
 import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
 

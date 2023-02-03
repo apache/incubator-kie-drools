@@ -75,8 +75,8 @@ public class CauseTest {
 
         assertThat(message.getImpactedRules().size()).isEqualTo(2);
 
-        assertThat(message.getImpactedRules().values().contains("Your First Rule")).isTrue();
-        assertThat(message.getImpactedRules().values().contains("Your Second Rule")).isTrue();
+        assertThat(message.getImpactedRules().containsValue("Your First Rule")).isTrue();
+        assertThat(message.getImpactedRules().containsValue("Your Second Rule")).isTrue();
 
         Cause[] causes = message.getCauses().toArray(new Cause[message.getCauses().size()]);
 

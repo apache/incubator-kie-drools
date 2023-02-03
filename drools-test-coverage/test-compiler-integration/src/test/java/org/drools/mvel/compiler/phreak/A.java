@@ -61,7 +61,7 @@ public class A {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        org.drools.mvel.integrationtests.phreak.A other = (org.drools.mvel.integrationtests.phreak.A) obj;
+        A other = (A) obj;
         if ( object == null ) {
             if ( other.getObject() != null ) return false;
         } else if ( !object.equals( other.getObject() ) ) return false;

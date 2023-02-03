@@ -42,12 +42,12 @@ public class JQScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getMimeTypes() {
-        return Arrays.asList("text/x.jq");
+        return List.of("text/x.jq");
     }
 
     @Override
     public List<String> getNames() {
-        return Arrays.asList("jq");
+        return List.of("jq");
     }
 
     @Override

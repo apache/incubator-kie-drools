@@ -71,7 +71,7 @@ public class From extends ConditionalElement
         if ( this == obj ) {
             return true;
         }
-        if ( obj == null || !( obj instanceof From ) ) {
+        if (!(obj instanceof From)) {
             return false;
         }
 

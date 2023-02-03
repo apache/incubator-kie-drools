@@ -131,9 +131,7 @@ public class InsertElementsCommand
 
     public String toString() {
         List<Object> list = new ArrayList<>();
-        for ( Object object : objects ) {
-            list.add( object );
-        }
+        list.addAll(objects);
         return "insert " + list;
     }
 

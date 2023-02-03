@@ -105,7 +105,7 @@ public class InstanceNotEqualsConstraint
             return true;
         }
 
-        if ( object == null || !(object instanceof InstanceNotEqualsConstraint) ) {
+        if (!(object instanceof InstanceNotEqualsConstraint)) {
             return false;
         }
 

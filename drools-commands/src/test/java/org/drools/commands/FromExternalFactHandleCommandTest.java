@@ -54,7 +54,7 @@ public class FromExternalFactHandleCommandTest {
         // DROOLS-7076 : Just to test not to throw NumberFormatException 
         String externalFormat = "0:2147483648:171497379:-1361525545:2147483648:null:NON_TRAIT:java.lang.String";
         FromExternalFactHandleCommand fromExternalFactHandleCommand = new FromExternalFactHandleCommand(externalFormat);
-        FactHandle handle = (FactHandle) runner.execute(fromExternalFactHandleCommand, context);
+        FactHandle handle = runner.execute(fromExternalFactHandleCommand, context);
 
         assertThat(handle).isNull();
     }

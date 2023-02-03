@@ -46,13 +46,13 @@ public class PiTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getGaps()).hasSize(1);
         
         @SuppressWarnings({"unchecked", "rawtypes"})
-        List<Hyperrectangle> gaps = Arrays.asList(new Hyperrectangle(1,
-                                                                     Arrays.asList(Interval.newFromBounds(new Bound(new BigDecimal("3.1415926535897932384626433832794"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null),
-                                                                                                          new Bound(new BigDecimal("3.1415926535897932384626433832794"),
-                                                                                                                    RangeBoundary.CLOSED,
-                                                                                                                    null)))));
+        List<Hyperrectangle> gaps = List.of(new Hyperrectangle(1,
+                                                               List.of(Interval.newFromBounds(new Bound(new BigDecimal("3.1415926535897932384626433832794"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null),
+                                                                                              new Bound(new BigDecimal("3.1415926535897932384626433832794"),
+                                                                                                        RangeBoundary.CLOSED,
+                                                                                                        null)))));
         assertThat(gaps).hasSize(1);
 
         // Assert GAPS

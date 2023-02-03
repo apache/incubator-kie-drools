@@ -17,6 +17,7 @@
 package org.kie.dmn.signavio.feel.runtime;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(Parameterized.class)
 public abstract class ExtendedFunctionsBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance(Arrays.asList(new KieDMNSignavioProfile()));
+    private final FEEL feel = FEEL.newInstance(List.of(new KieDMNSignavioProfile()));
 
     @Parameterized.Parameter(0)
     public String expression;

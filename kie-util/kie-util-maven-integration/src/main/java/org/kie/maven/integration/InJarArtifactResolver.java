@@ -78,7 +78,7 @@ public class InJarArtifactResolver extends ArtifactResolver {
         try (InputStream is = resourceURL.openStream();
                 ZipInputStream stream = new ZipInputStream(is);) {
 
-            ZipEntry entry = null;
+            ZipEntry entry;
             while ((entry = stream.getNextEntry()) != null) {
                 if (predicate.test(entry.getName())) {
                     resources.add(classLoader.getResource(entry.getName()));

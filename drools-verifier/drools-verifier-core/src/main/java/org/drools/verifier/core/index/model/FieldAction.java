@@ -16,6 +16,7 @@
 package org.drools.verifier.core.index.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Key;
@@ -54,24 +55,20 @@ public class FieldAction
     }
 
     public static KeyDefinition[] keyDefinitions() {
-        final ArrayList<KeyDefinition> keyDefinitions = new ArrayList<>();
-        for (final KeyDefinition key : Action.keyDefinitions()) {
-            keyDefinitions.add(key);
-        }
+        KeyDefinition[] origKeys = Action.keyDefinitions();
+        KeyDefinition[] keys = new KeyDefinition[origKeys.length +2];
+        System.arraycopy(origKeys, 0, keys, 0, origKeys.length);
+        keys[keys.length-2] = FIELD;
+        keys[keys.length-1] = FIELD;
 
-        keyDefinitions.add(FIELD);
-        keyDefinitions.add(FACT_TYPE__FIELD_NAME);
-
-        return keyDefinitions.toArray(new KeyDefinition[keyDefinitions.size()]);
+        return keys;
     }
 
     @Override
     public Key[] keys() {
         final ArrayList<Key> keys = new ArrayList<>();
 
-        for (final Key key : super.keys()) {
-            keys.add(key);
-        }
+        keys.addAll(Arrays.asList(super.keys()));
 
         keys.add(new Key(FIELD,
                          field));

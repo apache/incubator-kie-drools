@@ -347,7 +347,7 @@ public class KieCronExpression implements Serializable {
                         expression.length());
             }
 
-            if (exprOn <= YEAR) {
+            if (exprOn == YEAR) {
                 storeExpressionVals(0, "*", YEAR);
             }
 
@@ -381,7 +381,7 @@ public class KieCronExpression implements Serializable {
         char c = s.charAt(i);
         if ((c >= 'A') && (c <= 'Z') && (!s.equals("L")) && (!s.equals("LW"))) {
             String sub = s.substring(i, i + 3);
-            int sval = -1;
+            int sval;
             int eval = -1;
             if (type == MONTH) {
                 sval = getMonthNumber(sub) + 1;
@@ -894,8 +894,6 @@ public class KieCronExpression implements Serializable {
         if (stopAt < startAt) {
             switch (type) {
                 case SECOND:
-                    max = 60;
-                    break;
                 case MINUTE:
                     max = 60;
                     break;

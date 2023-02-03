@@ -25,7 +25,6 @@ import java.util.Set;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -194,7 +193,7 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) reteEvaluator.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = reteEvaluator.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();

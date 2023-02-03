@@ -109,19 +109,6 @@ public class TokenTypes {
             case UNIT:
             case RULE:
             case WHEN:
-                return JavaToken.Category.KEYWORD;
-            case WINDOWS_EOL:
-            case UNIX_EOL:
-            case OLD_MAC_EOL:
-                return JavaToken.Category.EOL;
-            case EOF:
-            case SPACE:
-            case CTRL_Z:
-                return JavaToken.Category.WHITESPACE_NO_EOL;
-            case SINGLE_LINE_COMMENT:
-            case JAVADOC_COMMENT:
-            case MULTI_LINE_COMMENT:
-                return JavaToken.Category.COMMENT;
             case ABSTRACT:
             case ASSERT:
             case BOOLEAN:
@@ -187,6 +174,18 @@ public class TokenTypes {
             case RULE_OR:
             case RULE_AND:
                 return JavaToken.Category.KEYWORD;
+            case WINDOWS_EOL:
+            case UNIX_EOL:
+            case OLD_MAC_EOL:
+                return JavaToken.Category.EOL;
+            case EOF:
+            case SPACE:
+            case CTRL_Z:
+                return JavaToken.Category.WHITESPACE_NO_EOL;
+            case SINGLE_LINE_COMMENT:
+            case JAVADOC_COMMENT:
+            case MULTI_LINE_COMMENT:
+                return JavaToken.Category.COMMENT;
             case LONG_LITERAL:
             case INTEGER_LITERAL:
             case DECIMAL_LITERAL:

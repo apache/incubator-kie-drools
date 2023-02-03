@@ -23,8 +23,6 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import java.math.BigDecimal;
-
 public class FinishedByFunctionTest {
 
     private FinishedByFunction finishedByFunction;
@@ -36,8 +34,8 @@ public class FinishedByFunctionTest {
 
     @Test
     public void invokeParamIsNull() {
-        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Range) null, (Comparable) "b" ), InvalidParametersEvent.class );
-        FunctionTestUtil.assertResultError( finishedByFunction.invoke((Range) new RangeImpl(), (Comparable) null ), InvalidParametersEvent.class );
+        FunctionTestUtil.assertResultError(finishedByFunction.invoke(null, "b"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(finishedByFunction.invoke(new RangeImpl(), (Comparable) null), InvalidParametersEvent.class);
     }
 
     @Test

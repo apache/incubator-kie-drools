@@ -184,7 +184,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
                     if (!urlToString.endsWith(".jar")) {
                         continue;
                     }
-                    URL tmp = null;
+                    URL tmp;
                     if (!urlToString.startsWith("jar:")) {
                         tmp = new URL("jar:" + urlToString + "!/" + name);
                     } else {
@@ -264,7 +264,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
     private void scanJar(URL jarFile) {
         try (ZipInputStream zipFile = new ZipInputStream(jarFile.openStream())) {
 
-            ZipEntry entry = null;
+            ZipEntry entry;
             while ((entry = zipFile.getNextEntry()) != null) {
                 int available = zipFile.available();
                 if (available <= 0) {
@@ -273,7 +273,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
 
-                int read = 0;
+                int read;
                 while ((read = zipFile.read(buffer)) > 0) {
                     out.write(buffer, 0, read);
                 }

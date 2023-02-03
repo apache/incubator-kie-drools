@@ -166,7 +166,7 @@ public class SequentialTest {
         ksession.setGlobal( "list",
                             list );
 
-        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(1)} )) );
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList(new A(1))));
 
         assertThat(list.size()).isEqualTo(6);
         assertThat(list.get(0)).isEqualTo("r1");
@@ -217,7 +217,7 @@ public class SequentialTest {
         ksession.setGlobal( "list",
                             list );
 
-        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{new A(5)} )) );
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList(new A(5))));
 
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("r9");
@@ -245,7 +245,7 @@ public class SequentialTest {
                                            15 );
 
 
-        ksession.execute( CommandFactory.newInsertElements( Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} ) ) );
+        ksession.execute( CommandFactory.newInsertElements( Arrays.asList(p1, stilton, p2, cheddar, p3)));
 
         assertThat(list.size()).isEqualTo(3);
     }

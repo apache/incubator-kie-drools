@@ -69,7 +69,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              kiePMMLFieldRef)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                                                       Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
+                                                       List.of(new KiePMMLNameValue(PARAM_1, value1)));
         Object retrieved = derivedField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);
     }

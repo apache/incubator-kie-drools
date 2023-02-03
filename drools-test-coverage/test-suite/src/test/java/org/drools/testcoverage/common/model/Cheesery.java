@@ -58,8 +58,8 @@ public class Cheesery implements Serializable {
 
     private void recalculateTotalAmount() {
         this.totalAmount = 0;
-        for (final Object cheese : this.cheeses) {
-            this.totalAmount += ((Cheese) cheese).getPrice();
+        for (final Cheese cheese : this.cheeses) {
+            this.totalAmount += cheese.getPrice();
         }
     }
 

@@ -136,7 +136,7 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
             return true;
         }
 
-        if ( object == null || !(object instanceof DoubleBetaConstraints) ) {
+        if (!(object instanceof DoubleBetaConstraints)) {
             return false;
         }
 

@@ -63,7 +63,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
      * 
      */
     public void compileNode(DecisionService ds, DMNCompilerImpl compiler, DMNModelImpl model) {
-        DMNType type = null;
+        DMNType type;
         DMNType fnType = null;
         if (ds.getVariable() == null) { // even for the v1.1 backport, variable creation is taken care in DMNCompiler.
             DMNCompilerHelper.reportMissingVariable(model, ds, ds, Msg.MISSING_VARIABLE_FOR_DS);
@@ -105,7 +105,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             return null;
         } else {
             Optional<String> importAlias = model.getImportAliasFor(input.getModelNamespace(), input.getModelName());
-            if (!importAlias.isPresent()) {
+            if (importAlias.isEmpty()) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ((DMNBaseNode)input).getSource(),
@@ -290,7 +290,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             }
             final QName lookup = lookupFn.apply(fiReturnType);
             Optional<ItemDefNodeImpl> composite = model.getItemDefinitions().stream().filter(id -> id.getModelNamespace().equals(lookup.getNamespaceURI()) && id.getName().equals(lookup.getLocalPart())).map(ItemDefNodeImpl.class::cast).findFirst();
-            if (!composite.isPresent()) {
+            if (composite.isEmpty()) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
                                       ni.getDecisionService(),

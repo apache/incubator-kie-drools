@@ -17,7 +17,6 @@
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
 import org.kie.dmn.model.api.*;
-import org.kie.dmn.model.v1_3.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.drools.drl.parser.DroolsError;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -39,18 +40,14 @@ public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError>
         super( errors.length );
         this.errors = errors;
 
-        for ( DroolsError error : errors ) {
-            add( error );
-        }
+        this.addAll(Arrays.asList(errors));
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         SerializableDroolsError[] temp = (SerializableDroolsError[]) in.readObject();
         this.errors = temp;
-        for ( DroolsError error : temp ) {
-            add( error );
-        }
+        this.addAll(Arrays.asList(temp));
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

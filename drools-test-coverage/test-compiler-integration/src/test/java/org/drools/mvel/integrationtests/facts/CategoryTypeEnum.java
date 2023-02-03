@@ -16,8 +16,6 @@
 
 package org.drools.mvel.integrationtests.facts;
 
-import org.drools.mvel.integrationtests.concurrency.AbstractConcurrentTest;
-
 public enum CategoryTypeEnum {
     ODD, PAIR;
 

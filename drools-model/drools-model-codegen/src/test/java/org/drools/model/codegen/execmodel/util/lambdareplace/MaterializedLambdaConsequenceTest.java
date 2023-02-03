@@ -19,6 +19,7 @@ package org.drools.model.codegen.execmodel.util.lambdareplace;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -174,7 +175,7 @@ public class MaterializedLambdaConsequenceTest {
         String consequenceBlock = "(org.drools.model.Drools drools, org.drools.model.codegen.execmodel.domain.Person $p) -> {{ ($p).setAge($p.getAge() + 1); ($p).setLikes(\"Cheese\"); drools.update($p,mask_$p); }}";
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg",
                 "defaultpkg.Rules53448E6B9A07CB05B976425EF329E308",
-                Arrays.asList(bitMaskVariable))
+                                                                List.of(bitMaskVariable))
                 .create(consequenceBlock, new ArrayList<>(), new ArrayList<>());
 
         String classNameWithPackage = aClass.getClassNameWithPackage();

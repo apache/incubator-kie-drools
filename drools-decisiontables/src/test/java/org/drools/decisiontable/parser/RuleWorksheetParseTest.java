@@ -81,7 +81,7 @@ public class RuleWorksheetParseTest {
         final Package ruleset = listener.getRuleSet();
         assertThat(ruleset).isNotNull();
 
-        final Rule firstRule = (Rule) ruleset.getRules().get( 0 );
+        final Rule firstRule = ruleset.getRules().get(0);
         assertThat(firstRule.getSalience()).isNotNull();
         assertThat(Integer.parseInt(firstRule.getSalience()) > 0).isTrue();
 
@@ -92,26 +92,26 @@ public class RuleWorksheetParseTest {
         assertThat(ruleset.getRules().size()).isEqualTo(6);
 
         // check imports
-        Import imp = (Import) ruleset.getImports().get( 0 );
+        Import imp = ruleset.getImports().get(0);
         assertThat(imp.getClassName()).isEqualTo("blah.class1");
-        imp = (Import) ruleset.getImports().get( 1 );
+        imp = ruleset.getImports().get(1);
         assertThat(imp.getClassName()).isEqualTo("blah.class2");
-        imp = (Import) ruleset.getImports().get( 2 );
+        imp = ruleset.getImports().get(2);
         assertThat(imp.getClassName()).isEqualTo("lah.di.dah");
 
         // check rules
-        Rule rule = (Rule) ruleset.getRules().get( 0 );
-        Condition cond = (Condition) rule.getConditions().get( 0 );
+        Rule rule = ruleset.getRules().get(0);
+        Condition cond = rule.getConditions().get(0);
         assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")");
 
-        Consequence cons = (Consequence) rule.getConsequences().get( 0 );
+        Consequence cons = rule.getConsequences().get(0);
         assertThat(cons).isNotNull();
         assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(Y);");
 
-        rule = (Rule) ruleset.getRules().get( 5 );
-        cond = (Condition) rule.getConditions().get( 1 );
+        rule = ruleset.getRules().get(5);
+        cond = rule.getConditions().get(1);
         assertThat(cond.getSnippet()).isEqualTo("myObject.size () > 7");
-        cons = (Consequence) rule.getConsequences().get( 0 );
+        cons = rule.getConsequences().get(0);
         assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(10-Jul-1974)");
 
     }
@@ -436,8 +436,8 @@ public class RuleWorksheetParseTest {
         System.out.println(drl);
         
         // check rules
-        Rule rule = (Rule) ruleset.getRules().get( 0 );
-        Condition cond = (Condition) rule.getConditions().get( 0 );
+        Rule rule = ruleset.getRules().get(0);
+        Condition cond = rule.getConditions().get(0);
         assertThat(cond.getSnippet()).isEqualTo("Foo(myObject.getColour().equals(red), myObject.size () > \"12\")");
         rule = ruleset.getRules().get( 1 );
         cond = rule.getConditions().get( 0 );
@@ -501,20 +501,20 @@ public class RuleWorksheetParseTest {
         assertThat(ruleset.getRules().size()).isEqualTo(6);
         assertThat(ruleset.getImports().size()).isEqualTo(0);
 
-        Rule rule = (Rule) ruleset.getRules().get( 0 );
+        Rule rule = ruleset.getRules().get(0);
         assertThat(rule.getConditions().size()).isEqualTo(3);
         assertThat(rule.getConsequences().size()).isEqualTo(2);
-        final Consequence cons = (Consequence) rule.getConsequences().get( 1 );
+        final Consequence cons = rule.getConsequences().get(1);
         assertThat(cons.getSnippet()).isEqualTo("myObject.setIsValid(1, 2)");
-        final Condition con = (Condition) rule.getConditions().get( 2 );
+        final Condition con = rule.getConditions().get(2);
         assertThat(con.getSnippet()).isEqualTo("myObject.size() < $3.00");
 
-        rule = (Rule) ruleset.getRules().get( 4 );
+        rule = ruleset.getRules().get(4);
 
         // this should have less conditions
         assertThat(rule.getConditions().size()).isEqualTo(1);
 
-        rule = (Rule) ruleset.getRules().get( 5 );
+        rule = ruleset.getRules().get(5);
         assertThat(rule.getConditions().size()).isEqualTo(2);
         assertThat(rule.getConsequences().size()).isEqualTo(1);
     }
@@ -533,8 +533,8 @@ public class RuleWorksheetParseTest {
         System.out.println( drl );
 
         // check rules
-        Rule rule = (Rule) ruleset.getRules().get( 0 );
-        Condition cond = (Condition) rule.getConditions().get( 0 );
+        Rule rule = ruleset.getRules().get(0);
+        Condition cond = rule.getConditions().get(0);
         assertThat(cond.getSnippet()).isEqualTo("Cheese(price == 6600)");
     }
 

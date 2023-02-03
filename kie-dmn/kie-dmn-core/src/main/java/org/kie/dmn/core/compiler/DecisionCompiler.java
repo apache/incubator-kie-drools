@@ -45,7 +45,7 @@ public class DecisionCompiler implements DRGElementCompiler {
     public void compileNode(DRGElement de, DMNCompilerImpl compiler, DMNModelImpl model) {
         Decision decision = (Decision) de;
         DecisionNodeImpl dn = new DecisionNodeImpl( decision );
-        DMNType type = null;
+        DMNType type;
         if ( decision.getVariable() == null ) {
             DMNCompilerHelper.reportMissingVariable( model, de, decision, Msg.MISSING_VARIABLE_FOR_DECISION );
             return;

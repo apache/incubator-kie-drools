@@ -112,7 +112,7 @@ public final class HalfBinaryExpr extends Expression {
     public HalfBinaryExpr setOperator(final Operator operator) {
         assertNotNull(operator);
         if (operator == this.operator) {
-            return (HalfBinaryExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.OPERATOR, this.operator, operator);
         this.operator = operator;
@@ -122,7 +122,7 @@ public final class HalfBinaryExpr extends Expression {
     public HalfBinaryExpr setRight(final Expression right) {
         assertNotNull(right);
         if (right == this.right) {
-            return (HalfBinaryExpr) this;
+            return this;
         }
         notifyPropertyChange(ObservableProperty.RIGHT, this.right, right);
         if (this.right != null)

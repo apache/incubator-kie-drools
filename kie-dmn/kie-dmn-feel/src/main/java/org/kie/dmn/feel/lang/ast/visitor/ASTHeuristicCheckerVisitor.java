@@ -48,7 +48,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     @Override
     public List<FEELEvent> visit(InfixOpNode n) {
         if (!(n.getLeft() instanceof UnaryTestNode || n.getLeft() instanceof RangeNode) && (n.getRight() instanceof UnaryTestNode || n.getRight() instanceof RangeNode)) {
-            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.COMPARING_TO_UT, n.getOperator().symbol + " (" + n.getRight().getText()) + ")", n));
+            return List.of(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.COMPARING_TO_UT, n.getOperator().symbol + " (" + n.getRight().getText()) + ")", n));
         }
         return defaultVisit(n);
     }
@@ -56,7 +56,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     @Override
     public List<FEELEvent> visit(UnaryTestNode n) {
         if (n.getValue() instanceof UnaryTestNode || n.getValue() instanceof RangeNode) {
-            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getOperator().symbol + " (" + n.getValue().getText()) + ")", n));
+            return List.of(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getOperator().symbol + " (" + n.getValue().getText()) + ")", n));
         }
         return defaultVisit(n);
     }
@@ -65,7 +65,7 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
     public List<FEELEvent> visit(RangeNode n) {
         if ((n.getStart() instanceof NullNode && n.getEnd() instanceof RangeNode)
                 || (n.getStart() instanceof RangeNode && n.getEnd() instanceof NullNode)) {
-            return Arrays.asList(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getText()), n));
+            return List.of(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getText()), n));
         }
         return defaultVisit(n);
     }

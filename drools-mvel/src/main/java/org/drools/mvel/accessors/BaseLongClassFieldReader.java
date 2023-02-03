@@ -85,8 +85,8 @@ public abstract class BaseLongClassFieldReader extends BaseClassFieldReader {
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getLongValue",
-                                                      new Class[]{ReteEvaluator.class, Object.class} );
+            return this.getClass().getDeclaredMethod("getLongValue",
+                                                     ReteEvaluator.class, Object.class);
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

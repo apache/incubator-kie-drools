@@ -15,7 +15,6 @@
  */
 package org.kie.drl.engine.runtime.kiesession.local.service;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.kie.api.runtime.KieSession;

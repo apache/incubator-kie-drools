@@ -134,7 +134,7 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
 
     @Override
     public Collection<? extends KieSession> getKieSessions() {
-        return (Collection<? extends KieSession>) (Object) Collections.unmodifiableSet( statefulSessions );
+        return (Collection<? extends KieSession>) (Object) Collections.unmodifiableSet(statefulSessions);
     }
 
     @Override
@@ -633,12 +633,12 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     @Override
     public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
         enqueueModification( () -> {
-            for (Rule rule : rules) {
-                this.eventSupport.fireBeforeRuleAdded( (RuleImpl) rule );
+            for (RuleImpl rule : rules) {
+                this.eventSupport.fireBeforeRuleAdded(rule);
             }
             delegate.kBaseInternal_addRules( rules, statefulSessions );
-            for (Rule rule : rules) {
-                this.eventSupport.fireAfterRuleAdded( (RuleImpl) rule );
+            for (RuleImpl rule : rules) {
+                this.eventSupport.fireAfterRuleAdded(rule);
             }
         } );
     }
@@ -671,12 +671,12 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     @Override
     public void removeRules( Collection<RuleImpl> rules ) {
         enqueueModification( () -> {
-            for (Rule rule : rules) {
-                this.eventSupport.fireBeforeRuleRemoved( (RuleImpl) rule );
+            for (RuleImpl rule : rules) {
+                this.eventSupport.fireBeforeRuleRemoved(rule);
             }
             delegate.kBaseInternal_removeRules( rules, statefulSessions );
-            for (Rule rule : rules) {
-                this.eventSupport.fireAfterRuleRemoved( (RuleImpl) rule );
+            for (RuleImpl rule : rules) {
+                this.eventSupport.fireAfterRuleRemoved(rule);
             }
         } );
     }

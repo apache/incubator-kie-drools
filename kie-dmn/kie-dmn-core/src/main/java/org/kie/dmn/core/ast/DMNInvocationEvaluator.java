@@ -92,7 +92,7 @@ public class DMNInvocationEvaluator
         DMNContext previousContext = result.getContext();
         DMNContext dmnContext = previousContext.clone();
         result.setContext( dmnContext );
-        Object invocationResult = null;
+        Object invocationResult;
 
         try {
             boolean walkedIntoScope = false;
@@ -119,13 +119,13 @@ public class DMNInvocationEvaluator
             FEELFunction function = this.functionLocator.apply(dmnContext, walkedIntoScope ? functionNameWithoutPrefix : functionName);
             if( function == null ) {
                 // check if it is a configured/built-in function
-                Object r = null;
+                Object r;
                 if (feel != null) {
                     r = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap()).getValue(functionName);
                 } else {
                     r = RootExecutionFrame.INSTANCE.getValue( functionName );
                 }
-                if( r != null && r instanceof FEELFunction ) {
+                if(r instanceof FEELFunction) {
                     function = (FEELFunction) r;
                 }
             }

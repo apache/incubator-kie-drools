@@ -67,7 +67,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 
         generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                push((String)vars.get("consequenceName"));
+                push(vars.get("consequenceName"));
                 mv.visitInsn(ARETURN); // return the first object on the stack
             }
         }).addMethod(ACC_PUBLIC, "getNotPatterns", generator.methodDescr(Boolean[].class), new ClassGenerator.MethodBody() {

@@ -2488,8 +2488,8 @@ public class AccumulateTest {
             final List list = new ArrayList();
             ksession.setGlobal("list", list);
 
-            final Integer day1 = 1;
-            final Integer day2 = 2;
+            final int day1 = 1;
+            final int day2 = 2;
             final Integer day3 = 3;
 
             final Course c = new Course(2);

@@ -633,7 +633,7 @@ public class KiePackagesBuilder {
                       .filter(org.drools.model.Declaration.class::isInstance)
                       .map(org.drools.model.Declaration.class::cast)
                       .filter(decl -> functionArgList.contains(decl))
-                      .forEach(decl -> bindings.add(new SelfPatternBiding<>((org.drools.model.Declaration)decl)));
+                      .forEach(decl -> bindings.add(new SelfPatternBiding<>(decl)));
             }
         }
     }

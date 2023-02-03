@@ -58,7 +58,7 @@ public class Base {
     list.add("Joy");
     list.add("Joy!");
 
-    this.array = (String[]) this.list.toArray(new String[this.list.size()]);
+    this.array = this.list.toArray(new String[this.list.size()]);
 
     things = new ArrayList<Thing>();
     things.add(new Thing("Bob"));

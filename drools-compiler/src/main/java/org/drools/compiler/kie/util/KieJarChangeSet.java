@@ -41,7 +41,7 @@ public class KieJarChangeSet {
     }
 
     public boolean contains(String resourceName) {
-        return changes.keySet().contains(resourceName);
+        return changes.containsKey(resourceName);
     }
 
     public KieJarChangeSet merge(KieJarChangeSet other) {

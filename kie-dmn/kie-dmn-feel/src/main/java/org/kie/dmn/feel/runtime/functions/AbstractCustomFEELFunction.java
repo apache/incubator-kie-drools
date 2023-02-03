@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
         }
         
-        FEELEvent capturedException = null;
+        FEELEvent capturedException;
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {
@@ -83,7 +84,7 @@ public abstract class AbstractCustomFEELFunction<B> extends BaseFEELFunction {
 
     @Override
     public List<List<Param>> getParameters() {
-        return Arrays.asList(parameters);
+        return Collections.singletonList(parameters);
     }
 
     String getSignature() {

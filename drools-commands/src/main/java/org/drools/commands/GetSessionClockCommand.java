@@ -28,7 +28,7 @@ public class GetSessionClockCommand
 
     public SessionClock execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
-        return ksession.<SessionClock>getSessionClock();
+        return ksession.getSessionClock();
     }
 
     public String toString() {

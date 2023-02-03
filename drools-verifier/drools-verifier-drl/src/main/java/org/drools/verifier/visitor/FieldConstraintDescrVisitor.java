@@ -91,7 +91,7 @@ public class FieldConstraintDescrVisitor {
         } else if (restrictionDescr instanceof VariableRestrictionDescr) {
             visit((VariableRestrictionDescr) restrictionDescr);
         } else if (restrictionDescr instanceof PredicateDescr) {
-            visit((PredicateDescr) restrictionDescr);
+            visit(restrictionDescr);
         } else if (restrictionDescr instanceof RestrictionConnectiveDescr) {
             visit((RestrictionConnectiveDescr) restrictionDescr);
         } else {

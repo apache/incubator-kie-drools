@@ -127,13 +127,13 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
 
         // set return values for methods
         when(entries[0].getNext()).thenReturn(null);
-        when(((TupleList) entries[0]).getFirst()).thenReturn(tuples[0]);
+        when(entries[0].getFirst()).thenReturn(tuples[0]);
 
         when(entries[5].getNext()).thenReturn(null);
-        when(((TupleList) entries[5]).getFirst()).thenReturn(tuples[1]);
+        when(entries[5].getFirst()).thenReturn(tuples[1]);
 
         when(entries[9].getNext()).thenReturn(null);
-        when(((TupleList) entries[9]).getFirst()).thenReturn(tuples[2]);
+        when(entries[9].getFirst()).thenReturn(tuples[2]);
 
         // create the mock table for the iterator
         AbstractHashTable table = mock(AbstractHashTable.class);

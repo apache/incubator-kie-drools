@@ -113,9 +113,7 @@ public class Converter {
         List<SimpleRuleRow> rsRules = s0.map(SimpleRuleRow::new).collect(Collectors.toList());
         Set<String> usedPredictors = new LinkedHashSet<>();
         for (SimpleRuleRow rr : rsRules) {
-            for (String key : rr.map.keySet()) {
-                usedPredictors.add(key);
-            }
+            usedPredictors.addAll(rr.map.keySet());
             LOG.debug("{}", rr);
         }
         LOG.debug("{}", usedPredictors);
@@ -369,7 +367,6 @@ public class Converter {
             case GREATER_THAN:
                 return ">";
             case IS_MISSING:
-                throw new UnsupportedOperationException("Unsupported operator for FEEL conversion");
             case IS_NOT_MISSING:
                 throw new UnsupportedOperationException("Unsupported operator for FEEL conversion");
             case LESS_OR_EQUAL:
@@ -481,7 +478,7 @@ public class Converter {
     private static String feelTypeFromDD(DataDictionary dd, String id) {
         FieldName lookup = FieldName.create(id);
         Optional<DataField> opt = dd.getDataFields().stream().filter(df -> df.getName().equals(lookup)).findFirst();
-        if (!opt.isPresent()) {
+        if (opt.isEmpty()) {
             return "Any";
         }
         DataType dataType = opt.map(DataField::getDataType).get();

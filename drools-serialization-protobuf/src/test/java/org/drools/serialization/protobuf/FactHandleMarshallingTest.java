@@ -109,8 +109,8 @@ public class FactHandleMarshallingTest {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ProtobufMarshallerWriteContext outContext = new ProtobufMarshallerWriteContext( baos, null, null, null,
                     new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
-            OldOutputMarshallerMethods.writeFactHandle_v1(outContext, (ObjectOutputStream) outContext, 
-                    outContext.getObjectMarshallingStrategyStore(), 2, factHandle);
+            OldOutputMarshallerMethods.writeFactHandle_v1(outContext, outContext,
+                                                          outContext.getObjectMarshallingStrategyStore(), 2, factHandle);
             outContext.close();
             byteArray = baos.toByteArray();
         }
@@ -192,7 +192,7 @@ public class FactHandleMarshallingTest {
         ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( confEP, object );
 
 
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         switch (type) {
             case 0: {
 

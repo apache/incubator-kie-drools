@@ -16,6 +16,7 @@
 package org.kie.internal.jaxb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -47,10 +48,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
         if( key == null || key.isEmpty() ) {
            return factory.newCorrelationKey(Collections.EMPTY_LIST);
         }
-        List<String> keys = new ArrayList<>();
-        for( String k : key.split(":") ) {
-            keys.add(k);
-        }
+        List<String> keys = Arrays.asList(key.split(":"));
         return KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey(keys);
     }
 

@@ -71,7 +71,7 @@ public class FromGenericCollectionTest {
         final KieSession ksession = kieBase.newKieSession();
         try {
             final Map<String, List<String>> crazyMap = new HashMap<String, List<String>>();
-            crazyMap.put("foo", Arrays.asList("bar"));
+            crazyMap.put("foo", List.of("bar"));
             final GenericHolder gh = new GenericHolder();
             gh.setCrazyMap(crazyMap);
 

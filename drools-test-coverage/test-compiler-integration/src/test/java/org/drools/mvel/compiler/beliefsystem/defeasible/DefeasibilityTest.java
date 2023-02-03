@@ -28,7 +28,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.util.Iterator;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -78,7 +77,7 @@ public class DefeasibilityTest {
         }
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()) );;
+        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()) );
 
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
@@ -143,7 +142,7 @@ public class DefeasibilityTest {
 
 
 
-    //@Test(timeout = 10000 )
+    @Test(timeout = 10000 )
     public void testDefeasibleEntailmentWithStrictOverride() {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strictOverride.drl" );
         kSession.fireAllRules();
@@ -170,7 +169,7 @@ public class DefeasibilityTest {
 
 
 
-    //@Test(timeout = 10000 )
+    @Test(timeout = 10000 )
     public void defeasibleEntailmentMultiActivation() {
         KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeat.drl" );
         kSession.fireAllRules();

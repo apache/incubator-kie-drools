@@ -140,7 +140,7 @@ public class KiePMMLOutputFieldTest {
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
-                                                       Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)),
+                                                       List.of(new KiePMMLNameValue(PARAM_1, value1)),
                                                        Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         assertThat(retrieved).isEqualTo(value1);

@@ -211,7 +211,7 @@ public class RightTupleIndexHashTableTest {
                                                            null,
                                                            true ) );
         assertThat(tuple.getFactHandle()).isSameAs(stiltonHandle1);
-        assertThat(((RightTuple) tuple.getNext()).getFactHandle()).isSameAs(stiltonHandle2);
+        assertThat(tuple.getNext().getFactHandle()).isSameAs(stiltonHandle2);
     }
 
     @Test

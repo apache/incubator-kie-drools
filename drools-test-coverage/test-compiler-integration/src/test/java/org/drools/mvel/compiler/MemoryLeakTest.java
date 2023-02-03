@@ -162,7 +162,7 @@ public class MemoryLeakTest {
 
         assertThat(liaNode).isNotNull();
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
-        LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
+        LeftInputAdapterNode.LiaNodeMemory memory = wm.getNodeMemory(liaNode);
         TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
         assertThat(stagedLeftTuples.getDeleteFirst()).isNull();
         assertThat(stagedLeftTuples.getInsertFirst()).isNull();

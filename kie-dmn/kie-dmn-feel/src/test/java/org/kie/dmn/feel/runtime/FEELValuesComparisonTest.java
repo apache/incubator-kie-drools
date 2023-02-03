@@ -19,7 +19,6 @@ package org.kie.dmn.feel.runtime;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELValuesComparisonTest extends BaseFEELTest {
 

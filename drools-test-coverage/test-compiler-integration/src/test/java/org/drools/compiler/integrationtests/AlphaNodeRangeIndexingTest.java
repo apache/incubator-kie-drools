@@ -136,7 +136,7 @@ public class AlphaNodeRangeIndexingTest {
         if (rangeIndexSize == 0) {
             assertThat(sinkAdapter.getRangeIndexMap()).isNull();
         } else {
-            long count = sinkAdapter.getRangeIndexMap().values().stream().flatMap(index -> index.getAllValues().stream()).count();
+            long count = sinkAdapter.getRangeIndexMap().values().stream().mapToLong(index -> index.getAllValues().size()).sum();
             assertThat(count).isEqualTo(rangeIndexSize);
         }
     }

@@ -108,7 +108,7 @@ public abstract class ActionInspector
     private boolean areDatesEqual(final Date value,
                                   final Comparable other) {
         if (other instanceof String) {
-            return format(value).toString().equals(other);
+            return format(value).equals(other);
         } else {
             return false;
         }

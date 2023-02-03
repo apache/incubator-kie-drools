@@ -74,7 +74,7 @@ public class DSLTokenizedMappingFileTest {
 
             assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
-            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+            DSLMappingEntry entry = this.file.getMapping().getEntries().get(0);
 
             assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
             assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);
@@ -103,7 +103,7 @@ public class DSLTokenizedMappingFileTest {
 
             assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
-            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+            DSLMappingEntry entry = this.file.getMapping().getEntries().get(0);
 
             assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
             assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);
@@ -168,7 +168,7 @@ public class DSLTokenizedMappingFileTest {
 
             assertThat(this.file.getMapping().getEntries().size()).isEqualTo(1);
 
-            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+            DSLMappingEntry entry = this.file.getMapping().getEntries().get(0);
 
             assertThat(entry.getSection()).isEqualTo(DSLMappingEntry.CONDITION);
             assertThat(entry.getMetaData()).isEqualTo(DSLMappingEntry.EMPTY_METADATA);

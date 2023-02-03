@@ -56,7 +56,7 @@ public class DecisionServiceConverter extends NamedElementConverter {
     protected void parseElements(HierarchicalStreamReader reader, UnmarshallingContext context, Object parent) {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            Object object = null;
+            Object object;
             String nodeName = reader.getNodeName();
             if (nodeName.equals(INPUT_DATA)) {
                 // Patch because the tag name inputData is used in both decision services and as a DRG Element

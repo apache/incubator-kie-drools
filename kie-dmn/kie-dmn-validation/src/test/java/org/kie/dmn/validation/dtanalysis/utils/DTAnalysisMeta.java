@@ -94,7 +94,7 @@ public class DTAnalysisMeta {
 
     private static Expression boundAsExpression(Bound<?> bound) {
         Comparable<?> value = bound.getValue();
-        Expression valueExpr = null;
+        Expression valueExpr;
         if (value == Interval.NEG_INF) {
             valueExpr = parseExpression("Interval.NEG_INF");
         } else if (value == Interval.POS_INF) {
@@ -128,7 +128,7 @@ public class DTAnalysisMeta {
         } else {
             throw new UnsupportedOperationException("boundAsExpression value " + value + " not supported.");
         }
-        Expression typeExpr = null;
+        Expression typeExpr;
         if (bound.getBoundaryType() == RangeBoundary.OPEN) {
             typeExpr = parseExpression("RangeBoundary.OPEN");
         } else if (bound.getBoundaryType() == RangeBoundary.CLOSED) {

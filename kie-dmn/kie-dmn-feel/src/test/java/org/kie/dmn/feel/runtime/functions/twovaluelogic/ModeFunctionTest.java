@@ -53,7 +53,7 @@ public class ModeFunctionTest {
     @Test
     public void invokeListParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(20, 30, null, (long) 20, null, BigDecimal.TEN)),
-                Arrays.asList( BigDecimal.valueOf(20) ));
+                                      List.of(BigDecimal.valueOf(20)));
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(20, 30, null, (long) 20, 30, BigDecimal.TEN)),
                 Arrays.asList( BigDecimal.valueOf(20), BigDecimal.valueOf(30) ));
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(null, null, null)),
@@ -78,7 +78,7 @@ public class ModeFunctionTest {
     @Test
     public void invokeArrayParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(20, 30, null, (long) 20, null, BigDecimal.TEN)),
-                Arrays.asList( BigDecimal.valueOf(20) ));
+                                      List.of(BigDecimal.valueOf(20)));
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(20, 30, null, (long) 20, 30, BigDecimal.TEN)),
                 Arrays.asList( BigDecimal.valueOf(20), BigDecimal.valueOf(30) ));
         FunctionTestUtil.assertResult(modeFunction.invoke(Arrays.asList(null, null, null)),

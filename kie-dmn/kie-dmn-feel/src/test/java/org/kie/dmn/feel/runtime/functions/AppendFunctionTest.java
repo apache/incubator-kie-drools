@@ -46,14 +46,14 @@ public class AppendFunctionTest {
 
     @Test
     public void invokeAppendNothing() {
-        FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test"), new Object[]{}), Arrays.asList("test"));
+        FunctionTestUtil.assertResultList(appendFunction.invoke(List.of("test"), new Object[]{}), List.of("test"));
         FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test", "test2"), new Object[]{}), Arrays.asList("test", "test2"));
     }
 
     @Test
     public void invokeAppendSomething() {
-        FunctionTestUtil.assertResultList(appendFunction.invoke(Collections.emptyList(), new Object[]{"test"}), Arrays.asList("test"));
-        FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test"), new Object[]{"test2"}), Arrays.asList("test", "test2"));
-        FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test"), new Object[]{"test2", "test3"}), Arrays.asList("test", "test2", "test3"));
+        FunctionTestUtil.assertResultList(appendFunction.invoke(Collections.emptyList(), new Object[]{"test"}), List.of("test"));
+        FunctionTestUtil.assertResultList(appendFunction.invoke(List.of("test"), new Object[]{"test2"}), Arrays.asList("test", "test2"));
+        FunctionTestUtil.assertResultList(appendFunction.invoke(List.of("test"), new Object[]{"test2", "test3"}), Arrays.asList("test", "test2", "test3"));
     }
 }
