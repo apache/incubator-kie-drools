@@ -237,7 +237,7 @@ public class PrototypeDSL {
         }
 
         private PrototypeVariable[] findRightPrototypeVariables(PrototypeExpression right, PrototypeVariable leftVar) {
-            Collection<PrototypeVariable> rightVars = right.getPrototypeVariable();
+            Collection<PrototypeVariable> rightVars = right.getPrototypeVariables();
             boolean rightVarsContainLeft = rightVars.contains(leftVar);
             PrototypeVariable[] protoVars = new PrototypeVariable[rightVarsContainLeft ? rightVars.size()-1 : rightVars.size()];
             int i = 0;

@@ -64,7 +64,7 @@ public interface PrototypeExpression {
         return false;
     }
 
-    default Collection<PrototypeVariable> getPrototypeVariable() {
+    default Collection<PrototypeVariable> getPrototypeVariables() {
         return Collections.emptyList();
     }
 
@@ -183,7 +183,7 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Collection<PrototypeVariable> getPrototypeVariable() {
+        public Collection<PrototypeVariable> getPrototypeVariables() {
             return Collections.singletonList(protoVar);
         }
 
@@ -406,10 +406,10 @@ public interface PrototypeExpression {
         }
 
         @Override
-        public Collection<PrototypeVariable> getPrototypeVariable() {
+        public Collection<PrototypeVariable> getPrototypeVariables() {
             Set<PrototypeVariable> protoVars = new HashSet<>();
-            protoVars.addAll(left.getPrototypeVariable());
-            protoVars.addAll(right.getPrototypeVariable());
+            protoVars.addAll(left.getPrototypeVariables());
+            protoVars.addAll(right.getPrototypeVariables());
             return protoVars;
         }
 
