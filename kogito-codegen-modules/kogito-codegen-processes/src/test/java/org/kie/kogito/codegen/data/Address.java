@@ -15,7 +15,23 @@
  */
 package org.kie.kogito.codegen.data;
 
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class Address {
+
+    private static final String ADDRESS_SEPARATOR = ", ";
+
+    private transient final Map<Integer, Entry<Supplier<String>, Consumer<String>>> ADDRESS = Map.of(
+            0, new SimpleImmutableEntry<Supplier<String>, Consumer<String>>(this::getStreet, this::setStreet),
+            1, new SimpleImmutableEntry<Supplier<String>, Consumer<String>>(this::getCity, this::setCity),
+            2, new SimpleImmutableEntry<Supplier<String>, Consumer<String>>(this::getZipCode, this::setZipCode),
+            3, new SimpleImmutableEntry<Supplier<String>, Consumer<String>>(this::getCountry, this::setCountry));
 
     private String street;
     private String city;
@@ -73,5 +89,20 @@ public class Address {
     @Override
     public String toString() {
         return "Address [street=" + street + ", city=" + city + ", zipCode=" + zipCode + ", country=" + country + "]";
+    }
+
+    public String getAddress() {
+        return IntStream.range(0, ADDRESS.size()).mapToObj(i -> ADDRESS.get(i).getKey().get()).collect(Collectors.joining(ADDRESS_SEPARATOR));
+    }
+
+    public void setAddress(String address) {
+        String[] addressSections = address.split(ADDRESS_SEPARATOR);
+        IntStream.range(0, addressSections.length).forEach(i -> ADDRESS.get(i).getValue().accept(addressSections[i]));
+    }
+
+    public static Address of(String address) {
+        Address a = new Address();
+        a.setAddress(address);
+        return a;
     }
 }

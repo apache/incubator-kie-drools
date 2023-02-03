@@ -27,10 +27,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Person {
+
+    private static final String ADDRESS_SEPARATOR = "; ";
 
     private String id;
     private String name;
@@ -219,6 +222,17 @@ public class Person {
 
     public void setBytes(byte[] bytes) {
         this.bytes = bytes;
+    }
+
+    @JsonIgnore
+    public String getAddressesStr() {
+        return getAddresses() != null ? getAddresses().stream().map(
+                a -> a.getAddress()).collect(Collectors.joining(ADDRESS_SEPARATOR)) : null;
+    }
+
+    public void setAddressesStr(String addresses) {
+        setAddresses(
+                Arrays.stream(addresses.split(ADDRESS_SEPARATOR)).map(a -> Address.of(a)).collect(Collectors.toList()));
     }
 
     @Override
