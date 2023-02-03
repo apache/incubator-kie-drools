@@ -8,7 +8,7 @@
   "data": {
     "id": "JOB_ID",
     "correlationId": "CORRELATION_ID",
-    "state": "TBD1",
+    "state": "SCHEDULED",
     "schedule": {
       "type": "timer",
       "startTime": "2023-01-30T22:01:15.001+01:00",

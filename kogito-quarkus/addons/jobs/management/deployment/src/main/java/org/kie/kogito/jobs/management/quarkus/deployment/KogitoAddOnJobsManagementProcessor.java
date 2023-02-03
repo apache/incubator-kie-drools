@@ -15,11 +15,27 @@
  */
 package org.kie.kogito.jobs.management.quarkus.deployment;
 
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.JobLookupId;
+import org.kie.kogito.jobs.service.api.Recipient;
+import org.kie.kogito.jobs.service.api.Schedule;
+import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
+import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
+import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
+import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
 import org.kie.kogito.quarkus.addons.common.deployment.OneOfCapabilityKogitoAddOnProcessor;
 
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
+import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 
 class KogitoAddOnJobsManagementProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
@@ -34,4 +50,25 @@ class KogitoAddOnJobsManagementProcessor extends OneOfCapabilityKogitoAddOnProce
         return new FeatureBuildItem(FEATURE);
     }
 
+    @BuildStep
+    public ReflectiveClassBuildItem jobsApiReflection() {
+        return new ReflectiveClassBuildItem(true,
+                true,
+                true,
+                SpecVersionSerializer.class.getName(),
+                SpecVersionDeserializer.class.getName(),
+                Job.class.getName(),
+                JobLookupId.class.getName(),
+                Recipient.class.getName(),
+                HttpRecipient.class.getName(),
+                HttpRecipientStringPayloadData.class.getName(),
+                HttpRecipientBinaryPayloadData.class.getName(),
+                HttpRecipientJsonPayloadData.class.getName(),
+                Schedule.class.getName(),
+                TimerSchedule.class.getName(),
+                CronSchedule.class.getName(),
+                JobCloudEvent.class.getName(),
+                CreateJobEvent.class.getName(),
+                DeleteJobEvent.class.getName());
+    }
 }

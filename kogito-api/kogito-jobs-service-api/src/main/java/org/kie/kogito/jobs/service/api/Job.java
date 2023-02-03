@@ -41,9 +41,26 @@ public class Job {
 
     @Schema(description = "Available states for a Job.")
     public enum State {
-        TBD1,
-        TBD2,
-        TBD3
+        /**
+         * Active job state.
+         */
+        SCHEDULED,
+        /**
+         * Active job state.
+         */
+        RETRY,
+        /**
+         * Final job state.
+         */
+        EXECUTED,
+        /**
+         * Final job state.
+         */
+        ERROR,
+        /**
+         * Final job state.
+         */
+        CANCELED
     }
 
     @Schema(description = "The unique identifier of the job in the system, this value is set by the jobs service.")

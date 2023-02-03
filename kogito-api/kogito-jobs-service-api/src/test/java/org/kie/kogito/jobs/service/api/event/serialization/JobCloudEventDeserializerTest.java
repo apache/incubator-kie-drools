@@ -40,7 +40,31 @@ import io.cloudevents.core.builder.CloudEventBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.kogito.jobs.service.api.event.TestConstants.*;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.CORRELATION_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.JOB_ID;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_HEADER_1_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_METHOD;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_PAYLOAD;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_1;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_1_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_2;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_QUERY_PARAM_2_VALUE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RECIPIENT_URL;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RETRY_DELAY;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RETRY_DELAY_UNIT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RETRY_DURATION_UNIT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RETRY_MAX_DURATION;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.RETRY_MAX_RETRIES;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_DELAY;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_DELAY_UNIT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_REPEAT_COUNT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SCHEDULE_START_TIME;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SOURCE;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SPEC_VERSION;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.SUBJECT;
+import static org.kie.kogito.jobs.service.api.event.TestConstants.TIME;
 
 class JobCloudEventDeserializerTest {
 
@@ -117,7 +141,7 @@ class JobCloudEventDeserializerTest {
 
         assertThat(job.getId()).isEqualTo(JOB_ID);
         assertThat(job.getCorrelationId()).isEqualTo(CORRELATION_ID);
-        assertThat(job.getState()).isEqualTo(Job.State.TBD1);
+        assertThat(job.getState()).isEqualTo(Job.State.SCHEDULED);
 
         assertThat(job.getSchedule()).isInstanceOf(TimerSchedule.class);
         TimerSchedule schedule = (TimerSchedule) job.getSchedule();

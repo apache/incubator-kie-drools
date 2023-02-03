@@ -26,6 +26,9 @@ import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
 import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer;
 import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.quarkus.addons.common.deployment.KogitoCapability;
@@ -59,6 +62,9 @@ class KogitoAddOnJobsMessagingProcessor extends OneOfCapabilityKogitoAddOnProces
                 JobLookupId.class.getName(),
                 Recipient.class.getName(),
                 HttpRecipient.class.getName(),
+                HttpRecipientStringPayloadData.class.getName(),
+                HttpRecipientBinaryPayloadData.class.getName(),
+                HttpRecipientJsonPayloadData.class.getName(),
                 Schedule.class.getName(),
                 TimerSchedule.class.getName(),
                 CronSchedule.class.getName(),
