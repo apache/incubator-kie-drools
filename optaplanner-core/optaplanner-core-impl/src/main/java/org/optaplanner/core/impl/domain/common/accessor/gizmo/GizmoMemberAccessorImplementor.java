@@ -34,31 +34,40 @@ public class GizmoMemberAccessorImplementor {
      * in order to create an instance of the Member
      * Accessor
      */
-    private static final Map<String, byte[]> classNameToBytecode = new HashMap<>();
+    private static Map<String, byte[]> classNameToBytecode;
 
     /**
      * A custom classloader that looks for the class in
      * classNameToBytecode
      */
-    private static final ClassLoader GIZMO_CLASS_LOADER = new ClassLoader() {
-        // getName() is an abstract method in Java 11 but not in Java 8
-        @Override
-        public String getName() {
-            return "OptaPlanner Gizmo MemberAccessor ClassLoader";
-        }
+    private static ClassLoader GIZMO_CLASS_LOADER;
 
-        @Override
-        public Class<?> findClass(String name) throws ClassNotFoundException {
-            if (classNameToBytecode.containsKey(name)) {
-                // Gizmo generated class
-                byte[] byteCode = classNameToBytecode.get(name);
-                return defineClass(name, byteCode, 0, byteCode.length);
-            } else {
-                // Not a Gizmo generated class; load from context class loader
-                return Thread.currentThread().getContextClassLoader().loadClass(name);
+    static {
+        resetClassLoaderCache();
+    }
+
+    public static void resetClassLoaderCache() {
+        classNameToBytecode = new HashMap<>();
+        GIZMO_CLASS_LOADER = new ClassLoader() {
+            // getName() is an abstract method in Java 11 but not in Java 8
+            @Override
+            public String getName() {
+                return "OptaPlanner Gizmo MemberAccessor ClassLoader";
             }
-        }
-    };
+
+            @Override
+            public Class<?> findClass(String name) throws ClassNotFoundException {
+                if (classNameToBytecode.containsKey(name)) {
+                    // Gizmo generated class
+                    byte[] byteCode = classNameToBytecode.get(name);
+                    return defineClass(name, byteCode, 0, byteCode.length);
+                } else {
+                    // Not a Gizmo generated class; load from context class loader
+                    return Thread.currentThread().getContextClassLoader().loadClass(name);
+                }
+            }
+        };
+    }
 
     final static String GENERIC_TYPE_FIELD = "genericType";
     final static String ANNOTATED_ELEMENT_FIELD = "annotatedElement";

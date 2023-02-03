@@ -51,6 +51,7 @@ import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
+import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoClassLoaderReset;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
@@ -185,6 +186,8 @@ class OptaPlannerProcessor {
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<BytecodeTransformerBuildItem> transformers) {
         IndexView indexView = combinedIndex.getIndex();
+
+        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerGizmoClassLoaderReset.class));
 
         // Only skip this extension if everything is missing. Otherwise, if some parts are missing, fail fast later.
         if (indexView.getAnnotations(DotNames.PLANNING_SOLUTION).isEmpty()
