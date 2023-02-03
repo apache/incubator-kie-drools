@@ -3,6 +3,8 @@
 name: Jenkins Tests
 on:
   pull_request:
+    branches-ignore:    
+      - '9.x' # 9.x is migrated from main branch and use the seed pipelines main branch to generate jobs
     paths: 
     - '.ci/jenkins/**'
     - '.github/workflows/jenkins-tests-PR.yml'
