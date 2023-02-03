@@ -1,24 +1,55 @@
-environment:
-  quarkus:
-    main:
-      enabled: true
-    branch:
-      enabled: true
-      version: '2.16'
-    lts:
-      enabled: true
-      version: '2.13'
+environments:
   native:
-    enabled: true
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
   mandrel:
-    enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
-  mandrel_lts:
-    enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
-    quarkus_version: 2.13
-  runtimes_bdd:
-    enabled: true
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+    - prod
+  quarkus-main:
+    env_vars:
+      QUARKUS_BRANCH: main
+    ids:
+    - quarkus
+  quarkus-branch:
+    env_vars:
+      QUARKUS_BRANCH: '2.16'
+    ids:
+    - quarkus
+  quarkus-lts:
+    env_vars:
+      BUILD_MVN_OPTS: -Dproductized
+      QUARKUS_BRANCH: '2.13'
+    ids:
+    - quarkus
+    - lts
+    - prod
+  mandrel-lts:
+    env_vars:
+      NATIVE: true
+      BUILD_MVN_OPTS: -Dproductized
+      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
+      QUARKUS_BRANCH: '2.13'
+      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+    - prod
+    - lts
+  ecosystem:
+    auto_generation: false
+    ids:
+    - ecosystem
+
 productized_branch: true
 disable:
   triggers: false
