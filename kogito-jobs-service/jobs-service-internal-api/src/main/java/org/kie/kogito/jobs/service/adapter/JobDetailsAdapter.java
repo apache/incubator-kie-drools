@@ -37,25 +37,22 @@ public class JobDetailsAdapter {
     public static class StatusAdapter {
         public static Job.State toState(JobStatus status) {
             if (Objects.isNull(status)) {
-                return Job.State.TBD3;
+                return Job.State.SCHEDULED;
             }
-            Job.State state = null;
             switch (status) {
                 case ERROR:
-                    state = Job.State.TBD1;
-                    break;
+                    return Job.State.ERROR;
                 case EXECUTED:
-                    state = Job.State.TBD2;
-                    break;
+                    return Job.State.EXECUTED;
                 case SCHEDULED:
-                    state = Job.State.TBD3;
-                    break;
+                    return Job.State.SCHEDULED;
                 case RETRY:
-                    break;
+                    return Job.State.RETRY;
                 case CANCELED:
-                    break;
+                    return Job.State.CANCELED;
+                default:
+                    throw new IllegalArgumentException("JobStatus: " + status + " can not be converted to a Job.State");
             }
-            return state;
         }
 
         public static JobStatus from(Job.State state) {
@@ -63,14 +60,19 @@ public class JobDetailsAdapter {
                 return JobStatus.SCHEDULED;
             }
             switch (state) {
-                case TBD1:
+                case ERROR:
                     return JobStatus.ERROR;
-                case TBD2:
+                case EXECUTED:
                     return JobStatus.EXECUTED;
-                case TBD3:
+                case SCHEDULED:
                     return JobStatus.SCHEDULED;
+                case RETRY:
+                    return JobStatus.RETRY;
+                case CANCELED:
+                    return JobStatus.CANCELED;
+                default:
+                    throw new IllegalArgumentException("Job.State: " + state + " can not be converted to a JobStatus");
             }
-            return JobStatus.EXECUTED;
         }
     }
 

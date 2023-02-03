@@ -31,6 +31,22 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
                 "org.kie.kogito.jobs.service.job.model.ScheduledJobAdapter$ProcessPayload",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$PointInTimeTriggerAccessor",
                 "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$IntervalTriggerAccessor",
-                "org.kie.kogito.jobs.api.event.CancelJobRequestEvent$JobId" })
+                "org.kie.kogito.jobs.api.event.CancelJobRequestEvent$JobId",
+                "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer",
+                "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer",
+                "org.kie.kogito.jobs.service.api.Job",
+                "org.kie.kogito.jobs.service.api.JobLookupId",
+                "org.kie.kogito.jobs.service.api.Recipient",
+                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient",
+                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData",
+                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData",
+                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData",
+                "org.kie.kogito.jobs.service.api.Schedule",
+                "org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule",
+                "org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule",
+                "org.kie.kogito.jobs.service.api.event.JobCloudEvent",
+                "org.kie.kogito.jobs.service.api.event.CreateJobEvent",
+                "org.kie.kogito.jobs.service.api.event.DeleteJobEvent"
+        })
 public class ReflectionConfiguration {
 }
