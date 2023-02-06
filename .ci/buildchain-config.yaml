@@ -24,43 +24,37 @@ build:
     build-command: 
       before:
         current: |
-          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner/pom.xml versions:compare-dependencies -pl :optaplanner-build-parent -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
-          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner/pom.xml versions:set-property -pl :optaplanner-build-parent -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
-          bash -c "cd optaplanner && if which git; then git diff; fi"
+          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:compare-dependencies -pl :optaplanner-build-parent -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
+          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:set-property -pl :optaplanner-build-parent -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
+          bash -c "if which git; then git diff; fi"
         upstream: |
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:compare-dependencies -pl :optaplanner-build-parent -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:set-property -pl :optaplanner-build-parent -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if which git; then git diff; fi"
       current: |
-        mvn -f optaplanner/pom.xml clean install -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS }}
+        mvn clean install -Dfull ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS }}
       upstream: |
         mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM }}
-    clone:
-      - optaplanner
   
   - project: kiegroup/optaweb-vehicle-routing
     build-command: 
       current: |
-        mvn -f optaweb-vehicle-routing/pom.xml clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAWEB_VEHICLE_ROUTING_BUILD_MVN_OPTS }}
+        mvn clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAWEB_VEHICLE_ROUTING_BUILD_MVN_OPTS }}
       upstream: |
         mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAWEB_VEHICLE_ROUTING_BUILD_MVN_OPTS_UPSTREAM }}
-    clone:
-      - optaweb-vehicle-routing
   
   - project: kiegroup/optaplanner-quickstarts
     build-command: 
       before:
         current: |
-          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner-quickstarts/pom.xml versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
-          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner-quickstarts/pom.xml versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
-          bash -c "cd optaplanner-quickstarts && if which git; then git diff; fi"
+          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
+          bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
+          bash -c "if which git; then git diff; fi"
         upstream: |
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if which git; then git diff; fi"
       current: |
-        mvn -f optaplanner-quickstarts/pom.xml clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS }}
+        mvn clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS }}
       upstream: |
         mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_UPSTREAM }}
-    clone:
-      - optaplanner-quickstarts
