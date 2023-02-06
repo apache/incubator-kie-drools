@@ -15,13 +15,17 @@
  */
 package org.drools.model;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.temporal.TemporalPredicate;
 import org.drools.model.impl.PrototypeImpl;
 import org.drools.model.impl.PrototypeVariableImpl;
@@ -120,6 +124,10 @@ public class PrototypeDSL {
 
         @Override
         public PrototypePatternDef expr(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right) {
+            if (right.hasPrototypeVariable()) {
+                return exprWithProtoDef(left, operator, right);
+            }
+
             Prototype prototype = getPrototype();
             Function1<PrototypeFact, Object> leftExtractor;
             AlphaIndex alphaIndex = null;
@@ -185,7 +193,7 @@ public class PrototypeDSL {
             return p -> {
                 Object leftValue = left.apply(p);
                 Object rightValue = right.apply(p);
-                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
+                return evaluateConstraint(leftValue, operator, rightValue);
             };
         }
 
@@ -193,8 +201,56 @@ public class PrototypeDSL {
             return (p1, p2) -> {
                 Object leftValue = extractor.apply(p1);
                 Object rightValue = otherExtractor.apply(p2);
-                return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
+                return evaluateConstraint(leftValue, operator, rightValue);
             };
+        }
+
+        private PrototypePatternDef exprWithProtoDef(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right) {
+            PrototypeVariable leftVar = getPrototypeVariable();
+            PrototypeVariable[] protoVars = findRightPrototypeVariables(right, leftVar);
+
+            switch (protoVars.length) {
+                case 2:
+                    expr( "expr:" + left + ":" + operator + ":" + right,
+                            protoVars[0], protoVars[1],
+                            asPredicate3(leftVar, left, operator, (PrototypeExpression.EvaluableExpression) right, protoVars)
+                        );
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+
+            return this;
+        }
+
+        private Predicate3<PrototypeFact, PrototypeFact, PrototypeFact> asPredicate3(PrototypeVariable leftVar, PrototypeExpression left, ConstraintOperator operator, PrototypeExpression.EvaluableExpression right, PrototypeVariable[] protoVars) {
+            return (l, r1, r2) -> {
+                Map<PrototypeVariable, PrototypeFact> factsMap = new HashMap<>();
+                factsMap.put(leftVar, l);
+                factsMap.put(protoVars[0], r1);
+                factsMap.put(protoVars[1], r2);
+
+                Object leftValue = left.asFunction(getPrototype()).apply(l);
+                Object rightValue = right.evaluate(factsMap);
+                return evaluateConstraint(leftValue, operator, rightValue);
+            };
+        }
+
+        private PrototypeVariable[] findRightPrototypeVariables(PrototypeExpression right, PrototypeVariable leftVar) {
+            Collection<PrototypeVariable> rightVars = right.getPrototypeVariables();
+            boolean rightVarsContainLeft = rightVars.contains(leftVar);
+            PrototypeVariable[] protoVars = new PrototypeVariable[rightVarsContainLeft ? rightVars.size()-1 : rightVars.size()];
+            int i = 0;
+            for (PrototypeVariable rightVar : rightVars) {
+                if (!rightVarsContainLeft || rightVar != leftVar) {
+                    protoVars[i++] = rightVar;
+                }
+            }
+            return protoVars;
+        }
+
+        private static boolean evaluateConstraint(Object leftValue, ConstraintOperator operator, Object rightValue) {
+            return leftValue != Prototype.UNDEFINED_VALUE && rightValue != Prototype.UNDEFINED_VALUE && operator.asPredicate().test(leftValue, rightValue);
         }
 
         private Function1<PrototypeFact, Object> getFieldValueExtractor(Prototype prototype, String fieldName) {
