@@ -1,9 +1,13 @@
 package org.optaplanner.examples.common.swingui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -36,18 +40,18 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
+    protected SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame;
     protected SolutionBusiness<Solution_, ?> solutionBusiness;
 
     protected boolean useIndictmentColor = false;
     protected TangoColorFactory normalColorFactory;
     protected double[] indictmentMinimumLevelNumbers;
 
-    public SolverAndPersistenceFrame getSolverAndPersistenceFrame() {
+    public SolverAndPersistenceFrame<Solution_> getSolverAndPersistenceFrame() {
         return solverAndPersistenceFrame;
     }
 
-    public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+    public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame) {
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 

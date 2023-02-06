@@ -1,7 +1,6 @@
 package org.optaplanner.examples.flightcrewscheduling.persistence;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static org.optaplanner.examples.common.persistence.generator.ProbabilisticDataGenerator.extractRandomElement;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -163,7 +162,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         for (int i = 0; i < flightRoundTripsPerDay; i++) {
             int flightCount = i % 2 == 0 ? 2 : 3;
             ArrayList<Airport> selectedAirports = new ArrayList<>(flightCount);
-            Airport firstAirport = extractRandomElement(random, homeAirportList);
+            Airport firstAirport = homeAirportList.get(random.nextInt(homeAirportList.size()));
             selectedAirports.add(firstAirport);
             ArrayList<Airport> nonFirstAirports = new ArrayList<>(airportList);
             nonFirstAirports.remove(firstAirport);
@@ -224,7 +223,8 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
         long id = 0L;
         for (int i = 0; i < employeeListSize; i++) {
             Employee employee =
-                    new Employee(id, employeeNameGenerator.generateNextValue(), extractRandomElement(random, homeAirportList));
+                    new Employee(id, employeeNameGenerator.generateNextValue(),
+                            homeAirportList.get(random.nextInt(homeAirportList.size())));
             employee.setSkillSet(Collections.singleton((i % 5) < 2 ? pilotSkill : flightAttendantSkill));
             int unavailableDayCount = 0;
             for (int j = 0; j < dayCount && unavailableDayCount < dayCount; j++) {

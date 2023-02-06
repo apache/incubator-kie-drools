@@ -27,8 +27,8 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
     private static final String INPUT_FILE_SUFFIX = "ctt";
 
     public static void main(String[] args) {
-        SolutionConverter<CourseSchedule> converter = SolutionConverter.createImportConverter(
-                CurriculumCourseApp.DATA_DIR_NAME, new CurriculumCourseImporter(), new CurriculumCourseSolutionFileIO());
+        SolutionConverter<CourseSchedule> converter = SolutionConverter.createImportConverter(CurriculumCourseApp.DATA_DIR_NAME,
+                new CurriculumCourseImporter(), new CurriculumCourseSolutionFileIO());
         converter.convertAll();
     }
 

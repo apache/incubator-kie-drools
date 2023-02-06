@@ -13,9 +13,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiConsumer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -52,7 +52,8 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolverAndPersistenceFrame<Solution_> extends JFrame {
+public final class SolverAndPersistenceFrame<Solution_>
+        extends JFrame {
 
     public static final ImageIcon OPTAPLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
@@ -92,18 +93,14 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         setIconImage(OPTAPLANNER_ICON.getImage());
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
-        this.extraActions = new Action[extraActions.length];
-        for (int i = 0; i < extraActions.length; i++) {
-            BiConsumer<SolutionBusiness<Solution_, ?>, SolutionPanel<Solution_>> consumer =
-                    extraActions[i].getConsumer();
-            this.extraActions[i] = new AbstractAction(extraActions[i].getName()) {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    consumer.accept(SolverAndPersistenceFrame.this.solutionBusiness,
-                            SolverAndPersistenceFrame.this.solutionPanel);
-                }
-            };
-        }
+        this.extraActions = Arrays.stream(extraActions)
+                .map(a -> new AbstractAction(a.getName()) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        a.accept(solutionBusiness, solutionPanel);
+                    }
+                })
+                .toArray(Action[]::new);
         indictmentHeatMapTrueIcon = new ImageIcon(getClass().getResource("indictmentHeatMapTrueIcon.png"));
         indictmentHeatMapFalseIcon = new ImageIcon(getClass().getResource("indictmentHeatMapFalseIcon.png"));
         refreshScreenDuringSolvingTrueIcon = new ImageIcon(getClass().getResource("refreshScreenDuringSolvingTrueIcon.png"));

@@ -1,12 +1,12 @@
 package org.optaplanner.examples.common.swingui.timetable;
 
-public class TimeTableLayoutConstraints {
+final class TimeTableLayoutConstraints {
 
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-    private boolean fillCollisions;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int height;
+    private final boolean fillCollisions;
 
     public TimeTableLayoutConstraints(int x, int y) {
         this(x, y, 1, 1, false);

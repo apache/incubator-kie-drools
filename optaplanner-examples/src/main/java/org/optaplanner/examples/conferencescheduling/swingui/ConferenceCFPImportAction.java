@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiConsumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -25,7 +24,7 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 import org.optaplanner.examples.conferencescheduling.persistence.ConferenceSchedulingCfpDevoxxImporter;
 
-public class ConferenceCFPImportAction implements CommonApp.ExtraAction<ConferenceSolution> {
+public final class ConferenceCFPImportAction implements CommonApp.ExtraAction<ConferenceSolution> {
 
     @Override
     public String getName() {
@@ -33,23 +32,22 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
     }
 
     @Override
-    public BiConsumer<SolutionBusiness<ConferenceSolution, ?>, SolutionPanel<ConferenceSolution>> getConsumer() {
-        return (solutionBusiness, solutionPanel) -> {
-            String[] cfpArray = { "cfp-devoxx" };
-            JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
-            JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
-            Object[] dialogue = {
-                    "Choose conference:", cfpConferenceBox,
-                    "Enter CFP REST Url:", cfpRestUrlTextField,
-            };
-
-            int option = JOptionPane.showConfirmDialog(solutionPanel, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
-            if (option == JOptionPane.OK_OPTION) {
-                String conferenceBaseUrl = cfpRestUrlTextField.getText();
-                new ConferenceCFPImportWorker(solutionBusiness, solutionPanel, conferenceBaseUrl)
-                        .executeAndShowDialog();
-            }
+    public void accept(SolutionBusiness<ConferenceSolution, ?> solutionBusiness,
+            SolutionPanel<ConferenceSolution> solutionPanel) {
+        String[] cfpArray = { "cfp-devoxx" };
+        JComboBox<String> cfpConferenceBox = new JComboBox<>(cfpArray);
+        JTextField cfpRestUrlTextField = new JTextField("https://dvbe18.confinabox.com/api/conferences/DVBE18");
+        Object[] dialogue = {
+                "Choose conference:", cfpConferenceBox,
+                "Enter CFP REST Url:", cfpRestUrlTextField,
         };
+
+        int option = JOptionPane.showConfirmDialog(solutionPanel, dialogue, "Import", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String conferenceBaseUrl = cfpRestUrlTextField.getText();
+            new ConferenceCFPImportWorker(solutionBusiness, solutionPanel, conferenceBaseUrl)
+                    .executeAndShowDialog();
+        }
     }
 
     private static final class ConferenceCFPImportWorker extends SwingWorker<ConferenceSolution, Void> {

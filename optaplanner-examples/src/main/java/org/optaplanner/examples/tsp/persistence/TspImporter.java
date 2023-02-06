@@ -26,8 +26,8 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
     public static final String INPUT_FILE_SUFFIX = "tsp";
 
     public static void main(String[] args) {
-        SolutionConverter<TspSolution> converter = SolutionConverter.createImportConverter(
-                TspApp.DATA_DIR_NAME, new TspImporter(), new TspSolutionFileIO());
+        SolutionConverter<TspSolution> converter =
+                SolutionConverter.createImportConverter(TspApp.DATA_DIR_NAME, new TspImporter(), new TspSolutionFileIO());
         converter.convert("other/air/europe40.tsp", "europe40.json");
         converter.convert("other/road-km/americanRoadTrip-road-km-n50.tsp", "americanRoadTrip-road-km-n50.json");
         converter.convert("cook/air/lu980.tsp", "lu980.json");

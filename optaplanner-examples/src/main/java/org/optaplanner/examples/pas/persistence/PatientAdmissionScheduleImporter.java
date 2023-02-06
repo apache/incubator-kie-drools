@@ -35,9 +35,9 @@ import org.optaplanner.examples.pas.domain.Specialism;
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
-        SolutionConverter<PatientAdmissionSchedule> converter = SolutionConverter.createImportConverter(
-                PatientAdmissionScheduleApp.DATA_DIR_NAME, new PatientAdmissionScheduleImporter(),
-                new PatientAdmissionScheduleSolutionFileIO());
+        SolutionConverter<PatientAdmissionSchedule> converter =
+                SolutionConverter.createImportConverter(PatientAdmissionScheduleApp.DATA_DIR_NAME,
+                        new PatientAdmissionScheduleImporter(), new PatientAdmissionScheduleSolutionFileIO());
         converter.convertAll();
     }
 

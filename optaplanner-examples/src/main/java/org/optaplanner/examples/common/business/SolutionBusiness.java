@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implements AutoCloseable {
+public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implements AutoCloseable {
 
     public static String getBaseFileName(File file) {
         return getBaseFileName(file.getName());
@@ -107,14 +107,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
         return app.getDescription();
     }
 
-    public String getAppIconResource() {
-        return app.getIconResource();
-    }
-
-    public File getDataDir() {
-        return dataDir;
-    }
-
     public void setDataDir(File dataDir) {
         this.dataDir = dataDir;
     }
@@ -133,10 +125,6 @@ public class SolutionBusiness<Solution_, Score_ extends Score<Score_>> implement
 
     public void setImporters(Set<AbstractSolutionImporter<Solution_>> importers) {
         this.importers = importers;
-    }
-
-    public void addExporter(AbstractSolutionExporter<Solution_> exporter) {
-        this.exporters.add(exporter);
     }
 
     public Set<AbstractSolutionExporter<Solution_>> getExporters() {

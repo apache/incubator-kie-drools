@@ -51,8 +51,8 @@ import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRoster> {
 
     public static void main(String[] args) {
-        SolutionConverter<NurseRoster> converter = SolutionConverter.createImportConverter(
-                NurseRosteringApp.DATA_DIR_NAME, new NurseRosteringImporter(), new NurseRosterSolutionFileIO());
+        SolutionConverter<NurseRoster> converter = SolutionConverter.createImportConverter(NurseRosteringApp.DATA_DIR_NAME,
+                new NurseRosteringImporter(), new NurseRosterSolutionFileIO());
         converter.convertAll();
     }
 

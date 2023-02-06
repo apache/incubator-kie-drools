@@ -5,7 +5,7 @@ import java.awt.geom.CubicCurve2D;
 
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-public class LatitudeLongitudeTranslator {
+public final class LatitudeLongitudeTranslator {
 
     public static final double MARGIN_RATIO = 0.04;
 
@@ -77,19 +77,6 @@ public class LatitudeLongitudeTranslator {
 
     public int getImageHeight() {
         return imageHeight;
-    }
-
-    public void drawSquare(Graphics2D g, double lon, double lat, int diameter) {
-        drawSquare(g, lon, lat, diameter, null);
-    }
-
-    public void drawSquare(Graphics2D g, double lon, double lat, int diameter, String label) {
-        int x = translateLongitudeToX(lon);
-        int y = translateLatitudeToY(lat);
-        g.fillRect(x - (diameter / 2), y - (diameter / 2), diameter, diameter);
-        if (label != null) {
-            g.drawString(label, x + diameter, y - diameter);
-        }
     }
 
     public void drawRoute(Graphics2D g, double lon1, double lat1, double lon2, double lat2, boolean straight, boolean dashed) {

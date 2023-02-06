@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 
 /**
@@ -13,13 +14,14 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     private static <Solution_> List<File> getImportDirFiles(CommonApp<Solution_> commonApp) {
-        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
-        File importDataDir = new File(dataDir, "import");
-        if (!importDataDir.exists()) {
-            throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
-                    + ") does not exist.");
-        } else {
-            return getAllFilesRecursivelyAndSorted(importDataDir, createSolutionImporter(commonApp)::acceptInputFile);
+        try (SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.solutionBusiness) {
+            File importDataDir = solutionBusiness.getImportDataDir();
+            if (!importDataDir.exists()) {
+                throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
+                        + ") does not exist.");
+            } else {
+                return getAllFilesRecursivelyAndSorted(importDataDir, createSolutionImporter(commonApp)::acceptInputFile);
+            }
         }
     }
 

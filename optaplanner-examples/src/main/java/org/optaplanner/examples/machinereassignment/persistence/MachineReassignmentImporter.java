@@ -31,9 +31,9 @@ import org.optaplanner.examples.machinereassignment.domain.MrService;
 public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<MachineReassignment> {
 
     public static void main(String[] args) {
-        SolutionConverter<MachineReassignment> converter = SolutionConverter.createImportConverter(
-                MachineReassignmentApp.DATA_DIR_NAME, new MachineReassignmentImporter(),
-                new MachineReassignmentSolutionFileIO());
+        SolutionConverter<MachineReassignment> converter =
+                SolutionConverter.createImportConverter(MachineReassignmentApp.DATA_DIR_NAME, new MachineReassignmentImporter(),
+                        new MachineReassignmentSolutionFileIO());
         converter.convert("model_a1_1.txt");
         converter.convert("model_a1_2.txt");
         converter.convert("model_a1_3.txt");

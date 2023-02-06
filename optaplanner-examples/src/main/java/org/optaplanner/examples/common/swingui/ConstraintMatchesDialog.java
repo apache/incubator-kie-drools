@@ -28,9 +28,9 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 
-public class ConstraintMatchesDialog extends JDialog {
+final class ConstraintMatchesDialog extends JDialog {
 
-    protected final SolutionBusiness solutionBusiness;
+    private final SolutionBusiness solutionBusiness;
 
     public ConstraintMatchesDialog(SolverAndPersistenceFrame solverAndPersistenceFrame,
             SolutionBusiness solutionBusiness) {
@@ -109,7 +109,7 @@ public class ConstraintMatchesDialog extends JDialog {
 
     public static class ConstraintMatchTotalTableModel extends AbstractTableModel {
 
-        private List<ConstraintMatchTotal<?>> constraintMatchTotalList;
+        private final List<ConstraintMatchTotal<?>> constraintMatchTotalList;
 
         public ConstraintMatchTotalTableModel(List<ConstraintMatchTotal<?>> constraintMatchTotalList) {
             this.constraintMatchTotalList = constraintMatchTotalList;

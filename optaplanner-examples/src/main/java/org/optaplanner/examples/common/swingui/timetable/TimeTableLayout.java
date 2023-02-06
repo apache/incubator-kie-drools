@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TimeTableLayout implements LayoutManager2 {
+final class TimeTableLayout implements LayoutManager2 {
 
     public static final int FILL_COLLISIONS_FLAG = -1;
 
@@ -291,7 +291,7 @@ public class TimeTableLayout implements LayoutManager2 {
         totalRowHeight = nextRowBoundY;
     }
 
-    private static class Column {
+    private static final class Column {
 
         private final int index;
         private final boolean autoWidth;
@@ -309,7 +309,7 @@ public class TimeTableLayout implements LayoutManager2 {
 
     }
 
-    private static class Row {
+    private static final class Row {
 
         private final int index;
         private final boolean autoHeight;
@@ -328,13 +328,13 @@ public class TimeTableLayout implements LayoutManager2 {
 
     }
 
-    private static class Cell {
+    private static final class Cell {
 
-        private Column column;
-        private Row row;
+        private final Column column;
+        private final Row row;
 
-        private Set<ComponentSpan> spans = new HashSet<>();
-        private Set<Integer> occupiedCollisionIndexes = new HashSet<>();
+        private final Set<ComponentSpan> spans = new HashSet<>();
+        private final Set<Integer> occupiedCollisionIndexes = new HashSet<>();
 
         private Cell(Column column, Row row) {
             this.column = column;
@@ -343,11 +343,10 @@ public class TimeTableLayout implements LayoutManager2 {
 
     }
 
-    private static class ComponentSpan {
+    private static final class ComponentSpan {
 
-        private Component component;
-
-        private Set<Cell> cells = new HashSet<>();
+        private final Component component;
+        private final Set<Cell> cells = new HashSet<>();
         private Cell topLeftCell;
         private Cell bottomRightCell;
         private Integer collisionIndex;

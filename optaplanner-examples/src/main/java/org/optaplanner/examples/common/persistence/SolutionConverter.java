@@ -33,7 +33,8 @@ public class SolutionConverter<Solution_> extends LoggingMain {
                 throw new UnsupportedOperationException();
             }
         };
-        return new SolutionConverter<>(dataDirName, inputSolutionFileIO, "import", outputSolutionFileIO, "unsolved");
+        return new SolutionConverter<>(CommonApp.determineDataDir(dataDirName).getName(), inputSolutionFileIO, "import",
+                outputSolutionFileIO, "unsolved");
     }
 
     public static <Solution_> SolutionConverter<Solution_> createExportConverter(String dataDirName,
@@ -88,11 +89,10 @@ public class SolutionConverter<Solution_> extends LoggingMain {
                     + inputDir.getAbsolutePath() + ").");
         }
         Arrays.sort(inputFiles, new ProblemFileComparator());
-        for (File inputFile : inputFiles) {
-            if (acceptInputFile(inputFile)) {
-                convert(inputFile);
-            }
-        }
+        Arrays.stream(inputFiles)
+                .parallel()
+                .filter(this::acceptInputFile)
+                .forEach(this::convert);
     }
 
     public boolean acceptInputFile(File inputFile) {

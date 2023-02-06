@@ -20,6 +20,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
@@ -29,24 +30,26 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
 
     protected abstract CommonApp<Solution_> createCommonApp();
 
-    private static List<File> getSolutionFiles(CommonApp<?> commonApp) {
-        List<File> fileList = new ArrayList<>(0);
-        File dataDir = CommonApp.determineDataDir(commonApp.getDataDirName());
-        File unsolvedDataDir = new File(dataDir, "unsolved");
-        if (!unsolvedDataDir.exists()) {
-            throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
-                    + ") does not exist.");
+    private List<File> getSolutionFiles(CommonApp<Solution_> commonApp) {
+        try (SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.createSolutionBusiness()) {
+            File unsolvedDataDir = solutionBusiness.getUnsolvedDataDir();
+            if (!unsolvedDataDir.exists()) {
+                throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
+                        + ") does not exist.");
+            }
+            SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
+            String inputFileExtension = solutionFileIO.getInputFileExtension();
+            List<File> fileList = new ArrayList<>(
+                    getAllFilesRecursivelyAndSorted(unsolvedDataDir, file -> file.getName().endsWith(inputFileExtension)));
+            File solvedDataDir = solutionBusiness.getSolvedDataDir();
+            if (solvedDataDir.exists()) {
+                String outputFileExtension = solutionFileIO.getOutputFileExtension();
+                fileList.addAll(
+                        getAllFilesRecursivelyAndSorted(solvedDataDir, file -> file.getName().endsWith(outputFileExtension)));
+            }
+            fileList.sort(new ProblemFileComparator());
+            return fileList;
         }
-        String inputFileExtension = commonApp.createSolutionFileIO().getInputFileExtension();
-        fileList.addAll(getAllFilesRecursivelyAndSorted(unsolvedDataDir, file -> file.getName().endsWith(inputFileExtension)));
-        File solvedDataDir = new File(dataDir, "solved");
-        if (solvedDataDir.exists()) {
-            String outputFileExtension = commonApp.createSolutionFileIO().getOutputFileExtension();
-            fileList.addAll(
-                    getAllFilesRecursivelyAndSorted(solvedDataDir, file -> file.getName().endsWith(outputFileExtension)));
-        }
-        fileList.sort(new ProblemFileComparator());
-        return fileList;
     }
 
     @TestFactory

@@ -140,11 +140,9 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
         return Collections.emptySet();
     }
 
-    public interface ExtraAction<Solution_> {
+    public interface ExtraAction<Solution_> extends BiConsumer<SolutionBusiness<Solution_, ?>, SolutionPanel<Solution_>> {
 
         String getName();
-
-        BiConsumer<SolutionBusiness<Solution_, ?>, SolutionPanel<Solution_>> getConsumer();
 
     }
 

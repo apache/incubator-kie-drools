@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-public class OpenBrowserAction extends AbstractAction {
+public final class OpenBrowserAction extends AbstractAction {
 
     private final URI uri;
 

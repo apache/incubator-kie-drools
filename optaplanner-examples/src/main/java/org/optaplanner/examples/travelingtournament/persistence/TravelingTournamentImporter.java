@@ -18,9 +18,9 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<TravelingTournament> {
 
     public static void main(String[] args) {
-        SolutionConverter<TravelingTournament> converter = SolutionConverter.createImportConverter(
-                TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter(),
-                new TravelingTournamentSolutionFileIO());
+        SolutionConverter<TravelingTournament> converter =
+                SolutionConverter.createImportConverter(TravelingTournamentApp.DATA_DIR_NAME, new TravelingTournamentImporter(),
+                        new TravelingTournamentSolutionFileIO());
         converter.convertAll();
     }
 

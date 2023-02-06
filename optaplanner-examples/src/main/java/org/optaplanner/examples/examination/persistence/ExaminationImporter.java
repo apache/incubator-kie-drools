@@ -45,8 +45,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
-        SolutionConverter<Examination> converter = SolutionConverter.createImportConverter(
-                ExaminationApp.DATA_DIR_NAME, new ExaminationImporter(), new ExaminationSolutionFileIO());
+        SolutionConverter<Examination> converter = SolutionConverter.createImportConverter(ExaminationApp.DATA_DIR_NAME,
+                new ExaminationImporter(), new ExaminationSolutionFileIO());
         converter.convertAll();
     }
 
