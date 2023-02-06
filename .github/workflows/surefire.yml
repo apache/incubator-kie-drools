@@ -13,7 +13,6 @@ jobs:
       checks: write
     name: Test analysis
     steps:
-      - uses: actions/checkout@v2
       - name: Download surefire reports
         uses: actions/github-script@v6
         with:
@@ -40,5 +39,7 @@ jobs:
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
         with:
+          check_name: ${{ github.event.workflow_run.name  }} test report
+          commit: ${{ github.event.workflow_run.head_sha }}
           report_paths: '**/surefire-reports/TEST-*.xml'
           skip_publishing: false
