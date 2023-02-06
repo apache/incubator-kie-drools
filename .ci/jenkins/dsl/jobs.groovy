@@ -206,9 +206,8 @@ setupDeployJob(JobType.NIGHTLY)
 setupSpecificBuildChainNightlyJob('native')
 setupSpecificBuildChainNightlyJob('quarkus-main')
 setupSpecificBuildChainNightlyJob('quarkus-branch')
-setupSpecificBuildChainNightlyJob('mandrel')
 setupSpecificBuildChainNightlyJob('quarkus-lts')
-setupSpecificBuildChainNightlyJob('mandrel-lts')
+setupSpecificBuildChainNightlyJob('native-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
