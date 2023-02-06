@@ -196,7 +196,7 @@ String getGitAuthorCredsID() {
 void checkoutNewBranch(String repo, String originBranch, String newBranch, String dirName = repo) {
     dir(dirName) {
         deleteDir()
-        checkoutRepo(optaPlannerRepository, originBranch)
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), originBranch, false))
         sh "git checkout -b ${newBranch}"
     }
 }

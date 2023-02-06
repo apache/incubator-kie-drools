@@ -31,7 +31,8 @@ if [[ ! "$1" == "test" ]]; then
     -DgenerateBackupPoms=false \
     -DnewVersion="${new_project_version}" \
 
-  ${mvn_cmd} process-test-sources
+  # The formatter and impsort goals override validation activated by the CI environment variable.
+  ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort
 
   # Commit the changes.
   git status
