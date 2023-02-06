@@ -24,9 +24,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function2;
 
 public interface PrototypeExpression {
+
+    interface EvaluableExpression {
+        Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap);
+    }
 
     Function1<PrototypeFact, Object> asFunction(Prototype prototype);
 
@@ -44,12 +48,24 @@ public interface PrototypeExpression {
         return new PrototypeFieldValue(fieldName);
     }
 
+    static PrototypeExpression prototypeField(PrototypeVariable protoVar, String fieldName) {
+        return new CompletePrototypeFieldValue(protoVar, fieldName);
+    }
+
     static PrototypeExpression prototypeArrayItem(String fieldName, int pos) {
         return new PrototypeArrayItemValue(fieldName, pos);
     }
 
     default PrototypeExpression andThen(PrototypeExpression other) {
         return new PrototypeCompositeExpression(this, other);
+    }
+
+    default boolean hasPrototypeVariable() {
+        return false;
+    }
+
+    default Collection<PrototypeVariable> getPrototypeVariables() {
+        return Collections.emptyList();
     }
 
     default PrototypeExpression composeWith(BinaryOperation.Operator op, PrototypeExpression right) {
@@ -68,7 +84,7 @@ public interface PrototypeExpression {
         return composeWith(BinaryOperation.Operator.DIV, right);
     }
 
-    class FixedValue implements PrototypeExpression {
+    class FixedValue implements PrototypeExpression, EvaluableExpression {
 
         private final Object value;
 
@@ -94,6 +110,11 @@ public interface PrototypeExpression {
         public Collection<String> getImpactedFields() {
             return Collections.emptyList();
         }
+
+        @Override
+        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+            return value;
+        }
     }
 
     enum ThisPrototype implements PrototypeExpression {
@@ -110,6 +131,7 @@ public interface PrototypeExpression {
             return "ThisPrototypeFieldValue";
         }
 
+        @Override
         public Collection<String> getImpactedFields() {
             return Collections.emptyList();
         }
@@ -137,8 +159,42 @@ public interface PrototypeExpression {
             return "PrototypeFieldValue{" + fieldName + "}";
         }
 
+        @Override
         public Collection<String> getImpactedFields() {
             return Collections.singletonList(fieldName);
+        }
+    }
+
+    class CompletePrototypeFieldValue extends PrototypeFieldValue implements EvaluableExpression {
+        private final PrototypeVariable protoVar;
+
+        CompletePrototypeFieldValue(PrototypeVariable protoVar, String fieldName) {
+            super(fieldName);
+            this.protoVar = protoVar;
+        }
+
+        public PrototypeVariable getProtoVar() {
+            return protoVar;
+        }
+
+        @Override
+        public boolean hasPrototypeVariable() {
+            return true;
+        }
+
+        @Override
+        public Collection<PrototypeVariable> getPrototypeVariables() {
+            return Collections.singletonList(protoVar);
+        }
+
+        @Override
+        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+            return protoVar.getPrototype().getFieldValueExtractor(getFieldName()).apply(factsMap.get(protoVar));
+        }
+
+        @Override
+        public String toString() {
+            return "PrototypeFieldValue{" + getFieldName() + " on " + protoVar + "}";
         }
     }
 
@@ -222,7 +278,7 @@ public interface PrototypeExpression {
         }
     }
 
-    class BinaryOperation implements PrototypeExpression {
+    class BinaryOperation implements PrototypeExpression, EvaluableExpression {
 
         public enum Operator {
             ADD("+", "add", Operator::add),
@@ -232,79 +288,59 @@ public interface PrototypeExpression {
 
             private final String symbol;
             private final String keyword;
-            private final Function3<Prototype, PrototypeExpression, PrototypeExpression, Function1<PrototypeFact, Object>> operator;
+            private final Function2<Object, Object, Object> operator;
 
-            Operator(String symbol, String keyword, Function3<Prototype, PrototypeExpression, PrototypeExpression, Function1<PrototypeFact, Object>> operator) {
+            Operator(String symbol, String keyword, Function2<Object, Object, Object> operator) {
                 this.symbol = symbol;
                 this.keyword = keyword;
                 this.operator = operator;
             }
 
-            private static Function1<PrototypeFact, Object> add(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
-                return (PrototypeFact fact) -> {
-                    Object leftValue = left.asFunction(prototype).apply(fact);
-                    Object rightValue = right.asFunction(prototype).apply(fact);
-
-                    if (leftValue instanceof String) {
-                        return ((String) leftValue) + (rightValue != null ? rightValue : "");
-                    }
-                    if (leftValue instanceof Integer && rightValue instanceof Integer) {
-                        return ((Integer) leftValue).intValue() + ((Integer) rightValue).intValue();
-                    }
-                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
-                        return rightValue == null ? 0 : rightValue;
-                    } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
-                        return leftValue;
-                    }
-                    return ((Number) leftValue).doubleValue() + ((Number) rightValue).doubleValue();
-                };
+            private static Object add(Object leftValue, Object rightValue) {
+                if (leftValue instanceof String) {
+                    return ((String) leftValue) + (rightValue != null ? rightValue : "");
+                }
+                if (leftValue instanceof Integer && rightValue instanceof Integer) {
+                    return ((Integer) leftValue).intValue() + ((Integer) rightValue).intValue();
+                }
+                if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
+                    return rightValue == null ? 0 : rightValue;
+                } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
+                    return leftValue;
+                }
+                return ((Number) leftValue).doubleValue() + ((Number) rightValue).doubleValue();
             }
 
-            private static Function1<PrototypeFact, Object> sub(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
-                return (PrototypeFact fact) -> {
-                    Object leftValue = left.asFunction(prototype).apply(fact);
-                    Object rightValue = right.asFunction(prototype).apply(fact);
-
-                    if (leftValue instanceof Integer && rightValue instanceof Integer) {
-                        return ((Integer) leftValue).intValue() - ((Integer) rightValue).intValue();
-                    }
-                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
-                        return rightValue == null ? 0 : rightValue;
-                    } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
-                        return leftValue;
-                    }
-                    return ((Number) leftValue).doubleValue() - ((Number) rightValue).doubleValue();
-                };
+            private static Object sub(Object leftValue, Object rightValue) {
+                if (leftValue instanceof Integer && rightValue instanceof Integer) {
+                    return ((Integer) leftValue).intValue() - ((Integer) rightValue).intValue();
+                }
+                if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE) {
+                    return rightValue == null ? 0 : rightValue;
+                } else if (rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
+                    return leftValue;
+                }
+                return ((Number) leftValue).doubleValue() - ((Number) rightValue).doubleValue();
             }
 
-            private static Function1<PrototypeFact, Object> mul(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
-                return (PrototypeFact fact) -> {
-                    Object leftValue = left.asFunction(prototype).apply(fact);
-                    Object rightValue = right.asFunction(prototype).apply(fact);
-
-                    if (leftValue instanceof Integer && rightValue instanceof Integer) {
-                        return ((Integer) leftValue).intValue() * ((Integer) rightValue).intValue();
-                    }
-                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
-                        return 0;
-                    }
-                    return ((Number) leftValue).doubleValue() * ((Number) rightValue).doubleValue();
-                };
+            private static Object mul(Object leftValue, Object rightValue) {
+                if (leftValue instanceof Integer && rightValue instanceof Integer) {
+                    return ((Integer) leftValue).intValue() * ((Integer) rightValue).intValue();
+                }
+                if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
+                    return 0;
+                }
+                return ((Number) leftValue).doubleValue() * ((Number) rightValue).doubleValue();
             }
 
-            private static Function1<PrototypeFact, Object> div(Prototype prototype, PrototypeExpression left, PrototypeExpression right) {
-                return (PrototypeFact fact) -> {
-                    Object leftValue = left.asFunction(prototype).apply(fact);
-                    Object rightValue = right.asFunction(prototype).apply(fact);
-
-                    if (leftValue instanceof Integer && rightValue instanceof Integer) {
-                        return ((Integer) leftValue).intValue() / ((Integer) rightValue).intValue();
-                    }
-                    if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
-                        return 0;
-                    }
-                    return ((Number) leftValue).doubleValue() / ((Number) rightValue).doubleValue();
-                };
+            private static Object div(Object leftValue, Object rightValue) {
+                if (leftValue instanceof Integer && rightValue instanceof Integer) {
+                    return ((Integer) leftValue).intValue() / ((Integer) rightValue).intValue();
+                }
+                if (leftValue == null || leftValue == Prototype.UNDEFINED_VALUE || rightValue == null || rightValue == Prototype.UNDEFINED_VALUE) {
+                    return 0;
+                }
+                return ((Number) leftValue).doubleValue() / ((Number) rightValue).doubleValue();
             }
 
             @Override
@@ -345,7 +381,11 @@ public interface PrototypeExpression {
 
         @Override
         public Function1<PrototypeFact, Object> asFunction(Prototype prototype) {
-            return op.operator.apply(prototype, left, right);
+            return (PrototypeFact fact) -> {
+                Object leftValue = left.asFunction(prototype).apply(fact);
+                Object rightValue = right.asFunction(prototype).apply(fact);
+                return op.operator.apply(leftValue, rightValue);
+            };
         }
 
         @Override
@@ -358,6 +398,26 @@ public interface PrototypeExpression {
             fields.addAll(left.getImpactedFields());
             fields.addAll(right.getImpactedFields());
             return fields;
+        }
+
+        @Override
+        public boolean hasPrototypeVariable() {
+            return left.hasPrototypeVariable() || right.hasPrototypeVariable();
+        }
+
+        @Override
+        public Collection<PrototypeVariable> getPrototypeVariables() {
+            Set<PrototypeVariable> protoVars = new HashSet<>();
+            protoVars.addAll(left.getPrototypeVariables());
+            protoVars.addAll(right.getPrototypeVariables());
+            return protoVars;
+        }
+
+        @Override
+        public Object evaluate(Map<PrototypeVariable, PrototypeFact> factsMap) {
+            Object leftValue = ((EvaluableExpression) left).evaluate(factsMap);
+            Object rightValue = ((EvaluableExpression) right).evaluate(factsMap);
+            return op.operator.apply(leftValue, rightValue);
         }
     }
 }
