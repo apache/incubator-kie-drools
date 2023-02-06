@@ -148,3 +148,15 @@ String getBuildBranch() {
 String getDroolsVersion() {
     return params.DROOLS_VERSION ?: getVersionFromReleaseBranch(getBuildBranch())
 }
+
+String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, String suffix = 'SNAPSHOT') {
+    String [] versionSplit = releaseBranch.split("\\.")
+    if (versionSplit.length == 3
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+        && versionSplit[2] == 'x') {
+        return "${versionSplit[0]}.${versionSplit[1]}.${microVersion}${suffix ? '-' + suffix : ''}"
+    } else {
+        error 'Cannot parse given branch as a release branch, aka [M].[m].x ...'
+    }
+}
