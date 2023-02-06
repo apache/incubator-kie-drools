@@ -23,6 +23,9 @@ ${mvn_cmd} rewrite:run \
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
 if [[ ! "$1" == "test" ]]; then
+  # The formatter and impsort goals override validation activated by the CI environment variable.
+  ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort -Denforcer.skip
+
   # 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
   new_project_version="9${project_version:1}"
   ${mvn_cmd} versions:set \
@@ -30,9 +33,6 @@ if [[ ! "$1" == "test" ]]; then
     -DallowSnapshots=true \
     -DgenerateBackupPoms=false \
     -DnewVersion="${new_project_version}" \
-
-  # The formatter and impsort goals override validation activated by the CI environment variable.
-  ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort
 
   # Commit the changes.
   git status
