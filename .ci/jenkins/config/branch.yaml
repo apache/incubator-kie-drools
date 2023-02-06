@@ -15,6 +15,7 @@ environments:
     ids:
     - native
     - prod
+    enabled: false
   quarkus-main:
     enabled: false
     env_vars:
@@ -34,6 +35,7 @@ environments:
     - quarkus
     - lts
     - prod
+    enabled: false
   mandrel-lts:
     env_vars:
       NATIVE: true
@@ -46,17 +48,21 @@ environments:
     - native
     - prod
     - lts
+    enabled: false
   sonarcloud:
     auto_generation: false
     ids:
     - sonarcloud
     - coverage
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: drools
+  branch: 8.34.x
+  is_branch_config_repo: true
 - name: drools-website
+  branch: 8.34.x
 git:
   author:
     name: kiegroup
