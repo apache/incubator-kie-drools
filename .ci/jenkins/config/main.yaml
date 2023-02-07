@@ -10,6 +10,9 @@ git:
     main_branch: true
     seed:
       branch: main
+  - name: 8.34.x
+    seed:
+      branch: seed-drools-8.34.x
 seed:
   config_file:
     git:
@@ -21,4 +24,4 @@ seed:
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch
 jenkins:
-  email_creds_id: KOGITO_CI_EMAIL_TO # TODO to update to DROOLS_EMAIL_CI and add in Jenkins
+  email_creds_id: KOGITO_CI_EMAIL_TO

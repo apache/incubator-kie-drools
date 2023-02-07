@@ -30,6 +30,11 @@ The following table lists the supported labels and values for `RuleSet` definiti
 |`true` or `false`. If `true`, then quotation marks are escaped so that they appear literally in the DRL.
 |Optional, at most once. If omitted, quotation marks are escaped.
 
+|`NumericDisabled`
+|`true` or `false`. If `true`, then a String representation is used for DRL instead of a double value
+from a Numeric cell. It would also skip additional numeric processing for the double value. For example, date formatting based on {PRODUCT} system property.
+|Optional, at most once. If omitted, a double value is used.
+
 |`IgnoreNumericFormat`
 |`true` or `false`. If `true`, then the format for numeric values is ignored, for example, percent and currency.
 |Optional, at most once. If omitted, DRL takes formatted values.
