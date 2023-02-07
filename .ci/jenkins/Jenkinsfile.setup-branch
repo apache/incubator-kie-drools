@@ -75,16 +75,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to repository') {
-            when {
-                expression { return shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getRepoName())
-                }
-            }
-        }
         stage('Update branch') {
             steps {
                 script {
@@ -98,6 +88,16 @@ pipeline {
                             println '[WARN] no changes to commit'
                         }
                     }
+                }
+            }
+        }
+        stage('Deploy to repository') {
+            when {
+                expression { return shouldDeployToRepository() }
+            }
+            steps {
+                script {
+                    runMavenDeploy(getRepoName())
                 }
             }
         }
