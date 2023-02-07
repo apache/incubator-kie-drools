@@ -52,7 +52,7 @@ public abstract class ReactiveMessagingEventConsumer {
         this.cancelJobEventType = cancelJobEventType;
     }
 
-    protected Uni<Void> onKogitoServiceRequest(Message<CloudEvent> message) {
+    public Uni<Void> onKogitoServiceRequest(Message<CloudEvent> message) {
         CloudEvent cloudEvent = message.getPayload();
         final String eventType = cloudEvent.getType();
         if (Objects.equals(createJobEventType, eventType)) {

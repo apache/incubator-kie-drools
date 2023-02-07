@@ -55,13 +55,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-abstract class ReactiveMessagingEventConsumerTest<T extends ReactiveMessagingEventConsumer> {
+public abstract class ReactiveMessagingEventConsumerTest<T extends ReactiveMessagingEventConsumer> {
 
-    private static final String JOB_ID = "JOB_ID";
-    private static final String INTERNAL_ERROR = "Internal error";
-    private static final String JOB_QUERY_ERROR = "Job query error";
-    private static final String EVENT_ID = "EVENT_ID";
-    private static final URI EVENT_SOURCE = URI.create("http://event_source");
+    public static final String JOB_ID = "JOB_ID";
+    public static final String INTERNAL_ERROR = "Internal error";
+    public static final String JOB_QUERY_ERROR = "Job query error";
+    public static final String EVENT_ID = "EVENT_ID";
+    public static final URI EVENT_SOURCE = URI.create("http://event_source");
 
     @Mock
     private TimerDelegateJobScheduler scheduler;
@@ -69,7 +69,7 @@ abstract class ReactiveMessagingEventConsumerTest<T extends ReactiveMessagingEve
     @Mock
     private ReactiveJobRepository jobRepository;
 
-    private ObjectMapper objectMapper;
+    public ObjectMapper objectMapper;
 
     @Mock
     private Message<CloudEvent> message;
@@ -255,7 +255,7 @@ abstract class ReactiveMessagingEventConsumerTest<T extends ReactiveMessagingEve
                 .hasMessageContaining(withErrorMessage);
     }
 
-    private CloudEvent newCreateProcessInstanceJobRequestCloudEvent() throws Exception {
+    public CloudEvent newCreateProcessInstanceJobRequestCloudEvent() throws Exception {
         Job job = new Job();
         job.setId(JOB_ID);
         return CloudEventBuilder.v1()
@@ -266,7 +266,7 @@ abstract class ReactiveMessagingEventConsumerTest<T extends ReactiveMessagingEve
                 .build();
     }
 
-    private CloudEvent newCancelJobRequestCloudEvent() throws Exception {
+    public CloudEvent newCancelJobRequestCloudEvent() throws Exception {
         CancelJobRequestEvent.JobId jobId = new CancelJobRequestEvent.JobId(JOB_ID);
         return CloudEventBuilder.v1()
                 .withId(EVENT_ID)

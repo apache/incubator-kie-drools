@@ -16,6 +16,8 @@
 
 package org.kie.kogito.jobs.service.resource;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -84,6 +86,33 @@ public abstract class CommonBaseJobResourceIT {
                 .when()
                 .post(getCreatePath())
                 .then();
+    }
+
+    protected <T> T getJob(String jobId, Class<T> type) {
+        return getJob(jobId, type, 200);
+    }
+
+    protected <T> T getJob(String jobId, Class<T> type, int code) {
+        try {
+            return objectMapper.readValue(given()
+                    .contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .get(getGetJobQuery(jobId))
+                    .then()
+                    .statusCode(code)
+                    .extract().body().asByteArray(), type);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected ValidatableResponse deleteJob(String jobId) {
+        return given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .delete(getGetJobQuery(jobId))
+                .then()
+                .statusCode(200);
     }
 
     protected void assertJobHasFinished(String jobId, long atMostTimeoutInSeconds) {

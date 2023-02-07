@@ -52,7 +52,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
 
     @Test
     void create() throws Exception {
-        final Job job = getJob("1");
+        final Job job = buildJob("1");
         final ScheduledJob response = create(jobToJson(job))
                 .statusCode(OK)
                 .extract()
@@ -75,11 +75,11 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
         return objectMapper.writeValueAsString(job);
     }
 
-    private Job getJob(String id) {
-        return getJob(id, DateUtil.now().plusSeconds(10));
+    private Job buildJob(String id) {
+        return buildJob(id, DateUtil.now().plusSeconds(10));
     }
 
-    private Job getJob(String id, ZonedDateTime expirationTime, Integer repeatLimit, Long repeatInterval) {
+    private Job buildJob(String id, ZonedDateTime expirationTime, Integer repeatLimit, Long repeatInterval) {
         return JobBuilder
                 .builder()
                 .id(id)
@@ -96,14 +96,14 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
                 .build();
     }
 
-    private Job getJob(String id, ZonedDateTime expirationTime) {
-        return getJob(id, expirationTime, null, null);
+    private Job buildJob(String id, ZonedDateTime expirationTime) {
+        return buildJob(id, expirationTime, null, null);
     }
 
     @Test
     void deleteAfterCreate() throws Exception {
         final String id = "2";
-        final Job job = getJob(id);
+        final Job job = buildJob(id);
         create(jobToJson(job));
         final ScheduledJob response = given().pathParam("id", id)
                 .when()
@@ -119,7 +119,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void getAfterCreate() throws Exception {
         final String id = "3";
-        final Job job = getJob(id);
+        final Job job = buildJob(id);
         create(jobToJson(job));
         assertGetScheduledJob(id);
     }
@@ -127,7 +127,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void executeTest() throws Exception {
         final String id = "4";
-        final Job job = getJob(id);
+        final Job job = buildJob(id);
         create(jobToJson(job));
         final ScheduledJob scheduledJob = assertGetScheduledJob(id);
         assertEquals(scheduledJob.getId(), job.getId());
@@ -139,7 +139,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void cancelRunningNonPeriodicJobTest() throws Exception {
         final String id = UUID.randomUUID().toString();
-        final Job job = getJob(id, DateUtil.now().plus(10, ChronoUnit.SECONDS));
+        final Job job = buildJob(id, DateUtil.now().plus(10, ChronoUnit.SECONDS));
         create(jobToJson(job));
 
         assertGetScheduledJob(id);
@@ -163,7 +163,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     void cancelRunningPeriodicJobTest() throws Exception {
         final String id = UUID.randomUUID().toString();
         int timeMillis = 1000;
-        final Job job = getJob(id, DateUtil.now().plus(timeMillis, ChronoUnit.MILLIS), 10, 500l);
+        final Job job = buildJob(id, DateUtil.now().plus(timeMillis, ChronoUnit.MILLIS), 10, 500l);
         create(jobToJson(job));
 
         //check the job was created
@@ -288,7 +288,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void patchInvalidAttributesTest() throws Exception {
         final String id = UUID.randomUUID().toString();
-        final Job job = getJob(id);
+        final Job job = buildJob(id);
         create(jobToJson(job));
 
         final String newCallbackEndpoint = "http://localhost/newcallback";
@@ -317,7 +317,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void patchInvalidIdPathTest() throws Exception {
         final String id = UUID.randomUUID().toString();
-        final Job job = getJob(id);
+        final Job job = buildJob(id);
         create(jobToJson(job));
 
         Job toPatch = JobBuilder.builder().expirationTime(DateUtil.now()).build();
@@ -333,7 +333,7 @@ public abstract class BaseJobResourceIT extends CommonBaseJobResourceIT {
     @Test
     void patchReschedulingTest() throws Exception {
         final String id = UUID.randomUUID().toString();
-        final Job job = getJob(id, DateUtil.now().plusHours(1));
+        final Job job = buildJob(id, DateUtil.now().plusHours(1));
         create(jobToJson(job));
 
         assertGetScheduledJob(id, false);

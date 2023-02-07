@@ -88,4 +88,32 @@ public abstract class BaseJobResourceV2IT extends CommonBaseJobResourceIT {
                 .asString();
         return objectMapper.readValue(response, Job.class);
     }
+
+    @Test
+    public void testCreateGetAndDelete() throws Exception {
+        Job job = buildJob(JOB_ID, OffsetDateTime.now().plusMinutes(10));
+        Job created = createJob(job);
+        assertThat(created).isNotNull();
+        assertThat(created.getId()).isEqualTo(job.getId());
+        assertThat(created.getState()).isNotNull();
+        assertThat(job.getState()).isNull();
+
+        Job getJob = getJob(created.getId(), Job.class);
+        assertThat(getJob.getId()).isEqualTo(created.getId());
+
+        deleteJob(created.getId());
+        getJob(created.getId(), Job.class, 404);
+    }
+
+    private Job buildJob(String jobId, OffsetDateTime time) {
+        return Job.builder()
+                .id(jobId)
+                .correlationId(jobId)
+                .schedule(TimerSchedule.builder().startTime(time).build())
+                .recipient(HttpRecipient.builder()
+                        .forStringPayload()
+                        .url(getCallbackEndpoint())
+                        .build())
+                .build();
+    }
 }
