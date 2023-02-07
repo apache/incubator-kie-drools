@@ -101,7 +101,7 @@ pipeline {
                     dir(kieBenchmarksRepo){
                         checkoutRepo(kieBenchmarksRepo, targetBranch)
                         githubscm.createBranch(localBranch)
-                        maven.mvnSetVersionProperty('version.org.drools', getNextMinorSnapshotVersion(getDroolsVersion()))
+                        maven.mvnSetVersionProperty('version.org.drools', getDroolsVersion())
                         // Add changed files, commit, open and merge PR
                         String prLink = commitAndCreatePR(commitMsg, localBranch, targetBranch)
                         sh "git checkout ${targetBranch}"
@@ -181,10 +181,6 @@ void runMavenDeploy(boolean localDeployment = false) {
 
 boolean isMainBranch() {
     return env.IS_MAIN_BRANCH ? env.IS_MAIN_BRANCH.toBoolean() : false
-}
-
-String getNextMinorSnapshotVersion(String currentVersion) {
-    return util.getNextVersion(currentVersion, 'minor')
 }
 
 String commitAndCreatePR(String commitMsg, String localBranch, String targetBranch) {
