@@ -25,6 +25,8 @@ environments:
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
+      # Due to https://github.com/quarkusio/quarkus/pull/30860
+      QUARKUS_VERSION: 2.16.999-SNAPSHOT
     ids:
     - quarkus
   quarkus-lts:
