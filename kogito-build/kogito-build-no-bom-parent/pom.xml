@@ -96,7 +96,6 @@
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
     <version.jandex.plugin>1.2.3</version.jandex.plugin>
     <version.jar.plugin>3.1.0</version.jar.plugin>
-    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
     <version.javancss.plugin>2.0</version.javancss.plugin>
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
     <version.formatter.plugin>2.13.0</version.formatter.plugin>
@@ -553,22 +552,6 @@ limitations under the License.
               </goals>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.javadoc.plugin}</version>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-            <additionalparam>${javadoc.additional.params}</additionalparam>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
