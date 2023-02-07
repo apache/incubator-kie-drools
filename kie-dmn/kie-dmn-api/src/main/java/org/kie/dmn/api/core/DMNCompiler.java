@@ -22,7 +22,9 @@ import java.util.Collections;
 
 import org.kie.api.io.Resource;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public interface DMNCompiler {
 
     default DMNModel compile(Resource resource) {

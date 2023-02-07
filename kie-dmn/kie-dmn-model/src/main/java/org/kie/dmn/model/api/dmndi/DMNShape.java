@@ -18,6 +18,9 @@ package org.kie.dmn.model.api.dmndi;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.model.api.GwtIncompatible;
+
+@GwtIncompatible
 public interface DMNShape extends Shape {
 
     public DMNLabel getDMNLabel();

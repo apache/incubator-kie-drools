@@ -23,7 +23,9 @@ import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class UnaryTestInterpretedExecutableExpression implements CompiledFEELExpression {
 
     public static final UnaryTestInterpretedExecutableExpression EMPTY = new UnaryTestInterpretedExecutableExpression(null) {

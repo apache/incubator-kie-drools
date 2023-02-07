@@ -48,7 +48,9 @@ import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class FEELParser {
 
     private static final List<String> REUSABLE_KEYWORDS = Arrays.asList(

@@ -20,7 +20,9 @@ package org.kie.dmn.api.core;
 import java.util.Map;
 
 import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public interface DMNPackage
         extends ResourceTypePackage<DMNModel> {
     String getNamespace();
