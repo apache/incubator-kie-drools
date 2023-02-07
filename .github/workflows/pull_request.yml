@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - 8.*
+      - 9.*
     paths-ignore:
       - 'LICENSE*'
       - '.gitignore'
