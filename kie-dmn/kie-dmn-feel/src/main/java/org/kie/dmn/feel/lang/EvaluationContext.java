@@ -47,6 +47,7 @@ public interface EvaluationContext {
 
     DMNRuntime getDMNRuntime();
 
+    @GwtIncompatible
     ClassLoader getRootClassLoader();
 
     void notifyEvt(Supplier<FEELEvent> event);
