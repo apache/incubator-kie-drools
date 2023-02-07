@@ -57,18 +57,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to repository') {
-            when {
-                expression { return shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    dir(getRepoName()){
-                        runMavenDeploy()
-                    }    
-                }
-            }
-        }
         stage('Update branch') {
             steps {
                 script {
@@ -88,6 +76,18 @@ pipeline {
                 }
             }
         } 
+        stage('Deploy to repository') {
+            when {
+                expression { return shouldDeployToRepository() }
+            }
+            steps {
+                script {
+                    dir(getRepoName()){
+                        runMavenDeploy()
+                    }    
+                }
+            }
+        }
         stage('update Drools version in kie-benchmarks') {
             when {
                 expression { isMainBranch() }
