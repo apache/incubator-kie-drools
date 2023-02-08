@@ -15,7 +15,6 @@ environments:
     ids:
     - native
     - prod
-    enabled: false
   quarkus-main:
     enabled: false
     env_vars:
@@ -37,7 +36,6 @@ environments:
     - quarkus
     - lts
     - prod
-    enabled: false
   mandrel-lts:
     env_vars:
       NATIVE: true
@@ -50,7 +48,6 @@ environments:
     - native
     - prod
     - lts
-    enabled: false
   sonarcloud:
     auto_generation: false
     ids:
