@@ -45,17 +45,18 @@ public class PMMLInfo<M extends PMMLModelInfo> {
     }
 
     public static PMMLInfo<PMMLModelInfo> from(InputStream is) {
+        PMML pmml;
         try {
-            PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
-            List<PMMLModelInfo> models = new ArrayList<>();
-            for (Model pm : pmml.getModels()) {
-                models.add(pmmlToModelInfo(pm));
-            }
-            PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, pmmlToHeaderInfo(pmml, pmml.getHeader()));
-            return info;
-        } catch (SAXException | JAXBException e) {
+            pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        List<PMMLModelInfo> models = new ArrayList<>();
+        for (Model pm : pmml.getModels()) {
+            models.add(pmmlToModelInfo(pm));
+        }
+        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, pmmlToHeaderInfo(pmml, pmml.getHeader()));
+        return info;
     }
 
     public static PMMLHeaderInfo pmmlToHeaderInfo(PMML pmml, Header h) {

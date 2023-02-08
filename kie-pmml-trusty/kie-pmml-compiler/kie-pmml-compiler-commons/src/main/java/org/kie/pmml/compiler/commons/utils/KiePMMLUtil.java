@@ -73,25 +73,26 @@ public class KiePMMLUtil {
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
     public static PMML load(final InputStream is, final String fileName) {
+        PMML toReturn;
         try {
-            PMML toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
-            String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;
-            List<DataField> dataFields = toReturn.getDataDictionary().getDataFields();
-            List<Model> models = toReturn.getModels();
-            for (int i = 0; i < models.size(); i++) {
-                Model model = models.get(i);
-                populateMissingModelName(model, cleanedFileName, i);
-                populateMissingOutputFieldDataType(model, dataFields);
-                populateMissingMiningTargetField(model, dataFields);
-                populateMissingPredictedOutputFieldTarget(model);
-                if (model instanceof MiningModel) {
-                    populateCorrectMiningModel((MiningModel) model);
-                }
-            }
-            return toReturn;
+            toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
         } catch (SAXException | JAXBException e) {
             throw new RuntimeException(e);
         }
+        String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;
+        List<DataField> dataFields = toReturn.getDataDictionary().getDataFields();
+        List<Model> models = toReturn.getModels();
+        for (int i = 0; i < models.size(); i++) {
+            Model model = models.get(i);
+            populateMissingModelName(model, cleanedFileName, i);
+            populateMissingOutputFieldDataType(model, dataFields);
+            populateMissingMiningTargetField(model, dataFields);
+            populateMissingPredictedOutputFieldTarget(model);
+            if (model instanceof MiningModel) {
+                populateCorrectMiningModel((MiningModel) model);
+            }
+        }
+        return toReturn;
     }
 
     /**
@@ -104,9 +105,9 @@ public class KiePMMLUtil {
     static void populateMissingModelName(final Model model, final String fileName, int i) {
         if (model.getModelName() == null || model.getModelName().isEmpty()) {
             String modelName = String.format(MODELNAME_TEMPLATE,
-                    fileName,
-                    model.getClass().getSimpleName(),
-                    i);
+                                             fileName,
+                                             model.getClass().getSimpleName(),
+                                             i);
             model.setModelName(modelName);
         }
     }
@@ -115,7 +116,6 @@ public class KiePMMLUtil {
      * Method to populate <code>MiningSchema</code> with a n ad-hoc created target <code>MiningField</code>.
      * It also populate the given <code>List&lt;DataField&gt;</code> with the relative <code>DataField</code>.
      * This method has to be called <b>after</b> the model name has been set
-     *
      * @param model
      * @param dataFields
      */
@@ -263,8 +263,8 @@ public class KiePMMLUtil {
         String toSet;
         if (segment.getId() == null || segment.getId().isEmpty()) {
             toSet = String.format(SEGMENTID_TEMPLATE,
-                    modelName,
-                    i);
+                                  modelName,
+                                  i);
         } else {
             toSet = getSanitizedId(segment.getId(), modelName);
         }
@@ -280,8 +280,8 @@ public class KiePMMLUtil {
      */
     static void populateMissingSegmentModelName(final Model model, final String segmentId) {
         String modelName = String.format(SEGMENTMODELNAME_TEMPLATE,
-                segmentId,
-                model.getClass().getSimpleName());
+                                         segmentId,
+                                         model.getClass().getSimpleName());
         model.setModelName(modelName);
     }
 
@@ -311,8 +311,8 @@ public class KiePMMLUtil {
         if (model.getOutput() != null &&
                 model.getOutput().getOutputFields() != null) {
             populateMissingOutputFieldDataType(model.getOutput().getOutputFields(),
-                    model.getMiningSchema().getMiningFields(),
-                    dataFields);
+                                               model.getMiningSchema().getMiningFields(),
+                                               dataFields);
         }
     }
 
@@ -338,7 +338,7 @@ public class KiePMMLUtil {
                                 .filter(targetField -> outputField.getTargetField().equals(targetField.getName()))
                                 .findFirst()
                                 .orElseThrow(() -> new KiePMMLException("Failed to find a target field for OutputField "
-                                        + outputField.getName().getValue()));
+                                                                                + outputField.getName().getValue()));
                     }
                     if (referencedField == null && (outputField.getResultFeature() == null || outputField.getResultFeature().equals(ResultFeature.PREDICTED_VALUE))) { // default predictedValue
                         referencedField = targetFields.stream()
@@ -356,7 +356,7 @@ public class KiePMMLUtil {
                                 .filter(df -> df.getName().equals(targetFieldName))
                                 .findFirst()
                                 .orElseThrow(() -> new KiePMMLException("Failed to find a DataField field for " +
-                                        "MiningField " + targetFieldName.toString()));
+                                                                                "MiningField " + targetFieldName.toString()));
                         outputField.setDataType(dataField.getDataType());
                     }
                 });
