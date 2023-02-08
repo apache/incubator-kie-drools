@@ -23,6 +23,7 @@ import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.transaction.TransactionMode;
 
 public enum CacheManager implements AutoCloseable {
 
@@ -50,8 +51,10 @@ public enum CacheManager implements AutoCloseable {
                 .shared(false)
                 .dataLocation("tmp/cache/data")
                 .indexLocation("tmp/cache/index");
-
-        builder.clustering().cacheMode(CacheMode.LOCAL);
+        builder.clustering()
+                .cacheMode(CacheMode.LOCAL)
+                .hash().numOwners(1);
+        builder.clustering().transaction().transactionMode(TransactionMode.TRANSACTIONAL);
         cacheConfiguration = builder.build();
     }
 
@@ -64,4 +67,11 @@ public enum CacheManager implements AutoCloseable {
     public void close() {
         cacheManager.stop();
     }
+
+    public void removeCache(String cacheName){
+        if (cacheManager.cacheExists(cacheName)) {
+            cacheManager.removeCache(cacheName);
+        }
+    }
+
 }
