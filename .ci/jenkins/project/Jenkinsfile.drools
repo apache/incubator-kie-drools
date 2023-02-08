@@ -134,8 +134,9 @@ void checkoutOptaplannerRepo() {
 }
 
 void checkoutOptaplannerQuickstartsRepo() {
-    // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
-    String quickstartsChangeTarget = getBuildBranch() != 'main' ?: 'development'
+    // If the PR to OptaPlanner targets the 'main' branch or the `9.x` branch, we assume the branch 'development' for quickstarts.
+    String quickstartsChangeTarget = getBuildBranch() == 'main' || getBuildBranch() == '9.x'
+            ? 'development' : getBuildBranch()
 
     dir(quickstartsRepo) {
         checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))

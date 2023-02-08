@@ -34,7 +34,7 @@ setupProjectNightlyJob()
 setupProjectReleaseJob()
 setupProjectPostReleaseJob()
 
-if (Utils.isMainBranch(this)) {
+if (Utils.isMainBranch(this) && getOptaPlannerLatestStream() == '8') { // When there is Drools 9, we may enable the job for 9.x
     setupProjectDroolsJob('main')
 }
 
