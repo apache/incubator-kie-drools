@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
@@ -243,9 +244,15 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testVARIABLE_LEADING_TRAILING_SPACES() {
         List<DMNMessage> validate = validator.validate( getReader( "VARIABLE_LEADING_TRAILING_SPACES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
-        assertThat( validate.get(0).getSourceId(), is("_dd662d27-7896-42cb-9d14-bd74203bdbec") );
+        Assertions.assertThat(validate).withFailMessage(ValidatorUtil.formatMessages(validate)).isNotEmpty();
+        Assertions.assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_dd662d27-7896-42cb-9d14-bd74203bdbec");
+        });
+        Assertions.assertThat(validate).anySatisfy(p -> {
+            Assertions.assertThat(p.getMessageType()).isEqualTo(DMNMessageType.INVALID_NAME);
+            Assertions.assertThat(p.getSourceId()).isEqualTo("_1f54fd51-6805-4280-b576-607450f85edd");
+        });
     }
 
     @Test
