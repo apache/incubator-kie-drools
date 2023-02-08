@@ -16,32 +16,8 @@
 
 package org.kie.dmn.ruleset2dmn;
 
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.DataType;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.Model;
-import org.dmg.pmml.PMML;
-import org.dmg.pmml.SimplePredicate;
+import org.dmg.pmml.*;
 import org.dmg.pmml.SimplePredicate.Operator;
-import org.dmg.pmml.Value;
 import org.dmg.pmml.rule_set.RuleSelectionMethod;
 import org.dmg.pmml.rule_set.RuleSelectionMethod.Criterion;
 import org.dmg.pmml.rule_set.RuleSet;
@@ -51,190 +27,177 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Decision;
-import org.kie.dmn.model.api.DecisionRule;
-import org.kie.dmn.model.api.DecisionTable;
-import org.kie.dmn.model.api.Definitions;
-import org.kie.dmn.model.api.HitPolicy;
-import org.kie.dmn.model.api.InformationItem;
-import org.kie.dmn.model.api.InformationRequirement;
-import org.kie.dmn.model.api.InputClause;
-import org.kie.dmn.model.api.InputData;
-import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.dmn.model.api.LiteralExpression;
-import org.kie.dmn.model.api.OutputClause;
-import org.kie.dmn.model.api.RuleAnnotation;
-import org.kie.dmn.model.api.RuleAnnotationClause;
-import org.kie.dmn.model.api.UnaryTests;
-import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
-import org.kie.dmn.model.v1_2.TDMNElementReference;
-import org.kie.dmn.model.v1_2.TDecision;
-import org.kie.dmn.model.v1_2.TDecisionRule;
-import org.kie.dmn.model.v1_2.TDecisionTable;
-import org.kie.dmn.model.v1_2.TDefinitions;
-import org.kie.dmn.model.v1_2.TInformationItem;
-import org.kie.dmn.model.v1_2.TInformationRequirement;
-import org.kie.dmn.model.v1_2.TInputClause;
-import org.kie.dmn.model.v1_2.TInputData;
-import org.kie.dmn.model.v1_2.TItemDefinition;
-import org.kie.dmn.model.v1_2.TLiteralExpression;
-import org.kie.dmn.model.v1_2.TOutputClause;
-import org.kie.dmn.model.v1_2.TRuleAnnotation;
-import org.kie.dmn.model.v1_2.TRuleAnnotationClause;
-import org.kie.dmn.model.v1_2.TUnaryTests;
+import org.kie.dmn.model.api.*;
+import org.kie.dmn.model.v1_2.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Converter {
 
     private static final Logger LOG = LoggerFactory.getLogger(Converter.class);
-    
-    public static String parse(String dmnModelName, InputStream is) throws Exception {
-        final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
-        if (pmml.getModels().size() != 1) {
-            throw new UnsupportedOperationException("Only single model supported for Decision Table conversion");
-        }
-        Model model0 = pmml.getModels().get(0);
-        if (!(model0 instanceof RuleSetModel)) {
-            throw new UnsupportedOperationException("Only single RuleSetModel supported for Decision Table conversion");
-        } 
-        RuleSetModel rsModel = (RuleSetModel) model0;
-        RuleSet rs = rsModel.getRuleSet();
-        if (rs.getRuleSelectionMethods().size() != 1) {
-            throw new UnsupportedOperationException("Only single RuleSelectionMethods supported for Decision Table conversion");
-        }
-        RuleSelectionMethod rssMethod0 = rs.getRuleSelectionMethods().get(0);
-        
-        Stream<SimpleRule> s0 = rs.getRules().stream().map(SimpleRule.class::cast);
-        if (rssMethod0.getCriterion() == Criterion.WEIGHTED_MAX) { // if WEIGHTED_MAX then sort by weight desc
-            s0 = s0.sorted(new WeightComparator().reversed());
-        }
-        List<SimpleRuleRow> rsRules = s0.map(SimpleRuleRow::new).collect(Collectors.toList());
-        Set<String> usedPredictors = new LinkedHashSet<>();
-        for (SimpleRuleRow rr : rsRules) {
-            usedPredictors.addAll(rr.map.keySet());
-            LOG.debug("{}", rr);
-        }
-        LOG.debug("{}", usedPredictors);
 
-        Map<String, Set<String>> predictorsLoVs = new HashMap<>();
+    public static String parse(String dmnModelName, InputStream is) {
+        try {
+            final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+            if (pmml.getModels().size() != 1) {
+                throw new UnsupportedOperationException("Only single model supported for Decision Table conversion");
+            }
+            Model model0 = pmml.getModels().get(0);
+            if (!(model0 instanceof RuleSetModel)) {
+                throw new UnsupportedOperationException("Only single RuleSetModel supported for Decision Table conversion");
+            }
+            RuleSetModel rsModel = (RuleSetModel) model0;
+            RuleSet rs = rsModel.getRuleSet();
+            if (rs.getRuleSelectionMethods().size() != 1) {
+                throw new UnsupportedOperationException("Only single RuleSelectionMethods supported for Decision Table conversion");
+            }
+            RuleSelectionMethod rssMethod0 = rs.getRuleSelectionMethods().get(0);
 
-        Definitions definitions = new TDefinitions();
-        setDefaultNSContext(definitions);
-        definitions.setId("dmnid_" + dmnModelName);
-        definitions.setName(dmnModelName);
-        String namespace = "ri2dmn_" + UUID.randomUUID();
-        definitions.setNamespace(namespace);
-        definitions.getNsContext().put(XMLConstants.DEFAULT_NS_PREFIX, namespace);
-        definitions.setExporter("kie-dmn-ri");
-        appendInputData(definitions, pmml, usedPredictors);
-        final String dtName = rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM ? "dt" : null;
-        DecisionTable dt = appendDecisionDT(definitions, dtName, pmml, usedPredictors);
-        if (rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM) {
-            dt.setHitPolicy(HitPolicy.COLLECT);
-        }
-        if (rs.getDefaultScore() != null) {
-            LiteralExpression le = leFromNumberOrString(rs.getDefaultScore());
-            dt.getOutput().get(0).setDefaultOutputEntry(le);
-        }
-        for (SimpleRuleRow r : rsRules) {
-            DecisionRule dr = new TDecisionRule();
-            for (String input : usedPredictors) {
-                List<SimplePredicate> predicatesForInput = r.map.get(input);
-                if (predicatesForInput != null && !predicatesForInput.isEmpty())  {
-                    FieldName fnLookup = FieldName.create(input);
-                    Optional<DataField> df = pmml.getDataDictionary().getDataFields().stream().filter(x-> x.getName().equals(fnLookup)).findFirst();
-                    UnaryTests ut = processSimplePredicateUnaryOrBinary(predicatesForInput, df);
-                    if (ut.getText().startsWith("\"") && ut.getText().endsWith("\"")) {
-                        predictorsLoVs.computeIfAbsent(input, k -> new LinkedHashSet<String>()).add(ut.getText());
+            Stream<SimpleRule> s0 = rs.getRules().stream().map(SimpleRule.class::cast);
+            if (rssMethod0.getCriterion() == Criterion.WEIGHTED_MAX) { // if WEIGHTED_MAX then sort by weight desc
+                s0 = s0.sorted(new WeightComparator().reversed());
+            }
+            List<SimpleRuleRow> rsRules = s0.map(SimpleRuleRow::new).collect(Collectors.toList());
+            Set<String> usedPredictors = new LinkedHashSet<>();
+            for (SimpleRuleRow rr : rsRules) {
+                usedPredictors.addAll(rr.map.keySet());
+                LOG.debug("{}", rr);
+            }
+            LOG.debug("{}", usedPredictors);
+
+            Map<String, Set<String>> predictorsLoVs = new HashMap<>();
+
+            Definitions definitions = new TDefinitions();
+            setDefaultNSContext(definitions);
+            definitions.setId("dmnid_" + dmnModelName);
+            definitions.setName(dmnModelName);
+            String namespace = "ri2dmn_" + UUID.randomUUID();
+            definitions.setNamespace(namespace);
+            definitions.getNsContext().put(XMLConstants.DEFAULT_NS_PREFIX, namespace);
+            definitions.setExporter("kie-dmn-ri");
+            appendInputData(definitions, pmml, usedPredictors);
+            final String dtName = rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM ? "dt" : null;
+            DecisionTable dt = appendDecisionDT(definitions, dtName, pmml, usedPredictors);
+            if (rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM) {
+                dt.setHitPolicy(HitPolicy.COLLECT);
+            }
+            if (rs.getDefaultScore() != null) {
+                LiteralExpression le = leFromNumberOrString(rs.getDefaultScore());
+                dt.getOutput().get(0).setDefaultOutputEntry(le);
+            }
+            for (SimpleRuleRow r : rsRules) {
+                DecisionRule dr = new TDecisionRule();
+                for (String input : usedPredictors) {
+                    List<SimplePredicate> predicatesForInput = r.map.get(input);
+                    if (predicatesForInput != null && !predicatesForInput.isEmpty()) {
+                        FieldName fnLookup = FieldName.create(input);
+                        Optional<DataField> df = pmml.getDataDictionary().getDataFields().stream().filter(x -> x.getName().equals(fnLookup)).findFirst();
+                        UnaryTests ut = processSimplePredicateUnaryOrBinary(predicatesForInput, df);
+                        if (ut.getText().startsWith("\"") && ut.getText().endsWith("\"")) {
+                            predictorsLoVs.computeIfAbsent(input, k -> new LinkedHashSet<String>()).add(ut.getText());
+                        }
+                        dr.getInputEntry().add(ut);
+                    } else {
+                        UnaryTests ut = new TUnaryTests();
+                        ut.setText("-");
+                        dr.getInputEntry().add(ut);
                     }
-                    dr.getInputEntry().add(ut);
+                }
+                if (rssMethod0.getCriterion() != Criterion.WEIGHTED_SUM) {
+                    dr.getOutputEntry().add(leFromNumberOrString(r.r.getScore()));
                 } else {
-                    UnaryTests ut = new TUnaryTests();
-                    ut.setText("-");
-                    dr.getInputEntry().add(ut);
+                    String output = "{score: " + feelLiteralValue(r.r.getScore(), Optional.empty()) + " , weight: " + r.r.getWeight() + " }";
+                    LiteralExpression le = new TLiteralExpression();
+                    le.setText(output);
+                    dr.getOutputEntry().add(le);
                 }
+                RuleAnnotation comment = new TRuleAnnotation();
+                String commentText = "recordCount=" + r.r.getRecordCount()
+                        + " nbCorrect=" + r.r.getNbCorrect()
+                        + " confidence=" + r.r.getConfidence()
+                        + " weight" + r.r.getWeight();
+                comment.setText(commentText);
+                dr.getAnnotationEntry().add(comment);
+                dt.getRule().add(dr);
             }
-            if (rssMethod0.getCriterion() != Criterion.WEIGHTED_SUM) {
-                dr.getOutputEntry().add(leFromNumberOrString(r.r.getScore()));
-            } else {
-                String output = "{score: "+ feelLiteralValue(r.r.getScore(), Optional.empty()) + " , weight: " + r.r.getWeight() + " }";
+
+            if (rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM) {
+                decisionAggregated(definitions, dtName);
+                decisionMax(definitions);
+                Decision decision = new TDecision();
+                String decisionName = definitions.getName();
+                decision.setName(decisionName);
+                decision.setId("d_" + CodegenStringUtil.escapeIdentifier(decisionName));
+                InformationItem variable = new TInformationItem();
+                variable.setName(decisionName);
+                variable.setId("dvar_" + CodegenStringUtil.escapeIdentifier(decisionName));
+                variable.setTypeRef(new QName("Any"));
+                decision.setVariable(variable);
+                addRequiredDecisionByName(decision, "aggregated");
+                addRequiredDecisionByName(decision, "max");
                 LiteralExpression le = new TLiteralExpression();
-                le.setText(output);
-                dr.getOutputEntry().add(le);
+                le.setText("aggregated[total=max][1].score");
+                decision.setExpression(le);
+                definitions.getDrgElement().add(decision);
             }
-            RuleAnnotation comment = new TRuleAnnotation();
-            String commentText = "recordCount="+r.r.getRecordCount()
-            + " nbCorrect=" + r.r.getNbCorrect()
-            + " confidence=" + r.r.getConfidence()
-            + " weight" + r.r.getWeight();
-            comment.setText(commentText);
-            dr.getAnnotationEntry().add(comment);
-            dt.getRule().add(dr);
-        }
 
-        if (rssMethod0.getCriterion() == Criterion.WEIGHTED_SUM) {
-            decisionAggregated(definitions, dtName);
-            decisionMax(definitions);
-            Decision decision = new TDecision();
-            String decisionName = definitions.getName();
-            decision.setName(decisionName);
-            decision.setId("d_" + CodegenStringUtil.escapeIdentifier(decisionName));
-            InformationItem variable = new TInformationItem();
-            variable.setName(decisionName);
-            variable.setId("dvar_" + CodegenStringUtil.escapeIdentifier(decisionName));
-            variable.setTypeRef(new QName("Any"));
-            decision.setVariable(variable);
-            addRequiredDecisionByName(decision, "aggregated");
-            addRequiredDecisionByName(decision, "max");
-            LiteralExpression le = new TLiteralExpression();
-            le.setText("aggregated[total=max][1].score");
-            decision.setExpression(le);
-            definitions.getDrgElement().add(decision);
-        }
-
-        for (DataField df : pmml.getDataDictionary().getDataFields()) {
-            if (df.getDataType() == DataType.STRING && predictorsLoVs.containsKey(df.getName().getValue())) {
-                for (Value value : df.getValues()) {
-                    predictorsLoVs.get(df.getName().getValue()).add("\""+value.getValue().toString()+"\"");
+            for (DataField df : pmml.getDataDictionary().getDataFields()) {
+                if (df.getDataType() == DataType.STRING && predictorsLoVs.containsKey(df.getName().getValue())) {
+                    for (Value value : df.getValues()) {
+                        predictorsLoVs.get(df.getName().getValue()).add("\"" + value.getValue().toString() + "\"");
+                    }
                 }
             }
-        }
-        for (Set<String> v : predictorsLoVs.values()) {
-            v.add("\"<unknown>\"");
-        }
-        for (Entry<String, Set<String>> kv : predictorsLoVs.entrySet()) {
-            ItemDefinition idd = new TItemDefinition();
-            idd.setName(kv.getKey());
-            idd.setTypeRef(new QName("string"));
-            UnaryTests lov = new TUnaryTests();
-            String lovText = kv.getValue().stream().collect(Collectors.joining(", "));
-            lov.setText(lovText);
-            idd.setAllowedValues(lov);
-            definitions.getItemDefinition().add(idd);
-            Optional<InputData> optInputData = definitions.getDrgElement().stream().filter(InputData.class::isInstance).map(InputData.class::cast).filter(drg-> drg.getName().equals(kv.getKey())).findFirst();
-            if (optInputData.isPresent()) {
-                optInputData.get().getVariable().setTypeRef(new QName(kv.getKey()));
-            } else {
-                throw new IllegalStateException();
+            for (Set<String> v : predictorsLoVs.values()) {
+                v.add("\"<unknown>\"");
             }
-            Optional<InputClause> optInputClause = dt.getInput().stream().filter(ic -> ic.getInputExpression().getText().equals(kv.getKey())).findFirst();
-            if (optInputClause.isPresent()) {
-                UnaryTests icLov = new TUnaryTests();
-                icLov.setText(lovText);
-                InputClause ic = optInputClause.get();
-                ic.setInputValues(icLov);
-                ic.getInputExpression().setTypeRef(new QName(kv.getKey()));
-            } else {
-                throw new IllegalStateException();
+            for (Entry<String, Set<String>> kv : predictorsLoVs.entrySet()) {
+                ItemDefinition idd = new TItemDefinition();
+                idd.setName(kv.getKey());
+                idd.setTypeRef(new QName("string"));
+                UnaryTests lov = new TUnaryTests();
+                String lovText = kv.getValue().stream().collect(Collectors.joining(", "));
+                lov.setText(lovText);
+                idd.setAllowedValues(lov);
+                definitions.getItemDefinition().add(idd);
+                Optional<InputData> optInputData = definitions.getDrgElement().stream().filter(InputData.class::isInstance).map(InputData.class::cast).filter(drg -> drg.getName().equals(kv.getKey())).findFirst();
+                if (optInputData.isPresent()) {
+                    optInputData.get().getVariable().setTypeRef(new QName(kv.getKey()));
+                } else {
+                    throw new IllegalStateException();
+                }
+                Optional<InputClause> optInputClause = dt.getInput().stream().filter(ic -> ic.getInputExpression().getText().equals(kv.getKey())).findFirst();
+                if (optInputClause.isPresent()) {
+                    UnaryTests icLov = new TUnaryTests();
+                    icLov.setText(lovText);
+                    InputClause ic = optInputClause.get();
+                    ic.setInputValues(icLov);
+                    ic.getInputExpression().setTypeRef(new QName(kv.getKey()));
+                } else {
+                    throw new IllegalStateException();
+                }
             }
-        }
 
-        DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
-        String xml = dmnMarshaller.marshal(definitions);
-        LOG.debug("{}", predictorsLoVs);
-        return xml;
+            DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
+            String xml = dmnMarshaller.marshal(definitions);
+            LOG.debug("{}", predictorsLoVs);
+            return xml;
+        } catch (SAXException | JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void addRequiredDecisionByName(Decision decision, String partOfIdentifier) {
@@ -255,12 +218,12 @@ public class Converter {
         variable.setId("dvar_" + CodegenStringUtil.escapeIdentifier(decisionName));
         variable.setTypeRef(new QName("Any"));
         decision.setVariable(variable);
-   
+
         addRequiredDecisionByName(decision, "aggregated");
-   
+
         LiteralExpression le = new TLiteralExpression();
         le.setText("max(aggregated.total)");
-   
+
         decision.setExpression(le);
         definitions.getDrgElement().add(decision);
     }
@@ -308,18 +271,18 @@ public class Converter {
     }
 
     /**
-     * Checks if a binary predicate can be collapsed to an unary one. 
-     * 
-     * @param predicates The contents of the binary predicate to check. 
-     * @return True, if the contents of the binary predicate have the same value, lower bound is greater or equal and upper bound is less or equal (case of [x..x]).  
+     * Checks if a binary predicate can be collapsed to an unary one.
+     *
+     * @param predicates The contents of the binary predicate to check.
+     * @return True, if the contents of the binary predicate have the same value, lower bound is greater or equal and upper bound is less or equal (case of [x..x]).
      * Otherwise returns false.
      */
     private static boolean canCollapseBinaryPredicate(final SimplePredicate first, final SimplePredicate second) {
         final Object firstValue = first.getValue();
         final Object secondValue = second.getValue();
 
-        final boolean haveCorrectOperators = (first.getOperator() == Operator.GREATER_OR_EQUAL) 
-            && (second.getOperator() == Operator.LESS_OR_EQUAL);
+        final boolean haveCorrectOperators = (first.getOperator() == Operator.GREATER_OR_EQUAL)
+                && (second.getOperator() == Operator.LESS_OR_EQUAL);
 
         if (firstValue instanceof BigDecimal && secondValue instanceof BigDecimal) {
             return haveCorrectOperators && (((BigDecimal) firstValue).compareTo((BigDecimal) secondValue) == 0);
@@ -392,9 +355,12 @@ public class Converter {
                 case BOOLEAN:
                     String trimmed = input.toString().trim().toLowerCase();
                     switch (trimmed) {
-                        case "true": return "true";
-                        case "false": return "false";
-                        default: throw new UnsupportedOperationException("Was expecting a FEEL:boolean but the pmml serialization was: "+input);
+                        case "true":
+                            return "true";
+                        case "false":
+                            return "false";
+                        default:
+                            throw new UnsupportedOperationException("Was expecting a FEEL:boolean but the pmml serialization was: " + input);
                     }
                 case DOUBLE:
                 case FLOAT:
@@ -403,12 +369,12 @@ public class Converter {
                     if (bdOrNull != null) {
                         return bdOrNull.toPlainString();
                     } else {
-                        throw new UnsupportedOperationException("Was expecting a FEEL:number but the pmml serialization was: "+input);
+                        throw new UnsupportedOperationException("Was expecting a FEEL:number but the pmml serialization was: " + input);
                     }
                 case STRING:
                     return "\"" + input + "\"";
                 default:
-                    throw new UnsupportedOperationException("Unhandled pmml serialization for FEEL conversion: "+input);
+                    throw new UnsupportedOperationException("Unhandled pmml serialization for FEEL conversion: " + input);
             }
         }
         LOG.debug("feelLiteralValue for {} and DD not available", input);
@@ -462,13 +428,13 @@ public class Converter {
 
     private static void appendInputData(Definitions definitions, PMML pmml, Set<String> usedPredictors) {
         DataDictionary dd = pmml.getDataDictionary();
-        for(String ri : usedPredictors) {
+        for (String ri : usedPredictors) {
             InputData id = new TInputData();
             id.setName(ri);
-            id.setId("id_"+CodegenStringUtil.escapeIdentifier(ri));
+            id.setId("id_" + CodegenStringUtil.escapeIdentifier(ri));
             InformationItem variable = new TInformationItem();
             variable.setName(ri);
-            variable.setId("idvar_"+CodegenStringUtil.escapeIdentifier(ri));
+            variable.setId("idvar_" + CodegenStringUtil.escapeIdentifier(ri));
             variable.setTypeRef(new QName(feelTypeFromDD(dd, ri)));
             id.setVariable(variable);
             definitions.getDrgElement().add(id);

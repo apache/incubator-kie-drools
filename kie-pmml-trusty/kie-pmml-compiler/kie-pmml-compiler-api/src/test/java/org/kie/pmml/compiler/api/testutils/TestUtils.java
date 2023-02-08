@@ -15,51 +15,50 @@
  */
 package org.kie.pmml.compiler.api.testutils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
-
 import org.dmg.pmml.PMML;
 import org.drools.util.FileUtils;
 import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class TestUtils {
 
     /**
      * Load a <code>PMML</code> from the given <b>file</b>
+     *
      * @param fileName
      * @return
-     * @throws SAXException
-     * @throws JAXBException
      * @throws IOException
      */
-    public static PMML loadFromFile(String fileName) throws SAXException, JAXBException, IOException {
+    public static PMML loadFromFile(String fileName) throws IOException {
         return loadFromInputStream(FileUtils.getFileInputStream(fileName));
     }
 
     /**
      * Load a <code>PMML</code> from the given <b>xml source</b>
+     *
      * @param xmlSource
      * @return
-     * @throws SAXException
-     * @throws JAXBException
      */
-    public static PMML loadFromSource(String xmlSource) throws SAXException, JAXBException {
+    public static PMML loadFromSource(String xmlSource) {
         return loadFromInputStream(new ByteArrayInputStream(xmlSource.getBytes()));
     }
 
     /**
      * Load a <code>PMML</code> from the given <code>InputStream</code>
+     *
      * @param is
-     * @return
-     * @throws SAXException
-     * @throws JAXBException
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
-    public static PMML loadFromInputStream(InputStream is) throws SAXException, JAXBException {
-        return org.jpmml.model.PMMLUtil.unmarshal(is);
+    public static PMML loadFromInputStream(InputStream is) {
+        try {
+            return org.jpmml.model.PMMLUtil.unmarshal(is);
+        } catch (SAXException | JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
