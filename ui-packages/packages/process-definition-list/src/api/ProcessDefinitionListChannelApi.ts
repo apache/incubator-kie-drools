@@ -30,4 +30,5 @@ export interface ProcessDefinitionListChannelApi {
   processDefinitionList__openProcessForm(
     processDefinition: ProcessDefinition
   ): Promise<void>;
+  processDefinitionsList__openTriggerCloudEvent(): void
 }

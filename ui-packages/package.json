@@ -151,7 +151,7 @@
     "@patternfly/react-core": "4.157.3"
   },
   "lint-staged": {
-    "packages/**/*.{js,ts,tsx}": [
+    "packages/**/*.{ts,tsx}": [
       "yarn run pretty-quick --staged",
       "eslint --fix"
     ]

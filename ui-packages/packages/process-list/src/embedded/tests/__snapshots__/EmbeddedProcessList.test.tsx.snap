@@ -13,6 +13,7 @@ exports[`EmbeddedProcessList tests Snapshot 1`] = `
       "handleProcessSkip": [MockFunction],
       "initialLoad": [MockFunction],
       "openProcess": [MockFunction],
+      "openTriggerCloudEvent": [MockFunction],
       "query": [MockFunction],
     }
   }

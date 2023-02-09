@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   DataTable,
   DataTableColumn,
@@ -35,6 +35,7 @@ export interface ProcessDefinitionListProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: ProcessDefinitionListDriver;
   singularProcessLabel: string;
+  isTriggerCloudEventEnabled?: boolean;
 }
 
 const ProcessDefinitionList: React.FC<
@@ -43,6 +44,7 @@ const ProcessDefinitionList: React.FC<
   isEnvelopeConnectedToChannel,
   driver,
   singularProcessLabel,
+  isTriggerCloudEventEnabled = false,
   ouiaId,
   ouiaSafe
 }) => {
@@ -87,6 +89,12 @@ const ProcessDefinitionList: React.FC<
     await driver.setProcessDefinitionFilter(filterProcessNames);
   };
 
+  const onOpenTriggerCloudEvent = useCallback(() => {
+    if (isTriggerCloudEventEnabled) {
+      driver.openTriggerCloudEvent();
+    }
+  }, [isTriggerCloudEventEnabled]);
+
   const filterProcessDefinition = (): ProcessDefinition[] => {
     if (filterProcessNames.length === 0) {
       return processDefinitionList;
@@ -122,6 +130,9 @@ const ProcessDefinitionList: React.FC<
         setFilterProcessNames={setFilterProcessNames}
         applyFilter={applyFilter}
         singularProcessLabel={singularProcessLabel}
+        onOpenTriggerCloudEvent={
+          isTriggerCloudEventEnabled ? onOpenTriggerCloudEvent : undefined
+        }
       />
       <Divider />
       <DataTable

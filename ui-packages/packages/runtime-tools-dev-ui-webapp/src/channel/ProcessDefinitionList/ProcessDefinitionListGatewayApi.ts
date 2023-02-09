@@ -21,8 +21,12 @@ export interface ProcessDefinitionListGatewayApi {
   setProcessDefinitionFilter: (filter: string[]) => Promise<void>;
   getProcessDefinitionsQuery: () => Promise<ProcessDefinition[]>;
   openProcessForm: (processDefinition: ProcessDefinition) => Promise<void>;
+  openTriggerCloudEvent: () => void;
   onOpenProcessFormListen: (
     listener: OnOpenProcessFormListener
+  ) => UnSubscribeHandler;
+  onOpenTriggerCloudEventListen: (
+    listener: OnOpenTriggerCloudEventListener
   ) => UnSubscribeHandler;
 }
 
@@ -30,14 +34,19 @@ export interface OnOpenProcessFormListener {
   onOpen: (processDefinition: ProcessDefinition) => void;
 }
 
+export interface OnOpenTriggerCloudEventListener {
+  onOpen: () => void;
+}
+
 export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 
 export class ProcessDefinitionListGatewayApiImpl
-  implements ProcessDefinitionListGatewayApi
-{
-  private readonly listeners: OnOpenProcessFormListener[] = [];
+  implements ProcessDefinitionListGatewayApi {
+  private readonly onOpenProcessListeners: OnOpenProcessFormListener[] = [];
+  private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] = [];
+
   private readonly devUIUrl: string;
   private readonly openApiPath: string;
   private processDefinitonFilter: string[] = [];
@@ -57,19 +66,38 @@ export class ProcessDefinitionListGatewayApiImpl
   }
 
   openProcessForm(processDefinition: ProcessDefinition): Promise<void> {
-    this.listeners.forEach((listener) => listener.onOpen(processDefinition));
+    this.onOpenProcessListeners.forEach(listener =>
+      listener.onOpen(processDefinition)
+    );
     return Promise.resolve();
   }
 
   onOpenProcessFormListen(
     listener: OnOpenProcessFormListener
   ): UnSubscribeHandler {
-    this.listeners.push(listener);
+    this.onOpenProcessListeners.push(listener);
 
     const unSubscribe = () => {
-      const index = this.listeners.indexOf(listener);
+      const index = this.onOpenProcessListeners.indexOf(listener);
       if (index > -1) {
-        this.listeners.splice(index, 1);
+        this.onOpenProcessListeners.splice(index, 1);
+      }
+    };
+
+    return {
+      unSubscribe
+    };
+  }
+
+  onOpenTriggerCloudEventListen(
+    listener: OnOpenTriggerCloudEventListener
+  ): UnSubscribeHandler {
+    this.onOpenTriggerCloudEventListeners.push(listener);
+
+    const unSubscribe = () => {
+      const index = this.onOpenTriggerCloudEventListeners.indexOf(listener);
+      if (index > -1) {
+        this.onOpenTriggerCloudEventListeners.splice(index, 1);
       }
     };
 
@@ -80,5 +108,11 @@ export class ProcessDefinitionListGatewayApiImpl
 
   getProcessDefinitionsQuery(): Promise<ProcessDefinition[]> {
     return getProcessDefinitionList(this.devUIUrl, this.openApiPath);
+  }
+
+  openTriggerCloudEvent(): void {
+    this.onOpenTriggerCloudEventListeners.forEach(listener =>
+      listener.onOpen()
+    );
   }
 }

@@ -103,4 +103,8 @@ export default class TestProcessListDriver implements ProcessListDriver {
   private getQueryLimit = (): number => {
     return this.offset + this.limit;
   };
+
+  openTriggerCloudEvent(): Promise<void> {
+    return Promise.resolve();
+  }
 }

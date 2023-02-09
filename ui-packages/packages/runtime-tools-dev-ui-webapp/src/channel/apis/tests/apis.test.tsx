@@ -39,7 +39,9 @@ import {
   jobCancel,
   performMultipleCancel,
   startProcessInstance,
-  startWorkflowRest
+  startWorkflowRest,
+  triggerCloudEvent,
+  triggerStartCloudEvent
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -52,6 +54,11 @@ import { processInstance } from '../../ProcessList/tests/ProcessListGatewayApi.t
 import { Form } from '@kogito-apps/form-details';
 import { FormType } from '@kogito-apps/forms-list';
 import * as SwaggerParser from '@apidevtools/swagger-parser';
+import {
+  CloudEventMethod,
+  KOGITO_BUSINESS_KEY,
+  KOGITO_PROCESS_REFERENCE_ID
+} from '@kogito-apps/cloud-event-form';
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 jest.mock('axios');
@@ -473,14 +480,14 @@ describe('test utility of svg panel', () => {
     it('on failed retrigger', async () => {
       mockedAxios.post.mockRejectedValue({ message: '404 error' });
       let result = null;
-      await handleProcessRetry(processInstance[0])
+      await handleProcessRetry(processInstance)
         .then(() => {
           result = 'success';
         })
         .catch((error) => {
           result = error.message;
         });
-      expect(result).toEqual("Cannot read property 'serviceUrl' of undefined");
+      expect(result).toEqual('404 error');
     });
   });
 
@@ -1110,5 +1117,147 @@ describe('swf custom form tests', () => {
         errorMessage: 'Failed to start workflow instance'
       });
     });
+  });
+});
+
+describe('triiger cloud events serction', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  it('trigger cloud event start - with businesskey', async () => {
+    mockedAxios.request.mockResolvedValue('success');
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: '/endpoint',
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: 'eventType',
+        source: 'eventSource',
+        extensions: {
+          kogitobusinesskey: '1234'
+        }
+      }
+    };
+    const response = await triggerStartCloudEvent(
+      event,
+      'http://localhost:8080/'
+    );
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).toBe('1234');
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe('http://localhost:8080/endpoint');
+    expect(request.method).toBe('POST');
+    expect(request.data).toHaveProperty('specversion', '1.0');
+    expect(request.data).toHaveProperty('type', 'eventType');
+    expect(request.data).toHaveProperty('source', 'eventSource');
+    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, '1234');
+    expect(request.data).toHaveProperty('data', JSON.parse(event.data));
+  });
+
+  it('trigger cloud event start - without businesskey', async () => {
+    mockedAxios.request.mockResolvedValue('success');
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: '/endpoint',
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: 'eventType',
+        source: 'eventSource',
+        extensions: {}
+      }
+    };
+    const response = await triggerStartCloudEvent(
+      event,
+      'http://localhost:8080/'
+    );
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe('http://localhost:8080/endpoint');
+    expect(request.method).toBe('POST');
+    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, response);
+  });
+
+  it('trigger cloud event - with instanceId', async () => {
+    mockedAxios.request.mockResolvedValue('success');
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: '/endpoint',
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: 'eventType',
+        source: 'eventSource',
+        extensions: {
+          kogitoprocrefid: '1234'
+        }
+      }
+    };
+    const response = await triggerCloudEvent(event, 'http://localhost:8080/');
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe('http://localhost:8080/endpoint');
+    expect(request.method).toBe('POST');
+    expect(request.data).toHaveProperty(KOGITO_PROCESS_REFERENCE_ID, '1234');
+    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+  });
+
+  it('trigger cloud event - without instanceId', async () => {
+    mockedAxios.request.mockResolvedValue('success');
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: '/endpoint',
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: 'eventType',
+        source: 'eventSource',
+        extensions: {}
+      }
+    };
+    const response = await triggerCloudEvent(event, 'http://localhost:8080/');
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe('http://localhost:8080/endpoint');
+    expect(request.method).toBe('POST');
+    expect(request.data).not.toHaveProperty(KOGITO_PROCESS_REFERENCE_ID);
+    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
+  });
+
+  it('trigger cloud event - using PUT', async () => {
+    mockedAxios.request.mockResolvedValue('success');
+    const event = {
+      method: CloudEventMethod.PUT,
+      endpoint: '/endpoint',
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: 'eventType',
+        source: 'eventSource',
+        extensions: {
+          kogitoprocrefid: '1234'
+        }
+      }
+    };
+    const response = await triggerCloudEvent(event, 'http://localhost:8080/');
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe('http://localhost:8080/endpoint');
+    expect(request.method).toBe('PUT');
   });
 });

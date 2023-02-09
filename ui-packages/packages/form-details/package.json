@@ -68,13 +68,7 @@
     ],
     "moduleNameMapper": {
       "\\.(scss|sass|css)$": "identity-obj-proxy",
-      "monaco-editor":"<rootDir>/__mocks__/monacoMock.js"
+      "monaco-editor": "<rootDir>/__mocks__/monacoMock.js"
     }
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "yarn run format",
-      "yarn run lint"
-    ]
   }
 }

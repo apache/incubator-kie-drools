@@ -19,8 +19,7 @@ exports[`WorkflowFormContainer tests Snapshot 1`] = `
       Object {
         "getCustomWorkflowSchema": [Function],
         "resetBusinessKey": [Function],
-        "startWorkflowCloudEvent": [Function],
-        "startWorkflowRest": [Function],
+        "startWorkflow": [Function],
       }
     }
     targetOrigin="*"

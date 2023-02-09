@@ -50,41 +50,21 @@ const WorkflowFormContainer: React.FC<
             workflowDefinitionData.workflowName
           );
         },
-        async startWorkflowCloudEvent(formData: any): Promise<void> {
-          return gatewayApi
-            .startWorkflowCloudEvent(formData)
-            .then((id: string) => {
-              onSubmitSuccess(
-                `A workflow with business key ${id} was triggered successfully.`
-              );
-            })
-            .catch((error) => {
-              console.error(error?.response);
-              const message =
-                error?.response?.data?.message +
-                  ' ' +
-                  error?.response?.data?.cause ||
-                error?.message ||
-                'Unknown error. More details in the developer tools console.';
-              onSubmitError(message);
-            });
-        },
         async resetBusinessKey() {
           onResetForm();
         },
-        async startWorkflowRest(
-          data: Record<string, any>,
-          endpoint: string
+        async startWorkflow(
+          endpoint: string,
+          data: Record<string, any>
         ): Promise<void> {
           return gatewayApi
-            .startWorkflowRest(data, endpoint)
+            .startWorkflow(endpoint, data)
             .then((id: string) => {
               onSubmitSuccess(
                 `A workflow with id ${id} was triggered successfully.`
               );
             })
             .catch((error) => {
-              console.error(error?.response);
               const message =
                 error?.response?.data?.message +
                   ' ' +

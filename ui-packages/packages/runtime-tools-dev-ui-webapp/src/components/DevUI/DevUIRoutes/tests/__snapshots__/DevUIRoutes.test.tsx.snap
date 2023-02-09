@@ -329,7 +329,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled Test PageNotFound route 
                 "url": "*",
               }
             }
-            key="15"
+            key="18"
             location={
               Object {
                 "hash": "",
@@ -959,7 +959,7 @@ exports[`DevUIRoutes tests::Process and Tracing enabled page not found page test
                 "url": "*",
               }
             }
-            key="15"
+            key="18"
             location={
               Object {
                 "hash": "",

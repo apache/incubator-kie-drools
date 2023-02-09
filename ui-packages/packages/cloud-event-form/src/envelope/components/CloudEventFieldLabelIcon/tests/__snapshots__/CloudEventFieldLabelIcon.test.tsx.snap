@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CloudEventFieldLabelIcon tests default snapshot test - with header 1`] = `
+<CloudEventFieldLabelIcon
+  cloudEventHeader="type"
+  fieldId="eventType"
+  helpMessage="Sets the type of the cloud event."
+>
+  <Popover
+    bodyContent={
+      <div>
+        <div>
+          Sets the type of the cloud event.
+        </div>
+        <div>
+          The value will be set in the
+           
+          <span
+            className="pf-u-success-color-100"
+          >
+            'type'
+          </span>
+           
+          header.
+        </div>
+      </div>
+    }
+    id="cloudEvent-form-eventType-help"
+  >
+    <MockedComponent />
+  </Popover>
+</CloudEventFieldLabelIcon>
+`;
+
+exports[`CloudEventFieldLabelIcon tests default snapshot test 1`] = `
+<CloudEventFieldLabelIcon
+  fieldId="endpoint"
+  helpMessage="Sets the endpoint and method where the CloudEvent should be triggered."
+>
+  <Popover
+    bodyContent={
+      <div>
+        <div>
+          Sets the endpoint and method where the CloudEvent should be triggered.
+        </div>
+      </div>
+    }
+    id="cloudEvent-form-endpoint-help"
+  >
+    <MockedComponent />
+  </Popover>
+</CloudEventFieldLabelIcon>
+`;

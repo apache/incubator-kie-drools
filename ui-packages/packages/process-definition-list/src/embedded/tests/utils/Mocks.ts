@@ -23,5 +23,6 @@ export const MockedProcessDefinitionListDriver = jest.fn<
   getProcessDefinitionsQuery: jest.fn(),
   openProcessForm: jest.fn(),
   setProcessDefinitionFilter: jest.fn(),
-  getProcessDefinitionFilter: jest.fn()
+  getProcessDefinitionFilter: jest.fn(),
+  openTriggerCloudEvent: jest.fn()
 }));

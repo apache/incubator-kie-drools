@@ -56,11 +56,13 @@ const props = {
   defaultStatusFilter: [ProcessInstanceState.Active],
   singularProcessLabel: 'Workflow',
   pluralProcessLabel: 'Workflows',
-  isWorkflow: true
+  isWorkflow: true,
+  isTriggerCloudEventEnabled: false
 };
 beforeEach(() => {
   props.setProcessStates.mockClear();
   props.setFilters.mockClear();
+  props.isTriggerCloudEventEnabled = false;
 });
 
 describe('ProcessListToolbar test', () => {
@@ -69,6 +71,19 @@ describe('ProcessListToolbar test', () => {
       'ProcessListToolbar'
     );
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('Snapshot tests with trigger cloud event', () => {
+    props.isTriggerCloudEventEnabled = true;
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
+      'ProcessListToolbar'
+    );
+    expect(wrapper).toMatchSnapshot();
+
+    const triggerButton = wrapper.findWhere((child) =>
+      child.text().includes('Trigger Cloud Event')
+    );
+    expect(triggerButton).not.toBeNull();
   });
 
   it('on select status', async () => {

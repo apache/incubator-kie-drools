@@ -16,6 +16,7 @@
 
 import {
   MessageBusClientApi,
+  NotificationPropertyNames,
   RequestPropertyNames
 } from '@kogito-tooling/envelope-bus/dist/api';
 import {
@@ -38,12 +39,22 @@ export const MockedApiRequests = jest.fn<
   processDefinitionList__getProcessDefinitionFilter: jest.fn()
 }));
 
+export const MockedApiNotifications = jest.fn<
+  Pick<
+    ProcessDefinitionListChannelApi,
+    NotificationPropertyNames<ProcessDefinitionListChannelApi>
+  >,
+  []
+>(() => ({
+  processDefinitionsList__openTriggerCloudEvent: jest.fn()
+}));
+
 export const MockedMessageBusClientApi = jest.fn<
   MessageBusClientApi<ProcessDefinitionListChannelApi>,
   []
 >(() => ({
   requests: new MockedApiRequests(),
-  notifications: jest.fn(),
+  notifications: new MockedApiNotifications(),
   subscribe: jest.fn(),
   unsubscribe: jest.fn()
 }));

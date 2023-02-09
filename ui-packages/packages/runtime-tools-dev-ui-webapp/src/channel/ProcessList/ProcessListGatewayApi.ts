@@ -38,7 +38,11 @@ export interface ProcessListGatewayApi {
   getChildProcessesQuery(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]>;
+  openTriggerCloudEvent: (processInstance?: ProcessInstance) => void;
   onOpenProcessListen: (listener: OnOpenProcessListener) => UnSubscribeHandler;
+  onOpenTriggerCloudEventListen: (
+    listener: OnOpenTriggerCloudEventListener
+  ) => UnSubscribeHandler;
 }
 
 export interface ProcessListState {
@@ -50,11 +54,18 @@ export interface OnOpenProcessListener {
   onOpen: (process: ProcessInstance) => void;
 }
 
+export interface OnOpenTriggerCloudEventListener {
+  onOpen: (process?: ProcessInstance) => void;
+}
+
 export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
-  private readonly listeners: OnOpenProcessListener[] = [];
+  private readonly onOpenProcessListeners: OnOpenProcessListener[] = [];
+  private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] =
+    [];
+
   private readonly queries: ProcessListQueries;
   private _ProcessListState: ProcessListState;
 
@@ -74,7 +85,7 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
   }
 
   openProcess = (process: ProcessInstance): Promise<void> => {
-    this.listeners.forEach((listener) => listener.onOpen(process));
+    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process));
     return Promise.resolve();
   };
 
@@ -158,17 +169,40 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
   }
 
   onOpenProcessListen(listener: OnOpenProcessListener): UnSubscribeHandler {
-    this.listeners.push(listener);
+    this.onOpenProcessListeners.push(listener);
 
     const unSubscribe = () => {
-      const index = this.listeners.indexOf(listener);
+      const index = this.onOpenProcessListeners.indexOf(listener);
       if (index > -1) {
-        this.listeners.splice(index, 1);
+        this.onOpenProcessListeners.splice(index, 1);
       }
     };
 
     return {
       unSubscribe
     };
+  }
+
+  onOpenTriggerCloudEventListen(
+    listener: OnOpenTriggerCloudEventListener
+  ): UnSubscribeHandler {
+    this.onOpenTriggerCloudEventListeners.push(listener);
+
+    const unSubscribe = () => {
+      const index = this.onOpenTriggerCloudEventListeners.indexOf(listener);
+      if (index > -1) {
+        this.onOpenTriggerCloudEventListeners.splice(index, 1);
+      }
+    };
+
+    return {
+      unSubscribe
+    };
+  }
+
+  openTriggerCloudEvent(processInstance?: ProcessInstance): void {
+    this.onOpenTriggerCloudEventListeners.forEach((listener) =>
+      listener.onOpen(processInstance)
+    );
   }
 }

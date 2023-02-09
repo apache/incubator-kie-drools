@@ -126,6 +126,9 @@
             <fileset>
               <directory>packages/runtime-gateway-api/node_modules</directory>
             </fileset>
+            <fileset>
+              <directory>packages/cloud-event-form/node_modules</directory>
+            </fileset>
           </filesets>
         </configuration>
       </plugin>

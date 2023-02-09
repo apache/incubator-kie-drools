@@ -48,6 +48,7 @@ describe('DevUILayout tests', () => {
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
+            dataIndexUrl={'http://localhost:8180'}
             trustyServiceUrl={'http://localhost:8081'}
             navigate={'JobsManagement'}
           />
@@ -92,6 +93,7 @@ describe('DevUILayout tests', () => {
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
+            dataIndexUrl={'http://localhost:8180'}
             trustyServiceUrl={'http://localhost:8081'}
             navigate={'JobsManagement'}
           />
@@ -136,6 +138,7 @@ describe('DevUILayout tests', () => {
       <DevUILayout {...props}>
         <MemoryRouter initialEntries={['/']} keyLength={0}>
           <DevUIRoutes
+            dataIndexUrl={'http://localhost:8180'}
             trustyServiceUrl={'http://localhost:8081'}
             navigate={'JobsManagement'}
           />

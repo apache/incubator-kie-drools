@@ -1,14 +1,14 @@
 /*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an 'AS IS' BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -19,6 +19,9 @@ import { mount } from 'enzyme';
 import ProcessDefinitionList from '../ProcessDefinitionList';
 import { MockedProcessDefinitionListDriver } from '../../../tests/mocks/MockedProcessDefinitionListDriver';
 import { act } from 'react-dom/test-utils';
+import ProcessDefinitionListToolbar from '../../ProcessDefinitionListToolbar/ProcessDefinitionListToolbar';
+
+jest.mock('../../ProcessDefinitionListToolbar/ProcessDefinitionListToolbar');
 
 describe('ProcessDefinition list tests', () => {
   Date.now = jest.fn(() => 1487076708000);
@@ -52,5 +55,25 @@ describe('ProcessDefinition list tests', () => {
       wrapper = mount(<ProcessDefinitionList {...props} />);
     });
     expect(wrapper).toMatchSnapshot();
+
+    const toolbar = wrapper.find(ProcessDefinitionListToolbar);
+    expect(toolbar.props().onOpenTriggerCloudEvent).toBeUndefined();
+  });
+
+  it('render ProcessDefinition list - table with cloud event enabled', async () => {
+    const props = {
+      isEnvelopeConnectedToChannel: true,
+      driver: driver,
+      singularProcessLabel: 'Workflow',
+      isTriggerCloudEventEnabled: true
+    };
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<ProcessDefinitionList {...props} />);
+    });
+    expect(wrapper).toMatchSnapshot();
+
+    const toolbar = wrapper.find(ProcessDefinitionListToolbar);
+    expect(toolbar.props().onOpenTriggerCloudEvent).not.toBeUndefined();
   });
 });

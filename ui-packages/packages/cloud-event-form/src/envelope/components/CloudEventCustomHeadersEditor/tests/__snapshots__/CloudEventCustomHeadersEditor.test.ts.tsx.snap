@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CloudEventCustomHeadersEditor tests Add headers 1`] = `
+<ForwardRef>
+  <div
+    data-ouia-component-type="custom-headers-editor"
+    data-ouia-safe={true}
+  >
+    <Stack
+      hasGutter={true}
+    >
+      <div
+        className="pf-l-stack pf-m-gutter"
+      >
+        <StackItem>
+          <div
+            className="pf-l-stack__item"
+          >
+            <Button
+              icon={
+                <PlusCircleIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              isInline={true}
+              key="add-header-button"
+              onClick={[Function]}
+              variant="link"
+            >
+              <MockedComponent />
+            </Button>
+          </div>
+        </StackItem>
+        <StackItem>
+          <div
+            className="pf-l-stack__item"
+          >
+            <Grid
+              data-ouia-component-id="custom-headers-editor-grid"
+              data-ouia-component-type="custom-headers-editor"
+              data-ouia-safe={true}
+            >
+              <div
+                className="pf-l-grid"
+                data-ouia-component-id="custom-headers-editor-grid"
+                data-ouia-component-type="custom-headers-editor"
+                data-ouia-safe={true}
+              >
+                <GridItem
+                  key="headers-grid-col-header"
+                  span={4}
+                >
+                  <div
+                    className="pf-l-grid__item pf-m-4-col"
+                  >
+                    <h4>
+                      Header Name
+                    </h4>
+                  </div>
+                </GridItem>
+                <GridItem
+                  key="headers-grid-col-value"
+                  span={8}
+                >
+                  <div
+                    className="pf-l-grid__item pf-m-8-col"
+                  >
+                    <h4>
+                      Value
+                    </h4>
+                  </div>
+                </GridItem>
+                <GridItem
+                  key="header-key-0"
+                  span={4}
+                >
+                  <div
+                    className="pf-l-grid__item pf-m-4-col"
+                  >
+                    <TextInput
+                      autoFocus={false}
+                      id="header-key-0-input"
+                      onChange={[Function]}
+                      value="key"
+                    >
+                      <MockedComponent />
+                    </TextInput>
+                  </div>
+                </GridItem>
+                <GridItem
+                  key="header-value-0"
+                  span={7}
+                >
+                  <div
+                    className="pf-l-grid__item pf-m-7-col"
+                  >
+                    <TextInput
+                      id="header-value-0-input"
+                      onChange={[Function]}
+                      value="value"
+                    >
+                      <MockedComponent />
+                    </TextInput>
+                  </div>
+                </GridItem>
+                <GridItem
+                  key="header-delete-0"
+                  span={1}
+                >
+                  <div
+                    className="pf-l-grid__item pf-m-1-col"
+                  >
+                    <Button
+                      aria-label="delete"
+                      key="header-delete-0-button"
+                      onClick={[Function]}
+                      variant="plain"
+                    >
+                      <MockedComponent />
+                    </Button>
+                  </div>
+                </GridItem>
+              </div>
+            </Grid>
+          </div>
+        </StackItem>
+      </div>
+    </Stack>
+  </div>
+</ForwardRef>
+`;
+
+exports[`CloudEventCustomHeadersEditor tests Snapshot - empty 1`] = `
+<ForwardRef>
+  <div
+    data-ouia-component-type="custom-headers-editor"
+    data-ouia-safe={true}
+  >
+    <Stack
+      hasGutter={true}
+    >
+      <div
+        className="pf-l-stack pf-m-gutter"
+      >
+        <StackItem>
+          <div
+            className="pf-l-stack__item"
+          >
+            <Button
+              icon={
+                <PlusCircleIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
+                />
+              }
+              isInline={true}
+              key="add-header-button"
+              onClick={[Function]}
+              variant="link"
+            >
+              <MockedComponent />
+            </Button>
+          </div>
+        </StackItem>
+      </div>
+    </Stack>
+  </div>
+</ForwardRef>
+`;

@@ -6,7 +6,9 @@ exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
 <ForwardRef
   channelApi={
     Object {
-      "notifications": [MockFunction],
+      "notifications": Object {
+        "processList__openTriggerCloudEvent": [MockFunction],
+      },
       "requests": Object {
         "processList__applyFilter": [MockFunction],
         "processList__applySorting": [MockFunction],
@@ -28,7 +30,9 @@ exports[`ProcessListEnvelopeView tests Snapshot 2`] = `
     driver={
       ProcessListEnvelopeViewDriver {
         "channelApi": Object {
-          "notifications": [MockFunction],
+          "notifications": Object {
+            "processList__openTriggerCloudEvent": [MockFunction],
+          },
           "requests": Object {
             "processList__applyFilter": [MockFunction],
             "processList__applySorting": [MockFunction],

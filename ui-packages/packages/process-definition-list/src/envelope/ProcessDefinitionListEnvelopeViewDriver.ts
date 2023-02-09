@@ -47,4 +47,8 @@ export default class ProcessDefinitionListEnvelopeViewDriver
   getProcessDefinitionsQuery(): Promise<ProcessDefinition[]> {
     return this.channelApi.requests.processDefinitionList__getProcessDefinitionsQuery();
   }
+
+  openTriggerCloudEvent(): void {
+    this.channelApi.notifications.processDefinitionsList__openTriggerCloudEvent();
+  }
 }

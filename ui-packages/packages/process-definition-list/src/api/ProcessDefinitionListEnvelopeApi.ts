@@ -33,4 +33,5 @@ export interface ProcessDefinition {
 
 export interface ProcessDefinitionListInitArgs {
   singularProcessLabel: string;
+  isTriggerCloudEventEnabled?: boolean
 }

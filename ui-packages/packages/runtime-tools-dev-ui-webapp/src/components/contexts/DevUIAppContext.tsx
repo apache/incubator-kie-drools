@@ -45,53 +45,35 @@ export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 
+type DevUIAppContextArgs = {
+  users?: User[];
+  devUIUrl: string;
+  openApiPath: string;
+  isProcessEnabled: boolean;
+  isTracingEnabled: boolean;
+  availablePages?: string[];
+  customLabels?: CustomLabels;
+  omittedProcessTimelineEvents: string[];
+  diagramPreviewSize?: DiagramPreviewSize;
+  isStunnerEnabled: boolean;
+};
+
 export class DevUIAppContextImpl implements DevUIAppContext {
-  private readonly users?: User[];
   private currentUser: User;
   private readonly userListeners: UserChangeListener[] = [];
-  private readonly devUIUrl: string;
-  private readonly openApiPath: string;
-  readonly isProcessEnabled: boolean;
-  readonly isTracingEnabled: boolean;
-  public readonly availablePages: string[];
-  public readonly customLabels: CustomLabels;
-  public readonly omittedProcessTimelineEvents: string[];
-  public readonly diagramPreviewSize?: DiagramPreviewSize;
-  public readonly isStunnerEnabled: boolean;
 
-  constructor(
-    users,
-    url,
-    path,
-    isProcessEnabled,
-    isTracingEnabled,
-    availablePages,
-    customLabels,
-    omittedProcessTimelineEvents,
-    diagramPreviewSize,
-    isStunnerEnabled
-  ) {
-    this.users = users;
-    this.devUIUrl = url;
-    this.openApiPath = path;
-    this.isProcessEnabled = isProcessEnabled;
-    this.isTracingEnabled = isTracingEnabled;
-    this.availablePages = availablePages;
-    this.customLabels = customLabels;
-    this.omittedProcessTimelineEvents = omittedProcessTimelineEvents;
-    this.diagramPreviewSize = diagramPreviewSize;
-    this.isStunnerEnabled = isStunnerEnabled;
-    if (users?.length > 0) {
-      this.currentUser = users[0];
+  constructor(private readonly args: DevUIAppContextArgs) {
+    if (args.users?.length > 0) {
+      this.currentUser = args.users[0];
     }
   }
 
   getDevUIUrl(): string {
-    return this.devUIUrl;
+    return this.args.devUIUrl;
   }
 
   getOpenApiPath(): string {
-    return this.openApiPath;
+    return this.args.openApiPath;
   }
 
   getCurrentUser(): User {
@@ -99,11 +81,11 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   getAllUsers(): User[] {
-    return this.users;
+    return this.args.users;
   }
 
   switchUser(userId: string): void {
-    const switchedUser = this.users.find((user) => user.id === userId);
+    const switchedUser = this.args.users.find((user) => user.id === userId);
     if (switchedUser) {
       this.currentUser = switchedUser;
       this.userListeners.forEach((listener) =>
@@ -126,11 +108,39 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   isWorkflow(): boolean {
-    return this.customLabels.singularProcessLabel == 'Workflow';
+    return this.args.customLabels?.singularProcessLabel == 'Workflow';
   }
 
   getIsStunnerEnabled(): boolean {
-    return this.isStunnerEnabled;
+    return this.args.isStunnerEnabled;
+  }
+
+  get isProcessEnabled(): boolean {
+    return this.args.isProcessEnabled;
+  }
+
+  get isTracingEnabled(): boolean {
+    return this.args.isTracingEnabled;
+  }
+
+  get isStunnerEnabled(): boolean {
+    return this.args.isStunnerEnabled;
+  }
+
+  get availablePages(): string[] {
+    return this.args.availablePages;
+  }
+
+  get customLabels(): CustomLabels {
+    return this.args.customLabels;
+  }
+
+  get omittedProcessTimelineEvents(): string[] {
+    return this.args.omittedProcessTimelineEvents;
+  }
+
+  get diagramPreviewSize(): DiagramPreviewSize {
+    return this.args.diagramPreviewSize;
   }
 }
 

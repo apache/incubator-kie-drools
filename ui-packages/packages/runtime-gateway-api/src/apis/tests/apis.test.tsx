@@ -468,14 +468,14 @@ describe('handle retry test', () => {
   it('on failed retrigger', async () => {
     client.mutate.mockRejectedValue({ message: '404 error' });
     let result = null;
-    await handleProcessRetry(processInstance[0], client)
+    await handleProcessRetry(processInstance, client)
       .then(() => {
         result = 'success';
       })
       .catch((error) => {
         result = error.message;
       });
-    expect(result).toEqual("Cannot read property 'id' of undefined");
+    expect(result).toEqual('404 error');
   });
 });
 

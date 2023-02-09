@@ -45,6 +45,7 @@ public class DevConsoleProcessor {
 
     private static final String DATA_INDEX_CLIENT_KEY = "quarkus.rest-client.\"" + DATA_INDEX_CONFIG_KEY + "\".url";
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
+    private static final String BASE_RELATIVE_URL = "/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
 
     @BuildStep(onlyIf = IsDevelopment.class)
     public void setUpDataIndexServiceURL(
@@ -75,7 +76,13 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route("/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui/resources/*")
+                .route(BASE_RELATIVE_URL + "/resources/*")
+                .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
+                        shutdownContext))
+                .build());
+
+        routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
+                .route(BASE_RELATIVE_URL + "/*")
                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());

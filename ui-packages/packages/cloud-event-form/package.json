@@ -1,0 +1,77 @@
+{
+  "name": "@kogito-apps/cloud-event-form",
+  "version": "1.0.0",
+  "description": "Cloud Event Form component.",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "precommit": "lint-staged",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "build": "rimraf dist && tsc -m commonjs -p tsconfig.json && yarn run copy:css",
+    "build:prod": "yarn run clean && yarn run lint && yarn run build",
+    "test:report": "yarn test --ci --reporters=jest-junit",
+    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
+    "update-snapshot": "jest --updateSnapshot",
+    "test:coverage": "rimraf coverage && yarn test --coverage",
+    "lint": "eslint './src/**/*.ts{,x}'",
+    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0"
+  },
+  "devDependencies": {
+    "@kogito-apps/ouia-tools": "^1.0.0"
+  },
+  "jest": {
+    "setupFiles": [
+      "../../config/Jest-config/test-shim.js",
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./src/static",
+      "dist/",
+      "./src/envelope/WorkflowFormEnvelope.tsx"
+    ],
+    "coverageReporters": [
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "transformIgnorePatterns": [],
+    "transform": {
+      "^.+\\.jsx?$": "../../config/Jest-config/babel-jest-wrapper.js",
+      "^.+\\.(ts|tsx)$": "ts-jest",
+      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+    },
+    "testMatch": [
+      "**/tests/*.(ts|tsx|js)"
+    ],
+    "moduleNameMapper": {
+      "\\.(scss|sass|css)$": "identity-obj-proxy",
+      "monaco-editor": "<rootDir>/__mocks__/monacoMock.js"
+    }
+  }
+}

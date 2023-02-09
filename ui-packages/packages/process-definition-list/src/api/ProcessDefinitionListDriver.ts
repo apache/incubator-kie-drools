@@ -24,4 +24,5 @@ export interface ProcessDefinitionListDriver {
   setProcessDefinitionFilter(filter: string[]): Promise<void>;
   getProcessDefinitionFilter(): Promise<string[]>;
   openProcessForm(processDefinition: ProcessDefinition): Promise<void>;
+  openTriggerCloudEvent(): void
 }

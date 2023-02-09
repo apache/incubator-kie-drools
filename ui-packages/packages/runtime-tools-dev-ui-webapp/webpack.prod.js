@@ -84,6 +84,9 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/workflow-form/dist/envelope/styles.css'
           ),
           path.resolve(
+              '../../node_modules/@kogito-apps/cloud-event-form/dist/envelope/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/@kogito-apps/process-definition-list/dist/envelope/styles.css'
           ),
           path.resolve(

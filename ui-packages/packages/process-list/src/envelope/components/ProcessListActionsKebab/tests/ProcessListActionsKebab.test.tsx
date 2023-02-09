@@ -87,6 +87,28 @@ describe('Process list actions kebab tests', () => {
     wrapper.find(DropdownItem).at(2).simulate('click');
     expect(props.onAbortClick).toHaveBeenCalled();
   });
+  it('Trigger CloudEvent click test', () => {
+    const onOpenTriggerCloudEvent = jest.fn();
+    let wrapper = mount(
+      <ProcessListActionsKebab
+        {...props}
+        onOpenTriggerCloudEvent={onOpenTriggerCloudEvent}
+      />
+    );
+    wrapper.find(Dropdown).find(KebabToggle).find('button').simulate('click');
+    wrapper = wrapper.update();
+    expect(
+      wrapper
+        .find(DropdownItem)
+        .at(2)
+        .find('a')
+        .children()
+        .contains('Send Cloud Event')
+    ).toBeTruthy();
+    wrapper.find(DropdownItem).at(2).simulate('click');
+    expect(onOpenTriggerCloudEvent).toHaveBeenCalled();
+  });
+
   it('process instance in active state', () => {
     let wrapper = mount(
       <ProcessListActionsKebab

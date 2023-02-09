@@ -10,15 +10,17 @@ exports[`ProcessDefinitionListContainer tests Snapshot 1`] = `
         "devUIUrl": Object {
           "getProcessDefinitions": [MockFunction],
         },
-        "listeners": Array [
+        "onOpenProcessListeners": Array [
           Object {
             "onOpen": [Function],
           },
         ],
+        "onOpenTriggerCloudEventListeners": Array [],
         "openApiPath": undefined,
         "processDefinitonFilter": Array [],
       }
     }
+    isTriggerCloudEventEnabled={false}
     targetOrigin="*"
   >
     <ForwardRef>

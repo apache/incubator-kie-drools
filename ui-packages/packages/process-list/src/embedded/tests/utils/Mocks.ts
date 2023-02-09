@@ -26,5 +26,6 @@ export const MockedProcessListDriver = jest.fn<ProcessListDriver, []>(() => ({
   handleProcessAbort: jest.fn(),
   handleProcessMultipleAction: jest.fn(),
   query: jest.fn(),
-  getChildProcessesQuery: jest.fn()
+  getChildProcessesQuery: jest.fn(),
+  openTriggerCloudEvent: jest.fn()
 }));

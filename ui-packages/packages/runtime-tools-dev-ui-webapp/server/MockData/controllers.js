@@ -433,7 +433,23 @@ module.exports = controller = {
     res.send({
       id: processId
     })
-  }
+  },
+  triggerCloudEvent: (req, res) => {
+    console.log(`......Trigger Cloud Event:: id: ${req.headers['ce-id']} type: ${req.headers['ce-type']} source: ${req.headers['ce-source']}`);
+
+    if (req.body.type === 'error') {
+      res.status(500).send('internal server error');
+    }
+    if (req.body.kogitobusinesskey) {
+      console.log(`Starting Serverless workflow with business key: ${req.body.kogitobusinesskey}`)
+      return res.status(200).send(req.body.kogitobusinesskey);
+    } else if(req.body.kogitoprocrefid) {
+      console.log(`Serverless Workflow with id ${req.body.kogitoprocrefid} successfully completed`)
+      return res.status(200).send(req.body.kogitoprocrefid);
+    }
+
+    return res.status(200).send("Cloud Event successfully triggered");
+  },
 };
 
 

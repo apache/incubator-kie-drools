@@ -53,7 +53,7 @@ const CustomWorkflowForm: React.FC<CustomWorkflowFormProps & OUIAProps> = ({
   ];
 
   const startWorkflow = (data: Record<string, any>): void => {
-    driver.startWorkflowRest(data, workflowDefinition.endpoint).then(() => {
+    driver.startWorkflow(workflowDefinition.endpoint, data).then(() => {
       formRendererApi?.current?.doReset();
     });
   };

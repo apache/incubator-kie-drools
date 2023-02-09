@@ -37,4 +37,5 @@ export interface ProcessListDriver {
   getChildProcessesQuery(
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]>;
+  openTriggerCloudEvent(processInstance?: ProcessInstance): void
 }

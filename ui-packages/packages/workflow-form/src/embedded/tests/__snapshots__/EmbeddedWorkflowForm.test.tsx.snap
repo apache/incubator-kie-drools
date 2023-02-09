@@ -6,8 +6,7 @@ exports[`EmbeddedWorkflowForm tests Snapshot 1`] = `
     Object {
       "getCustomWorkflowSchema": [MockFunction],
       "resetBusinessKey": [MockFunction],
-      "startWorkflowCloudEvent": [MockFunction],
-      "startWorkflowRest": [MockFunction],
+      "startWorkflow": [MockFunction],
     }
   }
   targetOrigin="origin"

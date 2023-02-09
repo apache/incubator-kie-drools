@@ -54,6 +54,7 @@
     "@kogito-apps/monitoring": "^1.0.0",
     "@kogito-apps/monitoring-webapp": "^1.0.0",
     "@kogito-apps/workflow-form": "^1.0.0",
+    "@kogito-apps/cloud-event-form": "^1.0.0",
     "@kogito-apps/custom-dashboard-list": "^1.0.0",
     "@kogito-apps/custom-dashboard-view": "^1.0.0",
     "@apidevtools/swagger-parser": "^10.0.3"

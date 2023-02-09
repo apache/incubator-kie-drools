@@ -37,22 +37,11 @@ describe('WorkflowFormEnvelopeViewDriver tests', () => {
     driver = new WorkflowFormEnvelopeViewDriver(channelApi);
   });
 
-  it('doSubmit', () => {
-    const formJSON = {
-      something: 'something'
-    };
-    driver.startWorkflowCloudEvent(formJSON);
-
-    expect(requests.workflowForm__startWorkflowCloudEvent).toHaveBeenCalledWith(
-      formJSON
-    );
-  });
-
   it('start custom workflow', () => {
-    driver.startWorkflowRest({ name: 'John' }, 'http://localhost:8080/test');
-    expect(requests.workflowForm__startWorkflowRest).toHaveBeenCalledWith(
-      { name: 'John' },
-      'http://localhost:8080/test'
+    driver.startWorkflow('http://localhost:8080/test', { name: 'John' });
+    expect(requests.workflowForm__startWorkflow).toHaveBeenCalledWith(
+      'http://localhost:8080/test',
+      { name: 'John' }
     );
   });
 });

@@ -1,0 +1,269 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CloudEventFormPage - tests Snapshot - definitions 1`] = `
+<MemoryRouter
+  keyLength={0}
+>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "canGo": [Function],
+        "createHref": [Function],
+        "entries": Array [
+          Object {
+            "hash": "",
+            "pathname": "/",
+            "search": "",
+            "state": undefined,
+          },
+        ],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "index": 0,
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <CloudEventFormPage>
+      <PageSection
+        data-ouia-component-id="title"
+        data-ouia-component-type="trigger-cloud-event-form-page-section"
+        data-ouia-safe={true}
+        variant="light"
+      >
+        <section
+          className="pf-c-page__main-section pf-m-light"
+          data-ouia-component-id="title"
+          data-ouia-component-type="trigger-cloud-event-form-page-section"
+          data-ouia-safe={true}
+        >
+          <PageTitle
+            title="Trigger Cloud Event"
+          >
+            <Flex
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
+            >
+              <div
+                className="pf-l-flex"
+                data-ouia-component-type="page-title"
+                data-ouia-safe={true}
+              >
+                <FlexItem
+                  spacer={
+                    Object {
+                      "default": "spacerSm",
+                    }
+                  }
+                >
+                  <div
+                    className="pf-m-spacer-sm"
+                  >
+                    <Title
+                      headingLevel="h1"
+                      size="4xl"
+                    >
+                      <h1
+                        className="pf-c-title pf-m-4xl"
+                        data-ouia-component-id="OUIA-Generated-Title-1"
+                        data-ouia-component-type="PF4/Title"
+                        data-ouia-safe={true}
+                      >
+                        Trigger Cloud Event
+                      </h1>
+                    </Title>
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+          </PageTitle>
+        </section>
+      </PageSection>
+      <PageSection
+        data-ouia-component-id="content"
+        data-ouia-component-type="cloud-event-form-page-section"
+        data-ouia-safe={true}
+      >
+        <section
+          className="pf-c-page__main-section"
+          data-ouia-component-id="content"
+          data-ouia-component-type="cloud-event-form-page-section"
+          data-ouia-safe={true}
+        >
+          <Card
+            className="Dev-ui__card-size"
+          >
+            <article
+              className="pf-c-card Dev-ui__card-size"
+              data-ouia-component-id="OUIA-Generated-Card-1"
+              data-ouia-component-type="PF4/Card"
+              data-ouia-safe={true}
+              id=""
+            >
+              <CardBody
+                className="pf-u-h-100"
+              >
+                <div
+                  className="pf-c-card__body pf-u-h-100"
+                >
+                  <MockedCloudEventFormContainer
+                    isTriggerNewInstance={true}
+                    onError={[Function]}
+                    onSuccess={[Function]}
+                  />
+                </div>
+              </CardBody>
+            </article>
+          </Card>
+        </section>
+      </PageSection>
+    </CloudEventFormPage>
+  </Router>
+</MemoryRouter>
+`;
+
+exports[`CloudEventFormPage - tests Snapshot - instances 1`] = `
+<MemoryRouter
+  keyLength={0}
+>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "canGo": [Function],
+        "createHref": [Function],
+        "entries": Array [
+          Object {
+            "hash": "",
+            "pathname": "/",
+            "search": "",
+            "state": undefined,
+          },
+        ],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "index": 0,
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <CloudEventFormPage>
+      <PageSection
+        data-ouia-component-id="title"
+        data-ouia-component-type="trigger-cloud-event-form-page-section"
+        data-ouia-safe={true}
+        variant="light"
+      >
+        <section
+          className="pf-c-page__main-section pf-m-light"
+          data-ouia-component-id="title"
+          data-ouia-component-type="trigger-cloud-event-form-page-section"
+          data-ouia-safe={true}
+        >
+          <PageTitle
+            title="Trigger Cloud Event"
+          >
+            <Flex
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
+            >
+              <div
+                className="pf-l-flex"
+                data-ouia-component-type="page-title"
+                data-ouia-safe={true}
+              >
+                <FlexItem
+                  spacer={
+                    Object {
+                      "default": "spacerSm",
+                    }
+                  }
+                >
+                  <div
+                    className="pf-m-spacer-sm"
+                  >
+                    <Title
+                      headingLevel="h1"
+                      size="4xl"
+                    >
+                      <h1
+                        className="pf-c-title pf-m-4xl"
+                        data-ouia-component-id="OUIA-Generated-Title-2"
+                        data-ouia-component-type="PF4/Title"
+                        data-ouia-safe={true}
+                      >
+                        Trigger Cloud Event
+                      </h1>
+                    </Title>
+                  </div>
+                </FlexItem>
+              </div>
+            </Flex>
+          </PageTitle>
+        </section>
+      </PageSection>
+      <PageSection
+        data-ouia-component-id="content"
+        data-ouia-component-type="cloud-event-form-page-section"
+        data-ouia-safe={true}
+      >
+        <section
+          className="pf-c-page__main-section"
+          data-ouia-component-id="content"
+          data-ouia-component-type="cloud-event-form-page-section"
+          data-ouia-safe={true}
+        >
+          <Card
+            className="Dev-ui__card-size"
+          >
+            <article
+              className="pf-c-card Dev-ui__card-size"
+              data-ouia-component-id="OUIA-Generated-Card-2"
+              data-ouia-component-type="PF4/Card"
+              data-ouia-safe={true}
+              id=""
+            >
+              <CardBody
+                className="pf-u-h-100"
+              >
+                <div
+                  className="pf-c-card__body pf-u-h-100"
+                >
+                  <MockedCloudEventFormContainer
+                    isTriggerNewInstance={false}
+                    onError={[Function]}
+                    onSuccess={[Function]}
+                  />
+                </div>
+              </CardBody>
+            </article>
+          </Card>
+        </section>
+      </PageSection>
+    </CloudEventFormPage>
+  </Router>
+</MemoryRouter>
+`;

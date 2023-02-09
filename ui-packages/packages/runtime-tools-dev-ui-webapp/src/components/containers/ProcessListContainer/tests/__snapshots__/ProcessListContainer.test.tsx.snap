@@ -36,7 +36,12 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
           "handleProcessRetry": [Function],
           "handleProcessSkip": [Function],
           "initialLoad": [Function],
-          "listeners": Array [
+          "onOpenProcessListeners": Array [
+            Object {
+              "onOpen": [Function],
+            },
+          ],
+          "onOpenTriggerCloudEventListeners": Array [
             Object {
               "onOpen": [Function],
             },
@@ -53,6 +58,7 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
         }
       }
       initialState={Object {}}
+      isTriggerCloudEventEnabled={true}
       isWorkflow={true}
       pluralProcessLabel="Workflows"
       singularProcessLabel="Workflow"

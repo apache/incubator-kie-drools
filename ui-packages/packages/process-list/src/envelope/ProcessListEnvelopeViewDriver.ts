@@ -79,4 +79,8 @@ export default class ProcessListEnvelopeViewDriver
       rootProcessInstanceId
     );
   }
+
+  openTriggerCloudEvent(processInstance?: ProcessInstance): void {
+    this.channelApi.notifications.processList__openTriggerCloudEvent(processInstance);
+  }
 }

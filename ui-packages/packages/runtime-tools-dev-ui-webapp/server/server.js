@@ -53,6 +53,10 @@ app.use('/docs', swaggerUi.serveFiles(null,swaggerOptions), swaggerUi.setup(null
 
 //Rest Api's
 // http://localhost:4000/management/processes/{processId}/instances/{processInstanceId}/error
+
+app.post('/', controller.triggerCloudEvent);
+app.put('/', controller.triggerCloudEvent);
+
 app.post(
   '/management/processes/:processId/instances/:processInstanceId/error',
   controller.showError

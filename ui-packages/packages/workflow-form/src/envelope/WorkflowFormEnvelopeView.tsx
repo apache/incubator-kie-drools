@@ -101,7 +101,11 @@ export const WorkflowFormEnvelopeView = React.forwardRef<
     );
   }
 
-  if (workflowSchema !== null) {
+  if (
+    workflowSchema !== null &&
+    workflowSchema.properties &&
+    Object.keys(workflowSchema.properties).length > 0
+  ) {
     return (
       <CustomWorkflowForm
         customFormSchema={workflowSchema}

@@ -30,6 +30,7 @@ import MonitoringPage from '../../pages/MonitoringPage/MonitoringPage';
 import WorkflowFormPage from '../../pages/WorkflowFormPage/WorkflowFormPage';
 import CustomDashboardListPage from '../../pages/CustomDashboardListPage/CustomDashboardListPage';
 import CustomDashboardViewPage from '../../pages/CustomDashboardViewPage/CustomDashboardViewPage';
+import CloudEventFormPage from '../../pages/CloudEventFormPage/CloudEventFormPage';
 
 interface IOwnProps {
   trustyServiceUrl: string;
@@ -44,24 +45,25 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
   dataIndexUrl,
   navigate
 }) => {
-  const { isProcessEnabled, isTracingEnabled } = useDevUIAppContext();
+  const context = useDevUIAppContext();
+
   const defaultPath = useMemo(() => {
-    if (isProcessEnabled) {
+    if (context.isProcessEnabled) {
       return '/JobsManagement';
     }
-    if (isTracingEnabled) {
+    if (context.isTracingEnabled) {
       return '/Audit';
     }
-  }, [isProcessEnabled, isTracingEnabled]);
+  }, [context.isProcessEnabled, context.isTracingEnabled]);
 
   const defaultButton = useMemo(() => {
-    if (isProcessEnabled) {
+    if (context.isProcessEnabled) {
       return 'Go to jobs management';
     }
-    if (isTracingEnabled) {
+    if (context.isTracingEnabled) {
       return 'Go to audit';
     }
-  }, [isProcessEnabled, isTracingEnabled]);
+  }, [context.isProcessEnabled, context.isTracingEnabled]);
 
   const routes: DevUIRoute[] = useMemo(
     () => [
@@ -77,13 +79,13 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route key="1" exact path="/Processes" component={ProcessesPage} />
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="2"
@@ -94,7 +96,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="3"
@@ -105,17 +107,17 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route key="4" exact path="/TaskInbox" component={TaskInboxPage} />
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: <Route key="5" exact path="/Forms" component={FormsListPage} />
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="6"
@@ -126,7 +128,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="7"
@@ -137,7 +139,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="8"
@@ -148,7 +150,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="9"
@@ -159,7 +161,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="10"
@@ -170,7 +172,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route
             key="11"
@@ -181,7 +183,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isTracingEnabled,
+        enabled: () => context.isTracingEnabled,
         node: (
           <Route key="12" path="/Audit">
             <TrustyApp
@@ -199,7 +201,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
-        enabled: () => isProcessEnabled,
+        enabled: () => context.isProcessEnabled,
         node: (
           <Route key="13" path="/Monitoring">
             <MonitoringPage dataIndexUrl={dataIndexUrl} />
@@ -223,10 +225,32 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       },
       {
+        enabled: () => context.isWorkflow(),
+        node: (
+          <Route
+            key="16"
+            exact
+            path="/Processes/CloudEvent/:instanceId?"
+            component={CloudEventFormPage}
+          />
+        )
+      },
+      {
+        enabled: () => context.isWorkflow(),
+        node: (
+          <Route
+            key="17"
+            exact
+            path="/WorkflowDefinitions/CloudEvent"
+            component={CloudEventFormPage}
+          />
+        )
+      },
+      {
         enabled: () => true,
         node: (
           <Route
-            key="15"
+            key="18"
             path="*"
             render={(_props) => (
               <PageNotFound
@@ -239,7 +263,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({
         )
       }
     ],
-    [isProcessEnabled, isTracingEnabled]
+    [context.isProcessEnabled, context.isTracingEnabled, context.isWorkflow()]
   );
 
   return (

@@ -208,6 +208,7 @@ exports[`ProcessList test Envelope not connected 1`] = `
         }
       }
       isAllChecked={false}
+      isTriggerCloudEventEnabled={false}
       processInstances={Array []}
       processStates={
         Array [
@@ -317,6 +318,7 @@ exports[`ProcessList test Envelope not connected 1`] = `
       }
       expanded={Object {}}
       isLoading={true}
+      isTriggerCloudEventEnabled={false}
       onSort={[Function]}
       processInstances={Array []}
       selectableInstances={0}

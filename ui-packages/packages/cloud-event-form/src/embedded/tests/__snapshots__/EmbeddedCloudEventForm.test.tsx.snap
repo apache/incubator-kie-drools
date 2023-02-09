@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedCloudEventForm tests Snapshot - defaultValue 1`] = `
+<ForwardRef
+  defaultValues={
+    Object {
+      "cloudEventSource": "/local/source",
+      "instanceId": "1234",
+    }
+  }
+  driver={
+    Object {
+      "triggerCloudEvent": [MockFunction],
+    }
+  }
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;
+
+exports[`EmbeddedCloudEventForm tests Snapshot - isNewInstanceEvent 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "triggerCloudEvent": [MockFunction],
+    }
+  }
+  isNewInstanceEvent={true}
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;
+
+exports[`EmbeddedCloudEventForm tests Snapshot 1`] = `
+<ForwardRef
+  driver={
+    Object {
+      "triggerCloudEvent": [MockFunction],
+    }
+  }
+  targetOrigin="origin"
+>
+  <ForwardRef>
+    <div />
+  </ForwardRef>
+</ForwardRef>
+`;

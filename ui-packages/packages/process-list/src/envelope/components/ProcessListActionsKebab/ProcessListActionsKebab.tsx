@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
-import { DropdownItem, Dropdown, KebabToggle } from '@patternfly/react-core';
+import React, { useMemo, useState } from 'react';
+import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import {
   ProcessInstance,
   ProcessInstanceState
@@ -27,6 +27,7 @@ interface ProcessListActionsKebabProps {
   onSkipClick: (processInstance: ProcessInstance) => Promise<void>;
   onRetryClick: (processInstance: ProcessInstance) => Promise<void>;
   onAbortClick: (processInstance: ProcessInstance) => Promise<void>;
+  onOpenTriggerCloudEvent?: (processInstance: ProcessInstance) => void;
 }
 
 const ProcessListActionsKebab: React.FC<
@@ -36,6 +37,7 @@ const ProcessListActionsKebab: React.FC<
   onSkipClick,
   onRetryClick,
   onAbortClick,
+  onOpenTriggerCloudEvent,
   ouiaId,
   ouiaSafe
 }) => {
@@ -49,24 +51,49 @@ const ProcessListActionsKebab: React.FC<
     setIsKebabOpen(isOpen);
   };
 
-  const dropDownList: JSX.Element[] =
-    processInstance.state === ProcessInstanceState.Error
-      ? [
-          <DropdownItem key={1} onClick={() => onRetryClick(processInstance)}>
-            Retry
-          </DropdownItem>,
-          <DropdownItem key={2} onClick={() => onSkipClick(processInstance)}>
-            Skip
-          </DropdownItem>,
-          <DropdownItem key={4} onClick={() => onAbortClick(processInstance)}>
-            Abort
-          </DropdownItem>
-        ]
-      : [
-          <DropdownItem key={4} onClick={() => onAbortClick(processInstance)}>
-            Abort
-          </DropdownItem>
-        ];
+  const dropDownList = useMemo(() => {
+    const result: JSX.Element[] = [];
+
+    if (processInstance.state === ProcessInstanceState.Error) {
+      result.push(
+        <DropdownItem
+          key={'Retry'}
+          onClick={() => onRetryClick(processInstance)}
+        >
+          Retry
+        </DropdownItem>
+      );
+      result.push(
+        <DropdownItem key={'Skip'} onClick={() => onSkipClick(processInstance)}>
+          Skip
+        </DropdownItem>
+      );
+    }
+
+    if (onOpenTriggerCloudEvent) {
+      result.push(
+        <DropdownItem
+          key={'CloudEvent'}
+          onClick={() => onOpenTriggerCloudEvent(processInstance)}
+        >
+          Send Cloud Event
+        </DropdownItem>
+      );
+    }
+    result.push(
+      <DropdownItem key={'Abort'} onClick={() => onAbortClick(processInstance)}>
+        Abort
+      </DropdownItem>
+    );
+
+    return result;
+  }, [
+    processInstance,
+    onSkipClick,
+    onRetryClick,
+    onAbortClick,
+    onOpenTriggerCloudEvent
+  ]);
 
   return (
     <Dropdown

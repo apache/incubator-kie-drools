@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CloudEventFormEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`CloudEventFormEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": [MockFunction],
+      "requests": Object {
+        "cloudEventForm__triggerCloudEvent": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <MockedCloudEventForm
+    defaultValues={
+      Object {
+        "cloudEventSource": "/local/test",
+        "instanceId": "1234",
+      }
+    }
+    driver={
+      CloudEventFormEnvelopeViewDriver {
+        "channelApi": Object {
+          "notifications": [MockFunction],
+          "requests": Object {
+            "cloudEventForm__triggerCloudEvent": [MockFunction],
+          },
+          "subscribe": [MockFunction],
+          "unsubscribe": [MockFunction],
+        },
+      }
+    }
+    isNewInstanceEvent={true}
+  />
+</ForwardRef>
+`;

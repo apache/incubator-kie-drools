@@ -16,17 +16,32 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import wait from 'waait';
 import WorkflowForm, { WorkflowFormProps } from '../WorkflowForm';
 import { WorkflowFormDriver } from '../../../../api';
 import { mount } from 'enzyme';
 import { MockedWorkflowFormDriver } from '../../../../embedded/tests/mocks/Mocks';
+import * as validateWorkflowData from '../validateWorkflowData';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
+
+jest.mock('@patternfly/react-core', () =>
+  Object.assign({}, jest.requireActual('@patternfly/react-core'), {
+    Alert: () => {
+      return <MockedComponent />;
+    },
+    Popover: () => {
+      return <MockedComponent />;
+    },
+    Popper: () => {
+      return <MockedComponent />;
+    }
+  })
+);
+
 jest.mock('@patternfly/react-code-editor', () =>
-  Object.assign(jest.requireActual('@patternfly/react-code-editor'), {
+  Object.assign({}, jest.requireActual('@patternfly/react-code-editor'), {
     CodeEditor: () => {
       return <MockedComponent />;
     }
@@ -35,9 +50,14 @@ jest.mock('@patternfly/react-code-editor', () =>
 
 let props: WorkflowFormProps;
 let startWorkflowSpy;
+const validateWorkflowDataSpy = jest.spyOn(
+  validateWorkflowData,
+  'validateWorkflowData'
+);
+
 const getWorkflowFormDriver = (): WorkflowFormDriver => {
   const driver = new MockedWorkflowFormDriver();
-  startWorkflowSpy = jest.spyOn(driver, 'startWorkflowCloudEvent');
+  startWorkflowSpy = jest.spyOn(driver, 'startWorkflow');
   startWorkflowSpy.mockReturnValue(Promise.resolve('newKey'));
   props.driver = driver;
   return driver;
@@ -59,12 +79,13 @@ describe('WorkflowForm Test', () => {
     };
   });
 
-  it('Workflow Form rendering', async () => {
+  it('Workflow Form - rendering', () => {
     const driver = getWorkflowFormDriver();
+    validateWorkflowDataSpy.mockReturnValue(true);
+
     let wrapper;
-    await act(async () => {
+    act(() => {
       wrapper = getWorkflowFormWrapper();
-      wait();
     });
 
     expect(wrapper).toMatchSnapshot();
@@ -74,15 +95,35 @@ describe('WorkflowForm Test', () => {
 
     expect(workflowForm.props().enabled).toBeFalsy();
 
-    const formData = {
-      type: 'participants',
-      data: '{ "username": "myuser" }'
-    };
-
-    await act(async () => {
-      workflowForm.find('Button[variant="primary"]').props().onClick(formData);
-      wait();
+    act(() => {
+      workflowForm.find('Button[variant="primary"]').props().onClick();
     });
-    expect(driver.startWorkflowCloudEvent).toHaveBeenCalled();
+
+    expect(driver.startWorkflow).toHaveBeenCalled();
+  });
+
+  it('Workflow Form - validation error', () => {
+    const driver = getWorkflowFormDriver();
+    validateWorkflowDataSpy.mockReturnValue(false);
+
+    let wrapper;
+
+    act(() => {
+      wrapper = getWorkflowFormWrapper();
+    });
+
+    const workflowForm = wrapper.find('Form');
+    expect(workflowForm.exists()).toBeTruthy();
+
+    expect(workflowForm.props().enabled).toBeFalsy();
+
+    act(() => {
+      workflowForm.find('Button[variant="primary"]').props().onClick();
+    });
+
+    wrapper = wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+    expect(driver.startWorkflow).not.toHaveBeenCalled();
   });
 });

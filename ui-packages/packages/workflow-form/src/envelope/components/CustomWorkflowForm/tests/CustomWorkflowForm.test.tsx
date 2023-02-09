@@ -29,7 +29,7 @@ let props: CustomWorkflowFormProps;
 let startWorkflowRestSpy;
 const getWorkflowFormDriver = (): WorkflowFormDriver => {
   const driver = new MockedWorkflowFormDriver();
-  startWorkflowRestSpy = jest.spyOn(driver, 'startWorkflowRest');
+  startWorkflowRestSpy = jest.spyOn(driver, 'startWorkflow');
   startWorkflowRestSpy.mockReturnValue(Promise.resolve('newKey'));
   props.driver = driver;
   return driver;
@@ -85,6 +85,6 @@ describe('CustomWorkflowForm Test', () => {
       customWorkflowForm.find('FormRenderer').props()['onSubmit']();
       wait();
     });
-    expect(driver.startWorkflowRest).toHaveBeenCalled();
+    expect(driver.startWorkflow).toHaveBeenCalled();
   });
 });

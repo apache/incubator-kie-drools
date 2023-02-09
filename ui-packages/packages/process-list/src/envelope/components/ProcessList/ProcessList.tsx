@@ -52,6 +52,7 @@ interface ProcessListProps {
   singularProcessLabel: string;
   pluralProcessLabel: string;
   isWorkflow: boolean;
+  isTriggerCloudEventEnabled?: boolean,
 }
 const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   driver,
@@ -59,6 +60,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   initialState,
   singularProcessLabel,
   pluralProcessLabel,
+  isTriggerCloudEventEnabled = false,
   isWorkflow,
   ouiaId,
   ouiaSafe
@@ -233,6 +235,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   if (error) {
     return <ServerErrors error={error} variant={'large'} />;
   }
+
   return (
     <div
       {...componentOuiaProps(
@@ -259,6 +262,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         singularProcessLabel={singularProcessLabel}
         pluralProcessLabel={pluralProcessLabel}
         isWorkflow={isWorkflow}
+        isTriggerCloudEventEnabled={isTriggerCloudEventEnabled}
       />
       {filters.status.length > 0 ? (
         <>
@@ -278,6 +282,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             setIsAllChecked={setIsAllChecked}
             singularProcessLabel={singularProcessLabel}
             pluralProcessLabel={pluralProcessLabel}
+            isTriggerCloudEventEnabled={isTriggerCloudEventEnabled}
           />
           {mustShowLoadMore && (
             <LoadMore

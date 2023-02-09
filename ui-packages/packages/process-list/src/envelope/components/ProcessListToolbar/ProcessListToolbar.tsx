@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   Toolbar,
   ToolbarItem,
@@ -87,6 +87,7 @@ interface ProcessListToolbarProps {
   singularProcessLabel: string;
   pluralProcessLabel: string;
   isWorkflow: boolean;
+  isTriggerCloudEventEnabled?: boolean;
 }
 
 const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
@@ -107,8 +108,9 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   singularProcessLabel,
   pluralProcessLabel,
   isWorkflow,
+  isTriggerCloudEventEnabled= false,
   ouiaId,
-  ouiaSafe
+  ouiaSafe,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [businessKeyInput, setBusinessKeyInput] = useState<string>('');
@@ -486,6 +488,12 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     setProcessInstances(clonedProcessInstances);
   };
 
+  const onOpenCloudEventClick = useCallback(() => {
+    if(isTriggerCloudEventEnabled) {
+      driver.openTriggerCloudEvent();
+    }
+  }, [driver])
+
   const statusMenuItems: JSX.Element[] = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -695,6 +703,19 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           </Tooltip>
         </ToolbarItem>
       </ToolbarGroup>
+      {
+          isTriggerCloudEventEnabled && <ToolbarGroup>
+            <ToolbarItem variant="separator"/>
+            <ToolbarItem>
+              <Button
+                  variant="primary"
+                  onClick={() => onOpenCloudEventClick()}
+              >
+                Trigger Cloud Event
+              </Button>
+            </ToolbarItem>
+          </ToolbarGroup>
+      }
     </React.Fragment>
   );
 

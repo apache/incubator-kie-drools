@@ -458,14 +458,14 @@ describe('test utility of svg panel', () => {
     it('on failed retrigger', async () => {
       mockedAxios.post.mockRejectedValue({ message: '404 error' });
       let result = null;
-      await handleProcessRetry(processInstance[0])
+      await handleProcessRetry(processInstance)
         .then(() => {
           result = 'success';
         })
         .catch((error) => {
           result = error.message;
         });
-      expect(result).toEqual("Cannot read property 'serviceUrl' of undefined");
+      expect(result).toEqual('404 error');
     });
   });
 

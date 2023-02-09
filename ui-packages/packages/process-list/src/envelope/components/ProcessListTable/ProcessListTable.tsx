@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   TableComposable,
   Thead,
@@ -78,6 +78,7 @@ interface ProcessListTableProps {
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   singularProcessLabel: string;
   pluralProcessLabel: string;
+  isTriggerCloudEventEnabled?: boolean;
 }
 
 const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
@@ -95,6 +96,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   setIsAllChecked,
   singularProcessLabel,
   pluralProcessLabel,
+  isTriggerCloudEventEnabled,
   driver,
   ouiaId,
   ouiaSafe
@@ -219,6 +221,14 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
     }
   };
 
+  const onOpenTriggerCloudEvent: (processiInstance: ProcessInstance) => void =
+    useMemo(() => {
+      if (isTriggerCloudEventEnabled) {
+        return (instance) => driver.openTriggerCloudEvent(instance);
+      }
+      return undefined;
+    }, [driver, isTriggerCloudEventEnabled]);
+
   const handleClick = (processInstance: ProcessInstance): void => {
     driver.openProcess(processInstance);
   };
@@ -301,6 +311,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
               onSkipClick={onSkipClick}
               onRetryClick={onRetryClick}
               onAbortClick={onAbortClick}
+              onOpenTriggerCloudEvent={onOpenTriggerCloudEvent}
               key={processInstance.id}
             />
           ],
@@ -467,7 +478,11 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                   break;
               }
               return (
-                <Th style={styleParams} key={columnIndex} {...sortParams}>
+                <Th
+                  style={styleParams}
+                  key={`${column}_header`}
+                  {...sortParams}
+                >
                   {column.startsWith('__') ? '' : column}
                 </Th>
               );
@@ -478,11 +493,11 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
           rowPairs.map((pair, pairIndex) => {
             const parentRow = (
               <Tr
-                key={`${pairIndex}-parent`}
+                key={`${pair.id}-parent`}
                 {...componentOuiaProps(pair.id, 'process-list-row', true)}
               >
                 <Td
-                  key={`${pairIndex}-parent-0`}
+                  key={`${pair.id}-parent-0`}
                   expand={{
                     rowIndex: pairIndex,
                     isExpanded: expanded[pairIndex],
@@ -496,7 +511,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                 />
                 {pair.parent.map((cell, cellIndex) => (
                   <Td
-                    key={`${pairIndex}-parent-${++cellIndex}`}
+                    key={`${pair.id}-parent-${columns[++cellIndex]}`}
                     dataLabel={columns[cellIndex]}
                     {...componentOuiaProps(
                       columns[cellIndex].toLowerCase(),
@@ -511,7 +526,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
             );
             const childRow = (
               <Tr
-                key={`${pairIndex}-child`}
+                key={`${pair.id}-child`}
                 isExpanded={expanded[pairIndex] === true}
                 {...componentOuiaProps(
                   pair.id,
@@ -519,10 +534,10 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                   true
                 )}
               >
-                <Td key={`${pairIndex}-child-0`} />
+                <Td key={`${pair.id}-child-0`} />
                 {rowPairs[pairIndex].child.map((cell, cellIndex) => (
                   <Td
-                    key={`${pairIndex}-child-${++cellIndex}`}
+                    key={`${pair.id}-child-${columns[++cellIndex]}`}
                     dataLabel={columns[cellIndex]}
                     noPadding={rowPairs[pairIndex].noPadding}
                     colSpan={6}
@@ -535,7 +550,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
               </Tr>
             );
             return (
-              <Tbody key={pairIndex}>
+              <Tbody key={`${pair.id}_tBody`}>
                 {parentRow}
                 {childRow}
               </Tbody>

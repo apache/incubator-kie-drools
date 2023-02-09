@@ -57,4 +57,5 @@ export interface ProcessListInitArgs {
   singularProcessLabel: string;
   pluralProcessLabel: string;
   isWorkflow: boolean;
+  isTriggerCloudEventEnabled?: boolean
 }

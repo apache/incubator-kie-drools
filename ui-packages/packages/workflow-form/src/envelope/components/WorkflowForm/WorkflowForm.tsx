@@ -18,15 +18,20 @@ import React, { useCallback, useState } from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { WorkflowDefinition, WorkflowFormDriver } from '../../../api';
 import {
+  ActionGroup,
+  Alert,
+  Button,
   Form,
   FormGroup,
-  TextInput,
-  ActionGroup,
-  Button,
-  Popover
+  Popover,
+  Stack,
+  StackItem,
+  ValidatedOptions
 } from '@patternfly/react-core';
 import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import { CodeEditor, Language } from '@patternfly/react-code-editor';
+import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon';
+import { validateWorkflowData } from './validateWorkflowData';
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;
@@ -39,101 +44,109 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
-  const [type, setType] = useState<string>('');
   const [data, setData] = useState<string>('');
+  const [isValid, setIsValid] = useState<boolean>(true);
 
   const resetForm = useCallback(() => {
     driver.resetBusinessKey();
-    setType('');
     setData('');
+    setIsValid(true);
   }, []);
 
-  const onSubmit = useCallback(() => {
-    driver.startWorkflowCloudEvent({
-      type,
-      data
-    });
+  const onSubmit = useCallback(async () => {
+    const valid = validateWorkflowData(data);
+
+    setIsValid(valid);
+
+    if (!valid) {
+      return;
+    }
+
+    await driver.startWorkflow(
+      workflowDefinition.endpoint,
+      data.trim() ? JSON.parse(data) : {}
+    );
+
     resetForm();
-  }, [driver, type, data]);
+  }, [driver, data]);
 
   return (
     <div {...componentOuiaProps(ouiaId, 'workflow-form', ouiaSafe)}>
-      <Form isHorizontal>
-        <FormGroup
-          label="Cloud Event Type"
-          isRequired
-          fieldId="formType"
-          labelIcon={
-            <Popover
-              id="workflow-form-type-help"
-              bodyContent={
-                <div>The type of the cloud event to be triggered.</div>
+      <Stack hasGutter>
+        <StackItem>
+          <Alert
+            isInline
+            variant="info"
+            title="Couldn't find JSON schema to display the Start Form."
+          >
+            <p>
+              Please type the data in JSON format in the Code Editor and press
+              the <b>Start</b> to submit it and start the Workflow.
+            </p>
+            <p>
+              If you want to use a Form to start the workflow, please provide a
+              valid JSON schema in the <code>dataInputSchema</code> property in
+              your workflow file.
+            </p>
+          </Alert>
+        </StackItem>
+        <StackItem>
+          <Form isHorizontal>
+            <FormGroup
+              label="Start Workflow Data"
+              isRequired
+              fieldId="workflowData"
+              helperTextInvalid={
+                !isValid && 'The Workflow Data should have a JSON format.'
+              }
+              helperTextInvalidIcon={<ExclamationCircleIcon />}
+              validated={
+                !isValid ? ValidatedOptions.error : ValidatedOptions.default
+              }
+              labelIcon={
+                <Popover
+                  id="workflow-form-data-help"
+                  bodyContent={
+                    <div>
+                      Fill the data to start the Workflow in JSON format.
+                    </div>
+                  }
+                >
+                  <button
+                    type="button"
+                    aria-label="More info for data field"
+                    onClick={(e) => e.preventDefault()}
+                    className="pf-c-form__group-label-help"
+                  >
+                    <HelpIcon noVerticalAlign />
+                  </button>
+                </Popover>
               }
             >
-              <button
-                type="button"
-                aria-label="More info for type field"
-                onClick={(e) => e.preventDefault()}
-                className="pf-c-form__group-label-help"
-              >
-                <HelpIcon noVerticalAlign />
-              </button>
-            </Popover>
-          }
-        >
-          <TextInput
-            value={type}
-            isRequired
-            type="text"
-            id="formType"
-            name="formType"
-            onChange={setType}
-          />
-        </FormGroup>
-        <FormGroup
-          label="Cloud Event Data"
-          isRequired
-          fieldId="formData"
-          labelIcon={
-            <Popover
-              id="workflow-form-data-help"
-              bodyContent={
-                <div>A JSON containing the data of the cloud event.</div>
-              }
-            >
-              <button
-                type="button"
-                aria-label="More info for data field"
-                onClick={(e) => e.preventDefault()}
-                className="pf-c-form__group-label-help"
-              >
-                <HelpIcon noVerticalAlign />
-              </button>
-            </Popover>
-          }
-        >
-          <CodeEditor
-            isDarkTheme={false}
-            isLineNumbersVisible={true}
-            isReadOnly={false}
-            isCopyEnabled={false}
-            isMinimapVisible={true}
-            isLanguageLabelVisible={false}
-            code={data}
-            language={Language.json}
-            height="400px"
-            onChange={setData}
-          />
-        </FormGroup>
-        <ActionGroup>
-          <Button variant="primary" onClick={onSubmit}>
-            Start
-          </Button>
-          <Button variant="secondary" onClick={resetForm}>
-            Reset
-          </Button>
-        </ActionGroup>
-      </Form>
+              <CodeEditor
+                isDarkTheme={false}
+                isLineNumbersVisible={true}
+                isReadOnly={false}
+                isCopyEnabled={false}
+                isMinimapVisible={true}
+                isLanguageLabelVisible={false}
+                code={data}
+                language={Language.json}
+                height="400px"
+                onChange={setData}
+              />
+            </FormGroup>
+            <ActionGroup>
+              <Button variant="primary" onClick={onSubmit}>
+                Start
+              </Button>
+              <Button variant="secondary" onClick={resetForm}>
+                Reset
+              </Button>
+            </ActionGroup>
+          </Form>
+        </StackItem>
+      </Stack>
     </div>
   );
 };

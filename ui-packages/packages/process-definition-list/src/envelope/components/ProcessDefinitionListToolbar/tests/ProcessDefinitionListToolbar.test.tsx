@@ -31,6 +31,29 @@ describe('ProcessDefinition list toolbar tests', () => {
       />
     );
     expect(wrapper).toMatchSnapshot();
+    expect(
+      wrapper
+        .findWhere((child) => child.key() === 'triggerCloudEventButton')
+        .exists()
+    ).toBeFalsy();
+  });
+
+  it('render toolbar - with trigger cloud event', () => {
+    const wrapper = mount(
+      <ProcessDefinitionListToolbar
+        applyFilter={jest.fn()}
+        setFilterProcessNames={jest.fn()}
+        filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
+        onOpenTriggerCloudEvent={jest.fn()}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+    expect(
+      wrapper
+        .findWhere((child) => child.key() === 'triggerCloudEventButton')
+        .exists()
+    ).toBeTruthy();
   });
 
   it('apply filter click', () => {
@@ -131,5 +154,29 @@ describe('ProcessDefinition list toolbar tests', () => {
         ['deleteChip']('Process name', 'process1');
     });
     expect(applyFilter).toHaveBeenCalled();
+  });
+
+  it('on open trigger cloud event form', () => {
+    const triggerCloudEvenMock = jest.fn();
+    const wrapper = mount(
+      <ProcessDefinitionListToolbar
+        applyFilter={jest.fn()}
+        setFilterProcessNames={jest.fn()}
+        filterProcessNames={[]}
+        singularProcessLabel={'Workflow'}
+        onOpenTriggerCloudEvent={triggerCloudEvenMock}
+      />
+    );
+
+    const triggerCloudEventButton = wrapper.findWhere(
+      (child) => child.key() === 'triggerCloudEventButton'
+    );
+    expect(triggerCloudEventButton.exists()).toBeTruthy();
+
+    act(() => {
+      triggerCloudEventButton.prop('onClick')(undefined);
+    });
+
+    expect(triggerCloudEvenMock).toHaveBeenCalled();
   });
 });

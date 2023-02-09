@@ -24,11 +24,16 @@ import {
 } from '@kogito-apps/management-console-shared';
 import { FormInfo } from '@kogito-apps/forms-list';
 import axios from 'axios';
+import uuidv4 from 'uuid';
 import { Form, FormContent } from '@kogito-apps/form-details';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { createProcessDefinitionList } from '../../utils/Utils';
 import { ProcessDefinition } from '@kogito-apps/process-definition-list';
 import { CustomDashboardInfo } from '@kogito-apps/custom-dashboard-list';
+import {
+  CloudEventRequest,
+  KOGITO_BUSINESS_KEY
+} from '@kogito-apps/cloud-event-form/dist';
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
@@ -154,7 +159,9 @@ export const handleProcessRetry = async (
       .then(() => {
         resolve();
       })
-      .catch((error) => reject(error));
+      .catch((error) => {
+        reject(error);
+      });
   });
 };
 
@@ -346,7 +353,7 @@ export const getProcessDefinitionList = (
       .then((response) => {
         const processDefinitionObjs = [];
         const paths = response.paths;
-        const regexPattern = /^\/[A-Za-z0-9_]+\/schema/;
+        const regexPattern = /^\/\w+\/schema/;
         Object.getOwnPropertyNames(paths)
           .filter((path) => regexPattern.test(path.toString()))
           .forEach((url) => {
@@ -408,32 +415,57 @@ export const startProcessInstance = (
   });
 };
 
-export const startWorkflowCloudEvent = (
-  formData: any,
-  businessKey: string,
+export const triggerStartCloudEvent = (
+  event: CloudEventRequest,
   devUIUrl: string
 ): Promise<string> => {
-  const kogitoBusinessKey =
-    businessKey.length > 0
-      ? businessKey
-      : Math.floor(Math.random() * 100000) + '';
+  if (!event.headers.extensions[KOGITO_BUSINESS_KEY]) {
+    event.headers.extensions[KOGITO_BUSINESS_KEY] = String(
+      Math.floor(Math.random() * 100000)
+    );
+  }
+
   return new Promise((resolve, reject) => {
-    axios
-      .post(devUIUrl, formData.data, {
-        headers: {
-          'ce-specversion': '1.0',
-          'ce-source': '/from/sw-service',
-          'ce-type': formData.type,
-          'ce-kogitobusinesskey': kogitoBusinessKey,
-          'ce-id': 'xyzabcdefgh'
-        }
-      })
-      .then((response) => {
-        resolve(kogitoBusinessKey);
-      })
-      .catch((error) => {
-        reject(error);
-      });
+    doTriggerCloudEvent(event, devUIUrl)
+      .then((response) =>
+        resolve(event.headers.extensions[KOGITO_BUSINESS_KEY])
+      )
+      .catch((error) => reject(error));
+  });
+};
+
+export const triggerCloudEvent = (
+  event: CloudEventRequest,
+  devUIUrl: string
+): Promise<any> => {
+  return doTriggerCloudEvent(event, devUIUrl);
+};
+
+const doTriggerCloudEvent = (
+  event: CloudEventRequest,
+  devUIUrl: string
+): Promise<any> => {
+  const cloudEvent = {
+    ...event.headers.extensions,
+    specversion: '1.0',
+    id: uuidv4(),
+    source: event.headers.source ?? '',
+    type: event.headers.type,
+    data: event.data ? JSON.parse(event.data) : {}
+  };
+
+  if (devUIUrl.endsWith('/')) {
+    devUIUrl = devUIUrl.slice(0, devUIUrl.length - 1);
+  }
+
+  const url = `${devUIUrl}${event.endpoint.startsWith('/') ? '' : '/'}${
+    event.endpoint
+  }`;
+
+  return axios.request({
+    url,
+    method: event.method,
+    data: cloudEvent
   });
 };
 

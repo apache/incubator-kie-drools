@@ -35,6 +35,7 @@ export interface Props {
   singularProcessLabel: string;
   pluralProcessLabel: string;
   isWorkflow: boolean;
+  isTriggerCloudEventEnabled?: boolean;
 }
 
 export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
@@ -68,7 +69,8 @@ export const EmbeddedProcessList = React.forwardRef<ProcessListApi, Props>(
             initialState: { ...props.initialState },
             singularProcessLabel: props.singularProcessLabel,
             pluralProcessLabel: props.pluralProcessLabel,
-            isWorkflow: props.isWorkflow
+            isWorkflow: props.isWorkflow,
+            isTriggerCloudEventEnabled: props.isTriggerCloudEventEnabled
           }
         );
       },

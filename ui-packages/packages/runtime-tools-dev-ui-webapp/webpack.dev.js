@@ -118,7 +118,10 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/form-details/dist/styles/styles.css'
           ),
           path.resolve(
-            '../../node_modules/@kogito-apps/workflow-form/dist/styles/styles.css'
+            '../../node_modules/@kogito-apps/workflow-form/dist/envelope/styles.css'
+          ),
+          path.resolve(
+              '../../node_modules/@kogito-apps/cloud-event-form/dist/envelope/styles.css'
           ),
           path.resolve(
             '../../node_modules/@kie-tools-core/guided-tour/dist/components'

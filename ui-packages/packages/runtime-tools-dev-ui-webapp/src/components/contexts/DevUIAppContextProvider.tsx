@@ -51,7 +51,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   return (
     <RuntimeToolsDevUIAppContext.Provider
       value={
-        new DevUIAppContextImpl(
+        new DevUIAppContextImpl({
           users,
           devUIUrl,
           openApiPath,
@@ -62,7 +62,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           omittedProcessTimelineEvents,
           diagramPreviewSize,
           isStunnerEnabled
-        )
+        })
       }
     >
       {children}

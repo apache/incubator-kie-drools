@@ -45,6 +45,7 @@ export interface ProcessListGatewayApi {
     rootProcessInstanceId: string
   ): Promise<ProcessInstance[]>;
   onOpenProcessListen: (listener: OnOpenProcessListener) => UnSubscribeHandler;
+  openTriggerCloudEvent(processInstance?: ProcessInstance): void;
 }
 
 export interface ProcessListState {
@@ -173,5 +174,9 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
     return {
       unSubscribe
     };
+  }
+
+  openTriggerCloudEvent(processInstance?: ProcessInstance): void {
+    console.info('not supported');
   }
 }

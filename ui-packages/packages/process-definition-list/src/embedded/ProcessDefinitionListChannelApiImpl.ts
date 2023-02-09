@@ -47,4 +47,8 @@ export class ProcessDefinitionListChannelApiImpl
   > {
     return this.driver.getProcessDefinitionsQuery();
   }
+
+  processDefinitionsList__openTriggerCloudEvent(): void {
+    this.driver.openTriggerCloudEvent();
+  }
 }
