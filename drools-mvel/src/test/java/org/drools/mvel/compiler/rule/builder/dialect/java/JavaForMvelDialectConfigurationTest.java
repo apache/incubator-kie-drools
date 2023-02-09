@@ -33,11 +33,10 @@ public class JavaForMvelDialectConfigurationTest {
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("13");
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("14");
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("15");
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void java16NotSupported() {
         new JavaForMvelDialectConfiguration().setJavaLanguageLevel("16");
+        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("17");
+        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("18");
+        new JavaForMvelDialectConfiguration().setJavaLanguageLevel("19");
     }
 
 }
