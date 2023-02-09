@@ -61,10 +61,10 @@ public class FEELExpressionsTest extends BaseFEELTest {
 
                 // unary test invocation
                 {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE , null},
-                {"{ is eighteen : = 18, bob is eighteen : is eighteen(18 ) }.bob is eighteen", Boolean.TRUE , null},
-                {"{ is eighteen : = 18, bob is eighteen : is eighteen(17 ) }.bob is eighteen", Boolean.FALSE , null},
-                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(18 ) }.bob is not eighteen", Boolean.FALSE , null},
-                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(17 ) }.bob is not eighteen", Boolean.TRUE , null},
+                {"{ is eighteen : = 18, bob is eighteen : is eighteen(18) }.bob is eighteen", Boolean.TRUE , null},
+                {"{ is eighteen : = 18, bob is eighteen : is eighteen(17) }.bob is eighteen", Boolean.FALSE , null},
+                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(18) }.bob is not eighteen", Boolean.FALSE , null},
+                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(17) }.bob is not eighteen", Boolean.TRUE , null},
 
                 // negated unary tests
                 {"10 in ( not( <5, >=20, =15, !=10 ) )", Boolean.FALSE, FEELEvent.Severity.ERROR},
