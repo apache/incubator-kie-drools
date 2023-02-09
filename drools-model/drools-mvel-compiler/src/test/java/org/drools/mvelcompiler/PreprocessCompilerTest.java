@@ -25,7 +25,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class ModifyCompilerTest implements CompilerTest {
+public class PreprocessCompilerTest implements CompilerTest {
 
     @Test
     public void testUncompiledMethod() {
@@ -72,12 +72,47 @@ public class ModifyCompilerTest implements CompilerTest {
              result -> assertThat(allUsedBindings(result)).containsExactlyInAnyOrder("$fact"));
     }
 
+    @Test
+    public void testMultiLineStringLiteral() {
+        test(" { java.lang.String s = \"\"\"\n" +
+                     "                      Pikachu\n" +
+                     "                      Is\n" +
+                     "                      Yellow\n" +
+                     "                      \"\"\"; " +
+                     "}",
+             " { java.lang.String s = \"Pikachu\\nIs\\nYellow\\n\"; }");
+    }
+
+    @Test
+    public void testMultiLineStringLiteralAsMethodCallExpr() {
+        test(" { java.lang.String s = \"\"\"\n" +
+                     "                      Charmander\n" +
+                     "                      Is\n" +
+                     "                      Red\n" +
+                     "                      \"\"\"" +
+                     ".formatted(2); " +
+                     "        " +
+                     "}",
+             " { java.lang.String s = \"Charmander\\nIs\\nRed\\n\".formatted(2); }");
+    }
+
+    @Test
+    public void testMultiLineStringWithStringCharacterInside() {
+        test(" { java.lang.String s = \"\"\"\n" +
+                     "                      Bulbasaur\n" +
+                     "                      Is\n" +
+                     "                      \"Green\"\n" +
+                     "                      \"\"\";\n" +
+                     "}",
+             " { java.lang.String s = \"Bulbasaur\\nIs\\n\\\"Green\\\"\\n\"; }");
+    }
+
     @Override
     public void test(Consumer<MvelCompilerContext> testFunction,
                       String inputExpression,
                       String expectedResult,
                       Consumer<CompiledBlockResult> resultAssert) {
-        CompiledBlockResult compiled = new ModifyCompiler().compile(inputExpression);
+        CompiledBlockResult compiled = new PreprocessCompiler().compile(inputExpression);
         assertThat(compiled.resultAsString()).isEqualToIgnoringWhitespace(expectedResult);
         resultAssert.accept(compiled);
     }

@@ -28,8 +28,8 @@ import java.util.List;
  */
 public class JavaCompilerSettings {
 
-    private String targetVersion = "15";
-    private String sourceVersion = "15";
+    private String targetVersion = "1.8";
+    private String sourceVersion = "1.8";
     private String sourceEncoding = "UTF-8";
     private boolean warnings = false;
     private boolean deprecations = false;

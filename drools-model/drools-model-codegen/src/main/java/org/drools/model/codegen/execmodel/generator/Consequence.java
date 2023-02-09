@@ -60,7 +60,7 @@ import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
 import org.drools.model.codegen.execmodel.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
-import org.drools.mvelcompiler.ModifyCompiler;
+import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.util.StringUtils;
 
@@ -226,7 +226,7 @@ public class Consequence {
     }
     private BlockStmt rewriteConsequence(String consequence) {
         try {
-            String ruleConsequenceAsBlock = rewriteModifyBlock(consequence.trim());
+            String ruleConsequenceAsBlock = preprocessConsequence(consequence.trim());
             return parseBlock( ruleConsequenceAsBlock );
         } catch (MvelCompilerException | ParseProblemException e) {
             context.addCompilationError( new InvalidExpressionErrorResult( "Unable to parse consequence caused by: " + e.getMessage(), Optional.of(context.getRuleDescr()) ) );
@@ -314,14 +314,16 @@ public class Consequence {
         return onCall;
     }
 
-    private String rewriteModifyBlock(String consequence) {
+    private String preprocessConsequence(String consequence) {
         int modifyPos = StringUtils.indexOfOutOfQuotes(consequence, "modify");
-        if (modifyPos < 0) {
+        int textBlockPos = StringUtils.indexOfOutOfQuotes(consequence, "\"\"\"");
+
+        if (modifyPos < 0 && textBlockPos < 0) {
             return consequence;
         }
 
-        ModifyCompiler modifyCompiler = new ModifyCompiler();
-        CompiledBlockResult compile = modifyCompiler.compile(addCurlyBracesToBlock(consequence));
+        PreprocessCompiler preprocessCompiler = new PreprocessCompiler();
+        CompiledBlockResult compile = preprocessCompiler.compile(addCurlyBracesToBlock(consequence));
 
         return printNode(compile.statementResults());
     }
@@ -400,7 +402,7 @@ public class Consequence {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties(methodCallExprs, updateExpr, updatedVar, updatedClass );
-                        modifiedProps.addAll(findModifiedPropertiesFromAssignment(assignExprs, updateExpr, updatedVar, updatedClass ));
+                        modifiedProps.addAll(findModifiedPropertiesFromAssignment(assignExprs, updatedVar));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
                         if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
@@ -504,7 +506,7 @@ public class Consequence {
         return modifiedProps;
     }
 
-    private Set<String> findModifiedPropertiesFromAssignment(List<AssignExpr> assignExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass) {
+    private Set<String> findModifiedPropertiesFromAssignment(List<AssignExpr> assignExprs, String updatedVar) {
         Set<String> modifiedProps = new HashSet<>();
         for (AssignExpr assignExpr : assignExprs) {
             Expression target = assignExpr.getTarget();
