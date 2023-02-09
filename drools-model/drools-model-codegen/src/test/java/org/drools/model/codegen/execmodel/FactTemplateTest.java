@@ -1355,4 +1355,37 @@ public class FactTemplateTest {
         ksession.insert(testFact4);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
+
+    @Test
+    public void testComparisonWithDifferentNumericTypes() {
+        // DROOLS-7332
+        Prototype personFact = prototype( "org.drools.FactPerson", "name", "age" );
+
+        PrototypeVariable markV = variable( personFact );
+
+        Rule rule = rule( "r" )
+                .build(
+                        protoPattern(markV).expr(prototypeField("age"), Index.ConstraintType.GREATER_THAN, fixedValue(17.5)),
+                        DSL.on(markV).execute((drools, p1) ->
+                                drools.insert(new Result( p1.get("name") )))
+                );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        assertThat(hasFactTemplateObjectType(ksession, "FactPerson")).isTrue();
+
+        Fact mark = createMapBasedFact( personFact );
+        mark.set( "name", "Mark" );
+        mark.set( "age", 18 );
+
+        ksession.insert( mark );
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjectsIntoList(ksession, Result.class);
+        assertThat(results).contains(new Result("Mark"));
+    }
 }

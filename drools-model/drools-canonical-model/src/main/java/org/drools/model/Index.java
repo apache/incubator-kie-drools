@@ -17,6 +17,7 @@
 
 package org.drools.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
@@ -79,16 +80,25 @@ public interface Index<A, V> {
                 case NOT_EQUAL:
                     return (t,v) -> !Objects.equals(t, v);
                 case GREATER_THAN:
-                    return (t,v) -> t != null && ((Comparable) t).compareTo(v) > 0;
+                    return (t,v) -> t != null && compare((Comparable) t, v) > 0;
                 case GREATER_OR_EQUAL:
-                    return (t,v) -> t != null && ((Comparable) t).compareTo(v) >= 0;
+                    return (t,v) -> t != null && compare((Comparable) t, v) >= 0;
                 case LESS_THAN:
-                    return (t,v) -> t != null && ((Comparable) t).compareTo(v) < 0;
+                    return (t,v) -> t != null && compare((Comparable) t, v) < 0;
                 case LESS_OR_EQUAL:
-                    return (t,v) -> t != null && ((Comparable) t).compareTo(v) <= 0;
+                    return (t,v) -> t != null && compare((Comparable) t, v) <= 0;
                 default:
                     throw new UnsupportedOperationException("Cannot convert " + this + " into a predicate");
             }
+        }
+
+        private <T, V> int compare(Comparable t, V v) {
+            if (t.getClass() != v.getClass() && t instanceof Number) {
+                BigDecimal b1 = BigDecimal.valueOf(((Number) t).doubleValue());
+                BigDecimal b2 = BigDecimal.valueOf(((Number) v).doubleValue());
+                return b1.compareTo(b2);
+            }
+            return t.compareTo(v);
         }
 
         public ConstraintType inverse() {
