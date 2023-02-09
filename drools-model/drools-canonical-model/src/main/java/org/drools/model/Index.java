@@ -80,25 +80,26 @@ public interface Index<A, V> {
                 case NOT_EQUAL:
                     return (t,v) -> !Objects.equals(t, v);
                 case GREATER_THAN:
-                    return (t,v) -> t != null && compare((Comparable) t, v) > 0;
+                    return (t,v) -> t != null && compare(t, v) > 0;
                 case GREATER_OR_EQUAL:
-                    return (t,v) -> t != null && compare((Comparable) t, v) >= 0;
+                    return (t,v) -> t != null && compare(t, v) >= 0;
                 case LESS_THAN:
-                    return (t,v) -> t != null && compare((Comparable) t, v) < 0;
+                    return (t,v) -> t != null && compare(t, v) < 0;
                 case LESS_OR_EQUAL:
-                    return (t,v) -> t != null && compare((Comparable) t, v) <= 0;
+                    return (t,v) -> t != null && compare(t, v) <= 0;
                 default:
                     throw new UnsupportedOperationException("Cannot convert " + this + " into a predicate");
             }
         }
 
-        private <T, V> int compare(Comparable t, V v) {
-            if (t.getClass() != v.getClass() && t instanceof Number) {
-                BigDecimal b1 = t instanceof BigDecimal ? (BigDecimal) t : BigDecimal.valueOf(((Number) t).doubleValue());
-                BigDecimal b2 = v instanceof BigDecimal ? (BigDecimal) v : BigDecimal.valueOf(((Number) v).doubleValue());
-                return b1.compareTo(b2);
-            }
-            return t.compareTo(v);
+        private <T, V> int compare(Object o1, Object o2) {
+            return o1.getClass() != o2.getClass() && o1 instanceof Number ?
+                    asBigDecimal(o1).compareTo(asBigDecimal(o2)) :
+                    ((Comparable) o1).compareTo(o2);
+        }
+
+        private BigDecimal asBigDecimal(Object obj) {
+            return obj instanceof BigDecimal ? (BigDecimal) obj : BigDecimal.valueOf(((Number) obj).doubleValue());
         }
 
         public ConstraintType inverse() {
