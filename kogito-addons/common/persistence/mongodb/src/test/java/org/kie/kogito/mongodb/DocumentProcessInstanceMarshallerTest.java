@@ -17,7 +17,6 @@ package org.kie.kogito.mongodb;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Collections;
 
 import org.bson.Document;
@@ -69,8 +68,6 @@ class DocumentProcessInstanceMarshallerTest {
         assertThat(processInstance.id()).isEqualTo(doc.get("id"));
         assertThat(processInstance.description()).isEqualTo(doc.get("description"))
                 .isEqualTo("User Task");
-        Collection<? extends ProcessInstance<BpmnVariables>> values = process.instances().values();
-        assertThat(values).isNotEmpty();
         BpmnVariables variables = processInstance.variables();
         String testVar = (String) variables.get("test");
         assertThat(testVar).isEqualTo("testValue");

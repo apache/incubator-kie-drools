@@ -15,14 +15,14 @@
  */
 package org.kie.kogito.persistence.kafka;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -39,7 +39,6 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static java.lang.String.format;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 public class KafkaProcessInstances implements MutableProcessInstances {
 
@@ -96,11 +95,11 @@ public class KafkaProcessInstances implements MutableProcessInstances {
 
     @Override
     public boolean exists(String id) {
-        return getProcessInstanceById(id) != null;
+        return getProcessInstanceById(id).isPresent();
     }
 
-    protected byte[] getProcessInstanceById(String id) {
-        return getStore().get(getKeyForProcessInstance(id));
+    protected Optional<byte[]> getProcessInstanceById(String id) {
+        return Optional.ofNullable(getStore().get(getKeyForProcessInstance(id)));
     }
 
     protected String getKeyForProcessInstance(String id) {
@@ -114,12 +113,11 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     @Override
     public void create(String id, ProcessInstance instance) {
         if (isActive(instance)) {
-            if (getProcessInstanceById(id) != null) {
+            if (getProcessInstanceById(id).isPresent()) {
                 throw new ProcessInstanceDuplicatedException(id);
             }
-            byte[] data = marshaller.marshallProcessInstance(instance);
             try {
-                sendKafkaRecord(id, data);
+                sendKafkaRecord(id, marshaller.marshallProcessInstance(instance));
             } catch (Exception e) {
                 throw new RuntimeException("Unable to persist process instance id: " + id, e);
             }
@@ -149,42 +147,19 @@ public class KafkaProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        byte[] data = getProcessInstanceById(id);
-        if (data == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
+    public Optional<ProcessInstance<?>> findById(String id, ProcessInstanceReadMode mode) {
+        return getProcessInstanceById(id).map(marshaller.createUnmarshallFunction(process, mode));
     }
 
     @Override
-    public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
-        final List<ProcessInstance> instances = new ArrayList<>();
-        try (final KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer())) {
-            while (iterator.hasNext()) {
-                instances.add(mode == MUTABLE ? marshaller.unmarshallProcessInstance(iterator.next().value, process) : marshaller.unmarshallReadOnlyProcessInstance(iterator.next().value, process));
-            }
-            return instances;
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to read process instances ", e);
-        }
+    public Stream<ProcessInstance<?>> stream(ProcessInstanceReadMode mode) {
+        KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer());
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
+                .map(k -> k.value)
+                .map(marshaller.createUnmarshallFunction(process, mode)).onClose(iterator::close);
     }
 
-    @Override
-    public Integer size() {
-        int size = 0;
-        try (KeyValueIterator<String, byte[]> iterator = getStore().prefixScan(getProcess().id(), Serdes.String().serializer())) {
-            while (iterator.hasNext()) {
-                size++;
-                iterator.next();
-            }
-        }
-        return size;
-    }
-
-    protected void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> getProcessInstanceById(instance.id());
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+    protected void disconnect(ProcessInstance<?> instance) {
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> getProcessInstanceById(instance.id()).orElseThrow()));
     }
 }

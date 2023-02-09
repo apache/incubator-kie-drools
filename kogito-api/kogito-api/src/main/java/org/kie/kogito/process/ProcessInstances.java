@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.process;
 
-import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface ProcessInstances<T> {
 
@@ -26,11 +26,9 @@ public interface ProcessInstances<T> {
 
     Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode);
 
-    default Collection<ProcessInstance<T>> values() {
-        return values(ProcessInstanceReadMode.READ_ONLY);
+    Stream<ProcessInstance<T>> stream(ProcessInstanceReadMode mode);
+
+    default Stream<ProcessInstance<T>> stream() {
+        return stream(ProcessInstanceReadMode.READ_ONLY);
     }
-
-    Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode);
-
-    Integer size();
 }

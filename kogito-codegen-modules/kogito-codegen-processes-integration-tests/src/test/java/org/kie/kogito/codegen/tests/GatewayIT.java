@@ -30,6 +30,7 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 
 public class GatewayIT extends AbstractCodegenIT {
 
@@ -57,7 +58,7 @@ public class GatewayIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
 
         // not test the other branch
         processInstance = p.createInstance(m);
@@ -73,7 +74,7 @@ public class GatewayIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("value");
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 
 }

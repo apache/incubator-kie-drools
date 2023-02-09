@@ -39,6 +39,8 @@ import org.kie.kogito.uow.UnitOfWork;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -127,7 +129,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(2).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 
     @Test
@@ -165,7 +167,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 
     @Test
@@ -192,7 +194,7 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(result.toMap()).hasSize(1).containsKey("x");
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 
     @Test
@@ -216,7 +218,7 @@ public class SignalEventIT extends AbstractCodegenIT {
 
         uow.end();
         // after the unit of work is ended process instance shows up in the list
-        assertThat(p.instances().size()).isEqualTo(1);
+        assertOne(p.instances());
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
@@ -239,9 +241,9 @@ public class SignalEventIT extends AbstractCodegenIT {
         assertThat(result.toMap().get("x")).isEqualTo("test");
 
         // since the unit of work is not ended yet there is still instance visible
-        assertThat(p.instances().size()).isEqualTo(1);
+        assertOne(p.instances());
         uow.end();
         // after unit of work is ended instance is gone from the list
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 }

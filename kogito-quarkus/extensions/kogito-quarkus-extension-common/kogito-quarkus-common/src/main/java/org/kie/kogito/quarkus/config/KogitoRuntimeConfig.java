@@ -36,4 +36,10 @@ public class KogitoRuntimeConfig {
      */
     @ConfigItem(name = "quarkus.events")
     public KogitoEventingRuntimeConfig eventingConfig;
+
+    /**
+     * Maximum number of process instance to be returned by GET api
+     */
+    @ConfigItem(name = "process.instances.limit", defaultValue = "1000")
+    public short processInstanceLimit;
 }

@@ -42,6 +42,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.topicName;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -81,6 +82,7 @@ public class KafkaProcessInstancesTest {
         instances = new KafkaProcessInstances(process, producer);
         instances.setStore(store);
         instances.setMarshaller(marshaller);
+        lenient().when(marshaller.createUnmarshallFunction(any(), any())).thenCallRealMethod();
     }
 
     @Test
@@ -123,53 +125,68 @@ public class KafkaProcessInstancesTest {
 
     @Test
     public void testProcessInstancesFindById() {
-        doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallProcessInstance(any(), any());
+        doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallProcessInstance(any(), any(), eq(ProcessInstanceReadMode.MUTABLE));
 
         doReturn(new byte[] {}).when(store).get(storedId);
 
         assertThat(instances.findById(id)).isPresent();
         assertThat(instances.findById(UUID.randomUUID().toString())).isNotPresent();
-        verify(marshaller).unmarshallProcessInstance(any(), any());
     }
 
     @Test
     public void testProcessInstancesFindByIdReadOnly() {
-        doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallReadOnlyProcessInstance(any(), any());
+        doReturn(mock(ProcessInstance.class)).when(marshaller).unmarshallProcessInstance(any(), any(), eq(ProcessInstanceReadMode.READ_ONLY));
 
         doReturn(new byte[] {}).when(store).get(storedId);
 
         assertThat(instances.findById(id, ProcessInstanceReadMode.READ_ONLY)).isPresent();
         assertThat(instances.findById(UUID.randomUUID().toString(), ProcessInstanceReadMode.READ_ONLY)).isNotPresent();
-        verify(marshaller).unmarshallReadOnlyProcessInstance(any(), any());
+    }
+
+    private static class KeyValueIteratorMock implements KeyValueIterator<String, String> {
+        boolean hasNext = true;
+
+        @Override
+        public boolean hasNext() {
+            boolean current = hasNext;
+            hasNext = false;
+            return current;
+        }
+
+        @Override
+        public KeyValue<String, String> next() {
+            return mock(KeyValue.class);
+        }
+
+        @Override
+        public void close() {
+        }
+
+        @Override
+        public String peekNextKey() {
+            return "";
+        }
     }
 
     @Test
     public void testProcessInstancesValues() {
-        KeyValueIterator iterator = mock(KeyValueIterator.class);
-        when(iterator.hasNext()).thenReturn(true, false);
-        when(iterator.next()).thenReturn(mock(KeyValue.class));
+        KeyValueIteratorMock iterator = new KeyValueIteratorMock();
         doReturn(iterator).when(store).prefixScan(eq(processId), any());
-
-        assertThat(instances.values()).hasSize(1);
-        verify(marshaller).unmarshallReadOnlyProcessInstance(any(), any());
+        assertOne(instances);
     }
 
     @Test
-    public void testProcessInstancesValuesReadOnly() {
-        KeyValueIterator iterator = mock(KeyValueIterator.class);
-        when(iterator.hasNext()).thenReturn(true, false);
-        when(iterator.next()).thenReturn(mock(KeyValue.class));
+    public void testProcessInstancesValuesMutable() {
+        KeyValueIteratorMock iterator = new KeyValueIteratorMock();
         doReturn(iterator).when(store).prefixScan(eq(processId), any());
-
-        assertThat(instances.values(ProcessInstanceReadMode.MUTABLE)).hasSize(1);
-        verify(marshaller).unmarshallProcessInstance(any(), any());
+        assertOne(instances, ProcessInstanceReadMode.MUTABLE);
     }
 
     @Test
     public void testProcessInstancesSize() {
         doReturn(mock(KeyValueIterator.class)).when(store).prefixScan(eq(processId), any());
 
-        assertThat(instances.size()).isZero();
+        assertEmpty(instances);
     }
 
     @Test

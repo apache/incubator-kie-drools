@@ -18,6 +18,7 @@ package org.kie.kogito.persistence.kafka;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.streams.KafkaStreams;
@@ -53,6 +54,9 @@ import static org.kie.api.runtime.process.ProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.persistence.kafka.KafkaPersistenceUtils.createTopologyForProcesses;
 import static org.kie.kogito.process.ProcessInstance.STATE_COMPLETED;
 import static org.kie.kogito.process.ProcessInstance.STATE_ERROR;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abortFirst;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 
 @Testcontainers
 public class KafkaProcessInstancesIT {
@@ -87,6 +91,22 @@ public class KafkaProcessInstancesIT {
         listener.close();
     }
 
+    private <T> void awaitTillOne(ProcessInstances<T> instances) {
+        awaitTillSize(instances, 1);
+    }
+
+    private <T> void awaitTillEmpty(ProcessInstances<T> instances) {
+        awaitTillSize(instances, 0);
+    }
+
+    private <T> void awaitTillSize(ProcessInstances<T> instances, int size) {
+        await().atMost(TIMEOUT).until(() -> {
+            try (Stream<ProcessInstance<T>> stream = instances.stream()) {
+                return stream.count() == size;
+            }
+        });
+    }
+
     @Test
     void testFindByIdReadMode() {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
@@ -97,7 +117,7 @@ public class KafkaProcessInstancesIT {
         listener.getKafkaStreams().start();
 
         ProcessInstances<BpmnVariables> instances = process.instances();
-        assertThat(instances.size()).isZero();
+        assertEmpty(instances);
 
         ProcessInstance<BpmnVariables> mutablePi = process.createInstance(BpmnVariables.create(singletonMap("var", "value")));
 
@@ -108,8 +128,6 @@ public class KafkaProcessInstancesIT {
             assertThat(error.failedNodeId()).isEqualTo("ScriptTask_1");
         });
         assertThat(mutablePi.variables().toMap()).containsExactly(entry("var", "value"));
-
-        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
 
         ProcessInstance<BpmnVariables> pi = instances.findById(mutablePi.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
@@ -124,7 +142,7 @@ public class KafkaProcessInstancesIT {
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> readOnlyPi.abort());
 
         instances.findById(mutablePi.id()).get().abort();
-        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
+        awaitTillEmpty(instances);
     }
 
     @Test
@@ -136,18 +154,18 @@ public class KafkaProcessInstancesIT {
         listener.getKafkaStreams().start();
 
         ProcessInstances<BpmnVariables> instances = process.instances();
-        assertThat(instances.size()).isZero();
+        assertEmpty(instances);
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
 
         processInstance.start();
 
-        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
+        awaitTillOne(instances);
 
-        ProcessInstance<BpmnVariables> pi = instances.values().stream().findFirst().get();
+        ProcessInstance<BpmnVariables> pi = getFirst(instances);
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> pi.abort());
-        instances.values(ProcessInstanceReadMode.MUTABLE).stream().findFirst().get().abort();
-        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
+        abortFirst(instances);
+        awaitTillEmpty(instances);
     }
 
     @Test
@@ -159,18 +177,18 @@ public class KafkaProcessInstancesIT {
         listener.getKafkaStreams().start();
 
         ProcessInstances<BpmnVariables> instances = process.instances();
-        assertThat(instances.size()).isZero();
+        assertEmpty(instances);
 
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(singletonMap("test", "test")));
 
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        await().atMost(TIMEOUT).until(() -> instances.values().size() == 1);
+        awaitTillOne(instances);
 
         SecurityPolicy asJohn = SecurityPolicy.of(IdentityProviders.of("john"));
 
-        assertThat(instances.values().iterator().next().workItems(asJohn)).hasSize(1);
+        assertThat(getFirst(instances).workItems(asJohn)).hasSize(1);
 
         List<WorkItem> workItems = processInstance.workItems(asJohn);
         assertThat(workItems).hasSize(1);
@@ -178,7 +196,7 @@ public class KafkaProcessInstancesIT {
         assertEquals("john", workItem.getParameters().get("ActorId"));
         processInstance.completeWorkItem(workItem.getId(), null, asJohn);
         assertEquals(STATE_COMPLETED, processInstance.status());
-        await().atMost(TIMEOUT).until(() -> instances.size() == 0);
+        awaitTillEmpty(instances);
     }
 
     KafkaStreams createStreams() {

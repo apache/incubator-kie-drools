@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.tests;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,10 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.Processes;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertSize;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 
 public class TimerEventIT extends AbstractCodegenIT {
 
@@ -237,10 +240,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
-        Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
-        assertThat(instances).hasSize(1);
-
-        ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
+        ProcessInstance<?> processInstance = getFirst(p.instances());
         assertThat(processInstance).isNotNull();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
@@ -248,7 +248,7 @@ public class TimerEventIT extends AbstractCodegenIT {
         processInstance.abort();
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
 
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 
     @Test
@@ -266,10 +266,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
-        Collection<?> instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
-        assertThat(instances).hasSize(2);
+        assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2);
 
-        ProcessInstance<?> processInstance = (ProcessInstance<?>) instances.iterator().next();
+        ProcessInstance<?> processInstance = getFirst(p.instances());
         assertThat(processInstance).isNotNull();
 
         assertThat(processInstance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
@@ -281,10 +280,9 @@ public class TimerEventIT extends AbstractCodegenIT {
         completed = listener.waitTillCompleted(3000);
         assertThat(completed).isFalse();
         // same amount of instances should be active as before deactivation
-        instances = p.instances().values(ProcessInstanceReadMode.MUTABLE);
-        assertThat(instances).hasSize(2);
-        // clean up by aborting all instances
-        instances.forEach(i -> ((ProcessInstance<?>) i).abort());
-        assertThat(p.instances().size()).isZero();
+
+        assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2);
+        abort(p.instances());
+        assertEmpty(p.instances());
     }
 }

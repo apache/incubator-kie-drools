@@ -24,6 +24,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jbpm.process.core.ProcessSupplier;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -54,7 +55,6 @@ import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.ProcessVersionResolver;
@@ -166,7 +166,9 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
 
     @Override
     public <S> void send(Signal<S> signal) {
-        instances().values(ProcessInstanceReadMode.MUTABLE).forEach(pi -> pi.send(signal));
+        try (Stream<ProcessInstance<T>> stream = instances.stream()) {
+            stream.forEach(pi -> pi.send(signal));
+        }
     }
 
     public Process<T> configure() {

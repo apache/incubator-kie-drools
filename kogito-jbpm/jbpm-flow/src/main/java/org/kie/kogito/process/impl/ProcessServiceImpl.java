@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
@@ -33,6 +34,7 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.process.Process;
@@ -51,9 +53,11 @@ import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 public class ProcessServiceImpl implements ProcessService {
 
     private final Application application;
+    private final short processInstanceLimit;
 
     public ProcessServiceImpl(Application application) {
         this.application = application;
+        this.processInstanceLimit = application.config().get(ConfigBean.class).processInstanceLimit();
     }
 
     @Override
@@ -92,10 +96,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public <T extends MappableToModel<R>, R> List<R> getProcessInstanceOutput(Process<T> process) {
-        return process.instances().values().stream()
-                .map(ProcessInstance::variables)
-                .map(MappableToModel::toModel)
-                .collect(Collectors.toList());
+        try (Stream<ProcessInstance<T>> stream = process.instances().stream().limit(processInstanceLimit)) {
+            return stream.map(ProcessInstance::variables)
+                    .map(MappableToModel::toModel)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override

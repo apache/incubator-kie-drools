@@ -25,16 +25,21 @@ import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +53,7 @@ abstract class AbstractProcessInstancesIT {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(factory);
         process.configure();
-        process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
+        abort(process.instances());
         return process;
     }
 
@@ -76,7 +81,6 @@ abstract class AbstractProcessInstancesIT {
         assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
         assertThat(processInstances.exists(processInstance.id())).isTrue();
         verify(processInstances).create(any(), any());
 
@@ -85,7 +89,7 @@ abstract class AbstractProcessInstancesIT {
 
         assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
-        assertThat(process.instances().values().iterator().next().workItems(securityPolicy)).hasSize(1);
+        assertThat(getFirst(processInstances).workItems(securityPolicy)).hasSize(1);
 
         WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
         assertThat(workItem).isNotNull();
@@ -95,8 +99,7 @@ abstract class AbstractProcessInstancesIT {
 
         processInstances = (JDBCProcessInstances) process.instances();
         verify(processInstances, times(1)).remove(processInstance.id());
-        assertThat(processInstances.size()).isZero();
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(process.instances());
     }
 
     @Test
@@ -114,25 +117,21 @@ abstract class AbstractProcessInstancesIT {
         ((JDBCProcessInstances) utProcess.instances()).remove(scriptProcessInstance.id());
         ((JDBCProcessInstances) scriptProcess.instances()).remove(utProcessInstance.id());
 
-        assertThat(utProcess.instances().size()).isOne();
-        assertThat(utProcess.instances().values()).hasSize(1);
+        assertOne(utProcess.instances());
         assertThat(utProcess.instances().findById(utProcessInstance.id())).isPresent();
         assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
 
-        assertThat(scriptProcess.instances().size()).isOne();
-        assertThat(scriptProcess.instances().values()).hasSize(1);
+        assertOne(scriptProcess.instances());
         assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isPresent();
         assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
 
         ((JDBCProcessInstances) utProcess.instances()).remove(utProcessInstance.id());
-        assertThat(utProcess.instances().size()).isZero();
-        assertThat(utProcess.instances().values()).isEmpty();
+        assertEmpty(utProcess.instances());
         assertThat(utProcess.instances().findById(utProcessInstance.id())).isEmpty();
         assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
 
         ((JDBCProcessInstances) scriptProcess.instances()).remove(scriptProcessInstance.id());
-        assertThat(scriptProcess.instances().size()).isZero();
-        assertThat(scriptProcess.instances().values()).isEmpty();
+        assertEmpty(scriptProcess.instances());
         assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
         assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
     }
@@ -146,19 +145,16 @@ abstract class AbstractProcessInstancesIT {
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         processInstances.update(processInstance.id(), instanceOne);
 
-        assertThat(processInstances.size()).isOne();
         assertThat(processInstances.exists(TEST_ID)).isFalse();
         Optional<?> foundTwo = processInstances.findById(TEST_ID);
         assertThat(foundTwo).isEmpty();
 
         processInstances.remove(processInstance.id());
-        assertThat(processInstances.size()).isZero();
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(process.instances());
     }
 
     @Test
@@ -177,7 +173,6 @@ abstract class AbstractProcessInstancesIT {
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
@@ -199,8 +194,7 @@ abstract class AbstractProcessInstancesIT {
         assertThat(instanceOne.version()).isEqualTo(lock() ? 2L : 0);
 
         processInstances.remove(processInstance.id());
-        assertThat(processInstances.size()).isZero();
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(process.instances());
     }
 
     @Test
@@ -211,7 +205,7 @@ abstract class AbstractProcessInstancesIT {
         processInstance.start();
 
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
+        assertOne(processInstances);
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
@@ -221,7 +215,7 @@ abstract class AbstractProcessInstancesIT {
 
         processInstances.remove(instanceOne.id());
         processInstances.remove(instanceTwo.id());
-        assertThat(processInstances.size()).isZero();
+        assertEmpty(processInstances);
     }
 
     @Test
@@ -239,22 +233,20 @@ abstract class AbstractProcessInstancesIT {
         JDBCProcessInstances processInstancesV1 = (JDBCProcessInstances) processV1.instances();
         JDBCProcessInstances processInstancesV2 = (JDBCProcessInstances) processV2.instances();
 
-        assertThat(processInstancesV1.size()).isOne();
+        assertOne(processInstancesV1);
         assertThat(processInstancesV1.findById(processInstanceV1.id())).isPresent();
-        assertThat(processInstancesV2.size()).isZero();
 
+        assertEmpty(processInstancesV2);
         ProcessInstance<BpmnVariables> processInstanceV2 = processV2.createInstance(BpmnVariables.create(singletonMap("test", "test")));
         processInstanceV2.start();
-
-        assertThat(processInstancesV2.size()).isOne();
+        assertOne(processInstancesV2);
         assertThat(processInstancesV2.findById(processInstanceV2.id())).isPresent();
 
         processInstancesV1.remove(processInstanceV1.id());
-        assertThat(processInstancesV1.size()).isZero();
-        assertThat(processV1.instances().values()).isEmpty();
+        assertEmpty(processInstancesV1);
 
-        assertThat(processInstancesV2.size()).isOne();
+        assertOne(processInstancesV2);
         processInstancesV2.remove(processInstanceV2.id());
-        assertThat(processInstancesV2.size()).isZero();
+        assertEmpty(processInstancesV2);
     }
 }

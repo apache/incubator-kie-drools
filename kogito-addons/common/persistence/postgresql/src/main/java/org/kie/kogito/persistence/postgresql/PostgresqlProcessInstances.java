@@ -15,18 +15,13 @@
  */
 package org.kie.kogito.persistence.postgresql;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.kie.kogito.process.MutableProcessInstances;
@@ -36,34 +31,26 @@ import org.kie.kogito.process.ProcessInstanceOptimisticLockingException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Row;
-import io.vertx.sqlclient.RowIterator;
 import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
-
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({ "rawtypes" })
 public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     private static final String VERSION = "version";
-
     private static final String PAYLOAD = "payload";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresqlProcessInstances.class);
     private static final String IS_NULL = "is null";
     private static final String INSERT = "INSERT INTO process_instances (id, payload, process_id, process_version, version) VALUES ($1, $2, $3, $4, $5)";
     private static final String UPDATE = "UPDATE process_instances SET payload = $1 WHERE process_id = $2 and id = $3 and process_version ";
     private static final String DELETE = "DELETE FROM process_instances WHERE process_id = $1 and id = $2 and process_version ";
     private static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE process_id = $1 and id = $2 and process_version ";
-    private static final String FIND_ALL = "SELECT payload FROM process_instances WHERE process_id = $1 and process_version ";
-    private static final String COUNT = "SELECT COUNT(id) FROM process_instances WHERE process_id = $1 and process_version ";
+    private static final String FIND_ALL = "SELECT payload, version FROM process_instances WHERE process_id = $1 and process_version ";
     private static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = $1, version = $2 WHERE process_id = $3 and id = $4 and version = $5 and process_version ";
 
     private final Process<?> process;
@@ -120,28 +107,27 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        Optional<Row> row = findByIdInternal(UUID.fromString(id));
+        return findByIdInternal(UUID.fromString(id)).map(r -> unmarshall(r, mode));
+    }
 
-        if (row.isPresent()) {
-            Optional<byte[]> payload = row.map(r -> r.getBuffer(PAYLOAD)).map(Buffer::getBytes);
-            if (payload.isPresent()) {
-                ProcessInstance<?> instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(payload.get(), process) : marshaller.unmarshallReadOnlyProcessInstance(payload.get(), process);
-                ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
-                return Optional.of(instance);
-            }
+    @Override
+    public Stream<ProcessInstance> stream(ProcessInstanceReadMode mode) {
+        try {
+            return getResultFromFuture(client.preparedQuery(FIND_ALL + (process.version() == null ? IS_NULL : "= $2")).execute(tuple(process.id())))
+                    .map(r -> StreamSupport.stream(r.spliterator(), false)).orElse(Stream.empty())
+                    .map(row -> unmarshall(row, mode));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw uncheckedException(e, "Error finding all process instances, for processId %s", process.id());
+        } catch (ExecutionException | TimeoutException e) {
+            throw uncheckedException(e, "Error finding all process instances, for processId %s", process.id());
         }
-        return Optional.empty();
     }
 
-    @Override
-    public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
-        return findAllInternal().stream().map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Integer size() {
-        return countInternal().intValue();
+    private ProcessInstance<?> unmarshall(Row r, ProcessInstanceReadMode mode) {
+        AbstractProcessInstance instance = (AbstractProcessInstance) marshaller.unmarshallProcessInstance(r.getBuffer(PAYLOAD).getBytes(), process, mode);
+        instance.setVersion(r.getLong(VERSION));
+        return instance;
     }
 
     @Override
@@ -150,12 +136,10 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
     }
 
     private void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> {
-            Optional<Row> row = findByIdInternal(UUID.fromString(instance.id()));
-            ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
-            return row.map(r -> r.getBuffer(PAYLOAD)).map(Buffer::getBytes).get();
-        };
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> findByIdInternal(UUID.fromString(instance.id())).map(r -> {
+            ((AbstractProcessInstance) instance).setVersion(r.getLong(VERSION));
+            return r.getBuffer(PAYLOAD).getBytes();
+        }).orElseThrow()));
     }
 
     private boolean insertInternal(UUID id, byte[] payload) {
@@ -234,48 +218,12 @@ public class PostgresqlProcessInstances implements MutableProcessInstances {
         }
     }
 
-    private List<byte[]> findAllInternal() {
-        try {
-            Future<RowSet<Row>> future = client.preparedQuery(FIND_ALL + (process.version() == null ? IS_NULL : "= $2"))
-                    .execute(tuple(process.id()));
-            return getResultFromFuture(future).map(r -> StreamSupport.stream(r.spliterator(), false).map(row -> row.getBuffer(PAYLOAD)).map(Buffer::getBytes).collect(Collectors.toList()))
-                    .orElseGet(Collections::emptyList);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw uncheckedException(e, "Error finding all process instances, for processId %s", process.id());
-        } catch (Exception e) {
-            throw uncheckedException(e, "Error finding all process instances, for processId %s", process.id());
-        }
-    }
-
     private Tuple tuple(Object... parameters) {
         Tuple tuple = Tuple.from(parameters);
         if (process.version() != null) {
             tuple.addValue(process.version());
         }
         return tuple;
-    }
-
-    private Long countInternal() {
-        try {
-            Future<RowSet<Row>> future = client.preparedQuery(COUNT + (process.version() == null ? IS_NULL : "= $2"))
-                    .execute(tuple(process.id()));
-            return getResultFromFuture(future).map(RowSet::iterator).map(RowIterator::next).map(row -> row.getLong("count")).orElse(0l);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw uncheckedException(e, "Error counting process instances, for processId %s", process.id());
-        } catch (Exception e) {
-            throw uncheckedException(e, "Error counting process instances, for processId %s", process.id());
-        }
-    }
-
-    private String getQueryFromFile(String scriptName) {
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(String.format("sql/%s.sql", scriptName))) {
-            byte[] buffer = stream.readAllBytes();
-            return new String(buffer);
-        } catch (Exception e) {
-            throw uncheckedException(e, "Error reading query script file %s", scriptName);
-        }
     }
 
     private boolean updateWithLock(UUID id, byte[] payload, long version) {

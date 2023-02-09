@@ -35,6 +35,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -90,7 +91,7 @@ class CacheProcessInstancesWithLockIT {
         when(mockCreatePi.internalGetProcessInstance()).thenReturn(createPi);
         when(mockCreatePi.id()).thenReturn(TEST_ID);
         pi.create(TEST_ID, mockCreatePi);
-        assertThat(pi.size()).isOne();
+        assertOne(pi);
         assertThat(pi.exists(TEST_ID)).isTrue();
 
         WorkflowProcessInstance updatePi = ((AbstractProcessInstance<?>) process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")))).internalGetProcessInstance();

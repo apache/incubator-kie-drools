@@ -30,6 +30,7 @@ import org.kie.kogito.process.Processes;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 
 public class SplitGatewayIT extends AbstractCodegenIT {
 
@@ -49,6 +50,6 @@ public class SplitGatewayIT extends AbstractCodegenIT {
         processInstance.start();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
-        assertThat(p.instances().size()).isZero();
+        assertEmpty(p.instances());
     }
 }

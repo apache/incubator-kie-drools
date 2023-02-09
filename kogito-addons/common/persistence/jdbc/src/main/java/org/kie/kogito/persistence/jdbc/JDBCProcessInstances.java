@@ -15,12 +15,9 @@
  */
 package org.kie.kogito.persistence.jdbc;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -34,12 +31,7 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
-
 public class JDBCProcessInstances implements MutableProcessInstances {
-
-    static final String PAYLOAD = "payload";
-    static final String VERSION = "version";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProcessInstances.class);
 
@@ -102,30 +94,22 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
+    public Optional<ProcessInstance<?>> findById(String id, ProcessInstanceReadMode mode) {
         LOGGER.debug("Find process instance id: {}, mode: {}", id, mode);
-        Map<String, Object> map = repository.findByIdInternal(process.id(), process.version(), UUID.fromString(id));
-        if (map.containsKey(PAYLOAD)) {
-            byte[] b = (byte[]) map.get(PAYLOAD);
-            ProcessInstance<?> instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process)
-                    : marshaller.unmarshallReadOnlyProcessInstance(b, process);
-            ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
-            return Optional.of(instance);
-        }
-        return Optional.empty();
+        return repository.findByIdInternal(process.id(), process.version(), UUID.fromString(id)).map(r -> unmarshall(r, mode));
     }
 
     @Override
-    public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
+    public Stream<ProcessInstance<?>> stream(ProcessInstanceReadMode mode) {
         LOGGER.debug("Find process instance values using mode: {}", mode);
-        return repository.findAllInternal(process.id(), process.version()).stream()
-                .map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process))
-                .collect(Collectors.toList());
+        return repository.findAllInternal(process.id(), process.version())
+                .map(r -> unmarshall(r, mode));
     }
 
-    @Override
-    public Integer size() {
-        return repository.countInternal(process.id(), process.version()).intValue();
+    private ProcessInstance<?> unmarshall(Repository.Record record, ProcessInstanceReadMode mode) {
+        ProcessInstance<?> instance = marshaller.unmarshallProcessInstance(record.getPayload(), process, mode);
+        ((AbstractProcessInstance<?>) instance).setVersion(record.getVersion());
+        return instance;
     }
 
     @Override
@@ -133,12 +117,11 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         return this.lock;
     }
 
-    private void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> {
-            Map<String, Object> map = repository.findByIdInternal(process.id(), process.version(), UUID.fromString(instance.id()));
-            ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
-            return (byte[]) map.get(PAYLOAD);
-        };
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+    private void disconnect(ProcessInstance<?> instance) {
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> {
+            Repository.Record r = repository.findByIdInternal(process.id(), process.version(), UUID.fromString(instance.id())).orElseThrow();
+            ((AbstractProcessInstance<?>) instance).setVersion(r.getVersion());
+            return r.getPayload();
+        }));
     }
 }

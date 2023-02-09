@@ -16,16 +16,15 @@
 package org.kie.kogito.persistence.filesystem;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.kogito.process.MutableProcessInstances;
@@ -35,8 +34,6 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
-
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({ "rawtypes" })
 public class FileSystemProcessInstances implements MutableProcessInstances {
@@ -66,16 +63,6 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public Integer size() {
-        try (Stream<Path> stream = Files.walk(storage)) {
-            Long count = stream.filter(file -> !Files.isDirectory(file)).count();
-            return count.intValue();
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to count process instances ", e);
-        }
-    }
-
-    @Override
     public Optional findById(String id, ProcessInstanceReadMode mode) {
         Path processInstanceStorage = Paths.get(storage.toString(), id);
 
@@ -83,19 +70,18 @@ public class FileSystemProcessInstances implements MutableProcessInstances {
             return Optional.empty();
         }
         byte[] data = readBytesFromFile(processInstanceStorage);
-        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
+        return Optional.of(marshaller.unmarshallProcessInstance(data, process, mode));
     }
 
     @Override
-    public Collection values(ProcessInstanceReadMode mode) {
-        try (Stream<Path> stream = Files.walk(storage)) {
-            return stream
+    public Stream<ProcessInstance> stream(ProcessInstanceReadMode mode) {
+        try {
+            return Files.walk(storage)
                     .filter(file -> !Files.isDirectory(file))
                     .map(this::readBytesFromFile)
-                    .map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process))
-                    .collect(Collectors.toList());
+                    .map(marshaller.createUnmarshallFunction(process, mode));
         } catch (IOException e) {
-            throw new RuntimeException("Unable to read process instances ", e);
+            throw new UncheckedIOException("Unable to read process instances ", e);
         }
     }
 

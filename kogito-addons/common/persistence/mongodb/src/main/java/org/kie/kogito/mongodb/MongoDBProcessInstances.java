@@ -15,10 +15,12 @@
  */
 package org.kie.kogito.mongodb;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -37,7 +39,6 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.ClientSession;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -50,7 +51,6 @@ import com.mongodb.client.result.UpdateResult;
 import static java.util.Collections.singletonMap;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID_INDEX;
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 public class MongoDBProcessInstances<T extends Model> implements MutableProcessInstances<T> {
 
@@ -58,48 +58,36 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     private org.kie.kogito.process.Process<?> process;
     private ProcessInstanceMarshallerService marshaller;
     private final MongoCollection<Document> collection;
-    private AbstractTransactionManager transactionManager;
+    private final AbstractTransactionManager transactionManager;
     private final boolean lock;
 
     public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName, AbstractTransactionManager transactionManager, boolean lock) {
         this.process = process;
-        this.collection = getCollection(mongoClient, process.id(), dbName);
+        this.collection = Objects.requireNonNull(getCollection(mongoClient, process.id(), dbName));
         this.marshaller = ProcessInstanceMarshallerService.newBuilder()
                 .withDefaultObjectMarshallerStrategies()
                 .withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, MarshallerContextName.MARSHALLER_FORMAT_JSON))
                 .build();
-        this.transactionManager = transactionManager;
+        this.transactionManager = Objects.requireNonNull(transactionManager);
         this.lock = lock;
     }
 
     @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
-        Document piDoc = find(id);
-        if (piDoc != null) {
-            ProcessInstance<T> instance = unmarshall(piDoc, mode);
-            setVersion(instance, piDoc.getLong(VERSION));
-            return Optional.of(instance);
-        }
-        return Optional.empty();
+        return find(id).map(piDoc -> unmarshall(piDoc, mode));
     }
 
     @Override
-    public Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode) {
-        FindIterable<Document> docs = Optional.ofNullable(transactionManager.getClientSession())
-                .map(collection::find)
-                .orElseGet(collection::find);
-        List<ProcessInstance<T>> list = new ArrayList<>();
-        try (MongoCursor<Document> cursor = docs.iterator()) {
-            while (cursor.hasNext()) {
-                list.add(unmarshall(cursor.next(), mode));
-            }
-        }
-        return list;
+    public Stream<ProcessInstance<T>> stream(ProcessInstanceReadMode mode) {
+        ClientSession clientSession = transactionManager.getClientSession();
+        MongoCursor<Document> docs = (clientSession == null ? collection.find() : collection.find(clientSession)).iterator();
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(docs, Spliterator.ORDERED), false).map(doc -> unmarshall(doc, mode)).onClose(docs::close);
     }
 
     private ProcessInstance<T> unmarshall(Document document, ProcessInstanceReadMode mode) {
-        byte[] content = document.toJson().getBytes();
-        return mode == MUTABLE ? (ProcessInstance<T>) marshaller.unmarshallProcessInstance(content, process) : (ProcessInstance<T>) marshaller.unmarshallReadOnlyProcessInstance(content, process);
+        ProcessInstance<T> instance = (ProcessInstance<T>) marshaller.unmarshallProcessInstance(document.toJson().getBytes(), process, mode);
+        setVersion(instance, document.getLong(VERSION));
+        return instance;
     }
 
     @Override
@@ -155,19 +143,14 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
         }
     }
 
-    private Document find(String id) {
-        if (transactionManager == null || collection == null) {
-            throw new IllegalArgumentException("Transaction manager is null");
-        }
-
-        return Optional.ofNullable(transactionManager.getClientSession())
-                .map(r -> collection.find(r, Filters.eq(PROCESS_INSTANCE_ID, id)).first())
-                .orElseGet(() -> collection.find(Filters.eq(PROCESS_INSTANCE_ID, id)).first());
+    private Optional<Document> find(String id) {
+        ClientSession clientSession = transactionManager.getClientSession();
+        return Optional.ofNullable((clientSession != null ? collection.find(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id)) : collection.find(Filters.eq(PROCESS_INSTANCE_ID, id))).first());
     }
 
     @Override
     public boolean exists(String id) {
-        return find(id) != null;
+        return find(id).isPresent();
     }
 
     @Override
@@ -181,26 +164,14 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     private void reloadProcessInstance(ProcessInstance<T> instance, String id) {
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> {
-            Document reloaded = find(id);
-            if (reloaded != null) {
-                setVersion(instance, reloaded.getLong(VERSION));
-                return reloaded.toJson().getBytes();
-            } else {
-                throw new IllegalArgumentException("process instance id " + id + " does not exists in mongodb");
-            }
-        }));
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(() -> find(id).map(reloaded -> {
+            setVersion(instance, reloaded.getLong(VERSION));
+            return reloaded.toJson().getBytes();
+        }).orElseThrow(() -> new IllegalArgumentException("process instance id " + id + " does not exists in mongodb"))));
     }
 
     private static void setVersion(ProcessInstance<?> instance, Long version) {
         ((AbstractProcessInstance<?>) instance).setVersion(version == null ? 0L : version);
-    }
-
-    @Override
-    public Integer size() {
-        return Optional.ofNullable(transactionManager.getClientSession())
-                .map(r -> (int) collection.countDocuments(r))
-                .orElseGet(() -> (int) collection.countDocuments());
     }
 
     @Override

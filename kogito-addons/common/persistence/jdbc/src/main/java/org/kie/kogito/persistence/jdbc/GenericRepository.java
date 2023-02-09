@@ -20,12 +20,16 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.sql.DataSource;
 
@@ -33,10 +37,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.persistence.jdbc.DatabaseType.getDataBaseType;
-import static org.kie.kogito.persistence.jdbc.JDBCProcessInstances.PAYLOAD;
-import static org.kie.kogito.persistence.jdbc.JDBCProcessInstances.VERSION;
 
 public class GenericRepository extends Repository {
+
+    private static final String PAYLOAD = "payload";
+    private static final String VERSION = "version";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenericRepository.class);
 
@@ -148,9 +153,12 @@ public class GenericRepository extends Repository {
         }
     }
 
+    private Record from(ResultSet rs) throws SQLException {
+        return new Record(rs.getBytes(PAYLOAD), rs.getLong(VERSION));
+    }
+
     @Override
-    Map<String, Object> findByIdInternal(String processId, String processVersion, UUID id) {
-        Map<String, Object> result = new HashMap<>();
+    Optional<Record> findByIdInternal(String processId, String processVersion, UUID id) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_BY_ID, processVersion))) {
             statement.setString(1, processId);
@@ -160,57 +168,85 @@ public class GenericRepository extends Repository {
             }
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    Optional<byte[]> b = Optional.ofNullable(resultSet.getBytes(PAYLOAD));
-                    if (b.isPresent()) {
-                        result.put(PAYLOAD, b.get());
-                    }
-                    result.put(VERSION, resultSet.getLong(VERSION));
-                    return result;
+                    return Optional.of(from(resultSet));
                 }
             }
         } catch (Exception e) {
             throw uncheckedException(e, "Error finding process instance %s", id);
         }
-        return result;
+        return Optional.empty();
+    }
+
+    private static class CloseableWrapper implements Runnable {
+
+        private Deque<AutoCloseable> wrapped = new ArrayDeque<>();
+
+        public <T extends AutoCloseable> T nest(T c) {
+            wrapped.addFirst(c);
+            return c;
+        }
+
+        @Override
+        public void run() {
+            try {
+                close();
+            } catch (Exception ex) {
+                throw new RuntimeException("Error closing resources", ex);
+            }
+        }
+
+        public void close() throws Exception {
+            Exception exception = null;
+            for (AutoCloseable wrap : wrapped) {
+                try {
+                    wrap.close();
+                } catch (Exception ex) {
+                    if (exception != null) {
+                        ex.addSuppressed(exception);
+                    }
+                    exception = ex;
+                }
+            }
+            if (exception != null) {
+                throw exception;
+            }
+        }
     }
 
     @Override
-    List<byte[]> findAllInternal(String processId, String processVersion) {
-        List<byte[]> result = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(FIND_ALL, processVersion))) {
+    Stream<Record> findAllInternal(String processId, String processVersion) {
+        CloseableWrapper close = new CloseableWrapper();
+        try {
+            Connection connection = close.nest(dataSource.getConnection());
+            PreparedStatement statement = close.nest(connection.prepareStatement(sqlIncludingVersion(FIND_ALL, processVersion)));
             statement.setString(1, processId);
             if (processVersion != null) {
                 statement.setString(2, processVersion);
             }
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    result.add(resultSet.getBytes(PAYLOAD));
+            ResultSet resultSet = close.nest(statement.executeQuery());
+            return StreamSupport.stream(new Spliterators.AbstractSpliterator<Record>(
+                    Long.MAX_VALUE, Spliterator.ORDERED) {
+                @Override
+                public boolean tryAdvance(Consumer<? super Record> action) {
+                    try {
+                        boolean hasNext = resultSet.next();
+                        if (hasNext) {
+                            action.accept(from(resultSet));
+                        }
+                        return hasNext;
+                    } catch (SQLException e) {
+                        throw uncheckedException(e, "Error finding all process instances, for processId %s", processId);
+                    }
                 }
+            }, false).onClose(close);
+        } catch (SQLException e) {
+            try {
+                close.close();
+            } catch (Exception ex) {
+                e.addSuppressed(ex);
             }
-            return result;
-        } catch (Exception e) {
             throw uncheckedException(e, "Error finding all process instances, for processId %s", processId);
         }
-    }
-
-    @Override
-    Long countInternal(String processId, String processVersion) {
-        try (Connection connection = dataSource.getConnection();
-                PreparedStatement statement = connection.prepareStatement(sqlIncludingVersion(COUNT, processVersion))) {
-            statement.setString(1, processId);
-            if (processVersion != null) {
-                statement.setString(2, processVersion);
-            }
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getLong("count");
-                }
-            }
-        } catch (Exception e) {
-            throw uncheckedException(e, "Error counting process instances, for processId %s", processId);
-        }
-        return 0l;
     }
 
     private static String sqlIncludingVersion(String statement, String processVersion) {

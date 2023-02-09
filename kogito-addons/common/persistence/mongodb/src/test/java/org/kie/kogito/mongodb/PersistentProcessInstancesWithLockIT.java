@@ -27,6 +27,8 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 
 class PersistentProcessInstancesWithLockIT extends TestHelper {
 
@@ -45,7 +47,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections.singletonMap("test", "test")));
         processInstance.start();
         MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), true);
-        assertThat(processInstances.size()).isOne();
+        assertOne(processInstances);
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
@@ -65,8 +67,7 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         assertThat(instanceOne.version()).isEqualTo(2L);
 
         processInstances.remove(processInstance.id());
-        assertThat(processInstances.size()).isZero();
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(processInstances);
     }
 
     @Test
@@ -80,7 +81,6 @@ class PersistentProcessInstancesWithLockIT extends TestHelper {
         processInstance.start();
 
         MongoDBProcessInstances<?> processInstances = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), true);
-        assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());

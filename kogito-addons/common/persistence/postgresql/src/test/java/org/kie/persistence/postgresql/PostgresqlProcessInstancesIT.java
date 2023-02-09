@@ -45,6 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -80,7 +84,7 @@ class PostgresqlProcessInstancesIT {
         BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(new PostgreProcessInstancesFactory(client, lock()));
         process.configure();
-        process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
+        abort(process.instances());
         return process;
     }
 
@@ -98,12 +102,12 @@ class PostgresqlProcessInstancesIT {
         assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
         PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
+        assertOne(processInstances);
         assertThat(processInstances.exists(processInstance.id())).isTrue();
 
         ProcessInstance<?> readOnlyPI = process.instances().findById(processInstance.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThat(readOnlyPI.status()).isEqualTo(STATE_ACTIVE);
-        assertThat(process.instances().values(ProcessInstanceReadMode.READ_ONLY).size()).isOne();
+        assertOne(processInstances);
 
         verify(processInstances).create(any(), any());
 
@@ -112,7 +116,7 @@ class PostgresqlProcessInstancesIT {
 
         assertThat(processInstance.description()).isEqualTo("BPMN2-UserTask");
 
-        assertThat(process.instances().values().iterator().next().workItems(securityPolicy)).hasSize(1);
+        assertThat(getFirst(process.instances()).workItems(securityPolicy)).hasSize(1);
 
         WorkItem workItem = processInstance.workItems(securityPolicy).get(0);
         assertThat(workItem).isNotNull();
@@ -123,9 +127,7 @@ class PostgresqlProcessInstancesIT {
         processInstances = (PostgresqlProcessInstances) process.instances();
         verify(processInstances, times(1)).remove(processInstance.id());
 
-        assertThat(processInstances.size()).isZero();
-
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(process.instances());
     }
 
     @Test
@@ -142,25 +144,21 @@ class PostgresqlProcessInstancesIT {
         ((PostgresqlProcessInstances) utProcess.instances()).remove(scriptProcessInstance.id());
         ((PostgresqlProcessInstances) scriptProcess.instances()).remove(utProcessInstance.id());
 
-        assertThat(utProcess.instances().size()).isOne();
-        assertThat(utProcess.instances().values()).hasSize(1);
+        assertOne(utProcess.instances());
         assertThat(utProcess.instances().findById(utProcessInstance.id())).isPresent();
         assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
 
-        assertThat(scriptProcess.instances().size()).isOne();
-        assertThat(scriptProcess.instances().values()).hasSize(1);
+        assertOne(scriptProcess.instances());
         assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isPresent();
         assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
 
         ((PostgresqlProcessInstances) utProcess.instances()).remove(utProcessInstance.id());
-        assertThat(utProcess.instances().size()).isZero();
-        assertThat(utProcess.instances().values()).isEmpty();
+        assertEmpty(utProcess.instances());
         assertThat(utProcess.instances().findById(utProcessInstance.id())).isEmpty();
         assertThat(utProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
 
         ((PostgresqlProcessInstances) scriptProcess.instances()).remove(scriptProcessInstance.id());
-        assertThat(scriptProcess.instances().size()).isZero();
-        assertThat(scriptProcess.instances().values()).isEmpty();
+        assertEmpty(scriptProcess.instances());
         assertThat(scriptProcess.instances().findById(scriptProcessInstance.id())).isEmpty();
         assertThat(scriptProcess.instances().findById(utProcessInstance.id())).isEmpty();
     }
@@ -172,7 +170,6 @@ class PostgresqlProcessInstancesIT {
         processInstance.start();
 
         PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
@@ -194,8 +191,7 @@ class PostgresqlProcessInstancesIT {
         assertThat(instanceOne.version()).isEqualTo(lock() ? 2L : 0);
 
         processInstances.remove(processInstance.id());
-        assertThat(processInstances.size()).isZero();
-        assertThat(process.instances().values()).isEmpty();
+        assertEmpty(process.instances());
 
     }
 
@@ -206,7 +202,7 @@ class PostgresqlProcessInstancesIT {
         processInstance.start();
 
         PostgresqlProcessInstances processInstances = (PostgresqlProcessInstances) process.instances();
-        assertThat(processInstances.size()).isOne();
+        assertOne(processInstances);
         Optional<?> foundOne = processInstances.findById(processInstance.id());
         BpmnProcessInstance instanceOne = (BpmnProcessInstance) foundOne.get();
         foundOne = processInstances.findById(processInstance.id());
@@ -216,7 +212,7 @@ class PostgresqlProcessInstancesIT {
 
         processInstances.remove(instanceOne.id());
         processInstances.remove(instanceTwo.id());
-        assertThat(processInstances.size()).isZero();
+        assertEmpty(processInstances);
     }
 
     @Test
@@ -233,23 +229,18 @@ class PostgresqlProcessInstancesIT {
         PostgresqlProcessInstances processInstancesV1 = (PostgresqlProcessInstances) processV1.instances();
         PostgresqlProcessInstances processInstancesV2 = (PostgresqlProcessInstances) processV2.instances();
 
-        assertThat(processInstancesV1.size()).isOne();
         assertThat(processInstancesV1.findById(processInstanceV1.id())).isPresent();
-        assertThat(processInstancesV2.size()).isZero();
 
+        assertEmpty(processInstancesV2);
         ProcessInstance<BpmnVariables> processInstanceV2 = processV2.createInstance(BpmnVariables.create(singletonMap("test", "test")));
         processInstanceV2.start();
-
-        assertThat(processInstancesV2.size()).isOne();
         assertThat(processInstancesV2.findById(processInstanceV2.id())).isPresent();
 
         processInstancesV1.remove(processInstanceV1.id());
-        assertThat(processInstancesV1.size()).isZero();
-        assertThat(processV1.instances().values()).isEmpty();
+        assertEmpty(processV1.instances());
 
-        assertThat(processInstancesV2.size()).isOne();
         processInstancesV2.remove(processInstanceV2.id());
-        assertThat(processInstancesV2.size()).isZero();
+        assertEmpty(processInstancesV2);
     }
 
     private class PostgreProcessInstancesFactory extends AbstractProcessInstancesFactory {

@@ -15,15 +15,19 @@
  */
 package org.kie.kogito.infinispan;
 
-import java.util.Collection;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.infinispan.client.hotrod.DefaultTemplate;
 import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
+import org.infinispan.commons.util.CloseableIterator;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -34,14 +38,13 @@ import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 @SuppressWarnings({ "rawtypes" })
 public class CacheProcessInstances implements MutableProcessInstances {
 
     private final RemoteCache<String, byte[]> cache;
-    private ProcessInstanceMarshallerService marshaller;
-    private org.kie.kogito.process.Process<?> process;
+    private final ProcessInstanceMarshallerService marshaller;
+    private final org.kie.kogito.process.Process<?> process;
     private final boolean lock;
 
     public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, boolean lock) {
@@ -57,40 +60,33 @@ public class CacheProcessInstances implements MutableProcessInstances {
     }
 
     @Override
-    public Integer size() {
-        return cache.size();
-    }
-
-    @Override
     public Optional<? extends ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
         return this.lock ? findWithLock(id, mode) : findInternal(id, mode);
     }
 
     private Optional<? extends ProcessInstance> findInternal(String id, ProcessInstanceReadMode mode) {
         byte[] data = cache.get(id);
-        if (data == null) {
-            return Optional.empty();
-        }
-        return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
+        return data == null ? Optional.empty() : Optional.of(marshaller.unmarshallProcessInstance(data, process, mode));
     }
 
     private Optional<? extends ProcessInstance> findWithLock(String id, ProcessInstanceReadMode mode) {
-        MetadataValue<byte[]> versionedCache = cache.getWithMetadata(id);
-        if (versionedCache != null) {
-            ProcessInstance<?> instance =
-                    mode == MUTABLE ? marshaller.unmarshallProcessInstance(versionedCache.getValue(), process) : marshaller.unmarshallReadOnlyProcessInstance(versionedCache.getValue(), process);
-            ((AbstractProcessInstance) instance).setVersion(versionedCache.getVersion());
-            return Optional.of(instance);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(cache.getWithMetadata(id)).map(record -> unmarshall(record, mode));
     }
 
     @Override
-    public Collection<? extends ProcessInstance> values(ProcessInstanceReadMode mode) {
-        return cache.values()
-                .parallelStream()
-                .map(data -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process))
-                .collect(Collectors.toList());
+    public Stream<? extends ProcessInstance> stream(ProcessInstanceReadMode mode) {
+        if (lock) {
+            CloseableIterator<Entry<Object, MetadataValue<Object>>> iterator = cache.retrieveEntriesWithMetadata(null, 1000);
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false).map(v -> unmarshall(v.getValue(), mode)).onClose(iterator::close);
+        } else {
+            return cache.values().parallelStream().map(marshaller.createUnmarshallFunction(process, mode));
+        }
+    }
+
+    private <T> ProcessInstance<?> unmarshall(MetadataValue<T> versionedCache, ProcessInstanceReadMode mode) {
+        ProcessInstance<?> instance = marshaller.unmarshallProcessInstance((byte[]) versionedCache.getValue(), process, mode);
+        ((AbstractProcessInstance) instance).setVersion(versionedCache.getVersion());
+        return instance;
     }
 
     @Override

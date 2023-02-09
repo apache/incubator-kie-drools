@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.codegen.tests;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,8 @@ import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 
 public class SubProcessIT extends AbstractCodegenIT {
 
@@ -48,10 +49,9 @@ public class SubProcessIT extends AbstractCodegenIT {
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        Collection<? extends ProcessInstance<? extends Model>> instances = subProcess.instances().values();
-        assertThat(instances).hasSize(1);
+        assertOne(subProcess.instances());
 
-        ProcessInstance<? extends Model> subProcessInstance = instances.iterator().next();
+        ProcessInstance<? extends Model> subProcessInstance = getFirst(subProcess.instances());
         assertThat(subProcessInstance.variables().toMap()).hasSize(3).contains(
                 entry("constant", "aString"), entry("name", "test"), entry("review", null));
 

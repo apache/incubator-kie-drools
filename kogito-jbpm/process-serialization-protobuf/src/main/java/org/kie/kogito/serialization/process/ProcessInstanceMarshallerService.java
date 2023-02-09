@@ -24,10 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.serialization.process.impl.ProtobufProcessInstanceMarshallerFactory;
 import org.slf4j.Logger;
@@ -150,5 +152,13 @@ public class ProcessInstanceMarshallerService {
                 LOGGER.warn("Process Instance {} cannot be reloaded", processInstance.id(), e);
             }
         };
+    }
+
+    public Function<byte[], ProcessInstance<?>> createUnmarshallFunction(Process<?> process, ProcessInstanceReadMode readMode) {
+        return data -> unmarshallProcessInstance(data, process, readMode);
+    }
+
+    public ProcessInstance<?> unmarshallProcessInstance(byte[] data, Process<?> process, ProcessInstanceReadMode mode) {
+        return unmarshallProcessInstance(data, process, mode.isReadOnly());
     }
 }

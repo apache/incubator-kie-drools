@@ -44,9 +44,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.mongodb.utils.DocumentConstants.PROCESS_INSTANCE_ID;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
+import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -69,8 +71,8 @@ class PersistentProcessInstancesIT extends TestHelper {
 
         MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, getDisabledMongoDBTransactionManager(), false);
 
-        assertThat(mongodbInstance.size()).isOne()
-                .isEqualTo(process.instances().size());
+        assertOne(mongodbInstance);
+        assertOne(process.instances());
 
         Optional<?> findById = mongodbInstance.findById(processInstance.id());
         BpmnProcessInstance found = (BpmnProcessInstance) findById.get();
@@ -79,15 +81,15 @@ class PersistentProcessInstancesIT extends TestHelper {
         assertThat(found.description()).isEqualTo("User Task");
         assertThat(found.variables().toMap()).containsExactly(entry("test", "test"));
         assertThat(mongodbInstance.exists(processInstance.id())).isTrue();
-        assertThat(mongodbInstance.values().size()).isOne();
+        assertOne(mongodbInstance);
 
         ProcessInstance<?> readOnlyPI = mongodbInstance.findById(processInstance.id(), ProcessInstanceReadMode.READ_ONLY).get();
         assertThat(readOnlyPI).as("ProcessInstanceDocument cannot be null").isNotNull();
-        assertThat(mongodbInstance.values(ProcessInstanceReadMode.READ_ONLY).size()).isOne();
+        assertThat(mongodbInstance.stream(ProcessInstanceReadMode.READ_ONLY)).hasSize(1);
 
         mongodbInstance.remove(processInstance.id());
         assertThat(mongodbInstance.exists(processInstance.id())).isFalse();
-        assertThat(mongodbInstance.values()).isEmpty();
+        assertEmpty(mongodbInstance);
     }
 
     @Test
@@ -122,17 +124,11 @@ class PersistentProcessInstancesIT extends TestHelper {
 
         MongoDBProcessInstances<BpmnVariables> mongodbInstance = new MongoDBProcessInstances<>(mongoClient, process, DB_NAME, transactionExecutor, false);
 
-        mongodbInstance.size();
-        verify(mongoCollection, times(1)).countDocuments(eq(clientSession));
-
         mongodbInstance.findById(id, ProcessInstanceReadMode.READ_ONLY);
         verify(mongoCollection, times(1)).find(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));
 
         mongodbInstance.exists(id);
         verify(mongoCollection, times(2)).find(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));
-
-        mongodbInstance.values(ProcessInstanceReadMode.READ_ONLY);
-        verify(mongoCollection, times(1)).find(eq(clientSession));
 
         mongodbInstance.remove(id);
         verify(mongoCollection, times(1)).deleteOne(eq(clientSession), eq(Filters.eq(PROCESS_INSTANCE_ID, id)));

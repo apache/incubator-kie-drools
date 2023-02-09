@@ -15,9 +15,9 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
@@ -29,18 +29,8 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     private final ConcurrentHashMap<String, ProcessInstance<T>> instances = new ConcurrentHashMap<>();
 
     @Override
-    public Integer size() {
-        return instances.size();
-    }
-
-    @Override
     public Optional<ProcessInstance<T>> findById(String id, ProcessInstanceReadMode mode) {
         return Optional.ofNullable(instances.get(id));
-    }
-
-    @Override
-    public Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode) {
-        return instances.values();
     }
 
     @Override
@@ -68,5 +58,10 @@ class MapProcessInstances<T> implements MutableProcessInstances<T> {
     @Override
     public boolean exists(String id) {
         return instances.containsKey(id);
+    }
+
+    @Override
+    public Stream<ProcessInstance<T>> stream(ProcessInstanceReadMode mode) {
+        return instances.values().stream();
     }
 }
