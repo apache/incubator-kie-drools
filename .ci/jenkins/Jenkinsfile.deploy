@@ -251,6 +251,9 @@ pipeline {
             when {
                 expression { return shouldStageArtifacts() }
             }
+            tools {
+                jdk 'kie-jdk11'
+            }
             steps {
                 script {
                     // Stage release artifacts
