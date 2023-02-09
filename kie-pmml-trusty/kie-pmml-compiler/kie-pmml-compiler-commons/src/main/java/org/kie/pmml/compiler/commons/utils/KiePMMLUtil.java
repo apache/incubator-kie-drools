@@ -70,12 +70,15 @@ public class KiePMMLUtil {
     /**
      * @param is
      * @return
-     * @throws SAXException
-     * @throws JAXBException
      * @see org.jpmml.model.PMMLUtil#unmarshal(InputStream)
      */
-    public static PMML load(final InputStream is, final String fileName) throws SAXException, JAXBException {
-        PMML toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
+    public static PMML load(final InputStream is, final String fileName) {
+        PMML toReturn;
+        try {
+            toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
+        } catch (SAXException | JAXBException e) {
+            throw new RuntimeException(e);
+        }
         String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;
         List<DataField> dataFields = toReturn.getDataDictionary().getDataFields();
         List<Model> models = toReturn.getModels();

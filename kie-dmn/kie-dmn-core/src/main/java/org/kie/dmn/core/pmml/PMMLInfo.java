@@ -44,8 +44,13 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         this.header = header;
     }
 
-    public static PMMLInfo<PMMLModelInfo> from(InputStream is) throws SAXException, JAXBException {
-        PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+    public static PMMLInfo<PMMLModelInfo> from(InputStream is) {
+        PMML pmml;
+        try {
+            pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         List<PMMLModelInfo> models = new ArrayList<>();
         for (Model pm : pmml.getModels()) {
             models.add(pmmlToModelInfo(pm));

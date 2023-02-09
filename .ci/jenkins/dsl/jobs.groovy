@@ -72,7 +72,7 @@ void setupProjectNightlyJob() {
 }
 
 void setupProjectReleaseJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-kogito-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Drools/Kogito Artifacts Release')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-drools-release', JobType.RELEASE, "${jenkins_path_project}/Jenkinsfile.release", 'Drools/Kogito Artifacts Release')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 

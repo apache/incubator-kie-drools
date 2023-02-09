@@ -89,7 +89,7 @@ import org.slf4j.LoggerFactory;
 public class Converter {
 
     private static final Logger LOG = LoggerFactory.getLogger(Converter.class);
-    
+
     public static String parse(String dmnModelName, InputStream is) throws Exception {
         final PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         if (pmml.getModels().size() != 1) {
@@ -98,14 +98,14 @@ public class Converter {
         Model model0 = pmml.getModels().get(0);
         if (!(model0 instanceof RuleSetModel)) {
             throw new UnsupportedOperationException("Only single RuleSetModel supported for Decision Table conversion");
-        } 
+        }
         RuleSetModel rsModel = (RuleSetModel) model0;
         RuleSet rs = rsModel.getRuleSet();
         if (rs.getRuleSelectionMethods().size() != 1) {
             throw new UnsupportedOperationException("Only single RuleSelectionMethods supported for Decision Table conversion");
         }
         RuleSelectionMethod rssMethod0 = rs.getRuleSelectionMethods().get(0);
-        
+
         Stream<SimpleRule> s0 = rs.getRules().stream().map(SimpleRule.class::cast);
         if (rssMethod0.getCriterion() == Criterion.WEIGHTED_MAX) { // if WEIGHTED_MAX then sort by weight desc
             s0 = s0.sorted(new WeightComparator().reversed());
@@ -255,12 +255,12 @@ public class Converter {
         variable.setId("dvar_" + CodegenStringUtil.escapeIdentifier(decisionName));
         variable.setTypeRef(new QName("Any"));
         decision.setVariable(variable);
-   
+
         addRequiredDecisionByName(decision, "aggregated");
-   
+
         LiteralExpression le = new TLiteralExpression();
         le.setText("max(aggregated.total)");
-   
+
         decision.setExpression(le);
         definitions.getDrgElement().add(decision);
     }
@@ -308,17 +308,17 @@ public class Converter {
     }
 
     /**
-     * Checks if a binary predicate can be collapsed to an unary one. 
-     * 
-     * @param predicates The contents of the binary predicate to check. 
-     * @return True, if the contents of the binary predicate have the same value, lower bound is greater or equal and upper bound is less or equal (case of [x..x]).  
+     * Checks if a binary predicate can be collapsed to an unary one.
+     *
+     * @param predicates The contents of the binary predicate to check.
+     * @return True, if the contents of the binary predicate have the same value, lower bound is greater or equal and upper bound is less or equal (case of [x..x]).
      * Otherwise returns false.
      */
     private static boolean canCollapseBinaryPredicate(final SimplePredicate first, final SimplePredicate second) {
         final Object firstValue = first.getValue();
         final Object secondValue = second.getValue();
 
-        final boolean haveCorrectOperators = (first.getOperator() == Operator.GREATER_OR_EQUAL) 
+        final boolean haveCorrectOperators = (first.getOperator() == Operator.GREATER_OR_EQUAL)
             && (second.getOperator() == Operator.LESS_OR_EQUAL);
 
         if (firstValue instanceof BigDecimal && secondValue instanceof BigDecimal) {
