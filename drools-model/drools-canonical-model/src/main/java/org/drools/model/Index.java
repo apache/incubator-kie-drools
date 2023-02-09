@@ -94,8 +94,8 @@ public interface Index<A, V> {
 
         private <T, V> int compare(Comparable t, V v) {
             if (t.getClass() != v.getClass() && t instanceof Number) {
-                BigDecimal b1 = BigDecimal.valueOf(((Number) t).doubleValue());
-                BigDecimal b2 = BigDecimal.valueOf(((Number) v).doubleValue());
+                BigDecimal b1 = t instanceof BigDecimal ? (BigDecimal) t : BigDecimal.valueOf(((Number) t).doubleValue());
+                BigDecimal b2 = v instanceof BigDecimal ? (BigDecimal) v : BigDecimal.valueOf(((Number) v).doubleValue());
                 return b1.compareTo(b2);
             }
             return t.compareTo(v);
