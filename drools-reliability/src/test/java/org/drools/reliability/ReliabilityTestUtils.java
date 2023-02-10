@@ -32,7 +32,7 @@ public class ReliabilityTestUtils {
                  .map(Path::toFile)
                  .forEach(File::delete);
         } catch (IOException e) {
-            //throw new UncheckedIOException(e);
+            throw new UncheckedIOException(e);
         }
     }
 }
