@@ -15,35 +15,16 @@
 
 package org.drools.reliability;
 
-import java.io.Serializable;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 
-public class Person implements Serializable {
-    private String name;
-    private int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+public class ReliableNamedEntryPointFactory extends NamedEntryPointFactory {
 
     @Override
-    public String toString() {
-        return "Person [name=" + name + ", age=" + age + "]@" + Integer.toHexString(System.identityHashCode(this));
+    public NamedEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
+        return new ReliableNamedEntryPoint(id, addedNode, reteEvaluator);
     }
 }

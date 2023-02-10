@@ -1,7 +1,3 @@
-package org.drools.reliability;
-
-import org.drools.core.SessionConfiguration;
-import org.drools.core.common.EntryPointFactory;
 /*
  * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
@@ -17,9 +13,12 @@ import org.drools.core.common.EntryPointFactory;
  * limitations under the License.
  */
 
+package org.drools.reliability;
+
+import org.drools.core.SessionConfiguration;
+import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
-import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -31,18 +30,18 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     @Override
     public EntryPointFactory getEntryPointFactory() {
-        return new NamedEntryPointFactory();
+        return new ReliableNamedEntryPointFactory();
     }
 
     @Override
     public InternalWorkingMemory createStatefulSession(RuleBase ruleBase, Environment environment, SessionConfiguration sessionConfig, boolean fromPool) {
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) ruleBase;
         if (fromPool || kbase.getSessionPool() == null) {
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) getWorkingMemoryFactory()
-                    .createWorkingMemory( kbase.nextWorkingMemoryCounter(), kbase, sessionConfig, environment );
-            return internalInitSession( kbase, sessionConfig, session );
+            StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) getWorkingMemoryFactory()
+                    .createWorkingMemory(kbase.nextWorkingMemoryCounter(), kbase, sessionConfig, environment);
+            return internalInitSession(kbase, sessionConfig, session);
         }
-        return (InternalWorkingMemory) kbase.getSessionPool().newKieSession( sessionConfig );
+        return (InternalWorkingMemory) kbase.getSessionPool().newKieSession(sessionConfig);
     }
 
     private StatefulKnowledgeSessionImpl internalInitSession(InternalKnowledgeBase kbase, SessionConfiguration sessionConfig, StatefulKnowledgeSessionImpl session) {

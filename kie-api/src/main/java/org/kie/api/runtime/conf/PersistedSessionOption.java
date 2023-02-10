@@ -43,10 +43,6 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
         return new PersistedSessionOption();
     }
 
-    public static PersistedSessionOption newSession(long sessionId) {
-        return new PersistedSessionOption(sessionId);
-    }
-
     public static PersistedSessionOption fromSession(long sessionId) {
         return new PersistedSessionOption(sessionId);
     }

@@ -110,14 +110,15 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
+
+        initObjectStore(entryPoint, conf, reteEvaluator);
+    }
+
+    protected void initObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
         boolean useClassAwareStore = isEqualityBehaviour || conf.isMutabilityEnabled();
-        long id = reteEvaluator.getIdentifier();
-        String entryPointId = reteEvaluator.getSessionConfiguration().getPersistedSessionOption()!=null ?
-                "cacheSession_" + reteEvaluator.getSessionConfiguration().getPersistedSessionOption().getSessionId() :
-                entryPoint.getEntryPointId();
         this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(entryPointId, isEqualityBehaviour, lock) : //entryPoint.getEntryPointId()
-                SessionComponentsFactory.get().createIdentityObjectStore(entryPointId); //entryPoint.getEntryPointId()
+                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
+                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
     }
 
     @Override
