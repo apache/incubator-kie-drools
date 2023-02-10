@@ -946,24 +946,49 @@ public class PackageModel {
                     "        @Override\n" +
                     "        public int getPropertiesSize() {\n" +
                     "            return " + accessibleProperties.size() + ";\n" +
-                    "        }\n\n" +
-                    "        @Override\n" +
-                    "        public int getPropertyIndex( String name ) {\n" +
-                    "            switch(name) {\n"
+                    "        }\n\n"
             );
-            for (int i = 0; i < accessibleProperties.size(); i++) {
-                sb.append( "                case \"" + accessibleProperties.get(i) + "\": return " + i + ";\n" );
-            }
-            sb.append(
-                    "             }\n" +
-                    "             throw new RuntimeException(\"Unknown property '\" + name + \"' for class class " + domainClass + "\");\n" +
-                    "        }\n" +
-                    "    }\n\n"
-            );
+            getPropertyIndexMethod(sb, domainClass, accessibleProperties, 0);
+            sb.append("    }\n");
         }
         sb.append( "}" );
 
         return sb.toString();
+    }
+
+    private void getPropertyIndexMethod(StringBuilder sb, Class<?> domainClass, List<String> accessibleProperties, int i) {
+        if (i == 0) {
+            sb.append(
+                    "        @Override\n" +
+                    "        public int getPropertyIndex( String name ) {\n" +
+                    "            switch(name) {\n"
+            );
+        } else {
+            sb.append(
+                    "        private int getPropertyIndex" + i + "( String name ) {\n" +
+                    "            switch(name) {\n"
+            );
+        }
+
+        int limit = Math.min(i + 1000, accessibleProperties.size());
+        for (; i < limit; i++) {
+            sb.append( "                case \"" + accessibleProperties.get(i) + "\": return " + i + ";\n" );
+        }
+
+        if (i == accessibleProperties.size()) {
+            sb.append(
+                    "             }\n" +
+                    "             throw new RuntimeException(\"Unknown property '\" + name + \"' for class class " + domainClass + "\");\n" +
+                    "        }\n"
+            );
+        } else {
+            sb.append(
+                    "             }\n" +
+                    "             return getPropertyIndex" + i + "(name);\n" +
+                    "        }\n"
+            );
+            getPropertyIndexMethod(sb, domainClass, accessibleProperties, i);
+        }
     }
 
     public Map<LambdaExpr, java.lang.reflect.Type> getLambdaReturnTypes() {
