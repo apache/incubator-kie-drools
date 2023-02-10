@@ -1,7 +1,9 @@
 package org.drools.reliability;
 
+import java.util.Collection;
+
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -15,7 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReliabilityTest {
 
-    @Test @Ignore
+    // Using @Before rather than @After because sometimes we terminate a process while debugging
+    @Before
+    public void tearDown() {
+        CacheManager.INSTANCE.removeCache("cacheSession_0");
+    }
+
+    @Test
     public void test() {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -45,11 +53,9 @@ public class ReliabilityTest {
         secondSession.insert(new Person("Mario", 40));
 
         assertThat(secondSession.fireAllRules()).isEqualTo(2);
-
-        CacheManager.INSTANCE.removeCache("cacheSession_0");
     }
 
-    @Test @Ignore
+    @Test
     public void testReliableObjectStore() {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -71,11 +77,9 @@ public class ReliabilityTest {
         firstSession.insert(new Person("Helen", 54));
 
         assertThat(firstSession.fireAllRules()).isEqualTo(1);
-
-        CacheManager.INSTANCE.removeCache("cacheSession_0");
     }
 
-    @Test @Ignore
+    @Test
     public void testSessionFromCache() {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -102,19 +106,12 @@ public class ReliabilityTest {
 
         System.out.println("secondSession getObjects.size (from firstSession) = " + secondSession.getObjects().size());
 
-        // re-propagate objects from the cache to the new session
-        secondSession.getFactHandles().forEach(factHandle -> {
-            secondSession.update(factHandle,secondSession.getObject(factHandle));
-        });
-
         secondSession.insert(new Person("John", 22));
         secondSession.insert(new Person("Mary", 42));
 
         System.out.println("secondSession getObjects.size = " + secondSession.getObjects().size());
 
         secondSession.fireAllRules();
-
-        CacheManager.INSTANCE.removeCache("cacheSession_0");
     }
 
 }
