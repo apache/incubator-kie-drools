@@ -1,10 +1,8 @@
-name: Build Chain
+name: Drools
 
 on:
   pull_request:
-    types: [labeled]
-    branches:
-      - main
+    types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - 'LICENSE'
       - '**/.gitignore'
@@ -15,19 +13,19 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  build-chain:
-    if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
+  drools-build:
     concurrency:
-      group: fdb-${{ github.head_ref }}
+      group: drools-${{ matrix.os }}_pr-${{ github.head_ref }}
       cancel-in-progress: true
+    timeout-minutes: 120
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         java-version: [11]
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Full downstream build
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -47,7 +45,8 @@ jobs:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          flow-type: full-downstream
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
+        with:
+          report_paths: '**/*-reports/TEST-*.xml'
