@@ -16,6 +16,7 @@
 package org.drools.drl.extensions;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -32,4 +33,6 @@ public interface DecisionTableProvider extends KieService {
                                                   DecisionTableConfiguration configuration);
 
     Map<String,List<String[]>> loadPropertiesFromFile(File file, DecisionTableConfiguration configuration);
+
+    Map<String,List<String[]>> loadPropertiesFromInputStream(InputStream inputStream, DecisionTableConfiguration configuration);
 }
