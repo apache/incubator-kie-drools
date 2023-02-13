@@ -14,7 +14,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     private static <Solution_> List<File> getImportDirFiles(CommonApp<Solution_> commonApp) {
-        try (SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.solutionBusiness) {
+        try (SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.createSolutionBusiness()) {
             File importDataDir = solutionBusiness.getImportDataDir();
             if (!importDataDir.exists()) {
                 throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
