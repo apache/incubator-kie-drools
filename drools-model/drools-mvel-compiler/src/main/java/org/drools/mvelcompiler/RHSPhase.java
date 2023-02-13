@@ -146,7 +146,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(TextBlockLiteralExpr n, Context arg) {
-        return null;
+        return new UnalteredTypedExpression(n, String.class);
     }
 
     @Override

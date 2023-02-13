@@ -31,6 +31,8 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TextBlockLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -40,6 +42,7 @@ import org.drools.mvel.parser.ast.expr.ModifyStatement;
 import org.drools.mvel.parser.printer.PrintUtil;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static com.github.javaparser.utils.StringEscapeUtils.escapeJava;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 
 /**
@@ -236,5 +239,10 @@ public class PreprocessPhase {
         blockStmt
                 .findAll(EmptyStmt.class)
                 .forEach(Node::remove);
+    }
+
+    public StringLiteralExpr replaceTextBlockWithConcatenatedStrings(TextBlockLiteralExpr textBlockLiteralExpr) {
+        // In TextBlocks the `"` character is allowed so it needs to be escaped
+        return new StringLiteralExpr(escapeJava(textBlockLiteralExpr.stripIndent()));
     }
 }

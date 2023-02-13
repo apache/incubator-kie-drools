@@ -891,4 +891,10 @@ public class MvelCompilerTest implements CompilerTest {
                      "}"
         );
     }
+
+    @Test
+    public void testMultiLineStringLiteral() {
+        test(" { java.lang.String s = \"\"\"\n string content\n \"\"\"; }",
+             " { java.lang.String s = \"\"\"\n string content\n \"\"\"; }");
+    }
 }

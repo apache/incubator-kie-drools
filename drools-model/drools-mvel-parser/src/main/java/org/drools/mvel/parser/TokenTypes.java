@@ -199,6 +199,7 @@ public class TokenTypes {
             case HEXADECIMAL_EXPONENT:
             case CHARACTER_LITERAL:
             case STRING_LITERAL:
+            case TEXT_BLOCK_LITERAL:
             case MILLISECOND_LITERAL:
             case SECOND_LITERAL:
             case MINUTE_LITERAL:
