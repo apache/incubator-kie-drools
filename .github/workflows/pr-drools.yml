@@ -1,4 +1,4 @@
-name: Kogito Runtimes
+name: Drools
 
 on:
   pull_request:
@@ -13,19 +13,19 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  kogito_runtimes-build:
+  drools-build:
     concurrency:
-      group: kogito_runtimes_pr-${{ github.head_ref }}
+      group: drools-${{ matrix.os }}_pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         java-version: [11]
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -44,7 +44,6 @@ jobs:
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/kogito-runtimes
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
