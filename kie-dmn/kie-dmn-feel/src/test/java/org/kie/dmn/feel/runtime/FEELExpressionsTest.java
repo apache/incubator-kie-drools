@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
