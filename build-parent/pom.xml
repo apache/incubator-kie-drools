@@ -43,12 +43,10 @@
     <version.com.fasterxml.jackson>2.14.1</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.14.1</version.com.fasterxml.jackson.databind>
     <version.com.fasterxml.jackson.annotations>2.14.1</version.com.fasterxml.jackson.annotations>
-    <version.org.jresearch.gwt.time>2.0.3</version.org.jresearch.gwt.time>
     <version.com.lowagie.itext>2.1.7</version.com.lowagie.itext>
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
-    <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.protobuf>3.21.9</version.com.google.protobuf>
     <version.com.h2database>2.1.214</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.43</version.com.networknt.json-schema-validator>
@@ -64,8 +62,6 @@
     <version.net.java.dev.glazedlists>1.8.0</version.net.java.dev.glazedlists>
     <version.antlr>2.7.7</version.antlr>
     <version.org.antlr>3.5.2</version.org.antlr>
-    <version.org.antlrgwt>4.10.0</version.org.antlrgwt>
-    <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
     <version.org.antlr.ST4>4.0.7</version.org.antlr.ST4>
     <version.org.apache.ant>1.10.11</version.org.apache.ant>
     <version.org.apache.commons.lang3>3.12.0</version.org.apache.commons.lang3>
@@ -126,7 +122,6 @@
     <version.io.swagger.parser.v3>2.0.6</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
     <version.org.xmlunit>2.8.2</version.org.xmlunit>
-    <!-- The version greater than 1.0.0.GA is not compatible with GWT 2.8.x -->
     <!-- therefore the property is rewritten in that repository parent -->
     <version.javax.validation>2.0.1.Final</version.javax.validation>
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
@@ -174,13 +169,6 @@
     <version.com.github.spotbugs-maven-plugin>3.1.8</version.com.github.spotbugs-maven-plugin>
 
     <maven.min.version>3.8.1</maven.min.version>
-    <!-- Important: this is one and only place where the supported user agents (browsers) are configured.
-         All webapps/showcases must use this property in their *.gwt.xml files.
-         We only need to support IE11+, but there is no ie11 permutation. IE11 will use the Firefox one (gecko1_8) -->
-    <gwt.user.agent.all>gecko1_8,safari</gwt.user.agent.all>
-    <!-- Number of GWT compiler worker processes. Defined as property so that it can be easily overridden from cmd line.
-         Default value is 1 to enable building on older machines as well (minimum is still about 4GiB of RAM memory). -->
-    <gwt.compiler.localWorkers>1</gwt.compiler.localWorkers>
     <!-- property for productisation to know the last released version -->
     <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
@@ -315,18 +303,6 @@
           <exclusion>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${version.com.google.gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -572,53 +548,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jresearch.gwt.time</groupId>
-        <artifactId>org.jresearch.gwt.time</artifactId>
-        <version>${version.org.jresearch.gwt.time}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.dominokit</groupId>
         <artifactId>domino-slf4j-logger</artifactId>
         <version>${version.domino-slf4j-logger}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr4gwt</groupId>
-        <artifactId>antlr4gwt-runtime</artifactId>
-        <version>${version.org.antlrgwt}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.antlr4gwt</groupId>
-        <artifactId>antlr4gwt-runtime</artifactId>
-        <version>${version.org.antlrgwt}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.rikkola.gwt</groupId>
-        <artifactId>antlr4-c3-gwt</artifactId>
-        <version>${version.org.antlr4c3gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.rikkola.gwt</groupId>
-        <artifactId>antlr4-c3-gwt</artifactId>
-        <version>${version.org.antlr4c3gwt}</version>
-        <classifier>sources</classifier>
-        <exclusions>
-          <exclusion>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -1024,31 +956,6 @@
         <version>${version.com.google.elemental2}</version>
       </dependency>
 
-      <!-- GWT -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-el</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
       <dependency>
         <groupId>io.swagger</groupId>
         <artifactId>swagger-core</artifactId>
@@ -1427,14 +1334,6 @@
                           implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
                     <reportOnly>${illegaltransitivereportonly}</reportOnly>
                     <regexIgnoredClasses combine.children="append">
-                      <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
-                           usually contain references to other dependencies which are not part of the project
-                           (transitive dependencies), which then results in the dependency check failure.
-                           From the maintenance point of view, ignoring these generated classes seems like the
-                           best option. -->
-                      <regexIgnoredClass>
-                        org\.jboss\.errai\.marshalling\.server\.impl\.ServerMarshallingFactory.*
-                      </regexIgnoredClass>
                       <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
                            then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
                       <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
@@ -1465,9 +1364,6 @@
                       <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
                       <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
                       <ignoreClass>org.relaxng.datatype.*</ignoreClass>
-                      <!-- Classes from gwt-user duplicated in errai-uibinder -->
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
                       <!-- ignoring java 9 compatible class for modules -->
                       <ignoreClass>module-info</ignoreClass>
                       <!-- ignoring multirelease jar classes -->
@@ -1512,53 +1408,6 @@
                         <artifactId>quarkus-ide-launcher</artifactId>
                         <ignoreClasses>
                           <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
-                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
-                           duplicate classes check seems to be the only way. -->
-                      <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-
-                      <!-- kie-dmn-feel-gwt relies on duplicated resources to remove non-GWT-compatible dependencies
-                           from kie-dmn-feel -->
-                      <dependency>
-                        <groupId>org.kie</groupId>
-                        <artifactId>kie-dmn-feel-gwt</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-
-                      <!-- org.jresearch.gwt.time depends on domino-slf4j-logger to provide an emulation java.util.time (JSR-310) to GWT -->
-                      <dependency>
-                        <groupId>org.dominokit</groupId>
-                        <artifactId>domino-slf4j-logger</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>org.slf4j.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-
-                      <!-- antlr4gwt and antlr4-c3-gwt (javax.json) rely on duplicated resources to provide a GWT-compatible
-                           implementation for ANTLR -->
-                      <dependency>
-                        <groupId>org.antlr4gwt</groupId>
-                        <artifactId>antlr4gwt-runtime</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>org.antlr.v4.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <groupId>org.antlr4gwt</groupId>
-                        <artifactId>antlr4gwt-annotations</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>org.antlr.v4.runtime.misc.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
 
@@ -2056,16 +1905,6 @@
             <additionalparam>${javadoc.additional.params}</additionalparam>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
-          <configuration>
-            <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
-            <strict>true</strict>
-            <printJavaCommandOnError>false</printJavaCommandOnError>
-          </configuration>
-        </plugin>
 
         <!-- This plugin's configuration is used to store Eclipse m2e settings only.
              It has no influence on the Maven build itself. -->
@@ -2461,10 +2300,6 @@
                               <exclude name="**/.errai/**/*.class"/>
                               <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
 
-                              <!--
-                                JaCoCo cannot add different classes with same name in the report, so
-                                removing it until KOGITO-4647 is done. -->
-                              <exclude name="**/kie-dmn-feel-gwt/target/classes/**/*.class"/>
                               <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.
                                 They need to be renamed to enable coverage reporting for them.
