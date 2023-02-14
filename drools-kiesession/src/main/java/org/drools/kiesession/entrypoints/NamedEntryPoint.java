@@ -30,8 +30,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
+import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Lockable;
@@ -56,7 +58,6 @@ import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.kiesession.session.SessionComponentsFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,11 +111,14 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
         this.pctxFactory = RuntimeComponentFactory.get().getPropagationContextFactory();
         this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
-        boolean useClassAwareStore = isEqualityBehaviour || conf.isMutabilityEnabled();
-        long id = reteEvaluator.getIdentifier();
-        this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
-                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
+
+        initObjectStore(entryPoint, conf, reteEvaluator);
+    }
+
+    protected void initObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
+        this.objectStore = isEqualityBehaviour || conf.isMutabilityEnabled() ?
+                new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
+                new IdentityObjectStore();
     }
 
     @Override

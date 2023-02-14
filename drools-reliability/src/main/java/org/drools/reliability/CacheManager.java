@@ -23,6 +23,7 @@ import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.transaction.TransactionMode;
 
 public enum CacheManager implements AutoCloseable {
 
@@ -30,6 +31,8 @@ public enum CacheManager implements AutoCloseable {
 
     private final DefaultCacheManager cacheManager;
     private final Configuration cacheConfiguration;
+
+    public static final String CACHE_DIR = "tmp/cache";
 
     CacheManager() {
         // Set up a clustered Cache Manager.
@@ -48,10 +51,12 @@ public enum CacheManager implements AutoCloseable {
         builder.persistence().passivation(false)
                 .addSoftIndexFileStore()
                 .shared(false)
-                .dataLocation("tmp/cache/data")
-                .indexLocation("tmp/cache/index");
-
-        builder.clustering().cacheMode(CacheMode.DIST_SYNC);
+                .dataLocation(CACHE_DIR + "/data")
+                .indexLocation(CACHE_DIR + "/index");
+        builder.clustering()
+                .cacheMode(CacheMode.LOCAL)
+                .hash().numOwners(1);
+        builder.clustering().transaction().transactionMode(TransactionMode.TRANSACTIONAL);
         cacheConfiguration = builder.build();
     }
 
@@ -64,4 +69,11 @@ public enum CacheManager implements AutoCloseable {
     public void close() {
         cacheManager.stop();
     }
+
+    public void removeCache(String cacheName){
+        if (cacheManager.cacheExists(cacheName)) {
+            cacheManager.removeCache(cacheName);
+        }
+    }
+
 }

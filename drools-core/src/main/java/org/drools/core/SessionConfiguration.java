@@ -16,14 +16,6 @@
 
 package org.drools.core;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.core.base.CoreComponentsBuilder;
 import org.drools.core.process.WorkItemManagerFactory;
 import org.drools.core.time.impl.TimerJobFactoryManager;
@@ -41,6 +33,7 @@ import org.kie.api.runtime.conf.DirectFiringOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.ThreadSafeOption;
@@ -52,6 +45,14 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public class SessionConfiguration implements KieSessionConfiguration, Externalizable {
 
@@ -73,6 +74,8 @@ public class SessionConfiguration implements KieSessionConfiguration, Externaliz
     private ClockType clockType;
 
     private BeliefSystemType beliefSystemType;
+
+    private PersistedSessionOption persistedSessionOption;
 
     private QueryListenerOption queryListener;
 
@@ -252,6 +255,11 @@ public class SessionConfiguration implements KieSessionConfiguration, Externaliz
 
     private void setBeliefSystemType(BeliefSystemType beliefSystemType) {
         this.beliefSystemType = beliefSystemType;
+    }
+
+    public PersistedSessionOption getPersistedSessionOption() { return this.persistedSessionOption;}
+    private void setPersistedSessionOption(PersistedSessionOption persistedSessionOption){
+        this.persistedSessionOption = persistedSessionOption;
     }
 
     public ClockType getClockType() {
@@ -440,6 +448,8 @@ public class SessionConfiguration implements KieSessionConfiguration, Externaliz
             setQueryListenerOption( (QueryListenerOption) option );
         } else if ( option instanceof BeliefSystemTypeOption ) {
             setBeliefSystemType( ((BeliefSystemType.resolveBeliefSystemType( ((BeliefSystemTypeOption) option).getBeliefSystemType() ))) );
+        } else if ( option instanceof PersistedSessionOption ) {
+            setPersistedSessionOption( (PersistedSessionOption) option);
         }
     }
 
