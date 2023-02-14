@@ -24,5 +24,4 @@ public class ReliableObjectStore extends MapObjectStore {
     public ReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
         super(fhCache);
     }
-
 }
