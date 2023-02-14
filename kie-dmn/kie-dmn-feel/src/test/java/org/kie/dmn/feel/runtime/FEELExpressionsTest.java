@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,9 +55,15 @@ public class FEELExpressionsTest extends BaseFEELTest {
 
                 // named parameters: in this case foo is null
                 {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", Boolean.TRUE , null},
+                {"{ is eighteen : function( foo, person's age ) foo = null and person's age = 18, bob is eighteen : is eighteen( person's age : 18 ) }.bob is eighteen", Boolean.TRUE , null},
+                {"{ is not eighteen : function( foo, person's age ) foo = null and person's age != 18, bob is not eighteen : is not eighteen( person's age : 17 ) }.bob is not eighteen", Boolean.TRUE , null},
 
                 // unary test invocation
                 {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE , null},
+                {"{ is eighteen : = 18, bob is eighteen : is eighteen(18) }.bob is eighteen", Boolean.TRUE , null},
+                {"{ is eighteen : = 18, bob is eighteen : is eighteen(17) }.bob is eighteen", Boolean.FALSE , null},
+                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(18) }.bob is not eighteen", Boolean.FALSE , null},
+                {"{ is not eighteen : != 18, bob is not eighteen : is not eighteen(17) }.bob is not eighteen", Boolean.TRUE , null},
 
                 // negated unary tests
                 {"10 in ( not( <5, >=20, =15, !=10 ) )", Boolean.FALSE, FEELEvent.Severity.ERROR},
