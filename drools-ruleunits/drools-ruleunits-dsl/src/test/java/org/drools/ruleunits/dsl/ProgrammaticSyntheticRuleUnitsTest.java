@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// this test simulates YaRD internal behaviour; if breaking, coordinate changes to YaRD impl2.
 public class ProgrammaticSyntheticRuleUnitsTest {
 
     @Test
