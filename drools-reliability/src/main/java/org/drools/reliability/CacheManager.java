@@ -32,6 +32,8 @@ public enum CacheManager implements AutoCloseable {
     private final DefaultCacheManager cacheManager;
     private final Configuration cacheConfiguration;
 
+    public static final String CACHE_DIR = "tmp/cache";
+
     CacheManager() {
         // Set up a clustered Cache Manager.
         GlobalConfigurationBuilder global = new GlobalConfigurationBuilder();
@@ -49,8 +51,8 @@ public enum CacheManager implements AutoCloseable {
         builder.persistence().passivation(false)
                 .addSoftIndexFileStore()
                 .shared(false)
-                .dataLocation("tmp/cache/data")
-                .indexLocation("tmp/cache/index");
+                .dataLocation(CACHE_DIR + "/data")
+                .indexLocation(CACHE_DIR + "/index");
         builder.clustering()
                 .cacheMode(CacheMode.LOCAL)
                 .hash().numOwners(1);

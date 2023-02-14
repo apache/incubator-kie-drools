@@ -27,10 +27,13 @@ public class ReliabilityTestUtils {
 
     public static void cleanUpCacheFiles() {
         try {
-            Files.walk(Paths.get("tmp/cache"))
-                 .sorted(Comparator.reverseOrder())
-                 .map(Path::toFile)
-                 .forEach(File::delete);
+            Path path = Paths.get(CacheManager.CACHE_DIR);
+            if (Files.exists(path)) {
+                Files.walk(path)
+                     .sorted(Comparator.reverseOrder())
+                     .map(Path::toFile)
+                     .forEach(File::delete);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
