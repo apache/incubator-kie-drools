@@ -1,4 +1,4 @@
-name: Downstream
+name: Kogito Downstream
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  downstream-build:
+  kogito-downstream-build:
     concurrency:
       group: pr-${{ matrix.job_name }}_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
