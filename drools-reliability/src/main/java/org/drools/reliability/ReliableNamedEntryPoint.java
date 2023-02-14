@@ -20,7 +20,6 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
-import org.drools.kiesession.session.SessionComponentsFactory;
 import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public class ReliableNamedEntryPoint extends NamedEntryPoint {
@@ -45,6 +44,6 @@ public class ReliableNamedEntryPoint extends NamedEntryPoint {
         } else {
             throw new ReliabilityConfigurationException("PersistedSessionOption has to be configured when drools-reliability is used");
         }
-        this.objectStore = SessionComponentsFactory.get().createIdentityObjectStore(cacheName);
+        this.objectStore = new ReliableObjectStore(CacheManager.INSTANCE.getOrCreateCache(cacheName));
     }
 }

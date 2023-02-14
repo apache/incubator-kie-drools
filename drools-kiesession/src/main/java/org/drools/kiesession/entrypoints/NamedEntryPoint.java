@@ -16,10 +16,24 @@
 
 package org.drools.kiesession.entrypoints;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.TraitHelper;
+import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.IdentityObjectStore;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Lockable;
@@ -44,22 +58,9 @@ import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.kiesession.session.SessionComponentsFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetBitMask;
@@ -115,10 +116,9 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
     }
 
     protected void initObjectStore(EntryPointId entryPoint, RuleBaseConfiguration conf, ReteEvaluator reteEvaluator) {
-        boolean useClassAwareStore = isEqualityBehaviour || conf.isMutabilityEnabled();
-        this.objectStore = useClassAwareStore ?
-                SessionComponentsFactory.get().createClassAwareObjectStore(entryPoint.getEntryPointId(), isEqualityBehaviour, lock) :
-                SessionComponentsFactory.get().createIdentityObjectStore(entryPoint.getEntryPointId());
+        this.objectStore = isEqualityBehaviour || conf.isMutabilityEnabled() ?
+                new ClassAwareObjectStore( isEqualityBehaviour, this.lock ) :
+                new IdentityObjectStore();
     }
 
     @Override
