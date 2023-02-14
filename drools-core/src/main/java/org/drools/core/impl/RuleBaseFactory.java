@@ -149,7 +149,8 @@ public class RuleBaseFactory {
      *     The KnowledgeSessionConfiguration.
      */
     public static KieSessionConfiguration newKnowledgeSessionConfiguration() {
-        return newKnowledgeSessionConfiguration(ChainedProperties.getChainedProperties(null), null);
+        ClassLoader classLoader = RuleBaseFactory.class.getClassLoader();
+        return newKnowledgeSessionConfiguration(ChainedProperties.getChainedProperties(classLoader), classLoader);
     }
 
     public static KieSessionConfiguration newKnowledgeSessionConfiguration(ChainedProperties chained, ClassLoader classLoader) {

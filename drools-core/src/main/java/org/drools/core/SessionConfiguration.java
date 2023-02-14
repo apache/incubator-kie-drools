@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -30,18 +29,16 @@ import org.drools.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;
-import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.internal.utils.ChainedProperties;
 
 public class SessionConfiguration extends BaseConfiguration<KieSessionOption, SingleValueKieSessionOption, MultiValueKieSessionOption> implements KieSessionConfiguration, Externalizable {
 
@@ -145,9 +142,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         return compConfig.getOptionSubKeys(optionKey);
     }
 
-    public final boolean setInternalProperty(String name,
-                                             String value) {
-        boolean set = true;
+    public final boolean setInternalProperty(String name, String value) {
         switch(name) {
             case ClockTypeOption.PROPERTY_NAME: {
                 setClockType(ClockType.resolveClockType(StringUtils.isEmpty(value) ? "realtime" : value));
@@ -157,11 +152,11 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
                 setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(StringUtils.isEmpty(value) ? "default" : value));
                 break;
             } default : {
-                set = false;
+                return false;
             }
         }
 
-        return set;
+        return true;
     }
 
     public final String getInternalProperty(String name) {

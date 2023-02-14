@@ -18,7 +18,6 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
-import org.kie.internal.conf.ConstraintJittingThresholdOption;
 
 /**
  * By default all the Drools artifacts under the resources folder, at any level, are included into the KieBase.
@@ -30,8 +29,7 @@ import org.kie.internal.conf.ConstraintJittingThresholdOption;
  *
  * DEFAULT = false
  */
-public enum GroupDRLsInKieBasesByFolderOption implements SingleValueRuleBuilderOption,
-                                                         SingleValueRuleBaseOption {
+public enum GroupDRLsInKieBasesByFolderOption implements SingleValueRuleBuilderOption, SingleValueRuleBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -58,7 +56,8 @@ public enum GroupDRLsInKieBasesByFolderOption implements SingleValueRuleBuilderO
         return this.value;
     }
 
-    @Override public String type() {
+    @Override
+    public String type() {
         return SingleValueRuleBuilderOption.super.type();
     }
 }

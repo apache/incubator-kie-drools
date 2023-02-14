@@ -1,14 +1,19 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.internal.conf;
-
-import org.kie.api.PropertiesConfiguration;
-import org.kie.internal.utils.ChainedProperties;
-
-import org.kie.api.conf.ConfigurationKey;
-import org.kie.api.conf.MultiValueOption;
-import org.kie.api.conf.Option;
-import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
-import org.kie.api.conf.SingleValueOption;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -18,6 +23,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import org.kie.api.PropertiesConfiguration;
+import org.kie.api.conf.ConfigurationKey;
+import org.kie.api.conf.MultiValueOption;
+import org.kie.api.conf.Option;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.OptionsConfiguration;
+import org.kie.api.conf.SingleValueOption;
+import org.kie.internal.utils.ChainedProperties;
 
 public class CompositeConfiguration<T extends Option, S extends SingleValueOption, M extends MultiValueOption>
         implements OptionsConfiguration<T, S, M>, Externalizable {
@@ -33,7 +47,7 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
 
         this.chainedProperties = chainedProperties;
 
-        for(ConfigurationFactory<T, S, M> f  : factories) {
+        for (ConfigurationFactory<T, S, M> f  : factories) {
             configurations.put(f.type(), f.create(this, classloader, chainedProperties));
         }
     }
@@ -50,15 +64,13 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
         chainedProperties = (ChainedProperties) in.readObject();
     }
 
-    private OptionsConfiguration<T, S, M> getOptionsConfiguration(String type) {
-        return this.configurations.get(type);
-    }
-
-    @Override public void makeImmutable() {
+    @Override
+    public void makeImmutable() {
         configurations.values().stream().forEach(conf -> conf.makeImmutable());
     }
 
-    @Override public <C extends T> void setOption(C option) {
+    @Override
+    public <C extends T> void setOption(C option) {
         OptionsConfiguration delegate = configurations.get(option.type());
         if (delegate==null) {
             throw new RuntimeException("Configuration for type " + option.type() + " does not exist");
@@ -66,7 +78,8 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
         delegate.setOption(option);
     }
 
-    @Override public <C extends S> C getOption(OptionKey<C> optionKey) {
+    @Override
+    public <C extends S> C getOption(OptionKey<C> optionKey) {
         OptionsConfiguration<T, S, M> delegate = configurations.get(optionKey.type());
         if (delegate==null) {
             throw new RuntimeException("Configuration for type " + optionKey.type() + " does not exist");
@@ -74,7 +87,8 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
         return delegate.getOption(optionKey);
     }
 
-    @Override public <C extends M> C getOption(OptionKey<C> optionKey, String subKey) {
+    @Override
+    public <C extends M> C getOption(OptionKey<C> optionKey, String subKey) {
         OptionsConfiguration<T, S, M> delegate = configurations.get(optionKey.type());
         if (delegate==null) {
             throw new RuntimeException("Configuration for type " + optionKey.type() + " does not exist");
@@ -82,7 +96,8 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
         return delegate.getOption(optionKey, subKey);
     }
 
-    @Override public <C extends M> Set<String> getOptionSubKeys(OptionKey<C> optionKey) {
+    @Override
+    public <C extends M> Set<String> getOptionSubKeys(OptionKey<C> optionKey) {
         OptionsConfiguration<T, S, M> delegate = configurations.get(optionKey.type());
         if (delegate==null) {
             throw new RuntimeException("Configuration for type " + optionKey.type() + " does not exist");
@@ -135,16 +150,15 @@ public class CompositeConfiguration<T extends Option, S extends SingleValueOptio
     }
 
     public String getProperty(PropertiesConfiguration exclude, String name) {
-        String value = null;
-        for(PropertiesConfiguration c : configurations.values()) {
+        for (PropertiesConfiguration c : configurations.values()) {
             if (c != exclude) {
-                value = ((InternalPropertiesConfiguration)c).getInternalProperty(name);
+                String value = ((InternalPropertiesConfiguration)c).getInternalProperty(name);
                 if (value != null) {
-                    break;
+                    return value;
                 }
             }
         }
 
-        return value;
+        return null;
     }
 }

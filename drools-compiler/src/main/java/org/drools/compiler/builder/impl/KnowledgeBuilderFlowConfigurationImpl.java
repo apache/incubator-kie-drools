@@ -16,20 +16,18 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.Set;
+
 import org.drools.core.BaseConfiguration;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.MultiValueKieBuilderOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
 import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -77,8 +75,7 @@ public class KnowledgeBuilderFlowConfigurationImpl extends BaseConfiguration<Kno
         super(compConfig);
     }
 
-    public boolean setInternalProperty(String name,
-            String value) {
+    public boolean setInternalProperty(String name, String value) {
         return false;
     }
 

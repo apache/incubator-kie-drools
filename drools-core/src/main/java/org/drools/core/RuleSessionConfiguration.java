@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,19 @@
 
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Set;
+
 import org.drools.util.StringUtils;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.DirectFiringOption;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
@@ -35,13 +40,6 @@ import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.InternalPropertiesConfiguration;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.internal.utils.ChainedProperties;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Set;
 
 public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption, SingleValueKieSessionOption, MultiValueKieSessionOption> implements KieSessionConfiguration, InternalPropertiesConfiguration, Externalizable {
 
@@ -67,9 +65,7 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         out.writeObject( queryListener );
     }
 
-    @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         queryListener = (QueryListenerOption) in.readObject();
     }
@@ -157,11 +153,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         this.beliefSystemType = beliefSystemType;
     }
 
-    private void setQueryListenerClass(QueryListenerOption option) {
-        checkCanChange();
-        this.queryListener = option;
-    }
-
     public QueryListenerOption getQueryListenerOption() {
         return this.queryListener;
     }
@@ -230,20 +221,17 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public final <T extends MultiValueKieSessionOption> T getOption(OptionKey<T> option,
-                                                                    String subKey) {
+    public final <T extends MultiValueKieSessionOption> T getOption(OptionKey<T> option, String subKey) {
         return compConfig.getOption(option, subKey);
     }
 
-    @Override public <C extends MultiValueKieSessionOption> Set<String> getOptionSubKeys(OptionKey<C> optionKey) {
+    @Override
+    public <C extends MultiValueKieSessionOption> Set<String> getOptionSubKeys(OptionKey<C> optionKey) {
         return compConfig.getOptionSubKeys(optionKey);
     }
 
     @Override
     public boolean setInternalProperty(String name, String value) {
-        boolean set = true;
-
         switch(name) {
             case DirectFiringOption.PROPERTY_NAME: {
                 setDirectFiring(!StringUtils.isEmpty(value) && Boolean.parseBoolean(value));
@@ -274,11 +262,11 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
                 setBeliefSystemType(StringUtils.isEmpty(value) ? BeliefSystemType.SIMPLE : BeliefSystemType.resolveBeliefSystemType(value));
                 break;
             } default: {
-                set = false;
+                return false;
             }
         }
 
-        return set;
+        return true;
     }
 
     @Override
@@ -313,7 +301,6 @@ public class RuleSessionConfiguration extends BaseConfiguration<KieSessionOption
 
     @Override
     public final int hashCode() {
-        int result = getBeliefSystemType().hashCode();
-        return result;
+        return getBeliefSystemType().hashCode();
     }
 }

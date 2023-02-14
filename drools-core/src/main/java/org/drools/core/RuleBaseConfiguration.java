@@ -16,20 +16,25 @@
 
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.rule.consequence.ConflictResolver;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.util.StringUtils;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;
-import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
@@ -37,6 +42,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
+import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
@@ -48,16 +54,8 @@ import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * RuleBaseConfiguration
@@ -434,9 +432,7 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
         }
     }
 
-    public boolean setInternalProperty(String name,
-                                       String value) {
-        boolean set = true;
+    public boolean setInternalProperty(String name, String value) {
         switch(name) {
             case SequentialAgendaOption.PROPERTY_NAME: {
                 setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(StringUtils.isEmpty(value) ? "sequential" : value));
@@ -519,11 +515,11 @@ public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, Sin
                 break;
             }
             default : {
-                set = false;
+                return false;
             }
         }
 
-        return set;
+        return true;
     }
 
     public String getInternalProperty(String name) {

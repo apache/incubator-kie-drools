@@ -16,19 +16,6 @@
 
 package org.drools.core;
 
-import org.drools.core.util.ConfFileUtils;
-import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.api.conf.ConfigurationKey;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.KieBaseOption;
-import org.kie.api.conf.MultiValueKieBaseOption;
-import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
-import org.kie.api.conf.SingleValueKieBaseOption;
-import org.kie.internal.utils.ChainedProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -36,6 +23,17 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.util.ConfFileUtils;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.ConfigurationKey;
+import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.MultiValueKieBaseOption;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueKieBaseOption;
+import org.kie.internal.conf.CompositeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FlowBaseConfiguration
@@ -65,7 +63,7 @@ public class FlowBaseConfiguration extends BaseConfiguration<KieBaseOption, Sing
 
     private static final long serialVersionUID = 510l;
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(FlowBaseConfiguration.class);
+    protected static final Logger logger = LoggerFactory.getLogger(FlowBaseConfiguration.class);
 
     private List<Map<String, Object>> workDefinitions;
 

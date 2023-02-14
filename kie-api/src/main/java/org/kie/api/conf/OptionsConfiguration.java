@@ -1,9 +1,24 @@
-package org.kie.api.conf;
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import org.kie.api.PropertiesConfiguration;
+package org.kie.api.conf;
 
 import java.util.Collections;
 import java.util.Set;
+
+import org.kie.api.PropertiesConfiguration;
 
 public interface OptionsConfiguration<T extends Option, S extends SingleValueOption, M extends MultiValueOption> extends PropertiesConfiguration {
 
@@ -18,7 +33,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
      * @return the Option value for the given option. Returns null if option is
      *         not configured.
      */
-    public <C extends T> void setOption( C option );
+    <C extends T> void setOption( C option );
 
     /**
      * Gets an option value
@@ -29,7 +44,7 @@ public interface OptionsConfiguration<T extends Option, S extends SingleValueOpt
      * @return the Option value for the given option. Returns null if option is
      *         not configured.
      */
-    public <C extends S> C getOption( OptionKey<C> optionKey );
+    <C extends S> C getOption( OptionKey<C> optionKey );
 
     /**
      * Gets an option value for the given option + key. This method should

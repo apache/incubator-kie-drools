@@ -1,23 +1,35 @@
-package org.drools.core;
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import org.drools.util.StringUtils;
-import org.kie.api.PropertiesConfiguration;
-import org.kie.api.conf.ConfigurationKey;
-import org.kie.api.conf.KieBaseOption;
-import org.kie.api.conf.MultiValueKieBaseOption;
-import org.kie.api.conf.MultiValueOption;
-import org.kie.api.conf.Option;
-import org.kie.api.conf.OptionsConfiguration;
-import org.kie.api.conf.SingleValueKieBaseOption;
-import org.kie.api.conf.SingleValueOption;
-import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.internal.conf.InternalPropertiesConfiguration;
-import org.kie.internal.utils.ChainedProperties;
+package org.drools.core;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.util.StringUtils;
+import org.kie.api.PropertiesConfiguration;
+import org.kie.api.conf.ConfigurationKey;
+import org.kie.api.conf.MultiValueOption;
+import org.kie.api.conf.Option;
+import org.kie.api.conf.OptionsConfiguration;
+import org.kie.api.conf.SingleValueOption;
+import org.kie.internal.conf.CompositeConfiguration;
+import org.kie.internal.conf.InternalPropertiesConfiguration;
+import org.kie.internal.utils.ChainedProperties;
 
 
 public abstract class BaseConfiguration<T extends Option, S extends SingleValueOption, M extends MultiValueOption> implements InternalPropertiesConfiguration, PropertiesConfiguration, Externalizable {
@@ -43,15 +55,13 @@ public abstract class BaseConfiguration<T extends Option, S extends SingleValueO
         immutable = in.readBoolean();
     }
 
-    public final boolean setProperty(String name,
-                                     String value) {
+    public final boolean setProperty(String name, String value) {
         name = name.trim();
         if ( StringUtils.isEmpty(name) ) {
             return false;
         }
 
         boolean set = setInternalProperty(name, value);
-
 
         if (!set) {
             set = compConfig.setProperty(this, name, value);

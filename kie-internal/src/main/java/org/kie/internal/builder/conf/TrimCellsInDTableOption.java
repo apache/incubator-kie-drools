@@ -18,7 +18,6 @@ package org.kie.internal.builder.conf;
 
 import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.SingleValueRuleBaseOption;
-import org.kie.internal.conf.ShareAlphaNodesOption;
 
 /**
  * An option to disable trimming of spaces for values in decision tables
@@ -27,8 +26,7 @@ import org.kie.internal.conf.ShareAlphaNodesOption;
  *
  * DEFAULT = true
  */
-public enum TrimCellsInDTableOption implements SingleValueRuleBuilderOption,
-                                               SingleValueRuleBaseOption {
+public enum TrimCellsInDTableOption implements SingleValueRuleBuilderOption, SingleValueRuleBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -56,7 +54,8 @@ public enum TrimCellsInDTableOption implements SingleValueRuleBuilderOption,
         return this.value;
     }
 
-    @Override public String type() {
+    @Override
+    public String type() {
         return SingleValueRuleBuilderOption.super.type();
     }
 }

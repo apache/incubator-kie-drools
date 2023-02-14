@@ -16,25 +16,23 @@
 
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.util.StringUtils;
-import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.api.conf.SingleValueKieBaseOption;
-import org.kie.internal.utils.ChainedProperties;
+import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 /**
  * RuleBaseConfiguration
@@ -107,8 +105,7 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
     }
 
     private void init() {
-        setMBeansEnabled( MBeansOption.isEnabled( getPropertyValue( MBeansOption.PROPERTY_NAME,
-                                                                                      "disabled" ) ) );
+        setMBeansEnabled( MBeansOption.isEnabled( getPropertyValue( MBeansOption.PROPERTY_NAME, "disabled" ) ) );
 
         setMutabilityEnabled( KieBaseMutabilityOption.determineMutability(
                 getPropertyValue( KieBaseMutabilityOption.PROPERTY_NAME, "ALLOWED" )) == KieBaseMutabilityOption.ALLOWED );
@@ -125,9 +122,7 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
         super.readExternal(in);
         mutabilityEnabled = in.readBoolean();
     }
-    public boolean setInternalProperty(String name,
-                                       String value) {
-        boolean set = true;
+    public boolean setInternalProperty(String name, String value) {
         switch(name) {
             case MBeansOption.PROPERTY_NAME: {
                 setMBeansEnabled( MBeansOption.isEnabled(value));
@@ -137,11 +132,11 @@ public class KieBaseConfigurationImpl extends BaseConfiguration<KieBaseOption, S
                 setMutabilityEnabled( StringUtils.isEmpty( value ) ? true : KieBaseMutabilityOption.determineMutability(value) == KieBaseMutabilityOption.ALLOWED );
                 break;
             } default: {
-                set = false;
+                return false;
             }
         }
 
-        return set;
+        return true;
     }
 
     public String getInternalProperty(String name) {

@@ -19,7 +19,6 @@ package org.drools.compiler.builder.impl;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.drools.compiler.compiler.Dialect;
@@ -30,11 +29,8 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.ConstraintBuilder;
 import org.drools.core.BaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.util.StringUtils;
-import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
@@ -45,7 +41,6 @@ import org.kie.internal.builder.conf.KnowledgeBuilderOption;
 import org.kie.internal.builder.conf.MultiValueKieBuilderOption;
 import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
 import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +122,7 @@ public class KnowledgeBuilderConfigurationImpl extends BaseConfiguration<Knowled
     private void buildSeverityMap() {
         this.severityMap = new HashMap<>();
         Map<String, String> temp = new HashMap<>();
-        getProperties().mapStartsWith(temp,
-                                      KBuilderSeverityOption.PROPERTY_NAME,
-                                      true);
+        getProperties().mapStartsWith(temp, KBuilderSeverityOption.PROPERTY_NAME, true);
 
         int index = KBuilderSeverityOption.PROPERTY_NAME.length();
         for (Map.Entry<String, String> entry : temp.entrySet()) {
@@ -140,7 +133,6 @@ public class KnowledgeBuilderConfigurationImpl extends BaseConfiguration<Knowled
     }
 
     public boolean setInternalProperty(String name, String value) {
-        boolean set = true;
         switch (name) {
             case DefaultDialectOption.PROPERTY_NAME: {
                 setDefaultDialect(value);
@@ -156,12 +148,12 @@ public class KnowledgeBuilderConfigurationImpl extends BaseConfiguration<Knowled
                     String key = name.substring(name.lastIndexOf('.') + 1);
                     this.severityMap.put(key, KBuilderSeverityOption.get(key, value).getSeverity());
                 } else {
-                    set = false;
+                    return false;
                 }
             }
         }
 
-        return set;
+        return true;
     }
 
     public String getInternalProperty(String name) {
@@ -174,7 +166,7 @@ public class KnowledgeBuilderConfigurationImpl extends BaseConfiguration<Knowled
                 return this.dumpDirectory != null ? this.dumpDirectory.toString() : null;
             } default: {
                 if (name.startsWith(KBuilderSeverityOption.PROPERTY_NAME)) {
-                    String         key      = name.substring(name.lastIndexOf('.') + 1);
+                    String key = name.substring(name.lastIndexOf('.') + 1);
                     ResultSeverity severity = this.severityMap.get(key);
                     return severity.toString();
                 }

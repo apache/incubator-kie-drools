@@ -46,7 +46,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return newKnowledgeBuilderConfiguration(null, classLoader);
     }
 
-    private ClassLoader getClassLoader(ClassLoader classLoader) {
+    protected ClassLoader getClassLoader(ClassLoader classLoader) {
         ClassLoader projClassLoader = classLoader instanceof ProjectClassLoader ? classLoader : ProjectClassLoader.getClassLoader(classLoader, getClass());
         return projClassLoader;
     }

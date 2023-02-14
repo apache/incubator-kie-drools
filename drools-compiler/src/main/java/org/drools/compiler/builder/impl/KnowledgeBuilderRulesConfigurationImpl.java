@@ -16,6 +16,12 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule.CompilationCache;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
 import org.drools.compiler.rule.builder.util.AccumulateUtil;
@@ -23,7 +29,6 @@ import org.drools.core.BaseConfiguration;
 import org.drools.drl.parser.DrlParser;
 import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
@@ -43,12 +48,6 @@ import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -166,7 +165,6 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
 
     public boolean setInternalProperty(String name,
                                        String value) {
-        boolean set = true;
         switch (name) {
             case ProcessStringEscapesOption.PROPERTY_NAME: {
                 setProcessStringEscapes(Boolean.parseBoolean(value));
@@ -192,13 +190,13 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                 }
                 break;
             } case ParallelRulesBuildThresholdOption.PROPERTY_NAME: {
-                setParallelRulesBuildThreshold(Integer.valueOf(value));
+                setParallelRulesBuildThreshold(Integer.parseInt(value));
                 break;
             } case ExternaliseCanonicalModelLambdaOption.PROPERTY_NAME: {
-                setExternaliseCanonicalModelLambda(Boolean.valueOf(value));
+                setExternaliseCanonicalModelLambda(Boolean.parseBoolean(value));
                 break;
             } case ParallelLambdaExternalizationOption.PROPERTY_NAME: {
-                setParallelLambdaExternalization(Boolean.valueOf(value));
+                setParallelLambdaExternalization(Boolean.parseBoolean(value));
                 break;
             } case AlphaNetworkCompilerOption.PROPERTY_NAME: {
                 try {
@@ -214,12 +212,12 @@ public class KnowledgeBuilderRulesConfigurationImpl extends BaseConfiguration<Kn
                 } else if (name.startsWith(EvaluatorOption.PROPERTY_NAME)) {
                     this.evaluatorRegistry.addEvaluatorDefinition(value);
                 } else {
-                    set = false;
+                    return false;
                 }
             }
         }
 
-        return set;
+        return true;
     }
 
     public String getInternalProperty(String name) {

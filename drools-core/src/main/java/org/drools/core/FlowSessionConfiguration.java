@@ -16,21 +16,6 @@
 
 package org.drools.core;
 
-import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.process.WorkItemManagerFactory;
-import org.drools.core.util.ConfFileUtils;
-import org.kie.api.conf.ConfigurationKey;
-import org.kie.api.conf.OptionKey;
-import org.kie.api.conf.OptionsConfiguration;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.KieSessionOption;
-import org.kie.api.runtime.conf.MultiValueKieSessionOption;
-import org.kie.api.runtime.conf.SingleValueKieSessionOption;
-import org.kie.api.runtime.conf.WorkItemHandlerOption;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.internal.conf.CompositeConfiguration;
-import org.kie.internal.utils.ChainedProperties;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -38,6 +23,19 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.CoreComponentsBuilder;
+import org.drools.core.process.WorkItemManagerFactory;
+import org.drools.core.util.ConfFileUtils;
+import org.kie.api.conf.ConfigurationKey;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.KieSessionOption;
+import org.kie.api.runtime.conf.MultiValueKieSessionOption;
+import org.kie.api.runtime.conf.SingleValueKieSessionOption;
+import org.kie.api.runtime.conf.WorkItemHandlerOption;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.conf.CompositeConfiguration;
 
 public class FlowSessionConfiguration extends BaseConfiguration<KieSessionOption, SingleValueKieSessionOption, MultiValueKieSessionOption> implements KieSessionConfiguration, Externalizable {
 
@@ -81,7 +79,7 @@ public class FlowSessionConfiguration extends BaseConfiguration<KieSessionOption
 
 
     private void initWorkItemHandlers(Map<String, Object> params) {
-        this.workItemHandlers = new HashMap<String, WorkItemHandler>();
+        this.workItemHandlers = new HashMap<>();
 
         // split on each space
         String locations[] = getPropertyValue( "drools.workItemHandlers", "" ).split( "\\s" );
