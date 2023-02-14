@@ -21,7 +21,7 @@ final class HardMediumSoftLongScoreContext extends ScoreContext<HardMediumSoftLo
     }
 
     public UndoScoreImpacter changeSoftScoreBy(long matchWeight, JustificationsSupplier justificationsSupplier) {
-        long softImpact = constraintWeight.getSoftScore() * matchWeight;
+        long softImpact = constraintWeight.softScore() * matchWeight;
         softScoreUpdater.accept(softImpact);
         UndoScoreImpacter undoScoreImpact = () -> softScoreUpdater.accept(-softImpact);
         if (!constraintMatchEnabled) {
@@ -54,7 +54,7 @@ final class HardMediumSoftLongScoreContext extends ScoreContext<HardMediumSoftLo
     public UndoScoreImpacter changeScoreBy(long matchWeight, JustificationsSupplier justificationsSupplier) {
         long hardImpact = constraintWeight.hardScore() * matchWeight;
         long mediumImpact = constraintWeight.mediumScore() * matchWeight;
-        long softImpact = constraintWeight.getSoftScore() * matchWeight;
+        long softImpact = constraintWeight.softScore() * matchWeight;
         hardScoreUpdater.accept(hardImpact);
         mediumScoreUpdater.accept(mediumImpact);
         softScoreUpdater.accept(softImpact);

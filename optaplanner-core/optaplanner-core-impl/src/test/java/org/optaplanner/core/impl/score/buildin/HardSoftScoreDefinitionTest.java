@@ -44,7 +44,7 @@ class HardSoftScoreDefinitionTest {
                 HardSoftScore.of(-1, -2));
         assertThat(optimisticBound.initScore()).isEqualTo(0);
         assertThat(optimisticBound.hardScore()).isEqualTo(Integer.MAX_VALUE);
-        assertThat(optimisticBound.getSoftScore()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(optimisticBound.softScore()).isEqualTo(Integer.MAX_VALUE);
     }
 
     @Test
@@ -55,7 +55,7 @@ class HardSoftScoreDefinitionTest {
                 HardSoftScore.of(-1, -2));
         assertThat(optimisticBound.initScore()).isEqualTo(0);
         assertThat(optimisticBound.hardScore()).isEqualTo(-1);
-        assertThat(optimisticBound.getSoftScore()).isEqualTo(-2);
+        assertThat(optimisticBound.softScore()).isEqualTo(-2);
     }
 
     @Test
@@ -66,7 +66,7 @@ class HardSoftScoreDefinitionTest {
                 HardSoftScore.of(-1, -2));
         assertThat(pessimisticBound.initScore()).isEqualTo(0);
         assertThat(pessimisticBound.hardScore()).isEqualTo(-1);
-        assertThat(pessimisticBound.getSoftScore()).isEqualTo(-2);
+        assertThat(pessimisticBound.softScore()).isEqualTo(-2);
     }
 
     @Test
@@ -77,7 +77,7 @@ class HardSoftScoreDefinitionTest {
                 HardSoftScore.of(-1, -2));
         assertThat(pessimisticBound.initScore()).isEqualTo(0);
         assertThat(pessimisticBound.hardScore()).isEqualTo(Integer.MIN_VALUE);
-        assertThat(pessimisticBound.getSoftScore()).isEqualTo(Integer.MIN_VALUE);
+        assertThat(pessimisticBound.softScore()).isEqualTo(Integer.MIN_VALUE);
     }
 
     @Test

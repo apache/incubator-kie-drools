@@ -16,7 +16,7 @@ final class SimpleLongScoreContext extends ScoreContext<SimpleLongScore> {
     }
 
     public UndoScoreImpacter changeScoreBy(long matchWeight, JustificationsSupplier justificationsSupplier) {
-        long impact = constraintWeight.getScore() * matchWeight;
+        long impact = constraintWeight.score() * matchWeight;
         scoreUpdater.accept(impact);
         UndoScoreImpacter undoScoreImpact = () -> scoreUpdater.accept(-impact);
         if (!constraintMatchEnabled) {

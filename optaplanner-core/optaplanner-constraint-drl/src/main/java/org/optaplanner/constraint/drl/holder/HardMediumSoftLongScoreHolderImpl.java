@@ -53,30 +53,30 @@ public final class HardMediumSoftLongScoreHolderImpl extends AbstractScoreHolder
         if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> {
             };
-        } else if (constraintWeight.mediumScore() == 0 && constraintWeight.getSoftScore() == 0) {
+        } else if (constraintWeight.mediumScore() == 0 && constraintWeight.softScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addHardConstraintMatch(kcontext,
                             constraintWeight.hardScore() * matchWeight);
-        } else if (constraintWeight.hardScore() == 0 && constraintWeight.getSoftScore() == 0) {
+        } else if (constraintWeight.hardScore() == 0 && constraintWeight.softScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addMediumConstraintMatch(kcontext,
                             constraintWeight.mediumScore() * matchWeight);
         } else if (constraintWeight.hardScore() == 0 && constraintWeight.mediumScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.softScore() * matchWeight);
         } else {
             matchExecutor =
                     (RuleContext kcontext, long matchWeight) -> addMultiConstraintMatch(kcontext,
                             constraintWeight.hardScore() * matchWeight, constraintWeight.mediumScore() * matchWeight,
-                            constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.softScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule, (RuleContext kcontext,
                 HardMediumSoftLongScore weightMultiplier) -> addMultiConstraintMatch(kcontext,
                         constraintWeight.hardScore() * weightMultiplier.hardScore(),
                         constraintWeight.mediumScore() * weightMultiplier.mediumScore(),
-                        constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
+                        constraintWeight.softScore() * weightMultiplier.softScore()));
     }
 
     // ************************************************************************

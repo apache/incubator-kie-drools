@@ -42,7 +42,7 @@ public final class SimpleLongScoreHolderImpl extends AbstractScoreHolder<SimpleL
             };
         } else {
             matchExecutor = (RuleContext kcontext, long matchWeight) -> addConstraintMatch(kcontext,
-                    constraintWeight.getScore() * matchWeight);
+                    constraintWeight.score() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
     }

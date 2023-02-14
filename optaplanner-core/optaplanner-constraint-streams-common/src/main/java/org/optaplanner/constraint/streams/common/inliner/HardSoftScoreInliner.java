@@ -18,7 +18,7 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
         validateConstraintWeight(constraint, constraintWeight);
         HardSoftScoreContext context = new HardSoftScoreContext(this, constraint, constraintWeight,
                 impact -> this.hardScore += impact, impact -> this.softScore += impact);
-        if (constraintWeight.getSoftScore() == 0) {
+        if (constraintWeight.softScore() == 0) {
             return WeightedScoreImpacter.of(context, HardSoftScoreContext::changeHardScoreBy);
         } else if (constraintWeight.hardScore() == 0) {
             return WeightedScoreImpacter.of(context, HardSoftScoreContext::changeSoftScoreBy);

@@ -19,7 +19,7 @@ final class HardMediumSoftLongScoreInliner extends AbstractScoreInliner<HardMedi
         validateConstraintWeight(constraint, constraintWeight);
         long hardConstraintWeight = constraintWeight.hardScore();
         long mediumConstraintWeight = constraintWeight.mediumScore();
-        long softConstraintWeight = constraintWeight.getSoftScore();
+        long softConstraintWeight = constraintWeight.softScore();
         HardMediumSoftLongScoreContext context = new HardMediumSoftLongScoreContext(this, constraint, constraintWeight,
                 impact -> this.hardScore += impact, impact -> this.mediumScore += impact,
                 impact -> this.softScore += impact);

@@ -46,24 +46,24 @@ public final class HardSoftScoreHolderImpl extends AbstractScoreHolder<HardSoftS
         if (constraintWeight.isZero()) {
             matchExecutor = (RuleContext kcontext, int matchWeight) -> {
             };
-        } else if (constraintWeight.getSoftScore() == 0) {
+        } else if (constraintWeight.softScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, int matchWeight) -> addHardConstraintMatch(kcontext,
                             constraintWeight.hardScore() * matchWeight);
         } else if (constraintWeight.hardScore() == 0) {
             matchExecutor =
                     (RuleContext kcontext, int matchWeight) -> addSoftConstraintMatch(kcontext,
-                            constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.softScore() * matchWeight);
         } else {
             matchExecutor =
                     (RuleContext kcontext, int matchWeight) -> addMultiConstraintMatch(kcontext,
-                            constraintWeight.hardScore() * matchWeight, constraintWeight.getSoftScore() * matchWeight);
+                            constraintWeight.hardScore() * matchWeight, constraintWeight.softScore() * matchWeight);
         }
         matchExecutorByNumberMap.put(rule, matchExecutor);
         matchExecutorByScoreMap.put(rule,
                 (RuleContext kcontext, HardSoftScore weightMultiplier) -> addMultiConstraintMatch(
                         kcontext, constraintWeight.hardScore() * weightMultiplier.hardScore(),
-                        constraintWeight.getSoftScore() * weightMultiplier.getSoftScore()));
+                        constraintWeight.softScore() * weightMultiplier.softScore()));
     }
 
     // ************************************************************************

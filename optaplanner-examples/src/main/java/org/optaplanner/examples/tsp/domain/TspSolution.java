@@ -113,7 +113,7 @@ public class TspSolution extends AbstractPersistable {
         if (score == null) {
             return null;
         }
-        long distance = -score.getScore();
+        long distance = -score.score();
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(distance / 1000.0);
         }

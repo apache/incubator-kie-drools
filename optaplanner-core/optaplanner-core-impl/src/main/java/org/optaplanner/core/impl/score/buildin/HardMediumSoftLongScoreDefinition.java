@@ -64,7 +64,7 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
         return HardMediumSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.hardScore() : Long.MAX_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.mediumScore() : Long.MAX_VALUE,
-                trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Long.MAX_VALUE);
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.softScore() : Long.MAX_VALUE);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
         return HardMediumSoftLongScore.ofUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.hardScore() : Long.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.mediumScore() : Long.MIN_VALUE,
-                trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Long.MIN_VALUE);
+                trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.softScore() : Long.MIN_VALUE);
     }
 
     @Override
@@ -86,8 +86,8 @@ public class HardMediumSoftLongScoreDefinition extends AbstractScoreDefinition<H
         long divisorHardScore = sanitize(divisor.hardScore());
         long dividendMediumScore = dividend.mediumScore();
         long divisorMediumScore = sanitize(divisor.mediumScore());
-        long dividendSoftScore = dividend.getSoftScore();
-        long divisorSoftScore = sanitize(divisor.getSoftScore());
+        long dividendSoftScore = dividend.softScore();
+        long divisorSoftScore = sanitize(divisor.softScore());
         return fromLevelNumbers(
                 divide(dividendInitScore, divisorInitScore),
                 new Number[] {

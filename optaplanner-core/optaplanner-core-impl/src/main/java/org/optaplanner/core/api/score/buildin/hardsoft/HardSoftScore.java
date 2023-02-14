@@ -142,7 +142,7 @@ public final class HardSoftScore implements Score<HardSoftScore> {
         return new HardSoftScore(
                 initScore + addend.initScore(),
                 hardScore + addend.hardScore(),
-                softScore + addend.getSoftScore());
+                softScore + addend.softScore());
     }
 
     @Override
@@ -150,7 +150,7 @@ public final class HardSoftScore implements Score<HardSoftScore> {
         return new HardSoftScore(
                 initScore - subtrahend.initScore(),
                 hardScore - subtrahend.hardScore(),
-                softScore - subtrahend.getSoftScore());
+                softScore - subtrahend.softScore());
     }
 
     @Override
@@ -200,7 +200,7 @@ public final class HardSoftScore implements Score<HardSoftScore> {
             HardSoftScore other = (HardSoftScore) o;
             return initScore == other.initScore()
                     && hardScore == other.hardScore()
-                    && softScore == other.getSoftScore();
+                    && softScore == other.softScore();
         } else {
             return false;
         }
@@ -218,7 +218,7 @@ public final class HardSoftScore implements Score<HardSoftScore> {
         } else if (hardScore != other.hardScore()) {
             return Integer.compare(hardScore, other.hardScore());
         } else {
-            return Integer.compare(softScore, other.getSoftScore());
+            return Integer.compare(softScore, other.softScore());
         }
     }
 

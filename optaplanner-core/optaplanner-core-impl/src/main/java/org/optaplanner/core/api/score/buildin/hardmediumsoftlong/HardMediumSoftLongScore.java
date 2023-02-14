@@ -180,7 +180,7 @@ public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongSc
                 initScore + addend.initScore(),
                 hardScore + addend.hardScore(),
                 mediumScore + addend.mediumScore(),
-                softScore + addend.getSoftScore());
+                softScore + addend.softScore());
     }
 
     @Override
@@ -189,7 +189,7 @@ public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongSc
                 initScore - subtrahend.initScore(),
                 hardScore - subtrahend.hardScore(),
                 mediumScore - subtrahend.mediumScore(),
-                softScore - subtrahend.getSoftScore());
+                softScore - subtrahend.softScore());
     }
 
     @Override
@@ -244,7 +244,7 @@ public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongSc
             return initScore == other.initScore()
                     && hardScore == other.hardScore()
                     && mediumScore == other.mediumScore()
-                    && softScore == other.getSoftScore();
+                    && softScore == other.softScore();
         } else {
             return false;
         }
@@ -264,7 +264,7 @@ public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongSc
         } else if (mediumScore != other.mediumScore()) {
             return Long.compare(mediumScore, other.mediumScore());
         } else {
-            return Long.compare(softScore, other.getSoftScore());
+            return Long.compare(softScore, other.softScore());
         }
     }
 

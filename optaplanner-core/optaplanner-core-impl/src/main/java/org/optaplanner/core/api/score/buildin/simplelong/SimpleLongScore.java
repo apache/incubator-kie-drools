@@ -93,14 +93,14 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
     public SimpleLongScore add(SimpleLongScore addend) {
         return new SimpleLongScore(
                 initScore + addend.initScore(),
-                score + addend.getScore());
+                score + addend.score());
     }
 
     @Override
     public SimpleLongScore subtract(SimpleLongScore subtrahend) {
         return new SimpleLongScore(
                 initScore - subtrahend.initScore(),
-                score - subtrahend.getScore());
+                score - subtrahend.score());
     }
 
     @Override
@@ -151,7 +151,7 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
         } else if (o instanceof SimpleLongScore) {
             SimpleLongScore other = (SimpleLongScore) o;
             return initScore == other.initScore()
-                    && score == other.getScore();
+                    && score == other.score();
         } else {
             return false;
         }
@@ -167,7 +167,7 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
         if (initScore != other.initScore()) {
             return Integer.compare(initScore, other.initScore());
         } else {
-            return Long.compare(score, other.getScore());
+            return Long.compare(score, other.score());
         }
     }
 
