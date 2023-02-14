@@ -23,7 +23,7 @@ defaults:
 jobs:
   productized-build-chain:
     concurrency:
-      group: rhbop_pull_request-${{ github.event_name }}-${{ github.head_ref }}-${{ matrix.os }}-${{ matrix.java-version }}
+      group: rhbop_pull_request-${{ github.event_name }}-${{ github.head_ref }}-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.maven-version }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
