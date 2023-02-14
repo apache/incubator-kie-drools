@@ -76,8 +76,8 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
                 List<MoveCountPerStepStatisticPoint> list = subSingleStatistic.getPointList();
                 for (MoveCountPerStepStatisticPoint point : list) {
                     long timeMillisSpent = point.getTimeMillisSpent();
-                    long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
-                    long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();
+                    long acceptedMoveCount = point.getAcceptedMoveCount();
+                    long selectedMoveCount = point.getSelectedMoveCount();
                     acceptedSeries.add(timeMillisSpent, acceptedMoveCount);
                     selectedSeries.add(timeMillisSpent, selectedMoveCount);
                 }

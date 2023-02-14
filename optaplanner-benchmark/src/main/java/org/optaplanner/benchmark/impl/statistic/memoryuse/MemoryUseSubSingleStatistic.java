@@ -61,8 +61,8 @@ public class MemoryUseSubSingleStatistic<Solution_>
             if (timeMillisSpent >= nextTimeMillisThreshold) {
                 registry.getGaugeValue(SolverMetric.MEMORY_USE, tags,
                         memoryUse -> pointList.add(
-                                new MemoryUseStatisticPoint(timeMillisSpent, new MemoryUseMeasurement(memoryUse.longValue(),
-                                        (long) registry.find("jvm.memory.max").tags(tags).gauge().value()))));
+                                new MemoryUseStatisticPoint(timeMillisSpent, memoryUse.longValue(),
+                                        (long) registry.find("jvm.memory.max").tags(tags).gauge().value())));
 
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
                 if (nextTimeMillisThreshold < timeMillisSpent) {
@@ -85,8 +85,8 @@ public class MemoryUseSubSingleStatistic<Solution_>
     @Override
     protected MemoryUseStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
-        return new MemoryUseStatisticPoint(Long.parseLong(csvLine.get(0)),
-                new MemoryUseMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));
+        return new MemoryUseStatisticPoint(Long.parseLong(csvLine.get(0)), Long.parseLong(csvLine.get(1)),
+                Long.parseLong(csvLine.get(2)));
     }
 
 }

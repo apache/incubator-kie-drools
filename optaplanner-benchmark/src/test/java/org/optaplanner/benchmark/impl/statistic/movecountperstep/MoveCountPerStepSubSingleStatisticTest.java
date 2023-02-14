@@ -21,8 +21,7 @@ public final class MoveCountPerStepSubSingleStatisticTest
 
     @Override
     protected List<MoveCountPerStepStatisticPoint> getInputPoints() {
-        MoveCountPerStepMeasurement moveCountPerStepMeasurement = new MoveCountPerStepMeasurement(0, Long.MAX_VALUE);
-        return Collections.singletonList(new MoveCountPerStepStatisticPoint(Long.MAX_VALUE, moveCountPerStepMeasurement));
+        return Collections.singletonList(new MoveCountPerStepStatisticPoint(Long.MAX_VALUE, 0, Long.MAX_VALUE));
     }
 
     @Override
@@ -30,9 +29,9 @@ public final class MoveCountPerStepSubSingleStatisticTest
         assertions.assertThat(outputPoints)
                 .hasSize(1)
                 .first()
-                .matches(s -> s.getMoveCountPerStepMeasurement().getAcceptedMoveCount() == 0,
+                .matches(s -> s.getAcceptedMoveCount() == 0,
                         "Accepted move counts do not match.")
-                .matches(s -> s.getMoveCountPerStepMeasurement().getSelectedMoveCount() == Long.MAX_VALUE,
+                .matches(s -> s.getSelectedMoveCount() == Long.MAX_VALUE,
                         "Selected move counts do not match.")
                 .matches(s -> s.getTimeMillisSpent() == Long.MAX_VALUE, "Millis do not match.");
     }

@@ -72,8 +72,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
                 List<MemoryUseStatisticPoint> points = subSingleStatistic.getPointList();
                 for (MemoryUseStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
-                    MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
-                    usedSeries.add(timeMillisSpent, memoryUseMeasurement.getUsedMemory());
+                    usedSeries.add(timeMillisSpent, point.getUsedMemory());
                     //                    maxSeries.add(timeMillisSpent, memoryUseMeasurement.getMaxMemory());
                 }
             }

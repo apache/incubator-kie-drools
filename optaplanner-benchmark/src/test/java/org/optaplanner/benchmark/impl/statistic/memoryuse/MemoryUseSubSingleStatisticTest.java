@@ -20,7 +20,7 @@ public final class MemoryUseSubSingleStatisticTest
 
     @Override
     protected List<MemoryUseStatisticPoint> getInputPoints() {
-        return Collections.singletonList(new MemoryUseStatisticPoint(Long.MAX_VALUE, MemoryUseMeasurement.create()));
+        return Collections.singletonList(MemoryUseStatisticPoint.create(Long.MAX_VALUE));
     }
 
     @Override
@@ -28,8 +28,8 @@ public final class MemoryUseSubSingleStatisticTest
         assertions.assertThat(outputPoints)
                 .hasSize(1)
                 .first()
-                .matches(s -> s.getMemoryUseMeasurement().getUsedMemory() > 0, "Used memory not recorded.")
-                .matches(s -> s.getMemoryUseMeasurement().getMaxMemory() > 0, "Max memory not recorded.")
+                .matches(s -> s.getUsedMemory() > 0, "Used memory not recorded.")
+                .matches(s -> s.getMaxMemory() > 0, "Max memory not recorded.")
                 .matches(s -> s.getTimeMillisSpent() == Long.MAX_VALUE, "Millis do not match.");
     }
 

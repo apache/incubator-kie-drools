@@ -34,7 +34,7 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
                 timeMillisSpent -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted", runTag,
                         accepted -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected", runTag,
                                 selected -> pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
-                                        new MoveCountPerStepMeasurement(accepted.longValue(), selected.longValue()))))));
+                                        accepted.longValue(), selected.longValue())))));
     }
 
     // ************************************************************************
@@ -49,8 +49,8 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     @Override
     protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
-        return new MoveCountPerStepStatisticPoint(Long.parseLong(csvLine.get(0)),
-                new MoveCountPerStepMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));
+        return new MoveCountPerStepStatisticPoint(Long.parseLong(csvLine.get(0)), Long.parseLong(csvLine.get(1)),
+                Long.parseLong(csvLine.get(2)));
     }
 
 }

@@ -4,26 +4,36 @@ import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
 public class MemoryUseStatisticPoint extends StatisticPoint {
 
-    private final long timeMillisSpent;
-    private final MemoryUseMeasurement memoryUseMeasurement;
+    public static MemoryUseStatisticPoint create(long timeMillisSpent) {
+        Runtime runtime = Runtime.getRuntime();
+        return new MemoryUseStatisticPoint(timeMillisSpent, runtime.totalMemory() - runtime.freeMemory(), runtime.maxMemory());
+    }
 
-    public MemoryUseStatisticPoint(long timeMillisSpent, MemoryUseMeasurement memoryUseMeasurement) {
+    private final long timeMillisSpent;
+    private final long usedMemory;
+    private final long maxMemory;
+
+    public MemoryUseStatisticPoint(long timeMillisSpent, long usedMemory, long maxMemory) {
         this.timeMillisSpent = timeMillisSpent;
-        this.memoryUseMeasurement = memoryUseMeasurement;
+        this.usedMemory = usedMemory;
+        this.maxMemory = maxMemory;
     }
 
     public long getTimeMillisSpent() {
         return timeMillisSpent;
     }
 
-    public MemoryUseMeasurement getMemoryUseMeasurement() {
-        return memoryUseMeasurement;
+    public long getUsedMemory() {
+        return usedMemory;
+    }
+
+    public long getMaxMemory() {
+        return maxMemory;
     }
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpent, memoryUseMeasurement.getUsedMemory(),
-                memoryUseMeasurement.getMaxMemory());
+        return buildCsvLineWithLongs(timeMillisSpent, usedMemory, maxMemory);
     }
 
 }
