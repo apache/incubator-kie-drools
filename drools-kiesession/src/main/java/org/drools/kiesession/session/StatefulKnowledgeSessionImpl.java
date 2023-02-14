@@ -329,7 +329,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agenda = agenda != null ? agenda : RuntimeComponentFactory.get().getAgendaFactory().createAgenda(kBase);
         this.agenda.setWorkingMemory(this);
 
-        this.entryPointsManager = new NamedEntryPointsManager(this);
+        this.entryPointsManager = (NamedEntryPointsManager) RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
 
         this.sequential = conf.isSequential();
 

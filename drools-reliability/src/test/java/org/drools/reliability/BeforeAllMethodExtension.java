@@ -15,13 +15,15 @@
 
 package org.drools.reliability;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.MapObjectStore;
-import org.infinispan.Cache;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-public class ReliableObjectStore extends MapObjectStore {
+public class BeforeAllMethodExtension implements BeforeAllCallback {
 
-    public ReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
-        super(fhCache);
+    @Override
+    public void beforeAll(ExtensionContext context) throws Exception {
+        // This method will be called before the first test method of all test classes
+        // So it makes sure to clean up even if we terminate a process while debugging
+        ReliabilityTestUtils.cleanUpCacheFiles();
     }
 }

@@ -63,7 +63,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+            ClassNotFoundException {
         super.readExternal(in);
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
@@ -217,7 +217,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
     public ExecutableRunner getRunner( KieBase kbase, Environment environment ) {
         if ( this.runner == null ) {
             initCommandService( kbase,
-                                environment );
+                    environment );
         }
         return this.runner;
     }
@@ -238,10 +238,10 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
         if ( clazz != null ) {
             try {
                 this.runner = clazz.getConstructor( KieBase.class,
-                                                    KieSessionConfiguration.class,
-                                                    Environment.class ).newInstance( kbase,
-                                                                                     this,
-                                                                                     environment );
+                        KieSessionConfiguration.class,
+                        Environment.class ).newInstance( kbase,
+                        this,
+                        environment );
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'", e );
             }
@@ -259,7 +259,7 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
 
         return getClockType() == that.getClockType() &&
-               getTimerJobFactoryType() == that.getTimerJobFactoryType();
+                getTimerJobFactoryType() == that.getTimerJobFactoryType();
     }
 
     @Override

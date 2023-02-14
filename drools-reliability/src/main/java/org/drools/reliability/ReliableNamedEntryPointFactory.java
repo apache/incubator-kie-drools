@@ -15,13 +15,16 @@
 
 package org.drools.reliability;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.MapObjectStore;
-import org.infinispan.Cache;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.kiesession.entrypoints.NamedEntryPoint;
+import org.drools.kiesession.entrypoints.NamedEntryPointFactory;
 
-public class ReliableObjectStore extends MapObjectStore {
+public class ReliableNamedEntryPointFactory extends NamedEntryPointFactory {
 
-    public ReliableObjectStore(Cache<Object, InternalFactHandle> fhCache) {
-        super(fhCache);
+    @Override
+    public NamedEntryPoint createEntryPoint(EntryPointNode addedNode, EntryPointId id, ReteEvaluator reteEvaluator) {
+        return new ReliableNamedEntryPoint(id, addedNode, reteEvaluator);
     }
 }
