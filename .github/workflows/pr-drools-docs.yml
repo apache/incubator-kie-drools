@@ -9,7 +9,7 @@ on:
 jobs:
   drools-build:
     concurrency:
-      group: drools-docs_pr-${{ github.head_ref }}
+      group: pr-drools_docs_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
