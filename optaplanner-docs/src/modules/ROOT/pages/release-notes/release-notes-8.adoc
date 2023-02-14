@@ -80,7 +80,7 @@ No OptaPlanner feature was removed or deprecated in the process.
 
 ==== Multiple entity classes with chained planning variables
 
-Fixed a xref:https://issues.redhat.com/browse/PLANNER-2798[bug] that prevented using two or more chained planning variables, each defined on a different planning entity class.
+Fixed a https://issues.redhat.com/browse/PLANNER-2798[bug] that prevented using two or more chained planning variables, each defined on a different planning entity class.
 
 [[releaseNotes-8.30.0.Final]]
 === OptaPlanner 8.30.0.Final

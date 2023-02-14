@@ -802,7 +802,7 @@ as an ``Airplane`` is not a ``Car``.
     }
 ----
 
-[[referencingValueRangeProviders]]
+[[explicitlyReferencingValueRangeProviders]]
 ====== Explicitly referenced ``ValueRangeProvider``s
 
 In more complicated cases where auto-detection is not sufficient or where clarity is preferred over simplicity,
