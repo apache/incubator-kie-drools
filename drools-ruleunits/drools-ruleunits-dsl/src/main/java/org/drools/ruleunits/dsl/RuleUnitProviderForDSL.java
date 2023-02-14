@@ -44,13 +44,13 @@ public class RuleUnitProviderForDSL extends RuleUnitProviderImpl {
     }
 
     @Override
-    protected <T extends RuleUnitData> Map<Class<? extends RuleUnitData>, RuleUnit> generateRuleUnit(T ruleUnitData) {
+    protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
         if (ruleUnitData instanceof RuleUnitDefinition) {
             RuleUnitDefinition ruleUnitDef = (RuleUnitDefinition) ruleUnitData;
             RulesFactory rulesFactory = new RulesFactory(ruleUnitDef);
             ruleUnitDef.defineRules(rulesFactory);
             RuleUnit<T> ruleUnit = new ModelRuleUnit<>((Class<T>) ruleUnitData.getClass(), rulesFactory.toModel(), rulesFactory.getUnitGlobalsResolver());
-            return Map.of(ruleUnitData.getClass(), ruleUnit);
+            return Map.of(getRuleUnitName( ruleUnitData ), ruleUnit);
         }
         return super.generateRuleUnit(ruleUnitData);
     }
