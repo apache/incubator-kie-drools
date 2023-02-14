@@ -15,13 +15,13 @@ on:
 jobs:
   kogito_apps-build:
     concurrency:
-      group: kogito_apps_pr-${{ github.head_ref }}
+      group: kogito_apps-${{ matrix.java-version }}_pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 180
     strategy:
       matrix:
         os: [ubuntu-latest]
-        java-version: [11]
+        java-version: [11, 17]
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}

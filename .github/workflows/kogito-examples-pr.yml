@@ -15,13 +15,13 @@ on:
 jobs:
   kogito_examples-build:
     concurrency:
-      group: ${{ matrix.examples-subfolder }}-pr-${{ github.head_ref }}
+      group: ${{ matrix.examples-subfolder }}-${{ matrix.java-version }}-pr-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 180
     strategy:
       matrix:
         os: [ubuntu-latest]
-        java-version: [11]
+        java-version: [11, 17]
         maven-version: ['3.8.7']
         examples-subfolder:
           - kogito-quarkus-examples
