@@ -113,10 +113,10 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
                 .orElse(null);
     }
 
-    private static Stream<Workflow> getWorkflows(KogitoBuildContext kogitoBuildContext) {
-        Path[] paths = kogitoBuildContext.getAppPaths().getPaths();
+    private static Stream<Workflow> getWorkflows(KogitoBuildContext context) {
+        Path[] paths = context.getAppPaths().getPaths();
 
-        Stream<Path> workflowFiles = CollectedResourceProducer.fromPaths(paths).stream()
+        Stream<Path> workflowFiles = CollectedResourceProducer.fromPaths(context.ignoreHiddenFiles(), paths).stream()
                 .map(collectedResource -> collectedResource.resource().getSourcePath())
                 .map(Paths::get);
 

@@ -50,4 +50,12 @@ public class KogitoBuildTimeConfig {
     @ConfigItem(name = "addon.messaging.outgoing.defaultName", defaultValue = "kogito_outgoing_stream")
     public String outgoingChannelDefaultName;
 
+    /**
+     * Whether to ignore hidden files when collecting files for code generation
+     * <p>
+     * If not defined, true will be used.
+     */
+    @ConfigItem(name = "codegen.ignoreHiddenFiles", defaultValue = "true")
+    public Boolean ignoreHiddenFiles;
+
 }

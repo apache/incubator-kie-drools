@@ -61,7 +61,7 @@ public class CustomDashboardGeneratedUtils {
 
     public static Collection<GeneratedFile> loadCustomGrafanaDashboardsList(final KogitoBuildContext context) {
         Collection<CollectedResource> collectedResources =
-                CollectedResourceProducer.fromPaths(context.getAppPaths().getPaths());
+                CollectedResourceProducer.fromPaths(context.ignoreHiddenFiles(), context.getAppPaths().getPaths());
         Map<String, List<Resource>> dashboardJsonsMap = getMappedJsons(collectedResources);
         Collection<GeneratedFile> toReturn = new ArrayList<>();
         if (dashboardJsonsMap.get(OPERATIONAL_DASHBOARD_PREFIX) != null) {

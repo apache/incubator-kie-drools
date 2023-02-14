@@ -125,6 +125,16 @@ public interface KogitoBuildContext extends DroolsModelBuildContext {
         return hasClassAvailable(KogitoCodeGenConstants.OPENAPI_SPEC_CLASS);
     }
 
+    /**
+     * Whether to ignore hidden files when collecting resources to generate code.
+     * Platforms should provide a property named #IGNORE_HIDDEN_FILES_PROP.
+     *
+     * @return true if to ignore hidden files in the collected path. Defaults to true if no property is set.
+     */
+    default boolean ignoreHiddenFiles() {
+        return getApplicationProperty(KogitoCodeGenConstants.IGNORE_HIDDEN_FILES_PROP, Boolean.class).orElse(true);
+    }
+
     <T> Optional<T> getApplicationProperty(String property, Class<T> clazz);
 
     AddonsConfig getAddonsConfig();

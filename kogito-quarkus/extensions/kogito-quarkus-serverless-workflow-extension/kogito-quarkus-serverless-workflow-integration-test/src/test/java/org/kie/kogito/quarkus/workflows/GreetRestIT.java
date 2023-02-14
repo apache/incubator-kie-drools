@@ -28,6 +28,11 @@ import static org.hamcrest.CoreMatchers.is;
 class GreetRestIT {
 
     @Test
+    void testGreetHiddenRest() {
+        assertIt("greethidden", "Hello from JSON Workflow,");
+    }
+
+    @Test
     void testGreetRest() {
         assertIt("greet", "Hello from JSON Workflow,");
     }

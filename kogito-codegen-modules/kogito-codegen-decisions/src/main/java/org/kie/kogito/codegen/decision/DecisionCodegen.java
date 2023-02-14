@@ -81,7 +81,7 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     public static DecisionCodegen ofPath(KogitoBuildContext context, Path... paths) {
-        return ofCollectedResources(context, CollectedResourceProducer.fromPaths(paths));
+        return ofCollectedResources(context, CollectedResourceProducer.fromPaths(context.ignoreHiddenFiles(), paths));
     }
 
     private static final String operationalDashboardDmnTemplate = "/grafana-dashboard-template/operational-dashboard-template.json";

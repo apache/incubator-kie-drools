@@ -52,7 +52,7 @@ public class ApplicationGeneratorDiscovery {
     }
 
     protected static Collection<Generator> loadGenerators(KogitoBuildContext context) {
-        Collection<CollectedResource> collectedResources = CollectedResourceProducer.fromPaths(context.getAppPaths().getPaths());
+        Collection<CollectedResource> collectedResources = CollectedResourceProducer.fromPaths(context.ignoreHiddenFiles(), context.getAppPaths().getPaths());
 
         ServiceLoader<GeneratorFactory> generatorFactories = ServiceLoader.load(GeneratorFactory.class);
 
