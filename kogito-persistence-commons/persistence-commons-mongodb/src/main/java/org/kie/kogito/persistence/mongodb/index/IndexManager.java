@@ -32,6 +32,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.bson.Document;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.persistence.api.schema.EntityIndexDescriptor;
 import org.kie.kogito.persistence.api.schema.IndexDescriptor;
 import org.kie.kogito.persistence.api.schema.SchemaRegisteredEvent;
@@ -71,16 +72,24 @@ public class IndexManager {
     @Inject
     Instance<MongoClientManager> mongoClientManager;
 
+    @ConfigProperty(name = "kogito.apps.persistence.indexing", defaultValue = "true")
+    Boolean indexEnabled;
+
     public void onSchemaRegisteredEvent(@Observes SchemaRegisteredEvent event) {
         if (schemaAcceptor.accept(event.getSchemaType())) {
             indexes.putAll(event.getSchemaDescriptor().getEntityIndexDescriptors());
-            updateIndexes(event.getSchemaDescriptor().getEntityIndexDescriptors().values());
+            if (indexEnabled) {
+                updateIndexes(event.getSchemaDescriptor().getEntityIndexDescriptors().values());
+            }
 
             event.getSchemaDescriptor().getProcessDescriptor().ifPresent(processDescriptor -> processIndexEvent.fire(new ProcessIndexEvent(processDescriptor)));
         }
     }
 
     public void onIndexCreateOrUpdateEvent(@Observes IndexCreateOrUpdateEvent event) {
+        if (!indexEnabled) {
+            return;
+        }
         String indexType = collectionIndexMapping.put(event.getCollection(), event.getIndex());
         if (!event.getIndex().equals(indexType)) {
             MongoCollection<Document> collection = this.getCollection(event.getCollection());
