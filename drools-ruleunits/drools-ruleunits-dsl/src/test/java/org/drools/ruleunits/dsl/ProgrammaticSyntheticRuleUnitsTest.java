@@ -54,8 +54,7 @@ public class ProgrammaticSyntheticRuleUnitsTest {
         strings.add("Hello World");
         ints.add(7);
 
-        unitInstance.fire();
-//        assertThat(unitInstance.fire()).isEqualTo(1);
+        assertThat(unitInstance.fire()).isEqualTo(1);
         assertThat(results).containsExactlyInAnyOrder("R2");
 
     }
