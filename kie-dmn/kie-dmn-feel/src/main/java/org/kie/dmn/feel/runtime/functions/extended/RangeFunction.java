@@ -62,7 +62,7 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     public FEELFnResult<Range> invoke(@ParameterName("from") String from) {
-        if (from == null) {
+        if (from == null || from.isEmpty() || from.isBlank()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "cannot be null"));
         }
         Range.RangeBoundary startBoundary = null;
