@@ -1,5 +1,5 @@
 # Tests RHBOP productized profile builds on PRs
-name: Optaplanner
+name: Optaplanner Downstream
 
 on:
   pull_request:
