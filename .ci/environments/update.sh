@@ -21,7 +21,7 @@ echo "Update project for environment '${environment}'"
 # If update script is present, apply it
 if [ -f "${env_path}/before.sh" ]; then
     echo "Run before script"
-    sh ${env_path}/before.sh
+    ${env_path}/before.sh
 fi
 
 # Apply patches if any
@@ -39,7 +39,7 @@ fi
 # If update script is present, apply it
 if [ -f "${env_path}/after.sh" ]; then
     echo "Run after script"
-    sh ${env_path}/after.sh
+    ${env_path}/after.sh
 fi
 
 # Download `setup_integration_branch` script and execute

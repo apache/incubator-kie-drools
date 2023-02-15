@@ -160,6 +160,7 @@ setupQuarkusIntegrationJob('quarkus-main')
 setupQuarkusIntegrationJob('quarkus-branch')
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('mandrel-lts')
+setupQuarkusIntegrationJob('quarkus-3')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
