@@ -159,39 +159,4 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     public void setBlockedNext(LeftTuple blockerNext) {
         this.blockedNext = blockerNext;
     }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#toString()
-     */
-    public String toString() {
-        final StringBuilder buffer = new StringBuilder();
-
-        LeftTuple entry = (LeftTuple) skipEmptyHandles();
-        while (entry != null) {
-            //buffer.append( entry.handle );
-            buffer.append(entry.getFactHandle()).append("\n");
-            entry = entry.getParent();
-        }
-        return buffer.toString();
-    }
-
-    protected String toExternalString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(String.format("%08X",
-                                     System.identityHashCode(this))).append(":");
-        long[] ids = new long[getIndex() + 1];
-        LeftTuple entry = (LeftTuple) skipEmptyHandles();
-        while (entry != null) {
-            ids[entry.getIndex()] = entry.getFactHandle().getId();
-            entry = entry.getParent();
-        }
-        builder.append(Arrays.toString(ids))
-               .append(" activation=")
-               .append( getContextObject() != null ? getContextObject() : "null")
-               .append(" sink=")
-               .append( getTupleSink().getClass().getSimpleName())
-               .append("(").append( getTupleSink().getId()).append(")");
-        return builder.toString();
-    }
-
 }

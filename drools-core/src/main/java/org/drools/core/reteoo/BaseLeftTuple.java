@@ -16,7 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -481,7 +484,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
 
-        LeftTuple entry = this;
+        Tuple entry = skipEmptyHandles();;
         while ( entry != null ) {
             //buffer.append( entry.handle );
             buffer.append(entry.getFactHandle());
@@ -609,7 +612,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         StringBuilder builder = new StringBuilder();
         builder.append( String.format( "%08X", System.identityHashCode( this ) ) ).append( ":" );
         long[] ids = new long[this.index+1];
-        LeftTuple entry = this;
+        Tuple entry = skipEmptyHandles();;
         while( entry != null ) {
             ids[entry.getIndex()] = entry.getFactHandle().getId();
             entry = entry.getParent();
@@ -662,5 +665,23 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     public boolean isStagedOnRight() {
         return false;
+    }
+
+    @Override
+    public Collection<Object> getAccumulatedObjects() {
+        if (getFirstChild() == null) {
+            return Collections.emptyList();
+        }
+        Collection<Object> result = new ArrayList<>();
+        if ( getContextObject() instanceof AccumulateNode.AccumulateContext ) {
+            for (LeftTuple child = getFirstChild(); child != null; child = child.getHandleNext()) {
+                result.add(child.getContextObject());
+            }
+        }
+        if ( getFirstChild().getRightParent() instanceof SubnetworkTuple ) {
+            LeftTuple leftParent = (( SubnetworkTuple ) getFirstChild().getRightParent()).getLeftParent();
+            result.addAll( leftParent.getAccumulatedObjects() );
+        }
+        return result;
     }
 }

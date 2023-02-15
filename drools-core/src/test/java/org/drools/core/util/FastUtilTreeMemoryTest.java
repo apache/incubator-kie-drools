@@ -5,7 +5,7 @@ import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.rule.accessor.TupleValueExtractor;
@@ -326,7 +326,7 @@ public class FastUtilTreeMemoryTest {
     }
 
     public static Tuple getLeftTuple(int number) {
-        LeftTupleImpl tuple = new LeftTupleImpl();
+        JoinNodeLeftTuple tuple = new JoinNodeLeftTuple();
         tuple.setFactHandle(getFactHandle(number));
         return tuple;
     };

@@ -20,6 +20,7 @@ import java.util.Collections;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
@@ -29,10 +30,9 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.FromNodeLeftTuple;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -99,7 +99,7 @@ public class MVELAccumulateBuilderTest {
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( new InitialFactImpl() );
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
         final InternalFactHandle f2 = (InternalFactHandle) ksession.insert( cheddar2 );
-        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
+        final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
                                                        sink,
                                                        true );
 
@@ -125,9 +125,9 @@ public class MVELAccumulateBuilderTest {
         assertThat(acc.getResult(wmContext,
                 accContext,
                 tuple,
-                ksession)).isEqualTo(new Integer( 18 ));
+                ksession)).isEqualTo(Integer.valueOf( 18 ));
 
-        LeftTuple match = new FromNodeLeftTuple();
+        LeftTuple match = new JoinNodeLeftTuple();
         match.setContextObject(value1);
         acc.tryReverse(wmContext,
                        accContext,
@@ -140,7 +140,7 @@ public class MVELAccumulateBuilderTest {
         assertThat(acc.getResult(wmContext,
                 accContext,
                 tuple,
-                ksession)).isEqualTo(new Integer( 8 ));
+                ksession)).isEqualTo(Integer.valueOf( 8 ));
     }
 
 }

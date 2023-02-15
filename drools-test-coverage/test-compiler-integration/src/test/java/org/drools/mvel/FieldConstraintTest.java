@@ -27,7 +27,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
@@ -225,7 +225,7 @@ public class FieldConstraintTest {
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar0 );
-        LeftTupleImpl tuple = new LeftTupleImpl( f0,
+        JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
                                          null,
                                          true );
 
@@ -233,7 +233,7 @@ public class FieldConstraintTest {
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
 
-        tuple = new LeftTupleImpl( tuple,
+        tuple = new JoinNodeLeftTuple( tuple,
                                new RightTupleImpl( f1, null ),
                                null,
                                true );

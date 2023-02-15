@@ -23,7 +23,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
@@ -79,33 +79,33 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
         InternalFactHandle fh12 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert(new Foo("snicker", 0));
 
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh1, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh2, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh3, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh4, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh5, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh6, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh7, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh8, null, true));
-        betaMemory.getLeftTupleMemory().add(new LeftTupleImpl(fh9, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh1, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh2, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh3, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh4, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh5, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh6, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh7, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh8, null, true));
+        betaMemory.getLeftTupleMemory().add(new JoinNodeLeftTuple(fh9, null, true));
 
         TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList leftTupleList = new TupleList();
-        leftTupleList.add(new LeftTupleImpl(fh10, null, true));
+        leftTupleList.add(new JoinNodeLeftTuple(fh10, null, true));
         hashTable.getTable()[0] = leftTupleList;
         leftTupleList = new TupleList();
-        leftTupleList.add(new LeftTupleImpl(fh11, null, true));
-        leftTupleList.add(new LeftTupleImpl(fh12, null, true));
-        leftTupleList.add(new LeftTupleImpl(fh13, null, true));
+        leftTupleList.add(new JoinNodeLeftTuple(fh11, null, true));
+        leftTupleList.add(new JoinNodeLeftTuple(fh12, null, true));
+        leftTupleList.add(new JoinNodeLeftTuple(fh13, null, true));
         hashTable.getTable()[0].setNext(leftTupleList);
 
         List tableIndexList = createTableIndexListForAssertion(hashTable);
         assertThat(tableIndexList.size()).isEqualTo(5);
 
-        List resultList = new ArrayList<LeftTupleImpl>();
+        List resultList = new ArrayList<JoinNodeLeftTuple>();
         Iterator it = betaMemory.getLeftTupleMemory().iterator();
-        for (LeftTupleImpl leftTuple = (LeftTupleImpl) it.next(); leftTuple != null; leftTuple = (LeftTupleImpl) it.next()) {
+        for (JoinNodeLeftTuple leftTuple = (JoinNodeLeftTuple) it.next(); leftTuple != null; leftTuple = (JoinNodeLeftTuple) it.next()) {
             resultList.add(leftTuple);
         }
 
@@ -122,7 +122,7 @@ public class LeftTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTable
         entries[5] = mock(TupleList.class);
         entries[9] = mock(TupleList.class);
 
-        LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock(LeftTupleImpl.class), mock(LeftTupleImpl.class), mock(LeftTupleImpl.class)};
+        JoinNodeLeftTuple[] tuples = new JoinNodeLeftTuple[]{mock(JoinNodeLeftTuple.class), mock(JoinNodeLeftTuple.class), mock(JoinNodeLeftTuple.class)};
 
         // set return values for methods
         when(entries[0].getNext()).thenReturn(null);

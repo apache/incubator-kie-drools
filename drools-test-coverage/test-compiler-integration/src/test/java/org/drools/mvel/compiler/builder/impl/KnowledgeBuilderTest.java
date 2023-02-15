@@ -40,7 +40,8 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
@@ -186,7 +187,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTupleImpl tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple( new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( rule,
                                                           0,
@@ -265,7 +266,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTupleImpl tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple( new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
@@ -1292,12 +1293,12 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         private RuleImpl               rule;
         private int                salience;
         private final GroupElement subrule;
-        private LeftTupleImpl          tuple;
+        private LeftTuple tuple;
 
         public MockActivation(final RuleImpl rule,
                               int salience,
                               final GroupElement subrule,
-                              final LeftTupleImpl tuple) {
+                              final LeftTuple tuple) {
             this.rule = rule;
             this.salience = salience;
             this.tuple = tuple;
@@ -1316,7 +1317,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return this.salience;
         }
 
-        public LeftTupleImpl getTuple() {
+        public LeftTuple getTuple() {
             return this.tuple;
         }
 
@@ -1419,7 +1420,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
     class MockTuple
         extends
-        LeftTupleImpl {
+        JoinNodeLeftTuple {
         private Map declarations;
 
         public MockTuple(final Map declarations) {
