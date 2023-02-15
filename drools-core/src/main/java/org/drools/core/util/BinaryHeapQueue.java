@@ -188,7 +188,6 @@ public class BinaryHeapQueue<T extends QueueEntry>
             return null;
         }
 
-
         final T result = this.elements.get(index);
         if ( log.isTraceEnabled() ) {
             log.trace( "Queue Removed {} {}", result.getQueueIndex(), result);
