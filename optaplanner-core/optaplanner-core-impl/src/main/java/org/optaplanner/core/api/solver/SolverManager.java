@@ -8,7 +8,6 @@ import java.util.function.Function;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -42,7 +41,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     /**
      * Use a {@link SolverConfig} to build a {@link SolverManager}.
      * <p>
-     * When using {@link ScoreManager} too, use {@link #create(SolverFactory)} instead
+     * When using {@link SolutionManager} too, use {@link #create(SolverFactory)} instead
      * so they reuse the same {@link SolverFactory} instance.
      *
      * @param solverConfig never null
@@ -58,7 +57,7 @@ public interface SolverManager<Solution_, ProblemId_> extends AutoCloseable {
     /**
      * Use a {@link SolverConfig} and a {@link SolverManagerConfig} to build a {@link SolverManager}.
      * <p>
-     * When using {@link ScoreManager} too, use {@link #create(SolverFactory, SolverManagerConfig)} instead
+     * When using {@link SolutionManager} too, use {@link #create(SolverFactory, SolverManagerConfig)} instead
      * so they reuse the same {@link SolverFactory} instance.
      *
      * @param solverConfig never null

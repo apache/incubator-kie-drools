@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.quarkus.testdata.invalid.inverserelation.constraints.TestdataInvalidQuarkusConstraintProvider;
@@ -46,6 +47,8 @@ class OptaPlannerProcessorInvalidTest {
     SolverManager<TestdataInvalidInverseRelationSolution, Long> solverManager;
     @Inject
     ScoreManager<TestdataInvalidInverseRelationSolution, SimpleScore> scoreManager;
+    @Inject
+    SolutionManager<TestdataInvalidInverseRelationSolution, SimpleScore> solutionManager;
 
     @Test
     void solve() {

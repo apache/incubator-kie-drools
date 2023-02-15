@@ -859,41 +859,9 @@ public class SolutionDescriptor<Solution_> {
     // Extraction methods
     // ************************************************************************
 
-    public void visitAllFacts(Solution_ solution, Consumer<Object> visitor) {
-        // Visit entities.
-        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            Object entity = extractMemberObject(entityMemberAccessor, solution);
-            if (entity != null) {
-                visitor.accept(entity);
-            }
-        }
-        // Visits facts.
-        for (MemberAccessor accessor : problemFactMemberAccessorMap.values()) {
-            Object object = extractMemberObject(accessor, solution);
-            if (object != null) {
-                visitor.accept(object);
-            }
-        }
-        // Visit all entities from entity collections.
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
-                    false);
-            for (Object entity : entityCollection) {
-                visitor.accept(entity);
-            }
-        }
-        // Visits problem facts from problem fact collections.
-        for (MemberAccessor accessor : problemFactCollectionMemberAccessorMap.values()) {
-            Collection<Object> objects = extractMemberCollectionOrArray(accessor, solution, true);
-            for (Object object : objects) {
-                visitor.accept(object);
-            }
-        }
-    }
-
-    public Collection<Object> getAllFacts(Solution_ solution) {
+    public Collection<Object> getAllEntitiesAndProblemFacts(Solution_ solution) {
         List<Object> facts = new ArrayList<>();
-        visitAllFacts(solution, facts::add);
+        visitAll(solution, facts::add);
         return facts;
     }
 
@@ -965,6 +933,28 @@ public class SolutionDescriptor<Solution_> {
                 }
             }
         }
+    }
+
+    public void visitAllProblemFacts(Solution_ solution, Consumer<Object> visitor) {
+        // Visits facts.
+        for (MemberAccessor accessor : problemFactMemberAccessorMap.values()) {
+            Object object = extractMemberObject(accessor, solution);
+            if (object != null) {
+                visitor.accept(object);
+            }
+        }
+        // Visits problem facts from problem fact collections.
+        for (MemberAccessor accessor : problemFactCollectionMemberAccessorMap.values()) {
+            Collection<Object> objects = extractMemberCollectionOrArray(accessor, solution, true);
+            for (Object object : objects) {
+                visitor.accept(object);
+            }
+        }
+    }
+
+    public void visitAll(Solution_ solution, Consumer<Object> visitor) {
+        visitAllProblemFacts(solution, visitor);
+        visitAllEntities(solution, visitor);
     }
 
     /**

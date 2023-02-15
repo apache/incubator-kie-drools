@@ -10,7 +10,9 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.score.ScoreExplanation;
+import org.optaplanner.core.api.solver.SolutionManager;
+import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -125,10 +127,12 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
             subSingleBenchmarkResult.setScoreCalculationCount(solverScope.getScoreCalculationCount());
 
-            ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
+            SolutionManager<Solution_, ?> solutionManager = SolutionManager.create(solverFactory);
             boolean isConstraintMatchEnabled = solver.getSolverScope().getScoreDirector().isConstraintMatchEnabled();
             if (isConstraintMatchEnabled) { // Easy calculator fails otherwise.
-                subSingleBenchmarkResult.setScoreExplanationSummary(scoreManager.getSummary(solution));
+                ScoreExplanation<Solution_, ?> scoreExplanation =
+                        solutionManager.explain(solution, SolutionUpdatePolicy.NO_UPDATE);
+                subSingleBenchmarkResult.setScoreExplanationSummary(scoreExplanation.getSummary());
             }
 
             problemBenchmarkResult.writeSolution(subSingleBenchmarkResult, solution);

@@ -26,11 +26,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -739,7 +739,7 @@ class DefaultSolverTest {
                 .mapToObj(id -> new TestdataEntity("e" + id))
                 .collect(Collectors.toList()));
 
-        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        Score<?> score = SolutionManager.create(solverFactory).update(solution);
         assertThat(score.initScore()).isEqualTo(-entityCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
@@ -771,7 +771,7 @@ class DefaultSolverTest {
         final int valueCount = 24;
         TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
 
-        Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
+        Score<?> score = SolutionManager.create(solverFactory).update(solution);
         assertThat(score.initScore()).isEqualTo(-valueCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 

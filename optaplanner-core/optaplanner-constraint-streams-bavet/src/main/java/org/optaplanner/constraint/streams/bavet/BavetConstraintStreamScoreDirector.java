@@ -44,7 +44,7 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
 
     private void resetConstraintStreamingSession() {
         session = scoreDirectorFactory.newSession(constraintMatchEnabledPreference, workingSolution);
-        getSolutionDescriptor().visitAllFacts(workingSolution, session::insert);
+        getSolutionDescriptor().visitAll(workingSolution, session::insert);
     }
 
     @Override

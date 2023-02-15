@@ -15,7 +15,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
@@ -58,19 +58,19 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         CommonApp<Solution_> commonApp = createCommonApp();
         SolverFactory<Solution_> solverFactory =
                 SolverFactory.createFromXmlResource(commonApp.getSolverConfigResource());
-        ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
+        SolutionManager<Solution_, ?> solutionManager = SolutionManager.create(solverFactory);
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(
                         solutionFile.getName(),
-                        () -> readAndWriteSolution(scoreManager, commonApp.createSolutionFileIO(), solutionFile)));
+                        () -> readAndWriteSolution(solutionManager, commonApp.createSolutionFileIO(), solutionFile)));
     }
 
-    private <Score_ extends Score<Score_>> void readAndWriteSolution(ScoreManager<Solution_, Score_> scoreManager,
+    private <Score_ extends Score<Score_>> void readAndWriteSolution(SolutionManager<Solution_, Score_> solutionManager,
             SolutionFileIO<Solution_> solutionFileIO, File solutionFile) {
         // Make sure we can process the solution from an existing file.
         Solution_ originalSolution = solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
-        Score_ originalScore = scoreManager.updateScore(originalSolution);
+        Score_ originalScore = solutionManager.update(originalSolution);
         assertThat(originalScore).isNotNull();
         // Write the solution to a temp file and read it back.
         Solution_ roundTripSolution = null;
@@ -85,7 +85,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
             Assertions.fail("Failed to write solution.", ex);
         }
         // Make sure the solutions equal by checking their scores against each other.
-        Score_ roundTripScore = scoreManager.updateScore(roundTripSolution);
+        Score_ roundTripScore = solutionManager.update(roundTripSolution);
         assertThat(roundTripScore).isEqualTo(originalScore);
     }
 

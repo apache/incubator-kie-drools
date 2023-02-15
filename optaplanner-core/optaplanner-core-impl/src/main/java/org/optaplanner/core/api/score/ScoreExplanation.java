@@ -14,9 +14,10 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
+import org.optaplanner.core.api.solver.SolutionManager;
 
 /**
- * Build by {@link ScoreManager#explainScore(Object)} to hold {@link ConstraintMatchTotal}s and {@link Indictment}s
+ * Build by {@link SolutionManager#explain(Object)} to hold {@link ConstraintMatchTotal}s and {@link Indictment}s
  * necessary to explain the quality of a particular {@link Score}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -41,16 +42,15 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
     Score_ getScore();
 
     /**
-     * Returns a diagnostic text that explains the {@link Score} through the {@link ConstraintMatch} API
-     * to identify which constraints or planning entities cause that score quality.
-     * In case of an {@link Score#isFeasible() infeasible} solution,
-     * this can help diagnose the cause of that.
+     * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
+     * constraints or planning entities cause that score quality.
      * <p>
-     * Do not parse this string.
-     * Instead, to provide this information in a UI or a service,
-     * use {@link #getConstraintMatchTotalMap()} and {@link #getIndictmentMap()}
-     * and convert those into a domain specific API.
+     * In case of an {@link Score#isFeasible() infeasible} solution, this can help diagnose the cause of that.
      *
+     * @apiNote Do not parse the return value, its format may change without warning.
+     *          Instead, to provide this information in a UI or a service,
+     *          use {@link ScoreExplanation#getConstraintMatchTotalMap()} and {@link ScoreExplanation#getIndictmentMap()}
+     *          and convert those into a domain-specific API.
      * @return never null
      */
     String getSummary();

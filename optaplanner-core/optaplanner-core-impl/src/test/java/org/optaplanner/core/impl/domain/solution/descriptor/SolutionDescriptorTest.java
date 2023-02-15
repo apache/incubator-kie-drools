@@ -215,7 +215,8 @@ class SolutionDescriptorTest {
         TestdataAutoDiscoverFieldSolution solution = new TestdataAutoDiscoverFieldSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "v1", "v2");
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution), "otherE1", "p1", "e1", "e2",
+                "v1", "v2");
     }
 
     @Test
@@ -237,7 +238,8 @@ class SolutionDescriptorTest {
         TestdataAutoDiscoverGetterSolution solution = new TestdataAutoDiscoverGetterSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "v1", "v2");
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution), "otherE1", "p1", "e1", "e2",
+                "v1", "v2");
     }
 
     @Test
@@ -258,7 +260,7 @@ class SolutionDescriptorTest {
         TestdataAutoDiscoverFieldOverrideSolution solution = new TestdataAutoDiscoverFieldOverrideSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity, listFact);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution),
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution),
                 "otherE1", "list1", "p1", "e1", "e2", "v1", "v2");
     }
 
@@ -280,7 +282,7 @@ class SolutionDescriptorTest {
         TestdataAutoDiscoverGetterOverrideSolution solution = new TestdataAutoDiscoverGetterOverrideSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity, listFact);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution),
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution),
                 "otherE1", "list1", "p1", "e1", "e2", "v1", "v2");
     }
 
@@ -302,7 +304,8 @@ class SolutionDescriptorTest {
         TestdataAutoDiscoverUnannotatedEntitySolution solution = new TestdataAutoDiscoverUnannotatedEntitySolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherU1", "p1", "u1", "u2", "v1", "v2");
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution), "otherU1", "p1", "u1", "u2",
+                "v1", "v2");
     }
 
     @Test
@@ -325,7 +328,8 @@ class SolutionDescriptorTest {
         TestdataExtendedAutoDiscoverGetterSolution solution = new TestdataExtendedAutoDiscoverGetterSolution(
                 "s1", singleProblemFact, listAsSingleProblemFact, entityList, otherEntity);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "f1", "p1", "e1", "e2");
+        assertAllCodesOfCollection(solutionDescriptor.getAllEntitiesAndProblemFacts(solution), "otherE1", "f1", "p1", "e1",
+                "e2");
     }
 
     @Test

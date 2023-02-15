@@ -113,4 +113,13 @@ public interface ProblemChangeDirector {
      * @param <EntityOrProblemFact> the object type
      */
     <EntityOrProblemFact> Optional<EntityOrProblemFact> lookUpWorkingObject(EntityOrProblemFact externalObject);
+
+    /**
+     * Calls variable listeners on the external changes submitted so far.
+     *
+     * @apiNote This happens automatically after the entire {@link ProblemChange} has been processed,
+     *          but this method allows the user to specifically request it in the middle of the {@link ProblemChange}.
+     */
+    void updateShadowVariables();
+
 }

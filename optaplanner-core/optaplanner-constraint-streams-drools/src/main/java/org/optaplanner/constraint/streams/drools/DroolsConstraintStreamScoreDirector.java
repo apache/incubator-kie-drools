@@ -61,7 +61,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         session = sessionDescriptor.getSession();
         agendaFilter = sessionDescriptor.getAgendaFilter();
         scoreInliner = sessionDescriptor.getScoreInliner();
-        getSolutionDescriptor().visitAllFacts(workingSolution, session::insert);
+        getSolutionDescriptor().visitAll(workingSolution, session::insert);
     }
 
     @Override

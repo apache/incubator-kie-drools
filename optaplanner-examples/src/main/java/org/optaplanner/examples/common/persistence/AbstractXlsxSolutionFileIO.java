@@ -33,10 +33,10 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -357,8 +357,8 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
         public AbstractXlsxWriter(Solution_ solution, String solverConfigResource) {
             this.solution = solution;
             SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfigResource);
-            ScoreManager<Solution_, Score_> scoreManager = ScoreManager.create(solverFactory);
-            ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(solution);
+            SolutionManager<Solution_, Score_> solutionManager = SolutionManager.create(solverFactory);
+            ScoreExplanation<Solution_, Score_> scoreExplanation = solutionManager.explain(solution);
             score = scoreExplanation.getScore();
             constraintMatchTotalsMap = scoreExplanation.getConstraintMatchTotalMap();
             indictmentMap = scoreExplanation.getIndictmentMap();

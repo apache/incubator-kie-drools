@@ -20,6 +20,7 @@ import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -27,6 +28,8 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.solver.DefaultSolutionManager;
+import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.core.impl.testutil.DisabledInProductization;
 import org.optaplanner.spring.boot.autoconfigure.chained.ChainedSpringTestConfiguration;
@@ -251,8 +254,11 @@ class OptaPlannerAutoConfigurationTest {
                     assertThat(solverFactory).isNotNull();
                     ScoreManager<TestdataSpringSolution, SimpleScore> scoreManager = context.getBean(ScoreManager.class);
                     assertThat(scoreManager).isNotNull();
-                    // TODO in 8.0, once SolverFactory.getScoreDirectorFactory() doesn't create a new instance every time
-                    // assertSame(solverFactory.getScoreDirectorFactory(), ((DefaultScoreManager<TestdataSpringSolution>) scoreManager).getScoreDirectorFactory());
+                    SolutionManager<TestdataSpringSolution, SimpleScore> solutionManager =
+                            context.getBean(SolutionManager.class);
+                    assertThat(((DefaultSolverFactory) solverFactory).getScoreDirectorFactory())
+                            .isSameAs(((DefaultSolutionManager<TestdataSpringSolution, SimpleScore>) solutionManager)
+                                    .getScoreDirectorFactory());
                     SolverManager<TestdataSpringSolution, Long> solverManager = context.getBean(SolverManager.class);
                     assertThat(solverManager).isNotNull();
                     // There is only one SolverFactory instance

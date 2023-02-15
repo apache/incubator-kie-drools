@@ -16,10 +16,11 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.solver.DefaultSolutionManager;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.quarkus.testdata.gizmo.DummyConstraintProvider;
@@ -46,6 +47,8 @@ class OptaPlannerProcessorGizmoKitchenSinkTest {
     SolverManager<TestDataKitchenSinkSolution, Long> solverManager;
     @Inject
     ScoreManager<TestDataKitchenSinkSolution, SimpleScore> scoreManager;
+    @Inject
+    SolutionManager<TestDataKitchenSinkSolution, SimpleScore> solutionManager;
 
     @Test
     void singletonSolverFactory() {
@@ -53,7 +56,7 @@ class OptaPlannerProcessorGizmoKitchenSinkTest {
         assertNotNull(scoreManager);
         // There is only one ScoreDirectorFactory instance
         assertSame(((DefaultSolverFactory<?>) solverFactory).getScoreDirectorFactory(),
-                ((DefaultScoreManager<?, ?>) scoreManager).getScoreDirectorFactory());
+                ((DefaultSolutionManager<?, ?>) solutionManager).getScoreDirectorFactory());
         assertNotNull(solverManager);
         // There is only one SolverFactory instance
         assertSame(solverFactory, ((DefaultSolverManager<TestDataKitchenSinkSolution, Long>) solverManager).getSolverFactory());

@@ -1,8 +1,12 @@
 [[releaseNotes]]
 = Release Notes
 
-This chapter lists new and noteworthy updates in OptaPlanner releases. OptaPlanner follows a 3-week release cycle. Bug fixes and minor improvements are generally not announced, which is why some of the minor releases are not mentioned here.
+This chapter lists new and noteworthy updates in OptaPlanner releases. OptaPlanner follows a 3-week release cycle.
+Bug fixes and minor improvements are generally not announced, which is why some of the minor releases are not mentioned here.
+
+For a step-by-step migration guide, see our https://www.optaplanner.org/download/upgradeRecipe/upgradeRecipe8.html[upgrade recipe].
+We even provide a https://www.optaplanner.org/download/upgradeRecipe/upgradeRecipe8.html#automatic-upgrade[migration tool] to make many of these changes automatically.
 
 For release notes on OptaPlanner 7.x and older, please visit https://www.optaplanner.org/download/releaseNotes/[Release Notes on optaplanner.org].
 
-include::release-notes-8.adoc[]
+include::release-notes/release-notes-8.adoc[]

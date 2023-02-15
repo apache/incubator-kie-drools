@@ -62,7 +62,7 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
         ((RuleEventManager) kieSession).addEventListener(new OptaPlannerRuleEventListener());
         resetScoreHolder();
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
-        getSolutionDescriptor().visitAllFacts(workingSolution, kieSession::insert);
+        getSolutionDescriptor().visitAll(workingSolution, kieSession::insert);
     }
 
     private void resetScoreHolder() {

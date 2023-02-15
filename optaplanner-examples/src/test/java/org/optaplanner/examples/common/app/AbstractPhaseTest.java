@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.ScoreManager;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
@@ -64,8 +64,8 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
-        ScoreManager<Solution_, ?> scoreManager = ScoreManager.create(solverFactory);
-        assertThat(scoreManager.updateScore(bestSolution)).isNotNull();
+        SolutionManager<Solution_, ?> solutionManager = SolutionManager.create(solverFactory);
+        assertThat(solutionManager.update(bestSolution)).isNotNull();
     }
 
     private static File buildFile(File unsolvedDataDir, String unsolvedFileName) {

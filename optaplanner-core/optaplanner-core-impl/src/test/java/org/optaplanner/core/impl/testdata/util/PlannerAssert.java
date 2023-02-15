@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Streams;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
@@ -251,7 +252,12 @@ public final class PlannerAssert {
     }
 
     public static void assertAllCodesOfCollection(Collection<?> collection, String... codes) {
-        assertAllCodesOfIterator(collection.iterator(), codes);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(collection).isNotNull();
+            softly.assertThat(collection)
+                    .map(PlannerAssert::codeIfNotNull)
+                    .containsExactlyInAnyOrder(codes);
+        });
     }
 
     public static void assertAllCodesOfIterableSelector(IterableSelector<?, ?> selector, long size, String... codes) {

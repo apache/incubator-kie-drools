@@ -104,7 +104,7 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
         return scoreExplanation.toString();
     }
 
-    DefaultScoreExplanation(InnerScoreDirector<Solution_, Score_> scoreDirector) {
+    public DefaultScoreExplanation(InnerScoreDirector<Solution_, Score_> scoreDirector) {
         this.solution = scoreDirector.getWorkingSolution();
         this.score = scoreDirector.calculateScore();
         this.constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();

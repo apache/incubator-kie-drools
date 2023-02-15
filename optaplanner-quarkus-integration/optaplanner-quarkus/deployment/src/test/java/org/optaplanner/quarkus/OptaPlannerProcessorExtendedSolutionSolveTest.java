@@ -17,10 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.core.impl.score.DefaultScoreManager;
+import org.optaplanner.core.impl.solver.DefaultSolutionManager;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverManager;
 import org.optaplanner.quarkus.testdata.extended.TestdataExtendedQuarkusSolution;
@@ -46,13 +47,15 @@ class OptaPlannerProcessorExtendedSolutionSolveTest {
     SolverManager<TestdataQuarkusSolution, Long> solverManager;
     @Inject
     ScoreManager<TestdataQuarkusSolution, SimpleScore> scoreManager;
+    @Inject
+    SolutionManager<TestdataQuarkusSolution, SimpleScore> solutionManager;
 
     @Test
     void singletonSolverFactory() {
         assertNotNull(solverFactory);
         // There is only one ScoreDirectorFactory instance
         assertSame(((DefaultSolverFactory<TestdataQuarkusSolution>) solverFactory).getScoreDirectorFactory(),
-                ((DefaultScoreManager<TestdataQuarkusSolution, SimpleScore>) scoreManager).getScoreDirectorFactory());
+                ((DefaultSolutionManager<TestdataQuarkusSolution, SimpleScore>) solutionManager).getScoreDirectorFactory());
         assertNotNull(solverManager);
         // There is only one SolverFactory instance
         assertSame(solverFactory, ((DefaultSolverManager<TestdataQuarkusSolution, Long>) solverManager).getSolverFactory());

@@ -598,8 +598,8 @@ import org.acme.schooltimetabling.domain.Lesson;
 import org.acme.schooltimetabling.domain.Room;
 import org.acme.schooltimetabling.domain.TimeTable;
 import org.acme.schooltimetabling.domain.Timeslot;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
 
@@ -611,7 +611,7 @@ public class TimeTableResource {
     @Inject
     SolverManager<TimeTable, Long> solverManager;
     @Inject
-    ScoreManager<TimeTable, HardSoftScore> scoreManager;
+    SolutionManager<TimeTable, HardSoftScore> solutionManager;
 
     // To try, open http://localhost:8080/timeTable
     @GET
@@ -620,7 +620,7 @@ public class TimeTableResource {
         // to avoid the race condition that the solver terminates between them
         SolverStatus solverStatus = getSolverStatus();
         TimeTable solution = findById(SINGLETON_TIME_TABLE_ID);
-        scoreManager.updateScore(solution); // Sets the score
+        solutionManager.update(solution); // Sets the score
         solution.setSolverStatus(solverStatus);
         return solution;
     }
@@ -673,7 +673,7 @@ For simplicity's sake, this code handles only one `TimeTable` instance,
 but it is straightforward to enable multi-tenancy and handle multiple `TimeTable` instances of different high schools in parallel.
 +
 The `getTimeTable()` method returns the latest timetable from the database.
-It uses the `ScoreManager` (which is automatically injected)
+It uses the `SolutionManager` (which is automatically injected)
 to calculate the score of that timetable, so the UI can show the score.
 +
 The `solve()` method starts a job to solve the current timetable and store the time slot and room assignments in the database.

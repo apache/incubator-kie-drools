@@ -11,6 +11,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
+@Deprecated(forRemoval = true)
 public class ScoreManagerTest {
 
     public static final SolverFactory<TestdataSolution> SOLVER_FACTORY =

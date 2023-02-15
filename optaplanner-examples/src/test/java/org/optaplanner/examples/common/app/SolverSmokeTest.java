@@ -22,9 +22,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -202,13 +202,13 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
     private void assertScoreAndConstraintMatches(SolverFactory<Solution_> solverFactory, Solution_ bestSolution,
             Score_ bestScoreLimit) {
         assertThat(bestSolution).isNotNull();
-        ScoreManager<Solution_, Score_> scoreManager = ScoreManager.create(solverFactory);
-        Score_ bestScore = scoreManager.updateScore(bestSolution);
+        SolutionManager<Solution_, Score_> solutionManager = SolutionManager.create(solverFactory);
+        Score_ bestScore = solutionManager.update(bestSolution);
         assertThat(bestScore)
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
                 .isGreaterThanOrEqualTo(bestScoreLimit);
 
-        ScoreExplanation<Solution_, Score_> scoreExplanation = scoreManager.explainScore(bestSolution);
+        ScoreExplanation<Solution_, Score_> scoreExplanation = solutionManager.explain(bestSolution);
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
                 scoreExplanation.getConstraintMatchTotalMap();
         assertThat(constraintMatchTotals).isNotNull();

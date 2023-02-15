@@ -16,6 +16,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -43,16 +44,7 @@ public class DefaultOptaPlannerBeanProvider {
         return SolverManager.create(solverFactory, solverManagerConfig);
     }
 
-    // Quarkus-ARC-Weld can't deal with enum pattern generics such as Score<S extends Score<S>>.
-    // See https://github.com/quarkusio/quarkus/pull/12137
-    //    @DefaultBean
-    //    @Singleton
-    //    @Produces
-    //    <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> scoreManager(
-    //            SolverFactory<Solution_> solverFactory) {
-    //        return ScoreManager.create(solverFactory);
-    //    }
-
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -61,6 +53,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -69,6 +62,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -77,6 +71,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -85,6 +80,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -93,6 +89,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -101,6 +98,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -109,6 +107,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -117,6 +116,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -125,6 +125,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -133,6 +134,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -141,6 +143,7 @@ public class DefaultOptaPlannerBeanProvider {
         return ScoreManager.create(solverFactory);
     }
 
+    @Deprecated(forRemoval = true)
     @DefaultBean
     @Singleton
     @Produces
@@ -148,4 +151,112 @@ public class DefaultOptaPlannerBeanProvider {
             SolverFactory<Solution_> solverFactory) {
         return ScoreManager.create(solverFactory);
     }
+
+    // Quarkus-ARC-Weld can't deal with enum pattern generics such as Score<S extends Score<S>>.
+    // See https://github.com/quarkusio/quarkus/pull/12137
+    //    @DefaultBean
+    //    @Singleton
+    //    @Produces
+    //    <Solution_, Score_ extends Score<Score_>> SolutionManager<Solution_, Score_> solutionManager(
+    //            SolverFactory<Solution_> solverFactory) {
+    //        return SolutionManager.create(solverFactory);
+    //    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, SimpleScore> solutionManager_workaroundSimpleScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, SimpleLongScore> solutionManager_workaroundSimpleLongScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, SimpleBigDecimalScore> solutionManager_workaroundSimpleBigDecimalScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardSoftScore> solutionManager_workaroundHardSoftScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardSoftLongScore> solutionManager_workaroundHardSoftLongScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardSoftBigDecimalScore> solutionManager_workaroundHardSoftBigDecimalScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardMediumSoftScore> solutionManager_workaroundHardMediumSoftScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardMediumSoftLongScore> solutionManager_workaroundHardMediumSoftLongScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, HardMediumSoftBigDecimalScore>
+            solutionManager_workaroundHardMediumSoftBigDecimalScore(
+                    SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, BendableScore> solutionManager_workaroundBendableScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, BendableLongScore> solutionManager_workaroundBendableLongScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
+    @DefaultBean
+    @Singleton
+    @Produces
+    <Solution_> SolutionManager<Solution_, BendableBigDecimalScore> solutionManager_workaroundBendableBigDecimalScore(
+            SolverFactory<Solution_> solverFactory) {
+        return SolutionManager.create(solverFactory);
+    }
+
 }

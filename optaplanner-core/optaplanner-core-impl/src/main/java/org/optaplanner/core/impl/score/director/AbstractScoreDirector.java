@@ -152,12 +152,12 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
         if (lookUpEnabled) {
             lookUpManager.reset();
-            solutionDescriptor.visitAllFacts(workingSolution, c -> {
+            solutionDescriptor.visitAll(workingSolution, c -> {
                 lookUpManager.addWorkingObject(c);
                 assertNonNullPlanningId(c);
             });
         } else {
-            solutionDescriptor.visitAllFacts(workingSolution, this::assertNonNullPlanningId);
+            solutionDescriptor.visitAll(workingSolution, this::assertNonNullPlanningId);
         }
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
@@ -165,7 +165,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
 
     @Override
     public void assertNonNullPlanningIds() {
-        getSolutionDescriptor().visitAllFacts(workingSolution, this::assertNonNullPlanningId);
+        getSolutionDescriptor().visitAll(workingSolution, this::assertNonNullPlanningId);
     }
 
     private void assertNonNullPlanningId(Object fact) {
@@ -260,6 +260,11 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void triggerVariableListeners() {
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
+    }
+
+    @Override
+    public void forceTriggerVariableListeners() {
+        variableListenerSupport.forceTriggerAllVariableListeners(getWorkingSolution());
     }
 
     protected void setCalculatedScore(Score_ score) {

@@ -1,6 +1,7 @@
 package org.optaplanner.examples.common.business;
 
 import static java.util.stream.Collectors.toList;
+import static org.optaplanner.core.api.solver.SolutionUpdatePolicy.NO_UPDATE;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +23,9 @@ import javax.swing.SwingUtilities;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -65,7 +66,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     private final CommonApp<Solution_> app;
     private final DefaultSolverFactory<Solution_> solverFactory;
     private final SolverManager<Solution_, Long> solverManager;
-    private final ScoreManager<Solution_, Score_> scoreManager;
+    private final SolutionManager<Solution_, Score_> solutionManager;
 
     private final AtomicReference<SolverJob<Solution_, Long>> solverJobRef = new AtomicReference<>();
     private final AtomicReference<Solution_> workingSolutionRef = new AtomicReference<>();
@@ -84,7 +85,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
         this.app = app;
         this.solverFactory = ((DefaultSolverFactory<Solution_>) solverFactory);
         this.solverManager = SolverManager.create(solverFactory);
-        this.scoreManager = ScoreManager.create(solverFactory);
+        this.solutionManager = SolutionManager.create(solverFactory);
     }
 
     private static List<File> getFileList(File dataDir, String extension) {
@@ -214,7 +215,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public Score_ getScore() {
-        return scoreManager.updateScore(getSolution());
+        return solutionManager.update(getSolution());
     }
 
     public boolean isSolving() {
@@ -240,7 +241,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public List<ConstraintMatchTotal<Score_>> getConstraintMatchTotalList() {
-        return scoreManager.explainScore(getSolution())
+        return solutionManager.explain(getSolution(), NO_UPDATE)
                 .getConstraintMatchTotalMap()
                 .values()
                 .stream()
@@ -249,7 +250,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
-        return scoreManager.explainScore(getSolution()).getIndictmentMap();
+        return solutionManager.explain(getSolution(), NO_UPDATE).getIndictmentMap();
     }
 
     public void importSolution(File file) {

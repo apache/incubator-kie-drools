@@ -15,6 +15,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -257,8 +258,8 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     void assertExpectedUndoMoveScore(Move<Solution_> move, Score_ beforeMoveScore);
 
     /**
-     * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for
-     * {@link #getWorkingSolution()} have {@link PlanningId}s with a null value.
+     * Asserts that none of the planning facts from {@link #getWorkingSolution()}
+     * have {@link PlanningId}s with a null value.
      */
     void assertNonNullPlanningIds();
 
@@ -389,5 +390,12 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      */
     void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex);
+
+    /**
+     * Unlike {@link #triggerVariableListeners()} which only triggers notifications already in the queue,
+     * this triggers every variable listener on every genuine variable.
+     * This is useful in {@link SolutionManager#update(Object)} to fill in shadow variable values.
+     */
+    void forceTriggerVariableListeners();
 
 }

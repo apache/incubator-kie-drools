@@ -19,6 +19,7 @@ import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -56,8 +57,9 @@ import org.springframework.util.ClassUtils;
 import com.fasterxml.jackson.databind.Module;
 
 @Configuration
-@ConditionalOnClass({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class })
-@ConditionalOnMissingBean({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolverManager.class })
+@ConditionalOnClass({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolutionManager.class, SolverManager.class })
+@ConditionalOnMissingBean({ SolverConfig.class, SolverFactory.class, ScoreManager.class, SolutionManager.class,
+        SolverManager.class })
 @EnableConfigurationProperties({ OptaPlannerProperties.class })
 public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
 
@@ -90,11 +92,19 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return SolverManager.create(solverFactory, solverManagerConfig);
     }
 
+    @Deprecated(forRemoval = true)
     @Bean
     @ConditionalOnMissingBean
     public <Solution_, Score_ extends Score<Score_>> ScoreManager<Solution_, Score_> scoreManager(
             SolverFactory solverFactory) {
         return ScoreManager.create(solverFactory);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public <Solution_, Score_ extends Score<Score_>> SolutionManager<Solution_, Score_> solutionManager(
+            SolverFactory solverFactory) {
+        return SolutionManager.create(solverFactory);
     }
 
     @Bean

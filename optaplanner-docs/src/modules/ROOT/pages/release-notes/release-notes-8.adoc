@@ -1,6 +1,19 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.35.0.Final]]
+=== OptaPlanner 8.35.0.Final
+
+==== `SolutionManager` gets support for updating shadow variables
+
+`SolutionManager` (formerly `ScoreManager`) methods such as `explain(solution)` and `update(solution)`  received a new overload with an extra argument, `SolutionUpdatePolicy`.
+This has often been requested by users who load their solutions from persistent storage (such as a relational database), where these solutions do not include the information carried by xref:shadow-variable/shadow-variable.adoc[shadow variables] or even the score.
+By calling these new overloads and picking the right policy,
+OptaPlanner will automatically compute values for all the shadow variables in the given solution
+and/or recalculate the score.
+
+Similarly, `ProblemChangeDirector` received a new method called `updateShadowVariables(), so that you can update shadow variables on demand in xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning].
+
 [[releaseNotes-8.34.0.Final]]
 === OptaPlanner 8.34.0.Final
 

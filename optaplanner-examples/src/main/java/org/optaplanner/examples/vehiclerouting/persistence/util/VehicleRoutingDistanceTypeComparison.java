@@ -5,8 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingMain;
@@ -20,7 +20,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
-    private final ScoreManager<VehicleRoutingSolution, HardSoftLongScore> scoreManager;
+    private final SolutionManager<VehicleRoutingSolution, HardSoftLongScore> solutionManager;
 
     public static void main(String[] args) {
         new VehicleRoutingDistanceTypeComparison().compare(
@@ -37,7 +37,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
         solutionFileIO = new VehicleRoutingSolutionFileIO();
         SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory
                 .createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
-        scoreManager = ScoreManager.create(solverFactory);
+        solutionManager = SolutionManager.create(solverFactory);
     }
 
     public void compare(String... filePaths) {
@@ -84,7 +84,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             inputCustomer.setNextCustomer(findInputObjectById(inputCustomerMap, varCustomer.getNextCustomer()));
             inputCustomer.setVehicle(findInputObjectById(inputVehicleMap, varCustomer.getVehicle()));
         }
-        scoreManager.updateScore(inputSolution);
+        solutionManager.update(inputSolution);
     }
 
     private <T extends AbstractPersistable> T findInputObjectById(Map<Long, T> inputMap, T varObject) {

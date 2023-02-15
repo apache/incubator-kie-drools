@@ -7,11 +7,11 @@ import java.util.Objects;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.ScoreManager;
-import org.optaplanner.core.api.score.ScoreManagerTest.ScoreManagerSource;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
+import org.optaplanner.core.api.solver.SolutionManager;
+import org.optaplanner.core.api.solver.SolutionManagerTest;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -19,11 +19,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataConstraintProvider;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public abstract class AbstractScoreManagerTest {
+public abstract class AbstractSolutionManagerTest {
 
     private final ConstraintStreamImplType constraintStreamImplType;
 
-    protected AbstractScoreManagerTest(ConstraintStreamImplType constraintStreamImplType) {
+    protected AbstractSolutionManagerTest(ConstraintStreamImplType constraintStreamImplType) {
         this.constraintStreamImplType = Objects.requireNonNull(constraintStreamImplType);
     }
 
@@ -38,13 +38,13 @@ public abstract class AbstractScoreManagerTest {
         solverConfig.setEntityClassList(Collections.singletonList(TestdataEntity.class));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
-        ScoreManager<TestdataSolution, SimpleScore> scoreManager =
-                ScoreManagerSource.FROM_SOLVER_FACTORY.createScoreManager(solverFactory);
+        SolutionManager<TestdataSolution, SimpleScore> solutionManager =
+                SolutionManagerTest.SolutionManagerSource.FROM_SOLVER_FACTORY.createSolutionManager(solverFactory);
 
         // Prepare the solution.
         int entityCount = 3;
         TestdataSolution solution = TestdataSolution.generateSolution(2, entityCount);
-        ScoreExplanation<TestdataSolution, SimpleScore> scoreExplanation = scoreManager.explainScore(solution);
+        ScoreExplanation<TestdataSolution, SimpleScore> scoreExplanation = solutionManager.explain(solution);
 
         // Check for expected results.
         SoftAssertions.assertSoftly(softly -> {

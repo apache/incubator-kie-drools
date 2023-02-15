@@ -1212,11 +1212,11 @@ On the other hand, _indicted objects_ are objects which were directly involved i
 [[usingScoreCalculationOutsideTheSolver]]
 === Using score calculation outside the `Solver`
 
-If other parts of your application, for example your webUI, need to calculate the score of a solution, use the `ScoreManager` API:
+If other parts of your application, for example your webUI, need to calculate the score of a solution, use the `SolutionManager` API:
 
 [source,java,options="nowrap"]
 ----
-ScoreManager<CloudBalance, HardSoftScore> scoreManager = ScoreManager.create(solverFactory);
+SolutionManager<CloudBalance, HardSoftScore> scoreManager = SolutionManager.create(solverFactory);
 ScoreExplanation<CloudBalance, HardSoftScore> scoreExplanation = scoreManager.explainScore(cloudBalance);
 ----
 
