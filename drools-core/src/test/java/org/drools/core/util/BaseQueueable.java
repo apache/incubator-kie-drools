@@ -24,7 +24,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.Consequence;
@@ -89,7 +89,7 @@ public class BaseQueueable implements Activation {
         return null;
     }
 
-    public LeftTupleImpl getTuple() {
+    public Tuple getTuple() {
         return null;
     }
 

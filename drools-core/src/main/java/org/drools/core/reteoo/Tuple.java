@@ -92,7 +92,9 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     Tuple getParent();
 
     InternalFactHandle getFactHandle();
+
     void setFactHandle( InternalFactHandle handle );
+
     InternalFactHandle getOriginalFactHandle();
 
     /**
@@ -131,36 +133,47 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     void clearStaged();
 
     void reAdd();
+
     void unlinkFromRightParent();
+
     void unlinkFromLeftParent();
 
     PropagationContext getPropagationContext();
+
     void setPropagationContext( PropagationContext propagationContext );
 
     Tuple getPrevious();
+
     void setPrevious( Tuple previous );
 
     <S extends Sink> S getTupleSink();
 
     TupleList getMemory();
+
     void setMemory( TupleList memory );
 
     void increaseActivationCountForEvents();
+
     void decreaseActivationCountForEvents();
 
     Tuple getRootTuple();
+
     Tuple skipEmptyHandles();
 
     LeftTuple getFirstChild();
+
     void setFirstChild( LeftTuple firstChild );
 
     LeftTuple getLastChild();
+
     void setLastChild( LeftTuple firstChild );
 
     <T extends Tuple> T getHandlePrevious();
+
     void setHandlePrevious( Tuple leftParentLeft );
 
     <T extends Tuple> T getHandleNext();
+
     void setHandleNext( Tuple leftParentright );
 
     ObjectTypeNode.Id getInputOtnId();

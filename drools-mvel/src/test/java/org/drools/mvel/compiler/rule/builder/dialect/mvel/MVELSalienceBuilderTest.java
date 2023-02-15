@@ -30,7 +30,9 @@ import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.LeftTupleImpl;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -122,7 +124,7 @@ public class MVELSalienceBuilderTest {
         source.setObjectCount(1);
         sink.setLeftTupleSource(source);
 
-        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
+        final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
                                                        sink,
                                                        true );
 
@@ -177,7 +179,7 @@ public class MVELSalienceBuilderTest {
 
         private Salience                 salience;
         private Rule                     rule;
-        private LeftTupleImpl            tuple;
+        private LeftTuple                tuple;
         private WorkingMemory wm;
         private final int                result;
         private transient boolean        halt;
@@ -202,9 +204,9 @@ public class MVELSalienceBuilderTest {
             source.setObjectCount(1);
             sink.setLeftTupleSource(source);
 
-            tuple = new LeftTupleImpl( f0,
-                                       sink,
-                                   true );
+            tuple = new JoinNodeLeftTuple(f0,
+                                          sink,
+                                          true );
             this.salience = salience;
             this.halt = false;
             this.error = false;

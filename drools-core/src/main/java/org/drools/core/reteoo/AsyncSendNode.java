@@ -175,7 +175,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
 
     @Override
     public LeftTuple createPeer(LeftTuple original) {
-        FromNodeLeftTuple peer = new FromNodeLeftTuple();
+        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
         return peer;
@@ -287,26 +287,26 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
-        return new FromNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
+        return new JoinNodeLeftTuple(factHandle, this, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
                                      final Sink sink) {
-        return new FromNodeLeftTuple(factHandle,leftTuple, sink );
+        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new FromNodeLeftTuple(leftTuple, sink, pctx,
+        return new JoinNodeLeftTuple(leftTuple, sink, pctx,
                                      leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
-        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -315,7 +315,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
                                      LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
 
     @Override

@@ -406,21 +406,21 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     @Override
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      boolean leftTupleMemoryEnabled) {
-        return new QueryElementNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
+        return new JoinNodeLeftTuple( factHandle, this, leftTupleMemoryEnabled );
     }
 
     @Override
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
                                      final Sink sink) {
-        return new QueryElementNodeLeftTuple(factHandle,leftTuple, sink );
+        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     @Override
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-        return new QueryElementNodeLeftTuple( leftTuple,
+        return new JoinNodeLeftTuple( leftTuple,
                                               sink,
                                               pctx,
                                               leftTupleMemoryEnabled );
@@ -430,7 +430,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
-        return new QueryElementNodeLeftTuple( leftTuple,
+        return new JoinNodeLeftTuple( leftTuple,
                                               rightTuple,
                                               sink );
     }
@@ -442,7 +442,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
                                      LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new QueryElementNodeLeftTuple( leftTuple,
+        return new JoinNodeLeftTuple( leftTuple,
                                               rightTuple,
                                               currentLeftChild,
                                               currentRightChild,
@@ -664,7 +664,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
 
     @Override
     public LeftTuple createPeer(LeftTuple original) {
-        QueryElementNodeLeftTuple peer = new QueryElementNodeLeftTuple();
+        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
         peer.initPeer((BaseLeftTuple) original, this);
         original.setPeer(peer);
         return peer;

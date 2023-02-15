@@ -25,7 +25,7 @@ import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 
 import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
-public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
+public class ReactiveFromNodeLeftTuple extends JoinNodeLeftTuple {
 
     private Map<Object, ModificationType> modificationTypeMap = new HashMap<>(); 
 
