@@ -22,8 +22,13 @@ import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.RuleUnitFactory;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.decision.DecisionModel;
+
+import static org.jbpm.workflow.instance.rule.RuleType.DMN_LANG;
+import static org.jbpm.workflow.instance.rule.RuleType.DRL_LANG;
+import static org.jbpm.workflow.instance.rule.RuleType.RULE_UNIT_LANG;
 
 public class RuleSetNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends StateBasedNodeFactory<RuleSetNodeFactory<T>, T> implements MappableNodeFactory<RuleSetNodeFactory<T>> {
 
@@ -44,22 +49,22 @@ public class RuleSetNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     }
 
     public RuleSetNodeFactory<T> ruleUnit(String unit, RuleUnitFactory<?> ruleUnit) {
-        getRuleSetNode().setRuleType(RuleSetNode.RuleType.ruleUnit(unit));
-        getRuleSetNode().setLanguage(RuleSetNode.RULE_UNIT_LANG);
+        getRuleSetNode().setRuleType(RuleType.ruleUnit(unit));
+        getRuleSetNode().setLanguage(RULE_UNIT_LANG);
         getRuleSetNode().setRuleUnitFactory(ruleUnit);
         return this;
     }
 
     public RuleSetNodeFactory<T> ruleFlowGroup(String ruleFlowGroup, Supplier<KieRuntime> supplier) {
-        getRuleSetNode().setRuleType(RuleSetNode.RuleType.ruleFlowGroup(ruleFlowGroup));
-        getRuleSetNode().setLanguage(RuleSetNode.DRL_LANG);
+        getRuleSetNode().setRuleType(RuleType.ruleFlowGroup(ruleFlowGroup));
+        getRuleSetNode().setLanguage(DRL_LANG);
         getRuleSetNode().setKieRuntime(supplier);
         return this;
     }
 
     public RuleSetNodeFactory<T> decision(String namespace, String model, String decision, Supplier<DecisionModel> supplier) {
-        getRuleSetNode().setRuleType(RuleSetNode.RuleType.decision(namespace, model, decision));
-        getRuleSetNode().setLanguage(RuleSetNode.DMN_LANG);
+        getRuleSetNode().setRuleType(RuleType.decision(namespace, model, decision));
+        getRuleSetNode().setLanguage(DMN_LANG);
         getRuleSetNode().setDecisionModel(supplier);
         return this;
     }

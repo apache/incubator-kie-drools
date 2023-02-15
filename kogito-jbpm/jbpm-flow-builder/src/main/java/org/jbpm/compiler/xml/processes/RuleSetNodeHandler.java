@@ -18,8 +18,11 @@ package org.jbpm.compiler.xml.processes;
 import org.jbpm.compiler.xml.Parser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import static org.jbpm.workflow.instance.rule.RuleType.DRL_LANG;
 
 public class RuleSetNodeHandler extends AbstractNodeHandler {
 
@@ -36,10 +39,10 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
         String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
         String language = element.getAttribute("implementation");
         if (language == null || language.equalsIgnoreCase("##unspecified") || language.isEmpty()) {
-            language = RuleSetNode.DRL_LANG;
+            language = DRL_LANG;
         }
         if (ruleFlowGroup != null && ruleFlowGroup.length() > 0) {
-            ruleSetNode.setRuleType(RuleSetNode.RuleType.of(ruleFlowGroup, language));
+            ruleSetNode.setRuleType(RuleType.of(ruleFlowGroup, language));
         }
     }
 
@@ -51,7 +54,7 @@ public class RuleSetNodeHandler extends AbstractNodeHandler {
     public void writeNode(Node node, StringBuilder xmlDump, boolean includeMeta) {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         writeNode("ruleSet", ruleSetNode, xmlDump, includeMeta);
-        RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
+        RuleType ruleType = ruleSetNode.getRuleType();
         if (ruleType != null) {
             if (!ruleType.isDecision()) {
                 xmlDump.append("ruleFlowGroup=\"" + ruleType.getName() + "\" ");

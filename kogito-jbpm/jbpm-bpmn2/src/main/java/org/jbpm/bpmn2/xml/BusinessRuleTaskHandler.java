@@ -23,11 +23,13 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import static org.jbpm.workflow.core.node.RuleSetNode.DMN_LANG;
+import static org.jbpm.workflow.instance.rule.RuleType.DMN_LANG;
+import static org.jbpm.workflow.instance.rule.RuleType.DRL_LANG;
 
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 
@@ -53,12 +55,11 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 
         String language = element.getAttribute("implementation");
         if (language == null || language.equalsIgnoreCase("##unspecified") || language.isEmpty()) {
-            language = RuleSetNode.DRL_LANG;
+            language = DRL_LANG;
         }
         ruleSetNode.setLanguage(language);
 
-        String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
-        if (language.equals(DMN_LANG)) {
+        if (DMN_LANG.equals(language)) {
             Map<String, String> parameters = new HashMap<>();
             for (DataAssociation dataAssociation : ruleSetNode.getIoSpecification().getDataInputAssociation()) {
                 for (Assignment assignment : dataAssociation.getAssignments()) {
@@ -69,12 +70,13 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             String namespace = parameters.get(NAMESPACE_PROP);
             String model = parameters.get(MODEL_PROP);
             String decision = parameters.get(DECISION_PROP);
-            ruleSetNode.setRuleType(RuleSetNode.RuleType.decision(
+            ruleSetNode.setRuleType(RuleType.decision(
                     namespace,
                     model,
                     decision));
         } else {
-            ruleSetNode.setRuleType(RuleSetNode.RuleType.of(ruleFlowGroup, language));
+            String ruleFlowGroup = element.getAttribute("ruleFlowGroup");
+            ruleSetNode.setRuleType(RuleType.of(ruleFlowGroup, language));
         }
 
         handleScript(ruleSetNode, element, "onEntry");
@@ -86,7 +88,7 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         RuleSetNode ruleSetNode = (RuleSetNode) node;
         writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
-        RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
+        RuleType ruleType = ruleSetNode.getRuleType();
         if (ruleType != null) {
             xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleType.getName()) + "\" " + EOL);
             // else DMN

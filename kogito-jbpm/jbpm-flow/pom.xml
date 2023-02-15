@@ -50,14 +50,6 @@
       <artifactId>process-workitems</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-dmn</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-symbol-solver-core</artifactId>
     </dependency>
@@ -69,6 +61,18 @@
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-wiring-dynamic</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-compiler</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-internal</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -95,7 +99,12 @@
     <!-- test -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
+      <artifactId>drools-kiesession</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-impl</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -122,10 +131,6 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-jackson-utils</artifactId>
     </dependency>
   </dependencies>
 

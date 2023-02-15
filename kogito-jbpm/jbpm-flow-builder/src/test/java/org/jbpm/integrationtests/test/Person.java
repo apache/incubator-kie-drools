@@ -17,9 +17,7 @@ package org.jbpm.integrationtests.test;
 
 import java.io.Serializable;
 
-public class Person
-        implements
-        Serializable {
+public class Person implements Serializable {
 
     private static final long serialVersionUID = 510l;
     private String name;
@@ -29,8 +27,7 @@ public class Person
 
     }
 
-    public Person(String name,
-            int age) {
+    public Person(String name, int age) {
         super();
         this.name = name;
         this.age = age;

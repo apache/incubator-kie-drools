@@ -636,7 +636,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         return expression != null && PatternConstants.PARAMETER_MATCHER.matcher(expression).find();
     }
 
-    protected String resolveExpression(String expression) {
+    public String resolveExpression(String expression) {
         return isExpression(expression) ? (String) resolveValue(expression) : expression;
     }
 
@@ -648,10 +648,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             }
             return expr;
         });
-    }
-
-    protected Object resolveFirstValue(String expression) {
-        return resolveValue(expression, (replacements) -> replacements.isEmpty() ? null : replacements.values().iterator().next());
     }
 
     // resolve expression based on variables or mvel expressions

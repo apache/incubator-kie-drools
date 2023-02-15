@@ -32,7 +32,7 @@ import org.drools.kiesession.audit.LogEvent;
 import org.drools.kiesession.audit.RuleFlowLogEvent;
 import org.drools.kiesession.audit.RuleFlowNodeLogEvent;
 import org.drools.mvel.MVELSafeHelper;
-import org.jbpm.audit.KogitoWorkingMemoryInMemoryLogger;
+import org.jbpm.bpmn2.audit.KogitoWorkingMemoryInMemoryLogger;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;

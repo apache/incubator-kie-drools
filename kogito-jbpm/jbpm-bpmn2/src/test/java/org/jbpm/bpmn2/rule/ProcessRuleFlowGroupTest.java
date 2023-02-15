@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.integrationtests;
+package org.jbpm.bpmn2.rule;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
 
     @Test
-    public void testRuleSetProcessContext() throws Exception {
+    public void testRuleSetProcessContext() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +

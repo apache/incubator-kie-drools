@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.compiler;
+package org.jbpm.bpmn2.rule;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,7 +37,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
-        InputStream in = this.getClass().getResourceAsStream("/org/jbpm/integrationtests/ruleflow.rfm");
+        InputStream in = this.getClass().getResourceAsStream("/ruleflow//ruleflow.rfm");
         assertThat(in).isNotNull();
 
         builder.addPackage(new PackageDescr("com.sample"));
@@ -49,7 +49,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         Map<String, Process> flows = pkg.getRuleFlows();
         assertThat(flows).isNotNull().hasSize(1).containsKey("0");
 
-        Process p = (Process) flows.get("0");
+        Process p = flows.get("0");
         assertThat(p).isInstanceOf(WorkflowProcessImpl.class);
 
         //now serialization
@@ -58,12 +58,12 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
         flows = pkg2.getRuleFlows();
         assertThat(flows).isNotNull().hasSize(1).containsKey("0");
-        p = (Process) flows.get("0");
+        p = flows.get("0");
         assertThat(p).isInstanceOf(WorkflowProcessImpl.class);
     }
 
     @Test
-    public void testPackageRuleFlows() throws Exception {
+    public void testPackageRuleFlows() {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("boo");
         Process rf = new MockRuleFlow("1");
         pkg.addProcess(rf);
@@ -84,9 +84,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
 
     }
 
-    class MockRuleFlow
-            implements
-            Process {
+    class MockRuleFlow implements Process {
 
         private String id;
 
@@ -143,8 +141,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         public void setDefaultContext(Context context) {
         }
 
-        public Context getContext(String contextType,
-                long id) {
+        public Context getContext(String contextType, long id) {
             return null;
         }
 
@@ -156,8 +153,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
             return null;
         }
 
-        public void setMetaData(String name,
-                Object value) {
+        public void setMetaData(String name, Object value) {
         }
 
         public Resource getResource() {

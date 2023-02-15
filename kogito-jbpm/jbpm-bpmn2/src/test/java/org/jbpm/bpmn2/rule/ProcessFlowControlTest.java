@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.integrationtests;
+package org.jbpm.bpmn2.rule;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -108,8 +108,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlow() throws Exception {
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.drl")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.rfm")));
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
@@ -130,8 +130,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowClear() throws Exception {
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.drl")));
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ruleflowClear.rfm")));
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/test_ruleflowClear.drl")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/test_ruleflowClear.rfm")));
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
@@ -175,8 +175,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
 
     @Test
     public void testRuleFlowInPackage() throws Exception {
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.drl")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.rfm")));
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         final List<String> list = new ArrayList<String>();
@@ -199,29 +199,29 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowInPackage1() throws Exception {
         // adding ruleflow before adding package
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.rfm")));
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.drl")));
         assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage2() throws Exception {
         // only adding ruleflow
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/ruleflow.rfm")));
         assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage3() throws Exception {
         // only adding ruleflow without any generated rules
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/empty_ruleflow.rfm")));
         assertThat(builder.getPackages()).isNotEmpty();
     }
 
     @Test
     @Disabled("MVEL not supported in ScriptTask")
     public void testRuleFlowActionDialects() throws Exception {
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ActionDialects.rfm")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/test_ActionDialects.rfm")));
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
         List<String> list = new ArrayList<String>();
@@ -238,7 +238,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     @Test
     public void testLoadingRuleFlowNoPackageName() {
         // loading a ruleflow with errors (null package name cause 3 errors)
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("error_ruleflow.rfm")));
+        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("/ruleflow/error_ruleflow.rfm")));
         assertThat(builder.getErrors().getErrors()).hasSize(3);
     }
 

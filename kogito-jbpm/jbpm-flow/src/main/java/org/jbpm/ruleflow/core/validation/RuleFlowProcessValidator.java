@@ -74,6 +74,8 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.rule.DecisionRuleType;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
@@ -217,8 +219,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
                 final String language = ruleSetNode.getLanguage();
 
-                RuleSetNode.RuleType ruleType = ruleSetNode.getRuleType();
-                if (RuleSetNode.DRL_LANG.equals(language)) {
+                RuleType ruleType = ruleSetNode.getRuleType();
+                if (ruleType.isRuleFlowGroup()) {
                     final String ruleFlowGroup = ruleType.getName();
                     if (ruleFlowGroup == null || "".equals(ruleFlowGroup)) {
                         addErrorMessage(process,
@@ -226,7 +228,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                 errors,
                                 "RuleSet (DRL) has no ruleflow-group.");
                     }
-                } else if (RuleSetNode.RULE_UNIT_LANG.equals(language)) {
+                } else if (ruleType.isRuleUnit()) {
                     final String unit = ruleType.getName();
                     if (unit == null || "".equals(unit)) {
                         addErrorMessage(process,
@@ -234,8 +236,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                 errors,
                                 "RuleSet (Rule Unit) has no ruleflow-group.");
                     }
-                } else if (RuleSetNode.DMN_LANG.equals(language)) {
-                    RuleSetNode.RuleType.Decision decision = (RuleSetNode.RuleType.Decision) ruleType;
+                } else if (ruleType.isDecision()) {
+                    DecisionRuleType decision = (DecisionRuleType) ruleType;
                     final String namespace = decision.getNamespace();
                     if (namespace == null || "".equals(namespace)) {
                         addErrorMessage(process,

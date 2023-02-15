@@ -1562,6 +1562,13 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>jbpm-flow-builder</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>jbpm-bpmn2</artifactId>
         <version>${project.version}</version>
       </dependency>

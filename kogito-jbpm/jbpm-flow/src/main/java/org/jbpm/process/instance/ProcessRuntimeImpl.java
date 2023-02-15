@@ -30,7 +30,6 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
@@ -61,7 +60,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -134,16 +132,6 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     @Override
     public KogitoProcessRuntime getKogitoProcessRuntime() {
         return kogitoProcessRuntime;
-    }
-
-    private ClassLoader getRootClassLoader() {
-        KieBase kbase = kruntime.getKieBase();
-        if (kbase != null) {
-            return ((InternalKnowledgeBase) kbase).getRootClassLoader();
-        }
-        CompositeClassLoader result = new CompositeClassLoader();
-        result.addClassLoader(Thread.currentThread().getContextClassLoader());
-        return result;
     }
 
     @Override

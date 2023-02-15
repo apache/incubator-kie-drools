@@ -27,6 +27,8 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.workflow.core.node.RuleSetNode;
+import org.jbpm.workflow.instance.rule.DecisionRuleType;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ruleunit.RuleUnitComponentFactory;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -80,7 +82,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         body.addStatement(getAssignedFactoryMethod(factoryField, RuleSetNodeFactory.class, getNodeId(node), getNodeKey(), new LongLiteralExpr(node.getId())))
                 .addStatement(getNameMethod(node, "Rule"));
 
-        RuleSetNode.RuleType ruleType = node.getRuleType();
+        RuleType ruleType = node.getRuleType();
         if (ruleType.getName().isEmpty()) {
             throw new IllegalArgumentException(
                     MessageFormat.format(
@@ -96,7 +98,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         } else if (ruleType.isRuleUnit()) {
             m = handleRuleUnit(variableScope, metadata, node, nodeName, ruleType);
         } else if (ruleType.isDecision()) {
-            m = handleDecision((RuleSetNode.RuleType.Decision) ruleType);
+            m = handleDecision((DecisionRuleType) ruleType);
         } else {
             throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: unsupported rule language " + node.getLanguage());
         }
@@ -112,7 +114,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
                 .forEach((k, v) -> body.addStatement(getFactoryMethod(nodeId, METHOD_PARAMETER, new StringLiteralExpr(k), new StringLiteralExpr(v.toString()))));
     }
 
-    private MethodCallExpr handleDecision(RuleSetNode.RuleType.Decision ruleType) {
+    private MethodCallExpr handleDecision(DecisionRuleType ruleType) {
 
         StringLiteralExpr namespace = new StringLiteralExpr(ruleType.getNamespace());
         StringLiteralExpr model = new StringLiteralExpr(ruleType.getModel());
@@ -138,7 +140,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
                 .addArgument(lambda);
     }
 
-    private MethodCallExpr handleRuleUnit(VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleSetNode.RuleType ruleType) {
+    private MethodCallExpr handleRuleUnit(VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleType ruleType) {
         String unitName = ruleType.getName();
         ProcessContextMetaModel processContext = new ProcessContextMetaModel(variableScope, contextClassLoader);
         RuleUnitDescription description;
@@ -176,7 +178,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         return d;
     }
 
-    private MethodCallExpr handleRuleFlowGroup(RuleSetNode.RuleType ruleType) {
+    private MethodCallExpr handleRuleFlowGroup(RuleType ruleType) {
         // build supplier for rule runtime
         BlockStmt actionBody = new BlockStmt();
         LambdaExpr lambda = new LambdaExpr(new Parameter(new UnknownType(), "()"), actionBody);

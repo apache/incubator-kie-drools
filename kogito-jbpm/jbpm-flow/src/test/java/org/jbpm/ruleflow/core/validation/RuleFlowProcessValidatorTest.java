@@ -36,6 +36,7 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.rule.RuleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -205,7 +206,7 @@ public class RuleFlowProcessValidatorTest {
     void testOnEntryOnExitValidation() {
         testNodeOnEntryOnExit(new MilestoneNode());
         RuleSetNode ruleSetNode = new RuleSetNode();
-        ruleSetNode.setRuleType(RuleSetNode.RuleType.ruleUnit("test"));
+        ruleSetNode.setRuleType(mock(RuleType.class));
         testNodeOnEntryOnExit(ruleSetNode);
         testNodeOnEntryOnExit(new SubProcessNode());
         testNodeOnEntryOnExit(new WorkItemNode());
