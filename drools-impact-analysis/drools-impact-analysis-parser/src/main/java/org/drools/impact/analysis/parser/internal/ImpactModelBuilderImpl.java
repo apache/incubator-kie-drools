@@ -40,6 +40,7 @@ import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static java.util.Collections.emptyList;
 import static org.drools.compiler.builder.impl.ClassDefinitionFactory.createClassDefinition;
@@ -177,7 +178,7 @@ public class ImpactModelBuilderImpl extends KnowledgeBuilderImpl {
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
                         pkg.getTypeResolver(),
-                        getBuilderConfiguration().getLanguageLevel().useJavaAnnotations());
+                        getBuilderConfiguration().getOption(LanguageLevelOption.KEY).useJavaAnnotations());
 
         annotationNormalizer.normalize(typeDescr);
         this.getBuildResultCollector().addAll(annotationNormalizer.getResults());

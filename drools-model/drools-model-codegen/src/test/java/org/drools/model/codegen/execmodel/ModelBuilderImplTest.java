@@ -25,6 +25,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +35,7 @@ import static org.drools.util.StringUtils.generateUUID;
 public class ModelBuilderImplTest {
 
     private static final ReleaseId RELEASE_ID = new ReleaseIdImpl("group:artifact:version");
-    private  static final  KnowledgeBuilderConfigurationImpl CONFIGURATION = new KnowledgeBuilderConfigurationImpl(ModelBuilderImplTest.class.getClassLoader());
+    private  static final  KnowledgeBuilderConfigurationImpl CONFIGURATION = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
     private InternalKnowledgePackage internalKnowledgePackage;
     private PackageRegistry packageRegistry;
     private ModelBuilderImpl<PackageSources> modelBuilder;

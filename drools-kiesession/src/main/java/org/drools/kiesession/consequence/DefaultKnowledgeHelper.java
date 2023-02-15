@@ -173,7 +173,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
             if ( object instanceof CoreWrapper ) {
                 handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
             }
-            if ( handle == null && reteEvaluator.getKnowledgeBase().getConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
+            if ( handle == null && reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getAssertBehaviour() == RuleBaseConfiguration.AssertBehaviour.EQUALITY ) {
                 InternalFactHandle modifiedFh = tuple.getFactHandle();
                 while (modifiedFh == null || modifiedFh.getObject() != object) {
                     tuple = tuple.getParent();

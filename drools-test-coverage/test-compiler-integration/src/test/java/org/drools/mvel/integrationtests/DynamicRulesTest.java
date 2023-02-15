@@ -1149,7 +1149,7 @@ public class DynamicRulesTest {
     @Test(timeout=10000)
     public void testJBRULES_2206() {
         KieBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration();
-        ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
+        config.as(RuleBaseConfiguration.KEY).setRuleBaseUpdateHandler( null );
 
         final KieModule kieModule = KieUtil.getKieModuleFromResources(KieUtil.generateReleaseId("test"), kieBaseTestConfiguration);
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.newKieBaseFromReleaseId(kieModule.getReleaseId(), config);

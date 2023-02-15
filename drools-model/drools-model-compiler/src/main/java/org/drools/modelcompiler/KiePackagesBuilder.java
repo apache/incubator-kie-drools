@@ -31,8 +31,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -171,7 +169,7 @@ public class KiePackagesBuilder {
 
     private static final ObjectType JAVA_CLASS_ARRAY_TYPE = new ClassObjectType( Object[].class );
 
-    private final RuleBaseConfiguration configuration;
+    private final KieBaseConfiguration configuration;
     private final KnowledgeBuilderConfiguration builderConf;
 
     private final Map<String, InternalKnowledgePackage> packages = new HashMap<>();
@@ -185,7 +183,7 @@ public class KiePackagesBuilder {
     }
 
     public KiePackagesBuilder( KieBaseConfiguration conf, KnowledgeBuilderConfiguration builderConf, Collection<Model> models) {
-        this.configuration = ((RuleBaseConfiguration) conf);
+        this.configuration = conf;
         this.builderConf = builderConf;
         this.models = models;
     }
@@ -320,7 +318,7 @@ public class KiePackagesBuilder {
         }
     }
 
-    private void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
+    public void setRuleMetaAttributes(Rule rule, RuleImpl ruleImpl) {
         for (Entry<String, Object> kv : rule.getMetaData().entrySet()) {
             ruleImpl.addMetaAttribute(kv.getKey(), kv.getValue());
             if (kv.getKey().equals( Propagation.class.getName() ) || kv.getKey().equals( Propagation.class.getSimpleName() )) {
@@ -1244,7 +1242,7 @@ public class KiePackagesBuilder {
     }
 
     private PropertySpecificOption getPropertySpecificOption() {
-        return builderConf != null ? (( KnowledgeBuilderConfigurationImpl ) builderConf).getPropertySpecificOption() : PropertySpecificOption.ALWAYS;
+        return builderConf != null ? builderConf.getOption(PropertySpecificOption.KEY) : PropertySpecificOption.ALWAYS;
     }
 
     private static GroupElement.Type conditionToGroupElementType( Condition.Type type ) {

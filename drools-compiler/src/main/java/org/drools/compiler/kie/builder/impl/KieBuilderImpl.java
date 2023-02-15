@@ -721,7 +721,7 @@ public class KieBuilderImpl
         }
 
         if ( !javaFiles.isEmpty() || !javaTestFiles.isEmpty() ) {
-            KnowledgeBuilderConfigurationImpl kconf = ((KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader));
+            KnowledgeBuilderConfigurationImpl kconf = newKnowledgeBuilderConfiguration(classLoader).as(KnowledgeBuilderConfigurationImpl.KEY);
             JavaConfiguration javaConf = (JavaConfiguration) kconf.getDialectConfiguration( "java" );
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );

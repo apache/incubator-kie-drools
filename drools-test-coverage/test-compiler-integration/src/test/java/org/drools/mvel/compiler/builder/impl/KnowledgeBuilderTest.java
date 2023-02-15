@@ -96,6 +96,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
 
@@ -197,7 +198,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertThat(map.get("value")).isEqualTo(new Integer( 1 ));
+        assertThat(map.get("value")).isEqualTo(Integer.valueOf( 1 ));
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(2) );" );
         pkg.removeRule( rule );
@@ -216,7 +217,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertThat(map.get("value")).isEqualTo(new Integer( 2 ));
+        assertThat(map.get("value")).isEqualTo(Integer.valueOf( 2 ));
 
     }
 
@@ -276,7 +277,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            ((StatefulKnowledgeSessionImpl)workingMemory) );
-        assertThat(map.get("value")).isEqualTo(new Integer( 1 ));
+        assertThat(map.get("value")).isEqualTo(Integer.valueOf( 1 ));
     }
 
     @Test
@@ -743,7 +744,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
     @Test
     public void testWarningsReportAsErrors() {
         System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "ERROR");
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl(cfg);
         
         final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
@@ -966,7 +967,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         compilerField.setAccessible( true );
         JavaCompiler compiler = ( JavaCompiler ) compilerField.get( dialect );
 
-        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         JavaForMvelDialectConfiguration javaConf = ( JavaForMvelDialectConfiguration ) conf.getDialectConfiguration( "java" );
         switch( javaConf.getCompiler() ) {
             case NATIVE : assertThat(compiler.getClass()).isSameAs(NativeJavaCompiler.class);
@@ -978,7 +979,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         }
 
         // test eclipse jdt core with property settings and default source level
-        conf = new KnowledgeBuilderConfigurationImpl();
+        conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         javaConf = ( JavaForMvelDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaForMvelDialectConfiguration.CompilerType.ECLIPSE );
         builder = new KnowledgeBuilderImpl( conf );

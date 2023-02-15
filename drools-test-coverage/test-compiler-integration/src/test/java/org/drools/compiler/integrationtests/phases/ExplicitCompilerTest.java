@@ -20,6 +20,7 @@ import org.drools.compiler.builder.impl.GlobalVariableContext;
 import org.drools.compiler.builder.impl.GlobalVariableContextImpl;
 import org.drools.compiler.builder.impl.InternalKnowledgeBaseProvider;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.builder.impl.KnowledgeBuilderRulesConfigurationImpl;
 import org.drools.compiler.builder.impl.PackageRegistryManagerImpl;
 import org.drools.compiler.builder.impl.RootClassLoaderProvider;
 import org.drools.compiler.builder.impl.TypeDeclarationBuilder;
@@ -55,6 +56,9 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.conf.CompositeBaseConfiguration;
+import org.kie.internal.utils.ChainedProperties;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,7 +76,7 @@ public class ExplicitCompilerTest {
 
         int parallelRulesBuildThreshold = 0;
         InternalKnowledgeBase kBase = null;
-        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl configuration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         ClassLoader rootClassLoader = configuration.getClassLoader();
 
         BuildResultCollectorImpl results = new BuildResultCollectorImpl();
@@ -103,7 +107,7 @@ public class ExplicitCompilerTest {
         AnnotationNormalizer annotationNormalizer =
                 AnnotationNormalizer.of(
                         packageRegistry.getTypeResolver(),
-                        configuration.getLanguageLevel().useJavaAnnotations());
+                        configuration.as(KnowledgeBuilderRulesConfigurationImpl.KEY).getLanguageLevel().useJavaAnnotations());
 
 
 
@@ -143,7 +147,7 @@ public class ExplicitCompilerTest {
         List<InternalKnowledgePackage> packages =
                 packageRegistryManager.getPackageRegistry().values()
                         .stream().map(PackageRegistry::getPackage).collect(Collectors.toList());
-        RuleBase kbase = RuleBaseFactory.newRuleBase((KieBaseConfiguration)null);
+        RuleBase kbase = RuleBaseFactory.newRuleBase();
         kbase.addPackages(packages);
         SessionsAwareKnowledgeBase sessionsAwareKnowledgeBase =
                 new SessionsAwareKnowledgeBase(kbase);

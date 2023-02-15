@@ -16,6 +16,7 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
 
 /**
  * Option to configure if the KieBase should retain a reference to the
@@ -32,6 +33,8 @@ public enum KeepReferenceOption implements SingleValueKieSessionOption {
      * The property name for the keep reference configuration
      */
     public static final String PROPERTY_NAME = "drools.keepReference";
+
+    public static OptionKey<KeepReferenceOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private final boolean keepReference;
 

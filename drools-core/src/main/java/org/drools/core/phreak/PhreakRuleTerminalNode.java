@@ -93,7 +93,7 @@ public class PhreakRuleTerminalNode {
                                          ActivationsManager activationsManager, RuleAgendaItem ruleAgendaItem,
                                          LeftTuple leftTuple) {
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
-        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             executor.addLeftTuple(leftTuple);
             return;
         }
@@ -172,7 +172,7 @@ public class PhreakRuleTerminalNode {
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
         ReteEvaluator reteEvaluator = activationsManager.getReteEvaluator();
 
-        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             if (!rtnLeftTuple.isQueued() ) {
                 executor.addLeftTuple( leftTuple );
                 reteEvaluator.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );

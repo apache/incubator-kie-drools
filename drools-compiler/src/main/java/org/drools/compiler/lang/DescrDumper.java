@@ -30,6 +30,7 @@ import org.drools.drl.ast.descr.OperatorDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.rule.XpathBackReference;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 import static org.drools.util.ClassUtils.findClass;
@@ -131,7 +132,7 @@ public class DescrDumper extends ReflectiveVisitor implements ExpressionRewriter
     }
 
     private void processConstraint(StringBuilder sbuilder, ExprConstraintDescr base, boolean isInsideRelCons, DumperContext context) {
-        DrlExprParser expr = new DrlExprParser( context.getRuleContext().getConfiguration().getLanguageLevel() );
+        DrlExprParser expr = new DrlExprParser( context.getRuleContext().getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = expr.parse( base.getExpression() );
         if ( result.getDescrs().size() == 1 ) {
             dump( sbuilder,

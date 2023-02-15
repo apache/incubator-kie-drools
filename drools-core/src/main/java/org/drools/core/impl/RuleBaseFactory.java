@@ -19,11 +19,14 @@ package org.drools.core.impl;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfiguration;
+import org.drools.core.BaseConfigurationFactories;
+import org.drools.core.CompositeSessionConfiguration;
+import org.drools.core.SessionConfigurationFactories;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.conf.CompositeBaseConfiguration;
+import org.kie.internal.utils.ChainedProperties;
 
 /**
  * <p>
@@ -51,7 +54,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
  * properties.setProperty( "org.kie.sequential", "true");
  * </pre>
  *
- * @see KnowledgeBase
+ * @see RuleBase
  */
 public class RuleBaseFactory {
 
@@ -77,7 +80,7 @@ public class RuleBaseFactory {
      *     The KnowledgeBase
      */
     public static RuleBase newRuleBase(String kbaseId) {
-        return newRuleBase( kbaseId, null );
+        return newRuleBase( kbaseId,  RuleBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
     /**
@@ -102,7 +105,7 @@ public class RuleBaseFactory {
      *     The KnowledgeBase
      */
     public static RuleBase newRuleBase(String kbaseId, KieBaseConfiguration conf) {
-        return new KnowledgeBaseImpl( kbaseId, (RuleBaseConfiguration) conf);
+        return new KnowledgeBaseImpl( kbaseId, (CompositeBaseConfiguration) conf);
     }
 
     /**
@@ -111,7 +114,7 @@ public class RuleBaseFactory {
      *     The KnowledgeBaseConfiguration.
      */
     public static KieBaseConfiguration newKnowledgeBaseConfiguration() {
-        return new RuleBaseConfiguration();
+        return newKnowledgeBaseConfiguration(null, null);
     }
 
     /**
@@ -122,7 +125,22 @@ public class RuleBaseFactory {
      */
     public static KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties,
                                                                      ClassLoader... classLoaders) {
-        return new RuleBaseConfiguration(properties, classLoaders);
+        if (classLoaders != null && (classLoaders.length > 1 || classLoaders[0] == null)) {
+            throw new UnsupportedOperationException("Pass only a single, non null, classloader. As an array of Classloaders is no longer supported. ");
+        }
+
+        ClassLoader classLoader = classLoaders != null ? classLoaders[0] : null;
+        ClassLoader projClassLoader = getClassLoader(classLoader);
+
+        ChainedProperties chained = ChainedProperties.getChainedProperties(projClassLoader);
+
+        if ( properties != null ) {
+            chained.addProperties( properties );
+        }
+
+        return new CompositeBaseConfiguration(chained, projClassLoader,
+                                              BaseConfigurationFactories.baseConf, BaseConfigurationFactories.ruleConf,
+                                              BaseConfigurationFactories.flowConf);
     }
 
     /**
@@ -131,16 +149,20 @@ public class RuleBaseFactory {
      *     The KnowledgeSessionConfiguration.
      */
     public static KieSessionConfiguration newKnowledgeSessionConfiguration() {
-        return new SessionConfiguration();
+        ClassLoader classLoader = RuleBaseFactory.class.getClassLoader();
+        return newKnowledgeSessionConfiguration(ChainedProperties.getChainedProperties(classLoader), classLoader);
     }
 
-    /**
-     * Create a KnowledgeSessionConfiguration on which properties can be set.
-     * @return
-     *     The KnowledgeSessionConfiguration.
-     */
-    public static KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
-        return new SessionConfiguration(properties);
+    public static KieSessionConfiguration newKnowledgeSessionConfiguration(ChainedProperties chained, ClassLoader classLoader) {
+
+        return new CompositeSessionConfiguration(chained, classLoader,
+                                                 SessionConfigurationFactories.baseConf, SessionConfigurationFactories.ruleConf,
+                                                 SessionConfigurationFactories.flowConf);
+    }
+
+    private static ClassLoader getClassLoader(ClassLoader classLoader) {
+        ClassLoader projClassLoader = classLoader instanceof ProjectClassLoader ? classLoader : ProjectClassLoader.getClassLoader(classLoader, RuleBaseFactory.class);
+        return projClassLoader;
     }
 
 }

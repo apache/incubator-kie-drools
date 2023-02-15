@@ -22,7 +22,11 @@ import org.kie.api.conf.Option;
  * A markup interface for KnowledgeBuilderConfiguration options
  */
 public interface KnowledgeBuilderOption
-    extends
-    Option {
+        extends
+        Option {
+    String TYPE = "Base";
 
+    default String type() {
+        return TYPE;
+    }
 }

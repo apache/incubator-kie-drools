@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * An option to define if the KieSession should directly firing consequences bypassing the agenda.
  * By default this option is disabled. Enabling this will bring a performance improvement at the cost
@@ -25,7 +27,7 @@ package org.kie.api.runtime.conf;
  *
  * DEFAULT = false
  */
-public enum DirectFiringOption implements SingleValueKieSessionOption {
+public enum DirectFiringOption implements SingleValueRuleRuntimeOption {
 
     YES(true),
     NO(false);
@@ -36,6 +38,8 @@ public enum DirectFiringOption implements SingleValueKieSessionOption {
      * The property name for the direct firing configuration
      */
     public static final String PROPERTY_NAME = "drools.directFiring";
+
+    public static OptionKey<DirectFiringOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private final boolean directFiring;
 

@@ -21,6 +21,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -54,7 +55,7 @@ public class RightTupleIndexHashTableIteratorTest extends BaseTupleIndexHashTabl
 
         BetaNodeFieldConstraint[] constraints = new BetaNodeFieldConstraint[]{constraint0};
 
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        RuleBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration().as(RuleBaseConfiguration.KEY);
 
         BetaConstraints betaConstraints = null;
 

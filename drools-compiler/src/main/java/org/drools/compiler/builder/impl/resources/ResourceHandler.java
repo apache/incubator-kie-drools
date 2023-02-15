@@ -28,6 +28,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public abstract class ResourceHandler {
             dumpDrlGeneratedFromDTable(this.configuration.getDumpDir(), generatedDrl, resource.getSourcePath());
         }
 
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+        DrlParser parser = new DrlParser(configuration.getOption(LanguageLevelOption.KEY));
         PackageDescr pkg = parser.parse(resource, new StringReader(generatedDrl));
         this.results.addAll(parser.getErrors());
         if (pkg == null) {
@@ -109,7 +110,7 @@ public abstract class ResourceHandler {
         boolean hasErrors;
         PackageDescr pkg;
         this.results.clear();
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+        DrlParser parser = new DrlParser(configuration.getOption(LanguageLevelOption.KEY));
 
         try {
             try {

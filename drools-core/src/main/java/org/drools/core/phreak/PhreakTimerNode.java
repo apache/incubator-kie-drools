@@ -375,7 +375,7 @@ public class PhreakTimerNode {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return timerJobCtx.getReteEvaluator().getSessionConfiguration().getTimedRuleExecutionFilter() != null;
+            return timerJobCtx.getReteEvaluator().getRuleSessionConfiguration().getTimedRuleExecutionFilter() != null;
         }
 
         @Override
@@ -403,7 +403,7 @@ public class PhreakTimerNode {
 
             timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
 
-            TimedRuleExecutionFilter filter = reteEvaluator.getSessionConfiguration().getTimedRuleExecutionFilter();
+            TimedRuleExecutionFilter filter = reteEvaluator.getRuleSessionConfiguration().getTimedRuleExecutionFilter();
             needEvaluation &= filter != null;
 
             for (final PathMemory pmem : timerJobCtx.getPathMemories()) {

@@ -31,6 +31,7 @@ import org.drools.commands.ChainableRunner;
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.commands.impl.FireAllRulesInterceptor;
 import org.drools.commands.impl.LoggingInterceptor;
+import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.compiler.Address;
@@ -54,6 +55,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -409,12 +411,12 @@ public class JpaPersistentStatefulSessionTest {
 
         final Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "com.example.CustomJPAProcessInstanceManagerFactory");
-        final KieSessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration(properties);
+        final KieSessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration(ChainedProperties.getChainedProperties(null).addProperties(properties), null);
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, config, env);
-        final SessionConfiguration sessionConfig = (SessionConfiguration) ksession.getSessionConfiguration();
+        final SessionConfiguration sessionConfig = ksession.getSessionConfiguration().as(SessionConfiguration.KEY);
 
-        assertThat(sessionConfig.getProcessInstanceManagerFactory()).isEqualTo("com.example.CustomJPAProcessInstanceManagerFactory");
+        assertThat(sessionConfig.as(FlowSessionConfiguration.KEY).getProcessInstanceManagerFactory()).isEqualTo("com.example.CustomJPAProcessInstanceManagerFactory");
     }
 
     @Test(expected = IllegalStateException.class)

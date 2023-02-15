@@ -19,6 +19,7 @@ import org.drools.io.InputStreamResource;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ public class DescrResourceSetTest {
     public void drlFilesTest() throws Exception {
         Set<File> drlFiles = getDrlFiles();
         for( File drl : drlFiles ) {
-            final DrlParser parser = new DrlParser((( KnowledgeBuilderConfigurationImpl )conf).getLanguageLevel());
+            final DrlParser parser = new DrlParser(conf.getOption(LanguageLevelOption.KEY));
             InputStreamResource resource = new InputStreamResource(new FileInputStream(drl));
             PackageDescr pkgDescr = parser.parse(resource);
             if( parser.hasErrors() ) {

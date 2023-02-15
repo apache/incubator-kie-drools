@@ -106,6 +106,7 @@ import org.kie.api.definition.rule.Watch;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1822,7 +1823,7 @@ public class PatternBuilder implements RuleConditionBuilder<PatternDescr> {
                                                         final PatternDescr patternDescr,
                                                         final BaseDescr original,
                                                         final String expression) {
-        DrlExprParser parser = new DrlExprParser(context.getConfiguration().getLanguageLevel());
+        DrlExprParser parser = new DrlExprParser(context.getConfiguration().getOption(LanguageLevelOption.KEY));
         ConstraintConnectiveDescr result = parser.parse(normalizeEval(expression));
         result.setResource(patternDescr.getResource());
         result.copyLocation(original);

@@ -32,6 +32,7 @@ import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
 import org.drools.io.ClassPathResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ public class ExplicitCanonicalModelCompilerTest {
     @Test
     public void testCompile() throws DroolsParserException, IOException {
         Resource resource = new ClassPathResource("org/drools/compiler/integrationtests/phases/ExplicitCompilerTest.drl");
-        KnowledgeBuilderConfigurationImpl configuration = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl configuration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         BuildResultCollectorImpl results = new BuildResultCollectorImpl();
 
         DrlResourceHandler handler = new DrlResourceHandler(configuration);

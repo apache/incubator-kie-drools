@@ -15,6 +15,8 @@
 
 package org.drools.compiler.builder.impl;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -41,6 +43,7 @@ import org.drools.compiler.builder.impl.processors.PackageCompilationPhase;
 import org.drools.compiler.builder.impl.processors.ReteCompiler;
 import org.drools.compiler.builder.impl.processors.RuleCompilationPhase;
 import org.drools.compiler.builder.impl.processors.RuleValidator;
+import org.drools.compiler.builder.impl.resources.DecisionTableResourceHandler;
 import org.drools.compiler.builder.impl.resources.ResourceHandler;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.DuplicateFunction;
@@ -86,27 +89,30 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.io.ResourceWithConfiguration;
+import org.kie.api.KieServices;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.DefaultDialectOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.Arrays.asList;
-
 public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDeclarationContext, BuildResultCollector, GlobalVariableContext {
-
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
     private final PackageRegistryManagerImpl pkgRegistryManager;
 
     private final BuildResultCollectorImpl results;
 
-    private final KnowledgeBuilderConfigurationImpl configuration;
+    private final KnowledgeBuilderConfiguration configuration;
 
     /**
      * Optional RuleBase for incremental live building
@@ -162,57 +168,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
              null);
     }
 
-    /**
-     * Pass a specific configuration for the PackageBuilder
-     * <p>
-     * PackageBuilderConfiguration is not thread safe and it also contains
-     * state. Once it is created and used in one or more PackageBuilders it
-     * should be considered immutable. Do not modify its properties while it is
-     * being used by a PackageBuilder.
-     */
-    public KnowledgeBuilderImpl(final KnowledgeBuilderConfigurationImpl configuration) {
-        this((InternalKnowledgeBase) null,
-             configuration);
-    }
-
-    public KnowledgeBuilderImpl(InternalKnowledgePackage pkg,
-                                KnowledgeBuilderConfigurationImpl configuration) {
-        if (configuration == null) {
-            this.configuration = new KnowledgeBuilderConfigurationImpl();
-        } else {
-            this.configuration = configuration;
-        }
-
-        this.rootClassLoader = this.configuration.getClassLoader();
-
-        this.defaultDialect = this.configuration.getDefaultDialect();
-
-        this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
-
-        this.results = new BuildResultCollectorImpl();
-
-        this.pkgRegistryManager =
-                new PackageRegistryManagerImpl(
-                        this.configuration, this, this);
-
-        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
-        pkgRegistry.setDialect(this.defaultDialect);
-        this.pkgRegistryManager.getPackageRegistry().put(pkg.getName(),
-                                pkgRegistry);
-
-        // add imports to pkg registry
-        for (final ImportDeclaration implDecl : pkg.getImports().values()) {
-            pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
-        }
-
-        processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
-        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
-    }
-
     public KnowledgeBuilderImpl(InternalKnowledgeBase kBase,
-                                KnowledgeBuilderConfigurationImpl configuration) {
+                                KnowledgeBuilderConfiguration configuration) {
         if (configuration == null) {
-            this.configuration = new KnowledgeBuilderConfigurationImpl();
+            this.configuration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         } else {
             this.configuration = configuration;
         }
@@ -223,9 +182,9 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
             this.rootClassLoader = this.configuration.getClassLoader();
         }
 
-        this.defaultDialect = this.configuration.getDefaultDialect();
+        this.defaultDialect = this.configuration.getOption(DefaultDialectOption.KEY).dialectName();
 
-        this.parallelRulesBuildThreshold = this.configuration.getParallelRulesBuildThreshold();
+        this.parallelRulesBuildThreshold = this.configuration.getOption(ParallelRulesBuildThresholdOption.KEY).getParallelRulesBuildThreshold();
 
         this.results = new BuildResultCollectorImpl();
 
@@ -237,6 +196,53 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
         processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
 
+        this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
+    }
+
+    /**
+     * Pass a specific configuration for the PackageBuilder
+     * <p>
+     * PackageBuilderConfiguration is not thread safe and it also contains
+     * state. Once it is created and used in one or more PackageBuilders it
+     * should be considered immutable. Do not modify its properties while it is
+     * being used by a PackageBuilder.
+     */
+    public KnowledgeBuilderImpl(final KnowledgeBuilderConfiguration configuration) {
+        this((InternalKnowledgeBase) null,
+             configuration);
+    }
+
+    public KnowledgeBuilderImpl(InternalKnowledgePackage pkg,
+                                KnowledgeBuilderConfiguration configuration) {
+        if (configuration == null) {
+            this.configuration = new KnowledgeBuilderFactoryServiceImpl().newKnowledgeBuilderConfiguration();
+        } else {
+            this.configuration = configuration;
+        }
+
+        this.rootClassLoader = this.configuration.getClassLoader();
+
+        this.defaultDialect = this.configuration.getOption(DefaultDialectOption.KEY).dialectName();
+
+        this.parallelRulesBuildThreshold = this.configuration.getOption(ParallelRulesBuildThresholdOption.KEY).getParallelRulesBuildThreshold();
+
+        this.results = new BuildResultCollectorImpl();
+
+        this.pkgRegistryManager =
+                new PackageRegistryManagerImpl(
+                        this.configuration, this, this);
+
+        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
+        pkgRegistry.setDialect(this.defaultDialect);
+        this.pkgRegistryManager.getPackageRegistry().put(pkg.getName(),
+                                                         pkgRegistry);
+
+        // add imports to pkg registry
+        for (final ImportDeclaration implDecl : pkg.getImports().values()) {
+            pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
+        }
+
+        processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         this.typeDeclarationManager = new TypeDeclarationManagerImpl(createTypeDeclarationBuilder(), this.kBase);
     }
 
@@ -300,7 +306,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      */
     public void addPackageFromDrl(final Reader reader,
                                   final Resource sourceResource) throws DroolsParserException, IOException {
-        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+        final DrlParser parser = new DrlParser(configuration.getOption(LanguageLevelOption.KEY));
         final PackageDescr pkg = parser.parse(sourceResource, reader);
         this.results.addAll(parser.getErrors());
         if (pkg == null) {
@@ -701,7 +707,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
      * @return The PackageBuilderConfiguration
      */
     public KnowledgeBuilderConfigurationImpl getBuilderConfiguration() {
-        return this.configuration;
+        return configuration.as(KnowledgeBuilderConfigurationImpl.KEY);
     }
 
     public PackageRegistry getPackageRegistry(String name) {
@@ -929,7 +935,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public KieBase newKieBase() {
-        return newKnowledgeBase(null);
+        return newKnowledgeBase(KieServices.get().newKieBaseConfiguration());
     }
 
     public KieBase newKnowledgeBase(KieBaseConfiguration conf) {
@@ -1002,10 +1008,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
                         typeDeclarationManager.getTypeDeclarationBuilder(),
                         globals,
                         this, // as DroolsAssemblerContext
+                        results,
                         kBase,
-                        configuration);
+                        configuration.as(KnowledgeBuilderConfigurationImpl.KEY));
         compositePackageCompilationPhase.process();
-        results.addAll(compositePackageCompilationPhase.getResults());
     }
 
     private void buildRules(Collection<CompositePackageDescr> packages) {

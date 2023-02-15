@@ -44,6 +44,7 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaExprAnalyzer;
 import org.junit.Test;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ public class JavaConsequenceBuilderTest {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools" );
         pkg.addImport( new ImportDeclaration( "org.drools.mvel.compiler.Cheese" ) );
 
-        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         // this test was originally intended with PropertyReactive.ALLOWED:
         conf.setOption(PropertySpecificOption.ALLOWED);
         KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl( pkg, conf );

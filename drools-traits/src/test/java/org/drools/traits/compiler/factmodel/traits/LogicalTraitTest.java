@@ -563,6 +563,8 @@ public class LogicalTraitTest extends CommonTraitTest {
         knowledgeSession.setGlobal( "list", list );
 
         knowledgeSession.fireAllRules();
+        assertThat(list).isEqualTo(Arrays.asList(42));
+
         knowledgeSession.insert( "x" );
         knowledgeSession.fireAllRules();
 

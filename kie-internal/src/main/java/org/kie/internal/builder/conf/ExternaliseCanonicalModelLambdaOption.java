@@ -16,6 +16,8 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * An Enum for ExternaliseCanonicalModelLambda option.
  *
@@ -23,7 +25,7 @@ package org.kie.internal.builder.conf;
  *
  * DEFAULT = false
  */
-public enum ExternaliseCanonicalModelLambdaOption implements SingleValueKnowledgeBuilderOption {
+public enum ExternaliseCanonicalModelLambdaOption implements SingleValueRuleBuilderOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -32,6 +34,8 @@ public enum ExternaliseCanonicalModelLambdaOption implements SingleValueKnowledg
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.externaliseCanonicalModelLambda";
+
+    public static OptionKey<ExternaliseCanonicalModelLambdaOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

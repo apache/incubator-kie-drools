@@ -45,6 +45,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,7 +99,7 @@ public class DrlxCompilerTest {
                 new PackageModel(
                         "com.example:dummy:1.0.0",
                         packageDescr.getName(),
-                        new KnowledgeBuilderConfigurationImpl(),
+                        KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY),
                         new DialectCompiletimeRegistry(),
                         new DRLIdGenerator());
         ModelGenerator.generateModel(

@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -71,6 +72,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
@@ -84,6 +86,9 @@ import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +107,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     // ------------------------------------------------------------
     private String              id;
 
-    private RuleBaseConfiguration config;
+    private KieBaseConfiguration config;
+
+    private RuleBaseConfiguration    ruleBaseConfig;
+    private KieBaseConfigurationImpl kieBaseConfig;
 
     protected Map<String, InternalKnowledgePackage> pkgs;
 
@@ -144,9 +152,10 @@ public class KnowledgeBaseImpl implements RuleBase {
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
-                             final RuleBaseConfiguration config) {
-        this.config = (config != null) ? config : new RuleBaseConfiguration();
-        this.config.makeImmutable();
+                             final CompositeBaseConfiguration config) {
+        this.config = config;
+        this.ruleBaseConfig = config.as(RuleBaseConfiguration.KEY);
+        this.kieBaseConfig = config.as(KieBaseConfigurationImpl.KEY);
 
         createRulebaseId(id);
 
@@ -160,9 +169,9 @@ public class KnowledgeBaseImpl implements RuleBase {
 
         setupRete();
 
-        sessionConfiguration = new SessionConfiguration( null, this.config.getClassLoader(), this.config.getChainedProperties() );
+        sessionConfiguration = RuleBaseFactory.newKnowledgeSessionConfiguration(config.getProperties(), this.config.getClassLoader()).as(SessionConfiguration.KEY);
 
-        mutable = this.config.isMutabilityEnabled();
+        mutable = kieBaseConfig.isMutabilityEnabled();
     }
 
     private void createRulebaseId(final String id) {
@@ -170,7 +179,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             this.id = id;
         } else {
             String key = "";
-            if (config.isMBeansEnabled()) {
+            if (kieBaseConfig.isMBeansEnabled()) {
                 DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
                 key = String.valueOf(agent.getNextKnowledgeBaseId());
             }
@@ -438,7 +447,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             ruleUnitDescriptionRegistry.add(newPkg.getRuleUnitDescriptionLoader());
         }
 
-        if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
+        if (ruleBaseConfig.isMultithreadEvaluation() && !hasMultiplePartitions()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
         }
     }
@@ -468,7 +477,7 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     private void checkMultithreadedEvaluation( RuleImpl rule ) {
-        if (config.isMultithreadEvaluation()) {
+        if (ruleBaseConfig.isMultithreadEvaluation()) {
             if (!rule.isMainAgendaGroup()) {
                 disableMultithreadEvaluation( "Agenda-groups are not supported with multithread evaluation: disabling it" );
             } else if (rule.getActivationGroup() != null) {
@@ -498,7 +507,7 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     private void disableMultithreadEvaluation(String warningMessage) {
-        config.enforceSingleThreadEvaluation();
+        ruleBaseConfig.enforceSingleThreadEvaluation();
         logger.warn( warningMessage );
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             entryPointNode.setPartitionsEnabled( false );
@@ -506,7 +515,7 @@ public class KnowledgeBaseImpl implements RuleBase {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
                     otn.setObjectSinkPropagator( ( (CompositePartitionAwareObjectSinkAdapter) sink )
-                                                         .asNonPartitionedSinkPropagator( config.getAlphaNodeHashingThreshold(), config.getAlphaNodeRangeIndexThreshold() ) );
+                                                         .asNonPartitionedSinkPropagator( ruleBaseConfig.getAlphaNodeHashingThreshold(), ruleBaseConfig.getAlphaNodeRangeIndexThreshold() ) );
                 }
             }
         }
@@ -583,7 +592,7 @@ public class KnowledgeBaseImpl implements RuleBase {
 
     private void updateDependentTypes( TypeDeclaration typeDeclaration ) {
         // update OTNs
-        if( this.getConfiguration().getEventProcessingMode().equals( EventProcessingOption.STREAM ) ) {
+        if( this.ruleBaseConfig.getEventProcessingMode().equals( EventProcessingOption.STREAM ) ) {
             // if the expiration for the type was set, then add 1, otherwise return -1
             long exp = typeDeclaration.getExpirationOffset() > -1 ? typeDeclaration.getExpirationOffset() + 1 : -1;
 
@@ -831,7 +840,7 @@ public class KnowledgeBaseImpl implements RuleBase {
         // always add the default entry point
         EntryPointNode epn = nodeFactory.buildEntryPointNode(this.reteooBuilder.getNodeIdsGenerator().getNextId(),
                                                              RuleBasePartitionId.MAIN_PARTITION,
-                                                             this.getConfiguration().isMultithreadEvaluation(),
+                                                             ruleBaseConfig.isMultithreadEvaluation(),
                                                              this.rete,
                                                              EntryPointId.DEFAULT);
         epn.attach();
@@ -1121,11 +1130,16 @@ public class KnowledgeBaseImpl implements RuleBase {
         return this.pkgs.get( name );
     }
 
-    public RuleBaseConfiguration getConfiguration() {
-        if ( this.config == null ) {
-            this.config = new RuleBaseConfiguration();
-        }
-        return this.config;
+    public RuleBaseConfiguration getRuleBaseConfiguration() {
+        return this.ruleBaseConfig;
+    }
+
+    public KieBaseConfigurationImpl getKieBaseConfiguration() {
+        return this.kieBaseConfig;
+    }
+
+    @Override public KieBaseConfiguration getConfiguration() {
+        return config;
     }
 
     public ClassLoader getRootClassLoader() {

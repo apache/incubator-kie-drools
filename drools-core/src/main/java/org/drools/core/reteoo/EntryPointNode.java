@@ -87,7 +87,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
                           final BuildContext context) {
         this( id,
               context.getPartitionId(),
-              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+              context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation(),
               objectSource,
               context.getCurrentEntryPoint() ); // irrelevant for this node, since it overrides sink management
     }

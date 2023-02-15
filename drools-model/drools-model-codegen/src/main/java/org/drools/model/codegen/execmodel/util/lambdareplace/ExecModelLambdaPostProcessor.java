@@ -55,6 +55,7 @@ import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.kie.internal.builder.conf.ParallelLambdaExternalizationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +105,7 @@ public class ExecModelLambdaPostProcessor {
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
         this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
         this.cu = cu;
-        this.isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
+        this.isParallel = pkgModel.getConfiguration().getOption(ParallelLambdaExternalizationOption.KEY).isLambdaExternalizationParallel();
     }
 
     public ExecModelLambdaPostProcessor(String packageName,

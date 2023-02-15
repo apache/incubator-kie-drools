@@ -50,6 +50,7 @@ import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoSetResource;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,18 +68,18 @@ public class DrlCompilerHelper {
     }
 
     public static DrlPackageDescrSetResource drlToPackageDescrs(DrlFileSetResource resources, DrlCompilationContext context) {
-        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = context.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         Set<PackageDescr> packageDescrSet = new HashSet<>();
         packageDescrSet.addAll(buildCompositePackageDescrs(resources, conf));
         return new DrlPackageDescrSetResource(packageDescrSet, resources.getModelLocalUriId().basePath());
     }
 
     public static ExecutableModelClassesContainer pkgDescrToExecModel(EfestoSetResource<PackageDescr> resources, DrlCompilationContext context) {
-        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getModelLocalUriId().basePath(), new KnowledgeBuilderConfigurationImpl(), context);
+        return pkgDescrToExecModel(toCompositePackageDescrs(resources.getContent()), resources.getModelLocalUriId().basePath(), KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY), context);
     }
 
     public static ExecutableModelClassesContainer drlToExecutableModel(DrlFileSetResource resources, DrlCompilationContext context) {
-        KnowledgeBuilderConfigurationImpl conf = (KnowledgeBuilderConfigurationImpl) context.newKnowledgeBuilderConfiguration();
+        KnowledgeBuilderConfigurationImpl conf = context.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         return pkgDescrToExecModel(buildCompositePackageDescrs(resources, conf), resources.getModelLocalUriId().basePath(), conf, context);
     }
 

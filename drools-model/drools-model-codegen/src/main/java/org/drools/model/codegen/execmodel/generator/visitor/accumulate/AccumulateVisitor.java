@@ -67,6 +67,7 @@ import org.drools.model.codegen.execmodel.generator.visitor.ModelGeneratorVisito
 import org.drools.model.codegen.execmodel.util.LambdaUtil;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.kie.api.runtime.rule.AccumulateFunction;
+import org.kie.internal.builder.conf.AccumulateFunctionOption;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -482,7 +483,7 @@ public class AccumulateVisitor {
 
     private AccumulateFunction getAccumulateFunction(AccumulateDescr.AccumulateFunctionCallDescr function, Class<?> methodCallExprType) {
         final String accumulateFunctionName = AccumulateUtil.getFunctionName(() -> methodCallExprType, function.getFunction());
-        final Optional<AccumulateFunction> bundledAccumulateFunction = ofNullable(packageModel.getConfiguration().getAccumulateFunction(accumulateFunctionName));
+        final Optional<AccumulateFunction> bundledAccumulateFunction = ofNullable(packageModel.getConfiguration().getOption(AccumulateFunctionOption.KEY, accumulateFunctionName).getFunction());
         final Optional<AccumulateFunction> importedAccumulateFunction = ofNullable(packageModel.getAccumulateFunctions().get(accumulateFunctionName));
 
         return bundledAccumulateFunction

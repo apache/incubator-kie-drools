@@ -22,6 +22,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
@@ -37,6 +38,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -749,10 +751,10 @@ public class ScenarioTest {
 
     public BuildContext createContext() {
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
-                                                   conf );
+                                                         conf );
         BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
 
         RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );

@@ -16,11 +16,15 @@
 
 package org.kie.internal.builder.conf;
 
-public enum PropertySpecificOption implements SingleValueKnowledgeBuilderOption {
+import org.kie.api.conf.OptionKey;
+
+public enum PropertySpecificOption implements SingleValueRuleBuilderOption {
 
     DISABLED, ALLOWED, ALWAYS;
 
     public static final String PROPERTY_NAME = "drools.propertySpecific";
+
+    public static OptionKey<PropertySpecificOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * {@inheritDoc}
@@ -34,8 +38,8 @@ public enum PropertySpecificOption implements SingleValueKnowledgeBuilderOption 
     }
 
     public boolean isPropSpecific(boolean hasPropSpecAnnotation, boolean hasNotPropSpecAnnotation) {
-       return (this == PropertySpecificOption.ALLOWED && hasPropSpecAnnotation ) ||
-              (this == PropertySpecificOption.ALWAYS && !hasNotPropSpecAnnotation);
+        return (this == PropertySpecificOption.ALLOWED && hasPropSpecAnnotation ) ||
+               (this == PropertySpecificOption.ALWAYS && !hasNotPropSpecAnnotation);
 
     }
 }

@@ -153,7 +153,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         this.activationGroups = new HashMap<>();
         this.executionStateMachine = executionStateMachine;
 
-        Object object = ComponentsFactory.createConsequenceExceptionHandler( kBase.getConfiguration().getConsequenceExceptionHandler(),
+        Object object = ComponentsFactory.createConsequenceExceptionHandler( kBase.getRuleBaseConfiguration().getConsequenceExceptionHandler(),
                                                                              kBase.getConfiguration().getClassLoader() );
         if ( object instanceof ConsequenceExceptionHandler ) {
             this.legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) object;
@@ -161,9 +161,9 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
             this.consequenceExceptionHandler = (org.kie.api.runtime.rule.ConsequenceExceptionHandler) object;
         }
 
-        this.declarativeAgenda = kBase.getConfiguration().isDeclarativeAgenda();
-        this.sequential = kBase.getConfiguration().isSequential();
-        if (kBase.getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
+        this.declarativeAgenda = kBase.getRuleBaseConfiguration().isDeclarativeAgenda();
+        this.sequential = kBase.getRuleBaseConfiguration().isSequential();
+        if (kBase.getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM) {
             expirationContexts = new ArrayList<>();
         }
     }
@@ -214,7 +214,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         this.workingMemory = workingMemory;
         this.agendaGroupsManager.setReteEvaluator( workingMemory );
 
-        if ( !workingMemory.getSessionConfiguration().isThreadSafe() ) {
+        if ( !workingMemory.getRuleSessionConfiguration().isThreadSafe() ) {
             executionStateMachine = new UnsafeExecutionStateMachine();
         }
 
@@ -223,11 +223,11 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     private PropagationList createPropagationList() {
-        if (!workingMemory.getSessionConfiguration().isThreadSafe()) {
+        if (!workingMemory.getRuleSessionConfiguration().isThreadSafe()) {
             return new ThreadUnsafePropagationList( workingMemory );
         }
 
-        return workingMemory.getSessionConfiguration().hasForceEagerActivationFilter() ?
+        return workingMemory.getRuleSessionConfiguration().hasForceEagerActivationFilter() ?
                new SynchronizedBypassPropagationList( workingMemory ) :
                new SynchronizedPropagationList( workingMemory );
     }

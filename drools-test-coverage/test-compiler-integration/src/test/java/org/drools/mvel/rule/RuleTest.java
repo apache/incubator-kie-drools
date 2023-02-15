@@ -17,18 +17,20 @@ package org.drools.mvel.rule;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.expr.MVELSalienceExpression;
 import org.junit.Test;
-import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.KieServices;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +38,7 @@ public class RuleTest {
 
     @Test
     public void testDateEffective() {
-        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase( "x", null).newKieSession();
+        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase( "x", RuleBaseFactory.newKnowledgeBaseConfiguration()).newKieSession();
 
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -61,7 +63,7 @@ public class RuleTest {
 
     @Test
     public void testDateExpires() throws Exception {
-        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", null).newKieSession();
+        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", RuleBaseFactory.newKnowledgeBaseConfiguration()).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -84,7 +86,7 @@ public class RuleTest {
 
     @Test
     public void testDateEffectiveExpires() {
-        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x",null).newKieSession();
+        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x",RuleBaseFactory.newKnowledgeBaseConfiguration()).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -112,7 +114,7 @@ public class RuleTest {
 
     @Test
     public void testRuleEnabled() {
-        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", null).newKieSession();
+        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", RuleBaseFactory.newKnowledgeBaseConfiguration()).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
@@ -130,9 +132,9 @@ public class RuleTest {
 
     @Test
     public void testTimeMachine() {
-        SessionConfiguration conf = new SessionConfiguration();
-        conf.setOption( ClockTypeOption.PSEUDO );
-        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", null).newKieSession(conf, null);
+        SessionConfiguration conf = KieServices.get().newKieSessionConfiguration().as(SessionConfiguration.KEY);
+        conf.setClockType(ClockType.PSEUDO_CLOCK);
+        WorkingMemory wm = (WorkingMemory) KnowledgeBaseFactory.newKnowledgeBase("x", RuleBaseFactory.newKnowledgeBaseConfiguration()).newKieSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
         ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );

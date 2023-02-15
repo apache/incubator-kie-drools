@@ -64,7 +64,7 @@ public class AgendaGroupQueueImpl
     public AgendaGroupQueueImpl(final String name,
                                 final RuleBase kBase) {
         this.name = name;
-        this.sequential = kBase.getConfiguration().isSequential();
+        this.sequential = kBase.getRuleBaseConfiguration().isSequential();
 
         this.clearedForRecency = -1;
     }
@@ -86,7 +86,7 @@ public class AgendaGroupQueueImpl
     public void setReteEvaluator(ReteEvaluator reteEvaluator) {
         this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
-        if (reteEvaluator != null && reteEvaluator.getSessionConfiguration().isDirectFiring()) {
+        if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
             this.priorityQueue = new ArrayQueue();
         } else {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());

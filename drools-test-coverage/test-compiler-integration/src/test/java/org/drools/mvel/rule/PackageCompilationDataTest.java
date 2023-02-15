@@ -24,6 +24,7 @@ import java.security.CodeSource;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
@@ -31,6 +32,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.accessor.EvalExpression;
 import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
+import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,7 +64,7 @@ public class PackageCompilationDataTest {
     public void testCodeSourceUrl() throws Exception {
         final String className = TestEvalExpression.class.getName();
 
-        KnowledgeBaseImpl kBase = new KnowledgeBaseImpl( "xxx", null );
+        KnowledgeBaseImpl kBase = new KnowledgeBaseImpl("xxx", (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration());
 
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage("org.drools");
         pkg.setClassLoader( Thread.currentThread().getContextClassLoader() );

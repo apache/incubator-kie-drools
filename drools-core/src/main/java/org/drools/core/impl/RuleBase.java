@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import org.drools.core.KieBaseConfigurationImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -44,6 +45,7 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.drools.core.rule.accessor.FactHandleFactory;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
@@ -51,6 +53,7 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 public interface RuleBase {
 
@@ -79,7 +82,11 @@ public interface RuleBase {
 
     RuleBasePartitionId createNewPartitionId();
 
-    RuleBaseConfiguration getConfiguration();
+    RuleBaseConfiguration getRuleBaseConfiguration();
+
+    KieBaseConfigurationImpl getKieBaseConfiguration();
+
+    KieBaseConfiguration getConfiguration();
 
     void readLock();
     void readUnlock();
@@ -155,7 +162,7 @@ public interface RuleBase {
     RuleUnitDescriptionRegistry getRuleUnitDescriptionRegistry();
     boolean hasUnits();
 
-    SessionConfiguration getSessionConfiguration();
+    KieSessionConfiguration getSessionConfiguration();
 
     List<AsyncReceiveNode> getReceiveNodes();
     void addReceiveNode(AsyncReceiveNode node);

@@ -16,7 +16,6 @@
 
 package org.kie.internal.builder;
 
-import org.kie.api.PropertiesConfiguration;
 import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
 
 /**
@@ -91,8 +90,7 @@ import org.kie.internal.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * </ul>
  */
 public interface KnowledgeBuilderConfiguration
-    extends
-    PropertiesConfiguration,
-    KnowledgeBuilderOptionsConfiguration {
+        extends
+        KnowledgeBuilderOptionsConfiguration {
 
 }

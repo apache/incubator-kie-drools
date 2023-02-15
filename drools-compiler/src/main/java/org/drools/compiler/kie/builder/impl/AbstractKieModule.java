@@ -224,7 +224,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
 
     public static void checkStreamMode( KieBaseModel kBaseModel, KieBaseConfiguration conf, Collection<? extends KiePackage> pkgs ) {
         if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
-             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
+             (conf == null || conf.getOption(EventProcessingOption.KEY) == EventProcessingOption.CLOUD ) ) {
             for (KiePackage kpkg : pkgs) {
                 if ( ((KnowledgePackageImpl ) kpkg).needsStreamMode() ) {
                     throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
@@ -245,7 +245,7 @@ public abstract class AbstractKieModule implements InternalKieModule, Serializab
     }
 
     public KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader) {
-        KnowledgeBuilderConfigurationImpl pconf = ((KnowledgeBuilderConfigurationImpl) newKnowledgeBuilderConfiguration(classLoader));
+        KnowledgeBuilderConfigurationImpl pconf = newKnowledgeBuilderConfiguration(classLoader).as(KnowledgeBuilderConfigurationImpl.KEY);
         pconf.setCompilationCache(getCompilationCache(kBaseModel.getName()));
         setModelPropsOnConf( ((KieBaseModelImpl) kBaseModel).getKModule(), pconf );
         return pconf;

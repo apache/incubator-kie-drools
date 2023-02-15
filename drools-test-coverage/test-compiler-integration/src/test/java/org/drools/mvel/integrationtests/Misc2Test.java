@@ -5538,7 +5538,7 @@ public class Misc2Test {
                 "System.out.println(\"Finally t=\"+t);\n" +
                 "end\n";
 
-        KnowledgeBuilderConfigurationImpl pkgBuilderCfg = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl pkgBuilderCfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
         mvelConf.setStrict( false );
 

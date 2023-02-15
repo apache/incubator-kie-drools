@@ -16,8 +16,8 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.api.conf.SingleValueKieBaseOption;
-
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * An option to disable trimming of spaces for values in decision tables
@@ -26,7 +26,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
  *
  * DEFAULT = true
  */
-public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
+public enum TrimCellsInDTableOption implements SingleValueRuleBuilderOption, SingleValueRuleBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -35,6 +35,9 @@ public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption
      * The property name for the enabling/disabling trim of cells values
      */
     public static final String PROPERTY_NAME = "drools.trimCellsInDTable";
+
+    public static OptionKey<TrimCellsInDTableOption> KEY = new OptionKey<>(SingleValueRuleBuilderOption.TYPE, PROPERTY_NAME);
+
 
     private boolean value;
 
@@ -49,5 +52,10 @@ public enum TrimCellsInDTableOption implements SingleValueKnowledgeBuilderOption
 
     public boolean isTrimCellsInDTable() {
         return this.value;
+    }
+
+    @Override
+    public String type() {
+        return SingleValueRuleBuilderOption.super.type();
     }
 }

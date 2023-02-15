@@ -89,7 +89,7 @@ public class RuleExecutor {
 
         reEvaluateNetwork( activationsManager );
 
-        if ( reteEvaluator.getSessionConfiguration().isDirectFiring() ) {
+        if ( reteEvaluator.getRuleSessionConfiguration().isDirectFiring() ) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
             RuleImpl rule = rtn.getRule();
             int directFirings = tupleList.size();

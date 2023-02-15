@@ -117,7 +117,7 @@ public class BetaNodeBuilder {
             betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
                                                                                                     constraintFieldName,
                                                                                                     declr,
-                                                                                                    constraintOperator), buildContext.getRuleBase().getConfiguration());
+                                                                                                    constraintOperator), buildContext.getRuleBase().getRuleBaseConfiguration());
         } else {
             betaConstraints = new EmptyBetaConstraints();
         }

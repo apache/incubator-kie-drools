@@ -16,8 +16,8 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.api.conf.SingleValueKieBaseOption;
-
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * By default all the Drools artifacts under the resources folder, at any level, are included into the KieBase.
@@ -29,7 +29,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
  *
  * DEFAULT = false
  */
-public enum GroupDRLsInKieBasesByFolderOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
+public enum GroupDRLsInKieBasesByFolderOption implements SingleValueRuleBuilderOption, SingleValueRuleBaseOption {
 
     ENABLED(true),
     DISABLED(false);
@@ -38,6 +38,8 @@ public enum GroupDRLsInKieBasesByFolderOption implements SingleValueKnowledgeBui
      * The property name for the enabling/disabling trim of cells values
      */
     public static final String PROPERTY_NAME = "drools.groupDRLsInKieBasesByFolder";
+
+    public static OptionKey<GroupDRLsInKieBasesByFolderOption> KEY = new OptionKey<>(SingleValueRuleBuilderOption.TYPE, PROPERTY_NAME);
 
     private boolean value;
 
@@ -52,5 +54,10 @@ public enum GroupDRLsInKieBasesByFolderOption implements SingleValueKnowledgeBui
 
     public boolean isGroupDRLsInKieBasesByFolder() {
         return this.value;
+    }
+
+    @Override
+    public String type() {
+        return SingleValueRuleBuilderOption.super.type();
     }
 }

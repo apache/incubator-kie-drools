@@ -16,10 +16,12 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * A class for the parallel rules build threshold configuration.
  */
-public class ParallelRulesBuildThresholdOption implements SingleValueKnowledgeBuilderOption {
+public class ParallelRulesBuildThresholdOption implements SingleValueRuleBuilderOption {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,11 +30,13 @@ public class ParallelRulesBuildThresholdOption implements SingleValueKnowledgeBu
      */
     public static final String PROPERTY_NAME = "drools.parallelRulesBuildThreshold";
 
+    public static OptionKey<ParallelRulesBuildThresholdOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
+
     private int parallelRulesBuildThreshold;
 
     /**
      * Private constructor to enforce the use of the factory method
-     * 
+     *
      * @param key
      */
     private ParallelRulesBuildThresholdOption(final int parallelRulesBuildThreshold) {

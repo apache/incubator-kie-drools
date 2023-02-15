@@ -16,11 +16,12 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
 
 /**
  * A class for the default package name configuration.
  */
-public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOption {
+public class DefaultPackageNameOption implements SingleValueKieBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -28,6 +29,8 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
      * The property name for the default package name
      */
     public static final String PROPERTY_NAME = "drools.defaultPackageName";
+
+    public static OptionKey<DefaultPackageNameOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * package name
@@ -68,6 +71,10 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
      * @return
      */
     public String getPackageName() {
+        return packageName;
+    }
+
+    public String packageName() {
         return packageName;
     }
 

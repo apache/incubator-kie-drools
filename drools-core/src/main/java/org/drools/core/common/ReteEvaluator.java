@@ -19,6 +19,7 @@ package org.drools.core.common;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
@@ -102,6 +103,8 @@ public interface ReteEvaluator {
 
     SessionConfiguration getSessionConfiguration();
 
+    RuleSessionConfiguration getRuleSessionConfiguration();
+
     AgendaEventSupport getAgendaEventSupport();
 
     RuleEventListenerSupport getRuleEventSupport();
@@ -113,7 +116,7 @@ public interface ReteEvaluator {
     SessionClock getSessionClock();
 
     default boolean isSequential() {
-        return getKnowledgeBase().getConfiguration().isSequential();
+        return getKnowledgeBase().getRuleBaseConfiguration().isSequential();
     }
 
     default void startOperation() { }

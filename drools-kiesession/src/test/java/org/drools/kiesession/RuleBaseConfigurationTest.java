@@ -22,20 +22,28 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
+import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.junit.Test;
+import org.kie.internal.conf.CompositeConfiguration;
+import org.kie.internal.utils.ChainedProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RuleBaseConfigurationTest {
+public class    RuleBaseConfigurationTest {
+    public RuleBaseConfiguration getRuleBaseConfiguration(Properties props) {
+        RuleBaseConfiguration brconf = new RuleBaseConfiguration(new CompositeConfiguration<>(ChainedProperties.getChainedProperties(null).addProperties(props), null));
+
+        return brconf;
+    }
 
     @Test
     public void testSystemProperties() {
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration();
+        RuleBaseConfiguration cfg = getRuleBaseConfiguration(null);
         assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.IDENTITY);
 
         System.setProperty( "drools.equalityBehavior",
                             "EQUALITY" );
-        cfg = new RuleBaseConfiguration();
+        cfg = getRuleBaseConfiguration(null);
         assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.EQUALITY);
         
         System.getProperties().remove( "drools.equalityBehavior" );
@@ -43,13 +51,13 @@ public class RuleBaseConfigurationTest {
 
     @Test
     public void testProgrammaticPropertiesFile() {
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration();
+        RuleBaseConfiguration cfg = getRuleBaseConfiguration(null);
         assertThat(cfg.isIndexLeftBetaMemory()).isEqualTo(true);
 
         Properties properties = new Properties();
         properties.setProperty( "drools.indexLeftBetaMemory",
                                 "false" );
-        cfg = new RuleBaseConfiguration( properties );
+        cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.isIndexLeftBetaMemory()).isEqualTo(false);
         
@@ -60,13 +68,13 @@ public class RuleBaseConfigurationTest {
     public void testAssertBehaviour() {
         Properties properties = new Properties();
         properties.setProperty( "drools.equalityBehavior", "identity" );
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
+        RuleBaseConfiguration cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.IDENTITY);
         
         properties = new Properties();
         properties.setProperty( "drools.equalityBehavior", "equality" );
-        cfg = new RuleBaseConfiguration(properties);
+        cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.getAssertBehaviour()).isEqualTo(AssertBehaviour.EQUALITY);
     }
@@ -76,15 +84,15 @@ public class RuleBaseConfigurationTest {
     public void testSequential() {
         Properties properties = new Properties();
         properties.setProperty( "drools.sequential", "false" );
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration(properties);
+        RuleBaseConfiguration cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.isSequential()).isFalse();
-        assertThat(cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
+        assertThat(RuntimeComponentFactory.get().getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
         
         properties = new Properties();
         properties.setProperty( "drools.sequential.agenda", "sequential" );
         properties.setProperty( "drools.sequential", "true" );
-        cfg = new RuleBaseConfiguration(properties);
+        cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.isSequential()).isTrue();
         assertThat(cfg.getSequentialAgenda()).isEqualTo(SequentialAgenda.SEQUENTIAL);
@@ -92,10 +100,10 @@ public class RuleBaseConfigurationTest {
         properties = new Properties();
         properties.setProperty( "drools.sequential.agenda", "dynamic" );
         properties.setProperty( "drools.sequential", "true" );
-        cfg = new RuleBaseConfiguration(properties);
+        cfg = getRuleBaseConfiguration(properties);
 
         assertThat(cfg.isSequential()).isTrue();
         assertThat(cfg.getSequentialAgenda()).isEqualTo(SequentialAgenda.DYNAMIC);
-        assertThat(cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
+        assertThat(RuntimeComponentFactory.get().getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory).isTrue();
     }
 }

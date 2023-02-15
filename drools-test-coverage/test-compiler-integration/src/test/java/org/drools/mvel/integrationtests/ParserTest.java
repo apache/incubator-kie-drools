@@ -62,7 +62,7 @@ public class ParserTest {
         assertThat(poisonError.getMessage().contains("Poison")).isTrue();
         assertThat(poisonError.getLine()).isEqualTo(28);
 
-        final KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
+        final KnowledgeBuilderConfigurationImpl cfg = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         final JavaConfiguration javaConf = (JavaConfiguration) cfg.getDialectConfiguration("java");
         switch (javaConf.getCompiler()) {
             case NATIVE:

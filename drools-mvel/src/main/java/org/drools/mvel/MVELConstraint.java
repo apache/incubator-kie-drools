@@ -70,6 +70,7 @@ import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.mvel2.ParserConfiguration;
@@ -214,7 +215,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         isUnification = false;
     }
 
-    public boolean isIndexable(short nodeType, RuleBaseConfiguration config) {
+    public boolean isIndexable(short nodeType, KieBaseConfiguration config) {
         return getConstraintType().isIndexableForNode(nodeType, this, config);
     }
 
@@ -263,7 +264,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     protected boolean evaluate(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple) {
         if (!jitted) {
-            int jittingThreshold = TEST_JITTING ? 0 : reteEvaluator.getKnowledgeBase().getConfiguration().getJittingThreshold();
+            int jittingThreshold = TEST_JITTING ? 0 : reteEvaluator.getKnowledgeBase().getRuleBaseConfiguration().getJittingThreshold();
             if (conditionEvaluator == null) {
                 if (jittingThreshold == 0 && !isDynamic) { // Only for test purposes or when jitting is enforced at first evaluation
                     synchronized (this) {
@@ -344,7 +345,8 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
 
     private ConditionEvaluator executeJitting(InternalFactHandle handle, ReteEvaluator reteEvaluator, Tuple tuple, ConditionEvaluator mvelEvaluator) {
         RuleBase kBase = reteEvaluator.getKnowledgeBase();
-        if (!isJmxAvailable() && MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold())) {
+
+        if (!isJmxAvailable()) { // @TODO have Mario check this (mdp feb2023)
             return mvelEvaluator;
         }
 

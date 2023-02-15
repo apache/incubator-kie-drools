@@ -16,6 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
 
 /**
  * An Enum for ProcessStringEscapes option.
@@ -35,7 +36,7 @@ package org.kie.internal.builder.conf;
  * if for any reason, you need the Drools 4 behaviour when parsing files, just set this
  * option to NO (false).
  */
-public enum ProcessStringEscapesOption implements SingleValueKnowledgeBuilderOption {
+public enum ProcessStringEscapesOption implements SingleValueRuleBuilderOption {
 
     YES(true),
     NO(false);
@@ -44,6 +45,8 @@ public enum ProcessStringEscapesOption implements SingleValueKnowledgeBuilderOpt
      * The property name for the process string escapes option
      */
     public static final String PROPERTY_NAME = "drools.parser.processStringEscapes";
+
+    public static OptionKey<ProcessStringEscapesOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

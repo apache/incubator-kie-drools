@@ -186,7 +186,7 @@ public class PatternBuilder
                     break;
                 case BETA:
                     linkBetaConstraint( (BetaNodeFieldConstraint) constraint, constraints.betaConstraints );
-                    if ( isNegative && context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
+                    if ( isNegative && context.getRuleBase().getRuleBaseConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                         checkDelaying( context, constraint );
                     }
                     break;
@@ -344,7 +344,7 @@ public class PatternBuilder
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );
-        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getConfiguration().getEventProcessingMode() ) ) {
+        if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getRuleBase().getRuleBaseConfiguration().getEventProcessingMode() ) ) {
             ExpirationSpec expirationSpec = getExpirationForType( context, objectType );
 
             if( expirationSpec.offset != NEVER_EXPIRES && expirationSpec.hard ) {
@@ -390,7 +390,7 @@ public class PatternBuilder
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
                                        final List<BetaNodeFieldConstraint> betaConstraints) {
-        if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
+        if ( context.getRuleBase().getRuleBaseConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final ObjectType thisObjectType = pattern.getObjectType();

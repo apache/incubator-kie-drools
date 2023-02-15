@@ -79,6 +79,7 @@ import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.expr.MVELConsequence;
 import org.drools.mvel.expr.MVELDebugHandler;
 import org.junit.Test;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -166,7 +167,7 @@ public class MVELConsequenceBuilderTest {
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.default",
                                 "mvel" );
-        KnowledgeBuilderConfigurationImpl cfg1 = new KnowledgeBuilderConfigurationImpl( properties );
+        KnowledgeBuilderConfigurationImpl cfg1 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(properties, null).as(KnowledgeBuilderConfigurationImpl.KEY);
 
         KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg, cfg1 );
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
@@ -349,7 +350,7 @@ public class MVELConsequenceBuilderTest {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.drools.mvel.compiler.test" );
         pkg.addImport( new ImportDeclaration( Cheese.class.getCanonicalName() ) );
 
-        KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl( pkg, conf );
 
         ruleDescr = new RuleDescr( "test consequence builder" );

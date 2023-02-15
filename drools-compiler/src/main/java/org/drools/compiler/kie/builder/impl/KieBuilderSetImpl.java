@@ -46,6 +46,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.drools.util.PortablePath;
+import org.kie.internal.builder.conf.GroupDRLsInKieBasesByFolderOption;
 
 import static java.util.Arrays.asList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -144,7 +145,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 continue;
             }
             CompositeKnowledgeBuilder ckbuilder = kBuilder.batch();
-            boolean useFolders = kBuilder.getBuilderConfiguration().isGroupDRLsInKieBasesByFolder();
+            boolean useFolders = kBuilder.getBuilderConfiguration().getOption(GroupDRLsInKieBasesByFolderOption.KEY).isGroupDRLsInKieBasesByFolder();
 
             KnowledgeBuilderImpl.ResourceRemovalResult removalResult = new KnowledgeBuilderImpl.ResourceRemovalResult();
 

@@ -31,8 +31,9 @@ public class VerifierConfigurationImpl implements VerifierConfiguration {
         return properties.get( name );
     }
 
-    public void setProperty(String name, String value) {
+    public boolean setProperty(String name, String value) {
         properties.put( name, value );
+        return true;
     }
 
     public Map<Resource, ResourceType> getVerifyingResources() {

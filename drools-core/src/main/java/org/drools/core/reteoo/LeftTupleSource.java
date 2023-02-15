@@ -83,7 +83,7 @@ public abstract class LeftTupleSource extends BaseNode implements LeftTupleNode 
     protected LeftTupleSource(int id, BuildContext context) {
         super(id,
               context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
-              context != null && context.getRuleBase().getConfiguration().isMultithreadEvaluation());
+              context != null && context.getRuleBase().getRuleBaseConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
         initMemoryId( context );
     }

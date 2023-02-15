@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * An option to define if 'accumulate' propagates its result even when its accumulate function result is 'null'.
  * For example, min(), max(), ave() returns 'null' when no fact matches the Pattern.
@@ -24,7 +26,7 @@ package org.kie.api.runtime.conf;
  *
  * DEFAULT = false
  */
-public enum AccumulateNullPropagationOption implements SingleValueKieSessionOption {
+public enum AccumulateNullPropagationOption implements SingleValueRuleRuntimeOption {
 
     YES(true),
     NO(false);
@@ -35,6 +37,8 @@ public enum AccumulateNullPropagationOption implements SingleValueKieSessionOpti
      * The property name for the accumulate null propagation configuration
      */
     public static final String PROPERTY_NAME = "drools.accumulateNullPropagation";
+
+    public static OptionKey<AccumulateNullPropagationOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private final boolean accumulateNullPropagation;
 

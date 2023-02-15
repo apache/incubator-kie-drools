@@ -26,6 +26,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
@@ -34,6 +35,7 @@ import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +49,7 @@ public class ReteooRuleBuilderTest {
     @Before
     public void setUp() throws Exception {
         this.builder = new ReteooRuleBuilder();
-        this.rulebase = new KnowledgeBaseImpl( "default", null );
+        rulebase = new KnowledgeBaseImpl("default", (CompositeBaseConfiguration)  RuleBaseFactory.newKnowledgeBaseConfiguration());
     }
 
     @Test

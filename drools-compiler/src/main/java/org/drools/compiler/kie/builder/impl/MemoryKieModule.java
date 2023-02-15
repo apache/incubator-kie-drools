@@ -148,7 +148,7 @@ public class MemoryKieModule extends AbstractKieModule
             KieContainerImpl.CompositeRunnable compositeUpdater = new KieContainerImpl.CompositeRunnable();
 
             KieBaseUpdaterOptions kieBaseUpdaterOptions = new KieBaseUpdaterOptions(new KieBaseUpdaterOptions.OptionEntry(
-                    AlphaNetworkCompilerOption.class, builderConfiguration.getAlphaNetworkCompilerOption()));
+                    AlphaNetworkCompilerOption.class, builderConfiguration.getOption(AlphaNetworkCompilerOption.KEY)));
 
             KieBaseUpdaters updaters = KieService.load(KieBaseUpdaters.class);
             updaters.getChildren()

@@ -29,7 +29,7 @@ public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderRes
     
     public ConfigurableSeverityResult(Resource resource, KnowledgeBuilderConfiguration config) {
         super(resource);
-        severity = config.getOption(KBuilderSeverityOption.class, getOptionKey()).getSeverity();
+        severity = config.getOption(KBuilderSeverityOption.KEY, getOptionKey()).getSeverity();
     }
     
     private ResultSeverity severity;

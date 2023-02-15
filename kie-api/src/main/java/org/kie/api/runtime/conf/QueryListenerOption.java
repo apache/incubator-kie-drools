@@ -16,6 +16,8 @@
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * An enum to configure the session query listener configuration.
  *
@@ -27,7 +29,7 @@ package org.kie.api.runtime.conf;
  * actions, a lightweight listener implementation can be used, preventing
  * the copy and improving query performance significantly.
  */
-public enum QueryListenerOption implements SingleValueKieSessionOption {
+public enum QueryListenerOption implements SingleValueRuleRuntimeOption {
 
     STANDARD("standard"),
     LIGHTWEIGHT("lightweight");
@@ -36,6 +38,8 @@ public enum QueryListenerOption implements SingleValueKieSessionOption {
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.queryListener";
+
+    public static OptionKey<QueryListenerOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private String             option;
 

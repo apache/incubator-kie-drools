@@ -20,29 +20,21 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.drools.core.base.CoreComponentsBuilder;
-import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.rule.consequence.ConflictResolver;
-import org.drools.core.util.ConfFileUtils;
+import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.util.StringUtils;
-import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.BetaRangeIndexOption;
+import org.kie.api.conf.ConfigurationKey;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.conf.KieBaseOption;
-import org.kie.api.conf.MBeansOption;
 import org.kie.api.conf.MultiValueKieBaseOption;
+import org.kie.api.conf.OptionKey;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.conf.SessionsPoolOption;
@@ -50,6 +42,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import org.kie.internal.conf.AlphaThresholdOption;
+import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
@@ -58,16 +51,11 @@ import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.core.util.Drools.isJmxAvailable;
-import static org.drools.core.util.MemoryUtil.hasPermGen;
 
 /**
  * RuleBaseConfiguration
@@ -112,10 +100,13 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.jittingThreshold = &lt;1...n&gt;
  * </pre>
  */
-public class RuleBaseConfiguration
+public class RuleBaseConfiguration  extends BaseConfiguration<KieBaseOption, SingleValueKieBaseOption, MultiValueKieBaseOption>
     implements
-        KieBaseConfiguration,
+    KieBaseConfiguration,
     Externalizable {
+
+    public static final ConfigurationKey<RuleBaseConfiguration> KEY = new ConfigurationKey<>("Rule");
+
     private static final long serialVersionUID = 510l;
 
     public static final boolean DEFAULT_PHREAK = true;
@@ -124,10 +115,6 @@ public class RuleBaseConfiguration
     public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
     protected static final transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
-
-    private ChainedProperties chainedProperties;
-
-    private boolean immutable;
 
     private boolean          sequential;
     private SequentialAgenda sequentialAgenda;
@@ -147,7 +134,6 @@ public class RuleBaseConfiguration
     private AssertBehaviour assertBehaviour;
     private String          consequenceExceptionHandler;
     private String          ruleBaseUpdateHandler;
-    private boolean         mutabilityEnabled;
 
     private boolean declarativeAgenda;
 
@@ -161,33 +147,74 @@ public class RuleBaseConfiguration
     private boolean multithread;
     private int     maxThreads;
 
-    // this property activates MBean monitoring and management
-    private boolean mbeansEnabled;
-
     private ConflictResolver conflictResolver;
 
     private Map<String, ActivationListenerFactory> activationListeners;
 
-    private List<Map<String, Object>> workDefinitions;
-    private boolean                   advancedProcessRuleIntegration;
-
-    private transient ClassLoader classLoader;
-
     private int sessionPoolSize;
 
-    private static class DefaultRuleBaseConfigurationHolder {
-        private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
+    /**
+     * A constructor that sets the classloader to be used as the parent classloader
+     * of this rule base classloaders, and the properties to be used
+     * as base configuration options
+     *
+     */
+    public RuleBaseConfiguration(CompositeConfiguration<KieBaseOption, SingleValueKieBaseOption, MultiValueKieBaseOption> compConfig) {
+        super(compConfig);
+        init();
     }
+    
+    private void init() {
 
-    public static RuleBaseConfiguration getDefaultInstance() {
-        return DefaultRuleBaseConfigurationHolder.defaultConf;
+        setRemoveIdentities(Boolean.parseBoolean(getPropertyValue("drools.removeIdentities", "false")));
+
+        setShareAlphaNodes(Boolean.parseBoolean(getPropertyValue(ShareAlphaNodesOption.PROPERTY_NAME, "true")));
+
+        setShareBetaNodes(Boolean.parseBoolean(getPropertyValue(ShareBetaNodesOption.PROPERTY_NAME, "true")));
+
+        setJittingThreshold( Integer.parseInt( getPropertyValue( ConstraintJittingThresholdOption.PROPERTY_NAME, "" + ConstraintJittingThresholdOption.DEFAULT_VALUE)));
+
+        setAlphaNodeHashingThreshold(Integer.parseInt(getPropertyValue(AlphaThresholdOption.PROPERTY_NAME, "3")));
+
+        setAlphaNodeRangeIndexThreshold(Integer.parseInt(getPropertyValue(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "" + AlphaRangeIndexThresholdOption.DEFAULT_VALUE)));
+
+        setBetaNodeRangeIndexEnabled(Boolean.parseBoolean(getPropertyValue(BetaRangeIndexOption.PROPERTY_NAME, "false")));
+
+        setSessionPoolSize(Integer.parseInt(getPropertyValue( SessionsPoolOption.PROPERTY_NAME, "-1")));
+
+        setCompositeKeyDepth(Integer.parseInt(getPropertyValue(CompositeKeyDepthOption.PROPERTY_NAME, "3")));
+
+        setIndexLeftBetaMemory(Boolean.parseBoolean(getPropertyValue(IndexLeftBetaMemoryOption.PROPERTY_NAME, "true")));
+
+        setIndexRightBetaMemory(Boolean.parseBoolean(getPropertyValue(IndexRightBetaMemoryOption.PROPERTY_NAME, "true")));
+
+        setIndexPrecedenceOption(IndexPrecedenceOption.determineIndexPrecedence(getPropertyValue(IndexPrecedenceOption.PROPERTY_NAME, "equality")));
+
+        setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(getPropertyValue(EqualityBehaviorOption.PROPERTY_NAME, "identity")));
+
+        setConsequenceExceptionHandler(getPropertyValue(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler"));
+
+        setRuleBaseUpdateHandler(getPropertyValue("drools.ruleBaseUpdateHandler", ""));
+
+        setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(getPropertyValue(SequentialAgendaOption.PROPERTY_NAME, "sequential")));
+
+        setSequential(Boolean.parseBoolean(getPropertyValue(SequentialOption.PROPERTY_NAME, "false")));
+
+        setMultithreadEvaluation(Boolean.parseBoolean(getPropertyValue(MultithreadEvaluationOption.PROPERTY_NAME,
+                                                                                         "false")));
+
+        setMaxThreads( Integer.parseInt( getPropertyValue( MaxThreadsOption.PROPERTY_NAME,
+                                                                             "3" ) ) );
+
+        setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( getPropertyValue( EventProcessingOption.PROPERTY_NAME,
+                                                                                                                        "cloud" ) ) );
+
+        setDeclarativeAgendaEnabled( Boolean.parseBoolean(getPropertyValue(DeclarativeAgendaOption.PROPERTY_NAME,
+                                                                                             "false")) );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        // avoid serializing user defined system properties
-        chainedProperties.filterDroolsPropertiesForSerialization();
-        out.writeObject(chainedProperties);
-        out.writeBoolean(immutable);
+        super.writeExternal(out);
         out.writeBoolean(sequential);
         out.writeObject(sequentialAgenda);
         out.writeBoolean(maintainTms);
@@ -207,19 +234,16 @@ public class RuleBaseConfiguration
         out.writeObject(consequenceExceptionHandler);
         out.writeObject(ruleBaseUpdateHandler);
         out.writeObject(conflictResolver);
-        out.writeBoolean(advancedProcessRuleIntegration);
         out.writeBoolean(multithread);
         out.writeInt(maxThreads);
         out.writeObject(eventProcessingMode);
         out.writeBoolean(declarativeAgenda);
         out.writeInt(sessionPoolSize);
-        out.writeBoolean(mutabilityEnabled);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        chainedProperties = (ChainedProperties) in.readObject();
-        immutable = in.readBoolean();
+                                                    ClassNotFoundException {
+        super.readExternal(in);
         sequential = in.readBoolean();
         sequentialAgenda = (SequentialAgenda) in.readObject();
         maintainTms = in.readBoolean();
@@ -239,280 +263,330 @@ public class RuleBaseConfiguration
         consequenceExceptionHandler = (String) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
-        advancedProcessRuleIntegration = in.readBoolean();
         multithread = in.readBoolean();
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         declarativeAgenda = in.readBoolean();
         sessionPoolSize = in.readInt();
-        mutabilityEnabled = in.readBoolean();
     }
 
-    /**
-     * Creates a new rulebase configuration using the provided properties
-     * as configuration options. Also, if a Thread.currentThread().getContextClassLoader()
-     * returns a non-null class loader, it will be used as the parent classloader
-     * for this rulebase class loaders, otherwise, the RuleBaseConfiguration.class.getClassLoader()
-     * class loader will be used.
-     *
-     * @param properties
-     */
-    public RuleBaseConfiguration(Properties properties) {
-        init(properties,
-             null);
-    }
-
-    /**
-     * Creates a new rulebase with a default parent class loader set according
-     * to the following algorithm:
-     *
-     * If a Thread.currentThread().getContextClassLoader() returns a non-null class loader,
-     * it will be used as the parent class loader for this rulebase class loaders, otherwise,
-     * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
-     */
-    public RuleBaseConfiguration() {
-        init(null,
-             null);
-    }
-
-    /**
-     * A constructor that sets the parent classloader to be used
-     * while dealing with this rule base
-     *
-     * @param classLoaders
-     */
-    public RuleBaseConfiguration(ClassLoader... classLoaders) {
-        init(null,
-             classLoaders);
-    }
-
-    public void setProperty(String name,
-                            String value) {
-        name = name.trim();
-        if (StringUtils.isEmpty(name)) {
-            return;
-        }
-
-        if (name.equals(SequentialAgendaOption.PROPERTY_NAME)) {
-            setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(StringUtils.isEmpty(value) ? "sequential" : value));
-        } else if (name.equals(SequentialOption.PROPERTY_NAME)) {
-            setSequential(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-        } else if (name.equals(RemoveIdentitiesOption.PROPERTY_NAME)) {
-            setRemoveIdentities(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-        } else if (name.equals(ShareAlphaNodesOption.PROPERTY_NAME)) {
-            setShareAlphaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( ShareBetaNodesOption.PROPERTY_NAME ) ) {
-            setShareBetaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( PermGenThresholdOption.PROPERTY_NAME ) ) {
-            setPermGenThreshold(StringUtils.isEmpty(value) ? PermGenThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
-        } else if ( name.equals( ConstraintJittingThresholdOption.PROPERTY_NAME ) ) {
-            setJittingThreshold( StringUtils.isEmpty( value ) ? ConstraintJittingThresholdOption.DEFAULT_VALUE : Integer.parseInt( value ) );
-        } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
-            setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
-        } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
-            setAlphaNodeRangeIndexThreshold( StringUtils.isEmpty( value ) ? AlphaRangeIndexThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
-        } else if ( name.equals( BetaRangeIndexOption.PROPERTY_NAME ) ) {
-            setBetaNodeRangeIndexEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
-            setSessionPoolSize( StringUtils.isEmpty( value ) ? -1 : Integer.parseInt(value));
-        } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
-            setCompositeKeyDepth( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
-        } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
-            setIndexLeftBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
-            setIndexRightBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
-            setIndexPrecedenceOption( StringUtils.isEmpty( value ) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
-        } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
-            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( StringUtils.isEmpty( value ) ? "identity" : value));
-        } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
-            setConsequenceExceptionHandler( StringUtils.isEmpty( value ) ? DefaultConsequenceExceptionHandler.class.getName() : value);
-        } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "" : value);
-        } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
-            setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
-            setMaxThreads( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
-        } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
-            setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value));
-        } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
-            setMBeansEnabled( MBeansOption.isEnabled(value));
-        } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
-            setMutabilityEnabled( StringUtils.isEmpty( value ) ? true : KieBaseMutabilityOption.determineMutability(value) == KieBaseMutabilityOption.ALLOWED );
+    @SuppressWarnings("unchecked")
+    public <T extends SingleValueKieBaseOption> T getOption(OptionKey<T> option) {
+        switch(option.name()) {
+            case SequentialOption.PROPERTY_NAME: {
+                return (T) (this.sequential ? SequentialOption.YES : SequentialOption.NO);
+            }
+            case RemoveIdentitiesOption.PROPERTY_NAME: {
+                return (T) (this.removeIdentities ? RemoveIdentitiesOption.YES : RemoveIdentitiesOption.NO);
+            }
+            case ShareAlphaNodesOption.PROPERTY_NAME: {
+                return (T) (this.shareAlphaNodes ? ShareAlphaNodesOption.YES : ShareAlphaNodesOption.NO);
+            }
+            case ShareBetaNodesOption.PROPERTY_NAME: {
+                return (T) (this.shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO);
+            }
+            case IndexRightBetaMemoryOption.PROPERTY_NAME: {
+                return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
+            }
+            case IndexLeftBetaMemoryOption.PROPERTY_NAME: {
+                return (T) (this.indexLeftBetaMemory ? IndexLeftBetaMemoryOption.YES : IndexLeftBetaMemoryOption.NO);
+            }
+            case IndexPrecedenceOption.PROPERTY_NAME: {
+                return (T) getIndexPrecedenceOption();
+            }
+            case EqualityBehaviorOption.PROPERTY_NAME: {
+                return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? EqualityBehaviorOption.IDENTITY : EqualityBehaviorOption.EQUALITY);
+            }
+            case SequentialAgendaOption.PROPERTY_NAME: {
+                return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
+            }
+            case ConstraintJittingThresholdOption.PROPERTY_NAME: {
+                return (T) ConstraintJittingThresholdOption.get(jittingThreshold);
+            }
+            case AlphaThresholdOption.PROPERTY_NAME: {
+                return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
+            }
+            case AlphaRangeIndexThresholdOption.PROPERTY_NAME: {
+                return (T) AlphaRangeIndexThresholdOption.get(alphaNodeRangeIndexThreshold);
+            }
+            case BetaRangeIndexOption.PROPERTY_NAME: {
+                return (T) (this.betaNodeRangeIndexEnabled ? BetaRangeIndexOption.ENABLED : BetaRangeIndexOption.DISABLED);
+            }
+            case SessionsPoolOption.PROPERTY_NAME: {
+                return (T) SessionsPoolOption.get(sessionPoolSize);
+            }
+            case CompositeKeyDepthOption.PROPERTY_NAME: {
+                return (T) CompositeKeyDepthOption.get(compositeKeyDepth);
+            }
+            case ConsequenceExceptionHandlerOption.PROPERTY_NAME: {
+                Class<? extends ConsequenceExceptionHandler> handler;
+                try {
+                    handler = (Class<? extends ConsequenceExceptionHandler>) Class.forName(consequenceExceptionHandler);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
+                                               e);
+                }
+                return (T) ConsequenceExceptionHandlerOption.get(handler);
+            }
+            case EventProcessingOption.PROPERTY_NAME: {
+                return (T) getEventProcessingMode();
+            }
+            case MaxThreadsOption.PROPERTY_NAME: {
+                return (T) MaxThreadsOption.get(getMaxThreads());
+            }
+            case MultithreadEvaluationOption.PROPERTY_NAME: {
+                return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
+            }
+            case DeclarativeAgendaOption.PROPERTY_NAME: {
+                return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
+            }
+            default:
+                return compConfig.getOption(option);
         }
     }
 
-    public String getProperty(String name) {
-        name = name.trim();
-        if ( StringUtils.isEmpty( name ) ) {
-            return null;
+    public void setOption(KieBaseOption option) {
+        switch (option.propertyName()) {
+            case SequentialOption.PROPERTY_NAME : {
+                setSequential(((SequentialOption) option).isSequential());
+                break;
+            }
+            case RemoveIdentitiesOption.PROPERTY_NAME: {
+                setRemoveIdentities(((RemoveIdentitiesOption) option).isRemoveIdentities());
+                break;
+            }
+            case ShareAlphaNodesOption.PROPERTY_NAME: {
+                setShareAlphaNodes(((ShareAlphaNodesOption) option).isShareAlphaNodes());
+                break;
+            }
+            case ShareBetaNodesOption.PROPERTY_NAME: {
+                setShareBetaNodes(((ShareBetaNodesOption) option).isShareBetaNodes());
+                break;
+            }
+            case IndexLeftBetaMemoryOption.PROPERTY_NAME: {
+                setIndexLeftBetaMemory(((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory());
+                break;
+            }
+            case IndexRightBetaMemoryOption.PROPERTY_NAME: {
+                setIndexRightBetaMemory(((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory());
+                break;
+            }
+            case IndexPrecedenceOption.PROPERTY_NAME: {
+                setIndexPrecedenceOption((IndexPrecedenceOption) option);
+                break;
+            }
+            case EqualityBehaviorOption.PROPERTY_NAME: {
+                setAssertBehaviour((option == EqualityBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY);
+                break;
+            }
+            case SequentialAgendaOption.PROPERTY_NAME: {
+                setSequentialAgenda((option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC);
+                break;
+            }
+            case ConstraintJittingThresholdOption.PROPERTY_NAME: {
+                setJittingThreshold( ( (ConstraintJittingThresholdOption) option ).getThreshold());
+                break;
+            }
+            case AlphaThresholdOption.PROPERTY_NAME: {
+                setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
+                break;
+            }
+            case AlphaRangeIndexThresholdOption.PROPERTY_NAME: {
+                setAlphaNodeRangeIndexThreshold( ( (AlphaRangeIndexThresholdOption) option ).getThreshold());
+                break;
+            }
+            case BetaRangeIndexOption.PROPERTY_NAME: {
+                setBetaNodeRangeIndexEnabled( ( (BetaRangeIndexOption) option ).isBetaRangeIndexEnabled());
+                break;
+            }
+            case SessionsPoolOption.PROPERTY_NAME: {
+                setSessionPoolSize( ( ( SessionsPoolOption ) option ).getSize());
+                break;
+            }
+            case CompositeKeyDepthOption.PROPERTY_NAME: {
+                setCompositeKeyDepth( ( (CompositeKeyDepthOption) option ).getDepth());
+                break;
+            }
+            case ConsequenceExceptionHandlerOption.PROPERTY_NAME: {
+                setConsequenceExceptionHandler( ( (ConsequenceExceptionHandlerOption) option ).getHandler().getName());
+                break;
+            }
+            case EventProcessingOption.PROPERTY_NAME: {
+                setEventProcessingMode( (EventProcessingOption) option);
+                break;
+            }
+            case MaxThreadsOption.PROPERTY_NAME: {
+                setMaxThreads( ( (MaxThreadsOption) option ).getMaxThreads());
+                break;
+            }
+            case MultithreadEvaluationOption.PROPERTY_NAME: {
+                setMultithreadEvaluation( ( (MultithreadEvaluationOption) option ).isMultithreadEvaluation());
+                break;
+            }
+            case DeclarativeAgendaOption.PROPERTY_NAME: {
+                setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
+                break;
+            }
+            default:
+                compConfig.setOption(option);
+        }
+    }
+
+    public boolean setInternalProperty(String name, String value) {
+        switch(name) {
+            case SequentialAgendaOption.PROPERTY_NAME: {
+                setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(StringUtils.isEmpty(value) ? "sequential" : value));
+                break;
+            }
+            case SequentialOption.PROPERTY_NAME: {
+                setSequential(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case RemoveIdentitiesOption.PROPERTY_NAME: {
+                setRemoveIdentities(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case ShareAlphaNodesOption.PROPERTY_NAME: {
+                setShareAlphaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case ShareBetaNodesOption.PROPERTY_NAME: {
+                setShareBetaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case ConstraintJittingThresholdOption.PROPERTY_NAME: {
+                setJittingThreshold(StringUtils.isEmpty(value) ? ConstraintJittingThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
+                break;
+            }
+            case AlphaThresholdOption.PROPERTY_NAME: {
+                setAlphaNodeHashingThreshold(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+                break;
+            }
+            case AlphaRangeIndexThresholdOption.PROPERTY_NAME: {
+                setAlphaNodeRangeIndexThreshold(StringUtils.isEmpty(value) ? AlphaRangeIndexThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
+                break;
+            }
+            case BetaRangeIndexOption.PROPERTY_NAME: {
+                setBetaNodeRangeIndexEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case SessionsPoolOption.PROPERTY_NAME: {
+                setSessionPoolSize(StringUtils.isEmpty(value) ? -1 : Integer.parseInt(value));
+                break;
+            }
+            case CompositeKeyDepthOption.PROPERTY_NAME: {
+                setCompositeKeyDepth(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+                break;
+            }
+            case IndexLeftBetaMemoryOption.PROPERTY_NAME: {
+                setIndexLeftBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+                break;
+            }
+            case IndexRightBetaMemoryOption.PROPERTY_NAME: {
+                setIndexRightBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+                break;
+            }
+            case IndexPrecedenceOption.PROPERTY_NAME: {
+                setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
+                break;
+            }
+            case EqualityBehaviorOption.PROPERTY_NAME: {
+                setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
+                break;
+            }
+            case ConsequenceExceptionHandlerOption.PROPERTY_NAME: {
+                setConsequenceExceptionHandler(StringUtils.isEmpty(value) ? DefaultConsequenceExceptionHandler.class.getName() : value);
+                break;
+            }
+            case "drools.ruleBaseUpdateHandler": {
+                setRuleBaseUpdateHandler(StringUtils.isEmpty(value) ? "" : value);
+                break;
+            }
+            case MultithreadEvaluationOption.PROPERTY_NAME: {
+                setMultithreadEvaluation(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+                break;
+            }
+            case MaxThreadsOption.PROPERTY_NAME: {
+                setMaxThreads(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+                break;
+            }
+            case EventProcessingOption.PROPERTY_NAME: {
+                setEventProcessingMode(EventProcessingOption.determineEventProcessingMode(StringUtils.isEmpty(value) ? "cloud" : value));
+                break;
+            }
+            default : {
+                return false;
+            }
         }
 
-        if ( name.equals( SequentialAgendaOption.PROPERTY_NAME ) ) {
-            return getSequentialAgenda().toExternalForm();
-        } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isSequential() );
-        } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isRemoveIdentities() );
-        } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isShareAlphaNodes() );
-        } else if ( name.equals( ShareBetaNodesOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isShareBetaNodes() );
-        } else if ( name.equals( PermGenThresholdOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getPermGenThreshold() );
-        } else if ( name.equals( ConstraintJittingThresholdOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getJittingThreshold() );
-        } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getAlphaNodeHashingThreshold() );
-        } else if ( name.equals( AlphaRangeIndexThresholdOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getAlphaNodeRangeIndexThreshold() );
-        } else if ( name.equals( BetaRangeIndexOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isBetaNodeRangeIndexEnabled() );
-        } else if ( name.equals( SessionsPoolOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getSessionPoolSize() );
-        } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getCompositeKeyDepth() );
-        } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isIndexLeftBetaMemory() );
-        } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isIndexRightBetaMemory());
-        } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
-            return getIndexPrecedenceOption().getValue();
-        } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
-            return getAssertBehaviour().toExternalForm();
-        } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
-            return getConsequenceExceptionHandler();
-        } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            return getRuleBaseUpdateHandler();
-        } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
-            return Boolean.toString(isAdvancedProcessRuleIntegration());
-        } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isMultithreadEvaluation() );
-        } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
-            return Integer.toString( getMaxThreads());
-        } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
-            return getEventProcessingMode().getMode();
-        } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
-            return isMBeansEnabled() ? "enabled" : "disabled";
-        } else if ( name.equals( KieBaseMutabilityOption.PROPERTY_NAME ) ) {
-            return isMutabilityEnabled() ? "ALLOWED" : "DISABLED";
+        return true;
+    }
+
+    public String getInternalProperty(String name) {
+        switch (name) {
+            case SequentialAgendaOption.PROPERTY_NAME: {
+                return getSequentialAgenda().toExternalForm();
+            }
+            case SequentialOption.PROPERTY_NAME: {
+                return Boolean.toString(isSequential());
+            }
+            case RemoveIdentitiesOption.PROPERTY_NAME: {
+                return Boolean.toString(isRemoveIdentities());
+            }
+            case ShareAlphaNodesOption.PROPERTY_NAME: {
+                return Boolean.toString(isShareAlphaNodes());
+            }
+            case ShareBetaNodesOption.PROPERTY_NAME: {
+                return Boolean.toString(isShareBetaNodes());
+            }
+            case ConstraintJittingThresholdOption.PROPERTY_NAME: {
+                return Integer.toString(getJittingThreshold());
+            }
+            case AlphaThresholdOption.PROPERTY_NAME: {
+                return Integer.toString(getAlphaNodeHashingThreshold());
+            }
+            case AlphaRangeIndexThresholdOption.PROPERTY_NAME: {
+                return Integer.toString(getAlphaNodeRangeIndexThreshold());
+            }
+            case BetaRangeIndexOption.PROPERTY_NAME: {
+                return Boolean.toString(isBetaNodeRangeIndexEnabled());
+            }
+            case SessionsPoolOption.PROPERTY_NAME: {
+                return Integer.toString(getSessionPoolSize());
+            }
+            case CompositeKeyDepthOption.PROPERTY_NAME: {
+                return Integer.toString(getCompositeKeyDepth());
+            }
+            case IndexLeftBetaMemoryOption.PROPERTY_NAME: {
+                return Boolean.toString(isIndexLeftBetaMemory());
+            }
+            case IndexRightBetaMemoryOption.PROPERTY_NAME: {
+                return Boolean.toString(isIndexRightBetaMemory());
+            }
+            case IndexPrecedenceOption.PROPERTY_NAME: {
+                return getIndexPrecedenceOption().getValue();
+            }
+            case EqualityBehaviorOption.PROPERTY_NAME: {
+                return getAssertBehaviour().toExternalForm();
+            }
+            case ConsequenceExceptionHandlerOption.PROPERTY_NAME: {
+                return getConsequenceExceptionHandler();
+            }
+            case "drools.ruleBaseUpdateHandler": {
+                return getRuleBaseUpdateHandler();
+            }
+            case MultithreadEvaluationOption.PROPERTY_NAME: {
+                return Boolean.toString(isMultithreadEvaluation());
+            }
+            case MaxThreadsOption.PROPERTY_NAME: {
+                return Integer.toString(getMaxThreads());
+            }
+            case EventProcessingOption.PROPERTY_NAME: {
+                return getEventProcessingMode().getMode();
+            }
         }
 
         return null;
-    }
-
-    /**
-     * A constructor that sets the classloader to be used as the parent classloader
-     * of this rule base classloaders, and the properties to be used
-     * as base configuration options
-     *
-     * @param classLoaders
-     * @param properties
-     */
-    public RuleBaseConfiguration(Properties properties,
-                                 ClassLoader... classLoaders) {
-        init( properties,
-              classLoaders );
-    }
-    
-    private void init(Properties properties, ClassLoader... classLoaders) {
-        if (classLoaders != null && classLoaders.length > 1) {
-            throw new RuntimeException("Multiple classloaders are no longer supported");
-        }
-        setClassLoader( classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0] );
-        init(properties);
-    }
-    
-    private void init(Properties properties) {
-        this.immutable = false;
-
-        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
-
-        if ( properties != null ) {
-            this.chainedProperties.addProperties( properties );
-        }
-
-        setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities", "false")).booleanValue());
-
-        setShareAlphaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareAlphaNodesOption.PROPERTY_NAME, "true")).booleanValue());
-
-        setShareBetaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareBetaNodesOption.PROPERTY_NAME, "true")).booleanValue());
-
-        setPermGenThreshold(Integer.parseInt(this.chainedProperties.getProperty(PermGenThresholdOption.PROPERTY_NAME, "" + PermGenThresholdOption.DEFAULT_VALUE)));
-
-        setJittingThreshold( Integer.parseInt( this.chainedProperties.getProperty( ConstraintJittingThresholdOption.PROPERTY_NAME, "" + ConstraintJittingThresholdOption.DEFAULT_VALUE)));
-
-        setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
-
-        setAlphaNodeRangeIndexThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaRangeIndexThresholdOption.PROPERTY_NAME, "" + AlphaRangeIndexThresholdOption.DEFAULT_VALUE)));
-
-        setBetaNodeRangeIndexEnabled(Boolean.valueOf(this.chainedProperties.getProperty(BetaRangeIndexOption.PROPERTY_NAME, "false")));
-
-        setSessionPoolSize(Integer.parseInt(this.chainedProperties.getProperty( SessionsPoolOption.PROPERTY_NAME, "-1")));
-
-        setCompositeKeyDepth(Integer.parseInt(this.chainedProperties.getProperty(CompositeKeyDepthOption.PROPERTY_NAME, "3")));
-
-        setIndexLeftBetaMemory(Boolean.valueOf(this.chainedProperties.getProperty(IndexLeftBetaMemoryOption.PROPERTY_NAME, "true")).booleanValue());
-
-        setIndexRightBetaMemory(Boolean.valueOf(this.chainedProperties.getProperty(IndexRightBetaMemoryOption.PROPERTY_NAME, "true")).booleanValue());
-
-        setIndexPrecedenceOption(IndexPrecedenceOption.determineIndexPrecedence(this.chainedProperties.getProperty(IndexPrecedenceOption.PROPERTY_NAME, "equality")));
-
-        setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(this.chainedProperties.getProperty(EqualityBehaviorOption.PROPERTY_NAME, "identity")));
-
-        setConsequenceExceptionHandler(this.chainedProperties.getProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler"));
-
-        setRuleBaseUpdateHandler(this.chainedProperties.getProperty("drools.ruleBaseUpdateHandler", ""));
-
-        setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME, "sequential")));
-
-        setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME, "false")).booleanValue());
-
-        setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
-                                                                                                "false" ) ).booleanValue() );
-
-        setMultithreadEvaluation( Boolean.valueOf( this.chainedProperties.getProperty( MultithreadEvaluationOption.PROPERTY_NAME,
-                                                                                       "false" ) ).booleanValue() );
-
-        setMaxThreads( Integer.parseInt( this.chainedProperties.getProperty( MaxThreadsOption.PROPERTY_NAME,
-                                                                             "3" ) ) );
-
-        setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( this.chainedProperties.getProperty( EventProcessingOption.PROPERTY_NAME,
-                                                                                                                        "cloud" ) ) );
-
-        setMBeansEnabled( MBeansOption.isEnabled( this.chainedProperties.getProperty( MBeansOption.PROPERTY_NAME,
-                                                                                      "disabled" ) ) );
-
-        setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
-                                                                                          "false" ) ) );
-
-        setMutabilityEnabled( KieBaseMutabilityOption.determineMutability(
-                this.chainedProperties.getProperty( KieBaseMutabilityOption.PROPERTY_NAME, "ALLOWED" )) == KieBaseMutabilityOption.ALLOWED );
-    }
-
-    /**
-     * Makes the configuration object immutable. Once it becomes immutable,
-     * there is no way to make it mutable again.
-     * This is done to keep consistency.
-     */
-    public void makeImmutable() {
-        this.immutable = true;
-    }
-
-    /**
-     * Returns true if this configuration object is immutable or false otherwise.
-     * @return
-     */
-    public boolean isImmutable() {
-        return this.immutable;
-    }
-
-    private void checkCanChange() {
-        if ( this.immutable ) {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
-        }
     }
 
     public void setSequential(boolean sequential) {
@@ -557,26 +631,6 @@ public class RuleBaseConfiguration
     public void setShareBetaNodes(final boolean shareBetaNodes) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.shareBetaNodes = shareBetaNodes;
-    }
-
-    public int getPermGenThreshold() {
-        return this.permGenThreshold;
-    }
-
-    public void setPermGenThreshold(final int permGenThreshold) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        if (permGenThreshold < 0 || permGenThreshold > 100) {
-            throw new UnsupportedOperationException( "The PermGen threshold should be a number between 0 and 100" );
-        }
-        if (isJmxAvailable() && !hasPermGen()) {
-            if (permGenThreshold != PermGenThresholdOption.DEFAULT_VALUE) {
-                logger.warn( "JVM version " + System.getProperty("java.version") + " has no PermGen space. " +
-                             "Attempt to set the permgenThreshold to " + permGenThreshold + " will be ignored");
-            }
-            this.permGenThreshold = 100;
-            return;
-        }
-        this.permGenThreshold = permGenThreshold;
     }
 
     public int getJittingThreshold() {
@@ -647,14 +701,11 @@ public class RuleBaseConfiguration
     }
 
     public void setCompositeKeyDepth(final int compositeKeyDepth) {
-        if ( !this.immutable ) {
-            if ( compositeKeyDepth > 3 ) {
-                throw new UnsupportedOperationException( "compositeKeyDepth cannot be greater than 3" );
-            }
-            this.compositeKeyDepth = compositeKeyDepth;
-        } else {
-            throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
+        checkCanChange();
+        if ( compositeKeyDepth > 3 ) {
+            throw new UnsupportedOperationException( "compositeKeyDepth cannot be greater than 3" );
         }
+        this.compositeKeyDepth = compositeKeyDepth;
     }
 
     public boolean isIndexLeftBetaMemory() {
@@ -700,10 +751,6 @@ public class RuleBaseConfiguration
     public void setRuleBaseUpdateHandler(String ruleBaseUpdateHandler) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.ruleBaseUpdateHandler = ruleBaseUpdateHandler;
-    }
-
-    public AgendaGroupFactory getAgendaGroupFactory() {
-        return RuntimeComponentFactory.get().getAgendaGroupFactory();
     }
 
     public SequentialAgenda getSequentialAgenda() {
@@ -777,60 +824,6 @@ public class RuleBaseConfiguration
     public void setDeclarativeAgendaEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.declarativeAgenda = enabled;
-    }    
-
-    public List<Map<String, Object>> getWorkDefinitions() {
-        if ( this.workDefinitions == null ) {
-            initWorkDefinitions();
-        }
-        return this.workDefinitions;
-
-    }
-
-    private void initWorkDefinitions() {
-        this.workDefinitions = new ArrayList<>();
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty( "drools.workDefinitions",
-                                                                 "" ).split( "\\s" );
-
-        // load each SemanticModule
-        for ( String factoryLocation : locations ) {
-            // trim leading/trailing spaces and quotes
-            factoryLocation = factoryLocation.trim();
-            if ( factoryLocation.startsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 1 );
-            }
-            if ( factoryLocation.endsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 0,
-                                                             factoryLocation.length() - 1 );
-            }
-            if ( !factoryLocation.equals( "" ) ) {
-                loadWorkItems( factoryLocation );
-            }
-        }
-    }
-
-    private void loadWorkItems(String location) {
-        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( location,
-                                                                                  null,
-                                                                                  RuleBaseConfiguration.class ) );
-        try {
-            this.workDefinitions.addAll(
-                (List<Map<String, Object>>) CoreComponentsBuilder.get().getMVELExecutor().eval( content, new HashMap() ) );
-        } catch ( Throwable t ) {
-            logger.error("Error occurred while loading work definitions " + location
-                    + "\nContinuing without reading these work definitions", t);
-            throw new RuntimeException( "Could not parse work definitions " + location + ": " + t.getMessage() );
-        }
-    }
-
-    public boolean isAdvancedProcessRuleIntegration() {
-        return advancedProcessRuleIntegration;
-    }
-
-    public void setAdvancedProcessRuleIntegration(boolean advancedProcessRuleIntegration) {
-        this.advancedProcessRuleIntegration = advancedProcessRuleIntegration;
     }
     
     public void addActivationListener(String name, ActivationListenerFactory factory) {
@@ -857,43 +850,6 @@ public class RuleBaseConfiguration
         } 
         
         throw new IllegalArgumentException( "ActivationListenerFactory not found for '" + name + "'" );
-    }
-
-    public ClassLoader getClassLoader() {
-        return this.classLoader;
-    }
-
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader( classLoader, getClass() );
-    }
-
-    /**
-     * Defines if the RuleBase should expose management and monitoring MBeans
-     *
-     * @param mbeansEnabled true for multi-thread or
-     *                     false for single-thread. Default is false.
-     */
-    public void setMBeansEnabled(boolean mbeansEnabled) {
-        checkCanChange();
-        this.mbeansEnabled = mbeansEnabled;
-    }
-
-    /**
-     * Returns true if the management and monitoring through MBeans is active 
-     *
-     * @return
-     */
-    public boolean isMBeansEnabled() {
-        return this.mbeansEnabled;
-    }
-
-    public void setMutabilityEnabled( boolean mutabilityEnabled ) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.mutabilityEnabled = mutabilityEnabled;
-    }
-
-    public boolean isMutabilityEnabled() {
-        return mutabilityEnabled;
     }
 
     public static class AssertBehaviour
@@ -1018,125 +974,5 @@ public class RuleBaseConfiguration
         public String toString() {
             return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T extends SingleValueKieBaseOption> T getOption(Class<T> option) {
-        if (SequentialOption.class.equals(option)) {
-            return (T) (this.sequential ? SequentialOption.YES : SequentialOption.NO);
-        } else if (RemoveIdentitiesOption.class.equals(option)) {
-            return (T) (this.removeIdentities ? RemoveIdentitiesOption.YES : RemoveIdentitiesOption.NO);
-        } else if (ShareAlphaNodesOption.class.equals(option)) {
-            return (T) (this.shareAlphaNodes ? ShareAlphaNodesOption.YES : ShareAlphaNodesOption.NO);
-        } else if (ShareBetaNodesOption.class.equals(option)) {
-            return (T) (this.shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO);
-        } else if (IndexLeftBetaMemoryOption.class.equals(option)) {
-            return (T) (this.indexLeftBetaMemory ? IndexLeftBetaMemoryOption.YES : IndexLeftBetaMemoryOption.NO);
-        } else if (IndexRightBetaMemoryOption.class.equals(option)) {
-            return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
-        } else if (IndexPrecedenceOption.class.equals(option)) {
-            return (T) getIndexPrecedenceOption();
-        } else if (EqualityBehaviorOption.class.equals(option)) {
-            return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? EqualityBehaviorOption.IDENTITY : EqualityBehaviorOption.EQUALITY);
-        } else if (SequentialAgendaOption.class.equals(option)) {
-            return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
-        } else if (PermGenThresholdOption.class.equals(option)) {
-            return (T) PermGenThresholdOption.get(permGenThreshold);
-        } else if (ConstraintJittingThresholdOption.class.equals(option)) {
-            return (T) ConstraintJittingThresholdOption.get(jittingThreshold);
-        } else if (AlphaThresholdOption.class.equals(option)) {
-            return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
-        } else if (AlphaRangeIndexThresholdOption.class.equals(option)) {
-            return (T) AlphaRangeIndexThresholdOption.get(alphaNodeRangeIndexThreshold);
-        } else if (BetaRangeIndexOption.class.equals(option)) {
-            return (T) (this.betaNodeRangeIndexEnabled ? BetaRangeIndexOption.ENABLED : BetaRangeIndexOption.DISABLED);
-        } else if ( SessionsPoolOption.class.equals(option)) {
-            return (T) SessionsPoolOption.get(sessionPoolSize);
-        } else if (CompositeKeyDepthOption.class.equals(option)) {
-            return (T) CompositeKeyDepthOption.get(compositeKeyDepth);
-        } else if (ConsequenceExceptionHandlerOption.class.equals(option)) {
-            Class<? extends ConsequenceExceptionHandler> handler;
-            try {
-                handler = (Class<? extends ConsequenceExceptionHandler>) Class.forName(consequenceExceptionHandler);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
-                                           e);
-            }
-            return (T) ConsequenceExceptionHandlerOption.get(handler);
-        } else if (EventProcessingOption.class.equals(option)) {
-            return (T) getEventProcessingMode();
-        } else if (MaxThreadsOption.class.equals(option)) {
-            return (T) MaxThreadsOption.get(getMaxThreads());
-        } else if (MultithreadEvaluationOption.class.equals(option)) {
-            return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
-        } else if (MBeansOption.class.equals(option)) {
-            return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
-        } else if (DeclarativeAgendaOption.class.equals(option)) {
-            return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
-        } else if (KieBaseMutabilityOption.class.equals(option)) {
-            return (T) (this.isMutabilityEnabled() ? KieBaseMutabilityOption.ALLOWED : KieBaseMutabilityOption.DISABLED);
-        }
-        return null;
-
-    }
-
-    public <T extends KieBaseOption> void setOption(T option) {
-        if (option instanceof SequentialOption) {
-            setSequential(((SequentialOption) option).isSequential());
-        } else if (option instanceof RemoveIdentitiesOption) {
-            setRemoveIdentities(((RemoveIdentitiesOption) option).isRemoveIdentities());
-        } else if (option instanceof ShareAlphaNodesOption) {
-            setShareAlphaNodes(((ShareAlphaNodesOption) option).isShareAlphaNodes());
-        } else if (option instanceof ShareBetaNodesOption) {
-            setShareBetaNodes(((ShareBetaNodesOption) option).isShareBetaNodes());
-        } else if (option instanceof IndexLeftBetaMemoryOption) {
-            setIndexLeftBetaMemory(((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory());
-        } else if (option instanceof IndexRightBetaMemoryOption) {
-            setIndexRightBetaMemory(((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory());
-        } else if (option instanceof IndexPrecedenceOption) {
-            setIndexPrecedenceOption((IndexPrecedenceOption) option);
-        } else if (option instanceof EqualityBehaviorOption) {
-            setAssertBehaviour((option == EqualityBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY);
-        } else if (option instanceof SequentialAgendaOption) {
-            setSequentialAgenda((option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC);
-        } else if (option instanceof PermGenThresholdOption) {
-            setPermGenThreshold(((PermGenThresholdOption) option).getThreshold());
-        } else if (option instanceof ConstraintJittingThresholdOption) {
-            setJittingThreshold( ( (ConstraintJittingThresholdOption) option ).getThreshold());
-        } else if (option instanceof AlphaThresholdOption) {
-            setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
-        } else if (option instanceof AlphaRangeIndexThresholdOption) {
-            setAlphaNodeRangeIndexThreshold( ( (AlphaRangeIndexThresholdOption) option ).getThreshold());
-        } else if (option instanceof BetaRangeIndexOption) {
-            setBetaNodeRangeIndexEnabled( ( (BetaRangeIndexOption) option ).isBetaRangeIndexEnabled());
-        } else if (option instanceof SessionsPoolOption ) {
-            setSessionPoolSize( ( ( SessionsPoolOption ) option ).getSize());
-        } else if (option instanceof CompositeKeyDepthOption) {
-            setCompositeKeyDepth( ( (CompositeKeyDepthOption) option ).getDepth());
-        } else if (option instanceof ConsequenceExceptionHandlerOption) {
-            setConsequenceExceptionHandler( ( (ConsequenceExceptionHandlerOption) option ).getHandler().getName());
-        } else if (option instanceof EventProcessingOption) {
-            setEventProcessingMode( (EventProcessingOption) option);
-        } else if (option instanceof MaxThreadsOption) {
-            setMaxThreads( ( (MaxThreadsOption) option ).getMaxThreads());
-        } else if (option instanceof MultithreadEvaluationOption) {
-            setMultithreadEvaluation( ( (MultithreadEvaluationOption) option ).isMultithreadEvaluation());
-        } else if (option instanceof MBeansOption) {
-            setMBeansEnabled( ( (MBeansOption) option ).isEnabled());
-        } else if (option instanceof DeclarativeAgendaOption) {
-            setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
-        } else if (option instanceof KieBaseMutabilityOption) {
-            setMutabilityEnabled(option == KieBaseMutabilityOption.ALLOWED);
-        }
-
-    }
-
-    public <T extends MultiValueKieBaseOption> T getOption(Class<T> option,
-                                                           String key) {
-        return null;
-    }
-
-    public ChainedProperties getChainedProperties() {
-        return chainedProperties;
     }
 }

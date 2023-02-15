@@ -11,21 +11,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.internal.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
 import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.conf.SingleValueKieSessionOption;
+import org.kie.api.runtime.conf.DirectFiringOption;
+import org.kie.api.runtime.conf.SingleValueRuleRuntimeOption;
 
 /**
  * Option to force evaluation and then activation of rules annotated with @Eager.
  */
-public class ForceEagerActivationOption implements SingleValueKieSessionOption {
+public class ForceEagerActivationOption implements SingleValueRuleRuntimeOption {
 
     private static final long serialVersionUID = 510l;
 
     public static final String PROPERTY_NAME = "drools.forceEagerActivation";
+
+    public static OptionKey<ForceEagerActivationOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     public static final ForceEagerActivationOption YES = new ForceEagerActivationOption(new ForceEagerActivationFilter() {
         @Override

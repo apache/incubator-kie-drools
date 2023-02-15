@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.impl.RuleBaseFactory;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
@@ -110,7 +111,7 @@ public abstract class BaseBetaConstraintsTest {
     protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,
                                         Class cls,
                                         short betaNodeType) {
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        RuleBaseConfiguration config = RuleBaseFactory.newKnowledgeBaseConfiguration().as(RuleBaseConfiguration.KEY);
         int depth = config.getCompositeKeyDepth();
 
         BetaConstraints betaConstraints;

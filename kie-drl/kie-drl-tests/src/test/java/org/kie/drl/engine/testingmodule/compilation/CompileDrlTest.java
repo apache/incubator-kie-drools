@@ -34,6 +34,7 @@ import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.testingmodule.utils.DrlTestUtils;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.core.service.CompilationManagerImpl;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,8 +53,7 @@ class CompileDrlTest {
         compilationManager = new CompilationManagerImpl();
         context = DrlCompilationContext.buildWithParentClassLoader(CompilationManager.class.getClassLoader());
         drlFiles = DrlTestUtils.collectDrlFiles("src/test/resources/org/drools/model/project/codegen");
-        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration =
-                new KnowledgeBuilderConfigurationImpl();
+        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         DrlResourceHandler drlResourceHandler =
                 new DrlResourceHandler(knowledgeBuilderConfiguration);
         packageDescrs = new HashSet<>();

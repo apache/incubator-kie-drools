@@ -23,6 +23,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 /**
  * Wraps the PackageBuilder for Verifier.
@@ -56,7 +57,7 @@ class VerifierPackageBuilder {
 
     class InnerBuilder extends KnowledgeBuilderImpl {
         public InnerBuilder() {
-            super( new KnowledgeBuilderConfigurationImpl() );
+            super(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY));
         }
 
         @Override

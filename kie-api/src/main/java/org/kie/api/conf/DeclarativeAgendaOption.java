@@ -28,7 +28,7 @@ package org.kie.api.conf;
  * <b>DEFAULT = false.</b>
  *
  */
-public enum DeclarativeAgendaOption implements SingleValueKieBaseOption {
+public enum DeclarativeAgendaOption implements SingleValueRuleBaseOption {
 
     ENABLED(true), DISABLED(false);
 
@@ -36,6 +36,8 @@ public enum DeclarativeAgendaOption implements SingleValueKieBaseOption {
      * The property name for the L and R Unlinking option
      */
     public static final String PROPERTY_NAME = "drools.declarativeAgendaEnabled";
+
+    public static OptionKey KEY = new OptionKey(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

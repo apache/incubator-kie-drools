@@ -26,6 +26,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.conf.TrimCellsInDTableOption;
 
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class DecisionTableResourceHandler extends ResourceHandler {
             return compositePackageDescr;
         }
 
-        dtableConfiguration.setTrimCell(this.configuration.isTrimCellsInDTable());
+        dtableConfiguration.setTrimCell(this.configuration.getOption(TrimCellsInDTableOption.KEY).isTrimCellsInDTable());
 
         String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
         return generatedDrlToPackageDescr(resource, generatedDrl);

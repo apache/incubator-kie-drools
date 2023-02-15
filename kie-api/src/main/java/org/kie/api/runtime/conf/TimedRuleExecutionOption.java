@@ -11,24 +11,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.api.runtime.conf;
 
+import org.kie.api.conf.OptionKey;
 import org.kie.api.definition.rule.Rule;
 
-public class TimedRuleExecutionOption implements SingleValueKieSessionOption {
+public class TimedRuleExecutionOption implements SingleValueRuleRuntimeOption {
 
     private static final long serialVersionUID = 510l;
 
     public static final String PROPERTY_NAME = "drools.timedRuleExecution";
 
-    public static final TimedRuleExecutionOption YES = new TimedRuleExecutionOption(new TimedRuleExecutionFilter() {
-        @Override
-        public boolean accept(Rule[] rules) {
-            return true;
-        }
-    });
+    public static OptionKey<TimedRuleExecutionOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
+
+    public static final TimedRuleExecutionOption YES = new TimedRuleExecutionOption(rules -> true);
 
     public static final TimedRuleExecutionOption NO = new TimedRuleExecutionOption(null);
 

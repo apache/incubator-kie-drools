@@ -16,6 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
 import org.kie.api.runtime.rule.EvaluatorDefinition;
 
 /**
@@ -24,7 +25,7 @@ import org.kie.api.runtime.rule.EvaluatorDefinition;
  * Drools supports custom evaluators. After implementing an evaluator
  * use this option class to register it to the knowledge builder.
  */
-public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
+public class EvaluatorOption implements MultiValueRuleBuilderOption {
 
     private static final long serialVersionUID = 510l;
 
@@ -32,6 +33,8 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
      * The prefix for the property name for evaluators
      */
     public static final String PROPERTY_NAME = "drools.evaluator.";
+
+    public static OptionKey<EvaluatorOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     /**
      * evaluator key
@@ -70,7 +73,7 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
      * {@inheritDoc}
      */
     public String getPropertyName() {
-        return PROPERTY_NAME+key;
+        return PROPERTY_NAME;
     }
 
     /**

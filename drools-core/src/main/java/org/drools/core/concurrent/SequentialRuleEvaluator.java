@@ -30,7 +30,7 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
 
     public SequentialRuleEvaluator( ActivationsManager activationsManager ) {
         super(activationsManager);
-        sequential = activationsManager.getReteEvaluator().getKnowledgeBase().getConfiguration().isSequential();
+        sequential = activationsManager.getReteEvaluator().getKnowledgeBase().getRuleBaseConfiguration().isSequential();
         knowledgeHelper = newKnowledgeHelper();
     }
 

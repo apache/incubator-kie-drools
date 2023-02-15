@@ -16,7 +16,8 @@
 
 package org.kie.internal.conf;
 
-import org.kie.api.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.OptionKey;
+import org.kie.api.conf.SingleValueRuleBaseOption;
 
 /**
  * An Enum for ShareBetaNodes option.
@@ -25,7 +26,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
  *
  * DEFAULT = true
  */
-public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
+public enum ShareBetaNodesOption implements SingleValueRuleBaseOption {
 
     YES(true),
     NO(false);
@@ -34,6 +35,8 @@ public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
      * The property name for the share beta nodes option
      */
     public static final String PROPERTY_NAME = "drools.shareBetaNodes";
+
+    public static OptionKey<SingleValueRuleBaseOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private boolean value;
 

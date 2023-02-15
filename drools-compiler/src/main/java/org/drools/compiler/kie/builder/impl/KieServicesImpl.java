@@ -24,12 +24,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
+import org.drools.core.BaseConfigurationFactories;
+import org.drools.core.CompositeSessionConfiguration;
+import org.drools.core.SessionConfigurationFactories;
 import org.drools.core.concurrent.ExecutorProviderImpl;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.io.ResourceFactoryServiceImpl;
 import org.drools.kiesession.audit.KnowledgeRuntimeLoggerProviderImpl;
+import org.drools.io.ResourceFactoryServiceImpl;
+import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -48,6 +50,8 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.conf.CompositeBaseConfiguration;
+import org.kie.internal.utils.ChainedProperties;
 import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.readFromJar;
@@ -286,27 +290,48 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieBaseConfiguration newKieBaseConfiguration() {
-        return new RuleBaseConfiguration();
+        return newKieBaseConfiguration(null, null);
     }
 
     public KieBaseConfiguration newKieBaseConfiguration(Properties properties) {
-        return new RuleBaseConfiguration(properties, null);
+        return newKieBaseConfiguration(properties, null);
     }
 
     public KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader) {
-        return new RuleBaseConfiguration(properties, classLoader);
+        ClassLoader projClassLoader = getClassLoader(classLoader);
+
+        ChainedProperties chained = ChainedProperties.getChainedProperties(projClassLoader);
+
+        if ( properties != null ) {
+            chained.addProperties( properties );
+        }
+        return new CompositeBaseConfiguration(chained, projClassLoader,
+                                              BaseConfigurationFactories.baseConf, BaseConfigurationFactories.ruleConf, BaseConfigurationFactories.flowConf);
     }
 
     public KieSessionConfiguration newKieSessionConfiguration() {
-        return new SessionConfiguration();
+        return newKieSessionConfiguration(null, null);
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
-        return new SessionConfiguration(properties);
+        return newKieSessionConfiguration(properties, null);
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader) {
-        return new SessionConfiguration(properties, classLoader);
+        ClassLoader projClassLoader = getClassLoader(classLoader);
+
+        ChainedProperties chained = ChainedProperties.getChainedProperties(projClassLoader);
+
+        if ( properties != null ) {
+            chained.addProperties( properties );
+        }
+        return new CompositeSessionConfiguration(chained, projClassLoader,
+                                                 SessionConfigurationFactories.baseConf, SessionConfigurationFactories.ruleConf, SessionConfigurationFactories.flowConf);
+    }
+
+    private ClassLoader getClassLoader(ClassLoader classLoader) {
+        ClassLoader projClassLoader = classLoader instanceof ProjectClassLoader ? classLoader : ProjectClassLoader.getClassLoader(classLoader, getClass());
+        return projClassLoader;
     }
 
     public Environment newEnvironment() {

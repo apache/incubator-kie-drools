@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -77,7 +78,7 @@ public class DefeasibilityTest {
         }
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()) );
+        ksConf.as(RuleSessionConfiguration.KEY).setBeliefSystemType(BeliefSystemType.DEFEASIBLE);
 
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
@@ -96,7 +97,7 @@ public class DefeasibilityTest {
         }
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
-        ksConf.setOption( BeliefSystemTypeOption.get(BeliefSystemType.DEFEASIBLE.getId()) );;
+        ksConf.as(RuleSessionConfiguration.KEY).setBeliefSystemType(BeliefSystemType.DEFEASIBLE);
 
         KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;

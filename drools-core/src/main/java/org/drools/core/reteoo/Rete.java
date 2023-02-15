@@ -71,7 +71,7 @@ public class Rete extends ObjectSource implements ObjectSink {
     // ------------------------------------------------------------
 
     public Rete(RuleBase kBase) {
-        super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null && kBase.getConfiguration().isMultithreadEvaluation() );
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null && kBase.getRuleBaseConfiguration().isMultithreadEvaluation() );
         this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPointId, EntryPointNode>() );
         this.kBase = kBase;
 

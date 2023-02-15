@@ -33,6 +33,8 @@ public enum MBeansOption implements SingleValueKieBaseOption {
      */
     public static final String PROPERTY_NAME = "kie.mbeans";
 
+    public static OptionKey<MBeansOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
+
     private boolean value;
 
     MBeansOption( final boolean value ) {

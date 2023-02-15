@@ -32,6 +32,7 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.model.Constraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
+import org.kie.api.KieBaseConfiguration;
 
 import static java.util.stream.Collectors.toList;
 
@@ -53,7 +54,7 @@ public class CombinedConstraint extends AbstractConstraint {
     }
 
     @Override
-    public boolean isIndexable( short nodeType, RuleBaseConfiguration config ) {
+    public boolean isIndexable( short nodeType, KieBaseConfiguration config) {
         return false;
     }
 

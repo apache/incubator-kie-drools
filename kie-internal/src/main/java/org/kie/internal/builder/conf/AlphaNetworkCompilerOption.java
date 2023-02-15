@@ -16,6 +16,8 @@
 
 package org.kie.internal.builder.conf;
 
+import org.kie.api.conf.OptionKey;
+
 /**
  * An Enum for AlphaNetworkCompilerOption option.
  *
@@ -27,13 +29,15 @@ package org.kie.internal.builder.conf;
  *
  * DEFAULT = disabled
  */
-public enum AlphaNetworkCompilerOption implements SingleValueKnowledgeBuilderOption {
+public enum AlphaNetworkCompilerOption implements SingleValueRuleBuilderOption {
 
     DISABLED("disabled"),
     INMEMORY("inmemory"),
     LOAD("load");
 
     public static final String PROPERTY_NAME = "drools.alphaNetworkCompiler";
+
+    public static OptionKey<AlphaNetworkCompilerOption> KEY = new OptionKey<>(TYPE, PROPERTY_NAME);
 
     private String value;
 

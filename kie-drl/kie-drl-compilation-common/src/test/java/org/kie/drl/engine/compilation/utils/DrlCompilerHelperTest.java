@@ -37,6 +37,7 @@ import org.kie.drl.engine.compilation.model.DrlFileSetResource;
 import org.kie.drl.engine.compilation.model.DrlPackageDescrSetResource;
 import org.kie.drl.engine.compilation.model.ExecutableModelClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
@@ -54,10 +55,8 @@ class DrlCompilerHelperTest {
                 .map(Path::toFile)
                 .filter(File::isFile)
                 .collect(Collectors.toSet());
-        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration =
-                new KnowledgeBuilderConfigurationImpl();
-        DrlResourceHandler drlResourceHandler =
-                new DrlResourceHandler(knowledgeBuilderConfiguration);
+        KnowledgeBuilderConfigurationImpl knowledgeBuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
+        DrlResourceHandler drlResourceHandler = new DrlResourceHandler(knowledgeBuilderConfiguration);
         packageDescrs = new HashSet<>();
         for (File drlFile : drlFiles) {
             FileSystemResource fileSystemResource = new FileSystemResource(drlFile);
