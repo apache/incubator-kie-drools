@@ -27,23 +27,16 @@ import org.jbpm.compiler.xml.SemanticModule;
 import org.jbpm.compiler.xml.core.DefaultSemanticModule;
 import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.compiler.xml.core.WrapperSemanticModule;
+import org.kie.internal.builder.conf.KnowledgeBuilderOption;
+import org.kie.internal.builder.conf.MultiValueKieBuilderOption;
+import org.kie.internal.builder.conf.SingleValueKieBuilderOption;
+import org.kie.internal.conf.CompositeConfiguration;
 
 public class SemanticKnowledgeBuilderConfigurationImpl extends KnowledgeBuilderConfigurationImpl {
     private SemanticModules semanticModules;
 
-    public SemanticKnowledgeBuilderConfigurationImpl() {
-    }
-
-    public SemanticKnowledgeBuilderConfigurationImpl(Properties properties) {
-        super(properties);
-    }
-
-    public SemanticKnowledgeBuilderConfigurationImpl(ClassLoader classLoader) {
-        super(classLoader);
-    }
-
-    public SemanticKnowledgeBuilderConfigurationImpl(Properties properties, ClassLoader classLoader) {
-        super(properties, classLoader);
+    public SemanticKnowledgeBuilderConfigurationImpl(CompositeConfiguration<KnowledgeBuilderOption, SingleValueKieBuilderOption, MultiValueKieBuilderOption> compConfig) {
+        super(compConfig);
     }
 
     public void addSemanticModule(SemanticModule module) {

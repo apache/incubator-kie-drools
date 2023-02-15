@@ -26,7 +26,6 @@ import org.drools.io.ByteArrayResource;
 import org.drools.io.ReaderResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -56,7 +55,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         builder.add(new ReaderResource(new StringReader(rule)), ResourceType.DRL);
 
         String process =
@@ -127,7 +126,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "    <connection from=\"4\" to=\"3\"/>\n" +
                         "  </connections>\n" +
                         "</process>";
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         builder.add(new ReaderResource(new StringReader(process2)), ResourceType.DRF);
         kbase.addPackages(builder.getKnowledgePackages());
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
@@ -153,7 +152,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         builder.add(new ReaderResource(new StringReader(rule)), ResourceType.DRL);
 
         String process =
@@ -224,7 +223,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
                         "    <connection from=\"4\" to=\"3\"/>\n" +
                         "  </connections>\n" +
                         "</process>";
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         builder.add(new ReaderResource(new StringReader(process2)), ResourceType.DRF);
         kbase.addPackages(builder.getKnowledgePackages());
         Map<String, Long> mapping = new HashMap<String, Long>();
@@ -252,7 +251,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = (KnowledgeBuilderImpl) KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         builder.add(new ByteArrayResource(rule.getBytes()), ResourceType.DRL);
 
         String process =

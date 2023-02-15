@@ -17,7 +17,6 @@ package org.jbpm.process.builder;
 
 import java.util.Collection;
 
-import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
@@ -33,7 +32,7 @@ public class KnowledgeBuilderTest extends AbstractBaseTest {
 
     @Test
     public void testKnowledgeProviderWithProcesses() {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(new SemanticKnowledgeBuilderConfigurationImpl());
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
 
         String str = "";
         str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

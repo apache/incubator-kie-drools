@@ -18,6 +18,7 @@ package org.jbpm.xml;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.ExistsDescr;
@@ -39,6 +40,7 @@ import org.drools.util.StringUtils;
 import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.compiler.xml.compiler.XmlPackageReader;
 import org.junit.jupiter.api.Test;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -448,7 +450,8 @@ public class XmlPackageReaderTest {
     }
 
     private XmlPackageReader getXmReader() {
-        SemanticKnowledgeBuilderConfigurationImpl conf = new SemanticKnowledgeBuilderConfigurationImpl();
+        SemanticKnowledgeBuilderConfigurationImpl conf =
+                (SemanticKnowledgeBuilderConfigurationImpl) KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
         XmlPackageReader xmlReader = new XmlPackageReader(conf.getSemanticModules());
         xmlReader.getParser().setClassLoader(XmlPackageReaderTest.class.getClassLoader());
 

@@ -26,7 +26,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.kiesession.audit.LogEvent;
 import org.drools.kiesession.audit.RuleFlowLogEvent;
@@ -166,7 +165,7 @@ public abstract class JbpmBpmn2TestCase {
                 DefaultSignalManagerFactory.class.getName());
         defaultProps.setProperty("drools.processInstanceManagerFactory",
                 DefaultProcessInstanceManagerFactory.class.getName());
-        KieSessionConfiguration conf = new SessionConfiguration(defaultProps);
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration(defaultProps);
         conf.setOption(ForceEagerActivationOption.YES);
         result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
         workingMemoryLogger = new KogitoWorkingMemoryInMemoryLogger(result);

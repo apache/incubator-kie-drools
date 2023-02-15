@@ -19,12 +19,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.mvel.DrlDumper;
 import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.compiler.xml.compiler.XmlDumper;
 import org.jbpm.compiler.xml.compiler.XmlPackageReader;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DumperTestHelper {
 
     public static void XmlFile(String filename) throws Exception {
-        SemanticKnowledgeBuilderConfigurationImpl conf = new SemanticKnowledgeBuilderConfigurationImpl();
+        SemanticKnowledgeBuilderConfigurationImpl conf =
+                (SemanticKnowledgeBuilderConfigurationImpl) KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration().as(KnowledgeBuilderConfigurationImpl.KEY);
 
         XmlPackageReader xmlPackageReader = new XmlPackageReader(conf.getSemanticModules());
         xmlPackageReader.getParser().setClassLoader(DumperTestHelper.class.getClassLoader());

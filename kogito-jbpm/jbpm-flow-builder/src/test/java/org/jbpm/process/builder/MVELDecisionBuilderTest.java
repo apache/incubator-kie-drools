@@ -27,7 +27,6 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.builder.MVELDialect;
-import org.jbpm.compiler.xml.compiler.SemanticKnowledgeBuilderConfigurationImpl;
 import org.jbpm.process.builder.dialect.mvel.MVELActionBuilder;
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.Action;
@@ -37,6 +36,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.jupiter.api.Test;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
@@ -51,7 +51,7 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
         ActionDescr actionDescr = new ActionDescr();
         actionDescr.setText("list.add( 'hello world' )");
 
-        builder = new KnowledgeBuilderImpl(pkg, new SemanticKnowledgeBuilderConfigurationImpl());
+        builder = new KnowledgeBuilderImpl(pkg, KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
 
         PackageRegistry pkgReg = builder.getPackageRegistry(pkg.getName());
         MVELDialect mvelDialect = (MVELDialect) pkgReg.getDialectCompiletimeRegistry().getDialect("mvel");
