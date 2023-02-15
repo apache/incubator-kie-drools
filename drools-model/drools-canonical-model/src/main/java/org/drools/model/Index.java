@@ -76,9 +76,9 @@ public interface Index<A, V> {
         public <T, V> BiPredicate<T, V> asPredicate() {
             switch (this) {
                 case EQUAL:
-                    return (t,v) -> Objects.equals(t, v);
+                    return (t,v) -> areEqual(t, v);
                 case NOT_EQUAL:
-                    return (t,v) -> !Objects.equals(t, v);
+                    return (t,v) -> !areEqual(t, v);
                 case GREATER_THAN:
                     return (t,v) -> t != null && compare(t, v) > 0;
                 case GREATER_OR_EQUAL:
@@ -92,8 +92,18 @@ public interface Index<A, V> {
             }
         }
 
-        private <T, V> int compare(Object o1, Object o2) {
-            return o1.getClass() != o2.getClass() && o1 instanceof Number ?
+        private boolean areEqual(Object o1, Object o2) {
+            return o1 instanceof Number && o2 instanceof Number ? areNumericEqual((Number) o1, (Number) o2) : Objects.equals(o1, o2);
+        }
+
+        private <T, V> boolean areNumericEqual(Number n1, Number n2) {
+            return n1.getClass() != n2.getClass() ?
+                    asBigDecimal(n1).equals(asBigDecimal(n2)) :
+                    Objects.equals(n1, n2);
+        }
+
+        private int compare(Object o1, Object o2) {
+            return o1.getClass() != o2.getClass() && o1 instanceof Number && o2 instanceof Number ?
                     asBigDecimal(o1).compareTo(asBigDecimal(o2)) :
                     ((Comparable) o1).compareTo(o2);
         }
