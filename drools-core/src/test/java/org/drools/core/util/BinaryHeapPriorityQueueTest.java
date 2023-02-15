@@ -30,7 +30,8 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List items = new ArrayList();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
+        final BinaryHeapQueue queue = new BinaryHeapQueue( Activation.class,
+                                                           NaturalComparator.INSTANCE,
                                                  100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
@@ -66,7 +67,8 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List items = new ArrayList();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
+        final BinaryHeapQueue queue = new BinaryHeapQueue( Activation.class,
+                                                           NaturalComparator.INSTANCE,
                                                            100000 );
 
         for ( int i = 0; i < 100000; ++i ) {

@@ -46,7 +46,7 @@ public class AgendaGroupQueueImpl
     /**
      * Items in the agenda.
      */
-    private          Queue              priorityQueue;
+    private          Queue<Activation> priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -54,7 +54,7 @@ public class AgendaGroupQueueImpl
 
     private ReteEvaluator reteEvaluator;
     private boolean               autoDeactivate = true;
-    private Map<Object, String>     nodeInstances  = new ConcurrentHashMap<>();
+    private Map<Object, String>   nodeInstances  = new ConcurrentHashMap<>();
 
     private volatile              boolean hasRuleFlowLister;
 
@@ -87,9 +87,9 @@ public class AgendaGroupQueueImpl
         this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
         if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
-            this.priorityQueue = new ArrayQueue();
+            this.priorityQueue = new ArrayQueue(Activation.class);
         } else {
-            this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
+            this.priorityQueue = new BinaryHeapQueue(Activation.class, new PhreakConflictResolver());
         }
     }
 

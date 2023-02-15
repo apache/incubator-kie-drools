@@ -134,7 +134,7 @@ public class BinaryHeapQueueTest {
 
         public Group(final String name) {
             this.name = name;
-            this.queue = new BinaryHeapQueue( ItemConflictResolver.INSTANCE );
+            this.queue = new BinaryHeapQueue( Activation.class, ItemConflictResolver.INSTANCE );
         }
 
         public String getName() {
