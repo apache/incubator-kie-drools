@@ -22,8 +22,9 @@ import org.drools.ruleunits.api.DataStore;
 import org.drools.ruleunits.api.DataStream;
 import org.drools.ruleunits.api.SingletonStore;
 import org.drools.ruleunits.dsl.util.DataSourceDefinition;
+import org.drools.ruleunits.impl.NamedRuleUnitData;
 
-public class SyntheticRuleUnit implements RuleUnitDefinition {
+public class SyntheticRuleUnit implements RuleUnitDefinition, NamedRuleUnitData {
 
     private final String unitName;
 
@@ -38,6 +39,11 @@ public class SyntheticRuleUnit implements RuleUnitDefinition {
         this.dataSources = dataSources;
         this.globals = globals;
         this.rulesDefinition = rulesDefinition;
+    }
+
+    @Override
+    public String getUnitName() {
+        return unitName;
     }
 
     @Override

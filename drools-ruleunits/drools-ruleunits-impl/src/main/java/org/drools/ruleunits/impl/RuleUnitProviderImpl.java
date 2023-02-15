@@ -55,7 +55,7 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     private static final boolean USE_EXEC_MODEL = true;
 
-    private final Map<Class<? extends RuleUnitData>, RuleUnit> ruleUnitMap;
+    private final Map<String, RuleUnit> ruleUnitMap;
 
     public RuleUnitProviderImpl() {
         this.ruleUnitMap = loadRuleUnits(Thread.currentThread().getContextClassLoader());
@@ -63,28 +63,39 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
 
     @Override
     public <T extends RuleUnitData> RuleUnit<T> getRuleUnit(T ruleUnitData) {
-        Class<? extends RuleUnitData> ruleUnitDataClass = ruleUnitData.getClass();
-        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitDataClass);
+        String ruleUnitName = getRuleUnitName(ruleUnitData);
+        RuleUnit<T> ruleUnit = ruleUnitMap.get(ruleUnitName);
         if (ruleUnit != null) {
             return ruleUnit;
         }
         ruleUnitMap.putAll(generateRuleUnit(ruleUnitData));
-        return ruleUnitMap.get(ruleUnitDataClass);
+        return ruleUnitMap.get(ruleUnitName);
     }
 
-    protected <T extends RuleUnitData> Map<Class<? extends RuleUnitData>, RuleUnit> generateRuleUnit(T ruleUnitData) {
+    protected <T extends RuleUnitData> Map<String, RuleUnit> generateRuleUnit(T ruleUnitData) {
         InternalKieModule kieModule = createRuleUnitKieModule(ruleUnitData.getClass(), USE_EXEC_MODEL);
         KieModuleKieProject kieModuleKieProject = createRuleUnitKieProject(kieModule, USE_EXEC_MODEL);
         return loadRuleUnits(kieModuleKieProject.getClassLoader());
     }
 
-    private Map<Class<? extends RuleUnitData>, RuleUnit> loadRuleUnits(ClassLoader classLoader) {
-        Map<Class<? extends RuleUnitData>, RuleUnit> map = new HashMap<>();
+    private Map<String, RuleUnit> loadRuleUnits(ClassLoader classLoader) {
+        Map<String, RuleUnit> map = new HashMap<>();
         ServiceLoader<RuleUnit> loader = ServiceLoader.load(RuleUnit.class, classLoader);
         for (RuleUnit impl : loader) {
-            map.put(((InternalRuleUnit) impl).getRuleUnitDataClass(), impl);
+            map.put( getRuleUnitName( ((InternalRuleUnit) impl).getRuleUnitDataClass() ), impl);
         }
         return map;
+    }
+
+    protected String getRuleUnitName(RuleUnitData ruleUnitData) {
+        if (ruleUnitData instanceof NamedRuleUnitData) {
+            return ((NamedRuleUnitData) ruleUnitData).getUnitName();
+        }
+        return getRuleUnitName(ruleUnitData.getClass());
+    }
+
+    protected String getRuleUnitName(Class<? extends RuleUnitData> ruleUnitDataClass) {
+        return ruleUnitDataClass.getCanonicalName();
     }
 
     static InternalKieModule createRuleUnitKieModule(Class<?> unitClass, boolean useExecModel) {
