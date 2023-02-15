@@ -120,7 +120,7 @@ public class PhreakRuleTerminalNode {
             }
         }
 
-        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple, reteEvaluator, rtnNode)) {
+        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple )) {
             // only relevant for seralization, to not refire Matches already fired
             return;
         }
@@ -193,7 +193,7 @@ public class PhreakRuleTerminalNode {
 
         int salienceInt = getSalienceValue( rtnNode, executor.getRuleAgendaItem(), ( AgendaItem ) leftTuple, reteEvaluator );
         
-        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple, reteEvaluator, rtnNode)) {
+        if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple)) {
             // only relevant for serialization, to not re-fire Matches already fired
             return;
         }

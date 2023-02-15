@@ -45,6 +45,8 @@ public class SerializableActivation
     private PropagationContext                propgationContext;
     private boolean                           active;
 
+    private int                               salience;
+
     public SerializableActivation() {
         
     }
@@ -61,13 +63,26 @@ public class SerializableActivation
             throw new RuntimeException("Unable to get declarations " + activation);
         }
         this.active = ((Activation)activation).isQueued();
+        this.salience = activation.getSalience();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        rule = (Rule) in.readObject();
+        declarations = (Declaration[]) in.readObject();
+        factHandles = (List<? extends FactHandle>) in.readObject();
+        propgationContext = (PropagationContext) in.readObject();
+        active = in.readBoolean();
+        salience = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(rule);
+        out.writeObject(declarations);
+        out.writeObject(factHandles);
+        out.writeObject(propgationContext);
+        out.writeBoolean(active);
+        out.writeInt(salience);
     }
 
     public Rule getRule() {
@@ -105,5 +120,10 @@ public class SerializableActivation
     
     public boolean isActive() {
         return active;
-    }        
+    }
+
+    @Override
+    public int getSalience() {
+        return salience;
+    }
 }

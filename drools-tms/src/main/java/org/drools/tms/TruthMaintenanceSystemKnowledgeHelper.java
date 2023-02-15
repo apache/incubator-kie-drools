@@ -31,7 +31,7 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.BeliefSystemMode;
@@ -129,7 +129,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
                 LogicalDependency<SimpleMode> tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
 
-                TruthMaintenanceSystemAgendaItem justified = ( TruthMaintenanceSystemAgendaItem ) dep.getJustified();
+                TruthMaintenanceSystemActivation justified = ( TruthMaintenanceSystemActivation ) dep.getJustified();
                 justified.getBlockers().remove( dep.getMode());
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
@@ -180,7 +180,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
 
     @Override
     public void blockMatch(Match act) {
-        TruthMaintenanceSystemAgendaItem targetMatch = ( TruthMaintenanceSystemAgendaItem ) act;
+        TruthMaintenanceSystemRuleTerminalNodeLeftTuple targetMatch = ( TruthMaintenanceSystemRuleTerminalNodeLeftTuple ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency<SimpleMode> dep = null;
         if ( this.previousBlocked != null ) {
@@ -200,33 +200,24 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
         ((TruthMaintenanceSystemActivation)this.activation).addBlocked( dep );
 
         if ( targetMatch.getBlockers().size() == 1 && targetMatch.isQueued()  ) {
-            if ( targetMatch.getRuleAgendaItem() == null ) {
-                // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
-                targetMatch.remove();
-            } else {
-                targetMatch.getRuleAgendaItem().getRuleExecutor().removeLeftTuple(targetMatch.getTuple());
-            }
+            // it wasn't blocked before, but is now, so we must remove, so it cannot be executed.
+            targetMatch.remove();
 
             if ( targetMatch.getActivationGroupNode() != null ) {
                 targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
-            }
-
-            if ( targetMatch.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
-                ruleFlowGroup.remove( targetMatch );
             }
         }
     }
 
     @Override
     public void unblockAllMatches(Match act) {
-        TruthMaintenanceSystemAgendaItem targetMatch = ( TruthMaintenanceSystemAgendaItem ) act;
+        TruthMaintenanceSystemRuleTerminalNodeLeftTuple targetMatch = ( TruthMaintenanceSystemRuleTerminalNodeLeftTuple ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
 
         for (LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
             LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
             LogicalDependency dep = ( LogicalDependency ) entry.getObject();
-            ((TruthMaintenanceSystemAgendaItem)dep.getJustifier()).removeBlocked( dep );
+            dep.getJustifier().removeBlocked( dep );
             entry = tmp;
         }
 

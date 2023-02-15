@@ -15,7 +15,6 @@
  */
 
 package org.drools.core.util;
-
 import java.util.Collection;
 
 import org.drools.core.util.Queue.QueueEntry;
@@ -45,7 +44,6 @@ public interface Queue<T extends QueueEntry> {
         void setQueueIndex(int index);
 
         void dequeue();
-
         boolean isQueued();
     }
 }

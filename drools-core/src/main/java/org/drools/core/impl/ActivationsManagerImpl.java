@@ -165,11 +165,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
             activation.setActivationGroupNode( null );
 
             if ( activation.isQueued() ) {
-                activation.setQueued(false);
                 activation.remove();
-
-                RuleExecutor ruleExec = ((RuleTerminalNodeLeftTuple)activation).getRuleAgendaItem().getRuleExecutor();
-                ruleExec.removeLeftTuple((LeftTuple) activation);
                 getAgendaEventSupport().fireActivationCancelled( activation, this.reteEvaluator, MatchCancelledCause.CLEAR );
             }
         }
@@ -178,7 +174,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn) {
-        return AgendaComponentFactory.get().createAgendaItem( activationCounter++, null, salience, null, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
+        return AgendaComponentFactory.get().createAgendaItem( salience, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
     }
 
     @Override
@@ -209,9 +205,6 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public void addItemToActivationGroup(AgendaItem activation) {
-        if ( activation.isRuleAgendaItem() ) {
-            throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
-        }
         String group = activation.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = this.activationGroups.computeIfAbsent(group, k -> new ActivationGroupImpl( this, k ));

@@ -23,7 +23,8 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.conflict.PhreakConflictResolver;
+import org.drools.core.conflict.MatchConflictResolver;
+import org.drools.core.conflict.RuleAgendaConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
@@ -62,7 +63,7 @@ public class RuleExecutor {
         this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
-            queue = new BinaryHeapQueue(PhreakConflictResolver.INSTANCE);
+            queue = new BinaryHeapQueue(MatchConflictResolver.INSTANCE);
         }
     }
 
@@ -147,7 +148,7 @@ public class RuleExecutor {
                 }
 
                 AgendaItem item = (AgendaItem) tuple;
-                if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept(item, reteEvaluator, rtn)) {
+                if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept(item)) {
                     // only relevant for serialization, to not refire Matches already fired
                     continue;
                 }
@@ -275,7 +276,7 @@ public class RuleExecutor {
     }
 
     private boolean isHigherSalience(RuleAgendaItem nextRule) {
-        return PhreakConflictResolver.doCompare(ruleAgendaItem,nextRule) >= 0;
+        return RuleAgendaConflictResolver.doCompare(ruleAgendaItem, nextRule) >= 0;
     }
 
     public TupleList getLeftTupleList() {

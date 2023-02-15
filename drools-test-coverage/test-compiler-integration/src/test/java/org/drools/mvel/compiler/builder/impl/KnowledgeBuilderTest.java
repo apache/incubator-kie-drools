@@ -40,6 +40,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -1416,6 +1417,11 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         @Override
         public void setQueueIndex(int index) {
 
+        }
+
+        @Override
+        public RuleAgendaItem getRuleAgendaItem() {
+            return null;
         }
     }
 

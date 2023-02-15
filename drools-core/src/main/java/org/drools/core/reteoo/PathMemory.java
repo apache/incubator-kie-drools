@@ -157,7 +157,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         agendaItem.getRuleExecutor().setDirty(true);
 
         ActivationsFilter activationFilter = activationsManager.getActivationsFilter();
-        if ( activationFilter != null && !activationFilter.accept( agendaItem, activationsManager.getReteEvaluator(), agendaItem.getTerminalNode() ) ) {
+        if ( activationFilter != null && !activationFilter.accept( agendaItem ) ) {
             return;
         }
 

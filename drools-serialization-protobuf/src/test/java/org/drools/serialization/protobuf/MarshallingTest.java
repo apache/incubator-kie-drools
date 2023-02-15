@@ -935,7 +935,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
-        session.fireAllRules();
+        assertThat(session.fireAllRules()).isEqualTo(1);
 
         session = getSerialisedStatefulKnowledgeSession( session, kBase, true );
 
@@ -1594,10 +1594,11 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( brie );
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
-        ksession.fireAllRules();
+        assertThat(ksession.fireAllRules()).isEqualTo(1); // only 1 as it halt
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession, true );
-        ksession.fireAllRules();
+        assertThat(ksession.fireAllRules()).isEqualTo(1); // it would have halt again
+        assertThat(ksession.fireAllRules()).isEqualTo(0); // make sure nothing to resume
 
         assertThat(list.size()).isEqualTo(2);
         assertThat(list.get(0)).isEqualTo("rule2");

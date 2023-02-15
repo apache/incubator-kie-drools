@@ -26,6 +26,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.Queue.QueueEntry;
@@ -106,9 +107,9 @@ public interface Activation extends Serializable, QueueEntry, Match {
 
     void setActive(boolean active);
 
-    boolean isRuleAgendaItem();
-
     default List<Object> getObjectsDeep() {
         return Collections.emptyList();
     }
+
+    RuleAgendaItem getRuleAgendaItem();
 }

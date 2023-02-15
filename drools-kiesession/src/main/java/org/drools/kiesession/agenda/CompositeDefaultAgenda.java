@@ -490,7 +490,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void stageLeftTuple( RuleAgendaItem ruleAgendaItem, AgendaItem justified ) {
+    public void stageLeftTuple( RuleAgendaItem ruleAgendaItem, Activation justified ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.stageLeftTuple -> TODO" );
     }
 

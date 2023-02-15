@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -188,7 +189,6 @@ public class BinaryHeapQueue<T extends QueueEntry>
             return null;
         }
 
-
         final T result = this.elements.get(index);
         if ( log.isTraceEnabled() ) {
             log.trace( "Queue Removed {} {}", result.getQueueIndex(), result);
@@ -317,7 +317,9 @@ public class BinaryHeapQueue<T extends QueueEntry>
     }
 
     public Collection<T> getAll() {
-        return elements.subList(1, size+1);
+        Collection<T> subList = isEmpty() ? Collections.EMPTY_LIST : elements.subList(1, size +1); // +1 as to is exclusive (from is inclusive)
+        return subList;
+
     }
 
     @Override

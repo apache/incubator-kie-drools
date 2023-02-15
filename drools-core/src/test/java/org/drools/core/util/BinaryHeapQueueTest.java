@@ -17,7 +17,6 @@ package org.drools.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.common.ActivationGroupNode;
@@ -27,6 +26,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
@@ -136,7 +136,7 @@ public class BinaryHeapQueueTest {
 
         public Group(final String name) {
             this.name = name;
-            this.queue = new BinaryHeapQueue<>( ItemConflictResolver.INSTANCE );
+            this.queue = new BinaryHeapQueue<>(ItemConflictResolver.INSTANCE );
         }
 
         public String getName() {
@@ -330,14 +330,15 @@ public class BinaryHeapQueueTest {
 
         public void setActive(boolean active) { }
 
-        public boolean isRuleAgendaItem() {
-            return false;
+        @Override
+        public RuleAgendaItem getRuleAgendaItem() {
+            return null;
         }
     }
 
     public static class ItemConflictResolver
             implements
-            ConflictResolver {
+            ConflictResolver<Item> {
 
         private static final long                 serialVersionUID = 1L;
         public static final  ItemConflictResolver INSTANCE         = new ItemConflictResolver();
@@ -346,8 +347,8 @@ public class BinaryHeapQueueTest {
             return ItemConflictResolver.INSTANCE;
         }
 
-        public final int compare(final Activation existing,
-                                 final Activation adding) {
+        public final int compare(final Item existing,
+                                 final Item adding) {
             final int s1 = existing.getSalience();
             final int s2 = adding.getSalience();
 
