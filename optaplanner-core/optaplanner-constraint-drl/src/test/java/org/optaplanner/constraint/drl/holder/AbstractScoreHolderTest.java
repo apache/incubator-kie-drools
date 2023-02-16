@@ -2,6 +2,9 @@ package org.optaplanner.constraint.drl.holder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,9 +13,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.AgendaItemImpl;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
@@ -37,19 +40,17 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
         }
         List<Object> justificationList = Arrays.asList(justifications);
         RuleContext kcontext = mock(RuleContext.class);
-        AgendaItemImpl agendaItem = new AgendaItemImpl() {
 
-            @Override
-            public List<Object> getObjects() {
-                return justificationList;
-            }
+        AtomicReference<Runnable> callbackRef = new AtomicReference<>();
+        AgendaItem agendaItem = mock(AgendaItem.class);
+        doReturn(justificationList).when(agendaItem).getObjects();
+        doReturn(justificationList).when(agendaItem).getObjectsDeep();
+        doAnswer(invocation -> callbackRef.get()).when(agendaItem).getCallback();
+        doAnswer(invocation -> {
+            callbackRef.set(invocation.getArgument(0));
+            return null;
+        }).when(agendaItem).setCallback(any());
 
-            @Override
-            public List<Object> getObjectsDeep() {
-                return justificationList;
-            }
-
-        };
         when(kcontext.getMatch()).thenReturn(agendaItem);
         when(kcontext.getRule()).thenReturn(rule);
         return kcontext;
