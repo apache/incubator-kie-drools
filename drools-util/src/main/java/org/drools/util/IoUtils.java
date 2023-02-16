@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -80,15 +83,31 @@ public class IoUtils {
     }
 
     public static String readFileAsString(File file) {
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return readInputStreamAsString(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String readJarEntryAsString(JarFile jarFile, JarEntry jarEntry) {
+        try (InputStream inputStream = jarFile.getInputStream(jarEntry)) {
+            return readInputStreamAsString(inputStream);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static String readInputStreamAsString(InputStream inputStream) {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET));
+            reader = new BufferedReader(new InputStreamReader(inputStream, UTF8_CHARSET));
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         } finally {
             if (reader != null) {
                 try {

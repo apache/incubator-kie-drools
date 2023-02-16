@@ -19,44 +19,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>test-integration-ruleunits</artifactId>
-  <name>Drools :: Test Coverage :: Integration tests with Rule Units</name>
+  <packaging>pom</packaging>
+  <name>Drools :: Test Coverage :: Integration tests with Rule Units Parent</name>
 
-  <properties>
-    <java.module.name>org.drools.compiler.integrationtests</java.module.name>
-    <surefire.forkCount>2</surefire.forkCount>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ruleunits-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-decisiontables</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-dynamic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>test-integration-ruleunits-jar</module>
+    <module>test-integration-ruleunits-tests</module>
+  </modules>
 </project>
