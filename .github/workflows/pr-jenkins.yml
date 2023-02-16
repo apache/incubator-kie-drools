@@ -15,6 +15,7 @@ jobs:
       group: ${{ github.repository.name }}_jenkinsfile_tests-${{ github.head_ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
+    name: Jenkinsfiles
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
@@ -43,6 +44,7 @@ jobs:
       group: ${{ github.repository.name }}_dsl_tests-${{ github.head_ref }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
+    name: DSL
     steps:
     - name: DSL tests
       uses: kiegroup/kogito-pipelines/.ci/actions/dsl-tests@main

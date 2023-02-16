@@ -1,4 +1,4 @@
-name: Test analysis
+name: Surefire report
 
 on:
   workflow_run:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
-    name: Test analysis
+    name: Tests analysis
     steps:
       - name: Download surefire reports
         uses: actions/github-script@v6
