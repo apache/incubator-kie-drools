@@ -65,12 +65,12 @@ git:
     name: bsig-gh-bot
     credentials_id: bsig-gh-bot
   fork_author:
-    name: kie-ci5
-    credentials_id: kie-ci5
+    name: kie-ci
+    credentials_id: kie-ci
   quarkus:
     author:
       name: quarkusio
-      credentials_id: kie-ci5
+      credentials_id: kie-ci
     branch: main
   jenkins_config_path: .ci/jenkins
 buildchain_config:
