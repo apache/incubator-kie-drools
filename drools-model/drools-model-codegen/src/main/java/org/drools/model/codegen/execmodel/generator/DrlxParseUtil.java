@@ -116,7 +116,7 @@ import static org.drools.util.MethodUtils.findMethod;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.util.ClassUtils.toRawClass;
 
 public class DrlxParseUtil {
 

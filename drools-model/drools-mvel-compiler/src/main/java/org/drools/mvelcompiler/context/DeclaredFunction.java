@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.util.TypeResolver;
-import org.drools.mvelcompiler.util.StreamUtils;
+import org.drools.util.StreamUtils;
 
 public class DeclaredFunction {
 

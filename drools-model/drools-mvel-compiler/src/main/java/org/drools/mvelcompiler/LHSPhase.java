@@ -52,7 +52,7 @@ import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.ast.VariableDeclaratorTExpr;
 import org.drools.mvelcompiler.context.Declaration;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.TypeUtils;
+import org.drools.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -345,7 +345,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(TypeUtils::isCollection).isPresent()) {
+        if(type.filter(ClassUtils::isCollection).isPresent()) {
             Expression index = n.getIndex();
             if(index.isStringLiteralExpr() || index.isNameExpr()) {
                 return new MapPutExprT(name, index, rhsOrNull(), name.getType());
@@ -379,7 +379,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     private Class<?> getRHSType() {
         return rhs
                 .flatMap(TypedExpression::getType)
-                .map(TypeUtils::classFromType)
+                .map(ClassUtils::classFromType)
                 .orElseThrow(() -> new MvelCompilerException("RHS doesn't have a type"));
     }
 

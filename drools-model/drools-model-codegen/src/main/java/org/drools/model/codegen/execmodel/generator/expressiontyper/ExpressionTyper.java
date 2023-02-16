@@ -115,12 +115,12 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.transfo
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.flattenScope;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
-import static org.drools.modelcompiler.util.ClassUtil.getTypeArgument;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.MvelParser.parseType;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.drools.util.ClassUtils.extractGenericType;
 import static org.drools.util.ClassUtils.getter2property;
+import static org.drools.util.ClassUtils.getTypeArgument;
+import static org.drools.util.ClassUtils.toRawClass;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class ExpressionTyper {

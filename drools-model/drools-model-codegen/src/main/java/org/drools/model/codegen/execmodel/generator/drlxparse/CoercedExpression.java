@@ -50,7 +50,7 @@ import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
+import static org.drools.util.ClassUtils.toNonPrimitiveType;
 
 public class CoercedExpression {
 

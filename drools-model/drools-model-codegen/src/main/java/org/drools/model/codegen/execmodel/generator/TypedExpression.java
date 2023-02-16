@@ -28,8 +28,8 @@ import org.drools.mvel.parser.printer.PrintUtil;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.util.ClassUtils.toNonPrimitiveType;
+import static org.drools.util.ClassUtils.toRawClass;
 
 public class TypedExpression {
 
