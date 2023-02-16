@@ -457,6 +457,7 @@ public class RuleExecutor {
             activation.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
+            e.printStackTrace();
             knowledgeHelper.restoreActivationOnConsequenceFailure( activation );
             activationsManager.handleException( activation, e );
         } finally {

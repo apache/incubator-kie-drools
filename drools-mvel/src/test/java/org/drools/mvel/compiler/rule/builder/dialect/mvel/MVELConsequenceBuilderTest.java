@@ -27,6 +27,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -34,8 +36,6 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
@@ -147,8 +147,10 @@ public class MVELConsequenceBuilderTest {
         final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0, rtn, true );
         f0.removeLeftTuple(tuple);
 
-        final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
-                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, null, null ), rtn, null);
+        final RuleTerminalNodeLeftTuple item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, pctxFactory.createPropagationContext(1, PropagationContext.Type.DELETION, null, null, null), true);
+        item.init(0, 0, item.getPropagationContext(), null, null);
+
+
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         (( MVELConsequence ) context.getRule().getConsequence()).compile(  ( MVELDialectRuntimeData ) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
@@ -211,10 +213,10 @@ public class MVELConsequenceBuilderTest {
                                                null,
                                                true );
 
-        final AgendaItem item = new AgendaItemImpl( 0,
-                                                tuple,
-                                                10,
-                                                null, null, null);
+        RuleTerminalNode rtn = new RuleTerminalNode();
+        final RuleTerminalNodeLeftTuple item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, null, true);
+        item.init(0, 0, item.getPropagationContext(), null, null);
+
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );
         try {

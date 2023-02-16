@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
@@ -100,10 +99,6 @@ public class MVELCompilationUnit
         // always use mvel reflective optimizer
         OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
 
-        PropertyHandler handler1 = PropertyHandlerFactory.getPropertyHandler( AgendaItemImpl.class );
-        if ( handler1 == null ) {
-            PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItemImpl.class, new ActivationPropertyHandler() );
-        }
         PropertyHandler handler2 = PropertyHandlerFactory.getPropertyHandler( RuleTerminalNodeLeftTuple.class);
         if (handler2 == null) {
             PropertyHandlerFactoryFixer.getPropertyHandlerClass().put(RuleTerminalNodeLeftTuple.class, new ActivationPropertyHandler());

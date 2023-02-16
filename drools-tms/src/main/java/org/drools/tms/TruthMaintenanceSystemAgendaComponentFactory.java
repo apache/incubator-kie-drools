@@ -30,6 +30,10 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 
 public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaComponentFactory {
+
+    public TruthMaintenanceSystemAgendaComponentFactory() {
+    }
+
     @Override
     public LeftTuple createTerminalTuple() {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple();

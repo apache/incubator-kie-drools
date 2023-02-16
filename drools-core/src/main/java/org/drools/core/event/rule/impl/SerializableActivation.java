@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.common.PropagationContext;
@@ -53,8 +53,8 @@ public class SerializableActivation
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
         this.propgationContext = ((Activation)activation).getPropagationContext();
-        if ( activation instanceof AgendaItemImpl) {
-            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getTupleSink()).getAllDeclarations();
+        if ( activation instanceof RuleTerminalNodeLeftTuple) {
+            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((RuleTerminalNodeLeftTuple)activation).getTuple().getTupleSink()).getAllDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
         } else {
