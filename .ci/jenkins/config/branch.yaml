@@ -81,7 +81,7 @@ git:
   quarkus:
     author:
       name: quarkusio
-      credentials_id: kie-ci4
+      credentials_id: kie-ci
     branch: main
   jenkins_config_path: .ci/jenkins
 buildchain_config:
