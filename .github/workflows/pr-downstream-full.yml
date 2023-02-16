@@ -1,4 +1,4 @@
-name: Build Chain
+name: Full downstream build
 
 on:
   pull_request:
@@ -18,7 +18,7 @@ jobs:
   build-chain:
     if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
     concurrency:
-      group: fdb-${{ github.head_ref }}
+      group: fdb-drools_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
     strategy:
       matrix:
@@ -27,7 +27,7 @@ jobs:
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Full downstream build
+    name: Build Chain (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main

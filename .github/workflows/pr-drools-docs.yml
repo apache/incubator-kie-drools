@@ -9,7 +9,7 @@ on:
 jobs:
   drools-build:
     concurrency:
-      group: drools-docs_pr-${{ github.head_ref }}
+      group: pr-drools_docs_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     strategy:
@@ -19,7 +19,7 @@ jobs:
         maven-version: ['3.8.7']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - uses: actions/checkout@v3
       - name: Java and Maven Setup

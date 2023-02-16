@@ -1,4 +1,4 @@
-name: Drools
+name: Kogito Downstream
 
 on:
   pull_request:
@@ -13,19 +13,35 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  drools-build:
+  kogito-downstream-build:
     concurrency:
-      group: drools-${{ matrix.os }}_pr-${{ github.head_ref }}
+      group: pr-${{ matrix.job_name }}_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        job_name: [ kogito-runtimes, kogito-apps, kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
+        os: [ubuntu-latest]
         java-version: [11]
         maven-version: ['3.8.7']
+        include:
+          - job_name: kogito-runtimes
+            repository: kogito-runtimes
+          - job_name: kogito-apps
+            repository: kogito-apps
+            env_BUILD_MVN_OPTS: "-DskipUI"
+          - job_name: kogito-quarkus-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
+          - job_name: kogito-springboot-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
+          - job_name: serverless-workflow-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
+    name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -44,7 +60,11 @@ jobs:
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP:kiegroup}/drools/${BRANCH:main}/.ci/buildchain-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          starting-project: kiegroup/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+        env: 
+          BUILD_MVN_OPTS: ${{ matrix.env_BUILD_MVN_OPTS }}
+          KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
