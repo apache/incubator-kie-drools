@@ -24,7 +24,7 @@ seed:
       repository: optaplanner
       author:
         name: kiegroup
-        credentials_id: kie-ci
+        credentials_id: kie-ci5
       branch: main
     path: .ci/jenkins/config/branch.yaml
 jenkins:
