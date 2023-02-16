@@ -515,6 +515,6 @@ public class BigDecimalTest extends BaseModelTest {
         ksession.insert(holder);
         int fires = ksession.fireAllRules();
 
-        assertThat(fires).isEqualTo(1);
+        Assertions.assertThat(fires).isEqualTo(1);
     }
 }
