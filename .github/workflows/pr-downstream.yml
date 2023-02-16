@@ -1,4 +1,4 @@
-name: Kogito Apps Build
+name: Kogito Downstream
 
 on:
   pull_request:
@@ -13,19 +13,30 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  build-chain:
+  kogito-downstream-build:
     concurrency:
-      group: kogito_apps_pr-${{ github.head_ref }}
+      group: pr-${{ matrix.job_name }}_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
-    timeout-minutes: 210
+    timeout-minutes: 180
     strategy:
       matrix:
+        job_name: [ kogito-quarkus-examples, kogito-springboot-examples, serverless-workflow-examples ]
         os: [ubuntu-latest]
         java-version: [11]
         maven-version: ['3.8.7']
+        include:
+          - job_name: kogito-quarkus-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-quarkus-examples/
+          - job_name: kogito-springboot-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: kogito-springboot-examples/
+          - job_name: serverless-workflow-examples
+            repository: kogito-examples
+            env_KOGITO_EXAMPLES_SUBFOLDER_POM: serverless-workflow-examples/
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: ${{ matrix.job_name }} (${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }})
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -43,7 +54,10 @@ jobs:
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
+          starting-project: kiegroup/${{ matrix.repository }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+        env: 
+          KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.env_KOGITO_EXAMPLES_SUBFOLDER_POM }}
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}

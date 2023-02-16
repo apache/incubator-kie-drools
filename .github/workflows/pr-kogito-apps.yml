@@ -1,4 +1,4 @@
-name: Kogito Examples Build
+name: Kogito Apps
 
 on:
   pull_request:
@@ -13,23 +13,19 @@ on:
       - '.ci/jenkins/**'
 
 jobs:
-  example-build:
+  build-chain:
     concurrency:
-      group: ${{ matrix.examples-subfolder }}-pr-${{ github.head_ref }}
+      group: pr-kogito-apps_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true
-    timeout-minutes: 180
+    timeout-minutes: 210
     strategy:
       matrix:
         os: [ubuntu-latest]
         java-version: [11]
         maven-version: ['3.8.7']
-        examples-subfolder:
-          - kogito-quarkus-examples
-          - kogito-springboot-examples
-          - serverless-workflow-examples
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - ${{ matrix.examples-subfolder }}
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
     steps:
       - name: Clean Disk Space
         uses: kiegroup/kogito-pipelines/.ci/actions/ubuntu-disk-space@main
@@ -45,11 +41,8 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@main
-        env:
-          KOGITO_EXAMPLES_SUBFOLDER_POM: ${{ matrix.examples-subfolder }}/
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/kogito-examples
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
