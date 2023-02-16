@@ -51,7 +51,7 @@ public class RuleExecutor {
     private final PathMemory                  pmem;
     private final RuleAgendaItem              ruleAgendaItem;
     private final TupleList                   tupleList;
-    private BinaryHeapQueue                   queue;
+    private BinaryHeapQueue<Activation>       queue;
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
@@ -64,7 +64,7 @@ public class RuleExecutor {
         this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
-            queue = new BinaryHeapQueue(SalienceComparator.INSTANCE);
+            queue = new BinaryHeapQueue(Activation.class, SalienceComparator.INSTANCE);
         }
     }
 
@@ -457,6 +457,7 @@ public class RuleExecutor {
             activation.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
+            e.printStackTrace();
             knowledgeHelper.restoreActivationOnConsequenceFailure( activation );
             activationsManager.handleException( activation, e );
         } finally {
