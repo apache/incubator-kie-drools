@@ -94,6 +94,7 @@
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.invoker.plugin>3.2.2</version.invoker.plugin>
     <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+    <jandex-maven-plugin.group-id>io.smallrye</jandex-maven-plugin.group-id>
     <version.jandex.plugin>3.0.5</version.jandex.plugin>
     <version.jar.plugin>3.1.0</version.jar.plugin>
     <version.javancss.plugin>2.0</version.javancss.plugin>
@@ -571,7 +572,7 @@ limitations under the License.
           <version>${version.plugin.plugin}</version>
         </plugin>
         <plugin>
-          <groupId>io.smallrye</groupId>
+          <groupId>${jandex-maven-plugin.group-id}</groupId>
           <artifactId>jandex-maven-plugin</artifactId>
           <version>${version.jandex.plugin}</version>
           <executions>
@@ -718,6 +719,18 @@ limitations under the License.
   </reporting>
 
   <profiles>
+    <profile>
+      <id>productized</id>
+      <activation>
+        <property>
+          <name>productized</name>
+        </property>
+      </activation>
+      <properties>
+        <jandex-maven-plugin.group-id>org.jboss.jandex</jandex-maven-plugin.group-id>
+        <version.jandex.plugin>1.2.3</version.jandex.plugin>
+      </properties>
+    </profile>
     <profile>
       <id>run-code-coverage</id>
       <build>

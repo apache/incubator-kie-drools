@@ -89,7 +89,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>io.smallrye</groupId>
+        <groupId>${jandex-maven-plugin.group-id}</groupId>
         <artifactId>jandex-maven-plugin</artifactId>
         <executions>
           <execution>
