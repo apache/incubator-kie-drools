@@ -2,6 +2,7 @@ package org.kie.dmn.feel.runtime.functions.extended;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @GwtIncompatible
 public class RangeFunctionTest {
@@ -33,8 +36,13 @@ public class RangeFunctionTest {
 
     @Test
     public void invokeDifferentTypes() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[1..\"cheese\"]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, "cheese", Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, LocalDate.of(1978, 9, 12), Range.RangeBoundary.CLOSED));
+        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..\"cheese\"]"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), InvalidParametersEvent.class);
+    }
+
+    @Test
+    public void invokeInvalidTypes() {
+        FunctionTestUtil.assertResultError(rangeFunction.invoke("[if(false)..if(true)]"), InvalidParametersEvent.class);
     }
 
     @Test
@@ -83,4 +91,84 @@ public class RangeFunctionTest {
         FunctionTestUtil.assertResult(rangeFunction.invoke("[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]"),
                 new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED));
     }
+
+
+    @Test
+    public void nodeIsAllowed_True() {
+        assertThat(rangeFunction.nodeIsAllowed(getNullNode())).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(getNumberNode())).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(getStringNode())).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(getBooleanNode())).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(getAtLiteralNode())).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(getFunctionInvocationNodeA())).isTrue();
+    }
+
+    @Test
+    public void nodeIsAllowed_False() {
+        IfExpressionNode ifExpressionNode = (IfExpressionNode) rangeFunction.parse("if(true)");
+        assertThat(rangeFunction.nodeIsAllowed(ifExpressionNode)).isFalse();
+    }
+
+    @Test
+    public void nodesAreSameType_True() {
+        assertThat(rangeFunction.nodesAreSameType(getNullNode(), getNullNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getNullNode(), getBooleanNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getNullNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getStringNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getNumberNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getBooleanNode(), getBooleanNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getAtLiteralNode())).isTrue();
+        assertThat(rangeFunction.nodesAreSameType(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
+    }
+
+    @Test
+    public void nodesAreSameType_False() {
+        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getBooleanNode())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getStringNode())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getFunctionInvocationNodeA())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getNumberNode())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getBooleanNode())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getFunctionInvocationNodeA())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getStringNode())).isFalse();
+        assertThat(rangeFunction.nodesAreSameType(getFunctionInvocationNodeB(), getFunctionInvocationNodeA())).isFalse();
+    }
+
+    @Test
+    public void nodesAreSameFunction_True() {
+        assertThat(rangeFunction.nodesAreSameFunction(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
+    }
+
+    @Test
+    public void nodesAreSameFunction_False() {
+        assertThat(rangeFunction.nodesAreSameFunction(getFunctionInvocationNodeA(), getFunctionInvocationNodeB())).isFalse();
+    }
+
+    private NullNode getNullNode() {
+        return (NullNode) rangeFunction.parse("null");
+    }
+
+    private NumberNode getNumberNode() {
+        return (NumberNode) rangeFunction.parse("1");
+    }
+
+    private StringNode getStringNode() {
+        return (StringNode) rangeFunction.parse("\"a\"");
+    }
+
+    private BooleanNode getBooleanNode() {
+        return (BooleanNode) rangeFunction.parse("false");
+    }
+
+    private AtLiteralNode getAtLiteralNode() {
+        return (AtLiteralNode) rangeFunction.parse("@\"2019-01-01\"");
+    }
+
+    private FunctionInvocationNode getFunctionInvocationNodeA() {
+        return (FunctionInvocationNode) rangeFunction.parse("duration(\"P2DT20H14M\")");
+    }
+
+    private FunctionInvocationNode getFunctionInvocationNodeB() {
+        return (FunctionInvocationNode) rangeFunction.parse("date(\"1978-10-13\")");
+    }
+
 }
