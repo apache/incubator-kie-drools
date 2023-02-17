@@ -24,6 +24,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.spi.Tuple;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
 import org.drools.model.Drools;
@@ -177,5 +178,15 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     @Override
     public Channel getChannel(String name) {
         return new ChannelImpl(knowledgeHelper.getChannel(name));
+    }
+
+    // Additional getters for non-exec-model compatibility (DefaultKnowledgeHelper)
+
+    public WorkingMemory getWorkingMemory() {
+        return knowledgeHelper.getWorkingMemory();
+    }
+
+    public Tuple getTuple() {
+        return knowledgeHelper.getTuple();
     }
 }

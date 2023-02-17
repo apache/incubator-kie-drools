@@ -196,7 +196,7 @@ public class Consequence {
         String mvelBlock = addCurlyBracesToBlock(consequenceString);
         CompiledBlockResult compile;
         try {
-            compile = DrlxParseUtil.createMvelCompiler(context).compileStatement(mvelBlock);
+            compile = DrlxParseUtil.createMvelCompiler(context, true).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;
