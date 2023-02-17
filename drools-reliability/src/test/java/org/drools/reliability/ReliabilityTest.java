@@ -48,27 +48,28 @@ public class ReliabilityTest {
                 "  System.out.println( $p.getAge() );\n" +
                 "end";
 
-        try {
-            KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-            KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-            conf.setOption(PersistedSessionOption.newSession());
-            KieSession firstSession = kbase.newKieSession(conf, null);
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption(PersistedSessionOption.newSession());
+        KieSession firstSession = kbase.newKieSession(conf, null);
 
-            long id = firstSession.getIdentifier();
+        long id = firstSession.getIdentifier();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
+        firstSession.insert("M");
+        firstSession.insert(new Person("Mark", 37));
 
-            KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
-            conf2.setOption(PersistedSessionOption.fromSession(id));
-            KieSession secondSession = kbase.newKieSession(conf2, null);
+        KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
+        conf2.setOption(PersistedSessionOption.fromSession(id));
+        KieSession secondSession = kbase.newKieSession(conf2, null);
 
+        try{
             secondSession.insert(new Person("Edson", 35));
             secondSession.insert(new Person("Mario", 40));
 
             assertThat(secondSession.fireAllRules()).isEqualTo(2);
-        } finally {
-            this.tearDown();
+
+        }finally {
+            secondSession.dispose();
         }
     }
 
@@ -83,12 +84,12 @@ public class ReliabilityTest {
                         "  System.out.println( $p.getAge() );\n" +
                         "end";
 
-        try{
-            KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-            KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-            conf.setOption(PersistedSessionOption.newSession());
-            KieSession firstSession = kbase.newKieSession(conf, null);
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption(PersistedSessionOption.newSession());
+        KieSession firstSession = kbase.newKieSession(conf, null);
 
+        try{
             firstSession.insert("M");
             firstSession.insert(new Person("Mark", 37));
             firstSession.insert(new Person("Helen", 54));
@@ -100,7 +101,7 @@ public class ReliabilityTest {
             assertThat(firstSession.fireAllRules()).isEqualTo(0);
 
         } finally {
-            this.tearDown();
+            firstSession.dispose();
         }
     }
 
@@ -116,29 +117,30 @@ public class ReliabilityTest {
                         "  System.out.println( $p.getAge() );\n" +
                         "end";
 
-        try {
-            KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-            KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-            conf.setOption(PersistedSessionOption.newSession());
-            KieSession firstSession = kbase.newKieSession(conf, null);
 
-            long id = firstSession.getIdentifier();
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption(PersistedSessionOption.newSession());
+        KieSession firstSession = kbase.newKieSession(conf, null);
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
+        long id = firstSession.getIdentifier();
 
-            firstSession.fireAllRules();
+        firstSession.insert("M");
+        firstSession.insert(new Person("Mark", 37));
 
-            KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
-            conf2.setOption(PersistedSessionOption.fromSession(id));
-            KieSession secondSession = kbase.newKieSession(conf2, null);
+        firstSession.fireAllRules();
 
+        KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
+        conf2.setOption(PersistedSessionOption.fromSession(id));
+        KieSession secondSession = kbase.newKieSession(conf2, null);
+
+        try{
             secondSession.insert(new Person("Edson", 35));
             secondSession.insert(new Person("Mario", 40));
 
             assertThat(secondSession.fireAllRules()).isEqualTo(2);
-        } finally {
-            this.tearDown();
+        }finally {
+            secondSession.dispose();
         }
     }
 
@@ -153,34 +155,35 @@ public class ReliabilityTest {
                         "then\n" +
                         "  System.out.println( $p.getAge() );\n" +
                         "  $p.setName(\"-\");\n" +
+                        "  update($p); \n" +
                        "end";
 
-        try {
-            KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-            KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
-            conf.setOption(PersistedSessionOption.newSession());
-            KieSession firstSession = kbase.newKieSession(conf, null);
-            long id = firstSession.getIdentifier();
 
-            firstSession.insert("M");
-            firstSession.insert(new Person("Mark", 37));
-            firstSession.insert(new Person("Nicole", 27));
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
+        conf.setOption(PersistedSessionOption.newSession());
+        KieSession firstSession = kbase.newKieSession(conf, null);
 
-            firstSession.fireAllRules();
+        long id = firstSession.getIdentifier();
 
-            KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
-            conf2.setOption(PersistedSessionOption.fromSession(id));
-            KieSession secondSession = kbase.newKieSession(conf2, null);
+        firstSession.insert("M");
+        firstSession.insert(new Person("Mark", 37));
+        firstSession.insert(new Person("Nicole", 27));
 
+        firstSession.fireAllRules();
+
+        KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
+        conf2.setOption(PersistedSessionOption.fromSession(id));
+        KieSession secondSession = kbase.newKieSession(conf2, null);
+
+        try{
             secondSession.insert(new Person("John", 22));
             secondSession.insert(new Person("Mary", 42));
 
-            secondSession.fireAllRules();
-
             assertThat(secondSession.fireAllRules()).isEqualTo(1);
 
-        } finally {
-            this.tearDown();
+        }finally {
+            secondSession.dispose();
         }
 
     }
