@@ -22,7 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -79,7 +78,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
     int sizeOfRuleFlowGroup(String name);
 
-    Activation[] getActivations();
+    Collection<Activation> getActivations();
 
     InternalAgendaGroup getMainAgendaGroup();
 
@@ -243,7 +242,7 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public Activation[] getActivations() {
+        public Collection<Activation> getActivations() {
             return this.mainAgendaGroup.getActivations();
         }
 
@@ -358,7 +357,7 @@ public interface AgendaGroupsManager extends Externalizable {
             // this is thread safe for BinaryHeapQueue
             // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
             List<RuleAgendaItem> lazyItems = new ArrayList<>();
-            for ( Activation aQueueable : agendaGroup.getAndClear() ) {
+            for ( Activation aQueueable : agendaGroup.getAll() ) {
                 final AgendaItem item = (AgendaItem) aQueueable;
                 if ( item.isRuleAgendaItem() ) {
                     lazyItems.add( (RuleAgendaItem) item );
@@ -377,6 +376,8 @@ public interface AgendaGroupsManager extends Externalizable {
 
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory, MatchCancelledCause.CLEAR );
             }
+            agendaGroup.reset();
+
             // restore lazy items
             for ( RuleAgendaItem lazyItem : lazyItems ) {
                 agendaGroup.add( lazyItem );
@@ -566,12 +567,12 @@ public interface AgendaGroupsManager extends Externalizable {
         }
 
         @Override
-        public Activation[] getActivations() {
+        public Collection<Activation> getActivations() {
             final List<Activation> list = new ArrayList<>();
             for (InternalAgendaGroup group : this.agendaGroups.values()) {
-                list.addAll(Arrays.asList(group.getActivations()));
+                list.addAll(group.getActivations());
             }
-            return list.toArray(new Activation[]{});
+            return list;
         }
 
         @Override

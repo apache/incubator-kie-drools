@@ -15,13 +15,12 @@
 
 package org.drools.core.phreak;
 
-import java.util.Comparator;
-
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
+import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.conflict.PhreakConflictResolver;
@@ -30,12 +29,11 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.ConsequenceException;
-import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
@@ -64,7 +62,7 @@ public class RuleExecutor {
         this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
-            queue = new BinaryHeapQueue(Activation.class, SalienceComparator.INSTANCE);
+            queue = new BinaryHeapQueue(PhreakConflictResolver.INSTANCE);
         }
     }
 
@@ -346,38 +344,6 @@ public class RuleExecutor {
 
     public boolean isDeclarativeAgendaEnabled() {
         return this.declarativeAgendaEnabled;
-    }
-
-    public static class SalienceComparator implements Comparator {
-
-        public static final SalienceComparator INSTANCE = new SalienceComparator();
-
-        public int compare(Object existing, Object adding) {
-            RuleTerminalNodeLeftTuple rtnLt1 = (RuleTerminalNodeLeftTuple) existing;
-            RuleTerminalNodeLeftTuple rtnLt2 = (RuleTerminalNodeLeftTuple) adding;
-
-            final int s1 = rtnLt1.getSalience();
-            final int s2 = rtnLt2.getSalience();
-
-            // highest goes first
-            if (s1 > s2) {
-                return 1;
-            } else if (s1 < s2) {
-                return -1;
-            }
-
-            final int l1 = rtnLt1.getRule().getLoadOrder();
-            final int l2 = rtnLt2.getRule().getLoadOrder();
-
-            // lowest goes first
-            if (l1 < l2) {
-                return 1;
-            } else if (l1 > l2) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
     }
 
     public void fireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation) throws ConsequenceException {

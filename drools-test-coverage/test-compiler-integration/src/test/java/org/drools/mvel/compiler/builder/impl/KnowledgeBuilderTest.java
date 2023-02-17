@@ -1405,15 +1405,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         }
 
         @Override
-        public void setQueueIndex(int index) {
-        }
-
-        @Override
-        public int getQueueIndex() {
-            return 0;
-        }
-
-        @Override
         public void dequeue() {
         }
     }

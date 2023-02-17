@@ -257,8 +257,10 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            for ( Activation activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
-                if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
+            Collection<Activation> activations = new ArrayList<>();
+            activations.addAll( wm.getAgenda().getAgendaGroupsManager().getActivations() );
+            for ( Activation activation : activations ) {
+                if ( activation.isRuleAgendaItem() ) {
                     // evaluate it
                     ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
                     ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );

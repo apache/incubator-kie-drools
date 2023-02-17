@@ -18,18 +18,12 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
+import java.util.Collection;
 
 import org.drools.core.util.Queue.QueueEntry;
 
 public class ArrayQueue<T extends QueueEntry> implements Queue<T>, Externalizable {
-
-    private Class cls;
-
-    public ArrayQueue(Class cls) {
-        this.cls = cls;
-    }
 
     private java.util.Queue<T> queue = new ArrayDeque<>();
 
@@ -69,10 +63,8 @@ public class ArrayQueue<T extends QueueEntry> implements Queue<T>, Externalizabl
     }
 
     @Override
-    public T[] getAndClear() {
-        T[] activations = (T[]) Array.newInstance(cls.getComponentType(), size());
-        clear();
-        return activations;
+    public Collection<T> getAll() {
+        return queue;
     }
 
     @Override
@@ -83,10 +75,5 @@ public class ArrayQueue<T extends QueueEntry> implements Queue<T>, Externalizabl
     @Override
     public T peek() {
         return queue.peek();
-    }
-
-    @Override
-    public Object[] toArray( Object[] a ) {
-        return queue.toArray(a);
     }
 }

@@ -16,12 +16,11 @@
 
 package org.drools.core.util;
 
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.util.Queue.QueueEntry;
 import org.junit.Test;
 
@@ -31,9 +30,7 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List<QueueEntry> items = new ArrayList<>();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( QueueEntry.class,
-                                                           NaturalComparator.INSTANCE,
-                                                 100000 );
+        final BinaryHeapQueue<QueueEntry> queue = new BinaryHeapQueue<>( NaturalComparator.INSTANCE );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( queue, random.nextLong() ) );
@@ -68,9 +65,7 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List items = new ArrayList();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( QueueEntry.class,
-                                                           NaturalComparator.INSTANCE,
-                                                           100000 );
+        final BinaryHeapQueue<QueueEntry> queue = new BinaryHeapQueue<>( NaturalComparator.INSTANCE );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( queue, random.nextLong() ) );
@@ -90,24 +85,13 @@ public class BinaryHeapPriorityQueueTest {
             queue.enqueue(i.next() );
         }
 
-        //        while (!queue.isEmpty()) {
-        //            queue.pop();
-        //        }
-
         final long elapsedDequeue = System.currentTimeMillis() - startDequeue;
-
-        //        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
-        //        System.out.println( "elapsedDequeue = " + elapsedDequeue );
     }
 
-    public class LongQueueable
-            implements
-            QueueEntry, Comparable {
+    public class LongQueueable implements QueueEntry, Comparable {
         private final Long value;
 
         private BinaryHeapQueue queue;
-
-        private int   index;
 
         public LongQueueable(BinaryHeapQueue queue,
                              final long value) {
@@ -115,16 +99,8 @@ public class BinaryHeapPriorityQueueTest {
             this.value = Long.valueOf( value );
         }
 
-        public void setQueueIndex(final int index) {
-            this.index = index;
-        }
-
-        public int getQueueIndex() {
-            return this.index;
-        }
-
         public void dequeue() {
-            this.queue.dequeue( this.index );
+            this.queue.dequeue();
         }
 
         public boolean isQueued() {
