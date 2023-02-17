@@ -40,12 +40,11 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     private final boolean lock;
     private final Repository repository;
 
-    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean autoDDL, boolean lock) {
+    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean lock) {
         this.process = process;
         this.lock = lock;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
         this.repository = new GenericRepository(dataSource);
-        DDLRunner.init(repository, autoDDL);
     }
 
     @Override

@@ -64,6 +64,12 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>${version.org.flywaydb}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

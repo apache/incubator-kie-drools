@@ -28,9 +28,8 @@ public class JDBCProcessInstancesFactory extends AbstractProcessInstancesFactory
 
     @Autowired
     public JDBCProcessInstancesFactory(DataSource dataSource,
-            @Value("${kogito.persistence.auto.ddl:true}") Boolean autoDDL,
             @Value("${kogito.persistence.optimistic.lock:false}") Boolean lock) {
-        super(dataSource, autoDDL, lock);
+        super(dataSource, lock);
     }
 
 }

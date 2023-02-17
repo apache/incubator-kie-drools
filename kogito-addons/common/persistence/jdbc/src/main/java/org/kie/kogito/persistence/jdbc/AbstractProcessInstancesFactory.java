@@ -22,22 +22,20 @@ import org.kie.kogito.process.ProcessInstancesFactory;
 
 public abstract class AbstractProcessInstancesFactory implements ProcessInstancesFactory {
 
-    private final boolean autoDDL;
     private final DataSource dataSource;
     private final Boolean lock;
 
     protected AbstractProcessInstancesFactory() {
-        this(null, true, false);
+        this(null, false);
     }
 
-    public AbstractProcessInstancesFactory(DataSource dataSource, Boolean autoDDL, Boolean lock) {
+    public AbstractProcessInstancesFactory(DataSource dataSource, Boolean lock) {
         this.dataSource = dataSource;
-        this.autoDDL = autoDDL;
         this.lock = lock;
     }
 
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        return new JDBCProcessInstances(process, dataSource, autoDDL, lock);
+        return new JDBCProcessInstances(process, dataSource, lock);
     }
 }

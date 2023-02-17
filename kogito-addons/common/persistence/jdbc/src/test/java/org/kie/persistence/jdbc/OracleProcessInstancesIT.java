@@ -44,6 +44,7 @@ public class OracleProcessInstancesIT extends AbstractProcessInstancesIT {
             ORACLE_DATA_SOURCE.setUser(ORACLE_CONTAINER.getUsername());
             ORACLE_DATA_SOURCE.setPassword(ORACLE_CONTAINER.getPassword());
             System.setProperty(ORACLE_TIMEZONE_PROPERTY, "false");
+            initMigration(ORACLE_CONTAINER, "oracle");
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create oracle datasource");
         }

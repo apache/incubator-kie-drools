@@ -26,7 +26,7 @@ import static org.mockito.Mockito.spy;
 public class TestProcessInstancesFactory extends AbstractProcessInstancesFactory {
 
     public TestProcessInstancesFactory(DataSource dataSource, boolean lock) {
-        super(dataSource, true, lock);
+        super(dataSource, lock);
     }
 
     @Override
