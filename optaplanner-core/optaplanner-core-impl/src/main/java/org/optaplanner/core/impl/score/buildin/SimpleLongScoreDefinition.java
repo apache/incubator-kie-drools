@@ -77,4 +77,9 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
                         divide(dividendScore, divisorScore)
                 });
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return long.class;
+    }
 }

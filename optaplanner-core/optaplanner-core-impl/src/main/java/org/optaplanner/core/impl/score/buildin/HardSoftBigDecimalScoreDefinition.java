@@ -88,4 +88,9 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
                         divide(dividendSoftScore, divisorSoftScore)
                 });
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return BigDecimal.class;
+    }
 }

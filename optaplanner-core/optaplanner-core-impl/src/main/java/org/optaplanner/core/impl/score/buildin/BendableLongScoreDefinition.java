@@ -139,4 +139,9 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
         long[] levels = LongStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
         return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return long.class;
+    }
 }

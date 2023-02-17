@@ -998,6 +998,12 @@
           "code": "java.method.addedToInterface",
           "new": "method Score_ org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::update(Solution_, org.optaplanner.core.api.solver.SolutionUpdatePolicy)",
           "justification": "To easy migration; ScoreManager is an interface we don't expect anyone to implement."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Class<?> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::getNumericType() @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
+          "justification": "Irrelevant."
         }
       ]
     }

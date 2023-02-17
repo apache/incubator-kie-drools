@@ -2,6 +2,8 @@ package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.buildin.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
@@ -153,5 +155,17 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      *         {@link Score#subtract(Score)} and {@link Score#compareTo(Object)} for scores of this score definition.
      */
     boolean isCompatibleArithmeticArgument(Score score);
+
+    /**
+     * Return the type of number that the score implementation operates on.
+     * Examples:
+     * <ul>
+     * <li>int.class for {@link SimpleScore}</li>
+     * <li>BigDecimal.class for {@link SimpleBigDecimalScore}</li>
+     * </ul>
+     *
+     * @return never null
+     */
+    Class<?> getNumericType();
 
 }

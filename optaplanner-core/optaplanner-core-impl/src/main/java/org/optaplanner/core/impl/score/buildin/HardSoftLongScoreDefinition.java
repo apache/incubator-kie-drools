@@ -89,4 +89,9 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
                         divide(dividendSoftScore, divisorSoftScore)
                 });
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return long.class;
+    }
 }

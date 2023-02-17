@@ -119,4 +119,9 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
                 .toArray(BigDecimal[]::new);
         return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return BigDecimal.class;
+    }
 }

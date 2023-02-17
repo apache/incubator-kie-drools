@@ -2,15 +2,13 @@ package org.optaplanner.test.api.score.stream.testdata;
 
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
-import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.planningid.TestdataStringPlanningIdEntity;
 
-public class TestdataConstraintProvider implements ConstraintProvider {
+public final class TestdataConstraintVerifierConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[] {
@@ -22,28 +20,28 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     }
 
     public Constraint penalizeEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataEntity.class)
-                .penalize(SimpleScore.ONE)
-                .asConstraint("Penalize every entity");
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
+                .penalize(HardSoftScore.ONE_HARD)
+                .asConstraint("Penalize every standard entity");
     }
 
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataEntity.class)
-                .reward(SimpleScore.ONE)
-                .asConstraint("Reward every entity");
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
+                .reward(HardSoftScore.ofSoft(2))
+                .asConstraint("Reward every standard entity");
     }
 
     public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataEntity.class)
-                .impact(SimpleScore.ONE,
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
+                .impact(HardSoftScore.ofHard(4),
                         entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1)
-                .asConstraint("Impact every entity");
+                .asConstraint("Impact every standard entity");
     }
 
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEachUniquePair(TestdataStringPlanningIdEntity.class,
-                Joiners.equal(TestdataStringPlanningIdEntity::getValue))
-                .penalize(SimpleScore.ONE)
+        return constraintFactory.forEachUniquePair(TestdataConstraintVerifierSecondEntity.class,
+                Joiners.equal(TestdataConstraintVerifierSecondEntity::getValue))
+                .penalize(HardSoftScore.ofSoft(3))
                 .asConstraint("Different String Entity Have Different Values");
     }
 

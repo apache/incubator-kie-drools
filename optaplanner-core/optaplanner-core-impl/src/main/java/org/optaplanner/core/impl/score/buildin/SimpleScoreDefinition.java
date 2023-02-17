@@ -82,4 +82,9 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
                         divide(dividendScore, divisorScore)
                 });
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return int.class;
+    }
 }

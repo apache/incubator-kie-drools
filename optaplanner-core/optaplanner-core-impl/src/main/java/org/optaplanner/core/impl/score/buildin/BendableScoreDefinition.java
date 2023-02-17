@@ -137,4 +137,9 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         int[] levels = IntStream.concat(Arrays.stream(hardScores), Arrays.stream(softScores)).toArray();
         return createScoreUninitialized(divide(dividendInitScore, divisorInitScore), levels);
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return int.class;
+    }
 }

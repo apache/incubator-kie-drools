@@ -85,4 +85,9 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
                         divide(dividendScore, divisorScore)
                 });
     }
+
+    @Override
+    public Class<?> getNumericType() {
+        return BigDecimal.class;
+    }
 }
