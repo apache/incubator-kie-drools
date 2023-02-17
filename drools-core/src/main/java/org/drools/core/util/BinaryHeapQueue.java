@@ -125,11 +125,7 @@ public class BinaryHeapQueue<T extends QueueEntry> implements Queue<T>, External
      */
     @Override
     public T dequeue() {
-        final T result = peek();
-        if ( result != null ) {
-            dequeue(result);
-        }
-        return result;
+        return elements.pollLast();
     }
 
     @Override
