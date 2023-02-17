@@ -529,13 +529,28 @@ public class RuleWorksheetParseTest {
         assertThat(ruleset).isNotNull();
         DRLOutput dout = new DRLOutput();
         ruleset.renderDRL( dout );
-        String drl = dout.getDRL();
-        System.out.println( drl );
 
         // check rules
         Rule rule = ruleset.getRules().get(0);
         Condition cond = rule.getConditions().get(0);
         assertThat(cond.getSnippet()).isEqualTo("Cheese(price == 6600)");
+    }
+
+    @Test
+    public void numericDisabled_timestamp() throws Exception {
+        // DROOLS-7322
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream("/data/NumericDisabledForTimestamp.drl.xls");
+        final RuleSheetListener listener = getRuleSheetListener( stream );
+
+        final Package ruleset = listener.getRuleSet();
+        assertThat(ruleset).isNotNull();
+        DRLOutput dout = new DRLOutput();
+        ruleset.renderDRL( dout );
+
+        // check rules
+        Rule rule = ruleset.getRules().get(0);
+        Consequence cond = rule.getConsequences().get(1);
+        assertThat(cond.getSnippet()).containsIgnoringWhitespaces("value = \"00:00:00\"");
     }
 
     /**
