@@ -15,13 +15,19 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.MethodUtils;
+import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil.RemoveRootNodeResult;
+import org.drools.mvelcompiler.CompiledBlockResult;
+import org.drools.mvelcompiler.MvelCompilerException;
 import org.junit.Test;
 
 import static java.util.Optional.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRemoveRootNodeViaScope;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getExpressionType;
@@ -121,5 +127,25 @@ public class DrlxParseUtilTest {
 
     private Expression expr(String $a) {
         return DrlxParseUtil.parseExpression($a).getExpr();
+    }
+
+    @Test
+    public void createMvelCompiler_withDrools() {
+        String mvelBlock = "{ drools.workingMemory.setGlobal(\"list\", new java.util.ArrayList()); }";
+        RuleContext context = createFakeRuleContext();
+        CompiledBlockResult compile;
+        try {
+            compile = DrlxParseUtil.createMvelCompiler(context, true).compileStatement(mvelBlock);
+            assertThat(compile.statementResults().toString()).isEqualToIgnoringWhitespace("{ drools.getWorkingMemory().setGlobal(\"list\", new java.util.ArrayList()); }");
+        } catch (MvelCompilerException e) {
+            fail("Failed while compiling satement", e);
+        }
+    }
+
+    private RuleContext createFakeRuleContext() {
+        PackageModel packageModel = new PackageModel(new ReleaseIdImpl("org.example", "mvel-compiler-test", "1.0.0"), "org.example", null, null, new DRLIdGenerator());
+        TypeResolver typeResolver = new ClassTypeResolver(new HashSet<>(), getClass().getClassLoader());
+        RuleContext context = new RuleContext(null, packageModel, typeResolver, null);
+        return context;
     }
 }
