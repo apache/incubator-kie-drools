@@ -94,6 +94,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.errors.IncompatibleGetterOverloadError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -900,6 +901,10 @@ public class DrlxParseUtil {
     }
 
     public static MvelCompiler createMvelCompiler(RuleContext context) {
+        return createMvelCompiler(context, false);
+    }
+
+    public static MvelCompiler createMvelCompiler(RuleContext context, boolean withDrools) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
         for (DeclarationSpec ds : context.getAllDeclarations()) {
@@ -915,9 +920,12 @@ public class DrlxParseUtil {
             mvelCompilerContext.addDeclaredFunction(m.getNameAsString(), m.getTypeAsString(), parametersType);
         }
 
+        if (withDrools) {
+            mvelCompilerContext.addDeclaration("drools", DroolsImpl.class);
+        }
+
         return new MvelCompiler(mvelCompilerContext);
     }
-
 
     public static ConstraintCompiler createConstraintCompiler(RuleContext context, Optional<Class<?>> originalPatternType) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
