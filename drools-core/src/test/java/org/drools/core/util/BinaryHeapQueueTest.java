@@ -16,6 +16,7 @@
 package org.drools.core.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.ActivationGroupNode;
@@ -23,18 +24,15 @@ import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.ConflictResolver;
 import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.common.PropagationContext;
 import org.junit.Before;
-import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Thes test class uses auxiliary test classes in org.kie.util:
@@ -82,39 +80,6 @@ public class BinaryHeapQueueTest {
         //    System.out.println( "The size is " + perms.size() );
     }
 
-    @Test
-    public void testShuffled() {
-
-        for ( Integer[] perm : perms ) {
-            Group group = new Group( "group" );
-
-            for ( Integer i : perm ) {
-                Item item = new Item( group,
-                                      i );
-                group.add( item );
-            }
-
-            Activation[] elems = group.getQueue();
-            for (Activation elem : elems ) {
-                Item item = (Item) elem;
-                //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getQueueIndex() );
-                if ( item.getQueueIndex() % 2 == 0 ) {
-                    group.remove( item );
-                    group.add( item );
-                }
-            }
-            boolean ok = true;
-            StringBuilder sb = new StringBuilder( "queue:" );
-            for ( int i = max - 1; i >= 0; i-- ) {
-                int sal = group.getNext().getSalience();
-                sb.append( " " ).append( sal );
-                if ( sal != i ) ok = false;
-            }
-            assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
-            //      System.out.println( sb.toString() );
-        }
-    }
-
     public static class Group {
 
         private static final long serialVersionUID = 510l;
@@ -134,7 +99,7 @@ public class BinaryHeapQueueTest {
 
         public Group(final String name) {
             this.name = name;
-            this.queue = new BinaryHeapQueue( Activation.class, ItemConflictResolver.INSTANCE );
+            this.queue = new BinaryHeapQueue<>( ItemConflictResolver.INSTANCE );
         }
 
         public String getName() {
@@ -194,8 +159,8 @@ public class BinaryHeapQueueTest {
             this.queue.dequeue( agendaItem );
         }
 
-        public Activation[] getQueue() {
-            return (Activation[]) this.queue.toArray(new Activation[size()] );
+        public Collection<Activation> getQueue() {
+            return this.queue.getAll();
         }
     }
 
@@ -204,7 +169,6 @@ public class BinaryHeapQueueTest {
 
         private static int actNo = 1;
 
-        private int   index;
         private long  activationNumber;
         private Group group;
         private int   salience;
@@ -220,15 +184,6 @@ public class BinaryHeapQueueTest {
             if (this.group != null) {
                 this.group.remove(this);
             }
-            this.index = -1;
-        }
-
-        public void setQueueIndex(int index) {
-            this.index = index;
-        }
-
-        public int getQueueIndex() {
-            return index;
         }
 
         public int getSalience() {

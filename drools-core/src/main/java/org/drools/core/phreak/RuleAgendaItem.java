@@ -15,11 +15,16 @@
 
 package org.drools.core.phreak;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -27,7 +32,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
@@ -37,10 +41,6 @@ import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaItem {
 
@@ -72,7 +72,6 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
      * The activation number
      */
     private           long                                           activationNumber;
-    private           int                                            index;
     private           boolean                                        queued;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
@@ -103,7 +102,6 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
         this.salience = salience;
         this.rtn = rtn;
         this.activationNumber = activationNumber;
-        this.index = -1;
         this.matched = true;
         this.agendaGroup = agendaGroup;
     }
@@ -142,26 +140,6 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
     public void nullPrevNext() {
         previous = null;
         next = null;
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
-            return true;
-        }
-
-        return object instanceof RuleAgendaItem && getRule().equals(((RuleAgendaItem) object).getRule());
-    }
-
-    /**
-     * Return the hashCode of the
-     * <code>TupleKey<code> as the hashCode of the AgendaItem
-     *
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        return getRule().hashCode();
     }
 
     @Override
@@ -224,11 +202,6 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
         return null;
     }
 
-    /*
-         * (non-Javadoc)
-         *
-         * @see org.kie.spi.Activation#getActivationNumber()
-         */
     @Override
     public long getActivationNumber() {
         return this.activationNumber;
@@ -250,21 +223,11 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
     }
 
     @Override
-    public void setQueueIndex(final int index) {
-        this.index = index;
-    }
-
-    @Override
     public void dequeue() {
         if (this.agendaGroup != null) {
             this.agendaGroup.remove(this);
         }
         this.queued = false;
-    }
-
-    @Override
-    public int getQueueIndex() {
-        return this.index;
     }
 
     @Override

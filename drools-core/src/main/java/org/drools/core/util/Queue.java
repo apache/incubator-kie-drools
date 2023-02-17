@@ -16,6 +16,8 @@
 
 package org.drools.core.util;
 
+import java.util.Collection;
+
 import org.drools.core.util.Queue.QueueEntry;
 
 public interface Queue<T extends QueueEntry> {
@@ -28,26 +30,17 @@ public interface Queue<T extends QueueEntry> {
 
     void clear();
 
-    T[] getAndClear();
+    Collection<T> getAll();
 
     int size();
 
     T peek();
 
-    Object[] toArray(Object[] a);
-
-
     interface QueueEntry {
 
         void setQueued(boolean b);
 
-        int getQueueIndex();
-
-        void setQueueIndex(int index);
-
-
         void dequeue();
-
 
         boolean isQueued();
     }

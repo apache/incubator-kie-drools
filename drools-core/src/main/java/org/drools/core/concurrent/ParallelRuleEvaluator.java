@@ -64,8 +64,7 @@ public class ParallelRuleEvaluator extends AbstractRuleEvaluator implements Rule
         this.fireCount = fireCount;
         this.fireLimit = fireLimit;
 
-        Activation[] activations = group.getActivations();
-        for ( Activation activation : activations ) {
+        for ( Activation activation : group.getActivations() ) {
             RuleAgendaItem item = (RuleAgendaItem) activation;
             int index = item.getPartition().getParallelEvaluationSlot();
             RuleEvaluatorCallable evaluator = evaluators[index];

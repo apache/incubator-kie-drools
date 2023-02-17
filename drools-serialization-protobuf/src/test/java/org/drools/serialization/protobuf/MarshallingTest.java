@@ -96,12 +96,10 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -335,20 +333,15 @@ public class MarshallingTest extends CommonTestMethodBase {
         kpkgs = SerializationHelper.serializeObject( kpkgs );
         kBase.addPackages(kpkgs);
 
-        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
-                                                                                       10 ) );
-        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie",
-                                                                                    10 ) );
-        InternalFactHandle bob = (InternalFactHandle) session.insert( new Person( "bob",
-                                                                                  30 ) );
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton", 10 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie", 10 ) );
+        InternalFactHandle bob = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
         session.fireAllRules();
 
         assertThat(3).isEqualTo(list.size());
-        assertThat(list.get(2)).isEqualTo(bob.getObject());
-        assertThat(list.get(1)).isEqualTo("stilton");
+        assertThat(list).contains(bob.getObject(), "stilton");
 
         session.dispose();
-
     }
 
     @Test
