@@ -81,21 +81,13 @@ How to retest this PR or trigger a specific build:
   Run native checks 
   Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] native</b>
 
-- for <b>mandrel checks</b>  
-  Run native checks against Mandrel image
-  Please add comment: <b>Jenkins run mandrel</b>
+ - for <b>native lts checks</b>  
+  Run native checks against quarkus lts branch
+  Please add comment: <b>Jenkins run native-lts</b>
 
-- for a <b>specific mandrel check</b>  
-  Run native checks against Mandrel image  
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] mandrel</b>
-
- - for <b>mandrel lts checks</b>  
-  Run native checks against Mandrel image and quarkus lts branch
-  Please add comment: <b>Jenkins run mandrel-lts</b>
-
-- for a <b>specific mandrel lts check</b>  
-  Run native checks against Mandrel image and quarkus lts branch
-  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] mandrel-lts</b>
+- for a <b>specific native lts check</b>  
+  Run native checks against quarkus lts branch
+  Please add comment: <b>Jenkins (re)run [drools|kogito-runtimes|kogito-apps|kogito-examples] native-lts</b>
 </details>
 
 <details>
