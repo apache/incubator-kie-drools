@@ -34,14 +34,14 @@ import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.generator.DRLIdGenerator;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
 import org.drools.model.codegen.execmodel.generator.UnificationTypedExpression;
-import org.drools.modelcompiler.util.StreamUtils;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.util.StreamUtils;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.util.ClassUtils.toNonPrimitiveType;
+import static org.drools.util.ClassUtils.toRawClass;
 
 public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 

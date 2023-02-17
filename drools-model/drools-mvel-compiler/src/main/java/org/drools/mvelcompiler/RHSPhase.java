@@ -77,10 +77,10 @@ import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static org.drools.util.ClassUtils.getAccessor;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
-import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
+import static org.drools.util.ClassUtils.getAccessor;
+import static org.drools.util.ClassUtils.classFromType;
 
 /**
  * This phase processes the right hand side of a Java Expression and creates a new AST
@@ -175,7 +175,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> scopeType = arg.getScopeType();
 
         Optional<Field> fieldType = scopeType.flatMap(te -> {
-            Class parentClass = TypeUtils.classFromType(te);
+            Class parentClass = classFromType(te);
             Field field = ClassUtils.getField(parentClass, n.asString());
             return ofNullable(field);
         });
@@ -347,7 +347,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         TypedExpression name = n.getName().accept(this, arg);
 
         Optional<Type> type = name.getType();
-        if(type.filter(TypeUtils::isCollection).isPresent()) {
+        if(type.filter(ClassUtils::isCollection).isPresent()) {
             return new ListAccessExprT(name, n.getIndex(), type.get());
         }
         return new UnalteredTypedExpression(n, type.orElse(null));

@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ import static java.lang.System.arraycopy;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.util.Arrays.asList;
+import static java.util.stream.Stream.of;
 import static org.drools.util.MethodUtils.getMethod;
 import static org.drools.util.StringUtils.ucFirst;
 
@@ -88,6 +90,20 @@ public final class ClassUtils {
         primitiveNameToType = Collections.unmodifiableMap(m2);
     }
 
+    public static Class<?> toNonPrimitiveType(Class<?> c) {
+        if (!c.isPrimitive()) return c;
+        if (c == int.class) return Integer.class;
+        if (c == long.class) return Long.class;
+        if (c == double.class) return Double.class;
+        if (c == float.class) return Float.class;
+        if (c == short.class) return Short.class;
+        if (c == byte.class) return Byte.class;
+        if (c == char.class) return Character.class;
+        if (c == boolean.class) return Boolean.class;
+        return c;
+    }
+    
+    
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
@@ -540,7 +556,54 @@ public final class ClassUtils {
         }
         throw new RuntimeException("No generic type");
     }
+    
 
+    public static Type getTypeArgument(Type genericType, int index) {
+        return genericType instanceof ParameterizedType ? (( ParameterizedType ) genericType).getActualTypeArguments()[index] : Object.class;
+    }
+    
+    public static boolean isAssignableFrom(Type from, Type to) {
+        Class<?> fromClass = toRawClass( from );
+        Class<?> toClass = toRawClass( to );
+        return fromClass.isAssignableFrom(toClass) || MethodUtils.areBoxingCompatible(fromClass, toClass);
+    }    
+
+
+    public static boolean isCollection(Type t) {
+        return of(List.class, Map.class).anyMatch(cls -> {
+            Class<?> clazz = classFromType(t);
+            return cls.isAssignableFrom(clazz);
+        });
+    }
+
+    public static Class<?> classFromType(Type t) {
+        Class<?> clazz;
+        if(t instanceof Class<?>) {
+            clazz = (Class<?>) t;
+        } else if(t instanceof ParameterizedType) {
+            clazz = (Class<?>) ((ParameterizedType)t).getRawType();
+        } else {
+            throw new UnsupportedOperationException("Unable to parse type");
+        }
+        return clazz;
+    }
+
+    public static Class<?> toRawClass(Type type) {
+        if (type == null) {
+            return null;
+        }
+        if (type instanceof Class<?>) {
+            return ( Class ) type;
+        }
+        if (type instanceof ParameterizedType ) {
+            return toRawClass( (( ParameterizedType ) type).getRawType() );
+        }
+        if (type instanceof TypeVariable ) {
+            return Object.class;
+        }
+        throw new UnsupportedOperationException( "Unknown type " + type );
+    }
+    
     public static Class<?> rawType(Type type) {
         if (type == null) {
             return null;

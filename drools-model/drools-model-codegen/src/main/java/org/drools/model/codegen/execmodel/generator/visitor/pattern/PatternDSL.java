@@ -61,8 +61,8 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.getPatt
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
+import static org.drools.util.StreamUtils.optionalToStream;
 
 public abstract class PatternDSL implements DSLNode {
 

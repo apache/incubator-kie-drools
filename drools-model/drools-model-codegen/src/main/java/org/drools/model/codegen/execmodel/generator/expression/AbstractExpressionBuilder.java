@@ -67,8 +67,8 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toJavaP
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.model.codegen.execmodel.generator.drlxparse.ConstraintParser.toBigDecimalExpression;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessiblePropertiesIncludingNonGetterValueMethod;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
+import static org.drools.util.ClassUtils.toRawClass;
 
 public abstract class AbstractExpressionBuilder {
 

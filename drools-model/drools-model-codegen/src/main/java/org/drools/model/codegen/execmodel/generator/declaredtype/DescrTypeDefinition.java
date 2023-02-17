@@ -46,7 +46,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.model.codegen.execmodel.generator.declaredtype.POJOGenerator.quote;
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
+import static org.drools.util.StreamUtils.optionalToStream;
 
 public class DescrTypeDefinition implements TypeDefinition {
 
