@@ -22,15 +22,16 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.core.rule.consequence.Activation;
+import org.drools.core.util.Queue.QueueEntry;
 import org.junit.Test;
 
 public class BinaryHeapPriorityQueueTest {
     @Test
     public void testOptimised() {
         final Random random = new Random();
-        final List items = new ArrayList();
+        final List<QueueEntry> items = new ArrayList<>();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( Activation.class,
+        final BinaryHeapQueue queue = new BinaryHeapQueue( QueueEntry.class,
                                                            NaturalComparator.INSTANCE,
                                                  100000 );
 
@@ -40,16 +41,16 @@ public class BinaryHeapPriorityQueueTest {
 
         final long startEnqueue = System.currentTimeMillis();
 
-        for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Activation) i.next() );
+        for ( final Iterator<QueueEntry> i = items.iterator(); i.hasNext(); ) {
+            queue.enqueue(i.next() );
         }
 
         final long elapsedEnqueue = System.currentTimeMillis() - startEnqueue;
 
         final long startDequeue = System.currentTimeMillis();
 
-        for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            ((Activation) i.next()).dequeue();
+        for ( final Iterator<QueueEntry> i = items.iterator(); i.hasNext(); ) {
+            i.next().dequeue();
         }
 
         //        while (!queue.isEmpty()) {
@@ -67,7 +68,7 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List items = new ArrayList();
 
-        final BinaryHeapQueue queue = new BinaryHeapQueue( Activation.class,
+        final BinaryHeapQueue queue = new BinaryHeapQueue( QueueEntry.class,
                                                            NaturalComparator.INSTANCE,
                                                            100000 );
 
@@ -77,16 +78,16 @@ public class BinaryHeapPriorityQueueTest {
 
         final long startEnqueue = System.currentTimeMillis();
 
-        for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Activation) i.next() );
+        for ( final Iterator<QueueEntry> i = items.iterator(); i.hasNext(); ) {
+            queue.enqueue(i.next() );
         }
 
         final long elapsedEnqueue = System.currentTimeMillis() - startEnqueue;
 
         final long startDequeue = System.currentTimeMillis();
 
-        for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Activation) i.next() );
+        for ( final Iterator<QueueEntry> i = items.iterator(); i.hasNext(); ) {
+            queue.enqueue(i.next() );
         }
 
         //        while (!queue.isEmpty()) {
@@ -97,5 +98,48 @@ public class BinaryHeapPriorityQueueTest {
 
         //        System.out.println( "elapsedEnqueue = " + elapsedEnqueue );
         //        System.out.println( "elapsedDequeue = " + elapsedDequeue );
+    }
+
+    public class LongQueueable
+            implements
+            QueueEntry, Comparable {
+        private final Long value;
+
+        private BinaryHeapQueue queue;
+
+        private int   index;
+
+        public LongQueueable(BinaryHeapQueue queue,
+                             final long value) {
+            this.queue = queue;
+            this.value = Long.valueOf( value );
+        }
+
+        public void setQueueIndex(final int index) {
+            this.index = index;
+        }
+
+        public int getQueueIndex() {
+            return this.index;
+        }
+
+        public void dequeue() {
+            this.queue.dequeue( this.index );
+        }
+
+        public boolean isQueued() {
+            return false;
+        }
+
+        public void setQueued(boolean activated) {
+        }
+
+        public int compareTo(final Object object) {
+            return this.value.compareTo( ((LongQueueable) object).value);
+        }
+
+        public String toString() {
+            return this.value.toString();
+        }
     }
 }
