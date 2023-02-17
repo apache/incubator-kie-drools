@@ -22,7 +22,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Stream;
@@ -121,7 +120,6 @@ public class BinaryHeapQueue<T extends QueueEntry> implements Queue<T>, External
      * Returns the Queueable on top of heap and remove it.
      *
      * @return the Queueable at top of heap
-     * @throws NoSuchElementException if <code>isEmpty() == true</code>
      */
     @Override
     public T dequeue() {
