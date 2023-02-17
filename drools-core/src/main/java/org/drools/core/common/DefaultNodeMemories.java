@@ -26,37 +26,34 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-/**
- * A concurrent implementation for the node memories interface
- */
+
 public class ConcurrentNodeMemories implements NodeMemories {
 
-    private AtomicReferenceArray<Memory> memories;
+    private Memory[] memories;
 
-    private final Lock lock = new ReentrantLock();
     private final RuleBase ruleBase;
 
     public ConcurrentNodeMemories( RuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
+        clear();
     }
 
     public void clearNodeMemory( MemoryFactory node ) {
         if ( peekNodeMemory(node.getMemoryId()) != null ) {
-            this.memories.set(node.getMemoryId(), null);
+            memories[node.getMemoryId()] = null;
         }
     }
     
     public void clear() {
-        this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
+        this.memories = new Memory[this.ruleBase.getMemoryCount()];
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
         RuleBase kBase = (RuleBase) session.getKieBase();
         Set<SegmentMemory> smemSet = new HashSet<>();
 
-        for (int i = 0; i < memories.length(); i++) {
-            Memory memory = memories.get(i);
+        for (int i = 0; i < memories.length; i++) {
+            Memory memory = memories[i];
             if (memory != null) {
                 memory.reset();
                 smemSet.add(memory.getSegmentMemory());
@@ -74,18 +71,12 @@ public class ConcurrentNodeMemories implements NodeMemories {
             }
         }
     }
-
-    /**
-     * The implementation tries to delay locking as much as possible, by running
-     * some potentially unsafe operations out of the critical session. In case it
-     * fails the checks, it will move into the critical sessions and re-check everything
-     * before effectively doing any change on data structures. 
-     */
+    
     public Memory getNodeMemory(MemoryFactory node, ReteEvaluator reteEvaluator) {
-        if( node.getMemoryId() >= this.memories.length() ) {
+        if( node.getMemoryId() >= this.memories.length ) {
             resize( node );
         }
-        Memory memory = this.memories.get( node.getMemoryId() );
+        Memory memory = this.memories[node.getMemoryId()];
 
         if( memory == null ) {
             memory = createNodeMemory( node, reteEvaluator );
@@ -100,57 +91,35 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * creates it.
      */
     private Memory createNodeMemory( MemoryFactory node, ReteEvaluator reteEvaluator ) {
-        try {
-            this.lock.lock();
-            // need to try again in a synchronized code block to make sure
-            // it was not created yet
-            Memory memory = this.memories.get( node.getMemoryId() );
-            if( memory == null ) {
-                memory = node.createMemory( this.ruleBase.getRuleBaseConfiguration(), reteEvaluator );
-
-                if( !this.memories.compareAndSet( node.getMemoryId(), null, memory ) ) {
-                    memory = this.memories.get( node.getMemoryId() );
-                }
-
-            }
-            return memory;
-        } finally {
-            this.lock.unlock();
-
+        // need to try again in a synchronized code block to make sure
+        // it was not created yet
+        Memory memory = this.memories[node.getMemoryId()];
+        if( memory == null ) {
+            memory = node.createMemory( this.ruleBase.getRuleBaseConfiguration(), reteEvaluator );
+            memory = this.memories[node.getMemoryId()];
         }
+        return memory;
     }
 
     /**
      * @param node
      */
     private void resize( MemoryFactory node ) {
-        try {
-            this.lock.lock();
-            if( node.getMemoryId() >= this.memories.length() ) {
-                // adding some buffer for new nodes, so that we reduce array copies
-                int size = Math.max( this.ruleBase.getMemoryCount(), node.getMemoryId() + 32 );
-                AtomicReferenceArray<Memory> newMem = new AtomicReferenceArray<>( size );
-                for ( int i = 0; i < this.memories.length(); i++ ) {
-                    newMem.set( i,
-                                this.memories.get( i ) );
-                }
-                this.memories = newMem;
-            }
-        } finally {
-            this.lock.unlock();
+        if( node.getMemoryId() >= this.memories.length ) {
+            // adding some buffer for new nodes, so that we reduce array copies
+            int size = Math.max( this.ruleBase.getMemoryCount(), node.getMemoryId() + 32 );
+            Memory[] newMem = new Memory[size];
+            System.arraycopy(memories, 0, newMem, 0, memories.length);
+            this.memories = newMem;
         }
     }
 
     public Memory peekNodeMemory(int memoryId ) {
-        if ( memoryId < this.memories.length() ) {
-            return this.memories.get( memoryId );
-        } else {
-            return null;
-        }
+        return memories[memoryId];
     }
 
     public int length() {
-        return this.memories.length();
+        return this.memories.length;
     }
 
 }
