@@ -30,7 +30,8 @@ public class BinaryHeapPriorityQueueTest {
         final Random random = new Random();
         final List<QueueEntry> items = new ArrayList<>();
 
-        final BinaryHeapQueue<QueueEntry> queue = new BinaryHeapQueue<>( NaturalComparator.INSTANCE );
+        final BinaryHeapQueue queue = new BinaryHeapQueue( NaturalComparator.INSTANCE,
+                                                           100000 );
 
         for ( int i = 0; i < 100000; ++i ) {
             items.add( new LongQueueable( queue, random.nextLong() ) );
@@ -93,14 +94,24 @@ public class BinaryHeapPriorityQueueTest {
 
         private BinaryHeapQueue queue;
 
+        private int   index;
+
         public LongQueueable(BinaryHeapQueue queue,
                              final long value) {
             this.queue = queue;
             this.value = Long.valueOf( value );
         }
 
+        public void setQueueIndex(final int index) {
+            this.index = index;
+        }
+
+        public int getQueueIndex() {
+            return this.index;
+        }
+
         public void dequeue() {
-            this.queue.dequeue();
+            this.queue.dequeue( this.index );
         }
 
         public boolean isQueued() {

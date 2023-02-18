@@ -72,6 +72,8 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
      * The activation number
      */
     private           long                                           activationNumber;
+
+    private           int                                            index;
     private           boolean                                        queued;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
@@ -102,6 +104,7 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
         this.salience = salience;
         this.rtn = rtn;
         this.activationNumber = activationNumber;
+        this.index = -1;
         this.matched = true;
         this.agendaGroup = agendaGroup;
     }
@@ -220,6 +223,16 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, AgendaIte
     @Override
     public String toString() {
         return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience=" + this.salience + ", tuple=" + this.tuple + "]";
+    }
+
+    @Override
+    public void setQueueIndex(final int index) {
+        this.index = index;
+    }
+
+    @Override
+    public int getQueueIndex() {
+        return this.index;
     }
 
     @Override

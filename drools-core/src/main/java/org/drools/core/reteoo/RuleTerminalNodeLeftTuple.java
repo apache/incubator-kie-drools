@@ -45,6 +45,9 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
      * The activation number
      */
     private           long                                           activationNumber;
+
+    private           int                                            queueIndex;
+
     private           boolean                                        queued;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
@@ -118,6 +121,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         setPropagationContext(pctx);
         this.salience = salience;
         this.activationNumber = activationNumber;
+        this.queueIndex = -1;
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
@@ -191,6 +195,14 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         if (queued) {
             setActive(true);
         }
+    }
+
+    public void setQueueIndex(final int queueIndex) {
+        this.queueIndex = queueIndex;
+    }
+
+    public int getQueueIndex() {
+        return this.queueIndex;
     }
 
     public void dequeue() {
