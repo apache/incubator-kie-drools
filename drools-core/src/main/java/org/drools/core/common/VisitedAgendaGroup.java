@@ -159,4 +159,14 @@ public class VisitedAgendaGroup implements Activation {
     public Object getDeclarationValue(String s) {
         return null;
     }
+
+    @Override
+    public int getQueueIndex() {
+        return 0;
+    }
+
+    @Override
+    public void setQueueIndex(int index) {
+
+    }
 }

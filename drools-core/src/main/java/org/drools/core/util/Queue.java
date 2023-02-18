@@ -40,6 +40,10 @@ public interface Queue<T extends QueueEntry> {
 
         void setQueued(boolean b);
 
+        int getQueueIndex();
+
+        void setQueueIndex(int index);
+
         void dequeue();
 
         boolean isQueued();

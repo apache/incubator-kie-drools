@@ -1407,6 +1407,16 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         @Override
         public void dequeue() {
         }
+
+        @Override
+        public int getQueueIndex() {
+            return 0;
+        }
+
+        @Override
+        public void setQueueIndex(int index) {
+
+        }
     }
 
     class MockTuple
