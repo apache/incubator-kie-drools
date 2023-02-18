@@ -49,4 +49,5 @@ public interface Rule
      */
     Map<String, Object> getMetaData();
 
+    int getLoadOrder();
 }

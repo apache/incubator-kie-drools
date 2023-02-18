@@ -16,6 +16,7 @@
 
 package org.drools.tms;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.util.LinkedList;
 import org.drools.kiesession.MockActivation;
 import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
@@ -48,6 +49,16 @@ public class TMSMockActivation extends MockActivation implements TruthMaintenanc
 
     @Override
     public void setLogicalDependencies(LinkedList justified) {
+
+    }
+
+    @Override
+    public void removeAllBlockersAndBlocked(ActivationsManager activationsManager) {
+
+    }
+
+    @Override
+    public void removeBlocked(LogicalDependency dep) {
 
     }
 }

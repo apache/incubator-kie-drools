@@ -31,7 +31,7 @@ public interface AgendaComponentFactory extends KieService {
     LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, Sink sink);
     LeftTuple createTerminalTuple(LeftTuple leftTuple, RightTuple rightTuple, LeftTuple currentLeftChild, LeftTuple currentRightChild, Sink sink, boolean leftTupleMemoryEnabled);
 
-    RuleAgendaItem createAgendaItem(long activationNumber, Tuple tuple, int salience, PropagationContext context, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup);
+    RuleAgendaItem createAgendaItem(int salience, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup);
 
     class Holder {
         private static final AgendaComponentFactory INSTANCE = createInstance();
@@ -96,8 +96,8 @@ public interface AgendaComponentFactory extends KieService {
         }
 
         @Override
-        public RuleAgendaItem createAgendaItem(long activationNumber, Tuple tuple, int salience, PropagationContext context, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup) {
-            return new RuleAgendaItem(activationNumber, tuple, salience, context, pmem, rtn, declarativeAgendaEnabled, agendaGroup);
+        public RuleAgendaItem createAgendaItem(int salience, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup) {
+            return new RuleAgendaItem(salience, pmem, rtn, declarativeAgendaEnabled, agendaGroup);
         }
     }
 }

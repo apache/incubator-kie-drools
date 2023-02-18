@@ -18,8 +18,7 @@ package org.drools.core.common;
 
 import java.util.Collection;
 import java.util.Map;
-
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.phreak.RuleAgendaItem;
 
 public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGroup {
 
@@ -64,18 +63,17 @@ public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGrou
 
     void reset();
 
-    void add(Activation activation);
+    void add(RuleAgendaItem activation);
 
-    Activation peek();
+    RuleAgendaItem peek();
 
-    Activation remove();
+    RuleAgendaItem remove();
 
-    void remove(Activation activation);
+    void remove(RuleAgendaItem activation);
 
     void setActive(boolean activate);
 
-
-    Collection<Activation> getAll();
+    Collection<RuleAgendaItem> getAll();
 
     void setActivatedForRecency(long recency);
     
@@ -89,7 +87,7 @@ public interface InternalAgendaGroup extends org.kie.api.runtime.rule.AgendaGrou
 
     void removeNodeInstance(Object processInstanceId, String nodeInstanceId);
 
-    Collection<Activation> getActivations();
+    Collection<RuleAgendaItem> getActivations();
 
     Map<Object, String> getNodeInstances();
 

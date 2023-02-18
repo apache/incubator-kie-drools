@@ -18,22 +18,19 @@ package org.drools.core.common;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReferenceArray;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.SegmentMemory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 
-public class ConcurrentNodeMemories implements NodeMemories {
+public class DefaultNodeMemories implements NodeMemories {
 
     private Memory[] memories;
 
     private final RuleBase ruleBase;
 
-    public ConcurrentNodeMemories( RuleBase ruleBase) {
+    public DefaultNodeMemories(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
         clear();
     }
@@ -45,7 +42,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
     
     public void clear() {
-        this.memories = new Memory[this.ruleBase.getMemoryCount()];
+        memories = new Memory[ruleBase.getMemoryCount()];
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
@@ -71,12 +68,12 @@ public class ConcurrentNodeMemories implements NodeMemories {
             }
         }
     }
-    
+
     public Memory getNodeMemory(MemoryFactory node, ReteEvaluator reteEvaluator) {
-        if( node.getMemoryId() >= this.memories.length ) {
+        if( node.getMemoryId() >= memories.length ) {
             resize( node );
         }
-        Memory memory = this.memories[node.getMemoryId()];
+        Memory memory = memories[node.getMemoryId()];
 
         if( memory == null ) {
             memory = createNodeMemory( node, reteEvaluator );
@@ -93,10 +90,10 @@ public class ConcurrentNodeMemories implements NodeMemories {
     private Memory createNodeMemory( MemoryFactory node, ReteEvaluator reteEvaluator ) {
         // need to try again in a synchronized code block to make sure
         // it was not created yet
-        Memory memory = this.memories[node.getMemoryId()];
+        Memory memory = memories[node.getMemoryId()];
         if( memory == null ) {
-            memory = node.createMemory( this.ruleBase.getRuleBaseConfiguration(), reteEvaluator );
-            memory = this.memories[node.getMemoryId()];
+            memory = node.createMemory( ruleBase.getRuleBaseConfiguration(), reteEvaluator );
+            memories[node.getMemoryId()] = memory;
         }
         return memory;
     }
@@ -105,21 +102,21 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * @param node
      */
     private void resize( MemoryFactory node ) {
-        if( node.getMemoryId() >= this.memories.length ) {
+        if( node.getMemoryId() >= memories.length ) {
             // adding some buffer for new nodes, so that we reduce array copies
-            int size = Math.max( this.ruleBase.getMemoryCount(), node.getMemoryId() + 32 );
+            int size = Math.max( ruleBase.getMemoryCount(), node.getMemoryId() + 32 );
             Memory[] newMem = new Memory[size];
             System.arraycopy(memories, 0, newMem, 0, memories.length);
-            this.memories = newMem;
+            memories = newMem;
         }
     }
 
     public Memory peekNodeMemory(int memoryId ) {
-        return memories[memoryId];
+        return memoryId < memories.length ? memories[memoryId] : null;
     }
 
     public int length() {
-        return this.memories.length;
+        return memories.length;
     }
 
 }

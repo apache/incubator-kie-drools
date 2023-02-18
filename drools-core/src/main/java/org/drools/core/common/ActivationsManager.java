@@ -85,7 +85,7 @@ public interface ActivationsManager {
 
     void addPropagation(PropagationEntry propagationEntry);
 
-    default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified) {
+    default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, Activation justified) {
         if (!ruleAgendaItem.isQueued()) {
             ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
         }

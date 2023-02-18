@@ -30,8 +30,7 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.junit.Test;
 
-public class
-        AddRemoveTest extends DroolsTestCase {
+public class AddRemoveTest extends DroolsTestCase {
     @Test
     public void testAdd() {
         /*

@@ -56,6 +56,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
     private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
+
     protected         RuleAgendaItem                                 ruleAgendaItem;
 
     private Runnable callback;
@@ -206,10 +207,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
     }
 
     public void dequeue() {
-        if (this.agendaGroup != null) {
-            this.agendaGroup.remove(this);
-        }
-        setQueued(false);
+        ruleAgendaItem.getRuleExecutor().removeLeftTuple(this);
     }
 
     public void remove() {
@@ -300,10 +298,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isRuleAgendaItem() {
-        return false;
     }
 
     public boolean hasBlockers() {

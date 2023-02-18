@@ -195,7 +195,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
                                                final PathMemory rs,
                                                final TerminalNode rtn ) {
         String ruleFlowGroupName = rtn.getRule().getRuleFlowGroup();
-        return AgendaComponentFactory.get().createAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(),
+        return AgendaComponentFactory.get().createAgendaItem( salience, rs, rtn, isDeclarativeAgenda(),
                 (InternalAgendaGroup) getAgendaGroup( !StringUtils.isEmpty(ruleFlowGroupName) ? ruleFlowGroupName : rtn.getRule().getAgendaGroup() ));
     }
 
@@ -287,9 +287,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void addItemToActivationGroup(final AgendaItem activation) {
-        if ( activation.isRuleAgendaItem() ) {
-            throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
-        }
         String group = activation.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
@@ -507,11 +504,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
             activation.setActivationGroupNode( null );
 
             if ( activation.isQueued() ) {
-                activation.setQueued(false);
                 activation.remove();
-
-                RuleExecutor ruleExec = ((RuleTerminalNodeLeftTuple)activation).getRuleAgendaItem().getRuleExecutor();
-                ruleExec.removeLeftTuple((LeftTuple) activation);
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                               this.workingMemory,
                                                                               MatchCancelledCause.CLEAR );
@@ -599,23 +592,14 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
-        for ( Match match : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
-            Activation act = ( Activation ) match;
-            if ( act.isRuleAgendaItem() ) {
-                // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
-                RuleExecutor ruleExecutor = ((RuleAgendaItem) act).getRuleExecutor();
-                ruleExecutor.evaluateNetwork(this);
-                TupleList list = ruleExecutor.getLeftTupleList();
-                for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
-                    if ( ruleName.equals( lt.getRule().getName() )
-                            && ( checkProcessInstance( lt, processInstanceId ) )) {
-                        return true;
-                    }
-                }
-
-            }   else {
-                if ( ruleName.equals( act.getRule().getName() )
-                        && ( checkProcessInstance( act, processInstanceId ) )) {
+        for ( RuleAgendaItem item : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
+            // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
+            RuleExecutor ruleExecutor = item.getRuleExecutor();
+            ruleExecutor.evaluateNetwork(this);
+            TupleList list = ruleExecutor.getLeftTupleList();
+            for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                if ( ruleName.equals( lt.getRule().getName() )
+                     && ( checkProcessInstance( lt, processInstanceId ) )) {
                     return true;
                 }
             }

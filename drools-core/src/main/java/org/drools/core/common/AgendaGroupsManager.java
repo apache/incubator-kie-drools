@@ -34,6 +34,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.consequence.Activation;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.MatchCancelledCause;
 
 public interface AgendaGroupsManager extends Externalizable {
@@ -78,7 +79,7 @@ public interface AgendaGroupsManager extends Externalizable {
 
     int sizeOfRuleFlowGroup(String name);
 
-    Collection<Activation> getActivations();
+    Collection<RuleAgendaItem> getActivations();
 
     InternalAgendaGroup getMainAgendaGroup();
 
@@ -233,16 +234,16 @@ public interface AgendaGroupsManager extends Externalizable {
                 return 0;
             }
             int count = 0;
-            for ( Activation item : mainAgendaGroup.getActivations() ) {
-                if (!((RuleAgendaItem) item).getRuleExecutor().getLeftTupleList().isEmpty()) {
-                    count = count + ((RuleAgendaItem) item).getRuleExecutor().getLeftTupleList().size();
+            for ( RuleAgendaItem item : mainAgendaGroup.getActivations() ) {
+                if (!(item.getRuleExecutor().getLeftTupleList().isEmpty())) {
+                    count = count + item.getRuleExecutor().getLeftTupleList().size();
                 }
             }
             return count;
         }
 
         @Override
-        public Collection<Activation> getActivations() {
+        public Collection<RuleAgendaItem> getActivations() {
             return this.mainAgendaGroup.getActivations();
         }
 
@@ -346,8 +347,8 @@ public interface AgendaGroupsManager extends Externalizable {
 
         private void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup, InternalAgenda agenda) {
             // enforce materialization of all activations of this group before removing them
-            for (Activation activation : agendaGroup.getActivations()) {
-                ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( agenda );
+            for (RuleAgendaItem activation : agendaGroup.getActivations()) {
+                activation.getRuleExecutor().reEvaluateNetwork( agenda );
             }
 
             final EventSupport eventsupport = this.workingMemory;
@@ -357,24 +358,9 @@ public interface AgendaGroupsManager extends Externalizable {
             // this is thread safe for BinaryHeapQueue
             // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
             List<RuleAgendaItem> lazyItems = new ArrayList<>();
-            for ( Activation aQueueable : agendaGroup.getAll() ) {
-                final AgendaItem item = (AgendaItem) aQueueable;
-                if ( item.isRuleAgendaItem() ) {
-                    lazyItems.add( (RuleAgendaItem) item );
-                    ((RuleAgendaItem) item).getRuleExecutor().cancel(workingMemory, eventsupport);
-                    continue;
-                }
-
-                // this must be set false before removal from the activationGroup.
-                // Otherwise the activationGroup will also try to cancel the Actvation
-                // Also modify won't work properly
-                item.setQueued(false);
-
-                if ( item.getActivationGroupNode() != null ) {
-                    item.getActivationGroupNode().getActivationGroup().removeActivation( item );
-                }
-
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item, this.workingMemory, MatchCancelledCause.CLEAR );
+            for (RuleAgendaItem item : agendaGroup.getAll() ) {
+                lazyItems.add(item );
+                item.getRuleExecutor().cancel(workingMemory, eventsupport);
             }
             agendaGroup.reset();
 
@@ -557,18 +543,19 @@ public interface AgendaGroupsManager extends Externalizable {
             if (group == null) {
                 return 0;
             }
+
             int count = 0;
-            for ( Activation item : group.getActivations() ) {
-                if (!((RuleAgendaItem) item).getRuleExecutor().getLeftTupleList().isEmpty()) {
-                    count = count + ((RuleAgendaItem) item).getRuleExecutor().getLeftTupleList().size();
+            for ( RuleAgendaItem item : group.getActivations() ) {
+                if (!item.getRuleExecutor().getLeftTupleList().isEmpty()) {
+                    count = count + item.getRuleExecutor().getLeftTupleList().size();
                 }
             }
             return count;
         }
 
         @Override
-        public Collection<Activation> getActivations() {
-            final List<Activation> list = new ArrayList<>();
+        public Collection<RuleAgendaItem> getActivations() {
+            final List<RuleAgendaItem> list = new ArrayList<>();
             for (InternalAgendaGroup group : this.agendaGroups.values()) {
                 list.addAll(group.getActivations());
             }

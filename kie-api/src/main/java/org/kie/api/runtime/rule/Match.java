@@ -52,4 +52,5 @@ public interface Match {
      */
     Object getDeclarationValue(String declarationId);
 
+    int getSalience();
 }

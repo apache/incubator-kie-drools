@@ -16,18 +16,17 @@
 
 package org.drools.core.conflict;
 
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.rule.consequence.ConflictResolver;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.rule.consequence.Activation;
-import org.drools.core.rule.consequence.ConflictResolver;
-
-public class PhreakConflictResolver implements ConflictResolver, Externalizable {
+public class RuleAgendaConflictResolver implements ConflictResolver<RuleAgendaItem>, Externalizable {
 
     private static final long                   serialVersionUID = 510l;
-    public static final  PhreakConflictResolver INSTANCE         = new PhreakConflictResolver();
+    public static final RuleAgendaConflictResolver INSTANCE         = new RuleAgendaConflictResolver();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
@@ -36,14 +35,16 @@ public class PhreakConflictResolver implements ConflictResolver, Externalizable 
     }
 
     public static ConflictResolver getInstance() {
-        return PhreakConflictResolver.INSTANCE;
+        return RuleAgendaConflictResolver.INSTANCE;
     }
 
-    public final int compare(final Activation existing, final Activation adding) {
+    public final int compare(final RuleAgendaItem existing,
+                             final RuleAgendaItem adding) {
         return doCompare( existing, adding );
     }
 
-    public final static int doCompare(final Activation existing, final Activation adding) {
+    public final static int doCompare(final RuleAgendaItem existing,
+                                      final RuleAgendaItem adding) {
         if (existing == adding) {
             return 0;
         }
@@ -53,10 +54,6 @@ public class PhreakConflictResolver implements ConflictResolver, Externalizable 
 
         if (s1 != s2) {
             return s1 > s2 ? 1 : -1;
-        }
-
-        if (adding.getRule().equals(existing.getRule()) || adding.getRule().getLoadOrder() == existing.getRule().getLoadOrder()) {
-            return existing.getActivationNumber() > adding.getActivationNumber() ? 1 : -1;
         }
 
         return adding.getRule().getLoadOrder() - existing.getRule().getLoadOrder(); // lowest order goes first

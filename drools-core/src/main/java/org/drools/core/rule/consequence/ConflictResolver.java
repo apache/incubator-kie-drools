@@ -19,6 +19,7 @@ package org.drools.core.rule.consequence;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.Tuple;
 
 /**
@@ -37,8 +38,8 @@ import org.drools.core.reteoo.Tuple;
  *
  * @version $Id: ConflictResolver.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  */
-public interface ConflictResolver
+public interface ConflictResolver<T>
     extends
     Serializable,
-    Comparator<Activation> {
+    Comparator<T> {
 }

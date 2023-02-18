@@ -90,7 +90,7 @@ import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
 import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -257,19 +257,16 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            Collection<Activation> activations = new ArrayList<>();
-            activations.addAll( wm.getAgenda().getAgendaGroupsManager().getActivations() );
-            for ( Activation activation : activations ) {
-                if ( activation.isRuleAgendaItem() ) {
-                    // evaluate it
-                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
-                    ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
-                }
+            // this must clone as re-evaluation will under underlying Collection
+            for ( RuleAgendaItem activation : new ArrayList<>(wm.getAgenda().getAgendaGroupsManager().getActivations())) {
+                // evaluate it
+                activation.getRuleExecutor().reEvaluateNetwork( wm );
+                activation.getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
             }
             dirty = false;
             // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-            for ( Activation activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
-                if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+            for ( RuleAgendaItem activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
+                if ( activation.getRuleExecutor().isDirty() ) {
                     dirty = true;
                     break;
                 }
@@ -335,11 +332,9 @@ public class ProtobufOutputMarshaller {
         }
 
         // serialize all network evaluator activations
-        for ( Activation activation : agenda.getAgendaGroupsManager().getActivations() ) {
-            if ( activation.isRuleAgendaItem() ) {
-                // serialize it
-                _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation, false) );
-            }
+        for ( RuleAgendaItem activation : agenda.getAgendaGroupsManager().getActivations() ) {
+            // serialize it
+            _ab.addRuleActivation( writeActivation( context, activation) );
         }
 
         _ksb.setAgenda( _ab.build() );
@@ -701,7 +696,6 @@ public class ProtobufOutputMarshaller {
         _activation.setTuple( writeTuple( context, agendaItem, isDormient ) );
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
-        _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
 
         if ( agendaItem.getActivationGroupNode() != null ) {
             _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
@@ -711,13 +705,30 @@ public class ProtobufOutputMarshaller {
             _activation.setHandleId( agendaItem.getActivationFactHandle().getId() );
         }
 
-        if (agendaItem instanceof TruthMaintenanceSystemAgendaItem) {
-            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemAgendaItem)agendaItem).getLogicalDependencies();
+        if (agendaItem instanceof TruthMaintenanceSystemActivation) {
+            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemActivation)agendaItem).getLogicalDependencies();
             if (list != null && !list.isEmpty()) {
                 for (LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext()) {
                     _activation.addLogicalDependency(((BeliefSet) node.getJustified()).getFactHandle().getId());
                 }
             }
+        }
+
+        return _activation.build();
+    }
+
+    public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation( MarshallerWriteContext context,
+                                                                                             RuleAgendaItem agendaItem) {
+        ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
+
+        RuleImpl rule = agendaItem.getRule();
+        _activation.setPackageName( rule.getPackage() );
+        _activation.setRuleName( rule.getName() );
+        _activation.setSalience( agendaItem.getSalience() );
+        _activation.setIsActivated( agendaItem.isQueued() );
+
+        if ( agendaItem.getActivationGroupNode() != null ) {
+            _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
         }
 
         return _activation.build();

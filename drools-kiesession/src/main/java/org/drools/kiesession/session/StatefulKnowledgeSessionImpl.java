@@ -51,7 +51,7 @@ import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.ConcurrentNodeMemories;
+import org.drools.core.common.DefaultNodeMemories;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -322,7 +322,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.entryPointsManager = new NamedEntryPointsManager(this);
 
-        this.nodeMemories = new ConcurrentNodeMemories(kBase);
+        this.nodeMemories = new DefaultNodeMemories(kBase);
         registerReceiveNodes(kBase.getReceiveNodes());
 
         RuleBaseConfiguration conf = kBase.getRuleBaseConfiguration();

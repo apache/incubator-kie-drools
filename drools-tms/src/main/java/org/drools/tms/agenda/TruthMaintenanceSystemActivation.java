@@ -16,6 +16,7 @@
 
 package org.drools.tms.agenda;
 
+import org.drools.core.common.ActivationsManager;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.tms.SimpleMode;
 import org.drools.tms.LogicalDependency;
@@ -37,4 +38,8 @@ public interface TruthMaintenanceSystemActivation<T extends ModedAssertion<T>> e
     void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
 
     LinkedList<SimpleMode> getBlockers();
+
+    void removeAllBlockersAndBlocked(ActivationsManager activationsManager);
+
+    void removeBlocked(LogicalDependency<SimpleMode> dep);
 }

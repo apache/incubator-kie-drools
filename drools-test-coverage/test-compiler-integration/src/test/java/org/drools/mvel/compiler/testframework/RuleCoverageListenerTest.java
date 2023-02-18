@@ -26,6 +26,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
@@ -196,5 +197,10 @@ class MockActivation implements Activation {
     @Override
     public void setQueueIndex(int index) {
 
+    }
+
+    @Override
+    public RuleAgendaItem getRuleAgendaItem() {
+        return null;
     }
 }
