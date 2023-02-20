@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import org.kie.kogito.quarkus.workflow.deployment.KogitoDataIndexServiceAvailableBuildItem;
-import org.kie.kogito.swf.tools.dataindex.config.DevConsoleRuntimeConfig;
+import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 
+import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -31,7 +31,6 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
-import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
 import io.quarkus.devconsole.spi.DevConsoleTemplateInfoBuildItem;
@@ -46,14 +45,7 @@ public class DevConsoleProcessor {
     private static final String DATA_INDEX_CLIENT_KEY = "quarkus.rest-client.\"" + DATA_INDEX_CONFIG_KEY + "\".url";
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
     private static final String BASE_RELATIVE_URL = "/q/dev/org.kie.kogito.kogito-quarkus-serverless-workflow-devui";
-
-    @BuildStep(onlyIf = IsDevelopment.class)
-    public void setUpDataIndexServiceURL(
-            final DevConsoleRuntimeConfig config,
-            final BuildProducer<SystemPropertyBuildItem> systemProperties) throws IOException {
-
-        systemProperties.produce(new SystemPropertyBuildItem(DATA_INDEX_CLIENT_KEY, config.dataIndexUrl));
-    }
+    private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
@@ -90,9 +82,10 @@ public class DevConsoleProcessor {
 
     @SuppressWarnings("unused")
     @BuildStep(onlyIf = IsDevelopment.class)
-    public void isDataIndexAvailable(final BuildProducer<DevConsoleTemplateInfoBuildItem> devConsoleTemplateInfoBuildItemBuildProducer,
-            final Optional<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItem) {
+    public void isDataIndexAvailable(BuildProducer<DevConsoleTemplateInfoBuildItem> devConsoleTemplateInfoBuildItemBuildProducer,
+            Optional<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItem,
+            Capabilities capabilities) {
         devConsoleTemplateInfoBuildItemBuildProducer.produce(new DevConsoleTemplateInfoBuildItem("isDataIndexAvailable",
-                dataIndexServiceAvailableBuildItem.isPresent()));
+                dataIndexServiceAvailableBuildItem.isPresent() || capabilities.isPresent(DATA_INDEX_CAPABILITY)));
     }
 }
