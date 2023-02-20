@@ -18,16 +18,14 @@ package org.kie.kogito.quarkus.workflow.deployment;
 
 import java.io.Closeable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.kie.kogito.quarkus.workflow.deployment.config.KogitoDevServicesBuildTimeConfig;
 import org.kie.kogito.quarkus.workflow.deployment.config.KogitoWorkflowBuildTimeConfig;
 import org.kie.kogito.quarkus.workflow.deployment.devservices.DataIndexInMemoryContainer;
@@ -38,6 +36,7 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.IsDockerWorking;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -62,8 +61,7 @@ public abstract class AbstractDevServicesProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDevServicesProcessor.class);
     private static final ContainerLocator LOCATOR = new ContainerLocator(DataIndexInMemoryContainer.DEV_SERVICE_LABEL, DataIndexInMemoryContainer.PORT);
-    private static final Map<String, Properties> DEVSERVICES_PROPS = new ConcurrentHashMap<>();
-
+    private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
     static Closeable closeable;
     static DataIndexDevServiceConfig cfg;
     static volatile boolean first = true;
@@ -84,11 +82,12 @@ public abstract class AbstractDevServicesProcessor {
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetwork,
             Optional<ConsoleInstalledBuildItem> consoleInstalled,
             CuratedApplicationShutdownBuildItem applicationShutdown,
-            LoggingSetupBuildItem loggingSetup) {
+            LoggingSetupBuildItem loggingSetup,
+            Capabilities capabilities) {
 
         DataIndexDevServiceConfig configuration = getConfiguration(buildTimeConfig);
 
-        if (configuration.devServicesEnabled && isDockerWorking.getAsBoolean()) {
+        if (capabilities.isMissing(DATA_INDEX_CAPABILITY) && configuration.devServicesEnabled && isDockerWorking.getAsBoolean()) {
             additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(DataIndexEventPublisher.class).build());
             Integer port = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", Integer.class).orElse(8080);
             Testcontainers.exposeHostPorts(port);
@@ -112,7 +111,7 @@ public abstract class AbstractDevServicesProcessor {
 
         DataIndexInstance dataIndex;
         try {
-            dataIndex = startDataIndex(configuration, launchMode, !devServicesSharedNetwork.isEmpty());
+            dataIndex = startDataIndex(capabilities, configuration, launchMode, !devServicesSharedNetwork.isEmpty());
             if (dataIndex != null) {
                 // Signal the service is available
                 dataIndexServiceAvailableBuildItemBuildProducer.produce(new KogitoDataIndexServiceAvailableBuildItem());
@@ -161,7 +160,7 @@ public abstract class AbstractDevServicesProcessor {
         }
     }
 
-    private DataIndexInstance startDataIndex(DataIndexDevServiceConfig config, LaunchModeBuildItem launchMode, boolean useSharedNetwork) {
+    private DataIndexInstance startDataIndex(Capabilities capabilities, DataIndexDevServiceConfig config, LaunchModeBuildItem launchMode, boolean useSharedNetwork) {
         if (!config.devServicesEnabled) {
             // explicitly disabled
             LOGGER.info("Not starting dev services for Kogito, as it has been disabled in the config.");
@@ -171,6 +170,11 @@ public abstract class AbstractDevServicesProcessor {
         if (!isDockerWorking.getAsBoolean()) {
             LOGGER.warn(
                     "Docker isn't working, unable to start Data Index image.");
+            return null;
+        }
+
+        if (capabilities.isPresent(DATA_INDEX_CAPABILITY)) {
+            LOGGER.info("Not starting dev services for Kogito, as Data Index is already present as Quarkus extension.");
             return null;
         }
 

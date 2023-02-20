@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.kie.kogito.quarkus.addons.common.deployment.TrustyServiceAvailableBuildItem;
+import org.kie.kogito.quarkus.extensions.spi.deployment.TrustyServiceAvailableBuildItem;
 import org.kie.kogito.tracing.decision.quarkus.devservices.TrustyServiceInMemoryContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

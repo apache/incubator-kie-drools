@@ -54,6 +54,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withImagePullPolicy(LATEST.equalsIgnoreCase(dockerImageName.getVersionPart()) ? PullPolicy.alwaysPull() : PullPolicy.defaultPolicy());
         withEnv("KOGITO_DATAINDEX_GATEWAY_URL", "host.testcontainers.internal");
+        withEnv("KOGITO_DATA_INDEX_VERTX_GRAPHQL_UI_PATH", "/q/graphql-ui");
     }
 
     @Override
