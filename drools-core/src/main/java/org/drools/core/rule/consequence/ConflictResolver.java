@@ -19,7 +19,6 @@ package org.drools.core.rule.consequence;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.Tuple;
 
 /**
@@ -31,7 +30,7 @@ import org.drools.core.reteoo.Tuple;
  * ordering of conflicting rules.
  * </p>
  * 
- * @see Activation
+ * @see InternalMatch
  * @see Tuple
  * @see org.kie.rule.Rule
  * 

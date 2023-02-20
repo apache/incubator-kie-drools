@@ -14,7 +14,7 @@ The following table lists the supported labels (column headers) and values for a
 
 |`PRIORITY`
 |P
-|An integer defining the `salience` value of the rule. Rules with a higher salience value are given higher priority when ordered in the activation queue. Overridden by the `Sequential` flag.
+|An integer defining the `salience` value of the rule. Rules with a higher salience value are given higher priority when ordered in the internalMatch queue. Overridden by the `Sequential` flag.
 
 Example: `PRIORITY 10`
 
@@ -44,7 +44,7 @@ Example: `AGENDA-GROUP "GroupName"`
 
 |`ACTIVATION-GROUP`
 |X
-|A string identifying an activation (or XOR) group to which you want to assign the rule. In activation groups, only one rule can be activated. The first rule to fire will cancel all pending activations of all rules in the activation group.
+|A string identifying an internalMatch (or XOR) group to which you want to assign the rule. In internalMatch groups, only one rule can be activated. The first rule to fire will cancel all pending internalMatches of all rules in the internalMatch group.
 
 Example: `ACTIVATION-GROUP "GroupName"`
 
@@ -74,7 +74,7 @@ Example: `AUTO-FOCUS true`
 
 |`LOCK-ON-ACTIVE`
 |L
-|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When this option is set to `true`, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the activation of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
+|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When this option is set to `true`, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the internalMatch of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
 
 Example: `LOCK-ON-ACTIVE true`
 

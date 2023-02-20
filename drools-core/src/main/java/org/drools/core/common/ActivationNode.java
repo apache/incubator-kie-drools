@@ -16,26 +16,26 @@
 
 package org.drools.core.common;
 
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.rule.consequence.Activation;
 
 public class ActivationNode extends AbstractBaseLinkedListNode<ActivationNode> {
 
     private static final long     serialVersionUID = 510l;
 
-    private final Activation activation;
+    private final InternalMatch internalMatch;
     private final Object parentContainer;
 
-    public ActivationNode(final Activation activation,
+    public ActivationNode(final InternalMatch internalMatch,
                           final Object parentContainer) {
         super();
-        this.activation = activation;
-        this.activation.setActivationNode( this );
+        this.internalMatch = internalMatch;
+        this.internalMatch.setActivationNode(this);
         this.parentContainer = parentContainer;
     }
 
-    public Activation getActivation() {
-        return this.activation;
+    public InternalMatch getActivation() {
+        return this.internalMatch;
     }
 
     public Object getParentContainer() {

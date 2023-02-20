@@ -46,9 +46,9 @@ import org.kie.api.runtime.rule.RuleContext;
  */
 public interface KnowledgeHelper extends RuleContext, Serializable {
     
-    void setActivation(Activation activation);
+    void setActivation(InternalMatch internalMatch);
 
-    default void restoreActivationOnConsequenceFailure(Activation activation) { }
+    default void restoreActivationOnConsequenceFailure(InternalMatch internalMatch) { }
 
     void reset();
     
@@ -120,7 +120,7 @@ public interface KnowledgeHelper extends RuleContext, Serializable {
 
     Tuple getTuple();
 
-    Activation getMatch();
+    InternalMatch getMatch();
 
     WorkingMemory getWorkingMemory();
     

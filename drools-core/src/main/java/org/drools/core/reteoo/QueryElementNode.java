@@ -37,7 +37,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
@@ -272,7 +272,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
             
             RightTuple rightTuple = createResultRightTuple(resultHandle, resultLeftTuple, dquery.isOpen());
 
-            if ( query.processAbduction((Activation) resultLeftTuple, dquery, objects, reteEvaluator) ) {
+            if ( query.processAbduction((InternalMatch) resultLeftTuple, dquery, objects, reteEvaluator) ) {
                 LeftTupleSink sink = dquery.getLeftTupleSink();
                 LeftTuple childLeftTuple = sink.createLeftTuple( this.leftTuple, rightTuple, sink );
                 boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);

@@ -182,9 +182,9 @@ It is important that you activate the profile that specifies the remote reposito
 <profiles>
   <profile>
     <id>profile-1</id>
-    <activation>
+    <internalMatch>
       <activeByDefault>true</activeByDefault>
-    </activation>
+    </internalMatch>
     ...
   </profile>
 </profiles>

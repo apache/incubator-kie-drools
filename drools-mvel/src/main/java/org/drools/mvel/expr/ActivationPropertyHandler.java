@@ -15,7 +15,7 @@
 package org.drools.mvel.expr;
 
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
@@ -27,7 +27,7 @@ public class ActivationPropertyHandler implements PropertyHandler {
     public Object getProperty(String name,
                               Object obj,
                               VariableResolverFactory variableFactory) {
-        Activation item = (Activation) obj;
+        InternalMatch item = (InternalMatch) obj;
         if ( "rule".equals( name ) ) {
             return item.getRule();
         } else if ( "active".equals( name ) ) {

@@ -26,11 +26,11 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.SimpleMode;
-import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 import org.drools.tms.beliefsystem.BeliefSystem;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -82,7 +82,7 @@ public class SimpleBeliefSystem
 
     public BeliefSet<SimpleMode> insert( SimpleMode mode,
                                          RuleImpl rule,
-                                         TruthMaintenanceSystemActivation activation,
+                                         TruthMaintenanceSystemInternalMatch activation,
                                          Object payload,
                                          BeliefSet<SimpleMode> beliefSet,
                                          PropagationContext context,
@@ -117,7 +117,7 @@ public class SimpleBeliefSystem
     }
 
     @Override
-    public void delete( SimpleMode mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context ) {
+    public void delete(SimpleMode mode, RuleImpl rule, InternalMatch internalMatch, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context) {
 
         beliefSet.remove( mode );
 
@@ -125,7 +125,7 @@ public class SimpleBeliefSystem
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
-                      null, activation != null ? activation.getTuple().getTupleSink() : null);
+                      null, internalMatch != null ? internalMatch.getTuple().getTupleSink() : null);
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
@@ -178,7 +178,7 @@ public class SimpleBeliefSystem
         return new SimpleBeliefSet( this, fh );
     }
 
-    public LogicalDependency newLogicalDependency(TruthMaintenanceSystemActivation activation,
+    public LogicalDependency newLogicalDependency(TruthMaintenanceSystemInternalMatch activation,
                                                   BeliefSet beliefSet,
                                                   Object object,
                                                   Object value) {

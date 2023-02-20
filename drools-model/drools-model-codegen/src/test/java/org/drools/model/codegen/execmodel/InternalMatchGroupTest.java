@@ -31,14 +31,14 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ActivationGroupTest extends OnlyPatternTest {
+public class InternalMatchGroupTest extends OnlyPatternTest {
 
     private static final String LIST_NAME = "list";
     private static final String LIST_OUTPUT_NAME = "output-list";
     private static final String KIE_SESSION = "ksession1";
     private static final String ACTIVATION_GROUP = "first-group";
 
-    public ActivationGroupTest(RUN_TYPE testRunType) {
+    public InternalMatchGroupTest(RUN_TYPE testRunType) {
         super(testRunType);
     }
 

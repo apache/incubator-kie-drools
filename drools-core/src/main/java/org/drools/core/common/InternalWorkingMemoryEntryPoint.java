@@ -21,7 +21,7 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -54,7 +54,7 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                               Object object,
                               BitMask mask,
                               Class<?> modifiedClass,
-                              Activation activation);
+                              InternalMatch internalMatch);
 
     void update(InternalFactHandle handle,
                 Object object,
@@ -66,13 +66,13 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                               Object object,
                               ObjectTypeConf typeConf,
                               RuleImpl rule,
-                              Activation activation);
+                              InternalMatch internalMatch);
 
     PropagationContext delete(InternalFactHandle handle,
                               Object object,
                               ObjectTypeConf typeConf,
                               RuleImpl rule,
-                              Activation activation,
+                              InternalMatch internalMatch,
                               TerminalNode terminalNode);
 
     void removeFromObjectStore(InternalFactHandle handle);

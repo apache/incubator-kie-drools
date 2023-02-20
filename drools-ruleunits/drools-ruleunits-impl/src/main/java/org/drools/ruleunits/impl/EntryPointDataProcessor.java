@@ -22,7 +22,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
@@ -53,12 +53,12 @@ public class EntryPointDataProcessor implements DataProcessor {
         ruleContext.insertLogical(entryPoint, object);
     }
 
-    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        update(handles.get(dh), obj, mask, modifiedClass, activation);
+    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        update(handles.get(dh), obj, mask, modifiedClass, internalMatch);
     }
 
-    public void update(InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        ((WorkingMemoryEntryPoint) entryPoint).update(fh, obj, mask, modifiedClass, activation);
+    public void update(InternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        ((WorkingMemoryEntryPoint) entryPoint).update(fh, obj, mask, modifiedClass, internalMatch);
     }
 
     @Override

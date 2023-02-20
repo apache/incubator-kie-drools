@@ -36,8 +36,8 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.time.TimerService;
@@ -295,8 +295,8 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.insert(object, dynamic);
     }
 
-    public void update(FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        delegate.update(handle, object, mask, modifiedClass, activation);
+    public void update(FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        delegate.update(handle, object, mask, modifiedClass, internalMatch);
     }
 
     public void removeEventListener(RuleRuntimeEventListener listener) {
@@ -357,8 +357,8 @@ public class StatefulKnowledgeSessionForRHS
         delegate.removeEventListener(listener);
     }
 
-    public void updateTraits(InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        delegate.updateTraits(h, mask, modifiedClass, activation);
+    public void updateTraits(InternalFactHandle h, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        delegate.updateTraits(h, mask, modifiedClass, internalMatch);
     }
 
     public void update(FactHandle handle, Object object) {
@@ -381,9 +381,9 @@ public class StatefulKnowledgeSessionForRHS
         delegate.reset();
     }
 
-    public <T, K, X extends TraitableBean> Thing<K> shed(Activation activation, TraitableBean<K, X> core,
+    public <T, K, X extends TraitableBean> Thing<K> shed(InternalMatch internalMatch, TraitableBean<K, X> core,
                                                          Class<T> trait) {
-        return delegate.shed(activation, core, trait);
+        return delegate.shed(internalMatch, core, trait);
     }
 
     public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
@@ -402,9 +402,9 @@ public class StatefulKnowledgeSessionForRHS
         delegate.clearNodeMemory(node);
     }
 
-    public <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b,
+    public <T, K> T don(InternalMatch internalMatch, K core, Collection<Class<? extends Thing>> traits, boolean b,
                         Mode[] modes) {
-        return delegate.don(activation, core, traits, b, modes);
+        return delegate.don(internalMatch, core, traits, b, modes);
     }
 
     public NodeMemories getNodeMemories() {
@@ -419,8 +419,8 @@ public class StatefulKnowledgeSessionForRHS
         return delegate.getObjectStore();
     }
 
-    public <T, K> T don(Activation activation, K core, Class<T> trait, boolean b, Mode[] modes) {
-        return delegate.don(activation, core, trait, b, modes);
+    public <T, K> T don(InternalMatch internalMatch, K core, Class<T> trait, boolean b, Mode[] modes) {
+        return delegate.don(internalMatch, core, trait, b, modes);
     }
 
     public void delete(FactHandle handle) {
@@ -673,8 +673,8 @@ public class StatefulKnowledgeSessionForRHS
         delegate.notifyWaitOnRest();
     }
 
-    public void cancelActivation(Activation activation, boolean declarativeAgenda) {
-        delegate.cancelActivation(activation, declarativeAgenda);
+    public void cancelActivation(InternalMatch internalMatch, boolean declarativeAgenda) {
+        delegate.cancelActivation(internalMatch, declarativeAgenda);
     }
 
     public void clearAgenda() {

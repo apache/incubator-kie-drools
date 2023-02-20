@@ -16,24 +16,24 @@
 
 package org.drools.core.common;
 
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.rule.consequence.Activation;
 
 public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGroupNode> {
 
-    private final Activation      activation;
+    private final InternalMatch internalMatch;
 
     private final InternalActivationGroup activationGroup;
 
-    public ActivationGroupNode(final Activation activation,
+    public ActivationGroupNode(final InternalMatch internalMatch,
                                final InternalActivationGroup activationGroup) {
         super();
-        this.activation = activation;
+        this.internalMatch = internalMatch;
         this.activationGroup = activationGroup;
     }
 
-    public Activation getActivation() {
-        return this.activation;
+    public InternalMatch getActivation() {
+        return this.internalMatch;
     }
 
     public InternalActivationGroup getActivationGroup() {
@@ -42,6 +42,6 @@ public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGr
 
     @Override
     public String toString() {
-        return "activation: " + activation + " in " + activationGroup;
+        return "activation: " + internalMatch + " in " + activationGroup;
     }
 }

@@ -14,11 +14,11 @@
 
 package org.drools.serialization.protobuf.actions;
 
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.serialization.protobuf.ProtobufInputMarshaller;
 import org.drools.tms.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.serialization.protobuf.PersisterHelper;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.ProtobufWorkingMemoryAction;
@@ -29,11 +29,11 @@ public class ProtobufBeliefSystemLogicalCallback extends BeliefSystemLogicalCall
         ProtobufMessages.ActionQueue.LogicalRetract _retract = _action.getLogicalRetract();
 
         this.handle = context.getHandles().get( _retract.getHandleId() );
-        this.activation = ( Activation ) ((ProtobufInputMarshaller.PBActivationsFilter)context.getFilter())
+        this.internalMatch = (InternalMatch) ((ProtobufInputMarshaller.PBActivationsFilter)context.getFilter())
                 .getTuplesCache().get( PersisterHelper.createActivationKey(_retract.getActivation().getPackageName(),
                         _retract.getActivation().getRuleName(),
                         _retract.getActivation().getTuple()) ).getContextObject();
-        this.context = this.activation.getPropagationContext();
+        this.context = this.internalMatch.getPropagationContext();
         this.fullyRetract = _retract.getFullyRetract();
         this.update = _retract.getUpdate();
     }
@@ -42,9 +42,9 @@ public class ProtobufBeliefSystemLogicalCallback extends BeliefSystemLogicalCall
     public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context) {
         ProtobufMessages.ActionQueue.LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
                 .setHandleId( this.handle.getId() )
-                .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
-                        this.activation.getRule().getName(),
-                        this.activation.getTuple() ) )
+                .setActivation( PersisterHelper.createActivation( this.internalMatch.getRule().getPackageName(),
+                        this.internalMatch.getRule().getName(),
+                        this.internalMatch.getTuple()))
                 .setFullyRetract( fullyRetract )
                 .setUpdate( update )
                 .build();

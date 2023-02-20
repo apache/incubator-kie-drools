@@ -1591,21 +1591,21 @@ public class LinkingTest {
         
 //        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
 //        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
-//        AgendaItem item = (AgendaItem) group.remove();
+//        InternalMatch item = (InternalMatch) group.remove();
 //        int count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
 //                
 //        agenda.addActivation( item, true );
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.remove();
+//        item = (InternalMatch) group.remove();
 //        
 //        agenda.fireActivation( item );
 //        assertEquals( 1, list.size() );        
 //        
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.remove();
+//        item = (InternalMatch) group.remove();
 //        count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(0, count );        
         

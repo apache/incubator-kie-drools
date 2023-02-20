@@ -45,7 +45,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -59,7 +58,7 @@ import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.common.PropagationContext;
@@ -84,7 +83,6 @@ import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.kie.api.KieServices;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -639,7 +637,7 @@ public class ProtobufInputMarshaller {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
                     ActivationKey activationKey = getActivationKey( context, _activation );
-                    Activation activation = (Activation) ((PBActivationsFilter)context.getFilter()).getTuplesCache().get(activationKey);
+                    InternalMatch internalMatch = (InternalMatch) ((PBActivationsFilter)context.getFilter()).getTuplesCache().get(activationKey);
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
@@ -662,7 +660,7 @@ public class ProtobufInputMarshaller {
 
                     ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
-                    tms.readLogicalDependency( handle, object, value, activation, typeConf );
+                    tms.readLogicalDependency(handle, object, value, internalMatch, typeConf);
                 }
             } else {
                 ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( ((TruthMaintenanceSystemImpl)tms).getBeliefSystem().newBeliefSet( handle ) );
@@ -805,14 +803,14 @@ public class ProtobufInputMarshaller {
 
         @Override
         public boolean accept(Match match) {
-            Activation activation = (Activation) match;
-            RuleImpl rule = activation.getRule();
-            TerminalNode rtn = activation.getRuleAgendaItem().getTerminalNode();
+            InternalMatch internalMatch = (InternalMatch) match;
+            RuleImpl rule = internalMatch.getRule();
+            TerminalNode rtn = internalMatch.getRuleAgendaItem().getTerminalNode();
             ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) && !serializedNodeMemories ?
-                    PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple().toObjects(true)) :
-                    PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple() );
+                    PersisterHelper.createActivationKey(rule.getPackageName(), rule.getName(), internalMatch.getTuple().toObjects(true)) :
+                    PersisterHelper.createActivationKey(rule.getPackageName(), rule.getName(), internalMatch.getTuple());
 
-            this.tuplesCache.put( activationKey, activation.getTuple() );
+            this.tuplesCache.put(activationKey, internalMatch.getTuple());
 
             return !dormantActivations.contains(activationKey);
         }

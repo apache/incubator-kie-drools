@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.drools.core.rule.consequence.Activation;
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.event.rule.MatchCancelledCause;
 
 public interface AgendaGroupsManager extends Externalizable {
     void setReteEvaluator(ReteEvaluator reteEvaluator);

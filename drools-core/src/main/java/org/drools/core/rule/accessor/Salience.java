@@ -21,14 +21,14 @@ import java.util.Map;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.definition.rule.Rule;
 
 public interface Salience extends Serializable {
 
     int DEFAULT_SALIENCE_VALUE = 0;
 
-    int getValue(final Activation activation,
+    int getValue(final InternalMatch internalMatch,
                  final Rule rule,
                  final ReteEvaluator reteEvaluator);
 
