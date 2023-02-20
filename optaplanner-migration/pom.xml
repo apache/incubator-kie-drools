@@ -21,13 +21,16 @@
 
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
-    <version.org.antlr>4.9.3</version.org.antlr>
+    <version.org.antlr>4.11.1</version.org.antlr>
     <version.jakarta.xml.bind.override>2.3.3</version.jakarta.xml.bind.override>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- TODO: Remove the version override after https://github.com/openrewrite/rewrite/issues/1615 is resolved. -->
+      <!--
+        Only remove the override once certain that the version is compatible with both Quarkus and Quarkus LTS.
+        Keep the override up to date with OpenRewrite.
+      -->
       <dependency>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4</artifactId>
