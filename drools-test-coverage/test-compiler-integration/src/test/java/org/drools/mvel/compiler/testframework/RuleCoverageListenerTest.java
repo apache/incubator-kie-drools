@@ -27,6 +27,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
@@ -149,6 +150,16 @@ class MockActivation implements Activation {
         return null;
     }
 
+    @Override
+    public Runnable getCallback() {
+        return null;
+    }
+
+    @Override
+    public void setCallback(Runnable callback) {
+
+    }
+
     public List<Object> getObjects() {
         return null;
     }
@@ -181,6 +192,16 @@ class MockActivation implements Activation {
 
     public void setActive(boolean active) { }
 
+    @Override
+    public void setSalience(int salience) {
+
+    }
+
+    @Override
+    public void setActivationFactHandle(InternalFactHandle factHandle) {
+
+    }
+
     public boolean isRuleAgendaItem() {
         return false;
     }
@@ -203,4 +224,26 @@ class MockActivation implements Activation {
     public RuleAgendaItem getRuleAgendaItem() {
         return null;
     }
+
+    @Override
+    public TerminalNode getTerminalNode() {
+        return null;
+    }
+
+    @Override
+    public String toExternalForm() {
+        return null;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return false;
+    }
+
+    @Override
+    public void cancel() {
+
+    }
+
+
 }

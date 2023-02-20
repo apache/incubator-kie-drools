@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -194,7 +193,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup ) {
+    public Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
         return getPartitionedAgendaForNode(ruleAgendaItem.getTerminalNode()).createAgendaItem( rtnLeftTuple, salience, context, ruleAgendaItem, agendaGroup );
     }
 
@@ -515,7 +514,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void addItemToActivationGroup( AgendaItem item ) {
+    public void addItemToActivationGroup( Activation item) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addItemToActivationGroup -> TODO" );
     }
 

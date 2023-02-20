@@ -17,19 +17,25 @@
 package org.drools.core.rule.consequence;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.InitialFact;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.Queue.QueueEntry;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
 /**
@@ -111,5 +117,62 @@ public interface Activation extends Serializable, QueueEntry, Match {
         return Collections.emptyList();
     }
 
-    RuleAgendaItem getRuleAgendaItem();
+    void setSalience(int salience);
+
+    void setActivationFactHandle(InternalFactHandle factHandle);
+
+    abstract RuleAgendaItem getRuleAgendaItem();
+
+    TerminalNode getTerminalNode();
+
+    String toExternalForm();
+
+    boolean isCanceled();
+
+    void cancel();
+
+    List<FactHandle> getFactHandles();
+
+    Runnable getCallback();
+
+    void setCallback(Runnable callback);
+
+    default List<FactHandle> getFactHandles(Tuple tuple) {
+        FactHandle[] factHandles = tuple.toFactHandles();
+        List<FactHandle> list = new ArrayList<>(factHandles.length);
+        for (FactHandle factHandle : factHandles) {
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add(factHandle);
+            }
+        }
+        return Collections.unmodifiableList( list );
+    }
+
+    default List<Object> getObjectsDeep(LeftTuple entry) {
+        List<Object> list = new ArrayList<>();
+        while ( entry != null ) {
+            if ( entry.getFactHandle() != null ) {
+                Object o = entry.getFactHandle().getObject();
+                if (!(o instanceof QueryElementFactHandle || o instanceof InitialFact)) {
+                    list.add(o);
+                    list.addAll( entry.getAccumulatedObjects() );
+                }
+            }
+            entry = entry.getParent();
+        }
+        return list;
+    }
+
+    default List<Object> getObjects(Tuple tuple) {
+        FactHandle[] factHandles = tuple.toFactHandles();
+        List<Object> list = new ArrayList<>(factHandles.length);
+        for (FactHandle factHandle : factHandles) {
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add(o);
+            }
+        }
+        return Collections.unmodifiableList(list);
+    }
 }

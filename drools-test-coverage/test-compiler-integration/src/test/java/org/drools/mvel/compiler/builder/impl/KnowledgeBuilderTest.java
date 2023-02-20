@@ -44,6 +44,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
@@ -1422,6 +1423,46 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         @Override
         public RuleAgendaItem getRuleAgendaItem() {
             return null;
+        }
+
+        @Override
+        public void setSalience(int salience) {
+
+        }
+
+        @Override
+        public void setActivationFactHandle(InternalFactHandle factHandle) {
+
+        }
+
+        @Override
+        public TerminalNode getTerminalNode() {
+            return null;
+        }
+
+        @Override
+        public String toExternalForm() {
+            return null;
+        }
+
+        @Override
+        public boolean isCanceled() {
+            return false;
+        }
+
+        @Override
+        public void cancel() {
+
+        }
+
+        @Override
+        public Runnable getCallback() {
+            return null;
+        }
+
+        @Override
+        public void setCallback(Runnable callback) {
+
         }
     }
 

@@ -20,7 +20,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -80,7 +79,7 @@ public class MVELConsequence
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final ReteEvaluator reteEvaluator) throws Exception {
 
-        VariableResolverFactory factory = unit.getFactory(knowledgeHelper, ((AgendaItem) knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
+        VariableResolverFactory factory = unit.getFactory(knowledgeHelper, knowledgeHelper.getMatch().getTerminalNode().getRequiredDeclarations(),
                 knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, reteEvaluator, reteEvaluator.getGlobalResolver());
 
         // do we have any functions for this namespace?

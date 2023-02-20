@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.rule.consequence.Activation;
 import org.drools.serialization.protobuf.iterators.ActivationIterator;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBaseFactory;
@@ -82,7 +82,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:true", "rule1:1:true", "rule1:2:true", "rule1:3:true", "rule1:4:true"},
@@ -92,7 +92,7 @@ public class ActivationIteratorTest {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:false", "rule1:1:false", "rule1:2:false", "rule1:3:false", "rule1:4:false"},
@@ -130,7 +130,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:true", "rule1:1:true", "rule1:2:true", "rule1:3:true", "rule1:4:true"},
@@ -140,7 +140,7 @@ public class ActivationIteratorTest {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:false", "rule1:1:false", "rule1:2:false", "rule1:3:false", "rule1:4:false"},
@@ -204,7 +204,7 @@ public class ActivationIteratorTest {
         Iterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule0:0:true", "rule0:1:true", "rule0:2:true", "rule0:3:true", "rule0:4:true",
@@ -217,7 +217,7 @@ public class ActivationIteratorTest {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule0:0:false", "rule0:1:false", "rule0:2:false", "rule0:3:false", "rule0:4:false",
@@ -279,7 +279,7 @@ public class ActivationIteratorTest {
         Iterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule0:0:true", "rule0:1:true", "rule0:2:true", "rule0:3:false", "rule0:4:false",
@@ -309,7 +309,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:1:true", "rule1:1:0:true", "rule1:1:1:true", "rule1:0:0:true"},
@@ -319,7 +319,7 @@ public class ActivationIteratorTest {
         ksession.fireAllRules();
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:1:false", "rule1:1:0:false", "rule1:1:1:false", "rule1:0:0:false"},
@@ -348,7 +348,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:1:true", "rule1:1:0:true", "rule1:1:1:true", "rule1:0:0:true"},
@@ -358,7 +358,7 @@ public class ActivationIteratorTest {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule1:0:1:false", "rule1:1:0:false", "rule1:1:1:false", "rule1:0:0:false"},
@@ -398,7 +398,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isQueued() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -417,7 +417,7 @@ public class ActivationIteratorTest {
 
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isQueued() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -467,7 +467,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.getDeclarationValue( "$s3" ) + ":" + act.isQueued() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -517,7 +517,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -566,7 +566,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
             } else if ( act.getRule().getName().equals( "rule1" ) ) {
@@ -618,7 +618,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }
 
@@ -659,7 +659,7 @@ public class ActivationIteratorTest {
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
-        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+        for (Activation act = (Activation) it.next(); act != null; act = (Activation) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }
 

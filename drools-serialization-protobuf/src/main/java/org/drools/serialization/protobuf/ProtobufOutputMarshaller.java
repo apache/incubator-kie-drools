@@ -32,7 +32,6 @@ import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AgendaGroupQueueImpl;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -328,7 +327,7 @@ public class ProtobufOutputMarshaller {
 
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( Activation activation : dormant ) {
-            _ab.addMatch( writeActivation( context, (AgendaItem) activation, true) );
+            _ab.addMatch( writeActivation(context, activation, true));
         }
 
         // serialize all network evaluator activations
@@ -686,27 +685,27 @@ public class ProtobufOutputMarshaller {
     }
 
     public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation( MarshallerWriteContext context,
-                                                                                             AgendaItem agendaItem,
+                                                                                             Activation activation,
                                                                                              boolean isDormient) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
-        RuleImpl rule = agendaItem.getRule();
+        RuleImpl rule = activation.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
-        _activation.setTuple( writeTuple( context, agendaItem, isDormient ) );
-        _activation.setSalience( agendaItem.getSalience() );
-        _activation.setIsActivated( agendaItem.isQueued() );
+        _activation.setTuple( writeTuple(context, activation, isDormient));
+        _activation.setSalience(activation.getSalience());
+        _activation.setIsActivated(activation.isQueued());
 
-        if ( agendaItem.getActivationGroupNode() != null ) {
-            _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
+        if (activation.getActivationGroupNode() != null ) {
+            _activation.setActivationGroup(activation.getActivationGroupNode().getActivationGroup().getName());
         }
 
-        if ( agendaItem.getActivationFactHandle() != null ) {
-            _activation.setHandleId( agendaItem.getActivationFactHandle().getId() );
+        if (activation.getActivationFactHandle() != null ) {
+            _activation.setHandleId(activation.getActivationFactHandle().getId());
         }
 
-        if (agendaItem instanceof TruthMaintenanceSystemActivation) {
-            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemActivation)agendaItem).getLogicalDependencies();
+        if (activation instanceof TruthMaintenanceSystemActivation) {
+            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemActivation) activation).getLogicalDependencies();
             if (list != null && !list.isEmpty()) {
                 for (LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext()) {
                     _activation.addLogicalDependency(((BeliefSet) node.getJustified()).getFactHandle().getId());

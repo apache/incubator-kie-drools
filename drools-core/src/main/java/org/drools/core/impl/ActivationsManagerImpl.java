@@ -28,7 +28,6 @@ import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -44,7 +43,6 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.AgendaComponentFactory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -178,14 +176,14 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
+    public Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
         rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
 
     @Override
     public void cancelActivation(Activation activation) {
-        AgendaItem item = (AgendaItem) activation;
+        Activation item = activation;
 
         if ( activation.isQueued() ) {
             if ( activation.getActivationGroupNode() != null ) {
@@ -204,7 +202,7 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public void addItemToActivationGroup(AgendaItem activation) {
+    public void addItemToActivationGroup(Activation activation) {
         String group = activation.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = this.activationGroups.computeIfAbsent(group, k -> new ActivationGroupImpl( this, k ));
