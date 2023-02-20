@@ -40,13 +40,13 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
      *
      * <pre>
      * {@code
-     *                                 ┌ rightEntity
-     *                right element ┐  │   ┌ rightIndex
-     *                              ↓  ↓   ↓
+     *                                 / rightEntity
+     *                right element \  |   / rightIndex
+     *                              |  |   |
      *               A {Ann[0]} <-> Y {Bob[1]}
-     *               ↑  ↑   ↑
-     *  left element ┘  │   └ leftIndex
-     *                  └ leftEntity
+     *               |  |   |
+     *  left element /  |   \ leftIndex
+     *                  \ leftEntity
      * }
      * </pre>
      *

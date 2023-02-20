@@ -58,7 +58,7 @@
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
-    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.11.0</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
@@ -67,7 +67,6 @@
     <version.versions.plugin>2.14.2</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
-
     <maven.min.version>3.8.1</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
     <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
@@ -455,12 +454,10 @@
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
-            <!--
-                 Disabled to workaround the following issue on JDK 16+:
-                 Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
-                 Since we do not add the footer ourselves, it must be the plugin itself.
-            -->
-            <!-- <failOnWarnings>true</failOnWarnings>-->
+            <failOnWarnings>true</failOnWarnings>
+            <!-- Override JBoss parent otherwise it fails on JDK 16+ -->
+            <header combine.self="override" />
+            <footer combine.self="override" />
             <quiet>true</quiet>
           </configuration>
         </plugin>

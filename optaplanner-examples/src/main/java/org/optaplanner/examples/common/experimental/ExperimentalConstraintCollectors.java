@@ -203,7 +203,7 @@ public class ExperimentalConstraintCollectors {
      * @param endMap Maps the fact to its end
      * @param differenceFunction Computes the difference between two points. The second argument is always
      *        larger than the first (ex: {@link Duration#between}
-     *        or (a,b) -> b - a).
+     *        or {@code (a,b) -> b - a}).
      * @param <A> type of the first mapped fact
      * @param <PointType_> type of the fact endpoints
      * @param <DifferenceType_> type of difference between points
@@ -275,7 +275,7 @@ public class ExperimentalConstraintCollectors {
      * @param endMap Maps the item to its end
      * @param differenceFunction Computes the difference between two points. The second argument is always
      *        larger than the first (ex: {@link Duration#between}
-     *        or (a,b) -> b - a).
+     *        or {@code (a,b) -> b - a}).
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact
      * @param <IntervalType_> type of the item in the cluster
@@ -358,7 +358,7 @@ public class ExperimentalConstraintCollectors {
      * @param endMap Maps the item to its end
      * @param differenceFunction Computes the difference between two points. The second argument is always
      *        larger than the first (ex: {@link Duration#between}
-     *        or (a,b) -> b - a).
+     *        or {@code (a,b) -> b - a}).
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact
      * @param <C> type of the third mapped fact
@@ -444,7 +444,7 @@ public class ExperimentalConstraintCollectors {
      * @param endMap Maps the item to its end
      * @param differenceFunction Computes the difference between two points. The second argument is always
      *        larger than the first (ex: {@link Duration#between}
-     *        or (a,b) -> b - a).
+     *        or {@code (a,b) -> b - a}).
      * @param <A> type of the first mapped fact
      * @param <B> type of the second mapped fact
      * @param <C> type of the third mapped fact

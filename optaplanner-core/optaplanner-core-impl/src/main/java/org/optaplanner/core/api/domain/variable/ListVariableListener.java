@@ -20,7 +20,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Entity_> @{@link PlanningEntity} on which the source variable is declared
- * @param <Element_>> the type of elements of the source list variable
+ * @param <Element_> the type of elements of the source list variable
  */
 public interface ListVariableListener<Solution_, Entity_, Element_> extends AbstractVariableListener<Solution_, Entity_> {
 

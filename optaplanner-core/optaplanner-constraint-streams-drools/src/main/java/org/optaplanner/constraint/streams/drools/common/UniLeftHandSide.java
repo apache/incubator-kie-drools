@@ -47,7 +47,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
  *
  * Left-hand side is that part of the rule between the "when" and "then" keywords.
  * The part between the "then" and "end" keywords is called the consequence of the rule, and this class does not represent it.
- * It can be created by calling {@link #andTerminate()}.
+ * It can be created by calling {@link #andTerminate(Function)} etc.
  *
  * There are also more complex variants of rules that still result in just one variable:
  *

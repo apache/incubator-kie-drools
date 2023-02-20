@@ -40,13 +40,13 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
      *
      * <pre>
      * {@code
-     *                             ┌ destinationEntity
-     *                             │   ┌ destinationIndex
-     *                             ↓   ↓
+     *                             / destinationEntity
+     *                             |   / destinationIndex
+     *                             |   |
      *                A {Ann[0]}->{Bob[2]}
-     *                ↑  ↑   ↑
-     * planning value ┘  │   └ sourceIndex
-     *                   └ sourceEntity
+     *                |  |   |
+     * planning value /  |   \ sourceIndex
+     *                   \ sourceEntity
      * }
      * </pre>
      *

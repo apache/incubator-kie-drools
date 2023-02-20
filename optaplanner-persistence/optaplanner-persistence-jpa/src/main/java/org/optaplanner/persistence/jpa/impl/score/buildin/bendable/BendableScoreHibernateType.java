@@ -7,9 +7,6 @@ import org.hibernate.usertype.ParameterizedType;
 import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
-/**
- * {@inheritDoc}
- */
 public class BendableScoreHibernateType extends AbstractScoreHibernateType implements ParameterizedType {
 
     @Override

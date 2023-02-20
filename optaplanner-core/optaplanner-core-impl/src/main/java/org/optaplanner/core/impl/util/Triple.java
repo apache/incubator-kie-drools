@@ -2,8 +2,8 @@ package org.optaplanner.core.impl.util;
 
 /**
  * An immutable tuple of three values.
- * Two instances {@link #equals(Object) are equal} if all three values in the first instance are equal to their counterpart in
- * the other instance.
+ * Two instances {@link Object#equals(Object) are equal} if all three values in the first instance
+ * are equal to their counterpart in the other instance.
  *
  * @param <A>
  * @param <B>

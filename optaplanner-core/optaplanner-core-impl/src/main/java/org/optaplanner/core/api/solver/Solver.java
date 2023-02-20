@@ -9,6 +9,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.change.ProblemChange;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A Solver solves a planning problem and returns the best solution found.

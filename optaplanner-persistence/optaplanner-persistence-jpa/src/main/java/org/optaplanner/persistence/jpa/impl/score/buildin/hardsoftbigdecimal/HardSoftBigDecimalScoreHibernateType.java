@@ -4,9 +4,6 @@ import org.hibernate.type.StandardBasicTypes;
 import org.optaplanner.core.impl.score.buildin.HardSoftBigDecimalScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
-/**
- * {@inheritDoc}
- */
 public class HardSoftBigDecimalScoreHibernateType extends AbstractScoreHibernateType {
 
     public HardSoftBigDecimalScoreHibernateType() {

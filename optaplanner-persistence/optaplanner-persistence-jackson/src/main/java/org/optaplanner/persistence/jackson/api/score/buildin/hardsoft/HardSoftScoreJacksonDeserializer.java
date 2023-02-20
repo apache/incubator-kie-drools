@@ -8,9 +8,6 @@ import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonDeseria
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
-/**
- * {@inheritDoc}
- */
 public class HardSoftScoreJacksonDeserializer extends AbstractScoreJacksonDeserializer<HardSoftScore> {
 
     @Override
