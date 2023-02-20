@@ -38,7 +38,7 @@ import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.DefaultNodeMemories;
+import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Memory;
@@ -119,7 +119,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         this.sessionConfiguration = sessionConfiguration;
 
         this.handleFactory = knowledgeBase.newFactHandleFactory();
-        this.nodeMemories = new DefaultNodeMemories(ruleBase);
+        this.nodeMemories = new ConcurrentNodeMemories(ruleBase);
 
         this.activationsManager = new ActivationsManagerImpl(this);
         this.entryPointsManager = RuntimeComponentFactory.get().getEntryPointFactory().createEntryPointsManager(this);
