@@ -37,7 +37,7 @@ import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -396,8 +396,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             leftTuple.reAdd();
             if ( context.getModificationMask().intersects( mask) ) {
                 doUpdateObject(leftTuple, context, reteEvaluator, leftTuple.getTupleSource(), true, lm, lm.getOrCreateSegmentMemory(this, reteEvaluator ) );
-                if (leftTuple instanceof Activation) {
-                    ((Activation)leftTuple).setActive(true);
+                if (leftTuple instanceof InternalMatch) {
+                    ((InternalMatch)leftTuple).setActive(true);
                 }
             }
         } else {

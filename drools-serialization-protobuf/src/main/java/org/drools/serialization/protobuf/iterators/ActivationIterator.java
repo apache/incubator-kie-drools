@@ -21,7 +21,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
@@ -74,10 +74,10 @@ public class ActivationIterator
     }
 
     public Object next() {
-        Activation acc = null;
+        InternalMatch acc = null;
         if ( this.currentTuple != null ) {
             Object obj = currentTuple.getContextObject();
-            acc = obj == Boolean.TRUE ? null : (Activation)obj;
+            acc = obj == Boolean.TRUE ? null : (InternalMatch)obj;
             currentTuple = leftTupleIter.next();
 
             while ( currentTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {

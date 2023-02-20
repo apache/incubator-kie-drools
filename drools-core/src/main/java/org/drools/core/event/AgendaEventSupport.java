@@ -28,7 +28,7 @@ import org.drools.core.event.rule.impl.AgendaGroupPushedEventImpl;
 import org.drools.core.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.core.event.rule.impl.RuleFlowGroupActivatedEventImpl;
 import org.drools.core.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.RuleFlowGroup;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -43,37 +43,37 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
         return reteEvaluator instanceof InternalWorkingMemory ? ((InternalWorkingMemory) reteEvaluator).getKnowledgeRuntime() : null;
     }
 
-    public void fireActivationCreated(final Activation activation,
+    public void fireActivationCreated(final InternalMatch internalMatch,
                                       final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            ActivationCreatedEventImpl event = new ActivationCreatedEventImpl( activation, getKRuntime( reteEvaluator ) );
+            ActivationCreatedEventImpl event = new ActivationCreatedEventImpl(internalMatch, getKRuntime(reteEvaluator) );
             notifyAllListeners( event, ( l, e ) -> l.matchCreated( e ) );
         }
     }
 
-    public void fireActivationCancelled(final Activation activation,
+    public void fireActivationCancelled(final InternalMatch internalMatch,
                                         final ReteEvaluator reteEvaluator,
                                         final MatchCancelledCause cause) {
         if ( hasListeners() ) {
-            ActivationCancelledEventImpl event = new ActivationCancelledEventImpl( activation, getKRuntime( reteEvaluator ), cause );
+            ActivationCancelledEventImpl event = new ActivationCancelledEventImpl(internalMatch, getKRuntime(reteEvaluator), cause );
             notifyAllListeners( event, ( l, e ) -> l.matchCancelled( e ) );
         }
     }
 
-    public BeforeMatchFiredEvent fireBeforeActivationFired(final Activation activation,
+    public BeforeMatchFiredEvent fireBeforeActivationFired(final InternalMatch internalMatch,
                                                            final ReteEvaluator reteEvaluator) {
         if ( hasListeners() ) {
-            BeforeMatchFiredEvent event = new BeforeActivationFiredEventImpl(activation, getKRuntime(reteEvaluator));
+            BeforeMatchFiredEvent event = new BeforeActivationFiredEventImpl(internalMatch, getKRuntime(reteEvaluator));
             notifyAllListeners( event, ( l, e ) -> l.beforeMatchFired( e ) );
             return event;
         }
         return null;
     }
 
-    public void fireAfterActivationFired(final Activation activation,
+    public void fireAfterActivationFired(final InternalMatch internalMatch,
                                          final ReteEvaluator reteEvaluator, BeforeMatchFiredEvent beforeMatchFiredEvent) {
         if ( hasListeners() ) {
-            AfterMatchFiredEvent event = new AfterActivationFiredEventImpl( activation, getKRuntime( reteEvaluator ), beforeMatchFiredEvent );
+            AfterMatchFiredEvent event = new AfterActivationFiredEventImpl(internalMatch, getKRuntime(reteEvaluator), beforeMatchFiredEvent );
             notifyAllListeners( event, ( l, e ) -> l.afterMatchFired( e ) );
         }
     }

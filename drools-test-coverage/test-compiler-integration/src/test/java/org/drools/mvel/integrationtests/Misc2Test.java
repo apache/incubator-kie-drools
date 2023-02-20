@@ -66,7 +66,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
@@ -6345,11 +6345,11 @@ public class Misc2Test {
         for ( Rule r : session.getKieBase().getKiePackage( "org.drools.test" ).getRules() ) {
             ( (RuleImpl) r ).setSalience( new Salience() {
                 @Override
-                public int getValue(Activation activation, Rule rule, ReteEvaluator reteEvaluator) {
-                    if ( activation == null ) {
+                public int getValue(InternalMatch internalMatch, Rule rule, ReteEvaluator reteEvaluator) {
+                    if (internalMatch == null ) {
                         return 0;
                     }
-                    InternalFactHandle h = (InternalFactHandle) activation.getFactHandles().get( 0 );
+                    InternalFactHandle h = (InternalFactHandle) internalMatch.getFactHandles().get(0);
                     return ( (Person) h.getObject() ).getAge();
                 }
 

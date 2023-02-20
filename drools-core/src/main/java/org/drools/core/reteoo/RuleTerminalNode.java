@@ -30,7 +30,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -133,7 +133,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
-    public void cancelMatch(Activation match, ReteEvaluator reteEvaluator) {
+    public void cancelMatch(InternalMatch match, ReteEvaluator reteEvaluator) {
         match.cancel();
         if ( match.isQueued() ) {
             Tuple leftTuple = match.getTuple();

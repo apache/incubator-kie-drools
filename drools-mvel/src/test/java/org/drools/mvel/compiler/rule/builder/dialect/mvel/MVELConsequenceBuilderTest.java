@@ -28,7 +28,6 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.compiler.compiler.PackageRegistry;

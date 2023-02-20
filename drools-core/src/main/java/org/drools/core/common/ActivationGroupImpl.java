@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.LinkedList;
-import org.drools.core.rule.consequence.Activation;
 
 public class ActivationGroupImpl
     implements
@@ -41,17 +41,17 @@ public class ActivationGroupImpl
         return this.name;
     }
 
-    public void addActivation(final Activation activation) {
-        final ActivationGroupNode node = new ActivationGroupNode( activation,
-                                                                  this );
-        activation.setActivationGroupNode( node );
+    public void addActivation(final InternalMatch internalMatch) {
+        final ActivationGroupNode node = new ActivationGroupNode(internalMatch,
+                                                                 this );
+        internalMatch.setActivationGroupNode(node);
         this.list.add( node );
     }
 
-    public void removeActivation(final Activation activation) {
-        final ActivationGroupNode node = activation.getActivationGroupNode();
+    public void removeActivation(final InternalMatch internalMatch) {
+        final ActivationGroupNode node = internalMatch.getActivationGroupNode();
         this.list.remove( node );
-        activation.setActivationGroupNode( null );
+        internalMatch.setActivationGroupNode(null);
     }
 
     public java.util.Iterator iterator() {

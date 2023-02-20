@@ -37,10 +37,10 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class ActivationGroupTest {
+public class InternalMatchGroupTest {
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public ActivationGroupTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public InternalMatchGroupTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 

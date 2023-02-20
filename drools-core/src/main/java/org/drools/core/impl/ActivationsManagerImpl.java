@@ -48,7 +48,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.common.PropagationContext;
@@ -159,12 +159,12 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
         for (final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();
-            final Activation activation = node.getActivation();
-            activation.setActivationGroupNode( null );
+            final InternalMatch internalMatch = node.getActivation();
+            internalMatch.setActivationGroupNode(null);
 
-            if ( activation.isQueued() ) {
-                activation.remove();
-                getAgendaEventSupport().fireActivationCancelled( activation, this.reteEvaluator, MatchCancelledCause.CLEAR );
+            if ( internalMatch.isQueued() ) {
+                internalMatch.remove();
+                getAgendaEventSupport().fireActivationCancelled(internalMatch, this.reteEvaluator, MatchCancelledCause.CLEAR);
             }
         }
         activationGroup.reset();
@@ -176,22 +176,22 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
+    public InternalMatch createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
         rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
 
     @Override
-    public void cancelActivation(Activation activation) {
-        Activation item = activation;
+    public void cancelActivation(InternalMatch internalMatch) {
+        InternalMatch item = internalMatch;
 
-        if ( activation.isQueued() ) {
-            if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+        if ( internalMatch.isQueued() ) {
+            if (internalMatch.getActivationGroupNode() != null ) {
+                internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            ((Tuple) activation).decreaseActivationCountForEvents();
+            ((Tuple) internalMatch).decreaseActivationCountForEvents();
 
-            getAgendaEventSupport().fireActivationCancelled( activation, reteEvaluator, MatchCancelledCause.WME_MODIFY );
+            getAgendaEventSupport().fireActivationCancelled(internalMatch, reteEvaluator, MatchCancelledCause.WME_MODIFY);
         }
 
         if (item.getRuleAgendaItem() != null) {
@@ -202,18 +202,18 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public void addItemToActivationGroup(Activation activation) {
-        String group = activation.getRule().getActivationGroup();
+    public void addItemToActivationGroup(InternalMatch internalMatch) {
+        String group = internalMatch.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = this.activationGroups.computeIfAbsent(group, k -> new ActivationGroupImpl( this, k ));
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
-                    actgroup.getTriggeredForRecency() >= activation.getPropagationContext().getFactHandle().getRecency() ) {
+                 actgroup.getTriggeredForRecency() >= internalMatch.getPropagationContext().getFactHandle().getRecency() ) {
                 return;
             }
 
-            actgroup.addActivation( activation );
+            actgroup.addActivation(internalMatch);
         }
     }
 

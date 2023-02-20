@@ -37,7 +37,7 @@ import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.base.AcceptsClassObjectType;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.base.ObjectType;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.abductive.Abductive;
@@ -173,7 +173,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     }
 
     @Override
-    public boolean processAbduction(Activation resultLeftTuple, DroolsQuery dquery, Object[] objects, ReteEvaluator reteEvaluator) {
+    public boolean processAbduction(InternalMatch resultLeftTuple, DroolsQuery dquery, Object[] objects, ReteEvaluator reteEvaluator) {
         boolean pass = true;
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) reteEvaluator;
         int numArgs = abducibleArgs.length;

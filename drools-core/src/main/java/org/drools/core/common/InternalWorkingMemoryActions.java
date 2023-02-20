@@ -23,7 +23,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.beliefsystem.Mode;
@@ -37,7 +37,7 @@ public interface InternalWorkingMemoryActions
                 Object object,
                 BitMask mask,
                 Class<?> modifiedClass,
-                Activation activation);
+                InternalMatch internalMatch);
 
     FactHandle insert(Object object,
                       boolean dynamic,
@@ -46,11 +46,11 @@ public interface InternalWorkingMemoryActions
 
     FactHandle insertAsync(Object object);
 
-    void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation );
+    void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch);
 
-    <T, K, X extends TraitableBean> Thing<K> shed( Activation activation, TraitableBean<K,X> core, Class<T> trait );
+    <T, K, X extends TraitableBean> Thing<K> shed(InternalMatch internalMatch, TraitableBean<K,X> core, Class<T> trait);
 
-    <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes );
+    <T, K> T don(InternalMatch internalMatch, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes);
 
-    <T, K> T don( Activation activation, K core, Class<T> trait, boolean b, Mode[] modes );
+    <T, K> T don(InternalMatch internalMatch, K core, Class<T> trait, boolean b, Mode[] modes);
 }

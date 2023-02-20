@@ -36,7 +36,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.TimeIntervalParser;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
@@ -74,7 +74,7 @@ public class ClassObjectTypeConf
     public ClassObjectTypeConf(final EntryPointId entryPoint,
                                final Class< ? > clazz,
                                final RuleBase ruleBase) {
-        this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
+        this.cls = (InternalMatch.class.isAssignableFrom(clazz) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
 

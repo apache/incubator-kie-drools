@@ -17,6 +17,7 @@ package org.drools.tms.beliefsystem.simple;
 
 import java.io.IOException;
 
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
@@ -26,7 +27,6 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.common.PropagationContext;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -35,7 +35,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
 
     protected InternalFactHandle handle;
     protected PropagationContext context;
-    protected Activation activation;
+    protected InternalMatch internalMatch;
 
     protected boolean update;
     protected boolean fullyRetract;
@@ -46,12 +46,12 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
 
     public BeliefSystemLogicalCallback(final InternalFactHandle handle,
         final PropagationContext context,
-        final Activation activation,
+        final InternalMatch internalMatch,
         final boolean update,
         final boolean fullyRetract) {
         this.handle = handle;
         this.context = context;
-        this.activation = activation;
+        this.internalMatch = internalMatch;
         this.update = update;
         this.fullyRetract = fullyRetract;
     }
@@ -59,7 +59,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
     public BeliefSystemLogicalCallback(MarshallerReaderContext context) throws IOException {
         this.handle = context.getHandles().get( context.readLong() );
         this.context = context.getPropagationContexts().get( context.readLong() );
-        this.activation = (Activation) context.getTerminalTupleMap().get( context.readInt() );
+        this.internalMatch = (InternalMatch) context.getTerminalTupleMap().get(context.readInt());
     }
 
     public boolean isUpdate() {
@@ -91,7 +91,7 @@ public class BeliefSystemLogicalCallback extends PropagationEntry.AbstractPropag
             }
         } else  {
             if ( fullyRetract ) {
-                nep.delete( this.handle, context.getRuleOrigin(), this.activation.getTuple().getTupleSink() );
+                nep.delete( this.handle, context.getRuleOrigin(), this.internalMatch.getTuple().getTupleSink());
             } else {
                 ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( nep.getEntryPoint(), handle.getObject() );
                 nep.getEntryPointNode().retractObject( handle, context, typeConf, reteEvaluator );

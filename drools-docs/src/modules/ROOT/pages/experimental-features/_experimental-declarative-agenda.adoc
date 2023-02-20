@@ -25,7 +25,7 @@ The basic idea is:
 * You can use the `kcontext.blockMatch(Match match)` call in a rule to block a selected match. Only when that rule becomes false will the match be eligible for firing. If it is already eligible for firing and is later blocked, it will be removed from the agenda until it is unblocked.
 * A match may have multiple blockers, so a count is kept. All blockers must become false for the counter to reach zero to enable the `Match` to be eligible for firing.
 * `kcontext.unblockAllMatches(Match match)` is an over-ride rule that will remove all blockers regardless.
-* An activation may also be cancelled using `cancelMatch` call, so it never fires.
+* An internalMatch may also be cancelled using `cancelMatch` call, so it never fires.
 * An unblocked `Match` is added to the agenda and obeys normal salience, agenda groups, ruleflow groups etc. definitions.
 * The `@Direct` annotation allows a rule to fire as soon as it's matched. This is supposed to be used for rules that block/unblock matches, it is not desirable for these rules to have side effects that impact else where.
 

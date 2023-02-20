@@ -26,7 +26,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
@@ -80,13 +80,13 @@ public class MVELSalienceExpression
         evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
-    public int getValue(final Activation activation,
+    public int getValue(final InternalMatch internalMatch,
                         final Rule rule,
                         final ReteEvaluator reteEvaluator) {
         VariableResolverFactory factory = unit.getFactory( reteEvaluator,
-                                                           reteEvaluator != null ? activation.getTerminalNode().getSalienceDeclarations() : null,
+                                                           reteEvaluator != null ? internalMatch.getTerminalNode().getSalienceDeclarations() : null,
                                                            rule, null,
-                                                           reteEvaluator != null ? activation.getTuple() : null,
+                                                           reteEvaluator != null ? internalMatch.getTuple() : null,
                                                            null, reteEvaluator, reteEvaluator.getGlobalResolver() );
         
         // do we have any functions for this namespace?

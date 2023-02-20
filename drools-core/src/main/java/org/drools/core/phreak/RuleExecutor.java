@@ -30,7 +30,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -49,7 +49,7 @@ public class RuleExecutor {
     private final PathMemory                  pmem;
     private final RuleAgendaItem              ruleAgendaItem;
     private final TupleList                   tupleList;
-    private BinaryHeapQueue<Activation>       queue;
+    private BinaryHeapQueue<InternalMatch>       queue;
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
@@ -96,7 +96,7 @@ public class RuleExecutor {
                 if (cancelAndContinue(reteEvaluator, rtn, rule, tuple, filter)) {
                     directFirings--;
                 } else {
-                    innerFireActivation( reteEvaluator, activationsManager, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                    innerFireActivation(reteEvaluator, activationsManager, (InternalMatch) tuple, ((InternalMatch) tuple).getConsequence());
                 }
                 removeLeftTuple( tuple );
             }
@@ -134,7 +134,7 @@ public class RuleExecutor {
             Tuple tuple = getNextTuple();
             
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (Activation) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (InternalMatch) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             Tuple lastTuple = null;
@@ -146,7 +146,7 @@ public class RuleExecutor {
                     continue;
                 }
 
-                Activation item = (Activation) tuple;
+                InternalMatch item = (InternalMatch) tuple;
                 if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept(item)) {
                     // only relevant for serialization, to not refire Matches already fired
                     continue;
@@ -179,7 +179,7 @@ public class RuleExecutor {
             }
 
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (Activation) lastTuple, ActivationsManager.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (InternalMatch) lastTuple, ActivationsManager.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 
@@ -199,7 +199,7 @@ public class RuleExecutor {
             tupleList.remove(leftTuple);
         } else {
             leftTuple = tupleList.removeFirst();
-            ((Activation) leftTuple).setQueued(false);
+            ((InternalMatch) leftTuple).setQueued(false);
         }
         return leftTuple;
     }
@@ -256,7 +256,7 @@ public class RuleExecutor {
             }
         }
 
-        return filter != null && !filter.accept((Activation) leftTuple);
+        return filter != null && !filter.accept((InternalMatch) leftTuple);
     }
 
     private boolean haltRuleFiring(int fireCount,
@@ -283,7 +283,7 @@ public class RuleExecutor {
     }
 
     public void addLeftTuple(Tuple tuple) {
-        ((Activation) tuple).setQueued(true);
+        ((InternalMatch) tuple).setQueued(true);
         this.tupleList.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
@@ -292,12 +292,12 @@ public class RuleExecutor {
 
     public void addQueuedLeftTuple(Tuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.enqueue((Activation) tuple);
+        queue.enqueue((InternalMatch) tuple);
         updateSalience(currentSalience);
     }
 
     public void removeLeftTuple(Tuple tuple) {
-        ((Activation) tuple).setQueued(false);
+        ((InternalMatch) tuple).setQueued(false);
         this.tupleList.remove(tuple);
         if (queue != null) {
             removeQueuedLeftTuple(tuple);
@@ -306,7 +306,7 @@ public class RuleExecutor {
 
     private void removeQueuedLeftTuple(Tuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.dequeue(((Activation) tuple));
+        queue.dequeue(((InternalMatch) tuple));
         updateSalience(currentSalience);
     }
 
@@ -346,28 +346,28 @@ public class RuleExecutor {
         return this.declarativeAgendaEnabled;
     }
 
-    public void fireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation) throws ConsequenceException {
+    public void fireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch) throws ConsequenceException {
         // We do this first as if a node modifies a fact that causes a recursion
         // on an empty pattern
         // we need to make sure it re-activates
         reteEvaluator.startOperation();
         try {
-            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(activation, reteEvaluator);
+            BeforeMatchFiredEvent beforeMatchFiredEvent = activationsManager.getAgendaEventSupport().fireBeforeActivationFired(internalMatch, reteEvaluator);
 
-            if ( activation.getActivationGroupNode() != null ) {
+            if (internalMatch.getActivationGroupNode() != null ) {
                 // We know that this rule will cancel all other activations in the group
                 // so lets remove the information now, before the consequence fires
-                final InternalActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
-                activationGroup.removeActivation( activation );
+                final InternalActivationGroup activationGroup = internalMatch.getActivationGroupNode().getActivationGroup();
+                activationGroup.removeActivation(internalMatch);
                 activationsManager.clearAndCancelActivationGroup( activationGroup );
             }
-            activation.setQueued(false);
+            internalMatch.setQueued(false);
 
             try {
-                innerFireActivation( reteEvaluator, activationsManager, activation, activation.getConsequence() );
+                innerFireActivation(reteEvaluator, activationsManager, internalMatch, internalMatch.getConsequence());
             } finally {
                 // if the tuple contains expired events
-                for ( Tuple tuple = activation.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
+                for (Tuple tuple = internalMatch.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
                     if ( tuple.getFactHandle().isEvent() ) {
                         // can be null for eval, not and exists that have no right input
 
@@ -384,53 +384,53 @@ public class RuleExecutor {
                 }
             }
 
-            activationsManager.getAgendaEventSupport().fireAfterActivationFired( activation, reteEvaluator, beforeMatchFiredEvent );
+            activationsManager.getAgendaEventSupport().fireAfterActivationFired(internalMatch, reteEvaluator, beforeMatchFiredEvent);
         } finally {
             reteEvaluator.endOperation();
         }
     }
 
-    public void fireConsequenceEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, String consequenceName) {
-        Consequence consequence = activation.getRule().getNamedConsequence( consequenceName );
+    public void fireConsequenceEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, String consequenceName) {
+        Consequence consequence = internalMatch.getRule().getNamedConsequence(consequenceName);
         if (consequence != null) {
-            fireActivationEvent(reteEvaluator, activationsManager, activation, consequence);
+            fireActivationEvent(reteEvaluator, activationsManager, internalMatch, consequence);
         }
     }
 
-    private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence) throws ConsequenceException {
+    private void fireActivationEvent(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, Consequence consequence) throws ConsequenceException {
         reteEvaluator.startOperation();
         try {
-            innerFireActivation( reteEvaluator, activationsManager, activation, consequence );
+            innerFireActivation(reteEvaluator, activationsManager, internalMatch, consequence);
         } finally {
             reteEvaluator.endOperation();
         }
     }
 
-    private void innerFireActivation( ReteEvaluator reteEvaluator, ActivationsManager activationsManager, Activation activation, Consequence consequence ) {
+    private void innerFireActivation(ReteEvaluator reteEvaluator, ActivationsManager activationsManager, InternalMatch internalMatch, Consequence consequence) {
         KnowledgeHelper knowledgeHelper = activationsManager.getKnowledgeHelper();
         try {
-            knowledgeHelper.setActivation( activation );
+            knowledgeHelper.setActivation(internalMatch);
 
             if ( log.isTraceEnabled() ) {
-                log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
+                log.trace("Fire event {} for rule \"{}\" \n{}", consequence.getName(), internalMatch.getRule().getName(), internalMatch.getTuple());
             }
 
             RuleEventListenerSupport ruleEventSupport = reteEvaluator.getRuleEventSupport();
-            ruleEventSupport.onBeforeMatchFire( activation );
+            ruleEventSupport.onBeforeMatchFire(internalMatch);
             consequence.evaluate(knowledgeHelper, reteEvaluator);
-            ruleEventSupport.onAfterMatchFire( activation );
+            ruleEventSupport.onAfterMatchFire(internalMatch);
 
-            activation.setActive(false);
+            internalMatch.setActive(false);
             knowledgeHelper.reset();
         } catch ( final Exception e ) {
             e.printStackTrace();
-            knowledgeHelper.restoreActivationOnConsequenceFailure( activation );
-            activationsManager.handleException( activation, e );
+            knowledgeHelper.restoreActivationOnConsequenceFailure(internalMatch);
+            activationsManager.handleException(internalMatch, e);
         } finally {
-            if ( activation.getActivationFactHandle() != null ) {
+            if (internalMatch.getActivationFactHandle() != null ) {
                 // update the Activation in the WM
-                InternalFactHandle factHandle = activation.getActivationFactHandle();
-                reteEvaluator.getDefaultEntryPoint().getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
+                InternalFactHandle factHandle = internalMatch.getActivationFactHandle();
+                reteEvaluator.getDefaultEntryPoint().getEntryPointNode().modifyActivation(factHandle, internalMatch.getPropagationContext(), reteEvaluator);
             }
         }
     }

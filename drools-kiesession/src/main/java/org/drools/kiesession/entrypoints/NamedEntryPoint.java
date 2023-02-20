@@ -52,7 +52,7 @@ import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
@@ -311,15 +311,15 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                        final Object object,
                        final BitMask mask,
                        final Class<?> modifiedClass,
-                       final Activation activation) {
-        update( (InternalFactHandle) factHandle, object, mask, modifiedClass, activation );
+                       final InternalMatch internalMatch) {
+        update((InternalFactHandle) factHandle, object, mask, modifiedClass, internalMatch);
     }
 
     public InternalFactHandle update(InternalFactHandle handle,
                                      final Object object,
                                      final BitMask mask,
                                      final Class<?> modifiedClass,
-                                     final Activation activation) {
+                                     final InternalMatch internalMatch) {
         lock();
         try {
             this.reteEvaluator.startOperation();
@@ -360,15 +360,15 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
                 this.handleFactory.increaseFactHandleRecency(handle);
 
                 final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
-                        activation == null ? null : activation.getRule(),
-                        activation == null ? null : activation.getTuple().getTupleSink(),
-                        handle, entryPoint, mask, modifiedClass, null);
+                                                                                                   internalMatch == null ? null : internalMatch.getRule(),
+                                                                                                   internalMatch == null ? null : internalMatch.getTuple().getTupleSink(),
+                                                                                                   handle, entryPoint, mask, modifiedClass, null);
 
                 if (typeConf.isTMSEnabled()) {
-                    TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).updateOnTms(handle, object, activation);
+                    TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(this).updateOnTms(handle, object, internalMatch);
                 }
 
-                beforeUpdate(handle, object, activation, originalObject, propagationContext);
+                beforeUpdate(handle, object, internalMatch, originalObject, propagationContext);
 
                 update(handle, object, originalObject, typeConf, propagationContext);
             } finally {
@@ -380,7 +380,7 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         return handle;
     }
 
-    protected void beforeUpdate(InternalFactHandle handle, Object object, Activation activation, Object originalObject, PropagationContext propagationContext) {
+    protected void beforeUpdate(InternalFactHandle handle, Object object, InternalMatch internalMatch, Object originalObject, PropagationContext propagationContext) {
     }
 
     public void update(InternalFactHandle handle, Object object, Object originalObject, ObjectTypeConf typeConf, PropagationContext propagationContext) {
@@ -493,11 +493,11 @@ public class NamedEntryPoint implements InternalWorkingMemoryEntryPoint, Propert
         }
     }
 
-    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation) {
-        return delete( handle, object, typeConf, rule, activation, activation == null ? null : activation.getTuple().getTupleSink() );
+    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, InternalMatch internalMatch) {
+        return delete(handle, object, typeConf, rule, internalMatch, internalMatch == null ? null : internalMatch.getTuple().getTupleSink());
     }
 
-    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation, TerminalNode terminalNode) {
+    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, InternalMatch internalMatch, TerminalNode terminalNode) {
         final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.reteEvaluator.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                 rule, terminalNode,
                 handle, this.entryPoint );

@@ -28,7 +28,7 @@ import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.base.ObjectType;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
@@ -64,7 +64,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
     }
 
     private Object getKey( Object object ) {
-        if ( object instanceof Activation) {
+        if ( object instanceof InternalMatch) {
             return ClassObjectType.Match_ObjectType.getClassType();
         }
         if ( object instanceof Fact) {

@@ -28,7 +28,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
@@ -68,7 +68,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
     }
 
 
-    public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
+    public Trigger createTrigger(InternalMatch item, InternalWorkingMemory wm) {
         long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = wm.getCalendars();

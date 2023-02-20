@@ -62,7 +62,7 @@ public class LazyTMSEnablingTest {
 
         final String fact2 = "logical";
 
-        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession).insert( fact2, null, new TMSMockActivation() );
+        TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession).insert( fact2, null, new TMSMockInternalMatch());
 
         assertThat(tms.getEqualityKeyMap().size()).as("Now that a logical insert was done, it should have an element.").isEqualTo(1);
 
@@ -105,7 +105,7 @@ public class LazyTMSEnablingTest {
         }
 
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession);
-        tms.insert( stringFact2, null, new TMSMockActivation() );
+        tms.insert( stringFact2, null, new TMSMockInternalMatch());
 
         assertThat(stringTypeConf
                 .isTMSEnabled()).as("Should have enabled TMS for Strings.").isTrue();
@@ -113,7 +113,7 @@ public class LazyTMSEnablingTest {
         assertThat(intTypeConf
                 .isTMSEnabled()).as("Shouldn't have enabled TMS for Integers.").isFalse();
 
-        tms.insert( intFact2, null, new TMSMockActivation() );
+        tms.insert( intFact2, null, new TMSMockInternalMatch());
 
         assertThat(intTypeConf
                 .isTMSEnabled()).as("Now it should have enabled TMS for Integers!.").isTrue();

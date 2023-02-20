@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 
 import org.apache.commons.math3.util.Pair;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.functions.accumulate.GroupKey;
 import org.drools.model.codegen.execmodel.domain.Adult;
 import org.drools.model.codegen.execmodel.domain.Child;
@@ -3955,16 +3955,16 @@ public class AccumulateTest extends BaseModelTest {
         // DROOLS-6202
         String str =
                 "import java.util.*;\n" +
-                        "import " + Person.class.getCanonicalName() + ";\n" +
-                        "import " + Activation.class.getCanonicalName() + ";\n" +
-                        "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
-                        "rule R when\n" +
-                        "  accumulate( $set: Set() from accumulate( $p: Person(); collectSet($p) ); $max: max($set.size()) )\n" +
-                        "then\n" +
-                        "  Activation activation = (Activation) drools.getMatch(); \n" +
-                        "  activation.getObjectsDeep(); \n" +
-                        "  holder.set($max); \n" +
-                        "end";
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "import " + InternalMatch.class.getCanonicalName() + ";\n" +
+                "global " + AtomicReference.class.getCanonicalName() + " holder;\n" +
+                "rule R when\n" +
+                "  accumulate( $set: Set() from accumulate( $p: Person(); collectSet($p) ); $max: max($set.size()) )\n" +
+                "then\n" +
+                "  InternalMatch match = (InternalMatch) drools.getMatch(); \n" +
+                "  match.getObjectsDeep(); \n" +
+                "  holder.set($max); \n" +
+                "end";
 
         KieSession ksession = getKieSession(str);
         AtomicReference<Integer> holder = new AtomicReference<>(0);

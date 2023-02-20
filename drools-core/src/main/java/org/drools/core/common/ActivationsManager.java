@@ -23,7 +23,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
@@ -54,15 +54,15 @@ public interface ActivationsManager {
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
 
-    Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
-                                int salience,
-                                PropagationContext context,
-                                RuleAgendaItem ruleAgendaItem,
-                                InternalAgendaGroup agendaGroup);
+    InternalMatch createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+                                   int salience,
+                                   PropagationContext context,
+                                   RuleAgendaItem ruleAgendaItem,
+                                   InternalAgendaGroup agendaGroup);
 
-    void cancelActivation(final Activation activation);
+    void cancelActivation(final InternalMatch internalMatch);
 
-    void addItemToActivationGroup(Activation activation);
+    void addItemToActivationGroup(InternalMatch internalMatch);
 
     RuleAgendaItem peekNextRule();
 
@@ -77,7 +77,7 @@ public interface ActivationsManager {
 
     void executeTask(ExecutableEntry executableEntry);
 
-    default void handleException(Activation activation, Exception e) {
+    default void handleException(InternalMatch internalMatch, Exception e) {
         throw new RuntimeException(e);
     }
 
@@ -85,7 +85,7 @@ public interface ActivationsManager {
 
     void addPropagation(PropagationEntry propagationEntry);
 
-    default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, Activation justified) {
+    default void stageLeftTuple(RuleAgendaItem ruleAgendaItem, InternalMatch justified) {
         if (!ruleAgendaItem.isQueued()) {
             ruleAgendaItem.getRuleExecutor().getPathMemory().queueRuleAgendaItem(this);
         }

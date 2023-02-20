@@ -19,7 +19,7 @@ The `drools` variable contains methods that provide information about the firing
 From the `drools` variable, you can also obtain a reference to the `KieRuntime` providing useful methods to interact with the running session, for example:
 
 * `drools.getKieRuntime().halt()`: Terminates rule execution if a user or application previously called `fireUntilHalt()`. When a user or application calls `fireUntilHalt()` method, the {RULE_ENGINE} starts in `active` mode and evaluates rules until the user or application explicitly calls `halt()` method. Otherwise, by default, the {RULE_ENGINE} runs in `passive` mode and evaluates rules only when a user or an application explicitly calls `fireAllRules()` method.
-* `drools.getKieRuntime().getAgenda()`: Returns a reference to the KIE session `Agenda`, and in turn provides access to rule activation groups, rule agenda groups, and ruleflow groups.
+* `drools.getKieRuntime().getAgenda()`: Returns a reference to the KIE session `Agenda`, and in turn provides access to rule internalMatch groups, rule agenda groups, and ruleflow groups.
 
 .Example call to access agenda group "CleanUp" and set the focus
 [source,java]

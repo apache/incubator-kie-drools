@@ -44,7 +44,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
@@ -52,9 +52,9 @@ public class PhreakActivationIterator
     implements
     Iterator {
 
-    private java.util.Iterator<Activation> agendaItemIter;
+    private java.util.Iterator<InternalMatch> agendaItemIter;
 
-    List<Activation> activations;
+    List<InternalMatch> internalMatches;
 
     PhreakActivationIterator() {
 
@@ -62,8 +62,8 @@ public class PhreakActivationIterator
 
     private PhreakActivationIterator(ReteEvaluator reteEvaluator,
                                      RuleBase kbase) {
-        activations = collectAgendaItems(kbase, reteEvaluator);
-        agendaItemIter =  activations.iterator();
+        internalMatches = collectAgendaItems(kbase, reteEvaluator);
+        agendaItemIter =  internalMatches.iterator();
     }
 
     public static PhreakActivationIterator iterator(ReteEvaluator reteEvaluator) {
@@ -92,22 +92,22 @@ public class PhreakActivationIterator
         return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
     }
 
-    public static List<Activation> collectAgendaItems(RuleBase kbase, ReteEvaluator reteEvaluator) {
+    public static List<InternalMatch> collectAgendaItems(RuleBase kbase, ReteEvaluator reteEvaluator) {
         Set<RuleTerminalNode> nodeSet = new HashSet<>();
         List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
 
-        List<Activation> activations = new ArrayList<>();
+        List<InternalMatch> internalMatches = new ArrayList<>();
         for ( RuleTerminalNode rtn : nodeList ) {
             if ( !nodeSet.contains(rtn) ) {
                 // this node has already been processed
                 continue;
             }
-            processLeftTuples(rtn.getLeftTupleSource(), activations, nodeSet, reteEvaluator);
+            processLeftTuples(rtn.getLeftTupleSource(), internalMatches, nodeSet, reteEvaluator);
         }
-        return activations;
+        return internalMatches;
     }
 
-    public static void processLeftTuples(LeftTupleSource node, List<Activation> activations, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    public static void processLeftTuples(LeftTupleSource node, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         LeftTupleSource node1 = node;
         while (NodeTypeEnums.LeftInputAdapterNode != node1.getType()) {
             node1 = node1.getLeftTupleSource();
@@ -131,7 +131,7 @@ public class PhreakActivationIterator
                         Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            collectFromPeers(accctx.getResultLeftTuple(), activations, nodeSet, reteEvaluator);
+                            collectFromPeers(accctx.getResultLeftTuple(), internalMatches, nodeSet, reteEvaluator);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                         bm = (BetaMemory) reteEvaluator.getNodeMemories().peekNodeMemory(node);
@@ -142,7 +142,7 @@ public class PhreakActivationIterator
                             for (; rt != null; rt = (RightTuple) it.next(rt)) {
                                 for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
                                     if (lt.getFirstChild() != null) {
-                                        collectFromPeers(lt.getFirstChild(), activations, nodeSet, reteEvaluator);
+                                        collectFromPeers(lt.getFirstChild(), internalMatches, nodeSet, reteEvaluator);
                                     }
                                 }
                             }
@@ -154,7 +154,7 @@ public class PhreakActivationIterator
                             Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                             for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                                 if (lt.getFirstChild() != null) {
-                                    collectFromLeftInput(lt.getFirstChild(), activations, nodeSet, reteEvaluator);
+                                    collectFromLeftInput(lt.getFirstChild(), internalMatches, nodeSet, reteEvaluator);
                                 }
                             }
                         }
@@ -167,7 +167,7 @@ public class PhreakActivationIterator
                         FastIterator it = ltm.fullFastIterator();
                         for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                             if (lt.getFirstChild() != null) {
-                                collectFromLeftInput(lt.getFirstChild(), activations, nodeSet, reteEvaluator);
+                                collectFromLeftInput(lt.getFirstChild(), internalMatches, nodeSet, reteEvaluator);
                             }
                         }
                     }
@@ -201,32 +201,32 @@ public class PhreakActivationIterator
             InternalFactHandle fh = it.next();
             fh.forEachLeftTuple( lt -> {
                 if ( lt.getTupleSink() == firstLiaSink ) {
-                    collectFromLeftInput(lt, activations, nodeSet, reteEvaluator);
+                    collectFromLeftInput(lt, internalMatches, nodeSet, reteEvaluator);
                 }
             });
         }
     }
 
-    private static void collectFromLeftInput(LeftTuple lt, List<Activation> activations, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    private static void collectFromLeftInput(LeftTuple lt, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         for (; lt != null; lt = lt.getHandleNext()) {
-            collectFromPeers(lt, activations, nodeSet, reteEvaluator);
+            collectFromPeers(lt, internalMatches, nodeSet, reteEvaluator);
         }
     }
 
-    private static void collectFromPeers(LeftTuple peer, List<Activation> activations, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
+    private static void collectFromPeers(LeftTuple peer, List<InternalMatch> internalMatches, Set<RuleTerminalNode> nodeSet, ReteEvaluator reteEvaluator) {
         while (peer != null) {
             if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
                 Object accctx = peer.getContextObject();
                 if (accctx instanceof AccumulateContext) {
                     // lefttuple representing an accumulated value now have that value as context object (it was null before) and must be skipped here
-                    collectFromLeftInput(((AccumulateContext) accctx).getResultLeftTuple(), activations, nodeSet, reteEvaluator);
+                    collectFromLeftInput(((AccumulateContext) accctx).getResultLeftTuple(), internalMatches, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
-                    collectFromLeftInput(childLt, activations, nodeSet, reteEvaluator);
+                    collectFromLeftInput(childLt, internalMatches, nodeSet, reteEvaluator);
                 }
             } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
-                activations.add((Activation) peer);
+                internalMatches.add((InternalMatch) peer);
                 nodeSet.remove(peer.getTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
             }
             peer = peer.getPeer();

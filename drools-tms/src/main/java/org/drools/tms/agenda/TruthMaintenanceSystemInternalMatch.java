@@ -20,10 +20,10 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.tms.SimpleMode;
 import org.drools.tms.LogicalDependency;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.LinkedList;
 
-public interface TruthMaintenanceSystemActivation<T extends ModedAssertion<T>> extends Activation {
+public interface TruthMaintenanceSystemInternalMatch<T extends ModedAssertion<T>> extends InternalMatch {
 
     void addBlocked(final LogicalDependency<SimpleMode> node);
 

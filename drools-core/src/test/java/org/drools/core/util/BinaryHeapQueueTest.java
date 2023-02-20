@@ -30,7 +30,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.ConflictResolver;
 import org.drools.core.rule.consequence.Consequence;
 import org.junit.Before;
@@ -85,8 +85,8 @@ public class BinaryHeapQueueTest {
                 group.add( item );
             }
 
-            Activation[] elems = group.getQueue().toArray( new Activation[0]);
-            for (Activation elem : elems ) {
+            InternalMatch[] elems = group.getQueue().toArray(new InternalMatch[0]);
+            for (InternalMatch elem : elems ) {
                 Item item = (Item) elem;
                 //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getQueueIndex() );
                 if ( item.getQueueIndex() % 2 == 0 ) {
@@ -197,13 +197,13 @@ public class BinaryHeapQueueTest {
             this.queue.dequeue( agendaItem );
         }
 
-        public Collection<Activation> getQueue() {
+        public Collection<InternalMatch> getQueue() {
             return this.queue.getAll();
         }
     }
 
 
-    public static class Item implements Activation {
+    public static class Item implements InternalMatch {
 
         private static int actNo = 1;
 

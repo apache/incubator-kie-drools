@@ -23,7 +23,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.CompiledInvoker;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
@@ -65,8 +65,8 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
 
                 // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
-                invokeInterface(KnowledgeHelper.class, "getMatch", Activation.class);
-                invokeInterface(Activation.class, "getTuple", Tuple.class);
+                invokeInterface(KnowledgeHelper.class, "getMatch", InternalMatch.class);
+                invokeInterface(InternalMatch.class, "getTuple", Tuple.class);
                 invokeInterface(Tuple.class, "getTupleSink", Sink.class);
                 cast(RuleTerminalNode.class);
                 invokeVirtual(RuleTerminalNode.class, "getRequiredDeclarations", Declaration[].class);

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.mvel.compiler.Bar;
 import org.drools.mvel.compiler.Foo;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -145,7 +145,7 @@ public class MatchTest {
                 "    $total : count()\n" +
                 "  )\n" +
                 "then\n" +
-                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + InternalMatch.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -171,7 +171,7 @@ public class MatchTest {
                 "  $b : Bar(id == \"roadster\")\n" +
                 "  exists Foo(bar == $b)\n" +
                 "then\n" +
-                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + InternalMatch.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
@@ -224,7 +224,7 @@ public class MatchTest {
                      "            $result : average($count)\n" +
                      "        )\n" +
                      "    then\n" +
-                     "        list.addAll( ((" + Activation.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep() );" +
+                     "        list.addAll( ((" + InternalMatch.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep() );" +
                      "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
@@ -255,7 +255,7 @@ public class MatchTest {
                 "            (Integer) $requiredCpuPowerTotal > $cpuPower\n" +
                 "        )\n" +
                 "    then\n" +
-                "        list.addAll(((" + Activation.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep());" +
+                "        list.addAll(((" + InternalMatch.class.getCanonicalName() + ") kcontext.getMatch()).getObjectsDeep());" +
                 "end";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
@@ -313,17 +313,17 @@ public class MatchTest {
         // DROOLS-1470
         String str =
                 "import org.drools.mvel.compiler.Foo\n" +
-                        "import org.drools.mvel.compiler.Bar\n" +
-                        "global java.util.List list\n" +
-                        "rule R when\n" +
-                        "  $b : Bar(id == \"roadster\")\n" +
-                        "  accumulate(\n" +
-                        "    $f : Foo(bar == $b);\n" +
-                        "    $t : count($f)\n" +
-                        "  )\n" +
-                        "then\n" +
-                        "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
-                        "end\n";
+                "import org.drools.mvel.compiler.Bar\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "  $b : Bar(id == \"roadster\")\n" +
+                "  accumulate(\n" +
+                "    $f : Foo(bar == $b);\n" +
+                "    $t : count($f)\n" +
+                "  )\n" +
+                "then\n" +
+                "  list.addAll(((" + InternalMatch.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
+                "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
@@ -370,7 +370,7 @@ public class MatchTest {
                 "    $t : count($b2)\n" +
                 "  )\n" +
                 "then\n" +
-                "  list.addAll(((" + Activation.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
+                "  list.addAll(((" + InternalMatch.class.getCanonicalName() + ")kcontext.getMatch()).getObjectsDeep());\n" +
                 "end\n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);

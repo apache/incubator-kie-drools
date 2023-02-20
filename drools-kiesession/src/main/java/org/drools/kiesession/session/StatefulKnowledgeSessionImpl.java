@@ -93,7 +93,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
 import org.drools.core.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
@@ -1243,23 +1243,23 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     @Override
-    public void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation ) {
-        this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().updateTraits(h, mask, modifiedClass, activation );
+    public void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().updateTraits(h, mask, modifiedClass, internalMatch);
     }
 
     @Override
-    public <T, K, X extends TraitableBean> Thing<K> shed( Activation activation, TraitableBean<K, X> core, Class<T> trait ) {
-        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().shed(core, trait, activation);
+    public <T, K, X extends TraitableBean> Thing<K> shed(InternalMatch internalMatch, TraitableBean<K, X> core, Class<T> trait) {
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().shed(core, trait, internalMatch);
     }
 
     @Override
-    public <T, K> T don( Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes ) {
-        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(activation, core, traits, b, modes);
+    public <T, K> T don(InternalMatch internalMatch, K core, Collection<Class<? extends Thing>> traits, boolean b, Mode[] modes) {
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(internalMatch, core, traits, b, modes);
     }
 
     @Override
-    public <T, K> T don( Activation activation, K core, Class<T> trait, boolean b, Mode[] modes ) {
-        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(activation, core, trait, b, modes);
+    public <T, K> T don(InternalMatch internalMatch, K core, Class<T> trait, boolean b, Mode[] modes) {
+        return this.entryPointsManager.getDefaultEntryPoint().getTraitHelper().don(internalMatch, core, trait, b, modes);
     }
 
     public FactHandle insert(final Object object,
@@ -1326,9 +1326,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        final Object object,
                        final BitMask mask,
                        Class<?> modifiedClass,
-                       final Activation activation) {
+                       final InternalMatch internalMatch) {
         checkAlive();
-        this.entryPointsManager.getDefaultEntryPoint().update(factHandle, object, mask, modifiedClass, activation);
+        this.entryPointsManager.getDefaultEntryPoint().update(factHandle, object, mask, modifiedClass, internalMatch);
     }
 
     /**
@@ -1628,9 +1628,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     @Override
-    public void cancelActivation( Activation activation, boolean declarativeAgenda ) {
-        if (declarativeAgenda && activation.getActivationFactHandle() != null) {
-            getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), this );
+    public void cancelActivation(InternalMatch internalMatch, boolean declarativeAgenda) {
+        if (declarativeAgenda && internalMatch.getActivationFactHandle() != null) {
+            getEntryPointNode().retractActivation(internalMatch.getActivationFactHandle(), internalMatch.getPropagationContext(), this);
         }
     }
 

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -38,18 +38,18 @@ public interface TruthMaintenanceSystem {
     EqualityKey get(Object object);
     void remove(final EqualityKey key);
 
-    InternalFactHandle insert(Object object, Object tmsValue, Activation activation);
-    InternalFactHandle insertPositive(Object object, Activation activation);
+    InternalFactHandle insert(Object object, Object tmsValue, InternalMatch internalMatch);
+    InternalFactHandle insertPositive(Object object, InternalMatch internalMatch);
     void delete(FactHandle fh);
 
-    void readLogicalDependency(InternalFactHandle handle, Object object, Object value, Activation activation, ObjectTypeConf typeConf);
+    void readLogicalDependency(InternalFactHandle handle, Object object, Object value, InternalMatch internalMatch, ObjectTypeConf typeConf);
 
     void clear();
 
     InternalFactHandle insertOnTms(Object object, ObjectTypeConf typeConf, PropagationContext propagationContext,
                                    InternalFactHandle handle, BiFunction<Object, ObjectTypeConf, InternalFactHandle> fhFactory);
 
-    void updateOnTms(InternalFactHandle handle, Object object, Activation activation);
+    void updateOnTms(InternalFactHandle handle, Object object, InternalMatch internalMatch);
 
     void deleteFromTms(InternalFactHandle handle, EqualityKey key, PropagationContext propagationContext );
 

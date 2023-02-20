@@ -28,17 +28,17 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class MockActivation implements Activation {
+public class MockInternalMatch implements InternalMatch {
 
     private RuleImpl rule;
 
-    public MockActivation( ) {
+    public MockInternalMatch() {
         this.rule = new RuleImpl();
     }
 

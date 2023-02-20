@@ -16,8 +16,6 @@
 package org.drools.core.common;
 
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
 import org.kie.api.runtime.rule.AgendaFilter;
 
 /**

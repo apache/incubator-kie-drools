@@ -31,12 +31,12 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.LinkedList;
-import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
+import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.BeliefSystemMode;
@@ -100,12 +100,12 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
     }
 
     @Override
-    public InternalFactHandle insertPositive(Object object, Activation activation) {
-        return insert(object, JTMSBeliefSetImpl.MODE.POSITIVE.getId(), activation);
+    public InternalFactHandle insertPositive(Object object, InternalMatch internalMatch) {
+        return insert(object, JTMSBeliefSetImpl.MODE.POSITIVE.getId(), internalMatch);
     }
 
     @Override
-    public InternalFactHandle insert(Object object, Object tmsValue, Activation activation) {
+    public InternalFactHandle insert(Object object, Object tmsValue, InternalMatch internalMatch) {
         ObjectTypeConf typeConf = typeConfReg.getOrCreateObjectTypeConf( ep.getEntryPoint(), object );
         if ( !typeConf.isTMSEnabled()) {
             enableTMS(object, typeConf);
@@ -132,7 +132,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         }
 
         // Any logical propagations are handled via the TMS.addLogicalDependency
-        return addLogicalDependency(fh, object, tmsValue, (TruthMaintenanceSystemActivation) activation, typeConf, false);
+        return addLogicalDependency(fh, object, tmsValue, (TruthMaintenanceSystemInternalMatch) internalMatch, typeConf, false);
     }
 
     @Override
@@ -194,15 +194,15 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
     public void readLogicalDependency(final InternalFactHandle handle,
                                       final Object object,
                                       final Object value,
-                                      final Activation activation,
+                                      final InternalMatch internalMatch,
                                       final ObjectTypeConf typeConf) {
-        addLogicalDependency( handle, object, value, (TruthMaintenanceSystemActivation) activation, typeConf, true );
+        addLogicalDependency(handle, object, value, (TruthMaintenanceSystemInternalMatch) internalMatch, typeConf, true);
     }
 
     private InternalFactHandle addLogicalDependency(final InternalFactHandle handle,
                                                     final Object object,
                                                     final Object tmsValue,
-                                                    final TruthMaintenanceSystemActivation activation,
+                                                    final TruthMaintenanceSystemInternalMatch activation,
                                                     final ObjectTypeConf typeConf,
                                                     final boolean read) {
         BeliefSystem beliefSystem = defaultBeliefSystem;
@@ -289,14 +289,14 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
     }
 
     @Override
-    public void updateOnTms(InternalFactHandle handle, Object object, Activation activation) {
+    public void updateOnTms(InternalFactHandle handle, Object object, InternalMatch internalMatch) {
         EqualityKey newKey = get(object);
         EqualityKey oldKey = handle.getEqualityKey();
 
         if ((oldKey.getStatus() == EqualityKey.JUSTIFIED || ((TruthMaintenanceSystemEqualityKey)oldKey).getBeliefSet() != null) && newKey != oldKey) {
             // Mixed stated and justified, we cannot have updates untill we figure out how to use this.
             throw new IllegalStateException("Currently we cannot modify something that has mixed stated and justified equal objects. " +
-                    "Rule " + (activation == null ? "" : activation.getRule().getName()) + " attempted an illegal operation");
+                                            "Rule " + (internalMatch == null ? "" : internalMatch.getRule().getName()) + " attempted an illegal operation");
         }
 
         if (newKey == null) {
@@ -333,7 +333,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
         }
     }
 
-    public static <M extends ModedAssertion<M>> void removeLogicalDependencies(TruthMaintenanceSystemActivation<M> activation) {
+    public static <M extends ModedAssertion<M>> void removeLogicalDependencies(TruthMaintenanceSystemInternalMatch<M> activation) {
         final LinkedList<LogicalDependency<M>> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;

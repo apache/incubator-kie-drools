@@ -17,7 +17,7 @@ package org.drools.ruleunits.impl.datasources;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
@@ -95,13 +95,13 @@ public class FieldDataStore<T> extends AbstractDataSource<T> implements Singleto
     }
 
     @Override
-    public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        update(fh.getDataHandle(), obj, mask, modifiedClass, activation);
+    public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        update(fh.getDataHandle(), obj, mask, modifiedClass, internalMatch);
     }
 
     @Override
-    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
+    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, internalMatch));
         subscribers.forEach(s -> s.update(dh, obj));
     }
 

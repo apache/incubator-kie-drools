@@ -64,7 +64,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.common.PropagationContext;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
@@ -421,7 +421,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public Activation getMatch() {
+        public InternalMatch getMatch() {
             return knowledgeHelper.getMatch();
         }
 
@@ -562,11 +562,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
         }
 
         @Override
-        public void setActivation(Activation activation) {
-            knowledgeHelper.setActivation(activation);
+        public void setActivation(InternalMatch internalMatch) {
+            knowledgeHelper.setActivation(internalMatch);
         }
 
-        public Activation getActivation() {
+        public InternalMatch getActivation() {
             return knowledgeHelper.getActivation();
         }
 

@@ -16,13 +16,13 @@
 
 package org.drools.core.event;
 
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 
 public class ActivationCreatedEvent extends ActivationEvent {
     private static final long serialVersionUID = 510L;
 
-    public ActivationCreatedEvent(final Activation activation) {
-        super( activation );
+    public ActivationCreatedEvent(final InternalMatch internalMatch) {
+        super(internalMatch);
     }
 
     @Override

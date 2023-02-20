@@ -59,7 +59,7 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
 import org.drools.core.common.InternalActivationGroup;
@@ -197,11 +197,11 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
-                                       final int salience,
-                                       final PropagationContext context,
-                                       RuleAgendaItem ruleAgendaItem,
-                                       InternalAgendaGroup agendaGroup) {
+    public InternalMatch createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+                                          final int salience,
+                                          final PropagationContext context,
+                                          RuleAgendaItem ruleAgendaItem,
+                                          InternalAgendaGroup agendaGroup) {
         rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
@@ -283,18 +283,18 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void addItemToActivationGroup(final Activation activation) {
-        String group = activation.getRule().getActivationGroup();
+    public void addItemToActivationGroup(final InternalMatch internalMatch) {
+        String group = internalMatch.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
-                 actgroup.getTriggeredForRecency() >= activation.getPropagationContext().getFactHandle().getRecency() ) {
+                 actgroup.getTriggeredForRecency() >= internalMatch.getPropagationContext().getFactHandle().getRecency() ) {
                 return;
             }
 
-            actgroup.addActivation( activation );
+            actgroup.addActivation(internalMatch);
         }
     }
 
@@ -314,31 +314,31 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void cancelActivation(final Activation activation) {
-        Activation item = activation;
+    public void cancelActivation(final InternalMatch internalMatch) {
+        InternalMatch item = internalMatch;
 
-        workingMemory.cancelActivation( activation, isDeclarativeAgenda() );
+        workingMemory.cancelActivation(internalMatch, isDeclarativeAgenda());
 
         if ( isDeclarativeAgenda() ) {
-            if (activation.getActivationFactHandle() == null) {
+            if (internalMatch.getActivationFactHandle() == null) {
                 // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
                 return;
             }
             // we are cancelling an actual Activation, so also it's handle from the WM.
-            if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            if (internalMatch.getActivationGroupNode() != null ) {
+                internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
         }
 
-        if ( activation.isQueued() ) {
-            if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+        if ( internalMatch.isQueued() ) {
+            if (internalMatch.getActivationGroupNode() != null ) {
+                internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            (( Tuple ) activation).decreaseActivationCountForEvents();
+            (( Tuple ) internalMatch).decreaseActivationCountForEvents();
 
-            workingMemory.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                           workingMemory,
-                                                                           MatchCancelledCause.WME_MODIFY );
+            workingMemory.getAgendaEventSupport().fireActivationCancelled(internalMatch,
+                                                                          workingMemory,
+                                                                          MatchCancelledCause.WME_MODIFY );
         }
 
         if (item.getRuleAgendaItem() != null) {
@@ -497,14 +497,14 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
         for ( final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();
-            final Activation activation = node.getActivation();
-            activation.setActivationGroupNode( null );
+            final InternalMatch internalMatch = node.getActivation();
+            internalMatch.setActivationGroupNode(null);
 
-            if ( activation.isQueued() ) {
-                activation.remove();
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                              this.workingMemory,
-                                                                              MatchCancelledCause.CLEAR );
+            if ( internalMatch.isQueued() ) {
+                internalMatch.remove();
+                eventsupport.getAgendaEventSupport().fireActivationCancelled(internalMatch,
+                                                                             this.workingMemory,
+                                                                             MatchCancelledCause.CLEAR );
             }
         }
         activationGroup.reset();
@@ -604,13 +604,13 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         return false;
     }
 
-    private boolean checkProcessInstance(Activation activation,
+    private boolean checkProcessInstance(InternalMatch internalMatch,
                                          String processInstanceId) {
-        final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
+        final Map<String, Declaration> declarations = internalMatch.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() )
                     || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
-                Object value = declaration.getValue( workingMemory, activation.getTuple() );
+                Object value = declaration.getValue(workingMemory, internalMatch.getTuple());
                 if ( value instanceof ProcessInstance ) {
                     return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
                 }
@@ -907,11 +907,11 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void handleException(Activation activation, Exception e) {
+    public void handleException(InternalMatch internalMatch, Exception e) {
         if ( this.legacyConsequenceExceptionHandler != null ) {
-            this.legacyConsequenceExceptionHandler.handleException( activation, getWorkingMemory(), e );
+            this.legacyConsequenceExceptionHandler.handleException(internalMatch, getWorkingMemory(), e);
         } else if ( this.consequenceExceptionHandler != null ) {
-            this.consequenceExceptionHandler.handleException( activation, getWorkingMemory().getKnowledgeRuntime(), e );
+            this.consequenceExceptionHandler.handleException(internalMatch, getWorkingMemory().getKnowledgeRuntime(), e);
         } else {
             throw new RuntimeException( e );
         }

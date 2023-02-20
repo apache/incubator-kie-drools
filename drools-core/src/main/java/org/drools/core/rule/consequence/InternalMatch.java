@@ -44,7 +44,7 @@ import org.kie.api.runtime.rule.Match;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  */
-public interface Activation extends Serializable, QueueEntry, Match {
+public interface InternalMatch extends Serializable, QueueEntry, Match {
     
     /**
      * 

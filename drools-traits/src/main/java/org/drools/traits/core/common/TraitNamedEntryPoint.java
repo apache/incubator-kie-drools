@@ -26,7 +26,7 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.traits.core.base.TraitHelperImpl;
 import org.drools.traits.core.factmodel.TraitProxy;
@@ -43,10 +43,10 @@ public class TraitNamedEntryPoint extends NamedEntryPoint {
     }
 
     @Override
-    protected void beforeUpdate(InternalFactHandle handle, Object object, Activation activation, Object originalObject, PropagationContext propagationContext) {
+    protected void beforeUpdate(InternalFactHandle handle, Object object, InternalMatch internalMatch, Object originalObject, PropagationContext propagationContext) {
         if (handle.isTraitable() && object != originalObject
                 && object instanceof TraitableBean && originalObject instanceof TraitableBean) {
-            this.traitHelper.replaceCore(handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation);
+            this.traitHelper.replaceCore(handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), internalMatch);
         }
     }
 
