@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEventManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleFlowGroup;
@@ -315,7 +314,7 @@ public abstract class WorkingMemoryLogger
     private String extractDeclarations(Match match) {
         final StringBuilder result = new StringBuilder();
         List<String> declarations = match.getDeclarationIds();
-        Map<String, Declaration> declsMap = ( (AgendaItem) match ).getTerminalNode().getSubRule().getOuterDeclarations();
+        Map<String, Declaration> declsMap = ( (Activation) match ).getTerminalNode().getSubRule().getOuterDeclarations();
         for ( int i = 0; i < declarations.size(); i++ ) {
             String declaration = declarations.get(i);
 

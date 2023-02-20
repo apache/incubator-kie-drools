@@ -27,6 +27,7 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Activation;
@@ -302,7 +303,7 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public List<? extends FactHandle> getFactHandles() {
+        public List<FactHandle> getFactHandles() {
             return null;
         }
 
@@ -333,6 +334,46 @@ public class BinaryHeapQueueTest {
         @Override
         public RuleAgendaItem getRuleAgendaItem() {
             return null;
+        }
+
+        @Override
+        public void setSalience(int salience) {
+
+        }
+
+        @Override
+        public void setActivationFactHandle(InternalFactHandle factHandle) {
+
+        }
+
+        @Override
+        public TerminalNode getTerminalNode() {
+            return null;
+        }
+
+        @Override
+        public String toExternalForm() {
+            return null;
+        }
+
+        @Override
+        public boolean isCanceled() {
+            return false;
+        }
+
+        @Override
+        public void cancel() {
+
+        }
+
+        @Override
+        public Runnable getCallback() {
+            return null;
+        }
+
+        @Override
+        public void setCallback(Runnable callback) {
+
         }
     }
 

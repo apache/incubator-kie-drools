@@ -54,7 +54,7 @@ public interface ActivationsManager {
 
     RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn);
 
-    AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+    Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                 int salience,
                                 PropagationContext context,
                                 RuleAgendaItem ruleAgendaItem,
@@ -62,7 +62,7 @@ public interface ActivationsManager {
 
     void cancelActivation(final Activation activation);
 
-    void addItemToActivationGroup(AgendaItem activation);
+    void addItemToActivationGroup(Activation activation);
 
     RuleAgendaItem peekNextRule();
 

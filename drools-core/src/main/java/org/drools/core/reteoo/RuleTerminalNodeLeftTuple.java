@@ -24,18 +24,18 @@ import java.util.Objects;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaItem {
+public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements Activation {
     private static final long serialVersionUID = 540l;
     /**
      * The salience

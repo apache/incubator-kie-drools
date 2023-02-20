@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.RuleSessionConfiguration;
+import org.drools.core.rule.consequence.Activation;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -98,7 +99,7 @@ public class JTMSTest {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
         		"import java.util.List \n" +
-        		"import org.drools.core.common.AgendaItem;" +
+                "import " + Activation.class.getCanonicalName() +" \n" +
         		"global java.util.List list;\n" + 
         		"\n" + 
         		"rule \"go1\"\n" + 
@@ -183,7 +184,7 @@ public class JTMSTest {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
                    "import java.util.List \n" +
-                   "import org.drools.core.common.AgendaItem;" +
+                   "import " + Activation.class.getCanonicalName() +" \n" +
                    "global java.util.List list;\n" +
                    "\n" +
                    "rule \"go1\"\n" +

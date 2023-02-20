@@ -31,7 +31,6 @@ import org.drools.core.common.ActivationGroupImpl;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -54,7 +53,6 @@ import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.phreak.ThreadUnsafePropagationList;
 import org.drools.core.reteoo.AgendaComponentFactory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -77,7 +75,6 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
-import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,7 +197,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+    public Activation createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                        final int salience,
                                        final PropagationContext context,
                                        RuleAgendaItem ruleAgendaItem,
@@ -286,7 +283,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void addItemToActivationGroup(final AgendaItem activation) {
+    public void addItemToActivationGroup(final Activation activation) {
         String group = activation.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = getActivationGroup( group );
@@ -318,7 +315,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void cancelActivation(final Activation activation) {
-        AgendaItem item = (AgendaItem) activation;
+        Activation item = activation;
 
         workingMemory.cancelActivation( activation, isDeclarativeAgenda() );
 

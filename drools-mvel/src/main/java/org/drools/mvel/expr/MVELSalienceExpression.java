@@ -21,7 +21,6 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -85,7 +84,7 @@ public class MVELSalienceExpression
                         final Rule rule,
                         final ReteEvaluator reteEvaluator) {
         VariableResolverFactory factory = unit.getFactory( reteEvaluator,
-                                                           reteEvaluator != null ? (( AgendaItem ) activation).getTerminalNode().getSalienceDeclarations() : null,
+                                                           reteEvaluator != null ? activation.getTerminalNode().getSalienceDeclarations() : null,
                                                            rule, null,
                                                            reteEvaluator != null ? activation.getTuple() : null,
                                                            null, reteEvaluator, reteEvaluator.getGlobalResolver() );

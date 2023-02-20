@@ -17,7 +17,6 @@ package org.drools.core.phreak;
 
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalActivationGroup;
@@ -135,7 +134,7 @@ public class RuleExecutor {
             Tuple tuple = getNextTuple();
             
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (Activation) tuple, ActivationsManager.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             Tuple lastTuple = null;
@@ -147,7 +146,7 @@ public class RuleExecutor {
                     continue;
                 }
 
-                AgendaItem item = (AgendaItem) tuple;
+                Activation item = (Activation) tuple;
                 if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept(item)) {
                     // only relevant for serialization, to not refire Matches already fired
                     continue;
@@ -180,7 +179,7 @@ public class RuleExecutor {
             }
 
             if (ruleIsAllMatches) {
-                fireConsequenceEvent(reteEvaluator, activationsManager, (AgendaItem) lastTuple, ActivationsManager.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(reteEvaluator, activationsManager, (Activation) lastTuple, ActivationsManager.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 
@@ -284,7 +283,7 @@ public class RuleExecutor {
     }
 
     public void addLeftTuple(Tuple tuple) {
-        ((AgendaItem) tuple).setQueued(true);
+        ((Activation) tuple).setQueued(true);
         this.tupleList.add(tuple);
         if (queue != null) {
             addQueuedLeftTuple(tuple);
@@ -298,7 +297,7 @@ public class RuleExecutor {
     }
 
     public void removeLeftTuple(Tuple tuple) {
-        ((AgendaItem) tuple).setQueued(false);
+        ((Activation) tuple).setQueued(false);
         this.tupleList.remove(tuple);
         if (queue != null) {
             removeQueuedLeftTuple(tuple);

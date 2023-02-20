@@ -27,7 +27,6 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.Mode;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -162,7 +161,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public void cancelMatch(Match act) {
-        AgendaItem match = ( AgendaItem ) act;
+        Activation match = (Activation) act;
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
     }
 
@@ -301,7 +300,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return ((AgendaItem)this.activation).getTerminalNode().getSubRule().getOuterDeclarations().get( identifier );
+        return this.activation.getTerminalNode().getSubRule().getOuterDeclarations().get(identifier);
     }
 
     public void halt() {

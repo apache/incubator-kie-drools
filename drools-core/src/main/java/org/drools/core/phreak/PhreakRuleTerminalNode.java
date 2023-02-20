@@ -16,7 +16,6 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
@@ -30,6 +29,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.consequence.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.MatchCancelledCause;
 
@@ -104,7 +104,7 @@ public class PhreakRuleTerminalNode {
             return;
         }
 
-        int salienceInt = getSalienceValue( rtnNode, ruleAgendaItem, ( AgendaItem ) leftTuple, reteEvaluator );
+        int salienceInt = getSalienceValue(rtnNode, ruleAgendaItem, (Activation) leftTuple, reteEvaluator);
 
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
         activationsManager.createAgendaItem( rtnLeftTuple, salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup() );
@@ -134,14 +134,14 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    private static void insertAndStageActivation(ReteEvaluator reteEvaluator, AgendaItem activation) {
+    private static void insertAndStageActivation(ReteEvaluator reteEvaluator, Activation activation) {
         ObjectTypeConf activationObjectTypeConf = reteEvaluator.getDefaultEntryPoint().getObjectTypeConfigurationRegistry().getObjectTypeConf(activation );
         InternalFactHandle factHandle = reteEvaluator.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, reteEvaluator, reteEvaluator.getDefaultEntryPoint() );
         reteEvaluator.getDefaultEntryPoint().getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), reteEvaluator );
         activation.setActivationFactHandle( factHandle );
     }
 
-    private static int getSalienceValue( TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, AgendaItem leftTuple, ReteEvaluator reteEvaluator ) {
+    private static int getSalienceValue(TerminalNode rtnNode, RuleAgendaItem ruleAgendaItem, Activation leftTuple, ReteEvaluator reteEvaluator) {
         Salience salience = ruleAgendaItem.getRule().getSalience();
         return salience == null ? 0 : (salience.isDynamic() ?
                     salience.getValue(leftTuple, rtnNode.getRule(), reteEvaluator) :
@@ -191,7 +191,7 @@ public class PhreakRuleTerminalNode {
             blocked = rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin());
         }
 
-        int salienceInt = getSalienceValue( rtnNode, executor.getRuleAgendaItem(), ( AgendaItem ) leftTuple, reteEvaluator );
+        int salienceInt = getSalienceValue(rtnNode, executor.getRuleAgendaItem(), (Activation) leftTuple, reteEvaluator);
         
         if (activationsManager.getActivationsFilter() != null && !activationsManager.getActivationsFilter().accept( rtnLeftTuple)) {
             // only relevant for serialization, to not re-fire Matches already fired
@@ -229,7 +229,7 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    private static void modifyActivation(ReteEvaluator reteEvaluator, AgendaItem activation) {
+    private static void modifyActivation(ReteEvaluator reteEvaluator, Activation activation) {
         // in Phreak this is only called for declarative agenda, on rule instances
         InternalFactHandle factHandle = activation.getActivationFactHandle();
         if ( factHandle != null ) {
