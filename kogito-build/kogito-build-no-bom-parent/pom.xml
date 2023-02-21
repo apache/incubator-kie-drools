@@ -100,7 +100,7 @@
     <version.javancss.plugin>2.0</version.javancss.plugin>
     <version.jdocbook.plugin>2.3.9</version.jdocbook.plugin>
     <version.formatter.plugin>2.13.0</version.formatter.plugin>
-    <version.impsort.plugin>1.5.0</version.impsort.plugin>
+    <version.impsort.plugin>1.8.0</version.impsort.plugin>
     <version.kr.motd.maven.os>1.6.0</version.kr.motd.maven.os>
     <version.license.plugin>4.0.rc2</version.license.plugin>
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
