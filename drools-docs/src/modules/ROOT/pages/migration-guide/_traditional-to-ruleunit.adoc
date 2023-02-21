@@ -150,4 +150,32 @@ end
 
 Firstly, declare `unit`. Don't need to declare `global`, because `controlSet` is a field of `MeasurementUnit`. Traditional `global` usage would become the Unit's field. In addition, the main difference is OOPath notation in LHS. It is described in detail at xref:language-reference/index.adoc#con-drl-rules-conditions_drl-rules[Rule conditions in DRL]. You should change from the class name (`Measurement`) to the `DataSource` property name in the Unit class (`measurements`).
 
+In addition, you need to take care of the `insert` in RHS. The `insert` method inserts a fact into a "DEFAULT" entry-point, but in Rule Unit use cases, you must specify a `DataSource` where you want to insert the fact. Hence, you must call `DataStore.add` or `DataStream.append` instead of `insert`.
+
+.Traditional DRL
+[source]
+----
+rule "Insert another Measurement"
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	insert(new Measurement("monochrome", "false"));
+end
+----
+
+.Rule Unit DRL
+[source]
+----
+unit MeasurementUnit;
+
+rule "Insert another Measurement"
+when
+	/measurements[ id == "color", $colorVal : val ]
+then
+	measurements.add(new Measurement("monochrome", "false"));
+end
+----
+
+Note that you don't need to re-write `update`, `modify` and `delete`, because they work for a fact in its DataSource expectedly.
+
 These changes are not negligible, but hopefully, as this migration guide demonstrated, they are not so difficult to implement either.
