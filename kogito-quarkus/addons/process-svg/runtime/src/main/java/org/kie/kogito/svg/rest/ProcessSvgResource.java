@@ -29,12 +29,18 @@ import javax.ws.rs.core.Response;
 
 import org.kie.kogito.svg.ProcessSvgService;
 
+import io.quarkus.security.credential.TokenCredential;
+import io.quarkus.security.identity.SecurityIdentity;
+
 @ApplicationScoped
 @Path("/svg")
 public class ProcessSvgResource {
 
     @Inject
     ProcessSvgService service;
+
+    @Inject
+    SecurityIdentity identity;
 
     @GET
     @Path("processes/{processId}")
@@ -54,7 +60,7 @@ public class ProcessSvgResource {
     public Response getExecutionPathByProcessInstanceId(@PathParam("processId") String processId,
             @PathParam("processInstanceId") String processInstanceId,
             @HeaderParam("Authorization") @DefaultValue("") String authHeader) {
-        Optional<String> processInstanceSvg = service.getProcessInstanceSvg(processId, processInstanceId, authHeader);
+        Optional<String> processInstanceSvg = service.getProcessInstanceSvg(processId, processInstanceId, getAuthHeader(authHeader));
         if (processInstanceSvg.isPresent()) {
             return Response.ok(processInstanceSvg.get()).build();
         } else {
@@ -65,5 +71,12 @@ public class ProcessSvgResource {
     @Inject
     protected void setProcessSvgService(ProcessSvgService service) {
         this.service = service;
+    }
+
+    protected String getAuthHeader(String authHeader) {
+        if (identity != null && !identity.isAnonymous() && identity.getCredential(TokenCredential.class) != null) {
+            return "Bearer " + identity.getCredential(TokenCredential.class).getToken();
+        }
+        return authHeader;
     }
 }
