@@ -18,6 +18,7 @@ package org.drools.core.conflict;
 
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.consequence.ConflictResolver;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.Match;
 
 import java.io.Externalizable;
@@ -25,7 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class MatchConflictResolver implements ConflictResolver<Match>, Externalizable {
+public class MatchConflictResolver implements ConflictResolver<InternalMatch>, Externalizable {
 
     private static final long                   serialVersionUID = 510l;
     public static final MatchConflictResolver INSTANCE         = new MatchConflictResolver();
@@ -40,13 +41,13 @@ public class MatchConflictResolver implements ConflictResolver<Match>, Externali
         return MatchConflictResolver.INSTANCE;
     }
 
-    public final int compare(final Match existing,
-                             final Match adding) {
+    public final int compare(final InternalMatch existing,
+                             final InternalMatch adding) {
         return doCompare( existing, adding );
     }
 
-    public final static int doCompare(final Match existing,
-                                      final Match adding) {
+    public final static int doCompare(final InternalMatch existing,
+                                      final InternalMatch adding) {
         if (existing == adding) {
             return 0;
         }

@@ -35,10 +35,13 @@ import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.util.BinaryHeapQueue;
+import org.drools.core.util.Queue;
+import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +52,7 @@ public class RuleExecutor {
     private final PathMemory                  pmem;
     private final RuleAgendaItem              ruleAgendaItem;
     private final TupleList                   tupleList;
-    private BinaryHeapQueue<InternalMatch>       queue;
+    private Queue<InternalMatch> queue;
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
@@ -62,7 +65,7 @@ public class RuleExecutor {
         this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
-            queue = new BinaryHeapQueue(MatchConflictResolver.INSTANCE);
+            queue = QueueFactory.createQueue(MatchConflictResolver.INSTANCE);
         }
     }
 

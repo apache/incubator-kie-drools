@@ -258,12 +258,6 @@
                   <include>it.unimi.dsi:fastutil</include>
                 </includes>
               </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>it.unimi.dsi.fastutil</pattern>
-                  <shadedPattern>org.drools.core.shade.it.unimi.dsi.fastutil</shadedPattern>
-                </relocation>
-              </relocations>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
               </transformers>

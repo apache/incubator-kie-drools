@@ -54,7 +54,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class BinaryHeapQueueTest {
 
     private List<Integer[]>  perms = new ArrayList<Integer[]>();
-    private final static int max   = 6;
+    private final static int max   = 20;
 
     // NOT really permutations, just some shuffling
     private void shuffle(Integer[] a,
@@ -76,34 +76,38 @@ public class BinaryHeapQueueTest {
     @Test
     public void testShuffled() {
 
-        for ( Integer[] perm : perms ) {
-            Group group = new Group( "group" );
+        long time = System.currentTimeMillis();
+        for (int k = 0; k < 10; k++) {
+            for (Integer[] perm : perms) {
+                Group group = new Group("group");
 
-            for ( Integer i : perm ) {
-                Item item = new Item( group,
-                                      i );
-                group.add( item );
-            }
-
-            InternalMatch[] elems = group.getQueue().toArray(new InternalMatch[0]);
-            for (InternalMatch elem : elems ) {
-                Item item = (Item) elem;
-                //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getQueueIndex() );
-                if ( item.getQueueIndex() % 2 == 0 ) {
-                    group.remove( item );
-                    group.add( item );
+                for (Integer i : perm) {
+                    Item item = new Item(group,
+                                         i);
+                    group.add(item);
                 }
+
+                InternalMatch[] elems = group.getQueue().toArray(new InternalMatch[0]);
+                for (InternalMatch elem : elems) {
+                    Item item = (Item) elem;
+                    //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getQueueIndex() );
+                    if (item.getQueueIndex() % 2 == 0) {
+                        group.remove(item);
+                        group.add(item);
+                    }
+                }
+                boolean ok = true;
+                StringBuilder sb = new StringBuilder("queue:");
+                for (int i = max - 1; i >= 0; i--) {
+                    int sal = group.getNext().getSalience();
+                    sb.append(" ").append(sal);
+                    if (sal != i) ok = false;
+                }
+                assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
+                //      System.out.println( sb.toString() );
             }
-            boolean ok = true;
-            StringBuilder sb = new StringBuilder( "queue:" );
-            for ( int i = max - 1; i >= 0; i-- ) {
-                int sal = group.getNext().getSalience();
-                sb.append( " " ).append( sal );
-                if ( sal != i ) ok = false;
-            }
-            assertThat(ok).as("incorrect order in " + sb.toString()).isTrue();
-            //      System.out.println( sb.toString() );
         }
+        System.out.println("time:" + (System.currentTimeMillis() - time));
     }
 
     @Before
@@ -113,8 +117,7 @@ public class BinaryHeapQueueTest {
         for ( int i = 0; i < max; i++ ) {
             a[i] = i;
         }
-        shuffle( a,
-                 max - 1 );
+        shuffle( a,max - 1 );
         //    System.out.println( "The size is " + perms.size() );
     }
 
@@ -125,7 +128,7 @@ public class BinaryHeapQueueTest {
         private String            name;
 
         /** Items in the agenda. */
-        private BinaryHeapQueue   queue;
+        private Queue<Item>      queue;
 
         /**
          * Construct an <code>AgendaGroup</code> with the given name.
@@ -137,7 +140,7 @@ public class BinaryHeapQueueTest {
 
         public Group(final String name) {
             this.name = name;
-            this.queue = new BinaryHeapQueue<>(ItemConflictResolver.INSTANCE );
+            this.queue = QueueFactory.createQueue(ItemConflictResolver.INSTANCE );
         }
 
         public String getName() {
@@ -197,7 +200,7 @@ public class BinaryHeapQueueTest {
             this.queue.dequeue( agendaItem );
         }
 
-        public Collection<InternalMatch> getQueue() {
+        public Collection<Item> getQueue() {
             return this.queue.getAll();
         }
     }

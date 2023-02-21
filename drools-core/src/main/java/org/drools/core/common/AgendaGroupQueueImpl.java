@@ -30,6 +30,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;
+import org.drools.core.util.QueueFactory;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -92,7 +93,7 @@ public class AgendaGroupQueueImpl
         if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
             this.priorityQueue = new ArrayQueue<>();
         } else {
-            this.priorityQueue = new BinaryHeapQueue<>(new RuleAgendaConflictResolver());
+            this.priorityQueue = QueueFactory.createQueue(RuleAgendaConflictResolver.INSTANCE);
         }
     }
 
