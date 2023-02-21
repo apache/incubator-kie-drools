@@ -14,15 +14,22 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
 
     private final PentaFunction<ResultContainer_, OldA, OldB, OldC, OldD, Runnable> accumulator;
 
-    protected AbstractGroupQuadNode(int groupStoreIndex,
+    protected AbstractGroupQuadNode(int groupStoreIndex, int undoStoreIndex,
             Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex, groupKeyFunction,
+        super(groupStoreIndex, undoStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
                 nextNodesTupleLifecycle);
         accumulator = collector == null ? null : collector.accumulator();
+    }
+
+    protected AbstractGroupQuadNode(int groupStoreIndex,
+            Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+        accumulator = null;
     }
 
     @Override

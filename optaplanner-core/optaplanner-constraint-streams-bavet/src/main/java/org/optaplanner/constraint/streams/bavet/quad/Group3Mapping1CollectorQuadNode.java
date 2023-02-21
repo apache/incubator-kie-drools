@@ -15,10 +15,12 @@ final class Group3Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
 
     public Group3Mapping1CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
-            int groupStoreIndex, QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, D> collector,
+            int groupStoreIndex, int undoStoreIndex,
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, D> collector,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
-                collector, nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex,
+                tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple), collector,
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

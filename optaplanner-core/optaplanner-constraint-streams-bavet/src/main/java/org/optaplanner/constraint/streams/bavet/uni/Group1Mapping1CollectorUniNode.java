@@ -14,10 +14,11 @@ final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
 
     private final int outputStoreSize;
 
-    public Group1Mapping1CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
+    public Group1Mapping1CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex, int undoStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, B> collector,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), collector, nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), collector,
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

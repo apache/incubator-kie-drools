@@ -8,10 +8,10 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
 
     private final int outputStoreSize;
 
-    public Group0Mapping1CollectorUniNode(int groupStoreIndex,
+    public Group0Mapping1CollectorUniNode(int groupStoreIndex, int undoStoreIndex,
             UniConstraintCollector<OldA, ResultContainer_, A> collector,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, collector, nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, null, collector, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

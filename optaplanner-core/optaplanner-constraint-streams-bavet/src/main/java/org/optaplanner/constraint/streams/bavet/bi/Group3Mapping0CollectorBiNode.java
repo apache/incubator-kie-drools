@@ -12,11 +12,11 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
 
     private final int outputStoreSize;
 
-    public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
-            BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
+    public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA, BiFunction<OldA, OldB, B> groupKeyMappingB,
+            BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
-                null, nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

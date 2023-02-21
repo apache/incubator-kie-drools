@@ -18,7 +18,7 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex,
                 tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
-                null, nextNodesTupleLifecycle);
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

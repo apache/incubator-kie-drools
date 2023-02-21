@@ -10,10 +10,10 @@ final class Group0Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, ResultCon
 
     private final int outputStoreSize;
 
-    public Group0Mapping1CollectorQuadNode(int groupStoreIndex,
+    public Group0Mapping1CollectorQuadNode(int groupStoreIndex, int undoStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, A> collector,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, collector, nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, null, collector, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

@@ -13,13 +13,14 @@ final class Group0Mapping4CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
 
     private final int outputStoreSize;
 
-    public Group0Mapping4CollectorTriNode(int groupStoreIndex,
+    public Group0Mapping4CollectorTriNode(int groupStoreIndex, int undoStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerA_, A> collectorA,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC, collectorD),
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

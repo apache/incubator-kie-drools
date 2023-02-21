@@ -12,11 +12,11 @@ final class Group0Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
 
     private final int outputStoreSize;
 
-    public Group0Mapping2CollectorQuadNode(int groupStoreIndex,
+    public Group0Mapping2CollectorQuadNode(int groupStoreIndex, int undoStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerA_, A> collectorA,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

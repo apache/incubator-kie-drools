@@ -1,12 +1,12 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.GroupNodeConstructor;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -15,11 +15,11 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
-    private final BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor;
+    private final GroupNodeConstructor<BiTuple<NewA, NewB>> nodeConstructor;
 
     public BavetBiGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor) {
+            GroupNodeConstructor<BiTuple<NewA, NewB>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -46,17 +46,9 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
-        }
-        int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<BiTuple<NewA, NewB>> insert =
-                buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
-        int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<BiTuple<A, B>, BiTuple<NewA, NewB>, ?, ?, ?, ?> node =
-                nodeConstructor.apply(inputStoreIndex, insert, outputStoreSize);
-        buildHelper.addNode(node, this);
+        ConstraintStream parentTupleSource = parent.getTupleSource();
+        List<? extends ConstraintStream> groupStreamChildList = groupStream.getChildStreamList();
+        nodeConstructor.build(buildHelper, parentTupleSource, groupStream, groupStreamChildList, this, childStreamList);
     }
 
     @Override
