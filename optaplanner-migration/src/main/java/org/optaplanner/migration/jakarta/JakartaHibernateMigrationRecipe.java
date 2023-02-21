@@ -42,7 +42,7 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
                     forEachExclusion(tag,
                             (exclusionGroupId, exclusionArtifactId) -> doNext(
                                     new RemoveExclusion(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
-                                            exclusionGroupId, exclusionArtifactId)));
+                                            exclusionGroupId, exclusionArtifactId, false)));
 
                     doNext(new ChangeDependencyGroupIdAndArtifactId(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
                             HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID + "-jakarta", null, null));

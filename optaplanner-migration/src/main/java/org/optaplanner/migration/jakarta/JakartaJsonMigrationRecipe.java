@@ -44,8 +44,8 @@ public class JakartaJsonMigrationRecipe extends Recipe {
                 Path parent = document.getSourcePath().getParent();
                 if (parent != null && parent.toString().endsWith(OPTAPLANNER_JSONB_MODULE)) {
                     doNext(new RemoveDependency(ORG_GLASSFISH, JAKARTA_JSON, "runtime"));
-                    doNext(new RemoveExclusion(ORG_ECLIPSE, YASSON, JAKARTA_JSON, JAKARTA_JSON_API));
-                    doNext(new RemoveExclusion(ORG_ECLIPSE, YASSON, ORG_GLASSFISH, JAKARTA_JSON));
+                    doNext(new RemoveExclusion(ORG_ECLIPSE, YASSON, JAKARTA_JSON, JAKARTA_JSON_API, false));
+                    doNext(new RemoveExclusion(ORG_ECLIPSE, YASSON, ORG_GLASSFISH, JAKARTA_JSON, false));
                 } else {
                     doNext(new ChangeDependencyGroupIdAndArtifactId(ORG_GLASSFISH, JAKARTA_JSON, JAKARTA_JSON,
                             JAKARTA_JSON_API, null, null));
