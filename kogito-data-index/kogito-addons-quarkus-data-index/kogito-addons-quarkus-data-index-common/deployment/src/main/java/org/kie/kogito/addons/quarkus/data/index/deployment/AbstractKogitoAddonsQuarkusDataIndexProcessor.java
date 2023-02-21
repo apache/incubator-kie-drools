@@ -29,7 +29,6 @@ import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
@@ -39,19 +38,20 @@ import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 public abstract class AbstractKogitoAddonsQuarkusDataIndexProcessor extends OneOfCapabilityKogitoAddOnProcessor {
 
     public static final String KOGITO_DATA_INDEX = "kogito.data-index.url";
+    private static final String KOGITO_DATA_INDEX_HTTP_URL = "kogito.dataindex.http.url";
 
     AbstractKogitoAddonsQuarkusDataIndexProcessor() {
         super(KogitoCapability.SERVERLESS_WORKFLOW, KogitoCapability.PROCESSES);
     }
 
+    @BuildStep
+    public void startDataIndexNormal(BuildProducer<SystemPropertyBuildItem> systemProperties) {
+        systemProperties.produce(new SystemPropertyBuildItem(KOGITO_DATA_INDEX_HTTP_URL, "http://localhost:${quarkus.http.port}"));
+    }
+
     @BuildStep(onlyIf = IsDevelopment.class)
     public void processGraphiql(BuildProducer<AdditionalBeanBuildItem> additionalBean) {
         additionalBean.produce(AdditionalBeanBuildItem.builder().addBeanClass(VertxGraphiQLSetup.class).setUnremovable().setDefaultScope(DotNames.APPLICATION_SCOPED).build());
-    }
-
-    @BuildStep
-    void capabilities(BuildProducer<CapabilityBuildItem> capabilityProducer) {
-        capabilityProducer.produce(new CapabilityBuildItem("org.kie.kogito.data-index"));
     }
 
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })

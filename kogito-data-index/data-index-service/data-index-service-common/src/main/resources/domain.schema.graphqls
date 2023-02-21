@@ -28,20 +28,6 @@ type Mutation {
     UserTaskInstanceAttachmentDelete(user:String, groups:[String], attachmentId: String): String
 }
 
-extend type ProcessInstance {
-    nodeDefinitions: [Node!]
-    diagram: String
-    source: String
-}
-
-type Node {
-    id: String!
-    nodeDefinitionId: String!
-    name: String!
-    type: String!
-    uniqueId: String!
-}
-
 type KogitoMetadata {
     lastUpdate: DateTime!
     processInstances: [ProcessInstanceMeta]

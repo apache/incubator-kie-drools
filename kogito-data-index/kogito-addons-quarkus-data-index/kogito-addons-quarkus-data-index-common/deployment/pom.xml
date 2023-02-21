@@ -22,5 +22,13 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-quarkus-data-index-common-runtime</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-process-svg-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-source-files-deployment</artifactId>
+    </dependency>
   </dependencies>
 </project>

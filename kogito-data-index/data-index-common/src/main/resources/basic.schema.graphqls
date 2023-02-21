@@ -33,6 +33,9 @@ type ProcessInstance {
     addons: [String!]
     lastUpdate: DateTime!
     businessKey: String
+    nodeDefinitions: [Node!]
+    diagram: String
+    source: String
 }
 
 type ProcessInstanceError {
@@ -47,6 +50,14 @@ enum ProcessInstanceState {
     ABORTED,
     SUSPENDED,
     ERROR
+}
+
+type Node {
+    id: String!
+    nodeDefinitionId: String!
+    name: String!
+    type: String!
+    uniqueId: String!
 }
 
 type NodeInstance {

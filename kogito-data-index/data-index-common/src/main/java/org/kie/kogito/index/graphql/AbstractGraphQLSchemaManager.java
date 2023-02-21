@@ -22,13 +22,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.graphql.query.GraphQLQueryOrderByParser;
 import org.kie.kogito.index.graphql.query.GraphQLQueryParserRegistry;
+import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.storage.DataIndexStorageService;
@@ -58,6 +61,9 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
     @Inject
     GraphQLScalarType dateTimeScalarType;
 
+    @Inject
+    KogitoRuntimeClient dataIndexApiExecutor;
+
     private GraphQLSchema schema;
 
     @PostConstruct
@@ -86,6 +92,14 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public GraphQLScalarType getDateTimeScalarType() {
         return dateTimeScalarType;
+    }
+
+    public KogitoRuntimeClient getDataIndexApiExecutor() {
+        return dataIndexApiExecutor;
+    }
+
+    public void setDataIndexApiExecutor(KogitoRuntimeClient dataIndexApiExecutor) {
+        this.dataIndexApiExecutor = dataIndexApiExecutor;
     }
 
     public String getProcessInstanceServiceUrl(DataFetchingEnvironment env) {
@@ -166,6 +180,22 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     protected Collection<UserTaskInstance> getUserTaskInstancesValues(DataFetchingEnvironment env) {
         return executeAdvancedQueryForCache(cacheService.getUserTaskInstancesCache(), env);
+    }
+
+    public CompletableFuture<String> getProcessInstanceDiagram(DataFetchingEnvironment env) {
+        ProcessInstance processInstance = env.getSource();
+        String serviceUrl = getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId());
+        return dataIndexApiExecutor.getProcessInstanceDiagram(serviceUrl, processInstance);
+    }
+
+    public CompletableFuture<String> getProcessInstanceSourceFileContent(DataFetchingEnvironment env) {
+        ProcessInstance processInstance = env.getSource();
+        return dataIndexApiExecutor.getProcessInstanceSourceFileContent(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
+    }
+
+    public CompletableFuture<List<Node>> getProcessNodes(DataFetchingEnvironment env) {
+        ProcessInstance processInstance = env.getSource();
+        return dataIndexApiExecutor.getProcessInstanceNodeDefinitions(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()), processInstance);
     }
 
     @Override

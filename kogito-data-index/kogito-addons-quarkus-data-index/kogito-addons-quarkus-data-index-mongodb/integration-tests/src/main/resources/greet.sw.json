@@ -65,7 +65,7 @@
           }
         }
       ],
-      "end": "true"
+      "end": true
     }
   ]
 }

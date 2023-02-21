@@ -37,6 +37,9 @@
             </goals>
             <configuration>
               <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+              <capabilities>
+                <provides>org.kie.kogito.data-index</provides>
+              </capabilities>
             </configuration>
           </execution>
         </executions>

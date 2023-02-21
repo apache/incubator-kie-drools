@@ -43,6 +43,9 @@ public class GraphQLAddonSchemaManagerImpl extends AbstractGraphQLSchemaManager 
                     builder.dataFetcher("parentProcessInstance", this::getParentProcessInstanceValue);
                     builder.dataFetcher("childProcessInstances", this::getChildProcessInstancesValues);
                     builder.dataFetcher("serviceUrl", this::getProcessInstanceServiceUrl);
+                    builder.dataFetcher("diagram", this::getProcessInstanceDiagram);
+                    builder.dataFetcher("source", this::getProcessInstanceSourceFileContent);
+                    builder.dataFetcher("nodeDefinitions", this::getProcessNodes);
                     return builder;
                 })
                 .type("ProcessInstanceState", builder -> {

@@ -24,6 +24,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusIntegrationTest
 class MongoQuarkusAddonDataIndexIT {
@@ -49,12 +50,15 @@ class MongoQuarkusAddonDataIndexIT {
                 .body("workflowdata.greeting", is("Hello from JSON Workflow,"))
                 .extract().path("id");
 
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, state } }\" }")
+        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id, state, diagram, source, nodeDefinitions { name } } }\" }")
                 .when().post("/graphql")
                 .then().statusCode(200)
                 .body("data.ProcessInstances.size()", is(1))
                 .body("data.ProcessInstances[0].id", is(id))
-                .body("data.ProcessInstances[0].state", is("COMPLETED"));
+                .body("data.ProcessInstances[0].state", is("COMPLETED"))
+                .body("data.ProcessInstances[0].diagram", is(notNullValue()))
+                .body("data.ProcessInstances[0].source", is(notNullValue()))
+                .body("data.ProcessInstances[0].nodeDefinitions.size()", is(12));
     }
 
     @Test
