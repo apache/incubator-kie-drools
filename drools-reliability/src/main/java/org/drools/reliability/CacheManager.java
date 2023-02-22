@@ -56,7 +56,7 @@ public enum CacheManager implements AutoCloseable {
         builder.clustering()
                 .cacheMode(CacheMode.LOCAL)
                 .hash().numOwners(1);
-        builder.clustering().transaction().transactionMode(TransactionMode.TRANSACTIONAL);
+//        builder.clustering().transaction().transactionMode(TransactionMode.TRANSACTIONAL); // Probably we don't need this unless we use a transaction boundary
         cacheConfiguration = builder.build();
     }
 

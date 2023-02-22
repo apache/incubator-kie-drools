@@ -32,23 +32,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(BeforeAllMethodExtension.class)
 public class ReliabilityTest {
 
+    private final String BASIC_DRL = "import " + Person.class.getCanonicalName() + ";" +
+                                      "rule X when\n" +
+                                      "  $s: String()\n" +
+                                      "  $p: Person( getName().startsWith($s) )\n" +
+                                      "then\n" +
+                                      "  System.out.println( $p.getAge() );\n" +
+                                      "end";
+
     @AfterEach
     public void tearDown() {
         CacheManager.INSTANCE.removeCache("cacheSession_0");
     }
 
     @Test
-    public void test() {
-        String drl =
-                "import " + Person.class.getCanonicalName() + ";" +
-                "rule X when\n" +
-                "  $s: String()\n" +
-                "  $p: Person( getName().startsWith($s) )\n" +
-                "then\n" +
-                "  System.out.println( $p.getAge() );\n" +
-                "end";
-
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+    public void failover_fireAtLast() {
+        KieBase kbase = new KieHelper().addContent(BASIC_DRL, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(PersistedSessionOption.newSession());
         KieSession firstSession = kbase.newKieSession(conf, null);
@@ -58,38 +57,33 @@ public class ReliabilityTest {
         firstSession.insert("M");
         firstSession.insert(new Person("Mark", 37));
 
+        //-- Assume JVM down here. Fail-over to other JVM or rebooted JVM
+        //-- ksession and kbase are lost. Client knows only "id"
+
+        KieBase kbase2 = new KieHelper().addContent(BASIC_DRL, ResourceType.DRL).build();
         KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
         conf2.setOption(PersistedSessionOption.fromSession(id));
-        KieSession secondSession = kbase.newKieSession(conf2, null);
+        KieSession secondSession = kbase2.newKieSession(conf2, null);
 
-        try{
+        try {
             secondSession.insert(new Person("Edson", 35));
             secondSession.insert(new Person("Mario", 40));
 
             assertThat(secondSession.fireAllRules()).isEqualTo(2);
 
-        }finally {
+        } finally {
             secondSession.dispose();
         }
     }
 
     @Test
-    public void testReliableObjectStore() {
-        String drl =
-                "import " + Person.class.getCanonicalName() + ";" +
-                        "rule X when\n" +
-                        "  $s: String()\n" +
-                        "  $p: Person( getName().startsWith($s) )\n" +
-                        "then\n" +
-                        "  System.out.println( $p.getAge() );\n" +
-                        "end";
-
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+    public void noFailover() { // a plain use case without fail-over
+        KieBase kbase = new KieHelper().addContent(BASIC_DRL, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(PersistedSessionOption.newSession());
         KieSession firstSession = kbase.newKieSession(conf, null);
 
-        try{
+        try {
             firstSession.insert("M");
             firstSession.insert(new Person("Mark", 37));
             firstSession.insert(new Person("Helen", 54));
@@ -105,20 +99,10 @@ public class ReliabilityTest {
         }
     }
 
-    @Disabled("It fails at the assertion, secondSession.fireAllRules() returns 0.")
+    //@Disabled("It fails at the assertion, secondSession.fireAllRules() returns 0.")
     @Test
-    public void testSessionFromCacheFireAllRules() {
-        String drl =
-                "import " + Person.class.getCanonicalName() + ";" +
-                        "rule X when\n" +
-                        "  $s: String()\n" +
-                        "  $p: Person( getName().startsWith($s) )\n" +
-                        "then\n" +
-                        "  System.out.println( $p.getAge() );\n" +
-                        "end";
-
-
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+    public void fireBeforeAndAfterFailover() {
+        KieBase kbase = new KieHelper().addContent(BASIC_DRL, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(PersistedSessionOption.newSession());
         KieSession firstSession = kbase.newKieSession(conf, null);
@@ -130,34 +114,38 @@ public class ReliabilityTest {
 
         firstSession.fireAllRules();
 
+        //-- Assume JVM down here
+
+        KieBase kbase2 = new KieHelper().addContent(BASIC_DRL, ResourceType.DRL).build();
         KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
         conf2.setOption(PersistedSessionOption.fromSession(id));
-        KieSession secondSession = kbase.newKieSession(conf2, null);
+        KieSession secondSession = kbase2.newKieSession(conf2, null);
 
-        try{
+        try {
             secondSession.insert(new Person("Edson", 35));
             secondSession.insert(new Person("Mario", 40));
 
+            // Replay scenario : fired = 2
+            // Continue scenario : fired = 1
             assertThat(secondSession.fireAllRules()).isEqualTo(2);
-        }finally {
+        } finally {
             secondSession.dispose();
         }
     }
 
-    @Disabled("It fails at the assertion, secondSession.fireAllRules() returns 0.")
+    //@Disabled("It fails at the assertion, secondSession.fireAllRules() returns 0.")
     @Test
-    public void testSessionFromCacheWithUpdates() {
+    public void update_fireBeforeAndAfterFailover() {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "rule X when\n" +
-                        "  $s: String()\n" +
-                        "  $p: Person( getName().startsWith($s) )\n" +
-                        "then\n" +
-                        "  System.out.println( $p.getAge() );\n" +
-                        "  $p.setName(\"-\");\n" +
-                        "  update($p); \n" +
-                       "end";
-
+                     "rule X when\n" +
+                     "  $s: String()\n" +
+                     "  $p: Person( getName().startsWith($s) )\n" +
+                     "then\n" +
+                     "  System.out.println( $p.getAge() );\n" +
+                     "  $p.setName(\"-\");\n" +
+                     "  update($p); \n" +
+                     "end";
 
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
@@ -170,19 +158,22 @@ public class ReliabilityTest {
         firstSession.insert(new Person("Mark", 37));
         firstSession.insert(new Person("Nicole", 27));
 
-        firstSession.fireAllRules();
+        assertThat(firstSession.fireAllRules()).isEqualTo(1);
 
+        //-- Assume JVM down here
+
+        KieBase kbase2 = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf2 = KieServices.get().newKieSessionConfiguration();
         conf2.setOption(PersistedSessionOption.fromSession(id));
-        KieSession secondSession = kbase.newKieSession(conf2, null);
+        KieSession secondSession = kbase2.newKieSession(conf2, null);
 
-        try{
+        try {
             secondSession.insert(new Person("John", 22));
             secondSession.insert(new Person("Mary", 42));
 
             assertThat(secondSession.fireAllRules()).isEqualTo(1);
 
-        }finally {
+        } finally {
             secondSession.dispose();
         }
 

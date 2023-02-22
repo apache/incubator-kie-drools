@@ -18,6 +18,7 @@ package org.drools.reliability;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ObjectStore;
 import org.drools.core.impl.RuleBase;
 import org.drools.kiesession.factory.RuntimeComponentFactoryImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -50,14 +51,10 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         }
 
         // re-propagate objects from the cache to the new session
-        updateFactsWithCache(session);
-        return session;
-    }
+        ReliableObjectStore reliableObjectStore = (ReliableObjectStore) session.getObjectStore();
+        reliableObjectStore.replayObjectStoreEventFromCache(session);
 
-    private void updateFactsWithCache(StatefulKnowledgeSessionImpl session) {
-        session.getFactHandles().forEach(factHandle -> {
-            session.update(factHandle, session.getObject(factHandle));
-        });
+        return session;
     }
 
     @Override
