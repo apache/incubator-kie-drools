@@ -171,10 +171,10 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 id: 'optaplanner',
                 primary: true,
                 env : [
-                    SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
-                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
+                    SONARCLOUD_ANALYSIS_MVN_OPTS: '-Dsonar.projectKey=org.optaplanner:optaplanner',
                 ]
             ], [
                 id: 'optaweb-vehicle-routing',
