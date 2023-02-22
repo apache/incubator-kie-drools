@@ -60,7 +60,7 @@ public class RuntimeSegmentUtilities {
         }
 
         // find segment root
-        LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(node, null);
+        LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(node);
 
         smem = restoreSegmentFromPrototype(reteEvaluator, segmentRoot);
         if ( smem != null ) {

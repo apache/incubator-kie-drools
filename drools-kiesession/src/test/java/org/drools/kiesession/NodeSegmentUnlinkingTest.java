@@ -238,13 +238,13 @@ public class NodeSegmentUnlinkingTest {
         n5.attach(buildContext);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
-        SegmentPrototype[] protos = BuildtimeSegmentUtilities.createPathProtoMemories(n3, null, null, kBase);
+        SegmentPrototype[] protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n3, null, kBase);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
 
-        protos = BuildtimeSegmentUtilities.createPathProtoMemories(n4, null, null, kBase);
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n4, null, kBase);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
 
-        protos = BuildtimeSegmentUtilities.createPathProtoMemories(n5, null, null, kBase);
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n5, null, kBase);
         Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
         createSegmentMemory( n2, ksession );
 

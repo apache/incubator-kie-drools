@@ -31,7 +31,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.PropagationContextFactory;
@@ -99,7 +98,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, kBase);
 
             // rule added with no sharing, so populate it's lian
-            wms.stream().forEach( wm -> Add.insertLiaFacts(tn.getPathNodes()[0], wm, visited, false));
+            wms.forEach(wm -> Add.insertLiaFacts(tn.getPathNodes()[0], wm, visited, false));
         } else {
             List<Pair> exclBranchRoots = getExclusiveBranchRoots(tn);
 
@@ -116,7 +115,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             Add.insertFacts(tn, wm, visited, false);
         }
 
-        smemsToNotify.stream().forEach( pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
+        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
     }
 
     /**
@@ -135,8 +134,6 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             wm.flushPropagations();
         }
 
-        Set<SegmentMemoryPair> smemsToNotify = new HashSet<>();
-
         List<Pair> exclBranchRoots = getExclusiveBranchRoots(tn);
 
         for (InternalWorkingMemory wm : wms) {
@@ -147,13 +144,15 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
+        Set<SegmentMemoryPair> smemsToNotify = new HashSet<>();
+
         if (exclBranchRoots.isEmpty()) {
             LeftTupleNode lian = tn.getPathNodes()[0];
             processLeftTuples(lian, false, tn, wms);
-            Remove.removeExistingPaths(exclBranchRoots, tn, wms, kBase, smemsToNotify);
+            Remove.removeExistingPaths(exclBranchRoots, tn, wms, kBase);
         } else {
             exclBranchRoots.forEach(pair -> processLeftTuples(pair.parent, false, tn, wms));
-            Remove.removeExistingPaths(exclBranchRoots, tn, wms, kBase, smemsToNotify);
+            Remove.removeExistingPaths(exclBranchRoots, tn, wms, kBase);
 
             // Process existing branches from the split  points
             Set<Integer> visited = new HashSet<>();
@@ -169,7 +168,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
-        smemsToNotify.stream().forEach( pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
+        smemsToNotify.forEach(pair -> pair.sm.notifyRuleLinkSegment(pair.wm));
     }
 
     public static void notifyImpactedSegments(SegmentMemory smem, InternalWorkingMemory wm, Set<SegmentMemoryPair> segmentsToNotify) {
@@ -270,12 +269,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         public static SegmentPrototype processSplit(LeftTupleNode splitNode, RuleBase kbase, Collection<InternalWorkingMemory> wms, Set<SegmentMemoryPair> smemsToNotify) {
-            LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode, null);
+            LeftTupleNode segmentRoot = BuildtimeSegmentUtilities.findSegmentRoot(splitNode);
             SegmentPrototype proto1 = kbase.getSegmentPrototype(segmentRoot);
             if ( proto1.getTipNode() != splitNode) {
                 // split does not already exist, add it.
-                SegmentPrototype proto2 = splitSegment(proto1, splitNode, kbase, wms, smemsToNotify);
-                return proto2;
+                return splitSegment(proto1, splitNode, kbase, wms, smemsToNotify);
             }
 
             // split already exists, add it.
@@ -284,29 +282,27 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
         private static void addExistingSegmentMemories(Collection<PathEndNode> pathEndNodes, InternalWorkingMemory wm) {
             // Iterates the path to find existing SegmentMemories that can be added to the new PathMemory
-            pathEndNodes.forEach(endNode -> {
-                Arrays.stream(endNode.getSegmentPrototypes()).forEach( proto -> {
-                    if (!isInsideSubnetwork(endNode, proto)) { // ths proto is before the start of the subnetwork
-                        return;
+            pathEndNodes.forEach(endNode -> Arrays.stream(endNode.getSegmentPrototypes()).forEach(proto -> {
+                if (!isInsideSubnetwork(endNode, proto)) { // ths proto is before the start of the subnetwork
+                    return;
+                }
+
+                LeftTupleNode node = proto.getRootNode();
+                Memory mem = wm.getNodeMemories().peekNodeMemory(node);
+
+                if (mem != null && mem.getSegmentMemory() != null) {
+                    SegmentMemory smem = mem.getSegmentMemory();
+
+                    PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(endNode);
+                    if (pmem == null) {
+                        pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
                     }
-
-                    LeftTupleNode node = proto.getRootNode();
-                    Memory mem = wm.getNodeMemories().peekNodeMemory(node);
-
-                    if (mem != null && mem.getSegmentMemory() != null) {
-                        SegmentMemory smem = mem.getSegmentMemory();
-
-                        PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(endNode);
-                        if (pmem == null) {
-                            pmem = RuntimeSegmentUtilities.initializePathMemory(wm, endNode);
-                        }
-                        if (pmem.getSegmentMemories()[proto.getPos()] == null) {
-                            // we check null, as this might have been fixed due to eager initialisation
-                            RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
-                        }
+                    if (pmem.getSegmentMemories()[proto.getPos()] == null) {
+                        // we check null, as this might have been fixed due to eager initialisation
+                        RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
                     }
-                });
-            });
+                }
+            }));
         }
 
         public static void insertFacts(TerminalNode tn, InternalWorkingMemory wm, Set<Integer> visited, boolean allBranches) {
@@ -334,12 +330,12 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             }
         }
 
-        public static SegmentMemory splitSegment(InternalWorkingMemory wm, SegmentMemory sm1, SegmentPrototype proto1, SegmentPrototype proto2, RuleBase kbase,
+        public static void splitSegment(InternalWorkingMemory wm, SegmentMemory sm1, SegmentPrototype proto1, SegmentPrototype proto2,
                                                  Set<SegmentMemoryPair> smemsToNotify) {
             Memory[] origMemories = sm1.getNodeMemories();
 
             // create new segment, starting after split
-            SegmentMemory sm2 = proto2.shallowNewSegmentMemory(wm); // we know there is only one sink
+            SegmentMemory sm2 = proto2.shallowNewSegmentMemory(); // we know there is only one sink
 
             // Move the children of sm1 to sm2
             if (sm1.getFirst() != null) {
@@ -357,7 +353,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             // preserve values that get changed updateSegmentMemory, for split
             long currentLinkedNodeMask  = sm1.getLinkedNodeMask();
-            proto1.shallowUpdateSegmentMemory(sm1,wm);
+            proto1.shallowUpdateSegmentMemory(sm1);
 
             if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode) {
                 if (!sm1.getStagedLeftTuples().isEmpty()) {
@@ -392,8 +388,6 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             notifyImpactedSegments(sm1, wm, smemsToNotify);
             notifyImpactedSegments(sm2, wm, smemsToNotify);
-
-            return sm2;
         }
 
         public static SegmentPrototype splitSegment(SegmentPrototype proto1, LeftTupleNode splitNode, RuleBase kbase, Collection<InternalWorkingMemory> wms, Set<SegmentMemoryPair> smemsToNotify) {
@@ -412,7 +406,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             for (InternalWorkingMemory wm : wms) {
                 Memory mem = wm.getNodeMemories().peekNodeMemory(proto1.getRootNode());
                 if ( mem != null && mem.getSegmentMemory() != null) {
-                    splitSegment(wm, mem.getSegmentMemory(), proto1, proto2, kbase, smemsToNotify);
+                    splitSegment(wm, mem.getSegmentMemory(), proto1, proto2, smemsToNotify);
                 }
             }
 
@@ -447,8 +441,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void splitProtos(SegmentPrototype proto1, SegmentPrototype proto2, LeftTupleNode splitNode) {
-            LeftTupleNode proto1TipNode = splitNode;
-            proto1.setTipNode(proto1TipNode);
+            proto1.setTipNode(splitNode);
 
             LeftTupleNode[] nodes = proto1.getNodesInSegment();
 
@@ -484,13 +477,14 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
         private static void splitEagerProtos(SegmentPrototype proto1, boolean proto1WasEager, SegmentPrototype proto2, PathEndNode endNode) {
-            SegmentPrototype[] eager = endNode.getEagerSegmentPrototypes();
             if (proto1WasEager) { // if it wasn't eager before, nothing can be eager after
+                SegmentPrototype[] eager = endNode.getEagerSegmentPrototypes();
                 if (proto1.requiresEager() && proto2.requiresEager()) {
                     // keep proto1 and add proto2
                     SegmentPrototype[] newEager = new SegmentPrototype[eager.length+1];
                     System.arraycopy(eager, 0, newEager, 0, eager.length);
                     newEager[newEager.length-1] = proto2; // I don't think order matters, so just add to the end
+                    endNode.setEagerSegmentPrototypes(newEager);
                 } else if (proto2.requiresEager()) {
                     // proto2 is no longer eager, find proto1 and swap proto1 with proto2
                     for ( int i = 0; i < eager.length; i++){
@@ -579,7 +573,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             }
                         } else if (pmem != null) {
                             // segment with just the PathEndNode, so create
-                            SegmentMemory sm = sproto.shallowNewSegmentMemory(wm);
+                            SegmentMemory sm = sproto.shallowNewSegmentMemory();
                             sm.setNodeMemories( new Memory[]{pmem});
                             pmem.setSegmentMemory(sm);
                             RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, sm);
@@ -611,7 +605,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                     if (visited.add(parent.getId())) {
                         // only vist the same parent node once, i.e. in case of subnetwork splits.
-                        correctMemoryOnSplitsChanged(parent, null, wm);
+                        correctMemoryOnSplitsChanged(parent, wm);
                     }
 
 
@@ -625,7 +619,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
     }
 
     public static class Remove {
-        private static void removeExistingPaths(List<Pair> exclBranchRoots, TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kbase, Set<SegmentMemoryPair> smemsToNotify) {
+        private static void removeExistingPaths(List<Pair> exclBranchRoots, TerminalNode tn, Collection<InternalWorkingMemory> wms, RuleBase kbase) {
             // update existing SegmentProtos (before removing path branch root) to remove EndNodes
             // for nodes after, just remove them from the cache
             for ( PathEndNode endNode : tn.getPathEndNodes() ) {
@@ -650,7 +644,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         smproto.setPathEndNodes(newNodes);
                     } else {
                         // unregister the segments exclusive to the branch being used
-                        kbase.getSegmentPrototypes().remove(smproto.getRootNode().getId());
+                        kbase.invalidateSegmentPrototype(smproto.getRootNode());
                     }
                 }
             }
@@ -677,9 +671,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         }
                     }
 
-                    if (parent != null && visited.add(parent.getId())) {
+                    if (visited.add(parent.getId())) {
                         // only vist the same parent node once, i.e. in case of subnetwork splits.
-                        correctMemoryOnSplitsChanged(parent, null, wm);
+                        correctMemoryOnSplitsChanged(parent, wm);
                     }
                 }
 
@@ -755,7 +749,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                 mergeSegments(proto1, proto2, kBase, wms);
 
-                notifyImpactedSegments(wms, proto1, null, smemsToNotify);
+                notifyImpactedSegments(wms, proto1, smemsToNotify);
             }
         }
 
@@ -770,7 +764,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             for (InternalWorkingMemory wm : wms) {
                 Memory mem1 = wm.getNodeMemories().peekNodeMemory(proto1.getRootNode());
                 Memory mem2 = wm.getNodeMemories().peekNodeMemory(proto2.getRootNode());
-                mergeSegment(proto1, mem1, proto2, origNodes, mem2, kbase, wm);
+                mergeSegment(proto1, mem1, proto2, origNodes, mem2, wm);
             }
 
             // Paths need updating, update the protos and the smems
@@ -796,7 +790,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 updatePaths(proto1, wms, endNode, newList);
             }
 
-            kbase.getSegmentPrototypes().remove(proto2.getRootNode().getId());
+            kbase.invalidateSegmentPrototype(proto2.getRootNode());
         }
 
 
@@ -824,8 +818,8 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             proto1.setMemories(protoMems);
 
             int bitPos = 1;
-            for (int i = 0; i < protoMems.length; i++ ) {
-                protoMems[i].setNodePosMaskBit(bitPos);
+            for (MemoryPrototype protoMem : protoMems) {
+                protoMem.setNodePosMaskBit(bitPos);
                 bitPos = bitPos << 1;
             }
             setNodeTypes(proto1, nodes);
@@ -834,7 +828,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
 
 
-        private static void mergeSegment(SegmentPrototype proto1, Memory m1, SegmentPrototype proto2, LeftTupleNode[] origNodes, Memory m2, RuleBase kbase, InternalWorkingMemory wm) {
+        private static void mergeSegment(SegmentPrototype proto1, Memory m1, SegmentPrototype proto2, LeftTupleNode[] origNodes, Memory m2, InternalWorkingMemory wm) {
             SegmentMemory sm1 = (m1 != null) ? m1.getSegmentMemory() : null;
             SegmentMemory sm2 = (m2 != null) ? m2.getSegmentMemory() : null;
             if ( sm1 == null && sm2 == null) {
@@ -876,10 +870,10 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             sm1.setNodeMemories(mems);
 
-            mergeSegment(sm1, sm2, proto1, origNodes, kbase, wm);
+            mergeSegment(sm1, sm2, proto1, origNodes, wm);
         }
 
-        private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2, SegmentPrototype proto1, LeftTupleNode[] origNodes, RuleBase kbase, InternalWorkingMemory wm) {
+        private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2, SegmentPrototype proto1, LeftTupleNode[] origNodes, InternalWorkingMemory wm) {
             if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode && !sm2.getStagedLeftTuples().isEmpty()) {
                 // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
                 // these are safe to just move to the parent SegmentMemory
@@ -903,7 +897,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             // preserve values that get changed updateSegmentMemory, for merge
             long currentLinkedNodeMask = sm1.getLinkedNodeMask();
-            proto1.shallowUpdateSegmentMemory(sm1, wm);
+            proto1.shallowUpdateSegmentMemory(sm1);
 
             mergeBitMasks(sm1, sm2, origNodes, currentLinkedNodeMask);
         }
@@ -1023,11 +1017,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, TerminalNode removingTN, InternalWorkingMemory wm) {
+    private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, InternalWorkingMemory wm) {
         if (splitStart.getType() == NodeTypeEnums.UnificationNode) {
             QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart);
             if (mem != null) {
-                mem.correctMemoryOnSinksChanged(removingTN);
+                mem.correctMemoryOnSinksChanged(null);
             }
         }
     }
@@ -1039,17 +1033,13 @@ public class EagerPhreakBuilder implements PhreakBuilder {
      */
     private static void processLeftTuples(LeftTupleNode node, boolean insert, TerminalNode tn, Collection<InternalWorkingMemory> wms) {
         for (InternalWorkingMemory wm : wms) {
-            // this visited is here due to subnetworks causing potential parent revisiting.
-            Set<LeftTupleNode> visited = new HashSet<>();
-
-
             // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
 
             // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
             // which provide the potential peer of the tuple being added or removed
 
             if (node instanceof AlphaTerminalNode) {
-                processLeftTuplesOnLian(wm, insert, tn, (LeftInputAdapterNode) node, visited);
+                processLeftTuplesOnLian(wm, insert, tn, (LeftInputAdapterNode) node);
                 return;
             }
 
@@ -1058,6 +1048,9 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 // segment has never been initialized, which means the rule(s) have never been linked and thus no Tuples to fix
                 return;
             }
+
+            // this visited is here due to subnetworks causing potential parent revisiting.
+            Set<LeftTupleNode> visited = new HashSet<>();
 
             while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
                 if (!visited.add(node)) {
@@ -1072,7 +1065,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                            visitChild(accctx.getResultLeftTuple(), insert, wm, tn, visited);
+                            visitChild(accctx.getResultLeftTuple(), insert, wm, tn);
                         }
                     } else if (NodeTypeEnums.ExistsNode == node.getType() &&
                                !((BetaNode) node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
@@ -1085,7 +1078,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                             RightTuple rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
                             for (; rt != null; rt = (RightTuple) it.next(rt)) {
                                 for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
-                                    visitChild(wm, insert, tn, it, lt, visited);
+                                    visitChild(wm, insert, tn, it, lt);
                                 }
                             }
                         }
@@ -1094,7 +1087,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         if (bm != null) {
                             FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                             Tuple lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                            visitChild(wm, insert, tn, it, lt, visited);
+                            visitChild(wm, insert, tn, it, lt);
                         }
                     }
                     return;
@@ -1104,7 +1097,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                         FastIterator it = ltm.fullFastIterator();
                         for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                            visitChild(lt, insert, wm, tn, visited);
+                            visitChild(lt, insert, wm, tn);
                         }
                     }
                     return;
@@ -1114,11 +1107,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
             // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
-            processLeftTuplesOnLian(wm, insert, tn, (LeftInputAdapterNode) node, visited);
+            processLeftTuplesOnLian(wm, insert, tn, (LeftInputAdapterNode) node);
         }
     }
 
-    private static void processLeftTuplesOnLian( InternalWorkingMemory wm, boolean insert, TerminalNode tn, LeftInputAdapterNode lian, Set<LeftTupleNode> visited ) {
+    private static void processLeftTuplesOnLian( InternalWorkingMemory wm, boolean insert, TerminalNode tn, LeftInputAdapterNode lian ) {
         ObjectSource os = lian.getObjectSource();
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParentObjectSource();
@@ -1134,7 +1127,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
                 if (isAssociatedWith(lt.getTupleSource(), tn)) {
-                    visitChild(lt, insert, wm, tn, visited);
+                    visitChild(lt, insert, wm, tn);
 
                     if (lt.getHandlePrevious() != null) {
                         lt.getHandlePrevious().setHandleNext( nextLt );
@@ -1147,18 +1140,18 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void visitChild(InternalWorkingMemory wm, boolean insert, TerminalNode tn, FastIterator it, Tuple lt, Set<LeftTupleNode> visited) {
+    private static void visitChild(InternalWorkingMemory wm, boolean insert, TerminalNode tn, FastIterator it, Tuple lt) {
         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
             LeftTuple childLt = lt.getFirstChild();
             while (childLt != null) {
                 LeftTuple nextLt = childLt.getHandleNext();
-                visitChild(childLt, insert, wm, tn, visited);
+                visitChild(childLt, insert, wm, tn);
                 childLt = nextLt;
             }
         }
     }
 
-    private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn, Set<LeftTupleNode> visited) {
+    private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, TerminalNode tn) {
         LeftTuple prevLt = null;
         LeftTupleSinkNode sink = lt.getTupleSink();
 
@@ -1169,7 +1162,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                     if (lt.getTupleSink().getAssociatedTerminalsSize() > 1) {
                         if (lt.getFirstChild() != null) {
                             for ( LeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
-                                visitChild(child, insert, wm, tn, visited);
+                                visitChild(child, insert, wm, tn);
                             }
                         } else if (lt.getTupleSink().getType() == NodeTypeEnums.RightInputAdapterNode) {
                             insertPeerRightTuple(lt, wm, tn, insert);
@@ -1282,7 +1275,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void deleteLeftTuple(LeftTuple removingLt, LeftTuple removingLt2, LeftTuple prevLt) {
+    static void deleteLeftTuple(LeftTuple removingLt, LeftTuple removingLt2, LeftTuple prevLt) {
         // only the first LT in a peer chain is hooked into left and right parents or the FH.
         // If the first LT is being remove, those hooks need to be shifted to the next peer,
         // or nulled if there is no next peer.
@@ -1408,7 +1401,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                         // only update segment after proto
                         if (i > proto.getPos()) {
                             long currentLinkedNodeMask  = sm.getLinkedNodeMask();
-                            smproto.shallowUpdateSegmentMemory(sm,wm);
+                            smproto.shallowUpdateSegmentMemory(sm);
                             sm.setLinkedNodeMask(currentLinkedNodeMask);
                         }
 
@@ -1430,17 +1423,13 @@ public class EagerPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void notifyImpactedSegments(Collection<InternalWorkingMemory> wms, SegmentPrototype proto1, SegmentPrototype proto2, Set<SegmentMemoryPair> smemsToNotify) {
+    private static void notifyImpactedSegments(Collection<InternalWorkingMemory> wms, SegmentPrototype proto1, Set<SegmentMemoryPair> smemsToNotify) {
         // any impacted segments must be notified for potential linking
         for (InternalWorkingMemory wm : wms) {
             Memory mem1 = wm.getNodeMemories().peekNodeMemory(proto1.getRootNode());
             if (mem1 != null && mem1.getSegmentMemory() != null) {
                 // there was a split segment, both need notifying.
                 notifyImpactedSegments(mem1.getSegmentMemory(), wm, smemsToNotify);
-                if (proto2 != null) {
-                    Memory mem2 = wm.getNodeMemories().peekNodeMemory(proto2.getRootNode());
-                    notifyImpactedSegments(mem2.getSegmentMemory(), wm, smemsToNotify);
-                }
             }
         }
     }

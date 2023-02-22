@@ -15,11 +15,8 @@
 
 package org.drools.core.phreak;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.RuleBase;
@@ -85,18 +82,6 @@ public class BuildtimeSegmentUtilities {
         }
     }
 
-    public static void createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, RuleBase rbase) {
-        // Will initialise all segments in a path
-        SegmentPrototype[] smems;
-
-        smems = createPathProtoMemories(tn, null, removingTn, rbase);
-
-        // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
-        if  (smems.length > 0) {
-            setSegments(tn, smems);
-        }
-    }
-
     private static void setSegments(PathEndNode endNode, SegmentPrototype[] smems) {
         List<SegmentPrototype> eager = new ArrayList<>();
         for (SegmentPrototype smem : smems) {
@@ -131,8 +116,19 @@ public class BuildtimeSegmentUtilities {
         return allLinkedMaskTest;
     }
 
-    // notes, looking into if/why I need stopNode
-    public static SegmentPrototype[] createPathProtoMemories(LeftTupleNode lts, LeftTupleSource stopNode, TerminalNode removingTn, RuleBase rbase) {
+    public static SegmentPrototype[] createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, RuleBase rbase) {
+        // Will initialise all segments in a path
+        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(tn, removingTn, rbase);
+
+        // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
+        if  (smems.length > 0) {
+            setSegments(tn, smems);
+        }
+
+        return smems;
+    }
+
+    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(LeftTupleNode lts, TerminalNode removingTn, RuleBase rbase) {
         LeftTupleNode segmentRoot = lts;
         LeftTupleNode segmentTip = lts;
         List<SegmentPrototype> smems = new ArrayList<>();
@@ -275,24 +271,6 @@ public class BuildtimeSegmentUtilities {
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT);
     }
 
-    public static class PathCacheEntry {
-        private LeftTupleNode node;
-        private List<PathEndNode> endNodes;
-
-        public PathCacheEntry(LeftTupleNode node, List<PathEndNode> endNodes) {
-            this.node = node;
-            this.endNodes = endNodes;
-        }
-
-        public LeftTupleNode node() {
-            return node;
-        }
-
-        public List<PathEndNode> endNodes() {
-            return endNodes;
-        }
-    }
-
     public static long nextNodePosMask(long posMask) {
         // prevent overflow of segment and path memories masks when a segment has 64 or more nodes or a path has 64 or more segments
         // in this extreme case all the items after the 64th will be all mapped by the same bit and then the linking of one of them
@@ -379,7 +357,7 @@ public class BuildtimeSegmentUtilities {
             // there is a subnetwork, so create all it's segment memory prototypes
             riaNode = (RightInputAdapterNode) betaNode.getRightInput();
 
-            SegmentPrototype[] smems = createPathProtoMemories(riaNode, riaNode.getStartTupleSource().getLeftTupleSource(), removingTn, rbase);
+            SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(riaNode, removingTn, rbase);
             setSegments(riaNode, smems);
 
             if (updateNodeBit && canBeDisabled(betaNode) && riaNode.getPathMemSpec().allLinkedTestMask() > 0) {
@@ -503,6 +481,10 @@ public class BuildtimeSegmentUtilities {
 
     public static boolean isSet(int mask, int bit) {
         return (mask & bit) == bit;
+    }
+
+    public static LeftTupleNode findSegmentRoot(LeftTupleNode tupleSource) {
+        return findSegmentRoot(tupleSource, null);
     }
 
     public static LeftTupleNode findSegmentRoot(LeftTupleNode tupleSource, TerminalNode ignoreTn) {

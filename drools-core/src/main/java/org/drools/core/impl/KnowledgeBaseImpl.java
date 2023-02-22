@@ -57,7 +57,6 @@ import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -91,8 +90,6 @@ import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -924,11 +921,6 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     @Override
-    public Map<Integer,SegmentPrototype> getSegmentPrototypes() {
-        return segmentProtos;
-    }
-
-    @Override
     public SegmentMemory createSegmentFromPrototype(ReteEvaluator reteEvaluator, LeftTupleSource tupleSource) {
         SegmentPrototype proto = segmentProtos.get(tupleSource.getId());
         return createSegmentFromPrototype(reteEvaluator, proto);
@@ -1034,7 +1026,6 @@ public class KnowledgeBaseImpl implements RuleBase {
     }
 
     public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> wms ) {
-        List<PathEndNode> endNodes = new ArrayList<>();
         List<TerminalNode> terminalNodes = new ArrayList<>(rules.size() * 2);
 
         for (Rule r : rules) {
@@ -1044,7 +1035,7 @@ public class KnowledgeBaseImpl implements RuleBase {
             terminalNodes.addAll(this.reteooBuilder.addRule(rule, wms));
         }
 
-        if (PhreakBuilder.isEagerSegmentCreation() && getSegmentPrototypes().isEmpty()) {
+        if (PhreakBuilder.isEagerSegmentCreation() && !hasSegmentPrototypes()) {
             // All Protos must be created, before inserting objects.
             for (TerminalNode tn : terminalNodes) {
                 tn.getPathMemSpec();

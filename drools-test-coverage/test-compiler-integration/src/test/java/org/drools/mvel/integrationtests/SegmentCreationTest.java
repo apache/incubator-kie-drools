@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -464,7 +465,7 @@ public class SegmentCreationTest {
 
         PathMemory pmemr2 = wm.getNodeMemory(rtn2);
         assertThat(pmemr2.getAllLinkedMaskTest()).isEqualTo(1);
-        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(0);
+        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(PhreakBuilder.isEagerSegmentCreation() ? 0 : 2);
         assertThat(pmemr2.getSegmentMemories().length).isEqualTo(3);
         assertThat(pmemr2.isRuleLinked()).isFalse();
 
@@ -476,7 +477,7 @@ public class SegmentCreationTest {
         BetaMemory cNodeBm = ( BetaMemory ) wm.getNodeMemory( cNode );
         SegmentMemory cNodeSmem = cNodeBm.getSegmentMemory();
 
-        assertThat(cNodeSmem.getAllLinkedMaskTest()).isEqualTo(0);
+        assertThat(cNodeSmem.getAllLinkedMaskTest()).isEqualTo(PhreakBuilder.isEagerSegmentCreation() ? 0 : 1);
         assertThat(cNodeSmem.getLinkedNodeMask()).isEqualTo(1);
 
         wm.insert(new LinkingTest.X());
@@ -490,10 +491,10 @@ public class SegmentCreationTest {
         wm.delete(cFh); // retract C does not unlink the rule
         wm.flushPropagations();
 
-        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(1); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertThat(pmemr2.getLinkedSegmentMask()).isEqualTo(PhreakBuilder.isEagerSegmentCreation() ? 1 : 3); // b segment never unlinks, as it has no impact on path unlinking anyway
         assertThat(pmemr2.isRuleLinked()).isTrue();
 
-        assertThat(pmemr3.getLinkedSegmentMask()).isEqualTo(1); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertThat(pmemr3.getLinkedSegmentMask()).isEqualTo(PhreakBuilder.isEagerSegmentCreation() ? 1 : 3); // b segment never unlinks, as it has no impact on path unlinking anyway
         assertThat(pmemr3.isRuleLinked()).isTrue();
     }
 

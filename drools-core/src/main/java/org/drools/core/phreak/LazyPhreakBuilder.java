@@ -91,6 +91,7 @@ import static org.drools.core.phreak.BuildtimeSegmentUtilities.isRootNode;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.isSet;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.nextNodePosMask;
 import static org.drools.core.phreak.BuildtimeSegmentUtilities.updateNodeTypesMask;
+import static org.drools.core.phreak.EagerPhreakBuilder.deleteLeftTuple;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.createRiaSegmentMemory;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getOrCreateSegmentMemory;
 import static org.drools.core.phreak.RuntimeSegmentUtilities.getQuerySegmentMemory;
@@ -99,10 +100,6 @@ import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 class LazyPhreakBuilder implements PhreakBuilder {
 
     private static final Logger log = LoggerFactory.getLogger(LazyPhreakBuilder.class);
-
-    public LazyPhreakBuilder() {
-         //throw new UnsupportedOperationException("DIE!!!!!");
-    }
 
     /**
      * This method is called after the rule nodes have been added to the network
@@ -621,7 +618,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    public static void flushStagedTuples(LeftTupleNode splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
+    private static void flushStagedTuples(LeftTupleNode splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
         if ( !pmem.isInitialized() ) {
             // The rule has never been linked in and evaluated, so there will be nothing to flush.
             return;
@@ -659,7 +656,7 @@ class LazyPhreakBuilder implements PhreakBuilder {
 
             PathEndNode pathEndNode = pmem.getPathEndNode();
             pathEndNode.resetPathMemSpec(removingTN); // re-initialise the PathMemory
-            AbstractTerminalNode.initPathMemory(pathEndNode, pmem, removingTN);
+            AbstractTerminalNode.initPathMemory(pathEndNode, pmem);
         }
         return previousSmems;
     }
@@ -1039,104 +1036,6 @@ class LazyPhreakBuilder implements PhreakBuilder {
         }
     }
 
-    private static void deleteLeftTuple(LeftTuple removingLt, LeftTuple removingLt2, LeftTuple prevLt) {
-        // only the first LT in a peer chain is hooked into left and right parents or the FH.
-        // If the first LT is being remove, those hooks need to be shifted to the next peer,
-        // or nulled if there is no next peer.
-        // When there is a subnetwork, it needs to shift to the peer of the next lt.
-        // if it is not the first LT in the peer chain, leftParent and rightParent are null.
-        // And the previous peer will need to point to the peer after removingLt, or removingLt2 if it exists.
-
-        boolean isFirstLt = prevLt == null; // is this the first LT in a peer chain chain
-        LeftTuple nextPeerLt    = (removingLt2 == null ) ? removingLt.getPeer() : removingLt2.getPeer(); // if there is a subnetwork, skip to the peer after that
-
-        if( !isFirstLt ) {
-            // This LT is not the first tuple in a peer chain. So just correct the peer chain linked list
-            prevLt.setPeer( nextPeerLt );
-        } else {
-            if ( nextPeerLt == null ) {
-                removingLt.unlinkFromLeftParent();
-                removingLt.unlinkFromRightParent();
-                return;
-            }
-
-            InternalFactHandle fh = removingLt.getFactHandle();
-
-            // This is the first LT in a peer chain. Only this LT is hooked into the left and right parent LT and RT and
-            // if it's the root (form the lian) it will be hooked itno the FH.
-            LeftTuple leftPrevious = removingLt.getHandlePrevious();
-            LeftTuple leftNext     = removingLt.getHandleNext();
-
-            LeftTuple rightPrevious = removingLt.getRightParentPrevious();
-            LeftTuple rightNext     = removingLt.getRightParentNext();
-
-            LeftTuple  leftParent  = removingLt.getLeftParent();
-            RightTuple rightParent = removingLt.getRightParent();
-
-            // This tuple is the first peer and thus is linked into the left parent LT.
-
-            nextPeerLt.setFactHandle(removingLt.getFactHandle());
-
-            // correct the linked list
-            if (leftPrevious != null) {
-                nextPeerLt.setHandlePrevious(leftPrevious);
-                leftPrevious.setHandleNext(nextPeerLt);
-            }
-
-            if (leftNext != null) {
-                nextPeerLt.setHandleNext(leftNext);
-                leftNext.setHandlePrevious(nextPeerLt);
-            }
-
-            // correct the linked list
-            if (rightPrevious != null) {
-                nextPeerLt.setRightParentPrevious(rightPrevious);
-                rightPrevious.setRightParentNext(nextPeerLt);
-            }
-
-            if (rightNext != null) {
-                nextPeerLt.setRightParentNext(rightNext);
-                rightNext.setRightParentPrevious(nextPeerLt);
-            }
-
-            // correct the parent's first/last references
-            if (leftParent!=null) {
-                nextPeerLt.setLeftParent(leftParent);
-
-                if (leftParent.getFirstChild() == removingLt) {
-                    leftParent.setFirstChild(nextPeerLt);
-                }
-
-                if (leftParent.getLastChild() == removingLt) {
-                    leftParent.setLastChild(nextPeerLt);
-                }
-            } else {
-                // is the LT for the LIAN, if so we need to process the FH too
-                fh.removeLeftTuple(removingLt);
-                if (leftPrevious == null) {
-                    // The removed tuple was first in linked list, add the peer at its original position
-                    fh.addFirstLeftTuple( nextPeerLt );
-                }
-            }
-
-            if ( rightParent != null ) {
-                // This tuple is the first peer and thus is linked into the right parent RT.
-                nextPeerLt.setRightParent(rightParent);
-
-                // correct the parent's first/last references
-                // if nextLT is null, it's ok for parent's reference to be null
-                if (rightParent.getFirstChild() == removingLt) {
-                    // if next peer exists, set it to this
-                    rightParent.setFirstChild(nextPeerLt);
-                }
-
-                if (rightParent.getLastChild() == removingLt) {
-                    rightParent.setLastChild(nextPeerLt);
-                }
-            }
-        }
-    }
-
     private static LeftTupleNode getNetworkSplitPoint(LeftTupleNode node) {
         while (node.getType() != NodeTypeEnums.LeftInputAdapterNode && node.getAssociatedTerminalsSize() == 1) {
             node = node.getLeftTupleSource();
@@ -1270,18 +1169,16 @@ class LazyPhreakBuilder implements PhreakBuilder {
     }
 
     private static void mergeNodeMemories(SegmentMemory sm1, SegmentMemory sm2) {
-        List<Memory> smNodeMemories1 = Arrays.asList(sm1.getNodeMemories());
-        List<Memory> smNodeMemories2 = Arrays.asList(sm2.getNodeMemories());
+        List<Memory> mergedMemories = new ArrayList<>();
 
         int nodePosMask = 1;
-        for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
+        for (Memory mem : sm1.getNodeMemories() ) {
             nodePosMask = nodePosMask >> 1;
+            mergedMemories.add(mem);
         }
 
-        for (Memory mem = smNodeMemories2.get(0); mem != null; ) {
-            Memory next = mem.getNext();
-            smNodeMemories2.remove(mem);
-            addToMemoryList(smNodeMemories1, mem);
+        for (Memory mem : sm2.getNodeMemories() ) {
+            addToMemoryList(mergedMemories, mem);
             mem.setSegmentMemory(sm1);
 
             // correct the NodePosMaskBit
@@ -1289,9 +1186,9 @@ class LazyPhreakBuilder implements PhreakBuilder {
                 ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
             }
             nodePosMask = nodePosMask >> 1;
-            mem = next;
         }
-        sm1.setNodeMemories(smNodeMemories1.toArray(new Memory[smNodeMemories1.size()]));
+
+        sm1.setNodeMemories(mergedMemories.toArray(new Memory[mergedMemories.size()]));
     }
 
     private static void addToMemoryList(List<Memory> smNodeMemories, Memory mem) {

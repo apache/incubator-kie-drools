@@ -219,10 +219,6 @@ public abstract class BaseNode
         return associatedTerminals.containsKey(terminalNode.getId());
     }
 
-    public Map<Integer, TerminalNode> getAssociatedTerminals() {
-        return associatedTerminals;
-    }
-
     @Override
     public final int hashCode() {
         return hashcode;

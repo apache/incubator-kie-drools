@@ -54,7 +54,6 @@ public class RemoveRuleTest {
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     public RemoveRuleTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        System.setProperty("drools.useEagerSegmentCreation", "true");
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 

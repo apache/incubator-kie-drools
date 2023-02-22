@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Serializable, Memory {
-    //public static SegmentMemory[] NOT_INITIALZED = new SegmentMemory[0];
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();

@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -30,10 +29,10 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
-import org.drools.core.phreak.EagerPhreakBuilder;
-import org.drools.core.phreak.EagerPhreakBuilder.Pair;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.phreak.EagerPhreakBuilder;
 import org.drools.core.phreak.EagerPhreakBuilder.Add;
+import org.drools.core.phreak.EagerPhreakBuilder.Pair;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -79,7 +78,6 @@ public class AddRuleTest {
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     public AddRuleTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        System.setProperty("drools.useEagerSegmentCreation", "true");
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -88,10 +86,10 @@ public class AddRuleTest {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
-
-
     @Test
     public void testAddThenSplitProtoAllJoins() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C() X() E()\n");
         InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
         ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
@@ -100,11 +98,9 @@ public class AddRuleTest {
         LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
         BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         PathEndNode endNode = smemProto0.getPathEndNodes()[0];
 
         assertSegmentsLengthAndPos(endNode, 1, wm);
@@ -144,6 +140,8 @@ public class AddRuleTest {
 
     @Test
     public void testAddThenSplitProtoWithNot() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         // This only really checks that the linkedNodeMask is set, for the 'not' bits
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() not B() C() not X() E()\n");
         InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
@@ -153,12 +151,10 @@ public class AddRuleTest {
         LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
         BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
         SegmentMemory smemLian = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smemLian.getSegmentPrototype()).isSameAs(smemProto0);
 
         assertThat(smemProto0.getNodesInSegment().length).isEqualTo(6);
@@ -177,6 +173,8 @@ public class AddRuleTest {
     }
     @Test
     public void testAddWithSplitThenCreateThirdSplit() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
                                                           "   a : A() B() C() E(1;) E(2;) E(3;) E(4;)\n",
                                                           "   A() B() C() X()\n");
@@ -191,22 +189,20 @@ public class AddRuleTest {
         BetaNode ebeta3 = (BetaNode) eotn.getSinks()[2].getSinks()[0];
         BetaNode xbeta = (BetaNode) xotn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
         SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
         PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
         assertSegmentsLengthAndPos(endNode0, 2, wm);
         assertSegmentsLengthAndPos(endNode1, 2, wm);
 
-        SegmentPrototype smemProtoE = protos.get(ebeta.getId());
+        SegmentPrototype smemProtoE = kbase1.getSegmentPrototype(ebeta);
         assertThat(smemProtoE.getNodesInSegment().length).isEqualTo(5);
         assertThat(smemProtoE.getPos()).isEqualTo(1);
-        SegmentPrototype smemProtoX = protos.get(xbeta.getId());
+        SegmentPrototype smemProtoX = kbase1.getSegmentPrototype(xbeta);
         assertThat(smemProtoX.getPos()).isEqualTo(1);
 
         SegmentPrototype[] oldSmemProtos = endNode1.getSegmentPrototypes();
@@ -233,6 +229,8 @@ public class AddRuleTest {
 
     @Test
     public void testAddWithSplitThenCreateThirdSplitInSamePos() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
                                                           "   a : A() B() C() E(1;) E(2;) E(3;) E(4;)\n",
                                                           "   A() B() C() X() Y()\n");
@@ -250,13 +248,11 @@ public class AddRuleTest {
         BetaNode ebeta3 = (BetaNode) eotn.getSinks()[2].getSinks()[0];
         BetaNode xbeta = (BetaNode) xotn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
         wm.fireAllRules();
 
         SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
         PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
@@ -302,6 +298,8 @@ public class AddRuleTest {
 
     @Test
     public void testAddWithSplitAndEvalThenCreateThirdSplit() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
                                                           "   a : A() B() C() eval(1==1) eval(2==2) E(3;) E(4;)\n",
                                                           "   A() B() C() X()\n");
@@ -316,16 +314,14 @@ public class AddRuleTest {
         BetaNode ebeta3 = (BetaNode) eotn.getSinks()[0].getSinks()[0];
         EvalConditionNode evnode = (EvalConditionNode)  cbeta.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
         SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
         assertSegmentsLengthAndPos(endNode1, 2, wm);
 
-        SegmentPrototype smemProtoEV = protos.get(evnode.getId());
+        SegmentPrototype smemProtoEV = kbase1.getSegmentPrototype(evnode);
         assertThat(smemProtoEV.getNodesInSegment().length).isEqualTo(5);
         assertThat(smemProtoEV.getPos()).isEqualTo(1);
         assertThat(smemProtoEV.getAllLinkedMaskTest()).isEqualTo(12); // first two are evals, so each is 0
@@ -345,6 +341,8 @@ public class AddRuleTest {
 
     @Test
     public void testChildProtosPosAndEndNodeSegmentsUpdated() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
                                                           "   a : A() B() B(1;) C(1;) X() X(1;) X(2;) E()\n",
                                                           "   a : A() B() B(1;) C(1;) X() X(1;) X(3;)\n",
@@ -357,11 +355,9 @@ public class AddRuleTest {
         LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
         BetaNode bbeta = (BetaNode) botn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
         assertThat(endNode0.getPathMemSpec().allLinkedTestMask()).isEqualTo(7);
         assertThat(endNode0.getPathMemSpec().smemCount()).isEqualTo(3);
@@ -381,6 +377,8 @@ public class AddRuleTest {
      */
     @Test
     public void testDataStructuresWithSubnetwork() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
                                                           "   a : A() B() exists ( C() and C(1;) ) E() X()\n");
 
@@ -390,11 +388,9 @@ public class AddRuleTest {
 
         LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
 
-        Map<Integer, SegmentPrototype> protos = kbase1.getSegmentPrototypes();
-
         insertAndFlush(wm);
 
-        SegmentPrototype smemProto0 = protos.get(lian.getId());
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
 
         PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
         assertThat(endNode0.getType()).isEqualTo(NodeTypeEnums.RightInputAdapterNode);

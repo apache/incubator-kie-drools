@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -47,19 +46,18 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean IS_LOG_TRACE_ENABLED = log.isTraceEnabled();
 
-    private          SegmentPrototype   proto;
-//    private          List<Memory>       nodeMemories = new ArrayList<>();
-    private          Memory[]       nodeMemories;
-    private          List<PathMemory>   pathMemories = new ArrayList<>(1);;
-    private          TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
-    private          long               linkedNodeMask;
-    private          long               dirtyNodeMask;
-    private          long               allLinkedMaskTest;
-    private          long               segmentPosMaskBit;
-    private          int                pos = -1;
-    private          boolean            active;
-    private          SegmentMemory      previous;
-    private          SegmentMemory      next;
+    private SegmentPrototype   proto;
+    private Memory[]       nodeMemories;
+    private final List<PathMemory>   pathMemories = new ArrayList<>(1);;
+    private final TupleSets<LeftTuple> stagedLeftTuples = new TupleSetsImpl<>();
+    private long linkedNodeMask;
+    private long dirtyNodeMask;
+    private long allLinkedMaskTest;
+    private long segmentPosMaskBit;
+    private int pos = -1;
+    private boolean active;
+    private SegmentMemory previous;
+    private SegmentMemory next;
 
     private transient List<PathMemory>  dataDrivenPathMemories;
 
@@ -73,10 +71,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.proto = new SegmentPrototype(rootNode, null);
     }
 
-    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory,
-                                                 ReteEvaluator reteEvaluator) {
-        T memory = reteEvaluator.getNodeMemory(memoryFactory);
-        return memory;
+    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory, ReteEvaluator reteEvaluator) {
+        return reteEvaluator.getNodeMemory(memoryFactory);
     }
 
     public LeftTupleNode getRootNode() {
@@ -456,13 +452,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             return smem;
         }
 
-        public SegmentMemory shallowNewSegmentMemory(ReteEvaluator reteEvaluator) {
+        public SegmentMemory shallowNewSegmentMemory() {
             SegmentMemory smem = new SegmentMemory();
-            shallowUpdateSegmentMemory(smem, reteEvaluator);
+            shallowUpdateSegmentMemory(smem);
             return smem;
         }
 
-        public void shallowUpdateSegmentMemory(SegmentMemory smem, ReteEvaluator reteEvaluator) {
+        public void shallowUpdateSegmentMemory(SegmentMemory smem) {
             smem.proto = this;
             smem.allLinkedMaskTest = this.allLinkedMaskTest;
             smem.segmentPosMaskBit = this.segmentPosMaskBit;
@@ -471,7 +467,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         public void updateSegmentMemory(SegmentMemory smem, ReteEvaluator reteEvaluator) {
-            shallowUpdateSegmentMemory(smem, reteEvaluator);
+            shallowUpdateSegmentMemory(smem);
             Memory[] nodeMemories = new Memory[getNodesInSegment().length];
             for ( int i = 0; i < memories.length; i++) {
                 Memory mem = reteEvaluator.getNodeMemory((MemoryFactory) getNodesInSegment()[i]);
@@ -506,10 +502,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             return rootNode;
         }
 
-        public void setRootNode(LeftTupleNode rootNode) {
-            this.rootNode = rootNode;
-        }
-
         public LeftTupleNode getTipNode() {
             return tipNode;
         }
@@ -520,7 +512,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         public void linkNode(long mask) {
             linkedNodeMask |= mask;
-        };
+        }
 
         public long getLinkedNodeMask() {
             return linkedNodeMask;

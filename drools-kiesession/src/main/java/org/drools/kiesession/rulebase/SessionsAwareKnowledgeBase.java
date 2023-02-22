@@ -62,7 +62,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.ruleunit.RuleUnitDescriptionRegistry;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
@@ -510,11 +509,6 @@ public class SessionsAwareKnowledgeBase implements InternalKnowledgeBase {
     @Override
     public SegmentPrototype getSegmentPrototype(SegmentMemory segment) {
         return delegate.getSegmentPrototype(segment);
-    }
-
-    @Override
-    public Map<Integer, SegmentPrototype> getSegmentPrototypes() {
-        return delegate.getSegmentPrototypes();
     }
 
     @Override
