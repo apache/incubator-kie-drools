@@ -29,7 +29,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
-                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                     BUILD_MVN_OPTS_CURRENT: getRuntimesBuildMvnOptions(jobFolder).join(' '),
                 ]
             ], [
@@ -79,17 +79,13 @@ setupDeployJob(JobType.PULL_REQUEST, 'kogito-bdd')
 createSetupBranchJob()
 
 // Nightly jobs
-setupSonarCloudJob()
 KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
-
-// Environment nightlies
+setupSpecificBuildChainNightlyJob('sonarcloud')
 setupSpecificBuildChainNightlyJob('native')
-
-// Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main')
-setupQuarkusIntegrationJob('quarkus-branch')
-setupQuarkusIntegrationJob('quarkus-lts')
-setupQuarkusIntegrationJob('native-lts')
+setupNightlyQuarkusIntegrationJob('quarkus-main')
+setupNightlyQuarkusIntegrationJob('quarkus-branch')
+setupNightlyQuarkusIntegrationJob('quarkus-lts')
+setupNightlyQuarkusIntegrationJob('native-lts')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -106,28 +102,12 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-runtimes', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupQuarkusIntegrationJob(String envName) {
+void setupNightlyQuarkusIntegrationJob(String envName) {
     KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
 }
 
 void setupSpecificBuildChainNightlyJob(String envName) {
     KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true)
-}
-
-void setupSonarCloudJob() {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-runtimes', JobType.NIGHTLY, 'sonarcloud', "${jenkins_path}/Jenkinsfile.sonarcloud", 'Kogito Runtimes Daily Sonar')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.triggers = [ cron : 'H 20 * * 1-5' ]
-    jobParams.env.putAll([
-        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        NOTIFICATION_JOB_NAME: 'Sonarcloud check'
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-        }
-    }
 }
 
 void createSetupBranchJob() {
