@@ -4,6 +4,13 @@
 [[releaseNotes-8.35.0.Final]]
 === OptaPlanner 8.35.0.Final
 
+==== `PlanningListVariable` gets support for K-Opt Moves
+
+A new move selector for list variables, `KOptListMoveSelector`, has been added.
+The `KOptListMoveSelector` selects a single entity, removes `k` edges from its route, and add `k` new edges from the removed edges' endpoints.
+The `KOptListMoveSelector` can help the solver escape local optima in vehicle routing problems.
+Configuration options are xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#kOptListMoveSelector[available in the documentation].
+
 ==== `SolutionManager` gets support for updating shadow variables
 
 `SolutionManager` (formerly `ScoreManager`) methods such as `explain(solution)` and `update(solution)`  received a new overload with an extra argument, `SolutionUpdatePolicy`.

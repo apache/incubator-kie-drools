@@ -40,6 +40,7 @@
           <subListSwapMoveSelector>
             <selectReversingMoveToo>false</selectReversingMoveToo>
           </subListSwapMoveSelector>
+          <kOptListMoveSelector />
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>9</entityTabuSize>

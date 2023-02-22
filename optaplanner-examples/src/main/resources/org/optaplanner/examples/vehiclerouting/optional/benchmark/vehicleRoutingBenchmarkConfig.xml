@@ -177,6 +177,7 @@
           <subListSwapMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListSwapMoveSelector>
+          <kOptListMoveSelector />
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>200</lateAcceptanceSize>
@@ -226,6 +227,7 @@
   <!--            </nearbySelection>-->
   <!--          </valueSelector>-->
   <!--        </tailChainSwapMoveSelector>-->
+  <!--        <kOptListMoveSelector />-->
   <!--      </unionMoveSelector>-->
   <!--      <acceptor>-->
   <!--        <entityTabuSize>9</entityTabuSize>-->
@@ -273,6 +275,7 @@
   <!--            </nearbySelection>-->
   <!--          </valueSelector>-->
   <!--        </tailChainSwapMoveSelector>-->
+  <!--        <kOptListMoveSelector />-->
   <!--      </unionMoveSelector>-->
   <!--      <acceptor>-->
   <!--        <lateAcceptanceSize>200</lateAcceptanceSize>-->

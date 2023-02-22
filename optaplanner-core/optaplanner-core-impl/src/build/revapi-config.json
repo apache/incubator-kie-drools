@@ -1004,6 +1004,12 @@
           "code": "java.method.addedToInterface",
           "new": "method java.lang.Class<?> org.optaplanner.core.impl.score.definition.ScoreDefinition<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::getNumericType() @ org.optaplanner.core.api.domain.solution.PlanningScore.NullScoreDefinition",
           "justification": "Irrelevant."
+        },
+        {
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "justification": "Mention ListKOptListMoveSelectorConfig since it is a new selector that can be configured."
         }
       ]
     }

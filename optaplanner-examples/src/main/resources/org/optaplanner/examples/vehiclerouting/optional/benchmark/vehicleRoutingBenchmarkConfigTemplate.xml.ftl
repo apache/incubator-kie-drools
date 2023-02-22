@@ -154,6 +154,7 @@
               </nearbySelection>
             </valueSelector>
           </tailChainSwapMoveSelector>
+          <kOptListMoveSelector />
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>${entityTabuSize}</entityTabuSize>
@@ -203,6 +204,7 @@
               </nearbySelection>
             </valueSelector>
           </tailChainSwapMoveSelector>
+          <kOptListMoveSelector />
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>

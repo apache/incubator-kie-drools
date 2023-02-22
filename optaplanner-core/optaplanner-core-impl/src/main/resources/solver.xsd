@@ -453,6 +453,8 @@
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
+            <xs:element name="kOptListMoveSelector" type="tns:kOptListMoveSelectorConfig"/>
+                        
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
             <xs:element name="moveListFactory" type="tns:moveListFactoryConfig"/>
@@ -582,6 +584,26 @@
         <xs:attribute name="mimicSelectorRef" type="xs:string"/>
                 
         <xs:attribute name="variableName" type="xs:string"/>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="kOptListMoveSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:moveSelectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="minimumK" type="xs:int"/>
+                    
+          <xs:element minOccurs="0" name="maximumK" type="xs:int"/>
+                  
+        </xs:sequence>
               
       </xs:extension>
           
@@ -904,6 +926,8 @@
             <xs:element name="cartesianProductMoveSelector" type="tns:cartesianProductMoveSelectorConfig"/>
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
+                        
+            <xs:element name="kOptListMoveSelector" type="tns:kOptListMoveSelectorConfig"/>
                         
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         

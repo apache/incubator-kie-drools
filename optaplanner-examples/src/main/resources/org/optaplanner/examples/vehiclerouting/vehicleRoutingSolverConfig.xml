@@ -33,6 +33,7 @@
       <subListSwapMoveSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subListSwapMoveSelector>
+      <kOptListMoveSelector />
       <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>

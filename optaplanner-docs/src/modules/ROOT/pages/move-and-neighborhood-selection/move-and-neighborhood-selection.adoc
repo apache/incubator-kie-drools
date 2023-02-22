@@ -462,6 +462,35 @@ Advanced configuration:
     </subListSwapMoveSelector>
 ----
 
+[[kOptListMoveSelector]]
+==== `KOptListMoveSelector`
+
+The `KOptListMoveSelector` considers the list variable to be
+a graph whose edges are the consecutive elements of the list
+(with the last element being consecutive to the first element).
+A `KOptListMove` selects an entity, remove `k` edges from its list variable, and add `k` new edges from the removed edges' endpoints.
+This move may reverse segments of the graph.
+
+image::move-and-neighborhood-selection/koptMove.png[align="center"]
+
+Simplest configuration:
+
+[source,xml]
+----
+    <kOptListMoveSelector/>
+----
+
+Advanced configuration:
+
+[source,xml]
+----
+    <kOptListMoveSelector>
+      ... <!-- Normal selector properties -->
+      <minimumK>2</minimumK>
+      <maximumK>4</maximumK>
+    </kOptListMoveSelector>
+----
+
 [[chainMoveSelectors]]
 === Move selectors for chained variables
 
