@@ -45,11 +45,6 @@ environments:
     - quarkus
     - lts
     - prod
-  sonarcloud:
-    auto_generation: false
-    ids:
-    - sonarcloud
-    - coverage
 productized_branch: true
 disable:
   triggers: false
