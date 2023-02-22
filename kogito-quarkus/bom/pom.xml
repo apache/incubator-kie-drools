@@ -71,6 +71,16 @@
         <artifactId>quarkus-asyncapi-deployment</artifactId>
         <version>${version.io.quarkiverse.asyncapi}</version>
       </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.embedded.postgresql</groupId>
+        <artifactId>quarkus-embedded-postgresql</artifactId>
+        <version>${version.io.quarkiverse.embedded.postgresql}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkiverse.embedded.postgresql</groupId>
+        <artifactId>quarkus-embedded-postgresql-deployment</artifactId>
+        <version>${version.io.quarkiverse.embedded.postgresql}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
