@@ -19,8 +19,8 @@
             <artifactId>jobs-service-postgresql</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>quarkus-postgresql-inmemory</artifactId>
+            <groupId>io.quarkiverse.embedded.postgresql</groupId>
+            <artifactId>quarkus-embedded-postgresql</artifactId>
         </dependency>
 
         <dependency>

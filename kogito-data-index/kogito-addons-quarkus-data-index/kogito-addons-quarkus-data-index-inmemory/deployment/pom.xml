@@ -19,8 +19,8 @@
       <artifactId>kogito-addons-quarkus-data-index-inmemory</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>quarkus-postgresql-inmemory-deployment</artifactId>
+      <groupId>io.quarkiverse.embedded.postgresql</groupId>
+        <artifactId>quarkus-embedded-postgresql-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

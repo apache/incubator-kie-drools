@@ -407,34 +407,6 @@
                 <version>${project.version}</version>
                 <classifier>javadoc</classifier>
             </dependency>
-
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>quarkus-postgresql-inmemory-parent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>quarkus-postgresql-inmemory</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>quarkus-postgresql-inmemory</artifactId>
-                <version>${project.version}</version>
-                <classifier>sources</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>quarkus-postgresql-inmemory-deployment</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.kie.kogito</groupId>
-                <artifactId>quarkus-postgresql-inmemory-deployment</artifactId>
-                <version>${project.version}</version>
-                <classifier>sources</classifier>
-            </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>persistence-commons-reporting-api</artifactId>
