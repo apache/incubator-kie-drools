@@ -718,8 +718,8 @@ public class LinkingTest {
         BetaMemory fMem = ( BetaMemory )   wm.getNodeMemory( fNode );
         BetaMemory gMem = ( BetaMemory )   wm.getNodeMemory( gNode );
 
-        RiaPathMemory riaMem1 = wm.getNodeMemory(riaNode1);
-        RiaPathMemory riaMem2 = wm.getNodeMemory(riaNode2);
+        RiaPathMemory riaMem1 = (RiaPathMemory) wm.getNodeMemory(riaNode1);
+        RiaPathMemory riaMem2 = (RiaPathMemory) wm.getNodeMemory(riaNode2);
 
         PathMemory rs = wm.getNodeMemory(rtn);
 

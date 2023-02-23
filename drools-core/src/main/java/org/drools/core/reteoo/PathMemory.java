@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Serializable, Memory {
-    //public static SegmentMemory[] NOT_INITIALZED = new SegmentMemory[0];
 
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
@@ -74,6 +73,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public long getLinkedSegmentMask() {
         return linkedSegmentMask;
+    }
+
+    public void setLinkedSegmentMask(long mask) {
+        this.linkedSegmentMask = mask;
     }
 
     public long getAllLinkedMaskTest() {
@@ -175,7 +178,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void unlinkedSegment(long mask, ReteEvaluator reteEvaluator) {
         boolean linkedRule =  isRuleLinked();
-        linkedSegmentMask ^= mask;
+        linkedSegmentMask &= ~mask;
         if (isLogTraceEnabled) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }

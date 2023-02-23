@@ -39,13 +39,22 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 
+import static org.drools.core.phreak.EagerPhreakBuilder.isInsideSubnetwork;
+
 public class RuntimeSegmentUtilities {
 
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
     public static SegmentMemory getOrCreateSegmentMemory(LeftTupleNode node, ReteEvaluator reteEvaluator) {
-        SegmentMemory smem = reteEvaluator.getNodeMemory((MemoryFactory) node).getSegmentMemory();
+        return getOrCreateSegmentMemory(reteEvaluator.getNodeMemory((MemoryFactory<? extends Memory>) node), node, reteEvaluator);
+    }
+
+    /**
+     * Initialises the NodeSegment memory for all nodes in the segment.
+     */
+    public static SegmentMemory getOrCreateSegmentMemory(Memory memory, LeftTupleNode node, ReteEvaluator reteEvaluator) {
+        SegmentMemory smem = memory.getSegmentMemory();
         if ( smem != null ) {
             return smem;
         }
@@ -61,6 +70,7 @@ public class RuntimeSegmentUtilities {
             return smem;
         }
 
+        // it should not be possible to reach here, for BuildTimeSegmentProtos
         return LazyPhreakBuilder.createSegmentMemory(reteEvaluator, segmentRoot);
     }
 
@@ -71,8 +81,6 @@ public class RuntimeSegmentUtilities {
         }
 
         LeftTupleNode lastNode = proto.getNodesInSegment()[proto.getNodesInSegment().length-1];
-        SegmentMemory smem = null;
-
 
         if (NodeTypeEnums.isTerminalNode(lastNode)) {
             // If the last node is a tn and it's pmem does not exist, instantiate it separately to avoid a recursive smem/pmem creation.
@@ -82,15 +90,13 @@ public class RuntimeSegmentUtilities {
                 pmem = initializePathMemory(reteEvaluator, (PathEndNode) lastNode);
             }
 
-            smem = pmem.getSegmentMemories()[proto.getPos()];
+            SegmentMemory smem = pmem.getSegmentMemories()[proto.getPos()];
+            if (smem != null) {
+                return smem;
+            }
         }
 
-
-        if (smem == null) {
-            // Note eager smems mean this smem may have been created by this initializePathMemory,
-            // so check and use that to avoid duplicate creation.
-            smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
-        }
+        SegmentMemory smem = reteEvaluator.getKnowledgeBase().createSegmentFromPrototype(reteEvaluator, proto);
 
         updateRiaAndTerminalMemory(smem, proto, reteEvaluator);
 
@@ -102,7 +108,7 @@ public class RuntimeSegmentUtilities {
         LiaNodeMemory liam = reteEvaluator.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
-            querySmem = getOrCreateSegmentMemory(liaNode, reteEvaluator);
+            querySmem = getOrCreateSegmentMemory(liam, liaNode, reteEvaluator);
         }
         return querySmem;
     }
@@ -110,16 +116,13 @@ public class RuntimeSegmentUtilities {
     static RightInputAdapterNode createRiaSegmentMemory( BetaNode betaNode, ReteEvaluator reteEvaluator ) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
 
-        LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
-        while (subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
-            subnetworkLts = subnetworkLts.getLeftTupleSource();
-        }
+        LeftTupleSource subnetworkLts = riaNode.getStartTupleSource();
 
         Memory rootSubNetwokrMem = reteEvaluator.getNodeMemory( (MemoryFactory) subnetworkLts );
         SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
         if (subNetworkSegmentMemory == null) {
             // we need to stop recursion here
-            getOrCreateSegmentMemory(subnetworkLts, reteEvaluator);
+            getOrCreateSegmentMemory(rootSubNetwokrMem, subnetworkLts, reteEvaluator);
         }
         return riaNode;
     }
@@ -139,7 +142,7 @@ public class RuntimeSegmentUtilities {
     public static SegmentMemory createChildSegment(ReteEvaluator reteEvaluator, LeftTupleNode node) {
         Memory memory = reteEvaluator.getNodeMemory((MemoryFactory) node);
         if (memory.getSegmentMemory() == null) {
-            getOrCreateSegmentMemory(node, reteEvaluator);
+            getOrCreateSegmentMemory(memory, node, reteEvaluator);
         }
         return memory.getSegmentMemory();
     }
@@ -153,33 +156,42 @@ public class RuntimeSegmentUtilities {
      * it sets the bit of node it is the right input for.
      */
     private static void updateRiaAndTerminalMemory(SegmentMemory smem,
-                                                 SegmentPrototype proto,
-                                                 ReteEvaluator reteEvaluator) {
-        for (PathEndNode pathEndNode : proto.getPathEndNodes()) {
-            if (pathEndNode.getSegmentPrototypes()[proto.getPos()] == null) {
-                // this is a rian path, and the smem is before the subnetwork, so skip.
+                                                   SegmentPrototype proto,
+                                                   ReteEvaluator reteEvaluator) {
+        for (PathEndNode endNode : proto.getPathEndNodes()) {
+            if (!isInsideSubnetwork(endNode, proto)) {
+                // While SegmentPrototypes are added for entire path, for traversal reasons.
+                // SegmenrMemory's themselves are only added to the PathMemory for path or subpath the are part of.
                 continue;
             }
 
-            PathMemory pmem = (PathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(pathEndNode);
+            PathMemory pmem = (PathMemory) reteEvaluator.getNodeMemories().peekNodeMemory(endNode);
             if (pmem != null) {
-                pmem.setSegmentMemory( smem.getPos(), smem );
+                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);
             } else {
-                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) pathEndNode, reteEvaluator);
-                pmem.setSegmentMemory( smem.getPos(), smem ); // this needs to be set before init, to avoid recursion during eager segment initialisation
-                initializePathMemory(reteEvaluator, pathEndNode, pmem);
+                pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<? extends PathMemory>) endNode, reteEvaluator);
+                RuntimeSegmentUtilities.addSegmentToPathMemory(pmem, smem);  // this needs to be set before init, to avoid recursion during eager segment initialisation
+                pmem.setSegmentMemory( smem.getPos(), smem );
+                initializePathMemory(reteEvaluator, endNode, pmem);
             }
 
-            smem.addPathMemory( pmem );
-            if (smem.isSegmentLinked()) {
+            if (smem.getAllLinkedMaskTest() > 0 && smem.isSegmentLinked()) {
                 // not's can cause segments to be linked, and the rules need to be notified for evaluation
                 smem.notifyRuleLinkSegment(reteEvaluator);
             }
         }
     }
 
+    public static void addSegmentToPathMemory(PathMemory pmem, SegmentMemory smem) {
+        if (smem.getRootNode().getPathIndex() >= pmem.getPathEndNode().getStartTupleSource().getPathIndex()) {
+            smem.addPathMemory(pmem);
+            pmem.setSegmentMemory(smem.getPos(), smem);
+        }
+
+    }
+
     public static PathMemory initializePathMemory(ReteEvaluator reteEvaluator, PathEndNode pathEndNode) {
-        PathMemory pmem = reteEvaluator.getNodeMemories().getNodeMemory((MemoryFactory<PathMemory>) pathEndNode, reteEvaluator);
+        PathMemory pmem = reteEvaluator.getNodeMemories().getNodeMemory(pathEndNode, reteEvaluator);
         initializePathMemory(reteEvaluator, pathEndNode, pmem);
         return pmem;
     }

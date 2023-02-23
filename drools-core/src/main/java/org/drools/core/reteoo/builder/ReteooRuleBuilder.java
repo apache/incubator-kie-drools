@@ -117,7 +117,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
         final GroupElement[] subrules = rule.getTransformedLhs( LogicTransformer.getInstance(), kBase.getGlobals() );
 
         for (int i = 0; i < subrules.length; i++) {
-
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( kBase, workingMemories );
             context.setRule( rule );
@@ -218,7 +217,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context, terminalNode);
 
-        PhreakBuilder.get().addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase());
+        if (!PhreakBuilder.isEagerSegmentCreation() || context.getRuleBase().hasSegmentPrototypes()) {
+            // only need to process this, if segment protos exist
+            PhreakBuilder.get().addRule(terminalNode, context.getWorkingMemories(), context.getRuleBase());
+        }
     }
 
     private static void setPathEndNodes(BuildContext context, TerminalNode terminalNode) {

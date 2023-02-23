@@ -16,25 +16,44 @@
 package org.drools.mvel.integrationtests.phreak;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.RuleBase;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.phreak.EagerPhreakBuilder;
+import org.drools.core.phreak.EagerPhreakBuilder.Add;
+import org.drools.core.phreak.EagerPhreakBuilder.Pair;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EvalConditionNode;
+import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.GroupElement;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -51,12 +70,11 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.rule.Match;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AddRuleTest {
-
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     public AddRuleTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
@@ -67,6 +85,458 @@ public class AddRuleTest {
     public static Collection<Object[]> getParameters() {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
+
+    @Test
+    public void testAddThenSplitProtoAllJoins() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C() X() E()\n");
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        PathEndNode endNode = smemProto0.getPathEndNodes()[0];
+
+        assertSegmentsLengthAndPos(endNode, 1, wm);
+        assertThat(endNode.getSegmentPrototypes()[0]).isSameAs(smemProto0);
+        assertThat(endNode.getEagerSegmentPrototypes().length).isEqualTo(0);
+        assertThat(smemProto0.getNodesInSegment().length).isEqualTo(6);
+        LeftTupleNode[] nodes = smemProto0.getNodesInSegment();
+        // the last RTN node is not part of the mask
+        assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(31);
+        assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(0);
+        assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT);
+
+        SegmentPrototype[] oldSmemProtos = endNode.getSegmentPrototypes();
+        SegmentPrototype smemProto1 = Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+
+        assertSegmentsLengthAndPos(endNode, 2, oldSmemProtos, smemProto1, wm);
+        assertThat(endNode.getSegmentPrototypes()[0]).isSameAs(smemProto0);
+        assertThat(endNode.getSegmentPrototypes()[1]).isSameAs(smemProto1);
+        assertThat(endNode.getEagerSegmentPrototypes().length).isEqualTo(0);
+        assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(0);
+        assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT);
+        assertThat(smemProto0.getNodesInSegment().length).isEqualTo(3);
+        assertThat(nodes[0]).isSameAs(smemProto0.getNodesInSegment()[0]);
+        assertThat(nodes[1]).isSameAs(smemProto0.getNodesInSegment()[1]);
+        assertThat(nodes[2]).isSameAs(smemProto0.getNodesInSegment()[2]);
+
+        assertThat(endNode).isSameAs(smemProto1.getPathEndNodes()[0]);
+        assertThat(smemProto1.getAllLinkedMaskTest()).isEqualTo(3);
+        assertThat(smemProto1.getLinkedNodeMask()).isEqualTo(0);
+        assertThat(smemProto1.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT);
+        assertThat(smemProto1.getNodesInSegment().length).isEqualTo(3);
+        assertThat(nodes[3]).isSameAs(smemProto1.getNodesInSegment()[0]);
+        assertThat(nodes[4]).isSameAs(smemProto1.getNodesInSegment()[1]);
+        assertThat(nodes[5]).isSameAs(smemProto1.getNodesInSegment()[2]);
+    }
+
+    @Test
+    public void testAddThenSplitProtoWithNot() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        // This only really checks that the linkedNodeMask is set, for the 'not' bits
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() not B() C() not X() E()\n");
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentMemory smemLian = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        assertThat(smemLian.getSegmentPrototype()).isSameAs(smemProto0);
+
+        assertThat(smemProto0.getNodesInSegment().length).isEqualTo(6);
+        assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(31);
+        assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(10); // nots must be linked in
+        assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT | BuildtimeSegmentUtilities.NOT_NODE_BIT);
+        SegmentPrototype smemProto1 = Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+
+        assertThat(smemProto0.getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(smemProto0.getLinkedNodeMask()).isEqualTo(2);
+        assertThat(smemProto0.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT | BuildtimeSegmentUtilities.NOT_NODE_BIT);
+
+        assertThat(smemProto1.getAllLinkedMaskTest()).isEqualTo(3);
+        assertThat(smemProto1.getLinkedNodeMask()).isEqualTo(1);
+        assertThat(smemProto1.getNodeTypesInSegment()).isEqualTo(BuildtimeSegmentUtilities.JOIN_NODE_BIT | BuildtimeSegmentUtilities.NOT_NODE_BIT);
+    }
+    @Test
+    public void testAddWithSplitThenCreateThirdSplit() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() C() E(1;) E(2;) E(3;) E(4;)\n",
+                                                          "   A() B() C() X()\n");
+
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode eotn = getObjectTypeNode(kbase1.getRete(), E.class);
+        ObjectTypeNode xotn = getObjectTypeNode(kbase1.getRete(), X.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode ebeta = (BetaNode) eotn.getSinks()[0].getSinks()[0];
+        BetaNode ebeta3 = (BetaNode) eotn.getSinks()[2].getSinks()[0];
+        BetaNode xbeta = (BetaNode) xotn.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
+        PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
+        PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
+        assertSegmentsLengthAndPos(endNode0, 2, wm);
+        assertSegmentsLengthAndPos(endNode1, 2, wm);
+
+        SegmentPrototype smemProtoE = kbase1.getSegmentPrototype(ebeta);
+        assertThat(smemProtoE.getNodesInSegment().length).isEqualTo(5);
+        assertThat(smemProtoE.getPos()).isEqualTo(1);
+        SegmentPrototype smemProtoX = kbase1.getSegmentPrototype(xbeta);
+        assertThat(smemProtoX.getPos()).isEqualTo(1);
+
+        SegmentPrototype[] oldSmemProtos = endNode1.getSegmentPrototypes();
+        SegmentPrototype smemProtoE2 = Add.processSplit(ebeta3, kbase1, Collections.singletonList(wm), new HashSet<>());
+        assertSegmentsLengthAndPos(endNode0, 3, wm);
+        assertSegmentsLengthAndPos(endNode1, 2, oldSmemProtos, smemProtoE2, wm);
+
+        assertThat(endNode0.getSegmentPrototypes()[0]).isSameAs(smemProto0);
+        assertThat(endNode0.getSegmentPrototypes()[1]).isSameAs(smemProtoE);
+        assertThat(endNode0.getSegmentPrototypes()[2]).isSameAs(smemProtoE2);
+
+        assertThat(smemProtoE.getNodesInSegment().length).isEqualTo(3);
+        assertThat(smemProtoE2.getNodesInSegment().length).isEqualTo(2);
+
+        assertThat(smemProtoE.getPos()).isEqualTo(1);
+        assertThat(smemProtoE2.getPos()).isEqualTo(2);
+
+        assertThat(smemProtoE.getSegmentPosMaskBit()).isEqualTo(2);
+        assertThat(smemProtoE2.getSegmentPosMaskBit()).isEqualTo(4);
+
+        assertThat(smemProtoE.getAllLinkedMaskTest()).isEqualTo(7);
+        assertThat(smemProtoE2.getAllLinkedMaskTest()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAddWithSplitThenCreateThirdSplitInSamePos() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() C() E(1;) E(2;) E(3;) E(4;)\n",
+                                                          "   A() B() C() X() Y()\n");
+
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode eotn = getObjectTypeNode(kbase1.getRete(), E.class);
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+        ObjectTypeNode xotn = getObjectTypeNode(kbase1.getRete(), X.class);
+        ObjectTypeNode yotn = getObjectTypeNode(kbase1.getRete(), Y.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode ebeta = (BetaNode) eotn.getSinks()[0].getSinks()[0];
+        BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
+        BetaNode ebeta3 = (BetaNode) eotn.getSinks()[2].getSinks()[0];
+        BetaNode xbeta = (BetaNode) xotn.getSinks()[0];
+
+        insertAndFlush(wm);
+        wm.fireAllRules();
+
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        assertThat(smem.getSegmentPrototype()).isSameAs(smemProto0);
+        PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
+        PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
+        assertSegmentsLengthAndPos(endNode0, 2, wm);
+        assertSegmentsLengthAndPos(endNode1, 2, wm);
+
+        // processSplit should return null, as it's alreayd split and this does nothing.
+        assertThat(Add.processSplit(cbeta, kbase1, Collections.singletonList(wm), new HashSet<>())).isNull();
+
+        // now add a rule at the given split, so we can check paths were all updated correctly
+        addRuleAtGivenSplit(kbase1, wm, cbeta, yotn);
+
+        BetaNode jbeta = (BetaNode) yotn.getSinks()[1];
+        assertThat(((ClassObjectType)jbeta.getObjectTypeNode().getObjectType()).getClassType()).isSameAs(Y.class);
+        assertThat(jbeta.getLeftTupleSource()).isSameAs(cbeta);
+
+        endNode0 = smemProto0.getPathEndNodes()[0];
+        endNode1 = smemProto0.getPathEndNodes()[1];
+        PathEndNode endNode2 = smemProto0.getPathEndNodes()[2];
+        assertSegmentsLengthAndPos(endNode0, 2, wm);
+        assertSegmentsLengthAndPos(endNode1, 2, wm);
+        assertSegmentsLengthAndPos(endNode2, 2, wm);
+    }
+
+    private static void addRuleAtGivenSplit(InternalKnowledgeBase kbase1, InternalWorkingMemory wm, BetaNode cbeta, ObjectTypeNode yotn) {
+        RuleImpl rule = new RuleImpl("newrule1");
+        BuildContext buildContext = new BuildContext(kbase1, Collections.emptyList() );
+
+        JoinNode joinNode = (JoinNode) BetaNodeBuilder.create(NodeTypeEnums.JoinNode, buildContext)
+                                             .setLeftType( C.class )
+                                             .setBinding( "object", "$object" )
+                                             .setRightType( Y.class )
+                                             .setConstraint( "object", "!=", "$object" ).build(cbeta, yotn);
+
+        joinNode.doAttach(buildContext);
+
+        RuleTerminalNode rtn = new RuleTerminalNode(buildContext.getNextNodeId(), joinNode, rule, new GroupElement(), 0, buildContext);
+        rtn.setPathEndNodes(new PathEndNode[]{rtn});
+        rtn.doAttach(buildContext);
+        Arrays.stream(rtn.getPathNodes()).forEach( n -> {n.addAssociatedTerminal(rtn); ((BaseNode)n).addAssociation(rule);});
+        new EagerPhreakBuilder().addRule(rtn, Collections.singletonList(wm), kbase1);
+    }
+
+    @Test
+    public void testAddWithSplitAndEvalThenCreateThirdSplit() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() C() eval(1==1) eval(2==2) E(3;) E(4;)\n",
+                                                          "   A() B() C() X()\n");
+
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+        ObjectTypeNode eotn = getObjectTypeNode(kbase1.getRete(), E.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode cbeta = (BetaNode) cotn.getSinks()[0];
+        BetaNode ebeta3 = (BetaNode) eotn.getSinks()[0].getSinks()[0];
+        EvalConditionNode evnode = (EvalConditionNode)  cbeta.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentMemory smem = wm.getNodeMemories().getNodeMemory(lian, wm).getSegmentMemory();
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
+        assertSegmentsLengthAndPos(endNode1, 2, wm);
+
+        SegmentPrototype smemProtoEV = kbase1.getSegmentPrototype(evnode);
+        assertThat(smemProtoEV.getNodesInSegment().length).isEqualTo(5);
+        assertThat(smemProtoEV.getPos()).isEqualTo(1);
+        assertThat(smemProtoEV.getAllLinkedMaskTest()).isEqualTo(12); // first two are evals, so each is 0
+
+        SegmentPrototype[] oldSmemProtos = endNode1.getSegmentPrototypes();
+        SegmentPrototype smemProtoE4 = Add.processSplit(ebeta3, kbase1, Collections.singletonList(wm), new HashSet<>());
+
+        assertSegmentsLengthAndPos(endNode1, 2, oldSmemProtos, smemProtoE4, wm);
+
+
+        assertThat(smemProtoEV.getSegmentPosMaskBit()).isEqualTo(2);
+        assertThat(smemProtoE4.getSegmentPosMaskBit()).isEqualTo(4);
+
+        assertThat(smemProtoEV.getAllLinkedMaskTest()).isEqualTo(4);
+        assertThat(smemProtoE4.getAllLinkedMaskTest()).isEqualTo(1);
+    }
+
+    @Test
+    public void testChildProtosPosAndEndNodeSegmentsUpdated() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() B(1;) C(1;) X() X(1;) X(2;) E()\n",
+                                                          "   a : A() B() B(1;) C(1;) X() X(1;) X(3;)\n",
+                                                          "   a : A() B() B(1;) C(2;)\n");
+
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode botn = getObjectTypeNode(kbase1.getRete(), B.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+        BetaNode bbeta = (BetaNode) botn.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+        PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
+        assertThat(endNode0.getPathMemSpec().allLinkedTestMask()).isEqualTo(7);
+        assertThat(endNode0.getPathMemSpec().smemCount()).isEqualTo(3);
+
+        assertSegmentsLengthAndPos(endNode0, 3, wm);
+
+        SegmentPrototype[] oldSmemProtos = endNode0.getSegmentPrototypes();
+        SegmentPrototype smemProto1 = Add.processSplit(bbeta, kbase1, Collections.singletonList(wm), new HashSet<>());
+
+        assertSegmentsLengthAndPos(endNode0, 4, oldSmemProtos, smemProto1, wm);
+        assertThat(endNode0.getPathMemSpec().allLinkedTestMask()).isEqualTo(15);
+        assertThat(endNode0.getPathMemSpec().smemCount()).isEqualTo(4);
+    }
+
+    /**
+     * This tests that masks and segments are not set, when outside of the subnetwork for a given path.
+     */
+    @Test
+    public void testDataStructuresWithSubnetwork() {
+        if (!PhreakBuilder.isEagerSegmentCreation()) return;
+
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() exists ( C() and C(1;) ) E() X()\n");
+
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase1.newKieSession();
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1.getRete(), A.class);
+        ObjectTypeNode botn = getObjectTypeNode(kbase1.getRete(), B.class);
+
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) aotn.getSinks()[0];
+
+        insertAndFlush(wm);
+
+        SegmentPrototype smemProto0 = kbase1.getSegmentPrototype(lian);
+
+        PathEndNode endNode0 = smemProto0.getPathEndNodes()[0];
+        assertThat(endNode0.getType()).isEqualTo(NodeTypeEnums.RightInputAdapterNode);
+        assertThat(endNode0.getPathMemSpec().allLinkedTestMask()).isEqualTo(2);
+        assertThat(endNode0.getPathMemSpec().smemCount()).isEqualTo(2);
+
+        PathEndNode endNode1 = smemProto0.getPathEndNodes()[1];
+        assertThat(endNode1.getType()).isEqualTo(NodeTypeEnums.RuleTerminalNode);
+        assertThat(endNode1.getPathMemSpec().allLinkedTestMask()).isEqualTo(3);
+        assertThat(endNode1.getPathMemSpec().smemCount()).isEqualTo(2);
+    }
+
+    @Test
+    public void testFindNewBrancheRootsSimple() {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B() C() E()\n",
+                                                          "   a : A() B() X() E()\n");
+
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+        ObjectTypeNode xotn = getObjectTypeNode(kbase1.getRete(), X.class);
+
+        BetaNode cBeta = (BetaNode) cotn.getSinks()[0];
+        BetaNode xBeta = (BetaNode) xotn.getSinks()[0];
+
+        TerminalNode[] tns = kbase1.getReteooBuilder().getTerminalNodes("org.kie.r0");
+        assertThat(tns.length).isEqualTo(1);
+        List<EagerPhreakBuilder.Pair> branchRoots =  EagerPhreakBuilder.getExclusiveBranchRoots(tns[0]);
+        assertThat(branchRoots.size()).isEqualTo(1);
+        assertThat(((Pair)branchRoots.toArray()[0]).child).isSameAs(cBeta);
+
+        tns = kbase1.getReteooBuilder().getTerminalNodes("org.kie.r1");
+        assertThat(tns.length).isEqualTo(1);
+        branchRoots =  EagerPhreakBuilder.getExclusiveBranchRoots(tns[0]);
+        assertThat(branchRoots.size()).isEqualTo(1);
+        assertThat(((Pair)branchRoots.toArray()[0]).child).isSameAs(xBeta);
+    }
+
+    @Test
+    public void testNewBrancheRootsWithSubnetwork() {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r",
+                                                          "   a : A() B(1;) C() E() X()\n",
+                                                          "   a : A() B(1;) C() exists ( E() and F() ) B(2;)\n");
+
+        ObjectTypeNode cotn = getObjectTypeNode(kbase1.getRete(), C.class);
+        ObjectTypeNode fotn = getObjectTypeNode(kbase1.getRete(), F.class);
+        ObjectTypeNode xotn = getObjectTypeNode(kbase1.getRete(), X.class);
+        ObjectTypeNode botn = getObjectTypeNode(kbase1.getRete(), B.class);
+
+        BetaNode fBeta = (BetaNode) fotn.getSinks()[0];
+        BetaNode xBeta = (BetaNode) xotn.getSinks()[0];
+        ExistsNode exists = (ExistsNode) ((LeftTupleNode)botn.getSinks()[1].getSinks()[0]).getLeftTupleSource();
+
+        TerminalNode[] tns = kbase1.getReteooBuilder().getTerminalNodes("org.kie.r0");
+        assertThat(tns.length).isEqualTo(1);
+        List<EagerPhreakBuilder.Pair> branchRoots =  EagerPhreakBuilder.getExclusiveBranchRoots(tns[0]);
+        assertThat(branchRoots.size()).isEqualTo(1);
+        Pair[] pairs = branchRoots.toArray(new Pair[1]);
+        assertThat(pairs[0].child).isSameAs(xBeta);
+
+        tns = kbase1.getReteooBuilder().getTerminalNodes("org.kie.r1");
+        assertThat(tns.length).isEqualTo(1);
+        branchRoots =  EagerPhreakBuilder.getExclusiveBranchRoots(tns[0]);
+        assertThat(branchRoots.size()).isEqualTo(2);
+        assertThat(((Pair)branchRoots.toArray()[0]).child).isSameAs(exists);
+        assertThat(((Pair)branchRoots.toArray()[1]).child).isSameAs(fBeta);
+    }
+
+    private static void insertAndFlush(InternalWorkingMemory wm) {
+        wm.insert(new A(1));
+        wm.insert(new B(1));
+        wm.insert(new B(2));
+        wm.insert(new C(1));
+        wm.insert(new C(2));
+        wm.insert(new E(1));
+        wm.insert(new E(2));
+        wm.insert(new E(3));
+        wm.insert(new E(4));
+        wm.insert(new X(1));
+        wm.insert(new Y(1));
+
+        wm.setGlobal("list", new ArrayList<>());
+        wm.flushPropagations();
+    }
+
+    private static void assertSegmentsLengthAndPos(PathEndNode endNode, int s, InternalWorkingMemory wm) {
+        assertSegmentsLengthAndPos(endNode, s, null, null, wm);
+    }
+
+    private static void assertSegmentsLengthAndPos(PathEndNode endNode, int s, SegmentPrototype[] oldProtos, SegmentPrototype newProto, InternalWorkingMemory wm) {
+        assertThat(endNode.getSegmentPrototypes().length).isEqualTo(s);
+        int smemOffset = 0;
+        int bitPos = 1;
+
+        for (int i = 0; i < endNode.getSegmentPrototypes().length; i++) {
+            assertThat(endNode.getSegmentPrototypes()[i].getPos()).isEqualTo(i);
+            assertThat(endNode.getSegmentPrototypes()[i].getSegmentPosMaskBit()).isEqualTo(bitPos);
+            bitPos = bitPos << 1;
+        }
+
+        if (oldProtos != null) {
+            // if old protos exist, assert the split was done correctly and protos all match as expected
+            for (int i = 0; i < endNode.getSegmentPrototypes().length; i++) {
+                if (i == newProto.getPos()) {
+                    // assert the inserted proto, and set the offset
+                    assertThat(newProto).isSameAs(endNode.getSegmentPrototypes()[newProto.getPos()]);
+                    smemOffset = 1;
+                } else {
+                    assertThat(oldProtos[i - smemOffset]).isSameAs(endNode.getSegmentPrototypes()[i]);
+                }
+            }
+        }
+
+        SegmentPrototype startProto = wm.getKnowledgeBase().getSegmentPrototype(endNode.getStartTupleSource());
+        // ensure all smems are null before start SmemProto. If startProto pos is 0, skip this
+        for (int i = 0; i < startProto.getPos(); i++) {
+            assertThat(endNode.getSegmentPrototypes()[i]).isNull();
+        }
+
+        // assert that all segments contain this path
+        for (int i = 0; i < endNode.getSegmentPrototypes().length; i++) {
+            SegmentPrototype proto = endNode.getSegmentPrototypes()[i];
+            if ( proto != null) { // protos before startTupleSource will be null
+                asList(proto.getPathEndNodes()).contains(endNode);
+            }
+        }
+
+        if ( wm == null ) {
+            return;
+        }
+
+        for (int i = 0; i < endNode.getSegmentPrototypes().length; i++) {
+            SegmentPrototype proto = endNode.getSegmentPrototypes()[i];
+
+            Memory m = wm.getNodeMemories().peekNodeMemory(proto.getRootNode());
+            SegmentMemory sm = m.getSegmentMemory();
+
+            assertThat(sm.getSegmentPrototype()).isSameAs(proto);
+            assertThat(sm.getRootNode()).isSameAs(proto.getRootNode());
+            assertThat(sm.getTipNode()).isSameAs(proto.getTipNode());
+
+            assertThat(sm.getPos()).isEqualTo(proto.getPos());
+            assertThat(sm.getAllLinkedMaskTest()).isEqualTo(proto.getAllLinkedMaskTest());
+            assertThat(sm.getSegmentPosMaskBit()).isEqualTo(proto.getSegmentPosMaskBit());
+        }
+    }
+
 
     @Test
     public void testPopulatedSingleRuleNoSharing() {
@@ -456,10 +926,10 @@ public class AddRuleTest {
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         if (PhreakBuilder.isEagerSegmentCreation()) {
             PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
-            assertThat(pm5.getSegmentMemories()).isEqualTo(new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
-            assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+            assertThat(pm5).isNull(); // this path is not yet initialised, as there is no inserted data
+            assertThat(rtn5.getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
         } else {
-            PathMemory pm5 = wm.getNodeMemory(rtn5);
+            PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
             smems = pm5.getSegmentMemories();
             assertThat(smems.length).isEqualTo(2);
             assertThat(smems[0]).isNull();
@@ -535,10 +1005,10 @@ public class AddRuleTest {
         RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         if (PhreakBuilder.isEagerSegmentCreation()) {
             PathMemory pm5 = (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
-            assertThat(pm5.getSegmentMemories()).isEqualTo( new SegmentMemory[2]); // this path is not yet initialised, as there is no inserted data
-            assertThat(pm5.getPathEndNode().getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
+            assertThat(pm5).isNull(); // this path is not yet initialised, as there is no inserted data
+            assertThat(rtn5.getSegmentPrototypes().length).isEqualTo(2); // make sure it's proto was created successfully
         } else {
-            PathMemory pm5 = wm.getNodeMemory(rtn5);
+            PathMemory pm5 =  (PathMemory) wm.getNodeMemories().peekNodeMemory(rtn5.getMemoryId());
             smems = pm5.getSegmentMemories();
             assertThat(smems.length).isEqualTo(2);
             assertThat(smems[0]).isNull();
@@ -615,25 +1085,29 @@ public class AddRuleTest {
         return ( RuleTerminalNode ) ((RuleBase) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
-    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
+    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String... rule) {
         return (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule));
     }
 
-    private String buildKnowledgePackageDrl(String ruleName, String rule) {
+    private String buildKnowledgePackageDrl(String ruleName, String... rule) {
         String str = "";
         str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n";
         str += "import " + B.class.getCanonicalName() + "\n";
         str += "import " + C.class.getCanonicalName() + "\n";
-        str += "import " + X.class.getCanonicalName() + "\n";
         str += "import " + E.class.getCanonicalName() + "\n";
+        str += "import " + F.class.getCanonicalName() + "\n";
+        str += "import " + X.class.getCanonicalName() + "\n";
+        str += "import " + Y.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
 
-        str += "rule " + ruleName + "  when \n";
-        str += rule;
-        str += "then \n";
-        str += " list.add( kcontext.getMatch() );\n";
-        str += "end \n";
+        for (int i = 0; i < rule.length; i++) {
+            str += "rule " + (rule.length == 1 ? ruleName : ruleName + i )+ "  when \n";
+            str += rule[i];
+            str += "then \n";
+            str += " list.add( kcontext.getMatch() );\n";
+            str += "end \n";
+        }
 
         return str;
     }

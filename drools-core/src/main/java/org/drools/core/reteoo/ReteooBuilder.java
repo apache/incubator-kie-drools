@@ -92,18 +92,17 @@ public class ReteooBuilder
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 
-// ------------------------------------------------------------
+    // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
     /**
      * Add a <code>Rule</code> to the network.
      *
-     * @param rule
-     *            The rule to add.
+     * @param rule     The rule to add.
      * @throws InvalidPatternException
      */
-    public synchronized void addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
+    public synchronized List<TerminalNode> addRule(final RuleImpl rule, Collection<InternalWorkingMemory> workingMemories) {
         final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase, workingMemories );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
@@ -111,6 +110,8 @@ public class ReteooBuilder
         if (rule.isQuery()) {
             this.queries.put( rule.getName(), terminals.toArray( new QueryTerminalNode[terminals.size()] ) );
         }
+
+        return terminals;
     }
 
     public void addEntryPoint( String id, Collection<InternalWorkingMemory> workingMemories ) {
@@ -248,7 +249,6 @@ public class ReteooBuilder
 
         if (removed) {
             stillInUse.remove( node.getId() );
-            // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
             for (InternalWorkingMemory workingMemory : wms) {
                 workingMemory.clearNodeMemory((MemoryFactory) node);
             }

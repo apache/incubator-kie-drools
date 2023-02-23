@@ -89,6 +89,10 @@ public class NodeTypeEnums {
         return node.getType() > NodeTypeEnums.BetaNode;
     }
 
+    public static boolean isBetaNodeWithRian(NetworkNode node) {
+        return node.getType() > NodeTypeEnums.BetaNode && ((org.drools.core.reteoo.BetaNode)node).isRightInputIsRiaNode();
+    }
+
     public static boolean isTerminalNode(NetworkNode node) {
         return node.getType() == QueryTerminalNode || node.getType() == RuleTerminalNode;
     }

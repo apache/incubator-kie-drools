@@ -35,6 +35,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.PathEndNode.PathMemSpec;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -58,15 +59,26 @@ import org.drools.core.reteoo.TimerNode;
 
 public class BuildtimeSegmentUtilities {
 
-    public static void createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, RuleBase rbase) {
-        // Will initialise all segments in a path
-        SegmentPrototype[] smems;
+    public static void updateSegmentEndNodes(PathEndNode endNode) {
+        SegmentPrototype smproto = endNode.getSegmentPrototypes()[endNode.getSegmentPrototypes().length-1];
+        if (smproto.getPathEndNodes() != null) {
+            // This is a special check, for shared subnetwork paths. It ensure it's initallysed only once,
+            // even though the rian is shared with different TNs.
+            return;
+        }
 
-        smems = createPathProtoMemories(tn, null, removingTn, rbase);
+        for ( int i = 0; i < endNode.getSegmentPrototypes().length; i++) {
+            smproto = endNode.getSegmentPrototypes()[i];
 
-        // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
-        if  (smems.length > 0) {
-            setSegments(tn, smems);
+            if ( smproto.getPathEndNodes() != null) {
+                PathEndNode[] existingNodes = smproto.getPathEndNodes();
+                PathEndNode[] newNodes = new PathEndNode[existingNodes.length+1];
+                System.arraycopy(existingNodes, 0, newNodes, 0, existingNodes.length);
+                newNodes[newNodes.length-1] = endNode;
+                smproto.setPathEndNodes(newNodes);
+            } else {
+                smproto.setPathEndNodes( new PathEndNode[]{endNode});
+            }
         }
     }
 
@@ -74,21 +86,57 @@ public class BuildtimeSegmentUtilities {
         List<SegmentPrototype> eager = new ArrayList<>();
         for (SegmentPrototype smem : smems) {
             // The segments before the start of a subnetwork, will be null for a rian path.
-            if (smem != null && requiresAnEagerSegment(smem.getNodeTypesInSegment())) {
+            if (smem != null && smem.requiresEager()) {
                 eager.add(smem);
             }
         }
         endNode.setEagerSegmentPrototypes(eager.toArray(new SegmentPrototype[eager.size()]));
 
+        long allLinkedMaskTest = getPathAllLinkedMaskTest(smems, endNode);
+
+        endNode.setPathMemSpec(new PathMemSpec(allLinkedMaskTest, smems.length));
+
         endNode.setSegmentPrototypes(smems);
+
+        updateSegmentEndNodes(endNode);
     }
 
-    // notes, looking into if/why I need stopNode
-    public static SegmentPrototype[] createPathProtoMemories(LeftTupleNode lts, LeftTupleSource stopNode, TerminalNode removingTn, RuleBase rbase) {
+    public static long getPathAllLinkedMaskTest(SegmentPrototype[] smems, PathEndNode endNode) {
+        long allLinkedMaskTest = 0;
+        for (int i = smems.length - 1; i >= 0; i--) {
+            SegmentPrototype smem = smems[i];
+
+            if (EagerPhreakBuilder.isInsideSubnetwork(endNode, smem) && smem.getAllLinkedMaskTest() > 0) {
+                allLinkedMaskTest = allLinkedMaskTest | 1;
+            }
+            if (i > 0) {
+                allLinkedMaskTest = nextNodePosMask(allLinkedMaskTest);
+            }
+        }
+        return allLinkedMaskTest;
+    }
+
+    public static SegmentPrototype[] createPathProtoMemories(TerminalNode tn, TerminalNode removingTn, RuleBase rbase) {
+        // Will initialise all segments in a path
+        SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(tn, removingTn, rbase);
+
+        // smems are empty, if there is no beta network. Which means it has an AlphaTerminalNode
+        if  (smems.length > 0) {
+            setSegments(tn, smems);
+        }
+
+        return smems;
+    }
+
+    public static SegmentPrototype[] createLeftTupleNodeProtoMemories(LeftTupleNode lts, TerminalNode removingTn, RuleBase rbase) {
         LeftTupleNode segmentRoot = lts;
         LeftTupleNode segmentTip = lts;
         List<SegmentPrototype> smems = new ArrayList<>();
-        boolean inside = true; // as it starts at the terminal or ria node, we know that it starts inside.
+        int start = 0;
+
+        LeftTupleNode firstConditional = getFirstConditionalBranchNode(lts);
+        int recordBefore = firstConditional == null  ? Integer.MAX_VALUE : firstConditional.getPathIndex();  // nodes after a branch CE can notify, but they cannot impact linking
+
         do {
             // iterate to find the actual segment root
             while (!BuildtimeSegmentUtilities.isRootNode(segmentRoot, removingTn)) {
@@ -96,12 +144,12 @@ public class BuildtimeSegmentUtilities {
             }
 
             // Store all nodes for the main path in reverse order (we're starting from the terminal node).
-            // If this is a subnetwork, only store nodes inside of it.
-            smems.add( 0, inside ? createSegmentMemory(segmentRoot, segmentTip, removingTn, rbase) : null );
-
-            if ( inside && segmentRoot.getLeftTupleSource() == stopNode) {
-                inside = false;
+            SegmentPrototype smem = rbase.getSegmentPrototype(segmentRoot);
+            if (smem == null) {
+                start = segmentRoot.getPathIndex(); // we want counter to start from the new segment proto only
+                smem = createSegmentMemory(segmentRoot, segmentTip, recordBefore, removingTn, rbase);
             }
+            smems.add(0, smem);
 
             // this is the new segment so set both to same, and it iterates for the actual segmentRoot next loop.
             segmentRoot = segmentRoot.getLeftTupleSource();
@@ -110,10 +158,14 @@ public class BuildtimeSegmentUtilities {
 
         // reset to find the next segments and set their position and their bit mask
         int ruleSegmentPosMask = 1;
-        for (int counter = 0; counter < smems.size(); counter++) {
-            if ( smems.get(counter) != null) { // The segments before the start of a subnetwork, will be null for a rian path.
-                smems.get(counter).setPos(counter);
-                smems.get(counter).setSegmentPosMaskBit(ruleSegmentPosMask);
+        for (int i = 0; i < smems.size(); i++) {
+            if ( start >= 0 && smems.get(i) != null) { // The segments before the start of a subnetwork, will be null for a rian path.
+                smems.get(i).setPos(i);
+                if (smems.get(i).getAllLinkedMaskTest() > 0) {
+                    smems.get(i).setSegmentPosMaskBit(ruleSegmentPosMask);
+                } else {
+                    smems.get(i).setSegmentPosMaskBit(0);
+                }
             }
             ruleSegmentPosMask = ruleSegmentPosMask << 1;
         }
@@ -121,10 +173,21 @@ public class BuildtimeSegmentUtilities {
         return smems.toArray(new SegmentPrototype[smems.size()]);
     }
 
+    static LeftTupleNode getFirstConditionalBranchNode(LeftTupleNode tupleSource) {
+        LeftTupleNode conditionalBranch = null;
+        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
+                conditionalBranch = tupleSource;
+            }
+            tupleSource = tupleSource.getLeftTupleSource();
+        }
+        return conditionalBranch;
+    }
+
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
      */
-    public static SegmentPrototype createSegmentMemory(LeftTupleNode segmentRoot, LeftTupleNode segmentTip, TerminalNode removingTn, RuleBase rbase) {
+    public static SegmentPrototype createSegmentMemory(LeftTupleNode segmentRoot, LeftTupleNode segmentTip, int recordBefore, TerminalNode removingTn, RuleBase rbase) {
         LeftTupleNode node = segmentRoot;
         int nodeTypesInSegment = 0;
 
@@ -136,12 +199,13 @@ public class BuildtimeSegmentUtilities {
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
         long nodePosMask = 1;
         long allLinkedTestMask = 0;
-        boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
+        boolean updateNodeBit = true;
 
         while (true) {
             nodeTypesInSegment = updateNodeTypesMask(node, nodeTypesInSegment);
             if (NodeTypeEnums.isBetaNode(node)) {
-                allLinkedTestMask = processBetaNode((BetaNode)node, smem, memories, nodes, nodePosMask, allLinkedTestMask, updateNodeBit, removingTn, rbase);
+                boolean updateAllLinked = node.getPathIndex() < recordBefore && updateNodeBit;
+                allLinkedTestMask = processBetaNode((BetaNode)node, smem, memories, nodes, nodePosMask, allLinkedTestMask, updateAllLinked, removingTn, rbase);
             } else {
                 switch (node.getType()) {
                     case NodeTypeEnums.LeftInputAdapterNode:
@@ -149,7 +213,6 @@ public class BuildtimeSegmentUtilities {
                         break;
                     case NodeTypeEnums.ConditionalBranchNode:
                         processConditionalBranchNode((ConditionalBranchNode) node, memories, nodes);
-                        updateNodeBit = false;
                         break;
                     case NodeTypeEnums.FromNode:
                         processFromNode((FromNode) node, memories, nodes);
@@ -192,12 +255,8 @@ public class BuildtimeSegmentUtilities {
         }
         smem.setAllLinkedMaskTest(allLinkedTestMask);
 
-        List<PathEndNode> endNodes = new ArrayList<>();
-        collectPathEndNodes(segmentTip, endNodes, removingTn);
-
         smem.setNodesInSegment(nodes.toArray( new LeftTupleNode[nodes.size()]));
         smem.setMemories(memories.toArray( new MemoryPrototype[memories.size()]));
-        smem.setPathEndNodes(endNodes.toArray( new PathEndNode[endNodes.size()]));
         smem.setNodeTypesInSegment(nodeTypesInSegment);
 
         rbase.registerSegmentPrototype(segmentRoot, smem);
@@ -212,31 +271,12 @@ public class BuildtimeSegmentUtilities {
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT);
     }
 
-    private static void collectPathEndNodes(LeftTupleNode lt,
-                                            List<PathEndNode> endNodes,
-                                            TerminalNode removingTn) {
-        if (removingTn != null & !NodeTypeEnums.isTerminalNode(lt) && !sinkNotExclusivelyAssociatedWithTerminal(removingTn, lt)) {
-            // ignore this path, it unique to the removing tn
-            return;
-        }
-
-         if (NodeTypeEnums.isTerminalNode(lt)) {
-            endNodes.add((PathEndNode) lt);
-        } else if (NodeTypeEnums.RightInputAdapterNode == lt.getType()) {
-            endNodes.add( (PathEndNode) lt );
-        }
-
-        for (LeftTupleSinkNode sink = lt.getSinkPropagator().getLastLeftTupleSink(); sink != null; sink = sink.getPreviousLeftTupleSinkNode()) {
-            collectPathEndNodes(sink, endNodes, removingTn);
-        }
-    }
-
-    public static long nextNodePosMask(long nodePosMask) {
+    public static long nextNodePosMask(long posMask) {
         // prevent overflow of segment and path memories masks when a segment has 64 or more nodes or a path has 64 or more segments
         // in this extreme case all the items after the 64th will be all mapped by the same bit and then the linking of one of them
         // will be enough to consider all those item linked
-        long nextNodePosMask = nodePosMask << 1;
-        return nextNodePosMask > 0 ? nextNodePosMask : nodePosMask;
+        long nextNodePosMask = posMask << 1;
+        return nextNodePosMask > 0 ? nextNodePosMask : posMask;
     }
 
     private static boolean processQueryNode(QueryElementNode queryNode, List<MemoryPrototype> memories, List<LeftTupleNode> nodes, long nodePosMask) {
@@ -317,7 +357,7 @@ public class BuildtimeSegmentUtilities {
             // there is a subnetwork, so create all it's segment memory prototypes
             riaNode = (RightInputAdapterNode) betaNode.getRightInput();
 
-            SegmentPrototype[] smems = createPathProtoMemories(riaNode, riaNode.getStartTupleSource(), removingTn, rbase);
+            SegmentPrototype[] smems = createLeftTupleNodeProtoMemories(riaNode, removingTn, rbase);
             setSegments(riaNode, smems);
 
             if (updateNodeBit && canBeDisabled(betaNode) && riaNode.getPathMemSpec().allLinkedTestMask() > 0) {
@@ -361,8 +401,8 @@ public class BuildtimeSegmentUtilities {
      * The result should discount any removingRule. That means it gives you the result as
      * if the rule had already been removed from the network.
      */
-    public static boolean isRootNode(LeftTupleNode node, TerminalNode removingTN) {
-        return node.getType() == NodeTypeEnums.LeftInputAdapterNode || isTipNode( node.getLeftTupleSource(), removingTN );
+    public static boolean isRootNode(LeftTupleNode node, TerminalNode ignoreTn) {
+        return node.getType() == NodeTypeEnums.LeftInputAdapterNode || isTipNode( node.getLeftTupleSource(), ignoreTn );
     }
 
     /**
@@ -413,6 +453,8 @@ public class BuildtimeSegmentUtilities {
     public static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
     public static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;
 
+    public static final int CONDITIONAL_BRANCH_BIT = 1 << 4;
+
     public static int updateNodeTypesMask(NetworkNode node, int mask) {
         if (node != null) {
             switch ( node.getType() ) {
@@ -429,6 +471,9 @@ public class BuildtimeSegmentUtilities {
                 case NodeTypeEnums.NotNode:
                     mask |= NOT_NODE_BIT;
                     break;
+                case NodeTypeEnums.ConditionalBranchNode:
+                    mask |= CONDITIONAL_BRANCH_BIT;
+                    break;
             }
         }
         return mask;
@@ -439,13 +484,17 @@ public class BuildtimeSegmentUtilities {
     }
 
     public static LeftTupleNode findSegmentRoot(LeftTupleNode tupleSource) {
-        while (!BuildtimeSegmentUtilities.isRootNode(tupleSource, null)) {
+        return findSegmentRoot(tupleSource, null);
+    }
+
+    public static LeftTupleNode findSegmentRoot(LeftTupleNode tupleSource, TerminalNode ignoreTn) {
+        while (!BuildtimeSegmentUtilities.isRootNode(tupleSource, ignoreTn)) {
             tupleSource = tupleSource.getLeftTupleSource();
         }
         return tupleSource;
     }
 
     public static boolean isAssociatedWith(NetworkNode node, TerminalNode tn) {
-        return tn.isTerminalNodeOf((LeftTupleNode) node);
+        return node.hasAssociatedTerminal(tn);
     }
 }

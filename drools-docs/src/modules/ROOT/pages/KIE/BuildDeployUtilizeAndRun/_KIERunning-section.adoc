@@ -513,15 +513,15 @@ For a quick start, here is the programmatic approach:
 ====
 [source,java]
 ----
-PoolingDataSource ds = new PoolingDataSource();
-ds.setUniqueName( "jdbc/BitronixJTADataSource" );
-ds.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-ds.setMaxPoolSize( 3 );
-ds.setAllowLocalTransactions( true );
-ds.getDriverProperties().put( "user", "sa" );
-ds.getDriverProperties().put( "password", "sasa" );
-ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
-ds.init();
+PoolingDataSource fs = new PoolingDataSource();
+fs.setUniqueName( "jdbc/BitronixJTADataSource" );
+fs.setClassName( "org.h2.jdbcx.JdbcDataSource" );
+fs.setMaxPoolSize( 3 );
+fs.setAllowLocalTransactions( true );
+fs.getDriverProperties().put( "user", "sa" );
+fs.getDriverProperties().put( "password", "sasa" );
+fs.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
+fs.init();
 ----
 ====
 
