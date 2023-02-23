@@ -115,9 +115,8 @@ public class RangeFunction extends BaseFEELFunction {
         } else if (leftNode instanceof FunctionInvocationNode && rightNode instanceof FunctionInvocationNode) {
             return nodesAreSameFunction((FunctionInvocationNode) leftNode, (FunctionInvocationNode) rightNode);
         } else {
-            return ALLOWED_NODES.stream().anyMatch(baseNodePredicate -> baseNodePredicate.test(leftNode) && baseNodePredicate.test(rightNode));
+            return leftNode.getClass().isAssignableFrom(rightNode.getClass()) || rightNode.getClass().isAssignableFrom(leftNode.getClass());
         }
-
     }
 
     // https://www.omg.org/spec/DMN/1.4/Beta1/PDF: Two function types (T1, ..., Tn) →U and (S1, ..., Sm) →V are equivalent iff n = m, Ti ≡ Sj for i = 1, n and U ≡ V
