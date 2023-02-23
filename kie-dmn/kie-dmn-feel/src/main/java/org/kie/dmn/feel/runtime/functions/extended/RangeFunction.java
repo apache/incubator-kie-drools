@@ -20,9 +20,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -95,13 +96,13 @@ public class RangeFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "right endpoint is not a recognised valid literal"));
         }
 
-        if (!nodesAreSameType(leftNode, rightNode)) {
+        Object left = leftNode.evaluate(STUBBED);
+        Object right = rightNode.evaluate(STUBBED);
+
+        if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
 
-        Object left = leftNode.evaluate(STUBBED);
-        Object right = rightNode.evaluate(STUBBED);
-        
         return FEELFnResult.ofResult( new RangeImpl(startBoundary, (Comparable)left, (Comparable)right, endBoundary) );
     }
     
@@ -109,20 +110,16 @@ public class RangeFunction extends BaseFEELFunction {
         return ALLOWED_NODES.stream().anyMatch(baseNodePredicate -> baseNodePredicate.test(node));
     }
 
-    protected boolean nodesAreSameType(BaseNode leftNode, BaseNode rightNode) {
-        if (leftNode instanceof NullNode || rightNode instanceof NullNode) {
-            return true;
-        } else if (leftNode instanceof FunctionInvocationNode && rightNode instanceof FunctionInvocationNode) {
-            return nodesAreSameFunction((FunctionInvocationNode) leftNode, (FunctionInvocationNode) rightNode);
-        } else {
-            return leftNode.getClass().isAssignableFrom(rightNode.getClass()) || rightNode.getClass().isAssignableFrom(leftNode.getClass());
-        }
-    }
 
-    // https://www.omg.org/spec/DMN/1.4/Beta1/PDF: Two function types (T1, ..., Tn) →U and (S1, ..., Sm) →V are equivalent iff n = m, Ti ≡ Sj for i = 1, n and U ≡ V
-    protected boolean nodesAreSameFunction(FunctionInvocationNode leftNode, FunctionInvocationNode rightNode) {
-        Class<?> left = FEEL.newInstance().evaluate(leftNode.getText()).getClass();
-        Class<?> right = FEEL.newInstance().evaluate(rightNode.getText()).getClass();
+    /**
+     *
+     * @param leftObject
+     * @param leftObject
+     * @return
+     */
+    protected boolean nodesReturnsSameType(Object leftObject, Object rightObject) {
+        Class<?> left = leftObject.getClass();
+        Class<?> right = rightObject.getClass();
         return left.equals(right) || left.isAssignableFrom(right) || right.isAssignableFrom(left);
     }
     
@@ -145,6 +142,9 @@ public class RangeFunction extends BaseFEELFunction {
             addToBuildin(builtIn, DateAndTimeFunction.INSTANCE);
             addToBuildin(builtIn, DurationFunction.INSTANCE);
             addToBuildin(builtIn, YearsAndMonthsFunction.INSTANCE);
+            addToBuildin(builtIn, StringFunction.INSTANCE);
+            addToBuildin(builtIn, StringLowerCaseFunction.INSTANCE);
+            addToBuildin(builtIn, NumberFunction.INSTANCE);
             functions = Collections.unmodifiableMap( builtIn );
         }
 

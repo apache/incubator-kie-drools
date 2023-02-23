@@ -22,6 +22,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class StringLowerCaseFunction
         extends BaseFEELFunction {
 
+    public static final StringLowerCaseFunction INSTANCE = new StringLowerCaseFunction();
+
     public StringLowerCaseFunction() {
         super( "lower case" );
     }

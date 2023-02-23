@@ -38,6 +38,8 @@ public class RangeFunctionTest {
     public void invokeDifferentTypes() {
         FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..\"cheese\"]"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..\"upper case(\"aBc4\")\"]"), InvalidParametersEvent.class);
     }
 
     @Test
@@ -92,6 +94,12 @@ public class RangeFunctionTest {
                 new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED));
     }
 
+    @Test
+    public void invoke_WithOneFunctionNode() {
+        FunctionTestUtil.assertResult(rangeFunction.invoke("[number(\"1\", \",\", \".\")\"..2]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED));
+        FunctionTestUtil.assertResult(rangeFunction.invoke("[\"a\"..lower case(\"Z\")]"), new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED));
+    }
+
 
     @Test
     public void nodeIsAllowed_True() {
@@ -110,37 +118,13 @@ public class RangeFunctionTest {
     }
 
     @Test
-    public void nodesAreSameType_True() {
-        assertThat(rangeFunction.nodesAreSameType(getNullNode(), getNullNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getNullNode(), getBooleanNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getNullNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getStringNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getNumberNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getBooleanNode(), getBooleanNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getAtLiteralNode())).isTrue();
-        assertThat(rangeFunction.nodesAreSameType(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
-    }
-
-    @Test
-    public void nodesAreSameType_False() {
-        assertThat(rangeFunction.nodesAreSameType(getStringNode(), getBooleanNode())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getStringNode())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getFunctionInvocationNodeA())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getNumberNode())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getAtLiteralNode(), getBooleanNode())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getFunctionInvocationNodeA())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getNumberNode(), getStringNode())).isFalse();
-        assertThat(rangeFunction.nodesAreSameType(getFunctionInvocationNodeB(), getFunctionInvocationNodeA())).isFalse();
-    }
-
-    @Test
     public void nodesAreSameFunction_True() {
-        assertThat(rangeFunction.nodesAreSameFunction(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
     }
 
     @Test
     public void nodesAreSameFunction_False() {
-        assertThat(rangeFunction.nodesAreSameFunction(getFunctionInvocationNodeA(), getFunctionInvocationNodeB())).isFalse();
+        assertThat(rangeFunction.nodesReturnsSameType(getFunctionInvocationNodeB(), getFunctionInvocationNodeC())).isFalse();
     }
 
     private NullNode getNullNode() {
@@ -169,6 +153,10 @@ public class RangeFunctionTest {
 
     private FunctionInvocationNode getFunctionInvocationNodeB() {
         return (FunctionInvocationNode) rangeFunction.parse("date(\"1978-10-13\")");
+    }
+
+    private FunctionInvocationNode getFunctionInvocationNodeC() {
+        return (FunctionInvocationNode) rangeFunction.parse("number(\"1 000,0\", \" \", \",\")");
     }
 
 }

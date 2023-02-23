@@ -23,6 +23,8 @@ import org.kie.dmn.feel.util.TypeUtil;
 public class StringFunction
         extends BaseFEELFunction {
 
+    public static final StringFunction INSTANCE = new StringFunction();
+
     public StringFunction() {
         super(FEELConversionFunctionNames.STRING);
     }
