@@ -579,4 +579,35 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("Mario");
     }
+
+    @Test
+    public void testFloatOperation() {
+        // DROOLS-7334
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name, (salaryAsFloat - 600.0) < 0 )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person mario = new Person("Mario", 40);
+        mario.setSalary(550);
+        ksession.insert(mario);
+
+        Person mark = new Person("Mark", 40);
+        mark.setSalary(650);
+        ksession.insert(mark);
+
+        ksession.fireAllRules();
+
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isEqualTo("Mario");
+    }
 }

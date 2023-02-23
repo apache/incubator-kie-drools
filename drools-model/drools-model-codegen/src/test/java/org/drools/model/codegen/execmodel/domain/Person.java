@@ -197,6 +197,10 @@ public class Person extends AbstractReactiveObject {
         return salary;
     }
 
+    public float getSalaryAsFloat() {
+        return salary.floatValue();
+    }
+
     public void setSalary( Integer salary ) {
         this.salary = salary;
     }
