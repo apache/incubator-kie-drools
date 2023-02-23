@@ -99,7 +99,12 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
         return new EvalConditionNode( id, tupleSource, eval, context );
     }
 
-    public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {
+    public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource splitStart, BuildContext context ) {
+        LeftTupleSource startTupleSource = leftInput;
+
+        while (startTupleSource.getLeftTupleSource() != splitStart) {
+            startTupleSource = startTupleSource.getLeftTupleSource();
+        }
         return new RightInputAdapterNode( id, leftInput, startTupleSource, context );
     }
 

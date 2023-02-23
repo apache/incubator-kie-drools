@@ -46,7 +46,10 @@ public interface AgendaComponentFactory extends KieService {
         return AgendaComponentFactory.Holder.INSTANCE;
     }
 
-    class AgendaComponentFactoryImpl implements AgendaComponentFactory {
+    public class AgendaComponentFactoryImpl implements AgendaComponentFactory {
+
+        public AgendaComponentFactoryImpl() {
+        }
 
         @Override
         public LeftTuple createTerminalTuple() {

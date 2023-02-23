@@ -96,6 +96,7 @@ import org.drools.util.StringUtils;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.errors.IncompatibleGetterOverloadError;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
@@ -116,7 +117,7 @@ import static org.drools.util.MethodUtils.findMethod;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
-import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
+import static org.drools.util.ClassUtils.toRawClass;
 
 public class DrlxParseUtil {
 
@@ -914,6 +915,10 @@ public class DrlxParseUtil {
     }
 
     public static MvelCompiler createMvelCompiler(RuleContext context) {
+        return createMvelCompiler(context, false);
+    }
+
+    public static MvelCompiler createMvelCompiler(RuleContext context, boolean withDrools) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
         for (DeclarationSpec ds : context.getAllDeclarations()) {
@@ -929,9 +934,12 @@ public class DrlxParseUtil {
             mvelCompilerContext.addDeclaredFunction(m.getNameAsString(), m.getTypeAsString(), parametersType);
         }
 
+        if (withDrools) {
+            mvelCompilerContext.addDeclaration("drools", DroolsImpl.class);
+        }
+
         return new MvelCompiler(mvelCompilerContext);
     }
-
 
     public static ConstraintCompiler createConstraintCompiler(RuleContext context, Optional<Class<?>> originalPatternType) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );

@@ -25,9 +25,8 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
@@ -36,8 +35,10 @@ import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.base.ObjectType;
 import org.drools.core.rule.accessor.PatternExtractor;
@@ -119,19 +120,19 @@ public class MVELSalienceBuilderTest {
                                      31 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( p );
 
-        MockLeftTupleSink sink = new MockLeftTupleSink(buildContext);
         MockTupleSource source = new MockTupleSource(1, buildContext);
         source.setObjectCount(1);
-        sink.setLeftTupleSource(source);
+
+        RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), new GroupElement(), 0, buildContext);
 
         final JoinNodeLeftTuple tuple = new JoinNodeLeftTuple( f0,
-                                                       sink,
+                                                               rtn,
                                                        true );
 
-        RuleTerminalNode rtn = new RuleTerminalNode();
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
 
+        final RuleTerminalNodeLeftTuple item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, null, true);
+        item.init(0, 0, item.getPropagationContext(), null, null);
 
         assertThat(context.getRule().getSalience().getValue(item, context.getRule(), ksession)).isEqualTo(25);
 
@@ -175,18 +176,18 @@ public class MVELSalienceBuilderTest {
     public static class SalienceEvaluator
         implements
         Runnable {
-        public static final int          iterations = 1000;
+        public static final int           iterations = 1000;
 
-        private Salience                 salience;
-        private Rule                     rule;
-        private LeftTuple                tuple;
-        private WorkingMemory wm;
-        private final int                result;
-        private transient boolean        halt;
-        private RuleBuildContext         context;
-        private AgendaItem               item;
+        private Salience                  salience;
+        private Rule                      rule;
+        private LeftTuple                 tuple;
+        private WorkingMemory             wm;
+        private final int                 result;
+        private transient boolean         halt;
+        private RuleBuildContext          context;
+        private RuleTerminalNodeLeftTuple item;
 
-        private boolean                  error;
+        private boolean                   error;
 
         public SalienceEvaluator(InternalKnowledgeBase kBase,
                                  RuleBuildContext context,
@@ -211,10 +212,12 @@ public class MVELSalienceBuilderTest {
             this.halt = false;
             this.error = false;
             this.result = (person.getAge() + 20) / 2;
-            
-            RuleTerminalNode rtn = new RuleTerminalNode();
+
+            RuleTerminalNode rtn = new RuleTerminalNode(0, source, context.getRule(), new GroupElement(), 0, buildContext);
             rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null);
+
+            item = (RuleTerminalNodeLeftTuple) rtn.createLeftTuple(tuple, rtn, null, true);
+            item.init(0, 0, item.getPropagationContext(), null, null);
         }
 
         public void run() {

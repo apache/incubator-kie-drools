@@ -230,7 +230,7 @@ public class PhreakJoinNodeTest {
         return new Scenario( phreakNode, joinNode, sinkNode, bm, wm );
     }
 
-    public BuildContext createContext() {
+    public static BuildContext createContext() {
 
         CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
 

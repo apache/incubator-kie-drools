@@ -470,7 +470,7 @@ public class ExecutionFlowControlTest {
         final InternalAgendaGroup group1 = agenda.getAgendaGroupsManager().getAgendaGroup( "group1" );
         agenda.getAgendaGroupsManager().setFocus( group1 );
         assertThat(group1.size()).isEqualTo(1);
-        RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
+        RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations().iterator().next();
         ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem1.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 
@@ -486,7 +486,7 @@ public class ExecutionFlowControlTest {
         InternalAgendaGroup group2 = agenda.getAgendaGroupsManager().getAgendaGroup( "group2" );
         agenda.getAgendaGroupsManager().setFocus( group2);
         assertThat(group2.size()).isEqualTo(1);
-        RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
+        RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations().iterator().next();
         ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
         assertThat(ruleItem2.getRuleExecutor().getLeftTupleList().size()).isEqualTo(3);
 

@@ -52,7 +52,6 @@ import org.drools.model.BitMask;
 import org.drools.model.codegen.execmodel.PackageModel;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.ModelGenerator;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.kie.internal.builder.conf.ParallelLambdaExternalizationOption;
@@ -70,7 +69,8 @@ import static org.drools.model.codegen.execmodel.generator.DslMethodNames.EXPR_C
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.FROM_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.NOT_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.REACTIVE_FROM_CALL;
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
+import static org.drools.util.MethodUtils.boxTypePrimitive;
+import static org.drools.util.StreamUtils.optionalToStream;
 
 public class ExecModelLambdaPostProcessor {
 
@@ -302,7 +302,7 @@ public class ExecModelLambdaPostProcessor {
             return Optional.empty();
         }
 
-        returnType = ClassUtil.boxTypePrimitive(returnType);
+        returnType = boxTypePrimitive(returnType);
 
         Type returnTypeJp;
 

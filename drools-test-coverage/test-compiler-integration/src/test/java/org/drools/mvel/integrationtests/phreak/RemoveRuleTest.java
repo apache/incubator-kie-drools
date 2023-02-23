@@ -90,11 +90,11 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
 
-        BetaMemory bMem = ( BetaMemory ) sm.getNodeMemories().get(1);
+        BetaMemory bMem = ( BetaMemory ) sm.getNodeMemories()[1];
         assertThat(bMem.getLeftTupleMemory().size()).isEqualTo(1);
         assertThat(bMem.getRightTupleMemory().size()).isEqualTo(1);
 
-        BetaMemory eMem = ( BetaMemory ) sm.getNodeMemories().get(4);
+        BetaMemory eMem = ( BetaMemory ) sm.getNodeMemories()[4];
         assertThat(eMem.getLeftTupleMemory().size()).isEqualTo(1);
         assertThat(eMem.getRightTupleMemory().size()).isEqualTo(1);
 
@@ -640,6 +640,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPathMemorySizeAfterSegmentMerge() throws Exception {
+        // The two A(1;) are not actually shared, as r2 creates an AlphaTerminalNode
         InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;) B(1;)\n" );
         kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)\n") );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());

@@ -27,17 +27,17 @@ public class C {
         this.object = object;
     }
 
-    public static C b(Object object) {
+    public static C c(Object object) {
         return new C( object );
     }
 
-    public static C[] b(Object... objects) {
-        C[] bs = new C[objects.length];
+    public static C[] c(Object... objects) {
+        C[] cs = new C[objects.length];
         int i = 0;
         for ( Object object : objects ) {
-            bs[i++] = new C( object );
+            cs[i++] = new C( object );
         }
-        return bs;
+        return cs;
     }        
 
     public Object getObject() {

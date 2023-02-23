@@ -17,6 +17,8 @@ package org.drools.ruleunits.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
 
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.DrlProject;
@@ -48,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.util.IoUtils.readFileAsString;
+import static org.drools.util.IoUtils.readJarEntryAsString;
 
 public class RuleUnitProviderImpl implements RuleUnitProvider {
 
@@ -120,21 +125,35 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
         try {
             Enumeration<URL> urlEnumeration = unitClass.getClassLoader().getResources(unitClass.getPackageName().replace('.', '/'));
             while (urlEnumeration.hasMoreElements()) {
-                String path = urlEnumeration.nextElement().getPath();
-                Optional.ofNullable(new File(path).listFiles())
-                        .stream()
-                        .flatMap(Arrays::stream)
-                        .filter(f -> doesDrlContainUnit(f, unitStatement) || doesXlsContainUnit(f, unitClass.getSimpleName()))
-                        .map(ks.getResources()::newFileSystemResource)
-                        .forEach(resource -> {
-                            LOGGER.debug("Found {} in {} unit", resource.getSourcePath(), unitClass.getSimpleName());
-                            resources.add(resource);
-                        });
+                URL resourceUrl = urlEnumeration.nextElement();
+                String protocol = resourceUrl.getProtocol();
+                switch (protocol) {
+                    case "file":
+                        collectResourcesInFileSystem(ks, unitClass, unitStatement, resources, resourceUrl);
+                        break;
+                    case "jar":
+                        collectResourcesInJar(ks, resources, unitClass, unitStatement, resourceUrl);
+                        break;
+                }
+
             }
         } catch (IOException e) {
             throw new RuleUnitGenerationException("Exception while creating KieModule", e);
         }
         return resources;
+    }
+
+    private static void collectResourcesInFileSystem(KieServices ks, Class<?> unitClass, String unitStatement, Collection<Resource> resources, URL resourceUrl) {
+        String path = resourceUrl.getPath();
+        Optional.ofNullable(new File(path).listFiles())
+                .stream()
+                .flatMap(Arrays::stream)
+                .filter(f -> doesDrlContainUnit(f, unitStatement) || doesXlsContainUnit(f, unitClass.getSimpleName()))
+                .map(ks.getResources()::newFileSystemResource)
+                .forEach(resource -> {
+                    LOGGER.debug("Found {} in {} unit", resource.getSourcePath(), unitClass.getSimpleName());
+                    resources.add(resource);
+                });
     }
 
     private static boolean doesDrlContainUnit(File file, String unitStatement) {
@@ -157,6 +176,50 @@ public class RuleUnitProviderImpl implements RuleUnitProvider {
     private static boolean doDecisionTablePropertiesContainUnit(Map<String, List<String[]>> dtableProperties, String unitName) {
         List<String[]> unitValues = dtableProperties.get("unit");
         return unitValues != null && unitValues.stream().anyMatch(valueArray -> valueArray.length > 0 && valueArray[0] != null && valueArray[0].trim().equals(unitName));
+    }
+
+    private static void collectResourcesInJar(KieServices ks, Collection<Resource> resources, Class<?> unitClass, String unitStatement, URL resourceUrl) {
+        String path = resourceUrl.getPath();                       // file:/path/to/xxx.jar!org/example
+        int jarSuffixIndex = path.indexOf(".jar!/");
+        String jarPath = path.substring(5, jarSuffixIndex + 4);    // /path/to/xxx.jar
+        String directoryPath = path.substring(jarSuffixIndex + 6); // org/example
+
+        try (JarFile jarFile = new JarFile(new File(jarPath))) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry jarEntry = entries.nextElement();
+                if (jarEntry.getName().startsWith(directoryPath + "/") && !jarEntry.isDirectory()) {
+                    if (doesDrlContainUnit(jarFile, jarEntry, unitStatement) || doesXlsContainUnit(jarFile, jarEntry, unitClass.getSimpleName())) {
+                        Resource resource = ks.getResources().newClassPathResource(jarEntry.getName(), unitClass.getClassLoader());
+                        LOGGER.debug("Found {} in {} unit", resource.getSourcePath(), unitClass.getSimpleName());
+                        resources.add(resource);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RuleUnitGenerationException("Exception while collecting resources in a jar file", e);
+        }
+    }
+
+    private static boolean doesDrlContainUnit(JarFile jarFile, JarEntry jarEntry, String unitStatement) {
+        return jarEntry.getName().endsWith(".drl") && readJarEntryAsString(jarFile, jarEntry).contains(unitStatement);
+    }
+
+    private static boolean doesXlsContainUnit(JarFile jarFile, JarEntry jarEntry, String unitName) {
+        if (jarEntry.getName().endsWith(".drl.xls") || jarEntry.getName().endsWith(".drl.xlsx")) {
+            DecisionTableProvider decisionTableProvider = DecisionTableFactory.getDecisionTableProvider();
+            if (decisionTableProvider == null) {
+                LOGGER.warn("decision table {} is found, but DecisionTableProvider implementation is not found in the classpath. Please add drools-decisiontables as a dependency", jarEntry.getName());
+                return false;
+            }
+            try (InputStream inputStream = jarFile.getInputStream(jarEntry)) {
+                Map<String, List<String[]>> dtableProperties = decisionTableProvider.loadPropertiesFromInputStream(inputStream, new DecisionTableConfigurationImpl());
+                return doDecisionTablePropertiesContainUnit(dtableProperties, unitName);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+        return false;
     }
 
     @Override

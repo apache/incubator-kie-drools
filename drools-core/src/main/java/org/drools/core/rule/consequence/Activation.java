@@ -28,6 +28,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.util.Queue.QueueEntry;
 import org.kie.api.runtime.rule.Match;
 
 /**
@@ -36,7 +37,7 @@ import org.kie.api.runtime.rule.Match;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  */
-public interface Activation extends Serializable, Match {
+public interface Activation extends Serializable, QueueEntry, Match {
     
     /**
      * 
@@ -84,10 +85,6 @@ public interface Activation extends Serializable, Match {
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
      */
     void remove();
-    
-    void setQueued(boolean activated);
-    
-    boolean isQueued();
 
     InternalAgendaGroup getAgendaGroup();
 
@@ -110,12 +107,6 @@ public interface Activation extends Serializable, Match {
     void setActive(boolean active);
 
     boolean isRuleAgendaItem();
-
-    void setQueueIndex(int index);
-
-    int getQueueIndex();
-
-    void dequeue();
 
     default List<Object> getObjectsDeep() {
         return Collections.emptyList();

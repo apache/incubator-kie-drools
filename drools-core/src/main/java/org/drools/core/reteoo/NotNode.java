@@ -131,13 +131,14 @@ public class NotNode extends BetaNode {
 
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
 
-        if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
+        if (memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
             // strangely we link here, this is actually just to force a network evaluation
             // The assert is then processed and the rule unlinks then.
             // This is because we need the first RightTuple to link with it's blocked
             if ( stagedInsertWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
+
             // NotNodes can only be unlinked, if they have no variable constraints
             memory.linkNode( this, reteEvaluator );
         } else if ( stagedInsertWasEmpty ) {

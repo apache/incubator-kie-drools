@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayDeque;
+import java.util.Collection;
 
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.util.Queue.QueueEntry;
 
-public class ArrayQueue implements Queue, Externalizable {
+public class ArrayQueue<T extends QueueEntry> implements Queue<T>, Externalizable {
 
-    private java.util.Queue<Activation> queue = new ArrayDeque<>();
+    private java.util.Queue<T> queue = new ArrayDeque<>();
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
@@ -33,21 +34,21 @@ public class ArrayQueue implements Queue, Externalizable {
 
     @Override
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        this.queue = (java.util.Queue<Activation>) in.readObject();
+        this.queue = (java.util.Queue<T>) in.readObject();
     }
 
     @Override
-    public void enqueue( Activation activation ) {
+    public void enqueue( T activation ) {
         queue.add( activation );
     }
 
     @Override
-    public Activation dequeue() {
+    public T dequeue() {
         return queue.poll();
     }
 
     @Override
-    public void dequeue( Activation activation ) {
+    public void dequeue( T activation ) {
         queue.remove( activation );
     }
 
@@ -62,10 +63,8 @@ public class ArrayQueue implements Queue, Externalizable {
     }
 
     @Override
-    public Activation[] getAndClear() {
-        Activation[] activations = (Activation[]) toArray( new Activation[size()] );
-        clear();
-        return activations;
+    public Collection<T> getAll() {
+        return queue;
     }
 
     @Override
@@ -74,12 +73,7 @@ public class ArrayQueue implements Queue, Externalizable {
     }
 
     @Override
-    public Activation peek() {
+    public T peek() {
         return queue.peek();
-    }
-
-    @Override
-    public Object[] toArray( Object[] a ) {
-        return queue.toArray(a);
     }
 }

@@ -16,23 +16,32 @@
 
 package org.drools.core.util;
 
-import org.drools.core.rule.consequence.Activation;
+import java.util.Collection;
 
-public interface Queue {
-    void enqueue(Activation queueable);
+import org.drools.core.util.Queue.QueueEntry;
 
-    Activation dequeue();
-    void dequeue(Activation activation);
+public interface Queue<T extends QueueEntry> {
+    void enqueue(T queueable);
+
+    T dequeue();
+    void dequeue(T activation);
 
     boolean isEmpty();
 
     void clear();
 
-    Activation[] getAndClear();
+    Collection<T> getAll();
 
     int size();
 
-    Activation peek();
+    T peek();
 
-    Object[] toArray(Object[] a);
+    interface QueueEntry {
+
+        void setQueued(boolean b);
+
+        void dequeue();
+
+        boolean isQueued();
+    }
 }

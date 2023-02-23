@@ -108,7 +108,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 env : [
                     // Sonarcloud analysis only on main branch
                     // As we have only Community edition
-                    DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
+                    ENABLE_SONARCLOUD: EnvUtils.isDefaultEnvironment(this, jobFolder.getEnvironmentName()) && Utils.isMainBranch(this),
                     // Setup full build if not prod profile
                     BUILD_MVN_OPTS_CURRENT: EnvUtils.hasEnvironmentId(this, jobFolder.getEnvironmentName(), 'prod') ? '' : '-Dfull',
                 ]
@@ -153,18 +153,17 @@ KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', 
 
 // Environment nightlies
 setupSpecificBuildChainNightlyJob('native')
-setupSpecificBuildChainNightlyJob('mandrel')
 
 // Jobs with integration branch
 setupQuarkusIntegrationJob('quarkus-main')
 setupQuarkusIntegrationJob('quarkus-branch')
 setupQuarkusIntegrationJob('quarkus-lts')
-setupQuarkusIntegrationJob('mandrel-lts')
+setupQuarkusIntegrationJob('native-lts')
+setupQuarkusIntegrationJob('quarkus-3')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
-setupPostReleaseJob()
 
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
   modules: [ 'drools-build-parent' ],
@@ -279,24 +278,6 @@ void setupPromoteJob(JobType jobType) {
             stringParam('PROJECT_VERSION', '', 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
-        }
-    }
-}
-void setupPostReleaseJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'drools-post-release', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.post-release", 'Drools Post Release')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    jobParams.env.putAll([
-            JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-            AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-            MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
-            MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            stringParam('PROJECT_VERSION', '', 'Recent release version of drools.')
-            booleanParam('SEND_NOTIFICATION', true, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
 }

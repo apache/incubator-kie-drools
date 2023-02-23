@@ -204,7 +204,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return AgendaComponentFactory.get().createTerminalTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
-
     }      
     
     public ObjectTypeNode.Id getLeftInputOtnId() {

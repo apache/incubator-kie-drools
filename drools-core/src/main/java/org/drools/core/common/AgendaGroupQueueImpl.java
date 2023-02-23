@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +47,7 @@ public class AgendaGroupQueueImpl
     /**
      * Items in the agenda.
      */
-    private          Queue              priorityQueue;
+    private          Queue<Activation> priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -54,7 +55,7 @@ public class AgendaGroupQueueImpl
 
     private ReteEvaluator reteEvaluator;
     private boolean               autoDeactivate = true;
-    private Map<Object, String>     nodeInstances  = new ConcurrentHashMap<>();
+    private Map<Object, String>   nodeInstances  = new ConcurrentHashMap<>();
 
     private volatile              boolean hasRuleFlowLister;
 
@@ -87,9 +88,9 @@ public class AgendaGroupQueueImpl
         this.reteEvaluator = reteEvaluator;
         // workingMemory can be null during deserialization
         if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
-            this.priorityQueue = new ArrayQueue();
+            this.priorityQueue = new ArrayQueue<>();
         } else {
-            this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
+            this.priorityQueue = new BinaryHeapQueue<>(new PhreakConflictResolver());
         }
     }
 
@@ -149,8 +150,8 @@ public class AgendaGroupQueueImpl
         this.lastRemoved = null;
     }
 
-    public Activation[] getAndClear() {
-        return this.priorityQueue.getAndClear();
+    public Collection<Activation> getAll() {
+        return this.priorityQueue.getAll();
     }
 
     /* (non-Javadoc)
@@ -222,8 +223,8 @@ public class AgendaGroupQueueImpl
         return this.priorityQueue.isEmpty();
     }
 
-    public Activation[] getActivations() {
-        return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
+    public Collection<Activation> getActivations() {
+        return this.priorityQueue.getAll();
     }
 
     @Override

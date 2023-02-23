@@ -19,7 +19,7 @@ seed:
       repository: drools
       author:
         name: kiegroup
-        credentials_id: kie-ci
+        credentials_id: kie-ci4
       branch: main
     path: .ci/jenkins/config/branch.yaml
   jenkinsfile: dsl/seed/jenkinsfiles/Jenkinsfile.seed.branch

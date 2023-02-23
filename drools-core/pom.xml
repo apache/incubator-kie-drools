@@ -223,6 +223,49 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createSourcesJar>true</createSourcesJar>
+              <minimizeJar>true</minimizeJar>
+              <filters>
+                <filter>
+                  <artifact>it.unimi.dsi:fastutil</artifact>
+                  <includes>
+                    <include>it/unimi/dsi/fastutil/Function**</include>
+                    <include>it/unimi/dsi/fastutil/Hash**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObjectCollection**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObject2Object**</include>
+                    <include>it/unimi/dsi/fastutil/objects/Object2ObjectMap**</include>
+                    <include>it/unimi/dsi/fastutil/objects/Object2ObjectFunction**</include>
+                    <include>it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectCollection**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectSet**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectIterable**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectIterator**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectSpliterator**</include>
+                  </includes>
+                </filter>
+              </filters>
+              <artifactSet>
+                <includes>
+                  <include>it.unimi.dsi:fastutil</include>
+                </includes>
+              </artifactSet>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
     </plugins>
   </build>
 </project>

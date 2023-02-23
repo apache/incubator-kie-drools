@@ -27,10 +27,13 @@ import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItemImpl;
 import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 
 public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaComponentFactory {
+
+    public TruthMaintenanceSystemAgendaComponentFactory() {
+    }
+
     @Override
     public LeftTuple createTerminalTuple() {
         return new TruthMaintenanceSystemRuleTerminalNodeLeftTuple();
@@ -77,6 +80,6 @@ public class TruthMaintenanceSystemAgendaComponentFactory implements AgendaCompo
 
     @Override
     public RuleAgendaItem createAgendaItem(long activationNumber, Tuple tuple, int salience, PropagationContext context, PathMemory pmem, TerminalNode rtn, boolean declarativeAgendaEnabled, InternalAgendaGroup agendaGroup) {
-        return new TruthMaintenanceSystemAgendaItemImpl(activationNumber, tuple, salience, context, pmem, rtn, declarativeAgendaEnabled, agendaGroup);
+        return new RuleAgendaItem(activationNumber, tuple, salience, context, pmem, rtn, declarativeAgendaEnabled, agendaGroup);
     }
 }

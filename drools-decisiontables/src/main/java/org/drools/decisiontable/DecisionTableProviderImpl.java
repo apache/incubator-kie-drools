@@ -111,6 +111,19 @@ public class DecisionTableProviderImpl
         }
     }
 
+    @Override
+    public Map<String, List<String[]>> loadPropertiesFromInputStream(InputStream inputStream, DecisionTableConfiguration configuration) {
+        switch (configuration.getInputType()) {
+            case XLS :
+            case XLSX :
+                PropertiesSheetListener propertiesSheetListener = new PropertiesSheetListener();
+                InputType.XLS.createParser(propertiesSheetListener).parseFile(inputStream);
+                return propertiesSheetListener.getProperties();
+            default :
+                return new HashMap<>();
+        }
+    }
+
     /**
      * Adapts a <code>Reader</code> as an <code>InputStream</code>. Adapted from
      * <CODE>StringInputStream</CODE>.

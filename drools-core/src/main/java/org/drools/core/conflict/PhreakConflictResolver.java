@@ -16,17 +16,16 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.rule.consequence.Activation;
-import org.drools.core.rule.consequence.ConflictResolver;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class PhreakConflictResolver
-        implements
-        ConflictResolver, Externalizable {
+import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.ConflictResolver;
+
+public class PhreakConflictResolver implements ConflictResolver, Externalizable {
+
     private static final long                   serialVersionUID = 510l;
     public static final  PhreakConflictResolver INSTANCE         = new PhreakConflictResolver();
 
@@ -40,13 +39,11 @@ public class PhreakConflictResolver
         return PhreakConflictResolver.INSTANCE;
     }
 
-    public final int compare(final Activation existing,
-                             final Activation adding) {
+    public final int compare(final Activation existing, final Activation adding) {
         return doCompare( existing, adding );
     }
 
-    public final static int doCompare(final Activation existing,
-                                      final Activation adding) {
+    public final static int doCompare(final Activation existing, final Activation adding) {
         if (existing == adding) {
             return 0;
         }
@@ -54,8 +51,14 @@ public class PhreakConflictResolver
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
 
-        return s1 != s2 ?
-               ( s1 > s2 ? 1 : -1 ) : // highest salience goes first (cannot do s1-s2 due to overflow)
-               adding.getRule().getLoadOrder() - existing.getRule().getLoadOrder(); // lowest order goes first
+        if (s1 != s2) {
+            return s1 > s2 ? 1 : -1;
+        }
+
+        if (adding.getRule().equals(existing.getRule()) || adding.getRule().getLoadOrder() == existing.getRule().getLoadOrder()) {
+            return existing.getActivationNumber() > adding.getActivationNumber() ? 1 : -1;
+        }
+
+        return adding.getRule().getLoadOrder() - existing.getRule().getLoadOrder(); // lowest order goes first
     }
 }

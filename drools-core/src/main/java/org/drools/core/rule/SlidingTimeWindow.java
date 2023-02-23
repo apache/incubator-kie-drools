@@ -143,22 +143,21 @@ public class SlidingTimeWindow
                             final ReteEvaluator reteEvaluator) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
-        // it may be a call back to expire the tuple that is already being expired
-        if ( !handle.equals( queue.getExpiringHandle() ) ) {
-            if ( handle.equals( queue.peek() ) ) {
+        final EventFactHandle peekEvent = queue.peek();
+        if (peekEvent != null) {
+            if (handle.equals(peekEvent)) {
                 // it was the head of the queue
                 queue.poll();
                 // update next expiration time
-                updateNextExpiration( queue.peek(),
-                                      reteEvaluator,
-                                      queue,
-                                      nodeId);
-            } else {
-                queue.remove( handle );
+                updateNextExpiration(queue.peek(), reteEvaluator, queue, nodeId);
+            } else if (handle.compareTo(peekEvent) >= 0) {
+                // if the event to be removed is older than the peek event we already know that it cannot be there,
+                // so it is not necessary to try to remove it (which is an expensive operation)
+                queue.remove(handle);
             }
-            if ( queue.isEmpty() && queue.getJobHandle() != null ) {
-                reteEvaluator.getTimerService().removeJob( queue.getJobHandle() );
-            }
+        }
+        if ( queue.isEmpty() && queue.getJobHandle() != null ) {
+            reteEvaluator.getTimerService().removeJob( queue.getJobHandle() );
         }
     }
 
@@ -171,23 +170,17 @@ public class SlidingTimeWindow
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
 
         EventFactHandle handle = queue.peek();
-        while ( handle != null && isExpired( currentTime,
-                                             handle ) ) {
-            queue.setExpiringHandle( handle );
+        while ( handle != null && isExpired( currentTime, handle ) ) {
             queue.remove();
             if( handle.isValid()) {
                 // if not expired yet, expire it
                 final PropagationContext expiresPctx = createPropagationContextForFact( reteEvaluator, handle, PropagationContext.Type.EXPIRATION );
                 ObjectTypeNode.doRetractObject(handle, expiresPctx, reteEvaluator);
             }
-            queue.setExpiringHandle( null );
             handle = queue.peek();
         }
         // update next expiration time
-        updateNextExpiration( handle,
-                              reteEvaluator,
-                              queue,
-                              nodeId );
+        updateNextExpiration( handle, reteEvaluator, queue, nodeId );
     }
 
     protected boolean isExpired(final long currentTime,
@@ -238,7 +231,6 @@ public class SlidingTimeWindow
             Externalizable {
 
         private PriorityQueue<EventFactHandle> queue;
-        private EventFactHandle                expiringHandle;
         private JobHandle                      jobHandle;
 
         public SlidingTimeWindowContext() {
@@ -260,21 +252,11 @@ public class SlidingTimeWindow
         public void readExternal(ObjectInput in) throws IOException,
                                                         ClassNotFoundException {
             this.queue = (PriorityQueue<EventFactHandle>) in.readObject();
-            this.expiringHandle = (EventFactHandle) in.readObject();
         }
 
         @Override
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( this.queue );
-            out.writeObject( this.expiringHandle );
-        }
-
-        public EventFactHandle getExpiringHandle() {
-            return expiringHandle;
-        }
-
-        public void setExpiringHandle( EventFactHandle expiringHandle ) {
-            this.expiringHandle = expiringHandle;
         }
 
         public void add(EventFactHandle handle) {

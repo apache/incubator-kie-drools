@@ -46,6 +46,9 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.phreak.BuildtimeSegmentUtilities;
+import org.drools.core.phreak.EagerPhreakBuilder.Add;
+import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.CoreComponentFactory;
@@ -59,6 +62,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
@@ -86,8 +90,6 @@ import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.internal.utils.KieService;
 import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1023,12 +1025,30 @@ public class KnowledgeBaseImpl implements RuleBase {
         kBaseInternal_addRules( rules, Collections.emptyList() );
     }
 
-    public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> workingMemories ) {
+    public void kBaseInternal_addRules(Collection<? extends Rule> rules, Collection<InternalWorkingMemory> wms ) {
+        List<TerminalNode> terminalNodes = new ArrayList<>(rules.size() * 2);
+
         for (Rule r : rules) {
             RuleImpl rule = (RuleImpl) r;
             checkMultithreadedEvaluation( rule );
             this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
-            this.reteooBuilder.addRule(rule, workingMemories);
+            terminalNodes.addAll(this.reteooBuilder.addRule(rule, wms));
+        }
+
+        if (PhreakBuilder.isEagerSegmentCreation() && !hasSegmentPrototypes()) {
+            // All Protos must be created, before inserting objects.
+            for (TerminalNode tn : terminalNodes) {
+                tn.getPathMemSpec();
+                BuildtimeSegmentUtilities.createPathProtoMemories(tn, null, this);
+            }
+            Set<Integer> visited = new HashSet<>();
+            for (TerminalNode tn : terminalNodes) {
+                // populate memories
+                wms.stream().forEach( wm -> {
+                    Add.insertLiaFacts(tn.getPathNodes()[0], wm, visited, true);
+                    Add.insertFacts(tn, wm, visited, true);
+                });
+            }
         }
     }
 

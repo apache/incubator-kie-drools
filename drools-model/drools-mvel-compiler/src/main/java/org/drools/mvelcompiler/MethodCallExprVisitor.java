@@ -33,9 +33,9 @@ import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.drools.mvelcompiler.util.TypeUtils;
+import org.drools.util.ClassUtils;
 
-import static org.drools.mvelcompiler.util.StreamUtils.optionalToStream;
+import static org.drools.util.StreamUtils.optionalToStream;
 
 public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
@@ -89,7 +89,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                                         List<TypedExpression> arguments,
                                         Class<?>[] argumentsType) {
         Optional<Method> method = scope.flatMap(TypedExpression::getType)
-                .<Class<?>>map(TypeUtils::classFromType)
+                .<Class<?>>map(ClassUtils::classFromType)
                 .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), argumentsType));
 
         if(method.isEmpty()) {
@@ -123,7 +123,7 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
                 .map(TypedExpression::getType)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(TypeUtils::classFromType)
+                .map(ClassUtils::classFromType)
                 .toArray(Class[]::new);
     }
 }

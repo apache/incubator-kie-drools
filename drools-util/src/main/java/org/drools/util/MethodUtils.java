@@ -17,6 +17,7 @@
 package org.drools.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 public class MethodUtils {
@@ -208,6 +209,14 @@ public class MethodUtils {
         return false;
     }
 
+    public static Type boxTypePrimitive(Type type) {
+        if (type instanceof Class<?>) {
+            return boxPrimitive((Class<?>)type);
+        } else {
+            return type;
+        }
+    }    
+    
     public static Class<?> boxPrimitive(Class cls) {
         if (cls == int.class || cls == Integer.class) {
             return Integer.class;

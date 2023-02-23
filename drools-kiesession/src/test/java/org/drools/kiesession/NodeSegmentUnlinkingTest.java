@@ -15,6 +15,7 @@
 
 package org.drools.kiesession;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.drools.core.base.ClassObjectType;
@@ -27,6 +28,7 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakNotNode;
@@ -236,9 +238,14 @@ public class NodeSegmentUnlinkingTest {
         n5.attach(buildContext);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
-        BuildtimeSegmentUtilities.createPathProtoMemories(n3, null, null, kBase);
-        BuildtimeSegmentUtilities.createPathProtoMemories(n4, null, null, kBase);
-        BuildtimeSegmentUtilities.createPathProtoMemories(n5, null, null, kBase);
+        SegmentPrototype[] protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n3, null, kBase);
+        Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
+
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n4, null, kBase);
+        Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
+
+        protos = BuildtimeSegmentUtilities.createLeftTupleNodeProtoMemories(n5, null, kBase);
+        Arrays.stream(protos).forEach( p -> p.setPathEndNodes( new PathEndNode[0]));
         createSegmentMemory( n2, ksession );
 
         BetaMemory bm = (BetaMemory) ksession.getNodeMemory( n1 );

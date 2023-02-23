@@ -45,20 +45,20 @@ public final class AddRemoveTestCases {
                                        final Object... facts) {
         
         insertFactsFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals,facts);
-//        insertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        insertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//
-//        fireRulesInsertFactsFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        fireRulesInsertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        fireRulesInsertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//
-//        insertFactsRemoveRulesFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        insertFactsRemoveRulesFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        insertFactsRemoveRulesFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//
-//        insertFactsFireRulesRemoveRulesReinsertRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        insertFactsFireRulesRemoveRulesReinsertRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
-//        insertFactsFireRulesRemoveRulesReinsertRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+
+        fireRulesInsertFactsFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        fireRulesInsertFactsFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        fireRulesInsertFactsFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+
+        insertFactsRemoveRulesFireRulesRemoveRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsRemoveRulesFireRulesRemoveRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsRemoveRulesFireRulesRemoveRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+
+        insertFactsFireRulesRemoveRulesReinsertRules1(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRulesReinsertRules2(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
+        insertFactsFireRulesRemoveRulesReinsertRules3(originalKnowledgeBase, rule1, rule2, rule1Name, rule2Name, additionalGlobals, facts);
     }
 
     public static void insertFactsFireRulesRemoveRules1(final String rule1,
@@ -549,7 +549,7 @@ public final class AddRemoveTestCases {
 
             TestUtil.addRules(kieSession, true, rule2);
             kieSession.fireAllRules();
-            assertThat(resultsList).containsOnly(rule1Name, rule2Name);
+            assertThat(resultsList).containsOnly(rule2Name);
         } finally {
             kieSession.dispose();
         }

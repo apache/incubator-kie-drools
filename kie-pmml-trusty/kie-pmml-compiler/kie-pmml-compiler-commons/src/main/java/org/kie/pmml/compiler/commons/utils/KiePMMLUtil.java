@@ -76,7 +76,7 @@ public class KiePMMLUtil {
         PMML toReturn;
         try {
             toReturn = org.jpmml.model.PMMLUtil.unmarshal(is);
-        } catch (SAXException | JAXBException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         String cleanedFileName = fileName.contains(".") ? fileName.substring(0, fileName.indexOf('.')) : fileName;

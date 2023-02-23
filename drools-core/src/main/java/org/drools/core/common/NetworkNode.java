@@ -43,7 +43,9 @@ public interface NetworkNode {
 
     void addAssociatedTerminal(TerminalNode terminalNode);
     void removeAssociatedTerminal(TerminalNode terminalNode);
+
     int getAssociatedTerminalsSize();
+
     boolean hasAssociatedTerminal(NetworkNode terminalNode);
 
     NetworkNode[] getSinks();

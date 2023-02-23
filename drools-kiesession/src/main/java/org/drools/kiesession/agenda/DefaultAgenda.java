@@ -599,8 +599,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         propagationList.flush();
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
-        Match[] matches = ((InternalAgendaGroup)systemRuleFlowGroup).getActivations();
-        for ( Match match : matches ) {
+        for ( Match match : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
             Activation act = ( Activation ) match;
             if ( act.isRuleAgendaItem() ) {
                 // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
