@@ -48,8 +48,6 @@ import java.util.function.Predicate;
 public class RangeFunction extends BaseFEELFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();
-
-    //private static final EvaluationContext STUBBED = new StubbedEvaluationContext();
     private static final EvaluationContext STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), new FEELEventListenersManager(), 0);
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
