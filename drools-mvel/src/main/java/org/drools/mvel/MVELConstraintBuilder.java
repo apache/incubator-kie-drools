@@ -128,7 +128,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
             DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
 
-            MVEL_OPERATORS = new HashSet<String>() {{
+            MVEL_OPERATORS = new HashSet<>() {{
                 add("==");
                 add("!=");
                 add(">");
@@ -200,7 +200,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                 requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) &&
                                 Operator.BuiltInOperator.EQUAL.getSymbol().equals( operatorDescr.getOperator() );
         if (isUnification && leftValue.equals(rightValue)) {
-            expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
+            expression = resolveUnificationAmbiguity(declarations, leftValue, rightValue);
         }
 
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
@@ -273,7 +273,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return expr;
     }
 
-    protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
+    private static String resolveUnificationAmbiguity(Declaration[] declrations, String leftValue, String rightValue) {
         // resolve ambiguity between variable and bound value with the same name in unifications
         rightValue = rightValue + "__";
         for (Declaration declaration : declrations) {
@@ -306,7 +306,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
         }
         if (vtype.isDecimalNumber() && field.getValue() != null) {
-            expr = expr.replace( rightValue, field.getValue().toString() );
+            int opPos = expr.indexOf(operator) + operator.length();
+            expr = expr.substring(0, opPos) + expr.substring(opPos).replace(rightValue, field.getValue().toString());
         }
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
         return normalizeEmptyKeyword( expr, operator );
@@ -462,7 +463,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         private BooleanConversionHandler() { }
 
         public Object convertFrom(Object in) {
-            if (in.getClass() == Boolean.class || in.getClass() == boolean.class) {
+            if (in.getClass() == Boolean.class) {
                 return in;
             }
             return in instanceof String && ((String)in).equalsIgnoreCase("true");
@@ -619,10 +620,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         parserContext1.setStrictTypeEnforcement( false );
         parserContext1.setStrongTyping( false );
-        Class< ? > returnType;
 
         try {
-            returnType = MVEL.analyze( expr, parserContext1 );
+            MVEL.analyze( expr, parserContext1 );
         } catch ( Exception e ) {
             return null;
         }
@@ -664,6 +664,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
         }
 
+        Class< ? > returnType;
         try {
             returnType = MVEL.analyze( expr, parserContext2 );
         } catch ( Exception e ) {
@@ -698,7 +699,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             final AnalysisResult analysis = context.getDialect().analyzeExpression(context,
                     descr,
                     fieldName,
-                    new BoundIdentifiers(pattern, context, Collections.EMPTY_MAP, objectType));
+                    new BoundIdentifiers(pattern, context, Collections.emptyMap(), objectType));
 
             if (analysis == null) {
                 // something bad happened
@@ -835,7 +836,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         private String expression;
         private ParserContext parserContext;
 
-        private transient Class<?> argumentClass;
         private transient MvelEvaluator<Object> evaluator;
 
         public Expression() { }
@@ -854,7 +854,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
             parserContext.setInputs(inputs);
 
-            this.argumentClass = MVEL.analyze( expression, parserContext );
             this.evaluator = createMvelEvaluator(MVEL.compileExpression( expression, parserContext ));
         }
 
