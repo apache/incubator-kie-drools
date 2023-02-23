@@ -6,18 +6,18 @@ import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
-import org.kie.dmn.model.api.GwtIncompatible;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@GwtIncompatible
 public class RangeFunctionTest {
 
     private RangeFunction rangeFunction;
@@ -100,13 +100,11 @@ public class RangeFunctionTest {
         FunctionTestUtil.assertResult(rangeFunction.invoke("[\"a\"..lower case(\"Z\")]"), new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED));
     }
 
-
     @Test
     public void nodeIsAllowed_True() {
         assertThat(rangeFunction.nodeIsAllowed(getNullNode())).isTrue();
         assertThat(rangeFunction.nodeIsAllowed(getNumberNode())).isTrue();
         assertThat(rangeFunction.nodeIsAllowed(getStringNode())).isTrue();
-        assertThat(rangeFunction.nodeIsAllowed(getBooleanNode())).isTrue();
         assertThat(rangeFunction.nodeIsAllowed(getAtLiteralNode())).isTrue();
         assertThat(rangeFunction.nodeIsAllowed(getFunctionInvocationNodeA())).isTrue();
     }
@@ -115,16 +113,61 @@ public class RangeFunctionTest {
     public void nodeIsAllowed_False() {
         IfExpressionNode ifExpressionNode = (IfExpressionNode) rangeFunction.parse("if(true)");
         assertThat(rangeFunction.nodeIsAllowed(ifExpressionNode)).isFalse();
+        assertThat(rangeFunction.nodeIsAllowed(getBooleanNode())).isFalse();
     }
 
     @Test
-    public void nodesAreSameFunction_True() {
-        assertThat(rangeFunction.nodesReturnsSameType(getFunctionInvocationNodeA(), getFunctionInvocationNodeA())).isTrue();
+    public void nodeValueIsAllowed_True() {
+        assertThat(rangeFunction.nodeValueIsAllowed(null)).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(12)).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(BigDecimal.valueOf(23.3243))).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(DateTimeFormatter.ISO_DATE.parse("2016-07-29", LocalDate::from))).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(DateTimeFormatter.ISO_TIME.parse("23:59:00", LocalTime::from))).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(LocalDateTime.of(2016, 7, 29, 5, 48, 23, 0))).isTrue();
+        assertThat(rangeFunction.nodeValueIsAllowed(Duration.parse("P2DT20H14M"))).isTrue();
     }
 
     @Test
-    public void nodesAreSameFunction_False() {
-        assertThat(rangeFunction.nodesReturnsSameType(getFunctionInvocationNodeB(), getFunctionInvocationNodeC())).isFalse();
+    public void nodeValueIsAllowed_False() {
+        assertThat(rangeFunction.nodeValueIsAllowed(Boolean.TRUE)).isFalse();
+        assertThat(rangeFunction.nodeValueIsAllowed(Collections.emptyMap())).isFalse();
+        assertThat(rangeFunction.nodeValueIsAllowed(Collections.emptyList())).isFalse();
+    }
+
+    @Test
+    public void nodesReturnsSameType_True() {
+        assertThat(rangeFunction.nodesReturnsSameType(null, null)).isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType("Hello", "world")).isTrue();
+    }
+
+    @Test
+    public void nodesReturnsSameType_False() {
+        assertThat(rangeFunction.nodesReturnsSameType(null, "null")).isFalse();
+        assertThat(rangeFunction.nodesReturnsSameType("1", 1)).isFalse();
+    }
+
+    @Test
+    public void evaluateWithValidFunctionInvocationNode() {
+        Object[][] data = validFunctionInvocationNodeData();
+        Arrays.stream(data).forEach(objects -> {
+            String expression = String.format("[%1$s..%1$s]", objects[0]);
+            FEELFnResult<Range> retrieved = rangeFunction.invoke(expression);
+            assertThat(retrieved.isRight())
+                    .withFailMessage(() -> String.format("Expected 'retrieved.isRight()' from, %s", expression))
+                    .isTrue();
+        });
+    }
+
+    @Test
+    public void evaluateWithInvalidFunctionInvocationNode() {
+        Object[][] data = invalidFunctionInvocationNodeData();
+        Arrays.stream(data).forEach(objects -> {
+            String expression = String.format("[%1$s..%1$s]", objects[0]);
+            FEELFnResult<Range> retrieved = rangeFunction.invoke(expression);
+            assertThat(retrieved.isLeft())
+                    .withFailMessage(() -> String.format("Expected 'retrieved.isLeft()' from, %s", expression))
+                    .isTrue();
+        });
     }
 
     private NullNode getNullNode() {
@@ -158,5 +201,180 @@ public class RangeFunctionTest {
     private FunctionInvocationNode getFunctionInvocationNodeC() {
         return (FunctionInvocationNode) rangeFunction.parse("number(\"1 000,0\", \" \", \",\")");
     }
+
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date, time, date and
+    //time, or duration.
+    private static Object[][] validFunctionInvocationNodeData() {
+        // Subset of FEELFunctionsTest.data
+        return new Object[][]{
+                // constants
+                {"string(1.1)", "1.1"},
+                {"replace( \"  foo   bar zed  \", \"^(\\s)+|(\\s)+$|\\s+(?=\\s)\", \"\" )", "foo bar zed"},
+                {"string(null)", null},
+                {"string(date(\"2016-08-14\"))", "2016-08-14"},
+                {"string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!"},
+                {"number(null, \",\", \".\")", null},
+                {"number(\"1,000.05\", \",\", \".\")", new BigDecimal("1000.05")},
+                {"number(\"1.000,05\", \".\", \",\")", new BigDecimal("1000.05")},
+                {"number(\"1000,05\", null, \",\")", new BigDecimal("1000.05")},
+                {"number(\"1,000.05e+12\", \",\", \".\")", new BigDecimal("1000.05e+12")},
+                {"number(\"1.000,05e+12\", \".\", \",\")", new BigDecimal("1000.05e+12")},
+                {"number(\"1000,05e+12\", null, \",\")", new BigDecimal("1000.05e+12")},
+                {"substring(\"foobar\", 3)", "obar"},
+                {"substring(\"foobar\", 3, 3)", "oba"},
+                {"substring(\"foobar\", -2, 1)", "a"},
+                {"substring(\"foobar\", -2, 5)", "ar"},
+                {"substring(\"foobar\", 15, 5)", null},
+                {"string length(\"foobar\")", BigDecimal.valueOf(6)},
+                {"string length(null)", null},
+                {"upper case(\"aBc4\")", "ABC4"},
+                {"upper case(null)", null},
+                {"lower case(\"aBc4\")", "abc4"},
+                {"lower case(null)", null},
+                {"substring before( \"foobar\", \"bar\")", "foo"},
+                {"substring before( \"foobar\", \"xyz\")", ""},
+                {"substring before( \"foobar\", \"foo\")", ""},
+                {"substring after( \"foobar\", \"foo\")", "bar"},
+                {"substring after( \"foobar\", \"xyz\")", ""},
+                {"substring after( \"foobar\", \"bar\")", ""},
+                {"replace(\"banana\",\"a\",\"o\")", "bonono"},
+                {"replace(\"banana\",\"(an)+\", \"**\")", "b**a"},
+                {"replace(\"banana\",\"[aeiouy]\",\"[$0]\")", "b[a]n[a]n[a]"},
+                {"replace(\"0123456789\",\"(\\d{3})(\\d{3})(\\d{4})\",\"($1) $2-$3\")", "(012) 345-6789"},
+                {"count([1, 2, 3])", BigDecimal.valueOf(3)},
+                {"count( 1, 2, 3 )", BigDecimal.valueOf(3)},
+                {"min( \"a\", \"b\", \"c\" )", "a"},
+                {"min([ \"a\", \"b\", \"c\" ])", "a"},
+                {"max( 1, 2, 3 )", BigDecimal.valueOf(3)},
+                {"max([ 1, 2, 3 ])", BigDecimal.valueOf(3)},
+                {"max(duration(\"PT1H6M\"), duration(\"PT1H5M\"))", Duration.parse("PT1H6M")},
+                {"max(duration(\"P6Y\"), duration(\"P5Y\"))", ComparablePeriod.parse("P6Y")},
+                {"sum( 1, 2, 3 )", BigDecimal.valueOf(6)},
+                {"sum([ 1, 2, 3 ])", BigDecimal.valueOf(6)},
+                {"sum([])", null},
+                {"product( 2, 3, 4 )", BigDecimal.valueOf(24)},
+                {"product([ 2, 3, 4 ])", BigDecimal.valueOf(24)},
+                {"product([])", null},
+                {"mean( 1, 2, 3 )", BigDecimal.valueOf(2)},
+                {"mean([ 1, 2, 3 ])", BigDecimal.valueOf(2)},
+                {"decimal( 1/3, 2 )", new BigDecimal("0.33")},
+                {"decimal( 1.5, 0 )", new BigDecimal("2")},
+                {"decimal( 2.5, 0 )", new BigDecimal("2")},
+                {"decimal( null, 0 )", null},
+                {"floor( 1.5 )", new BigDecimal("1")},
+                {"floor( -1.5 )", new BigDecimal("-2")},
+                {"floor( null )", null},
+                {"ceiling( 1.5 )", new BigDecimal("2")},
+                {"ceiling( -1.5 )", new BigDecimal("-1")},
+                {"ceiling( null )", null},
+                {"ceiling( n : 1.5 )", new BigDecimal("2")},
+                {"abs( 10 )", new BigDecimal("10")},
+                {"abs( -10 )", new BigDecimal("10")},
+                {"abs( n: -10 )", new BigDecimal("10")},
+                {"abs(@\"PT5H\")", Duration.parse("PT5H")},
+                {"abs(@\"-PT5H\")", Duration.parse("PT5H")},
+                {"abs(n: @\"-PT5H\")", Duration.parse("PT5H")},
+                {"abs(duration(\"P1Y\"))", ComparablePeriod.parse("P1Y")},
+                {"abs(duration(\"-P1Y\"))", ComparablePeriod.parse("P1Y")},
+
+                {"day of year( date(2019, 9, 17) )", BigDecimal.valueOf(260)},
+                {"day of week( date(2019, 9, 17) )", "Tuesday"},
+                {"month of year( date(2019, 9, 17) )", "September"},
+                {"week of year( date(2019, 9, 17) )", BigDecimal.valueOf(38)},
+                {"week of year( date(2003, 12, 29) )", BigDecimal.valueOf(1)}, // ISO defs.
+                {"week of year( date(2004, 1, 4) )", BigDecimal.valueOf(1)},
+                {"week of year( date(2005, 1, 3) )", BigDecimal.valueOf(1)},
+                {"week of year( date(2005, 1, 9) )", BigDecimal.valueOf(1)},
+                {"week of year( date(2005, 1, 1) )", BigDecimal.valueOf(53)},
+                {"median( 8, 2, 5, 3, 4 )", new BigDecimal("4")},
+                {"median( [6, 1, 2, 3] )", new BigDecimal("2.5")},
+                {"median( [ ] ) ", null}, // DMN spec, Table 69: Semantics of list functions
+        };
+    }
+
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date, time, date and
+    //time, or duration.
+    private static Object[][] invalidFunctionInvocationNodeData() {
+        // Subset of FEELFunctionsTest.data
+        return new Object[][]{
+                // constants
+                {"contains(\"foobar\", \"ob\")", Boolean.TRUE},
+                {"contains(\"foobar\", \"of\")", Boolean.FALSE},
+                {"starts with(\"foobar\", \"of\")", Boolean.FALSE},
+                {"starts with(\"foobar\", \"fo\")", Boolean.TRUE},
+                {"ends with(\"foobar\", \"of\")", Boolean.FALSE},
+                {"ends with(\"foobar\", \"bar\")", Boolean.TRUE},
+                {"matches(\"foo\", \"[a-z]{3}\")", Boolean.TRUE},
+                {"matches(\"banana\", \"[a-z]{3}\")", Boolean.TRUE},
+                {"matches(\"two \\n lines\", \"two.*lines\")", Boolean.FALSE},
+                {"matches(\"two \\n lines\", \"two.*lines\", \"s\")", Boolean.TRUE}, // DOT_ALL flag set by "s"
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\")", Boolean.FALSE},
+                {"matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")", Boolean.TRUE}, // MULTILINE flag set by "m"
+                {"matches(\"FoO\", \"foo\")", Boolean.FALSE},
+                {"matches(\"FoO\", \"foo\", \"i\")", Boolean.TRUE}, // CASE_INSENSITIVE flag set by "i"
+                {"list contains([1, 2, 3], 2)", Boolean.TRUE},
+                {"list contains([1, 2, 3], 5)", Boolean.FALSE},
+                {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Collections.singletonList(BigDecimal.valueOf(4))},
+                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"append( [1, 2], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"append( [], 3, 4 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"append( [1, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
+                {"append( [1, 2], null, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
+                {"append( 0, 1, 2 )", Arrays.asList(BigDecimal.valueOf(0), BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
+                {"concatenate( [1, 2], [3] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"concatenate( [1, 2], 3, [4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"insert before( [1, 2, 3], 1, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], 3, null )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], -3, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], -1, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
+                {"remove( [1, 2, 3], 1 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"remove( [1, 2, 3], 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
+                {"remove( [1, 2, 3], -1 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
+                {"remove( [1, 2, 3], -3 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"reverse( [1, 2, 3] )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2), BigDecimal.valueOf(1))},
+                {"index of( [1, 2, 3, 2], 2 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4))},
+                {"index of( [1, 2, null, null], null )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"index of( [1, 2, null, null], 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
+                {"union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"union( [1, 2, null], 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
+                {"union( null, 4 )", Arrays.asList(null, BigDecimal.valueOf(4))},
+                {"distinct values( [1, 2, 3, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"distinct values( [1, 2, null, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
+                {"distinct values( 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
+                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
+                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
+                {"sort( [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
+                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
+                {"sort( list : [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
+                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
+                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList("a", "b", "c", "d", "e")},
+                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList("a", "b", "c", "d", "e")},
+                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList("a", "b", "c", "d", "e")},
+                {"all( true )", true},
+                {"all( false )", false},
+                {"all( [true] )", true},
+                {"all( [false] )", false},
+                {"all( true, false )", false},
+                {"all( true, true )", true},
+                {"all( [true, false] )", false},
+                {"all( [true, true] )", true},
+                {"all( [false,null,true] )", false},
+                {"all( [] )", true},
+                {"any( true )", true},
+                {"any( false )", false},
+                {"any( [true] )", true},
+                {"any( [false] )", false},
+                {"any( true, false )", true},
+                {"any( true, true )", true},
+                {"any( [true, false] )", true},
+                {"any( [true, true] )", true},
+                {"any( [false,null,true] )", true},
+                {"any( [] )", false},
+        };
+    }
+
 
 }
