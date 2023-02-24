@@ -15,6 +15,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,121 +30,275 @@ public class RangeFunctionTest {
 
     @Test
     public void invokeNull() {
-        FunctionTestUtil.assertResultError(rangeFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(rangeFunction.invoke(" "), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(rangeFunction.invoke(""), InvalidParametersEvent.class);
+        List<String> from = Arrays.asList(null, " ", "", "[..]");
+        from.forEach(it ->  FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class, it));
     }
 
     @Test
     public void invokeDifferentTypes() {
-        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..\"cheese\"]"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..date(\"1978-09-12\")]"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(rangeFunction.invoke("[1..\"upper case(\"aBc4\")\"]"), InvalidParametersEvent.class);
+        List<String> from = Arrays.asList("[1..\"cheese\"]",
+                "[1..date(\"1978-09-12\")]",
+                "[1..date(\"1978-09-12\")]",
+                "[1..\"upper case(\"aBc4\")\"]");
+        from.forEach(it ->  FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class, it));
     }
 
     @Test
     public void invokeInvalidTypes() {
-        FunctionTestUtil.assertResultError(rangeFunction.invoke("[if(false)..if(true)]"), InvalidParametersEvent.class);
+        String from = "[if(false)..if(true)]";
+        FunctionTestUtil.assertResultError(rangeFunction.invoke(from), InvalidParametersEvent.class, from);
+    }
+
+    @Test
+    public void invoke_LeftNull() {
+        String from = "(..2)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
+                from);
+        from = "(..\"z\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN),
+                from);
+        from = "(..\"yz\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN),
+                from);
+        from = "(..date(\"1978-10-13\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, null, LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
+                from);
+        from = "(..duration(\"P3DT20H14M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, null, Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
+                from);
+        from = "(..duration(\"P2Y6M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN,
+                        null,
+                        new ComparablePeriod(Period.parse("P2Y6M")),
+                        Range.RangeBoundary.OPEN),
+                from);
+    }
+
+    @Test
+    public void invoke_RightNull() {
+        String from = "(1..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN),
+                from);
+        from = "(\"a\"..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN),
+                from);
+        from = "(\"ab\"..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN),
+                from);
+        from = "(date(\"1978-09-12\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), null, Range.RangeBoundary.OPEN),
+                from);
+        from = "(duration(\"P2DT20H14M\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), null, Range.RangeBoundary.OPEN),
+                from);
+        from = "(duration(\"P1Y6M\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN,
+                        new ComparablePeriod(Period.parse("P1Y6M")),
+                        null,
+                        Range.RangeBoundary.OPEN),
+                from);
     }
 
     @Test
     public void invoke_OpenOpenBoundaries() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(1..2)"), new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(\"a\"..\"z\")"), new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(\"ab\"..\"yz\")"), new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(date(\"1978-09-12\")..date(\"1978-10-13\"))"),
-                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))"),
-                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(duration(\"P1Y6M\")..duration(\"P2Y6M\"))"),
+        String from = "(1..2)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
+                from);
+        from = "(\"a\"..\"z\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN),
+                from);
+        from = "(\"ab\"..\"yz\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN),
+                from);
+        from = "(date(\"1978-09-12\")..date(\"1978-10-13\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
+                from);
+        from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
+                from);
+        from = "(duration(\"P1Y6M\")..duration(\"P2Y6M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                 new RangeImpl(Range.RangeBoundary.OPEN,
                         new ComparablePeriod(Period.parse("P1Y6M")),
                         new ComparablePeriod(Period.parse("P2Y6M")),
-                        Range.RangeBoundary.OPEN));
+                        Range.RangeBoundary.OPEN),
+                from);
     }
 
     @Test
     public void invoke_OpenClosedBoundaries() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(1..2]"), new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(\"a\"..\"z\"]"), new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(date(\"1978-09-12\")..date(\"1978-10-13\")]"),
-                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]"),
-                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED));
+        String from = "(1..2]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
+                from);
+        from = "(\"a\"..\"z\"]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED),
+                from);
+        from = "(date(\"1978-09-12\")..date(\"1978-10-13\")]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
+                from);
+        from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
+                from);
     }
 
     @Test
     public void invoke_ClosedOpenBoundaries() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2)"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[\"a\"..\"z\")"), new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[date(\"1978-09-12\")..date(\"1978-10-13\"))"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN));
+        String from = "[1..2)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
+                from);
+        from = "[\"a\"..\"z\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN),
+                from);
+        from = "[date(\"1978-09-12\")..date(\"1978-10-13\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
+                from);
+        from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN));
+                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
+                from);
     }
 
     @Test
     public void invoke_ClosedClosedBoundaries() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[2..1]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[\"a\"..\"z\"]"), new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[date(\"1978-09-12\")..date(\"1978-10-13\")]"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED));
+        String from = "[1..2)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2]"),
+                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
+                from);
+        from = "[2..1]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED),
+                from);
+        from = "[\"a\"..\"z\"]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
+                from);
+        from = "[date(\"1978-09-12\")..date(\"1978-10-13\")]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
+                from);
+        from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
+                from);
     }
 
     @Test
     public void invoke_WithOneFunctionNode() {
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[number(\"1\", \",\", \".\")\"..2]"), new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED));
-        FunctionTestUtil.assertResult(rangeFunction.invoke("[\"a\"..lower case(\"Z\")]"), new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED));
+        String from = "[number(\"1\", \",\", \".\")\"..2]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
+                from);
+        from = "[\"a\"..lower case(\"Z\")]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
+                from);
     }
 
     @Test
     public void nodeIsAllowed_True() {
-        assertThat(rangeFunction.nodeIsAllowed(getNullNode())).isTrue();
-        assertThat(rangeFunction.nodeIsAllowed(getNumberNode())).isTrue();
-        assertThat(rangeFunction.nodeIsAllowed(getStringNode())).isTrue();
-        assertThat(rangeFunction.nodeIsAllowed(getAtLiteralNode())).isTrue();
-        assertThat(rangeFunction.nodeIsAllowed(getFunctionInvocationNodeA())).isTrue();
+        BaseNode node = rangeFunction.getNullNode();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        node = getNumberNode();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        node = getStringNode();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        node = getAtLiteralNode();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        node = getFunctionInvocationNodeA();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
     }
 
     @Test
     public void nodeIsAllowed_False() {
-        IfExpressionNode ifExpressionNode = (IfExpressionNode) rangeFunction.parse("if(true)");
-        assertThat(rangeFunction.nodeIsAllowed(ifExpressionNode)).isFalse();
-        assertThat(rangeFunction.nodeIsAllowed(getBooleanNode())).isFalse();
+        BaseNode node = rangeFunction.parse("if(true)");
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isFalse();
+        node = getBooleanNode();
+        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isFalse();
     }
 
     @Test
     public void nodeValueIsAllowed_True() {
-        assertThat(rangeFunction.nodeValueIsAllowed(null)).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(12)).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(BigDecimal.valueOf(23.3243))).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(DateTimeFormatter.ISO_DATE.parse("2016-07-29", LocalDate::from))).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(DateTimeFormatter.ISO_TIME.parse("23:59:00", LocalTime::from))).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(LocalDateTime.of(2016, 7, 29, 5, 48, 23, 0))).isTrue();
-        assertThat(rangeFunction.nodeValueIsAllowed(Duration.parse("P2DT20H14M"))).isTrue();
+        Object value = null;
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = 12;
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = BigDecimal.valueOf(23.3243);
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = DateTimeFormatter.ISO_DATE.parse("2016-07-29", LocalDate::from);
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = DateTimeFormatter.ISO_TIME.parse("23:59:00", LocalTime::from);
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = LocalDateTime.of(2016, 7, 29, 5, 48, 23, 0);
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
+        value = Duration.parse("P2DT20H14M");
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isTrue();
     }
 
     @Test
     public void nodeValueIsAllowed_False() {
-        assertThat(rangeFunction.nodeValueIsAllowed(Boolean.TRUE)).isFalse();
-        assertThat(rangeFunction.nodeValueIsAllowed(Collections.emptyMap())).isFalse();
-        assertThat(rangeFunction.nodeValueIsAllowed(Collections.emptyList())).isFalse();
+        Object value = Boolean.TRUE;
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isFalse();
+        value = Collections.emptyMap();
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isFalse();
+        value = Collections.emptyList();
+        assertThat(rangeFunction.nodeValueIsAllowed(value))
+                .withFailMessage(String.format("%s", value)).isFalse();
     }
 
     @Test
     public void nodesReturnsSameType_True() {
-        assertThat(rangeFunction.nodesReturnsSameType(null, null)).isTrue();
-        assertThat(rangeFunction.nodesReturnsSameType("Hello", "world")).isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType(null, null))
+                .withFailMessage("null - null")
+                .isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType("Hello", "world"))
+                .withFailMessage("\"Hello\" - \"world\"")
+                .isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType(null, "world"))
+                .withFailMessage("null - \"world\"")
+                .isTrue();
+        assertThat(rangeFunction.nodesReturnsSameType(1, null))
+                .withFailMessage("1 - null")
+                .isTrue();
     }
 
     @Test
     public void nodesReturnsSameType_False() {
-        assertThat(rangeFunction.nodesReturnsSameType(null, "null")).isFalse();
-        assertThat(rangeFunction.nodesReturnsSameType("1", 1)).isFalse();
+        assertThat(rangeFunction.nodesReturnsSameType("1", 1))
+                .withFailMessage("\"1\" - 1")
+                .isFalse();
     }
 
     @Test
@@ -170,9 +325,39 @@ public class RangeFunctionTest {
         });
     }
 
-    private NullNode getNullNode() {
-        return (NullNode) rangeFunction.parse("null");
+    @Test
+    public void parse_NotEmptyString() {
+        String input = "";
+        assertThat(rangeFunction.parse(input))
+                .withFailMessage(String.format("Check `%s`", input))
+                .isInstanceOf(NullNode.class);
+        input = "null";
+        assertThat(rangeFunction.parse("null"))
+                .withFailMessage(String.format("Check `%s`", input))
+                .isInstanceOf(NullNode.class);
+        input = "1";
+        assertThat(rangeFunction.parse("1"))
+                .withFailMessage(String.format("Check `%s`", input))
+                .isInstanceOf(NumberNode.class);
+        input = "\"a\"";
+        assertThat(rangeFunction.parse(input)).withFailMessage(String.format("Check `%s`", input)).isInstanceOf(StringNode.class);
+        input = "false";
+        assertThat(rangeFunction.parse(input)).withFailMessage(String.format("Check `%s`", input)).isInstanceOf(BooleanNode.class);
+        input = "@\"2019-01-01\"";
+        assertThat(rangeFunction.parse(input)).withFailMessage(String.format("Check `%s`", input)).isInstanceOf(AtLiteralNode.class);
+        input = "duration(\"P2DT20H14M\")";
+        assertThat(rangeFunction.parse(input)).withFailMessage(String.format("Check `%s`", input)).isInstanceOf(FunctionInvocationNode.class);
     }
+    @Test
+    public void parse_emptyString() {
+        assertThat(rangeFunction.parse("")).withFailMessage("Check ``").isInstanceOf(NullNode.class);
+    }
+
+    @Test
+    public void getNullNode() {
+        assertThat(rangeFunction.getNullNode()).isInstanceOf(NullNode.class);
+    }
+
 
     private NumberNode getNumberNode() {
         return (NumberNode) rangeFunction.parse("1");
@@ -192,14 +377,6 @@ public class RangeFunctionTest {
 
     private FunctionInvocationNode getFunctionInvocationNodeA() {
         return (FunctionInvocationNode) rangeFunction.parse("duration(\"P2DT20H14M\")");
-    }
-
-    private FunctionInvocationNode getFunctionInvocationNodeB() {
-        return (FunctionInvocationNode) rangeFunction.parse("date(\"1978-10-13\")");
-    }
-
-    private FunctionInvocationNode getFunctionInvocationNodeC() {
-        return (FunctionInvocationNode) rangeFunction.parse("number(\"1 000,0\", \" \", \",\")");
     }
 
     // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date, time, date and

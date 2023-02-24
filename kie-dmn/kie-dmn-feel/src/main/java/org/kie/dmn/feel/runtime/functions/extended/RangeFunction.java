@@ -34,10 +34,8 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.model.api.GwtIncompatible;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
+import java.time.*;
+import java.time.chrono.ChronoPeriod;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,10 +57,14 @@ public class RangeFunction extends BaseFEELFunction {
     private static final List<Predicate<Object>> ALLOWED_TYPES = Arrays.asList(Objects::isNull,
             object -> object instanceof String,
             object -> object instanceof Number,
+            object -> object instanceof Duration,
+            object -> object instanceof ChronoPeriod,
+            object -> object instanceof ZonedDateTime,
+            object -> object instanceof OffsetDateTime,
             object -> object instanceof LocalDateTime,
             object -> object instanceof LocalDate,
-            object -> object instanceof LocalTime,
-            object -> object instanceof TemporalAmount);
+            object -> object instanceof OffsetTime,
+            object -> object instanceof LocalTime);
 
 
     public RangeFunction() {
@@ -73,7 +75,7 @@ public class RangeFunction extends BaseFEELFunction {
         if (from == null || from.isEmpty() || from.isBlank()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "cannot be null"));
         }
-        Range.RangeBoundary startBoundary = null;
+        Range.RangeBoundary startBoundary;
         if (from.startsWith("(") || from.startsWith("]")) {
             startBoundary = RangeBoundary.OPEN;
         } else if (from.startsWith("[")) {
@@ -81,7 +83,7 @@ public class RangeFunction extends BaseFEELFunction {
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not start with a valid character"));
         }
-        Range.RangeBoundary endBoundary = null;
+        Range.RangeBoundary endBoundary;
         if (from.endsWith(")") || from.endsWith("[")) {
             endBoundary = RangeBoundary.OPEN;
         } else if (from.endsWith("]")) {
@@ -96,6 +98,9 @@ public class RangeFunction extends BaseFEELFunction {
         }
         String leftString = split[0].substring(1);
         String rightString = split[1].substring(0, split[1].length() - 1);
+        if ((leftString.isEmpty() || leftString.isBlank()) && (rightString.isEmpty() || rightString.isBlank())) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one endpoint must not be null"));
+        }
         BaseNode leftNode = parse(leftString);
         if (!nodeIsAllowed(leftNode)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "left endpoint is not a recognised valid literal"));
@@ -138,7 +143,7 @@ public class RangeFunction extends BaseFEELFunction {
         if (Objects.equals(leftObject, rightObject)) {
             return true;
         } else if (leftObject == null || rightObject == null) {
-            return false;
+            return true;
         } else {
             Class<?> left = leftObject.getClass();
             Class<?> right = rightObject.getClass();
@@ -147,6 +152,14 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     protected BaseNode parse(String input) {
+       return input.isEmpty() || input.isBlank() ? getNullNode() : parseNotEmptyInput(input);
+    }
+
+    protected BaseNode getNullNode() {
+        return parseNotEmptyInput("null");
+    }
+
+    protected BaseNode parseNotEmptyInput(String input) {
         FEEL_1_1Parser parser = FEELParser.parse(null, input, Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
         ParseTree tree = parser.expression();
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
