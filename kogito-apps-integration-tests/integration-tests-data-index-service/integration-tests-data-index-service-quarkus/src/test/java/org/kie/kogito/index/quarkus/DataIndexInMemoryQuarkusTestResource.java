@@ -22,9 +22,9 @@ import java.util.Map;
 import org.kie.kogito.index.resources.DataIndexInMemoryResource;
 import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
-public class DataIndexInMemoryQuarkusTestResource extends ConditionalQuarkusTestResource<DataIndexInMemoryResource> {
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
+public class DataIndexInMemoryQuarkusTestResource extends ConditionalQuarkusTestResource<DataIndexInMemoryResource> {
 
     public DataIndexInMemoryQuarkusTestResource() {
         super(new DataIndexInMemoryResource());
@@ -42,6 +42,8 @@ public class DataIndexInMemoryQuarkusTestResource extends ConditionalQuarkusTest
         properties.put("mp.messaging.outgoing.kogito-usertaskinstances-events.url", dataIndexUrl + "/tasks");
         properties.put("mp.messaging.outgoing.kogito-variables-events.connector", "quarkus-http");
         properties.put("mp.messaging.outgoing.kogito-variables-events.url", dataIndexUrl);
+        properties.put("mp.messaging.outgoing.kogito-jobs-events.connector", "quarkus-http");
+        properties.put("mp.messaging.outgoing.kogito-jobs-events.url", dataIndexUrl + "/jobs");
         properties.put("kogito.events.variables.enabled", "false");
         return properties;
     }

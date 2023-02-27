@@ -16,18 +16,19 @@
 package org.kie.kogito.index.inmemory;
 
 import org.kie.kogito.index.AbstractProcessDataIndexIT;
-import org.kie.kogito.index.quarkus.DataIndexInMemoryQuarkusTestResource;
 import org.kie.kogito.index.quarkus.InMemoryTestProfile;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.quarkus.test.junit.TestProfile;
 
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
+
 @QuarkusIntegrationTest
 @TestProfile(InMemoryTestProfile.class)
 public class ProcessDataIndexInMemoryIT extends AbstractProcessDataIndexIT {
 
-    @QuarkusTestProperty(name = DataIndexInMemoryQuarkusTestResource.KOGITO_DATA_INDEX_SERVICE_URL)
+    @QuarkusTestProperty(name = KOGITO_DATA_INDEX_SERVICE_URL)
     String dataIndex;
 
     @Override

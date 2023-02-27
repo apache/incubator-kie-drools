@@ -19,15 +19,15 @@ package org.kie.kogito.index.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.DataIndexInfinispanResource;
+import org.kie.kogito.index.resources.kafka.DataIndexInfinispanKafkaResource;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
-public class DataIndexInfinispanSpringTestResource extends ConditionalSpringBootTestResource<DataIndexInfinispanResource> {
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
+public class DataIndexInfinispanSpringTestResource extends ConditionalSpringBootTestResource<DataIndexInfinispanKafkaResource> {
 
     public DataIndexInfinispanSpringTestResource() {
-        super(new DataIndexInfinispanResource());
+        super(new DataIndexInfinispanKafkaResource());
     }
 
     @Override

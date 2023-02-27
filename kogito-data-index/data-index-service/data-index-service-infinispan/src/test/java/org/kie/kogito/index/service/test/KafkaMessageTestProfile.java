@@ -34,4 +34,8 @@ public class KafkaMessageTestProfile implements QuarkusTestProfile {
                 new TestResourceEntry(KafkaQuarkusTestResource.class, Collections.emptyMap(), true));
     }
 
+    @Override
+    public String getConfigProfile() {
+        return "kafka-events-support";
+    }
 }

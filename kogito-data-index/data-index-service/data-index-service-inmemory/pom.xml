@@ -29,10 +29,6 @@
       <groupId>io.quarkiverse.embedded.postgresql</groupId>
       <artifactId>quarkus-embedded-postgresql</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
-      <artifactId>quarkus-reactive-messaging-http</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito</groupId>

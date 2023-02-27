@@ -77,6 +77,7 @@ public class TaskAssigningServiceResource implements TestResource {
         dataIndex.withNetworkAliases("dataindex");
         dataIndex.setInfinispanURL("infinispan:11222");
         dataIndex.setKafkaURL(kafkaInternalUrl);
+        dataIndex.addEnv("QUARKUS_PROFILE", "kafka-events-support");
         dataIndex.start();
 
         LOGGER.debug("Start TaskAssigningProcesses test resource");

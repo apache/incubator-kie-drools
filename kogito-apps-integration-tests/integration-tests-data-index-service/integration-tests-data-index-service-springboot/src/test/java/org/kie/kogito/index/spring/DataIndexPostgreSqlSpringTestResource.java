@@ -19,15 +19,14 @@ package org.kie.kogito.index.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.DataIndexPostgreSqlResource;
+import org.kie.kogito.index.resources.kafka.DataIndexPostgreSqlKafkaResource;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
-public class DataIndexPostgreSqlSpringTestResource extends ConditionalSpringBootTestResource<DataIndexPostgreSqlResource> {
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
-
+public class DataIndexPostgreSqlSpringTestResource extends ConditionalSpringBootTestResource<DataIndexPostgreSqlKafkaResource> {
     public DataIndexPostgreSqlSpringTestResource() {
-        super(new DataIndexPostgreSqlResource());
+        super(new DataIndexPostgreSqlKafkaResource());
     }
 
     @Override

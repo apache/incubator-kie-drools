@@ -32,5 +32,4 @@ public class InMemoryMessageTestProfile implements QuarkusTestProfile {
                 new TestResourceEntry(InMemoryMessagingTestResource.class, Collections.emptyMap(), true),
                 new TestResourceEntry(PostgreSqlQuarkusTestResource.class, Collections.emptyMap(), true));
     }
-
 }

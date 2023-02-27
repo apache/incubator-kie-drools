@@ -70,6 +70,11 @@
       <artifactId>quarkus-rest-client-reactive</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.quarkiverse.reactivemessaging.http</groupId>
+      <artifactId>quarkus-reactive-messaging-http</artifactId>
+    </dependency>
+
     <!-- Metrics -->
     <dependency>
       <groupId>io.quarkus</groupId>

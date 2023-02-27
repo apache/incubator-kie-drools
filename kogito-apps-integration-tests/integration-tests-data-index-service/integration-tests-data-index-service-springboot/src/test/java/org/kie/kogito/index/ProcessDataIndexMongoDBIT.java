@@ -27,7 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import io.restassured.RestAssured;
 
-import static org.kie.kogito.index.spring.DataIndexInfinispanSpringTestResource.KOGITO_DATA_INDEX_SERVICE_URL;
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { KogitoApplication.class })
 @ContextConfiguration(initializers = { KogitoServiceRandomPortSpringTestResource.class, DataIndexMongoDBSpringTestResource.class })

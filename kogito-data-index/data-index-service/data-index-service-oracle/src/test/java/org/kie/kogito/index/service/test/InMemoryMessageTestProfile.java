@@ -31,5 +31,4 @@ public class InMemoryMessageTestProfile implements QuarkusTestProfile {
                 new TestResourceEntry(InMemoryMessagingTestResource.class),
                 new TestResourceEntry(OracleSqlQuarkusTestResource.class));
     }
-
 }

@@ -19,15 +19,15 @@ package org.kie.kogito.index.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.DataIndexMongoDBResource;
+import org.kie.kogito.index.resources.kafka.DataIndexMongoDBKafkaResource;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
-public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBResource> {
+import static org.kie.kogito.index.Constants.KOGITO_DATA_INDEX_SERVICE_URL;
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
+public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBKafkaResource> {
 
     public DataIndexMongoDBSpringTestResource() {
-        super(new DataIndexMongoDBResource());
+        super(new DataIndexMongoDBKafkaResource());
     }
 
     @Override

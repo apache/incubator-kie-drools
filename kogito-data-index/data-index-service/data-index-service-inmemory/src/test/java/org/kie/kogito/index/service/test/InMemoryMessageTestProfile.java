@@ -27,5 +27,4 @@ public class InMemoryMessageTestProfile implements QuarkusTestProfile {
     public List<TestResourceEntry> testResources() {
         return Arrays.asList(new TestResourceEntry(InMemoryMessagingTestResource.class));
     }
-
 }
