@@ -16,6 +16,9 @@ git:
   - name: 8.34.x
     seed:
       branch: seed-optaplanner-8.34.x
+  - name: 8.35.x
+    seed:
+      branch: seed-optaplanner-8.35.x
   main_branch:
     default: main
 seed:
