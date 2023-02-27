@@ -63,6 +63,10 @@ pipeline {
         }
 
         stage('Init Optaweb Vehicle Routing') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
@@ -78,6 +82,10 @@ pipeline {
         }
 
         stage('Init Optaplanner Quickstarts') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     def buildParams = getDefaultBuildParams()
@@ -198,4 +206,12 @@ String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, S
     } else {
         error 'Cannot parse given branch as a release branch, aka [M].[m].x ...'
         }
+}
+
+boolean isStream8() {
+    return env.OPTAPLANNER_LATEST_STREAM == '8'
+}
+
+boolean isStream9() {
+    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }
