@@ -15,6 +15,7 @@
   <description>Parent module for Kogito Quarkus Knative Add-Ons</description>
   <modules>
     <module>eventing</module>
+    <module>serving</module>
   </modules>
 
 </project>

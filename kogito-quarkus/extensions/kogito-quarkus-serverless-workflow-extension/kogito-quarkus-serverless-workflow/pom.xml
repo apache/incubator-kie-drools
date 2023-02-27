@@ -101,7 +101,6 @@
       <groupId>io.quarkiverse.asyncapi</groupId>
       <artifactId>quarkus-asyncapi</artifactId>
     </dependency>
-
     <!-- Service Discovery -->
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -20,7 +20,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import org.kie.kogito.addons.quarkus.k8s.parser.KubeURI;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,21 +30,23 @@ import io.fabric8.knative.client.KnativeClient;
 import io.fabric8.knative.serving.v1.Service;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
+@ApplicationScoped
 public class KnativeResourceDiscovery {
 
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
-    private KnativeClient knativeClient;
+    private final KnativeClient knativeClient;
 
+    @Inject
     public KnativeResourceDiscovery(final KubernetesClient kubernetesClient) {
         logger.debug("Trying to adapt kubernetes client to knative");
         this.knativeClient = kubernetesClient.adapt(KnativeClient.class);
     }
 
-    public Optional<URL> queryServiceByName(KubeURI kubeURI) {
-        Service service = knativeClient.services().inNamespace(kubeURI.getNamespace()).withName(kubeURI.getResourceName()).get();
+    public Optional<URL> queryService(String namespace, String serviceName) {
+        Service service = knativeClient.services().inNamespace(namespace).withName(serviceName).get();
         if (null == service) {
-            logger.error("Knative {} service not found on the {} namespace.", kubeURI.getResourceName(), kubeURI.getNamespace());
+            logger.error("Knative {} service not found on the {} namespace.", serviceName, namespace);
             return Optional.empty();
         }
         logger.debug("Found Knative endpoint at {}", service.getStatus().getUrl());
@@ -52,5 +56,9 @@ public class KnativeResourceDiscovery {
             logger.error("Failed to query Knative service", e);
             return Optional.empty();
         }
+    }
+
+    public String getCurrentContext() {
+        return knativeClient.getNamespace();
     }
 }

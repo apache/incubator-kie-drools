@@ -58,14 +58,14 @@ public class KubeResourceDiscovery implements Serializable {
             case KubeConstants.KIND_SERVICE:
                 if (isKnative(kubeURI)) {
                     KnativeResourceDiscovery knativeResourceDiscovery = new KnativeResourceDiscovery(client);
-                    return knativeResourceDiscovery.queryServiceByName(kubeURI).map(Object::toString);
+                    return knativeResourceDiscovery.queryService(kubeURI.getNamespace(), kubeURI.getResourceName()).map(Object::toString);
                 } else {
                     return ServiceUtils.queryServiceByName(client, kubeURI).map(Object::toString);
                 }
 
             case KubeConstants.KIND_KNATIVE_SERVICE:
                 KnativeResourceDiscovery knativeResourceDiscovery = new KnativeResourceDiscovery(client);
-                return knativeResourceDiscovery.queryServiceByName(kubeURI).map(Object::toString);
+                return knativeResourceDiscovery.queryService(kubeURI.getNamespace(), kubeURI.getResourceName()).map(Object::toString);
 
             case KubeConstants.KIND_POD:
                 return PodUtils.queryPodByName(client, kubeURI).map(Object::toString);
