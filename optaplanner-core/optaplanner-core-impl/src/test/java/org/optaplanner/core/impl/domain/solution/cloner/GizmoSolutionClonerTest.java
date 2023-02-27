@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
+import org.optaplanner.core.impl.util.MutableReference;
 
 import io.quarkus.gizmo.ClassCreator;
 import io.quarkus.gizmo.ClassOutput;
@@ -47,7 +48,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     @Override
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
-        final byte[][] classBytecodeHolder = new byte[1][];
+        MutableReference<byte[]> classBytecodeHolder = new MutableReference<>(null);
         ClassOutput classOutput =
                 GizmoSolutionClonerImplementor.createClassOutputWithDebuggingCapability(classBytecodeHolder);
         ClassCreator classCreator = ClassCreator.builder()
@@ -71,10 +72,10 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
                 });
 
         GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor,
-                Collections.singletonList(solutionDescriptor.getSolutionClass()),
+                Collections.singleton(solutionDescriptor.getSolutionClass()),
                 memoizedSolutionOrEntityDescriptorMap, deepClonedClassSet);
         classCreator.close();
-        final byte[] byteCode = classBytecodeHolder[0];
+        final byte[] byteCode = classBytecodeHolder.getValue();
 
         ClassLoader gizmoClassLoader = new ClassLoader() {
             // getName() is an abstract method in Java 11 but not in Java 8

@@ -34,7 +34,8 @@ class GizmoMemberAccessorFactoryTest {
     @Test
     void testReturnedMemberAccessor() throws NoSuchMethodException {
         Method member = TestdataEntity.class.getMethod("getValue");
-        MemberAccessor memberAccessor = GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, PlanningVariable.class);
+        MemberAccessor memberAccessor =
+                GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, PlanningVariable.class, new GizmoClassLoader());
 
         TestdataEntity entity = new TestdataEntity();
         TestdataValue value = new TestdataValue("A");
@@ -69,7 +70,7 @@ class GizmoMemberAccessorFactoryTest {
         });
 
         assertThatCode(() -> {
-            GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, PlanningVariable.class);
+            GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, PlanningVariable.class, new GizmoClassLoader());
         }).hasMessage("When using the domainAccessType (GIZMO) the classpath or modulepath must contain " +
                 "io.quarkus.gizmo:gizmo.\nMaybe add a dependency to io.quarkus.gizmo:gizmo.");
     }

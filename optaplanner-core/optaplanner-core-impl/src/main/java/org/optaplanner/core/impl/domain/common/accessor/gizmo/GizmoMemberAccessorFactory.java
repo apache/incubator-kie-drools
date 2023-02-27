@@ -25,7 +25,8 @@ public class GizmoMemberAccessorFactory {
         return member.getDeclaringClass().getName() + "$OptaPlanner$MemberAccessor$" + memberType + "$" + memberName;
     }
 
-    public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass) {
+    public static MemberAccessor buildGizmoMemberAccessor(Member member, Class<? extends Annotation> annotationClass,
+            GizmoClassLoader gizmoClassLoader) {
         try {
             // Check if Gizmo on the classpath by verifying we can access one of its classes
             Class.forName("io.quarkus.gizmo.ClassCreator", false,
@@ -36,8 +37,7 @@ public class GizmoMemberAccessorFactory {
                     ") the classpath or modulepath must contain io.quarkus.gizmo:gizmo.\n" +
                     "Maybe add a dependency to io.quarkus.gizmo:gizmo.");
         }
-        MemberAccessor accessor = GizmoMemberAccessorImplementor.createAccessorFor(member, annotationClass);
-        return accessor;
+        return GizmoMemberAccessorImplementor.createAccessorFor(member, annotationClass, gizmoClassLoader);
     }
 
     private GizmoMemberAccessorFactory() {

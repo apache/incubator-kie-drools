@@ -6,11 +6,13 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoClassLoader;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 
 public final class MemberAccessorFactory {
@@ -26,13 +28,15 @@ public final class MemberAccessorFactory {
      * @param memberAccessorType
      * @param annotationClass the annotation the member was annotated with (used for error reporting)
      * @param domainAccessType
+     * @param classLoader null or {@link GizmoClassLoader} if domainAccessType is {@link DomainAccessType#GIZMO}.
      * @return never null, new instance of the member accessor
      */
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
+            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType, ClassLoader classLoader) {
         switch (domainAccessType) {
             case GIZMO:
-                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass);
+                return GizmoMemberAccessorFactory.buildGizmoMemberAccessor(member, annotationClass,
+                        (GizmoClassLoader) Objects.requireNonNull(classLoader));
             case REFLECTION:
                 return buildReflectiveMemberAccessor(member, memberAccessorType, annotationClass);
             default:
@@ -88,6 +92,7 @@ public final class MemberAccessorFactory {
     }
 
     private final Map<String, MemberAccessor> memberAccessorCache;
+    private final GizmoClassLoader gizmoClassLoader = new GizmoClassLoader();
 
     public MemberAccessorFactory() {
         this(null);
@@ -117,7 +122,12 @@ public final class MemberAccessorFactory {
             Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
         String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(member);
         return memberAccessorCache.computeIfAbsent(generatedClassName,
-                k -> MemberAccessorFactory.buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType));
+                k -> MemberAccessorFactory.buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType,
+                        gizmoClassLoader));
+    }
+
+    public GizmoClassLoader getGizmoClassLoader() {
+        return gizmoClassLoader;
     }
 
     public enum MemberAccessorType {

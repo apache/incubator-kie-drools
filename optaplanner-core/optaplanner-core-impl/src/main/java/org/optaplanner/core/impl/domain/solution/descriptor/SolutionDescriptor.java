@@ -84,12 +84,6 @@ public class SolutionDescriptor<Solution_> {
         return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
     }
 
-    public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,
-            Class<Solution_> solutionClass,
-            Class<?>... entityClasses) {
-        return buildSolutionDescriptor(domainAccessType, solutionClass, null, null, Arrays.asList(entityClasses));
-    }
-
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             List<Class<?>> entityClassList) {
         return buildSolutionDescriptor(DomainAccessType.REFLECTION, solutionClass, null, null, entityClassList);
@@ -166,10 +160,6 @@ public class SolutionDescriptor<Solution_> {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
-
-    public SolutionDescriptor(Class<Solution_> solutionClass) {
-        this(solutionClass, null);
-    }
 
     private SolutionDescriptor(Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap) {
         this.solutionClass = solutionClass;
@@ -598,7 +588,7 @@ public class SolutionDescriptor<Solution_> {
         if (solutionCloner == null) {
             switch (descriptorPolicy.getDomainAccessType()) {
                 case GIZMO:
-                    solutionCloner = GizmoSolutionClonerFactory.build(this);
+                    solutionCloner = GizmoSolutionClonerFactory.build(this, memberAccessorFactory.getGizmoClassLoader());
                     break;
                 case REFLECTION:
                     solutionCloner = new FieldAccessingSolutionCloner<>(this);

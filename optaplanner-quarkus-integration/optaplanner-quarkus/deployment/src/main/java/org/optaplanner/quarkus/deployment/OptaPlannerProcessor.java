@@ -615,6 +615,7 @@ class OptaPlannerProcessor {
         Set<String> generatedMemberAccessorsClassNameSet = new HashSet<>();
         Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
 
+        GizmoMemberAccessorEntityEnhancer entityEnhancer = new GizmoMemberAccessorEntityEnhancer();
         if (solverConfig.getDomainAccessType() == DomainAccessType.GIZMO) {
             Collection<AnnotationInstance> membersToGeneratedAccessorsFor = new ArrayList<>();
 
@@ -631,8 +632,8 @@ class OptaPlannerProcessor {
 
                         try {
                             generatedMemberAccessorsClassNameSet
-                                    .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember,
-                                            classOutput, classInfo, fieldInfo, transformers));
+                                    .add(entityEnhancer.generateFieldAccessor(annotatedMember, classOutput, classInfo,
+                                            fieldInfo, transformers));
                         } catch (ClassNotFoundException | NoSuchFieldException e) {
                             throw new IllegalStateException("Fail to generate member accessor for field (" +
                                     fieldInfo.name() + ") of the class( " +
@@ -645,9 +646,8 @@ class OptaPlannerProcessor {
                         ClassInfo classInfo = methodInfo.declaringClass();
 
                         try {
-                            generatedMemberAccessorsClassNameSet.add(
-                                    GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember,
-                                            classOutput, classInfo, methodInfo, transformers));
+                            generatedMemberAccessorsClassNameSet.add(entityEnhancer.generateMethodAccessor(annotatedMember,
+                                    classOutput, classInfo, methodInfo, transformers));
                         } catch (ClassNotFoundException | NoSuchMethodException e) {
                             throw new IllegalStateException("Failed to generate member accessor for the method (" +
                                     methodInfo.name() + ") of the class (" +
@@ -663,13 +663,11 @@ class OptaPlannerProcessor {
             // Using REFLECTION domain access type so OptaPlanner doesn't try to generate GIZMO code
             SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
                     solverConfig.getSolutionClass(), null, null, solverConfig.getEntityClassList());
-            gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
-                    classOutput,
-                    indexView,
-                    transformers));
+            gizmoSolutionClonerClassNameSet
+                    .add(entityEnhancer.generateSolutionCloner(solutionDescriptor, classOutput, indexView, transformers));
         }
 
-        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
+        entityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 

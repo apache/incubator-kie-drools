@@ -23,7 +23,7 @@ class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor =
                 MemberAccessorFactory.buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
-                        DomainAccessType.REFLECTION);
+                        DomainAccessType.REFLECTION, null);
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("value");
@@ -42,7 +42,7 @@ class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, null);
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("privateField");
@@ -61,7 +61,7 @@ class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, null);
         assertThat(memberAccessor)
                 .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("publicField");
@@ -80,7 +80,7 @@ class MemberAccessorFactoryTest {
         MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
+                DomainAccessType.REFLECTION, null);
         assertThat(memberAccessor)
                 .isInstanceOf(LambdaBeanPropertyMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("publicProperty");
