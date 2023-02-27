@@ -23,6 +23,7 @@ environments:
     ids:
     - quarkus
   quarkus-3:
+    enabled: false
     env_vars:
       QUARKUS_VERSION: 3.0.0.Alpha3
       BUILD_MVN_OPTS: -Denforcer.skip
