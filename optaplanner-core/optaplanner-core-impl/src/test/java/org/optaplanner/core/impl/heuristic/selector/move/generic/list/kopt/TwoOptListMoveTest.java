@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
@@ -164,12 +165,13 @@ class TwoOptListMoveTest {
         TestdataListValue destinationV2 = new TestdataListValue("2");
         TestdataListEntity destinationE1 = new TestdataListEntity("e1");
 
-        ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
+        InnerScoreDirector<TestdataListSolution, SimpleScore> destinationScoreDirector = mockRebasingScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
                         { v1, destinationV1 },
                         { v2, destinationV2 },
                         { e1, destinationE1 },
                 });
+        doReturn(scoreDirector.getSupplyManager()).when(destinationScoreDirector).getSupplyManager();
 
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));

@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.util.CollectionUtils;
@@ -171,8 +173,9 @@ final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public TwoOptListMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new TwoOptListMove<>(variableDescriptor,
-                indexVariableSupply,
+        SupplyManager supplyManager = ((InnerScoreDirector<Solution_, ?>) destinationScoreDirector).getSupplyManager();
+        IndexVariableSupply supply = supplyManager.demand(new IndexVariableDemand<>(variableDescriptor));
+        return new TwoOptListMove<>(variableDescriptor, supply,
                 destinationScoreDirector.lookUpWorkingObject(entity),
                 destinationScoreDirector.lookUpWorkingObject(firstEdgeStartpoint),
                 destinationScoreDirector.lookUpWorkingObject(firstEdgeEndpoint),
