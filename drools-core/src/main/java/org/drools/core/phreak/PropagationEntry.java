@@ -15,6 +15,7 @@
 
 package org.drools.core.phreak;
 
+import java.io.Serializable;
 import java.util.concurrent.CountDownLatch;
 
 import org.drools.core.base.DroolsQuery;
@@ -190,7 +191,7 @@ public interface PropagationEntry {
         }
     }
 
-    class Insert extends AbstractPropagationEntry {
+    class Insert extends AbstractPropagationEntry implements Serializable {
         private static final ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
 
         private final InternalFactHandle handle;
