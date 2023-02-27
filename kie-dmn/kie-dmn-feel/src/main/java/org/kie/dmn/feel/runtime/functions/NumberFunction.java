@@ -25,6 +25,8 @@ import org.kie.dmn.feel.util.EvalHelper;
 public class NumberFunction
         extends BaseFEELFunction {
 
+    public static final NumberFunction INSTANCE = new NumberFunction();
+
     public NumberFunction() {
         super(FEELConversionFunctionNames.NUMBER);
     }
