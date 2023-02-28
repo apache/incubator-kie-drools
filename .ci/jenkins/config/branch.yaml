@@ -45,7 +45,6 @@ environments:
     - quarkus
     - lts
     - prod
-    enabled: false
 productized_branch: false
 disable:
   triggers: false
