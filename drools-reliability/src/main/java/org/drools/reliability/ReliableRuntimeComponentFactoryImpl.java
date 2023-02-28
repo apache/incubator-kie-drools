@@ -15,7 +15,10 @@
 
 package org.drools.reliability;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.core.SessionConfiguration;
+import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.EntryPointFactory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.RuleBase;
@@ -28,6 +31,10 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
 
     public static final ReliableRuntimeComponentFactoryImpl DEFAULT = new ReliableRuntimeComponentFactoryImpl();
 
+    private static final AtomicLong RELIABLE_SESSIONS_COUNTER = new AtomicLong(0);
+
+    private final AgendaFactory agendaFactory = ReliableAgendaFactory.getInstance();
+
     @Override
     public EntryPointFactory getEntryPointFactory() {
         return new ReliableNamedEntryPointFactory();
@@ -38,7 +45,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) ruleBase;
         if (fromPool || kbase.getSessionPool() == null) {
             StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) getWorkingMemoryFactory()
-                    .createWorkingMemory(kbase.nextWorkingMemoryCounter(), kbase, sessionConfig, environment);
+                    .createWorkingMemory(RELIABLE_SESSIONS_COUNTER.getAndIncrement(), kbase, sessionConfig, environment);
             return internalInitSession(kbase, sessionConfig, session);
         }
         return (InternalWorkingMemory) kbase.getSessionPool().newKieSession(sessionConfig);
@@ -50,7 +57,7 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         }
 
         // re-propagate objects from the cache to the new session
-        updateFactsWithCache(session);
+//        updateFactsWithCache(session);
         return session;
     }
 
@@ -58,6 +65,10 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         session.getFactHandles().forEach(factHandle -> {
             session.update(factHandle, session.getObject(factHandle));
         });
+    }
+
+    public AgendaFactory getAgendaFactory() {
+        return agendaFactory;
     }
 
     @Override

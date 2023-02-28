@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class SynchronizedPropagationList implements PropagationList {
 
-    protected static final transient Logger log                = LoggerFactory.getLogger( SynchronizedPropagationList.class );
+    protected static final Logger log = LoggerFactory.getLogger( SynchronizedPropagationList.class );
 
     protected final ReteEvaluator reteEvaluator;
 

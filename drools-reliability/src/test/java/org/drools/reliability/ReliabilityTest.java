@@ -62,13 +62,13 @@ public class ReliabilityTest {
         conf2.setOption(PersistedSessionOption.fromSession(id));
         KieSession secondSession = kbase.newKieSession(conf2, null);
 
-        try{
+        try {
             secondSession.insert(new Person("Edson", 35));
             secondSession.insert(new Person("Mario", 40));
 
             assertThat(secondSession.fireAllRules()).isEqualTo(2);
 
-        }finally {
+        } finally {
             secondSession.dispose();
         }
     }
@@ -77,12 +77,12 @@ public class ReliabilityTest {
     public void testReliableObjectStore() {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
-                        "rule X when\n" +
-                        "  $s: String()\n" +
-                        "  $p: Person( getName().startsWith($s) )\n" +
-                        "then\n" +
-                        "  System.out.println( $p.getAge() );\n" +
-                        "end";
+                "rule X when\n" +
+                "  $s: String()\n" +
+                "  $p: Person( getName().startsWith($s) )\n" +
+                "then\n" +
+                "  System.out.println( $p.getAge() );\n" +
+                "end";
 
         KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();

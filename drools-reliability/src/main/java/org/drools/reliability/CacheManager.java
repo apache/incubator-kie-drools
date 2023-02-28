@@ -15,6 +15,7 @@
 
 package org.drools.reliability;
 
+import org.drools.core.common.ReteEvaluator;
 import org.infinispan.Cache;
 import org.infinispan.commons.api.CacheContainerAdmin;
 import org.infinispan.commons.marshall.JavaSerializationMarshaller;
@@ -24,6 +25,7 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.transaction.TransactionMode;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 
 public enum CacheManager implements AutoCloseable {
 
@@ -60,9 +62,19 @@ public enum CacheManager implements AutoCloseable {
         cacheConfiguration = builder.build();
     }
 
-    public <k, V> Cache<k, V> getOrCreateCache(String cacheName) {
+    public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
+        String cacheId = getSessionIdentifier(reteEvaluator) + "_" + cacheName;
         // Obtain a volatile cache.
-        return cacheManager.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheName, cacheConfiguration);
+        return cacheManager.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheId, cacheConfiguration);
+    }
+
+    private long getSessionIdentifier(ReteEvaluator reteEvaluator) {
+        PersistedSessionOption persistedSessionOption = reteEvaluator.getSessionConfiguration().getPersistedSessionOption();
+        if (persistedSessionOption != null) {
+            return persistedSessionOption.isNewSession() ? reteEvaluator.getIdentifier() : persistedSessionOption.getSessionId();
+        } else {
+            throw new ReliabilityConfigurationException("PersistedSessionOption has to be configured when drools-reliability is used");
+        }
     }
 
     @Override
