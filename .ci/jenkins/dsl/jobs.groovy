@@ -151,10 +151,11 @@ createSetupBranchJob()
 // Nightly jobs
 Closure addFullProfileJobParamsGetter = { script ->
     def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
-    jobParams.env.put([ BUILD_MVN_OPTS_CURRENT: '-Dfull' ])
+    jobParams.env.put('BUILD_MVN_OPTS_CURRENT', '-Dfull')
+    return jobParams
 }
 
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetterClosure)
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
 
 // Environment nightlies
 setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
