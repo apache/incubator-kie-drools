@@ -1348,10 +1348,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         public void setActivationGroupNode( final ActivationGroupNode activationGroupNode ) {
         }
 
-        public GroupElement getSubRule() {
-            return this.subrule;
-        }
-
         public InternalAgendaGroup getAgendaGroup() {
             return null;
         }
@@ -1443,16 +1439,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         @Override
         public String toExternalForm() {
             return null;
-        }
-
-        @Override
-        public boolean isCanceled() {
-            return false;
-        }
-
-        @Override
-        public void cancel() {
-
         }
 
         @Override

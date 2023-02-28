@@ -274,10 +274,6 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public GroupElement getSubRule() {
-            return null;
-        }
-
         public Tuple getTuple() {
             return null;
         }
@@ -357,16 +353,6 @@ public class BinaryHeapQueueTest {
         @Override
         public String toExternalForm() {
             return null;
-        }
-
-        @Override
-        public boolean isCanceled() {
-            return false;
-        }
-
-        @Override
-        public void cancel() {
-
         }
 
         @Override

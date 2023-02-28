@@ -16,38 +16,21 @@
 
 package org.drools.core.conflict;
 
-import org.drools.core.phreak.RuleAgendaItem;
+import java.io.Serializable;
+
 import org.drools.core.rule.consequence.ConflictResolver;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.kie.api.runtime.rule.Match;
+import org.kie.api.definition.rule.Rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+public class MatchConflictResolver implements ConflictResolver<InternalMatch>, Serializable {
 
-public class MatchConflictResolver implements ConflictResolver<InternalMatch>, Externalizable {
+    public static final MatchConflictResolver INSTANCE = new MatchConflictResolver();
 
-    private static final long                   serialVersionUID = 510l;
-    public static final MatchConflictResolver INSTANCE         = new MatchConflictResolver();
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-    }
-
-    public static ConflictResolver getInstance() {
-        return MatchConflictResolver.INSTANCE;
-    }
-
-    public final int compare(final InternalMatch existing,
-                             final InternalMatch adding) {
+    public final int compare(InternalMatch existing, InternalMatch adding) {
         return doCompare( existing, adding );
     }
 
-    public final static int doCompare(final InternalMatch existing,
-                                      final InternalMatch adding) {
+    public final static int doCompare(InternalMatch existing, InternalMatch adding) {
         if (existing == adding) {
             return 0;
         }
@@ -59,6 +42,13 @@ public class MatchConflictResolver implements ConflictResolver<InternalMatch>, E
             return s1 > s2 ? 1 : -1;
         }
 
-        return adding.getRule().getLoadOrder() - existing.getRule().getLoadOrder(); // lowest order goes first
+        Rule r1 = existing.getRule();
+        Rule r2 = adding.getRule();
+
+        if (r1.getLoadOrder() == r2.getLoadOrder()) {
+            return existing.getActivationNumber() > adding.getActivationNumber() ? 1 : -1;
+        }
+
+        return r2.getLoadOrder() - r1.getLoadOrder(); // lowest order goes first
     }
 }

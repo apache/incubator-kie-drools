@@ -122,10 +122,6 @@ class MockInternalMatch implements InternalMatch {
         return 0;
     }
 
-    public GroupElement getSubRule() {
-        return null;
-    }
-
     public Tuple getTuple() {
         return null;
     }
@@ -234,16 +230,4 @@ class MockInternalMatch implements InternalMatch {
     public String toExternalForm() {
         return null;
     }
-
-    @Override
-    public boolean isCanceled() {
-        return false;
-    }
-
-    @Override
-    public void cancel() {
-
-    }
-
-
 }

@@ -84,14 +84,6 @@ public interface InternalAgenda extends Agenda, ActivationsManager {
 
     boolean isDeclarativeAgenda();
 
-    /**
-     * Returns true if there is at least one activation of the given rule name
-     * in the given ruleflow group name
-     */
-    boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
-                                            String ruleName,
-                                            String processInstanceId);
-
     void setWorkingMemory(final InternalWorkingMemory workingMemory);
 
     /**

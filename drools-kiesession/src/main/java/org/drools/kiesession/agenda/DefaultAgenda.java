@@ -32,15 +32,19 @@ import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
 import org.drools.core.common.EventSupport;
+import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
+import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.RuleBase;
@@ -57,22 +61,16 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.Declaration;
-import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.consequence.ConsequenceException;
 import org.drools.core.rule.consequence.ConsequenceExceptionHandler;
-import org.drools.core.common.InternalActivationGroup;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.common.PropagationContext;
-import org.drools.core.common.RuleFlowGroup;
-import org.drools.core.reteoo.Tuple;
-import org.drools.util.StringUtils;
 import org.drools.core.util.index.TupleList;
+import org.drools.util.StringUtils;
 import org.drools.wiring.api.ComponentsFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.MatchCancelledCause;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
 import org.slf4j.Logger;
@@ -310,7 +308,21 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, String processInstanceId) {
-        return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
+        propagationList.flush();
+        RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
+
+        for ( RuleAgendaItem item : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
+            // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
+            RuleExecutor ruleExecutor = item.getRuleExecutor();
+            ruleExecutor.evaluateNetwork(this);
+            TupleList list = ruleExecutor.getLeftTupleList();
+            for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
+                if ( ruleName.equals( lt.getRule().getName() ) && ( lt.checkProcessInstance( workingMemory, processInstanceId ) )) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -580,47 +592,6 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public int sizeOfRuleFlowGroup(String name) {
         return agendaGroupsManager.sizeOfRuleFlowGroup(name);
-    }
-
-    @Override
-    public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
-                                            String ruleName,
-                                            String processInstanceId) {
-        propagationList.flush();
-        RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
-
-        for ( RuleAgendaItem item : ((InternalAgendaGroup)systemRuleFlowGroup).getActivations() ) {
-            // The lazy RuleAgendaItem must be fully evaluated, to see if there is a rule match
-            RuleExecutor ruleExecutor = item.getRuleExecutor();
-            ruleExecutor.evaluateNetwork(this);
-            TupleList list = ruleExecutor.getLeftTupleList();
-            for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
-                if ( ruleName.equals( lt.getRule().getName() )
-                     && ( checkProcessInstance( lt, processInstanceId ) )) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean checkProcessInstance(InternalMatch internalMatch,
-                                         String processInstanceId) {
-        final Map<String, Declaration> declarations = internalMatch.getSubRule().getOuterDeclarations();
-        for ( Declaration declaration : declarations.values() ) {
-            if ( "processInstance".equals( declaration.getIdentifier() )
-                    || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
-                Object value = declaration.getValue(workingMemory, internalMatch.getTuple());
-                if ( value instanceof ProcessInstance ) {
-                    return sameProcessInstance( processInstanceId, ( ProcessInstance ) value );
-                }
-            }
-        }
-        return true;
-    }
-
-    protected boolean sameProcessInstance( String processInstanceId, ProcessInstance value ) {
-        return processInstanceId.equals( value.getId());
     }
 
     @Override

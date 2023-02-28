@@ -85,16 +85,6 @@ public class TMSMockInternalMatch extends MockInternalMatch implements TruthMain
     }
 
     @Override
-    public boolean isCanceled() {
-        return false;
-    }
-
-    @Override
-    public void cancel() {
-
-    }
-
-    @Override
     public Runnable getCallback() {
         return null;
     }

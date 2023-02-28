@@ -14,25 +14,17 @@
  */
 
 package org.drools.core.phreak;
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationNode;
+
 import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queue.QueueEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntry {
-
-    private static final Logger log = LoggerFactory.getLogger(RuleAgendaItem.class);
-    private static final long serialVersionUID = 510l;
 
     private transient RuleExecutor executor;
     private RuleAgendaItem previous;
@@ -40,21 +32,13 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntr
     private PathMemory pmem;
     private boolean declarativeAgendaEnabled;
 
-    /**
-     * The salience
-     */
-    private           int                                            salience;
-    /**
-     * Rule terminal node, gives access to SubRule *
-     */
-    private           TerminalNode                                   rtn;
+    private int salience;
 
-    private           int                                            index;
-    private           boolean                                        queued;
-    private transient InternalAgendaGroup                            agendaGroup;
-    private           ActivationGroupNode                            activationGroupNode;
-    private           ActivationNode                                 activationNode;
-    private           boolean                                        active;
+    private TerminalNode rtn;
+
+    private int index;
+    private boolean queued;
+    private transient InternalAgendaGroup agendaGroup;
 
     public RuleAgendaItem() {
 
@@ -167,32 +151,8 @@ public class RuleAgendaItem implements LinkedListNode<RuleAgendaItem>, QueueEntr
         dequeue();
     }
 
-    public ActivationGroupNode getActivationGroupNode() {
-        return this.activationGroupNode;
-    }
-
-    public void setActivationGroupNode(final ActivationGroupNode activationNode) {
-        this.activationGroupNode = activationNode;
-    }
-
     public InternalAgendaGroup getAgendaGroup() {
         return this.agendaGroup;
-    }
-
-    public ActivationNode getActivationNode() {
-        return this.activationNode;
-    }
-
-    public void setActivationNode(final ActivationNode activationNode) {
-        this.activationNode = activationNode;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public boolean isRuleInUse() {

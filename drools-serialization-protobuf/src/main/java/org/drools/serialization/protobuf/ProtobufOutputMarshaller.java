@@ -726,10 +726,6 @@ public class ProtobufOutputMarshaller {
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
 
-        if ( agendaItem.getActivationGroupNode() != null ) {
-            _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
-        }
-
         return _activation.build();
     }
 

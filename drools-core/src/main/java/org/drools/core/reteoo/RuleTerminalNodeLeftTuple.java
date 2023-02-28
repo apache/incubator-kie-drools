@@ -26,13 +26,12 @@ import org.drools.core.common.ActivationNode;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements InternalMatch {
@@ -53,7 +52,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements Internal
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             activationFactHandle;
-    private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
 
@@ -235,10 +233,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements Internal
         this.activationNode = activationNode;
     }
 
-    public GroupElement getSubRule() {
-        return getTerminalNode().getSubRule();
-    }
-
     public TerminalNode getTerminalNode() {
         return (TerminalNode) getTupleSink();
     }
@@ -274,14 +268,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements Internal
             declarations.add(decl.getIdentifier());
         }
         return Collections.unmodifiableList(declarations);
-    }
-
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public void cancel() {
-        this.canceled = true;
     }
 
     public boolean isMatched() {

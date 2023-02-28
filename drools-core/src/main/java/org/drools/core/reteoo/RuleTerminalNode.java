@@ -134,7 +134,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     public void cancelMatch(InternalMatch match, ReteEvaluator reteEvaluator) {
-        match.cancel();
         if ( match.isQueued() ) {
             Tuple leftTuple = match.getTuple();
             if ( match.getRuleAgendaItem() != null ) {

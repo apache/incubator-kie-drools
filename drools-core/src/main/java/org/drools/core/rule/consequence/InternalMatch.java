@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.InitialFact;
 import org.drools.core.common.ActivationGroupNode;
@@ -28,13 +29,15 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.GroupElement;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.Declaration;
 import org.drools.core.util.Queue.QueueEntry;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
@@ -42,7 +45,7 @@ import org.kie.api.runtime.rule.Match;
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
  * As an <code>Activation</code>. Each <code>Activation</code> is assigned a number, this 
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
- * from a single insert, update, retract are assgigned the same Activation number.
+ * from a single insert, update, retract are assigned the same Activation number.
  */
 public interface InternalMatch extends Serializable, QueueEntry, Match {
     
@@ -55,24 +58,22 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
 
     Consequence getConsequence();
     
-    int getSalience();
-
     /**
-     * Retrieve the subrule that was activated.
-     * 
-     * @return
-     */
-    GroupElement getSubRule();
-    
-    /**
-     * Each PropgationContext is assigned an id from a counter for the WorkingMemory action it 
+     * Each PropagationContext is assigned an id from a counter for the WorkingMemory action it
      * represents. All Activations return this id as the ActivationNumber, thus all Activations
-     * created from the same PropgationContext will return the same long for this method.
+     * created from the same PropagationContext will return the same long for this method.
      *  
      * @return 
      *     The activation number
      */
     long getActivationNumber();
+
+    Runnable getCallback();
+    void setCallback(Runnable callback);
+
+    default List<Object> getObjectsDeep() {
+        return Collections.emptyList();
+    }
 
     /**
      * Retrieve the <code>Tuple</code> that was activated.
@@ -113,29 +114,15 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
 
     void setActive(boolean active);
 
-    default List<Object> getObjectsDeep() {
-        return Collections.emptyList();
-    }
-
     void setSalience(int salience);
 
     void setActivationFactHandle(InternalFactHandle factHandle);
 
-    abstract RuleAgendaItem getRuleAgendaItem();
+    RuleAgendaItem getRuleAgendaItem();
 
     TerminalNode getTerminalNode();
 
     String toExternalForm();
-
-    boolean isCanceled();
-
-    void cancel();
-
-    List<FactHandle> getFactHandles();
-
-    Runnable getCallback();
-
-    void setCallback(Runnable callback);
 
     default List<FactHandle> getFactHandles(Tuple tuple) {
         FactHandle[] factHandles = tuple.toFactHandles();
@@ -174,5 +161,19 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
             }
         }
         return Collections.unmodifiableList(list);
+    }
+
+    default boolean checkProcessInstance(ReteEvaluator workingMemory, String processInstanceId) {
+        final Map<String, Declaration> declarations = getTerminalNode().getSubRule().getOuterDeclarations();
+        for ( Declaration declaration : declarations.values() ) {
+            if ( "processInstance".equals( declaration.getIdentifier() )
+                    || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
+                Object value = declaration.getValue(workingMemory, getTuple());
+                if ( value instanceof ProcessInstance) {
+                    return processInstanceId.equals( (( ProcessInstance ) value).getId() );
+                }
+            }
+        }
+        return true;
     }
 }

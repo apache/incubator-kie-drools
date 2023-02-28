@@ -432,11 +432,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public boolean isRuleInstanceAgendaItem( String ruleflowGroupName, String ruleName, String processInstanceId ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.isRuleInstanceAgendaItem -> TODO" );
-    }
-
-    @Override
     public InternalAgendaGroup getAgendaGroup( String name ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroup -> TODO" );
     }

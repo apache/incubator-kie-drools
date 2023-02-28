@@ -83,10 +83,6 @@ public class MockInternalMatch implements InternalMatch {
     public void setActivationGroupNode( final ActivationGroupNode activationGroupNode ) {
     }
 
-    public GroupElement getSubRule() {
-        return null;
-    }
-
     public InternalAgendaGroup getAgendaGroup() {
         return null;
     }
@@ -182,16 +178,6 @@ public class MockInternalMatch implements InternalMatch {
     @Override
     public String toExternalForm() {
         return null;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return false;
-    }
-
-    @Override
-    public void cancel() {
-
     }
 
     @Override
