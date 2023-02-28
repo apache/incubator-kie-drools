@@ -135,7 +135,7 @@
     <dependency>
       <groupId>it.unimi.dsi</groupId>
       <artifactId>fastutil</artifactId>
-      <scope>provided</scope> <!-- only for pleasing enforcer plugin during a full build: -PfullProfile on the _whole_ project -->
+      <optional>true</optional> <!-- only for pleasing enforcer plugin during a full build: -PfullProfile on the _whole_ project -->
     </dependency>
 
   </dependencies>
