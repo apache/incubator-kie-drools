@@ -282,8 +282,8 @@ public class DecisionRestResourceGenerator {
 
         interpolateRequestPath(pathName, placeHolder, clonedDmnMethod);
 
-        ReturnStmt returnStmt = clonedDmnMethod.findFirst(ReturnStmt.class).orElseThrow(TEMPLATE_WAS_MODIFIED);
-        returnStmt.setExpression(new MethodCallExpr("buildDMNResultResponse").addArgument(new NameExpr("result")));
+        MethodCallExpr methodCallExpr = clonedDmnMethod.findFirst(MethodCallExpr.class, mce -> mce.getNameAsString().equals("enrichResponseHeaders")).orElseThrow(TEMPLATE_WAS_MODIFIED);
+        methodCallExpr.setName("buildDMNResultResponse").setArguments(NodeList.nodeList(new NameExpr("result")));
         return clonedDmnMethod;
     }
 
@@ -359,7 +359,9 @@ public class DecisionRestResourceGenerator {
     }
 
     private void addMonitoringToMethod(MethodDeclaration method, String nameURL) {
-        BlockStmt body = method.getBody().orElseThrow(() -> new NoSuchElementException("This method should be invoked only with concrete classes and not with abstract methods or interfaces."));
+        MethodCallExpr methodCallExpr = method.findFirst(MethodCallExpr.class, mce -> mce.getNameAsString().equals("enrichResponseHeaders")).orElseThrow(TEMPLATE_WAS_MODIFIED);
+        BlockStmt body = methodCallExpr.findAncestor(BlockStmt.class)
+                .orElseThrow(() -> new NoSuchElementException("This method should be invoked only with concrete classes and not with abstract methods or interfaces."));
         NodeList<Statement> statements = body.getStatements();
         ReturnStmt returnStmt = body.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("Return statement not found: can't add monitoring to endpoint. Template was modified."));
         statements.addFirst(parseStatement("long startTime = System.nanoTime();"));

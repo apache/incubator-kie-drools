@@ -21,12 +21,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.AbstractStringAssert;
 import org.drools.codegen.common.GeneratedFile;
+import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -37,7 +39,11 @@ import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
 import org.kie.kogito.grafana.JGrafana;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
@@ -87,6 +93,8 @@ public class DecisionCodegenTest {
 
         if (contextBuilder.build().hasRESTForGenerator(codeGenerator)) {
             expectedResources.add("decision/VacationsResource.java");
+
+            assertRestResource(codeGenerator);
         }
 
         assertThat(fileNames(generatedFiles)).containsAll(expectedResources);
@@ -111,6 +119,8 @@ public class DecisionCodegenTest {
                 "org/kie/kogito/app/DecisionModelResourcesProvider.java"));
         if (contextBuilder.build().hasRESTForGenerator(codeGenerator)) {
             expectedResources.add("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/OneOfEachTypeResource.java");
+
+            assertRestResource(codeGenerator);
         }
 
         assertThat(fileNames(generatedFiles)).containsAll(expectedResources);
@@ -140,6 +150,8 @@ public class DecisionCodegenTest {
 
             assertEquals(1, vacationDomainDashboard.getDashboard().panels.size());
             assertEquals(0, vacationDomainDashboard.getDashboard().links.size());
+
+            assertRestResource(decisionCodeGenerator);
         }
     }
 
@@ -175,6 +187,8 @@ public class DecisionCodegenTest {
                     JGrafana.parse(new String(dashboards.stream().filter(x -> x.relativePath().contains("domain-dashboard-Vacations.json")).findFirst().get().contents()));
 
             assertEquals(1, vacationDomainDashboard.getDashboard().links.size());
+
+            assertRestResource(decisionCodeGenerator);
         }
     }
 
@@ -259,6 +273,21 @@ public class DecisionCodegenTest {
         CompilationUnit compilationUnit = optionalApplicationSection.get().compilationUnit();
         assertThat(compilationUnit).isNotNull();
         return assertThat(compilationUnit.toString());
+    }
+
+    protected void assertRestResource(DecisionCodegen codeGenerator) {
+        codeGenerator.generate().stream()
+                .filter(x -> x.type().equals(GeneratedFileType.of("REST", GeneratedFileType.Category.SOURCE, true, true)))
+                .forEach(x -> assertRestResource(StaticJavaParser.parse(new String(x.contents()))));
+    }
+
+    protected void assertRestResource(CompilationUnit compilationUnit) {
+        compilationUnit
+                .findAll(MethodDeclaration.class, x -> x.getNameAsString().contains("_dmnresult"))
+                .stream()
+                .map(x -> x.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("Could not find return statement")))
+                .map(x -> x.findFirst(MethodCallExpr.class).orElseThrow(() -> new NoSuchElementException("Could not find method call")))
+                .forEach(x -> assertThat(x.getNameAsString()).isEqualTo("buildDMNResultResponse"));
     }
 
     protected DecisionCodegen getDecisionCodegen(String sourcePath, KogitoBuildContext.Builder contextBuilder) {
