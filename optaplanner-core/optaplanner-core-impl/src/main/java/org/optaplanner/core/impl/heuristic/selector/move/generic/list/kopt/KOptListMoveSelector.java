@@ -71,14 +71,6 @@ final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution
         return total;
     }
 
-    private long factorialUpToCount(long toMultiply, int count) {
-        long total = toMultiply;
-        for (int i = 1; i < count; i++) {
-            total *= (toMultiply - i);
-        }
-        return total;
-    }
-
     @Override
     public Iterator<Move<Solution_>> iterator() {
         return new KOptListMoveIterator<>(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,

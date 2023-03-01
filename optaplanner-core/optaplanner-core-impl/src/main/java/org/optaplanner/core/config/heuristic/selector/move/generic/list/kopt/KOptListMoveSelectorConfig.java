@@ -55,10 +55,8 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
     @Override
     public KOptListMoveSelectorConfig inherit(KOptListMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        this.minimumK =
-                ConfigUtils.inheritOverwritableProperty(minimumK, inheritedConfig.minimumK);
-        this.maximumK =
-                ConfigUtils.inheritOverwritableProperty(maximumK, inheritedConfig.maximumK);
+        this.minimumK = ConfigUtils.inheritOverwritableProperty(minimumK, inheritedConfig.minimumK);
+        this.maximumK = ConfigUtils.inheritOverwritableProperty(maximumK, inheritedConfig.maximumK);
         return this;
     }
 

@@ -123,11 +123,11 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
 
     private KOptDescriptor<Solution_, Node_> pickKOptMoveRec(Iterator<Node_> valueIterator, Node_[] pickedValues,
             int pickedSoFar,
-            int K) {
+            int k) {
         Node_ previousRemovedEdgeEndpoint = pickedValues[2 * pickedSoFar - 2];
         Node_ nextRemovedEdgePoint, nextRemovedEdgeOppositePoint;
 
-        int remainingAttempts = (K - pickedSoFar + 3) * 2;
+        int remainingAttempts = (k - pickedSoFar + 3) * 2;
         while (remainingAttempts > 0) {
             nextRemovedEdgePoint = valueIterator.next();
             while (nextRemovedEdgePoint == getNodePredecessor(previousRemovedEdgeEndpoint) ||
@@ -158,8 +158,8 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
             }
             pickedValues[2 * pickedSoFar] = nextRemovedEdgeOppositePoint;
 
-            if (pickedSoFar < K) {
-                KOptDescriptor<Solution_, Node_> descriptor = pickKOptMoveRec(valueIterator, pickedValues, pickedSoFar + 1, K);
+            if (pickedSoFar < k) {
+                KOptDescriptor<Solution_, Node_> descriptor = pickKOptMoveRec(valueIterator, pickedValues, pickedSoFar + 1, k);
                 if (descriptor != null && descriptor.isFeasible()) {
                     return descriptor;
                 }
