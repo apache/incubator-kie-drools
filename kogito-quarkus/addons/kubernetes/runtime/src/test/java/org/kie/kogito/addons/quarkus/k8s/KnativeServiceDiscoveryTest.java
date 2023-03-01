@@ -51,7 +51,10 @@ public class KnativeServiceDiscoveryTest {
         Service service = knativeClient.services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
         service.getMetadata().setName("test");
-        knativeClient.services().inNamespace(namespace).resource(service).create();
+
+        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+        knativeClient.services().inNamespace(namespace).create(service);
+
         assertEquals(Optional.empty(),
                 kubeResourceDiscovery.query(new KubeURI("knative:serving.knative.dev/v1/Service/" + namespace + "/invalid")));
     }
@@ -64,7 +67,9 @@ public class KnativeServiceDiscoveryTest {
         KnativeClient knativeClient = mockServer.getClient().adapt(KnativeClient.class);
         Service kService = knativeClient.services().inNamespace(namespace)
                 .load(this.getClass().getClassLoader().getResourceAsStream("knative/quarkus-greeting.yaml")).get();
-        knativeClient.services().inNamespace(namespace).resource(kService).create();
+
+        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+        knativeClient.services().inNamespace(namespace).create(kService);
 
         Optional<String> url = kubeResourceDiscovery.query(kubeURI);
         assertEquals("http://serverless-workflow-greeting-quarkus.test.10.99.154.147.sslip.io", url.get());

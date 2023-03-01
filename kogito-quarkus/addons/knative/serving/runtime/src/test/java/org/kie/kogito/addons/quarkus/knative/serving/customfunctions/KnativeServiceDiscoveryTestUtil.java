@@ -41,7 +41,8 @@ final class KnativeServiceDiscoveryTestUtil {
 
         service.getStatus().setUrl(remoteServiceUrl);
 
-        knativeClient.services().inNamespace(namespace).resource(service).create();
+        // ItemWritableOperation#create is deprecated. However, we can't use the new method while Quarkus LTS is not greater than 2.16.
+        knativeClient.services().inNamespace(namespace).create(service);
 
         return Optional.of(knativeClient);
     }
