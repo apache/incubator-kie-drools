@@ -94,7 +94,7 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
                         h.getObject(),
                         mask,
                         modifiedClass,
-                        this.activation);
+                        this.internalMatch);
                 return;
             }
 
@@ -102,9 +102,9 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
                     ((InternalFactHandle) handle).getObject(),
                     mask,
                     modifiedClass,
-                    this.activation);
+                    this.internalMatch);
             if (h.isTraitOrTraitable()) {
-                toStatefulKnowledgeSession().updateTraits(h, mask, modifiedClass, this.activation);
+                toStatefulKnowledgeSession().updateTraits(h, mask, modifiedClass, this.internalMatch);
             }
         }
 
@@ -115,8 +115,8 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
             if (h instanceof RuleUnitDefaultFactHandle && ((RuleUnitDefaultFactHandle) h).getDataStore() != null) {
                 // This handle has been insert from a datasource, so remove from it
                 ((RuleUnitDefaultFactHandle) h).getDataStore().delete((RuleUnitDefaultFactHandle) h,
-                        this.activation.getRule(),
-                        this.activation.getTuple().getTupleSink(),
+                        this.internalMatch.getRule(),
+                        this.internalMatch.getTuple().getTupleSink(),
                         fhState);
                 return;
             }
@@ -127,8 +127,8 @@ public class RuleUnitStatefulKnowledgeSessionImpl extends StatefulKnowledgeSessi
             }
 
             h.getEntryPoint(kogitoSession).delete(handle,
-                    this.activation.getRule(),
-                    this.activation.getTuple().getTupleSink(),
+                    this.internalMatch.getRule(),
+                    this.internalMatch.getTuple().getTupleSink(),
                     fhState);
         }
     }

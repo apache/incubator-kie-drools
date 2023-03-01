@@ -17,7 +17,7 @@
 package org.drools.modelcompiler.attributes;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.Salience;
 import org.drools.core.reteoo.Tuple;
 import org.drools.model.DynamicValueSupplier;
@@ -32,8 +32,8 @@ public class LambdaSalience extends DynamicAttributeEvaluator<Integer> implement
     }
 
     @Override
-    public int getValue(Activation activation, Rule rule, ReteEvaluator reteEvaluator) {
-        Tuple tuple = activation.getTuple();
+    public int getValue(InternalMatch internalMatch, Rule rule, ReteEvaluator reteEvaluator) {
+        Tuple tuple = internalMatch.getTuple();
         Object[] facts = declarationsToFacts( reteEvaluator, tuple, getDeclarations(tuple), supplier.getVariables() );
         return supplier.supply( facts );
     }

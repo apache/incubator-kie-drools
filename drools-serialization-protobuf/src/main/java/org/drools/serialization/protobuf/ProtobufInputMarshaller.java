@@ -45,7 +45,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -59,7 +58,7 @@ import org.drools.core.process.WorkItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.accessor.GlobalResolver;
 import org.drools.core.common.PropagationContext;
@@ -638,7 +637,7 @@ public class ProtobufInputMarshaller {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
                     ActivationKey activationKey = getActivationKey( context, _activation );
-                    Activation activation = (Activation) ((PBActivationsFilter)context.getFilter()).getTuplesCache().get(activationKey);
+                    InternalMatch internalMatch = (InternalMatch) ((PBActivationsFilter)context.getFilter()).getTuplesCache().get(activationKey);
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
@@ -661,7 +660,7 @@ public class ProtobufInputMarshaller {
 
                     ObjectTypeConf typeConf = context.getWorkingMemory().getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf( handle.getEntryPointId(),
                                                                                                                  handle.getObject() );
-                    tms.readLogicalDependency( handle, object, value, activation, typeConf );
+                    tms.readLogicalDependency(handle, object, value, internalMatch, typeConf);
                 }
             } else {
                 ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( ((TruthMaintenanceSystemImpl)tms).getBeliefSystem().newBeliefSet( handle ) );
@@ -803,26 +802,25 @@ public class ProtobufInputMarshaller {
         }
 
         @Override
-        public boolean accept(Activation activation,
-                              ReteEvaluator reteEvaluator,
-                              TerminalNode rtn) {
-            if ( activation.isRuleAgendaItem() ) {
-                ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
-                if ( !this.rneActivations.containsKey( key ) || this.rneActivations.get( key ).getEvaluated() ) {
-                    rneaToFire.add( (RuleAgendaItem) activation );
-                }
-                return true;
-            } else {
+        public boolean accept(Match match) {
+            InternalMatch internalMatch = (InternalMatch) match;
+            RuleImpl rule = internalMatch.getRule();
+            TerminalNode rtn = internalMatch.getRuleAgendaItem().getTerminalNode();
+            ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) && !serializedNodeMemories ?
+                    PersisterHelper.createActivationKey(rule.getPackageName(), rule.getName(), internalMatch.getTuple().toObjects(true)) :
+                    PersisterHelper.createActivationKey(rule.getPackageName(), rule.getName(), internalMatch.getTuple());
 
-                RuleImpl rule = activation.getRule();
-                ActivationKey activationKey = PersisterHelper.hasNodeMemory( rtn ) && !serializedNodeMemories ?
-                        PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple().toObjects(true)) :
-                        PersisterHelper.createActivationKey( rule.getPackageName(), rule.getName(), activation.getTuple() );
+            this.tuplesCache.put(activationKey, internalMatch.getTuple());
 
-                this.tuplesCache.put( activationKey, activation.getTuple() );
+            return !dormantActivations.contains(activationKey);
+        }
 
-                return !dormantActivations.contains(activationKey);
+        public boolean accept(RuleAgendaItem activation) {
+            ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName());
+            if ( !this.rneActivations.containsKey( key ) || this.rneActivations.get( key ).getEvaluated() ) {
+                rneaToFire.add(activation );
             }
+            return true;
         }
 
         public Map<ActivationKey, Tuple> getTuplesCache() {
@@ -841,18 +839,6 @@ public class ProtobufInputMarshaller {
                 ruleExecutor.reEvaluateNetwork( wm );
                 ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
-        }
-
-        @Override
-        public boolean accept(Match match) {
-            Tuple tuple = ((Activation)match).getTuple();
-            ActivationKey key = PersisterHelper.createActivationKey( match.getRule().getPackageName(), 
-                                                                     match.getRule().getName(),
-                                                                     tuple );
-            // add the tuple to the cache for correlation
-            this.tuplesCache.put( key, tuple );
-            // check if there was an active activation for it
-            return !this.dormantActivations.contains( key );
         }
 
         public void withSerializedNodeMemories() {

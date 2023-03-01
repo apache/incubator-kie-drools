@@ -25,14 +25,13 @@ import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEventManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.reteoo.Tuple;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.kiesession.session.StatelessKnowledgeSessionImpl;
@@ -263,7 +262,7 @@ public abstract class WorkingMemoryLogger
                                                 event.getMatch().getRule().getName(),
                                                 extractDeclarations( event.getMatch() ),
                                                 ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
+                                                extractFactHandleIds( (InternalMatch) event.getMatch()) ));
     }
 
     /**
@@ -275,7 +274,7 @@ public abstract class WorkingMemoryLogger
                                                 event.getMatch().getRule().getName(),
                                                 extractDeclarations( event.getMatch() ),
                                                 ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
+                                                extractFactHandleIds( (InternalMatch) event.getMatch()) ));
     }
 
     /**
@@ -287,7 +286,7 @@ public abstract class WorkingMemoryLogger
                                                 event.getMatch().getRule().getName(),
                                                 extractDeclarations( event.getMatch() ),
                                                 ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
+                                                extractFactHandleIds( (InternalMatch) event.getMatch()) ));
     }
 
     /**
@@ -299,7 +298,7 @@ public abstract class WorkingMemoryLogger
                                                 event.getMatch().getRule().getName(),
                                                 extractDeclarations( event.getMatch() ),
                                                 ((RuleImpl)event.getMatch().getRule()).getRuleFlowGroup(),
-                                                extractFactHandleIds( (Activation) event.getMatch() ) ) );
+                                                extractFactHandleIds( (InternalMatch) event.getMatch()) ));
     }
 
     /**
@@ -315,7 +314,7 @@ public abstract class WorkingMemoryLogger
     private String extractDeclarations(Match match) {
         final StringBuilder result = new StringBuilder();
         List<String> declarations = match.getDeclarationIds();
-        Map<String, Declaration> declsMap = ( (AgendaItem) match ).getTerminalNode().getSubRule().getOuterDeclarations();
+        Map<String, Declaration> declsMap = ( (InternalMatch) match ).getTerminalNode().getSubRule().getOuterDeclarations();
         for ( int i = 0; i < declarations.size(); i++ ) {
             String declaration = declarations.get(i);
 
@@ -341,13 +340,13 @@ public abstract class WorkingMemoryLogger
         return result.toString();
     }
 
-    private String extractFactHandleIds(Activation activation) {
-        InternalFactHandle activatingFact = activation.getPropagationContext().getFactHandle();
+    private String extractFactHandleIds(InternalMatch internalMatch) {
+        InternalFactHandle activatingFact = internalMatch.getPropagationContext().getFactHandle();
         StringBuilder sb = new StringBuilder();
         if (activatingFact != null) {
             sb.append(activatingFact.getId());
         }
-        InternalFactHandle[] factHandles = activation.getTuple().toFactHandles();
+        InternalFactHandle[] factHandles = internalMatch.getTuple().toFactHandles();
         for (int i = 0; i < factHandles.length; i++) {
             if (activatingFact != null) {
                 if (activatingFact.getId() == factHandles[i].getId()) {

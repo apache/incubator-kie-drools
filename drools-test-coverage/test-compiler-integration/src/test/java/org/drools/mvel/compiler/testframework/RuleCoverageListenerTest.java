@@ -26,9 +26,11 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
 import org.junit.Test;
@@ -49,14 +51,14 @@ public class RuleCoverageListenerTest {
         assertThat(ls.getRules().size()).isEqualTo(3);
         assertThat(ls.getPercentCovered()).isEqualTo(0);
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule1"), null, null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockInternalMatch("rule1"), null, null));
         assertThat(ls.getRules().size()).isEqualTo(2);
         assertThat(ls.getRules().contains("rule2")).isTrue();
         assertThat(ls.getRules().contains("rule3")).isTrue();
         assertThat(ls.getRules().contains("rule1")).isFalse();
         assertThat(ls.getPercentCovered()).isEqualTo(33);
 
-        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockActivation("rule2"), null, null));
+        ls.afterMatchFired(new AfterActivationFiredEventImpl(new MockInternalMatch("rule2"), null, null));
         assertThat(ls.getRules().size()).isEqualTo(1);
         assertThat(ls.getRules().contains("rule2")).isFalse();
         assertThat(ls.getRules().contains("rule1")).isFalse();
@@ -64,7 +66,7 @@ public class RuleCoverageListenerTest {
 
         assertThat(ls.getPercentCovered()).isEqualTo(66);
 
-        ls.afterMatchFired( new AfterActivationFiredEventImpl( new MockActivation( "rule3" ), null , null));
+        ls.afterMatchFired( new AfterActivationFiredEventImpl(new MockInternalMatch("rule3" ), null , null));
         assertThat(ls.getRules().size()).isEqualTo(0);
         assertThat(ls.getRules().contains("rule2")).isFalse();
         assertThat(ls.getRules().contains("rule1")).isFalse();
@@ -77,10 +79,10 @@ public class RuleCoverageListenerTest {
 }
 
 @SuppressWarnings("serial")
-class MockActivation implements Activation {
+class MockInternalMatch implements InternalMatch {
     private String ruleName;
 
-    public MockActivation(String ruleName) {
+    public MockInternalMatch(String ruleName) {
         this.ruleName = ruleName;
     }
 
@@ -120,10 +122,6 @@ class MockActivation implements Activation {
         return 0;
     }
 
-    public GroupElement getSubRule() {
-        return null;
-    }
-
     public Tuple getTuple() {
         return null;
     }
@@ -146,6 +144,16 @@ class MockActivation implements Activation {
 
     public List<FactHandle> getFactHandles() {
         return null;
+    }
+
+    @Override
+    public Runnable getCallback() {
+        return null;
+    }
+
+    @Override
+    public void setCallback(Runnable callback) {
+
     }
 
     public List<Object> getObjects() {
@@ -180,6 +188,16 @@ class MockActivation implements Activation {
 
     public void setActive(boolean active) { }
 
+    @Override
+    public void setSalience(int salience) {
+
+    }
+
+    @Override
+    public void setActivationFactHandle(InternalFactHandle factHandle) {
+
+    }
+
     public boolean isRuleAgendaItem() {
         return false;
     }
@@ -188,4 +206,28 @@ class MockActivation implements Activation {
     public void dequeue() {
     }
 
+    @Override
+    public int getQueueIndex() {
+        return 0;
+    }
+
+    @Override
+    public void setQueueIndex(int index) {
+
+    }
+
+    @Override
+    public RuleAgendaItem getRuleAgendaItem() {
+        return null;
+    }
+
+    @Override
+    public TerminalNode getTerminalNode() {
+        return null;
+    }
+
+    @Override
+    public String toExternalForm() {
+        return null;
+    }
 }

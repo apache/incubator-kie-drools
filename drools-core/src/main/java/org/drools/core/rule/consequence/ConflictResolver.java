@@ -30,15 +30,15 @@ import org.drools.core.reteoo.Tuple;
  * ordering of conflicting rules.
  * </p>
  * 
- * @see Activation
+ * @see InternalMatch
  * @see Tuple
  * @see org.kie.rule.Rule
  * 
  *
  * @version $Id: ConflictResolver.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  */
-public interface ConflictResolver
+public interface ConflictResolver<T>
     extends
     Serializable,
-    Comparator<Activation> {
+    Comparator<T> {
 }

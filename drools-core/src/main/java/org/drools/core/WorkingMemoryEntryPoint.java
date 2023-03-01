@@ -25,7 +25,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -76,7 +76,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
                 Object object,
                 BitMask mask,
                 Class<?> modifiedClass,
-                Activation activation);
+                InternalMatch internalMatch);
 
     EntryPointId getEntryPoint();
     ReteEvaluator getReteEvaluator();

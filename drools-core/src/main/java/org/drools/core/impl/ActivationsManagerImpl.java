@@ -28,7 +28,6 @@ import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -44,13 +43,12 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.AgendaComponentFactory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.definitions.rule.impl.QueryImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.common.PropagationContext;
@@ -161,16 +159,12 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
         for (final Iterator it = activationGroup.iterator(); it.hasNext(); ) {
             final ActivationGroupNode node = (ActivationGroupNode) it.next();
-            final Activation activation = node.getActivation();
-            activation.setActivationGroupNode( null );
+            final InternalMatch internalMatch = node.getActivation();
+            internalMatch.setActivationGroupNode(null);
 
-            if ( activation.isQueued() ) {
-                activation.setQueued(false);
-                activation.remove();
-
-                RuleExecutor ruleExec = ((RuleTerminalNodeLeftTuple)activation).getRuleAgendaItem().getRuleExecutor();
-                ruleExec.removeLeftTuple((LeftTuple) activation);
-                getAgendaEventSupport().fireActivationCancelled( activation, this.reteEvaluator, MatchCancelledCause.CLEAR );
+            if ( internalMatch.isQueued() ) {
+                internalMatch.remove();
+                getAgendaEventSupport().fireActivationCancelled(internalMatch, this.reteEvaluator, MatchCancelledCause.CLEAR);
             }
         }
         activationGroup.reset();
@@ -178,26 +172,26 @@ public class ActivationsManagerImpl implements ActivationsManager {
 
     @Override
     public RuleAgendaItem createRuleAgendaItem(int salience, PathMemory pathMemory, TerminalNode rtn) {
-        return AgendaComponentFactory.get().createAgendaItem( activationCounter++, null, salience, null, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
+        return AgendaComponentFactory.get().createAgendaItem( salience, pathMemory, rtn, false, agendaGroupsManager.getMainAgendaGroup());
     }
 
     @Override
-    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
+    public InternalMatch createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
         rtnLeftTuple.init(activationCounter++, salience, context, ruleAgendaItem, agendaGroup);
         return rtnLeftTuple;
     }
 
     @Override
-    public void cancelActivation(Activation activation) {
-        AgendaItem item = (AgendaItem) activation;
+    public void cancelActivation(InternalMatch internalMatch) {
+        InternalMatch item = internalMatch;
 
-        if ( activation.isQueued() ) {
-            if ( activation.getActivationGroupNode() != null ) {
-                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+        if ( internalMatch.isQueued() ) {
+            if (internalMatch.getActivationGroupNode() != null ) {
+                internalMatch.getActivationGroupNode().getActivationGroup().removeActivation(internalMatch);
             }
-            ((Tuple) activation).decreaseActivationCountForEvents();
+            ((Tuple) internalMatch).decreaseActivationCountForEvents();
 
-            getAgendaEventSupport().fireActivationCancelled( activation, reteEvaluator, MatchCancelledCause.WME_MODIFY );
+            getAgendaEventSupport().fireActivationCancelled(internalMatch, reteEvaluator, MatchCancelledCause.WME_MODIFY);
         }
 
         if (item.getRuleAgendaItem() != null) {
@@ -208,21 +202,18 @@ public class ActivationsManagerImpl implements ActivationsManager {
     }
 
     @Override
-    public void addItemToActivationGroup(AgendaItem activation) {
-        if ( activation.isRuleAgendaItem() ) {
-            throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
-        }
-        String group = activation.getRule().getActivationGroup();
+    public void addItemToActivationGroup(InternalMatch internalMatch) {
+        String group = internalMatch.getRule().getActivationGroup();
         if ( !StringUtils.isEmpty(group) ) {
             InternalActivationGroup actgroup = this.activationGroups.computeIfAbsent(group, k -> new ActivationGroupImpl( this, k ));
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
-                    actgroup.getTriggeredForRecency() >= activation.getPropagationContext().getFactHandle().getRecency() ) {
+                 actgroup.getTriggeredForRecency() >= internalMatch.getPropagationContext().getFactHandle().getRecency() ) {
                 return;
             }
 
-            actgroup.addActivation( activation );
+            actgroup.addActivation(internalMatch);
         }
     }
 

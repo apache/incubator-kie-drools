@@ -25,5 +25,5 @@ import org.drools.core.WorkingMemory;
  * WorkingMemory invalid.
  */
 public interface ConsequenceExceptionHandler {
-    void handleException(Activation activation, WorkingMemory workingMemory, Exception exception);
+    void handleException(InternalMatch internalMatch, WorkingMemory workingMemory, Exception exception);
 }

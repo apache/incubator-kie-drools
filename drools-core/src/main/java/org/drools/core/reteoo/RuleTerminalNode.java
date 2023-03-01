@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.drools.core.base.SalienceInteger;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,6 +30,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.consequence.InternalMatch;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -133,8 +133,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
     }
 
-    public void cancelMatch(AgendaItem match, ReteEvaluator reteEvaluator) {
-        match.cancel();
+    public void cancelMatch(InternalMatch match, ReteEvaluator reteEvaluator) {
         if ( match.isQueued() ) {
             Tuple leftTuple = match.getTuple();
             if ( match.getRuleAgendaItem() != null ) {

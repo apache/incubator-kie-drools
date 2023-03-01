@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -1536,7 +1535,7 @@ public class LinkingTest {
 
         InternalAgenda agenda = wm.getAgenda();
         InternalAgendaGroup group = agenda.getAgendaGroupsManager().getNextFocus();
-        AgendaItem item = (AgendaItem) group.remove();
+        RuleAgendaItem item = group.remove();
         RuleExecutor ruleExecutor = ((RuleAgendaItem)item).getRuleExecutor();
         int count = ruleExecutor.evaluateNetworkAndFire(wm, null, 0, -1);
         //assertEquals(3, count );
@@ -1592,21 +1591,21 @@ public class LinkingTest {
         
 //        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
 //        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
-//        AgendaItem item = (AgendaItem) group.remove();
+//        InternalMatch item = (InternalMatch) group.remove();
 //        int count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
 //                
 //        agenda.addActivation( item, true );
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.remove();
+//        item = (InternalMatch) group.remove();
 //        
 //        agenda.fireActivation( item );
 //        assertEquals( 1, list.size() );        
 //        
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.remove();
+//        item = (InternalMatch) group.remove();
 //        count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(0, count );        
         

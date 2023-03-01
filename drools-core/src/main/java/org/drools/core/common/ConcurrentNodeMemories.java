@@ -46,7 +46,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             this.memories.set(node.getMemoryId(), null);
         }
     }
-    
+
     public void clear() {
         this.memories = new AtomicReferenceArray<>( this.ruleBase.getMemoryCount() );
     }
@@ -79,7 +79,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * The implementation tries to delay locking as much as possible, by running
      * some potentially unsafe operations out of the critical session. In case it
      * fails the checks, it will move into the critical sessions and re-check everything
-     * before effectively doing any change on data structures. 
+     * before effectively doing any change on data structures.
      */
     public Memory getNodeMemory(MemoryFactory node, ReteEvaluator reteEvaluator) {
         if( node.getMemoryId() >= this.memories.length() ) {

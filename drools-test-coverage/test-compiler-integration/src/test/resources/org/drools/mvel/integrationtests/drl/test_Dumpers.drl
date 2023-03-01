@@ -50,7 +50,7 @@ end
 rule "test group3 1"
     salience 5
     agenda-group "agenda group 3"
-    activation-group "activation group 3"
+    activation-group "internalMatch group 3"
     auto-focus true
     when
         Cheese( )
@@ -61,7 +61,7 @@ end
 
 rule "test group3 2"
     agenda-group "agenda group 3"
-    activation-group "activation group 3"
+    activation-group "internalMatch group 3"
     when
         Cheese( $type : type, $price : price )
     then

@@ -22,14 +22,15 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.conflict.PhreakConflictResolver;
+import org.drools.core.conflict.RuleAgendaConflictResolver;
 import org.drools.core.impl.RuleBase;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;
+import org.drools.core.util.QueueFactory;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -43,11 +44,13 @@ public class AgendaGroupQueueImpl
         InternalAgendaGroup,
         InternalRuleFlowGroup {
     private static final long serialVersionUID = 510l;
+
+    private static final RuleAgendaItem VISITED_AGENDA_GROUP = new RuleAgendaItem();
     private final    String             name;
     /**
      * Items in the agenda.
      */
-    private          Queue<Activation> priorityQueue;
+    private          Queue<RuleAgendaItem> priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -59,7 +62,7 @@ public class AgendaGroupQueueImpl
 
     private volatile              boolean hasRuleFlowLister;
 
-    private Activation            lastRemoved;
+    private RuleAgendaItem        lastRemoved;
     private final boolean         sequential;
 
     public AgendaGroupQueueImpl(final String name,
@@ -73,7 +76,7 @@ public class AgendaGroupQueueImpl
     @Override
     public void visited() {
         if (sequential) {
-            lastRemoved = VisitedAgendaGroup.INSTANCE;
+            lastRemoved = VISITED_AGENDA_GROUP;
         }
     }
 
@@ -90,7 +93,7 @@ public class AgendaGroupQueueImpl
         if (reteEvaluator != null && reteEvaluator.getRuleSessionConfiguration().isDirectFiring()) {
             this.priorityQueue = new ArrayQueue<>();
         } else {
-            this.priorityQueue = new BinaryHeapQueue<>(new PhreakConflictResolver());
+            this.priorityQueue = QueueFactory.createQueue(RuleAgendaConflictResolver.INSTANCE);
         }
     }
 
@@ -150,7 +153,7 @@ public class AgendaGroupQueueImpl
         this.lastRemoved = null;
     }
 
-    public Collection<Activation> getAll() {
+    public Collection<RuleAgendaItem> getAll() {
         return this.priorityQueue.getAll();
     }
 
@@ -161,25 +164,25 @@ public class AgendaGroupQueueImpl
         return this.priorityQueue.size();
     }
 
-    public void add(final Activation activation) {
+    public void add(final RuleAgendaItem activation) {
         if ( lastRemoved != null ) {
             // this will only be set if sequential. Do not add Match's that are higher in salience + load order than the lastRemoved (fired)
-            if ( lastRemoved == activation || lastRemoved == VisitedAgendaGroup.INSTANCE || PhreakConflictResolver.doCompare( lastRemoved, activation ) < 0 ) {
+            if ( lastRemoved == activation || lastRemoved == VISITED_AGENDA_GROUP || RuleAgendaConflictResolver.doCompare(lastRemoved, activation) < 0 ) {
                 return;
             }
         }
         this.priorityQueue.enqueue( activation);
     }
 
-    public Activation remove() {
-        Activation match = this.priorityQueue.dequeue();
+    public RuleAgendaItem remove() {
+        RuleAgendaItem match = this.priorityQueue.dequeue();
         if ( sequential ) {
             lastRemoved = match;
         }
         return match;
     }
 
-    public Activation peek() {
+    public RuleAgendaItem peek() {
         return this.priorityQueue.peek();
     }
 
@@ -223,7 +226,7 @@ public class AgendaGroupQueueImpl
         return this.priorityQueue.isEmpty();
     }
 
-    public Collection<Activation> getActivations() {
+    public Collection<RuleAgendaItem> getActivations() {
         return this.priorityQueue.getAll();
     }
 
@@ -245,7 +248,7 @@ public class AgendaGroupQueueImpl
         return this.name.hashCode();
     }
 
-    public void remove(final Activation activation) {
+    public void remove(final RuleAgendaItem activation) {
         this.priorityQueue.dequeue(activation);
     }
 

@@ -17,13 +17,13 @@
 package org.drools.core.event;
 
 
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 
 public class BeforeActivationFiredEvent extends ActivationEvent {
     private static final long serialVersionUID = 510l;
 
-    public BeforeActivationFiredEvent(final Activation activation) {
-        super( activation );
+    public BeforeActivationFiredEvent(final InternalMatch internalMatch) {
+        super(internalMatch);
     }
 
     public String toString() {

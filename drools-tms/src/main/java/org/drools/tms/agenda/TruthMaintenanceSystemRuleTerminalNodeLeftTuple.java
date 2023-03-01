@@ -29,7 +29,7 @@ import org.drools.tms.SimpleMode;
 import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.drools.tms.beliefsystem.ModedAssertion;
 
-public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends RuleTerminalNodeLeftTuple implements TruthMaintenanceSystemAgendaItem<T> {
+public class TruthMaintenanceSystemRuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends RuleTerminalNodeLeftTuple implements TruthMaintenanceSystemInternalMatch<T> {
 
     private LinkedList<SimpleMode> blockers;
     private LinkedList<LogicalDependency<T>> justified;

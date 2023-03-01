@@ -17,7 +17,6 @@ package org.drools.tms;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -25,13 +24,13 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
-import org.drools.tms.agenda.TruthMaintenanceSystemActivation;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
+import org.drools.tms.agenda.TruthMaintenanceSystemRuleTerminalNodeLeftTuple;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.BeliefSystemMode;
@@ -53,18 +52,18 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
     }
 
     @Override
-    public void setActivation(final Activation activation) {
-        TruthMaintenanceSystemActivation tmsActivation = (TruthMaintenanceSystemActivation) activation;
+    public void setActivation(final InternalMatch internalMatch) {
+        TruthMaintenanceSystemInternalMatch tmsActivation = (TruthMaintenanceSystemInternalMatch) internalMatch;
         this.previousJustified = tmsActivation.getLogicalDependencies();
         this.previousBlocked = tmsActivation.getBlocked();
-        super.setActivation(activation);
+        super.setActivation(internalMatch);
         tmsActivation.setLogicalDependencies( null );
         tmsActivation.setBlocked( null );
     }
 
     @Override
-    public void restoreActivationOnConsequenceFailure(Activation activation) {
-        TruthMaintenanceSystemActivation tmsActivation = (TruthMaintenanceSystemActivation) activation;
+    public void restoreActivationOnConsequenceFailure(InternalMatch internalMatch) {
+        TruthMaintenanceSystemInternalMatch tmsActivation = (TruthMaintenanceSystemInternalMatch) internalMatch;
         tmsActivation.setLogicalDependencies( this.previousJustified );
         tmsActivation.setBlocked( tmsActivation.getBlocked() );
     }
@@ -92,7 +91,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
             return null;
         }
 
-        if ( !activation.isMatched() ) {
+        if ( !internalMatch.isMatched() ) {
             // Activation is already unmatched, can't do logical insertions against it
             return null;
         }
@@ -109,18 +108,18 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
 
         if ( dep != null ) {
             // Add the previous matching logical dependency back into the list
-            ((TruthMaintenanceSystemActivation)this.activation).addLogicalDependency( dep );
+            ((TruthMaintenanceSystemInternalMatch)this.internalMatch).addLogicalDependency(dep);
             return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            return TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((InternalWorkingMemoryEntryPoint) entryPoint).insert( object, value, this.activation );
+            return TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((InternalWorkingMemoryEntryPoint) entryPoint).insert( object, value, this.internalMatch);
         }
     }
 
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency<T> dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
-                TruthMaintenanceSystemImpl.removeLogicalDependency( dep, activation.getPropagationContext() );
+                TruthMaintenanceSystemImpl.removeLogicalDependency(dep, internalMatch.getPropagationContext());
             }
         }
 
@@ -129,7 +128,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
                 LogicalDependency<SimpleMode> tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
 
-                TruthMaintenanceSystemAgendaItem justified = ( TruthMaintenanceSystemAgendaItem ) dep.getJustified();
+                TruthMaintenanceSystemInternalMatch justified = (TruthMaintenanceSystemInternalMatch) dep.getJustified();
                 justified.getBlockers().remove( dep.getMode());
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
@@ -143,7 +142,7 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
     @Override
     public InternalFactHandle bolster( final Object object, final Object value ) {
 
-        if ( object == null || ! activation.isMatched() ) {
+        if ( object == null || ! internalMatch.isMatched() ) {
             return null;
         }
 
@@ -169,18 +168,18 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
             ((TruthMaintenanceSystemEqualityKey)handle.getEqualityKey()).setBeliefSet( beliefSet );
         }
 
-        return beliefSystem.insert( beliefSystem.asMode( value ),
-                                    activation.getRule(),
-                                    (TruthMaintenanceSystemActivation) activation,
-                                    object,
-                                    beliefSet,
-                                    activation.getPropagationContext(),
-                                    otc ).getFactHandle();
+        return beliefSystem.insert(beliefSystem.asMode( value ),
+                                   internalMatch.getRule(),
+                                   (TruthMaintenanceSystemInternalMatch) internalMatch,
+                                   object,
+                                   beliefSet,
+                                   internalMatch.getPropagationContext(),
+                                   otc ).getFactHandle();
     }
 
     @Override
     public void blockMatch(Match act) {
-        TruthMaintenanceSystemAgendaItem targetMatch = ( TruthMaintenanceSystemAgendaItem ) act;
+        TruthMaintenanceSystemRuleTerminalNodeLeftTuple targetMatch = ( TruthMaintenanceSystemRuleTerminalNodeLeftTuple ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency<SimpleMode> dep = null;
         if ( this.previousBlocked != null ) {
@@ -194,39 +193,30 @@ public class TruthMaintenanceSystemKnowledgeHelper<T extends ModedAssertion<T>> 
 
         if ( dep == null ) {
             SimpleMode mode = new SimpleMode();
-            dep = new SimpleLogicalDependency( (TruthMaintenanceSystemActivation)this.activation, targetMatch, mode );
+            dep = new SimpleLogicalDependency((TruthMaintenanceSystemInternalMatch)this.internalMatch, targetMatch, mode );
             mode.setObject( dep );
         }
-        ((TruthMaintenanceSystemActivation)this.activation).addBlocked( dep );
+        ((TruthMaintenanceSystemInternalMatch)this.internalMatch).addBlocked(dep);
 
         if ( targetMatch.getBlockers().size() == 1 && targetMatch.isQueued()  ) {
-            if ( targetMatch.getRuleAgendaItem() == null ) {
-                // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
-                targetMatch.remove();
-            } else {
-                targetMatch.getRuleAgendaItem().getRuleExecutor().removeLeftTuple(targetMatch.getTuple());
-            }
+            // it wasn't blocked before, but is now, so we must remove, so it cannot be executed.
+            targetMatch.remove();
 
             if ( targetMatch.getActivationGroupNode() != null ) {
                 targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
-            }
-
-            if ( targetMatch.getActivationNode() != null ) {
-                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
-                ruleFlowGroup.remove( targetMatch );
             }
         }
     }
 
     @Override
     public void unblockAllMatches(Match act) {
-        TruthMaintenanceSystemAgendaItem targetMatch = ( TruthMaintenanceSystemAgendaItem ) act;
+        TruthMaintenanceSystemRuleTerminalNodeLeftTuple targetMatch = ( TruthMaintenanceSystemRuleTerminalNodeLeftTuple ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
 
         for (LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
             LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
             LogicalDependency dep = ( LogicalDependency ) entry.getObject();
-            ((TruthMaintenanceSystemAgendaItem)dep.getJustifier()).removeBlocked( dep );
+            dep.getJustifier().removeBlocked( dep );
             entry = tmp;
         }
 

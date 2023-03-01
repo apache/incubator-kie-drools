@@ -32,7 +32,6 @@ import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AgendaGroupQueueImpl;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -63,7 +62,7 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.RuleFlowGroup;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.SelfRemovalJobContext;
@@ -90,7 +89,7 @@ import org.drools.serialization.protobuf.marshalling.ProcessMarshaller;
 import org.drools.serialization.protobuf.marshalling.ProcessMarshallerFactory;
 import org.drools.tms.LogicalDependency;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
-import org.drools.tms.agenda.TruthMaintenanceSystemAgendaItem;
+import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -257,19 +256,16 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            Collection<Activation> activations = new ArrayList<>();
-            activations.addAll( wm.getAgenda().getAgendaGroupsManager().getActivations() );
-            for ( Activation activation : activations ) {
-                if ( activation.isRuleAgendaItem() ) {
-                    // evaluate it
-                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
-                    ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
-                }
+            // this must clone as re-evaluation will under underlying Collection
+            for ( RuleAgendaItem activation : new ArrayList<>(wm.getAgenda().getAgendaGroupsManager().getActivations())) {
+                // evaluate it
+                activation.getRuleExecutor().reEvaluateNetwork( wm );
+                activation.getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
             }
             dirty = false;
             // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-            for ( Activation activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
-                if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+            for ( RuleAgendaItem activation : wm.getAgenda().getAgendaGroupsManager().getActivations() ) {
+                if ( activation.getRuleExecutor().isDirty() ) {
                     dirty = true;
                     break;
                 }
@@ -322,24 +318,22 @@ public class ProtobufOutputMarshaller {
 
         // serialize all dormant activations
         org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
-        List<Activation> dormant = new ArrayList<>();
-        for (Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
+        List<InternalMatch> dormant = new ArrayList<>();
+        for (InternalMatch item = (InternalMatch) it.next(); item != null; item = (InternalMatch) it.next() ) {
             if ( !item.isQueued() ) {
                 dormant.add( item );
             }
         }
 
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
-        for ( Activation activation : dormant ) {
-            _ab.addMatch( writeActivation( context, (AgendaItem) activation, true) );
+        for ( InternalMatch internalMatch : dormant ) {
+            _ab.addMatch( writeActivation(context, internalMatch, true));
         }
 
         // serialize all network evaluator activations
-        for ( Activation activation : agenda.getAgendaGroupsManager().getActivations() ) {
-            if ( activation.isRuleAgendaItem() ) {
-                // serialize it
-                _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation, false) );
-            }
+        for ( RuleAgendaItem activation : agenda.getAgendaGroupsManager().getActivations() ) {
+            // serialize it
+            _ab.addRuleActivation( writeActivation( context, activation) );
         }
 
         _ksb.setAgenda( _ab.build() );
@@ -520,11 +514,11 @@ public class ProtobufOutputMarshaller {
             //_belief.setActivation( value )
 
             LogicalDependency dependency = (LogicalDependency) node.getObject();
-            Activation activation = dependency.getJustifier();
+            InternalMatch internalMatch = dependency.getJustifier();
             ProtobufMessages.Activation _activation = ProtobufMessages.Activation.newBuilder()
-                    .setPackageName( activation.getRule().getPackage() )
-                    .setRuleName( activation.getRule().getName() )
-                    .setTuple( writeTuple( context, activation, true ) )
+                    .setPackageName(internalMatch.getRule().getPackage())
+                    .setRuleName(internalMatch.getRule().getName())
+                    .setTuple( writeTuple(context, internalMatch, true))
                     .build();
             _logicalDependency.setActivation( _activation );
 
@@ -665,11 +659,11 @@ public class ProtobufOutputMarshaller {
 
     public static class ActivationsSorter
             implements
-            Comparator<Activation> {
+            Comparator<InternalMatch> {
         public static final ActivationsSorter INSTANCE = new ActivationsSorter();
 
-        public int compare(Activation o1,
-                           Activation o2) {
+        public int compare(InternalMatch o1,
+                           InternalMatch o2) {
             int result = o1.getRule().getName().compareTo( o2.getRule().getName() );
             if ( result == 0 ) {
                 org.drools.core.reteoo.Tuple t1 = o1.getTuple();
@@ -691,28 +685,27 @@ public class ProtobufOutputMarshaller {
     }
 
     public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation( MarshallerWriteContext context,
-                                                                                             AgendaItem agendaItem,
+                                                                                             InternalMatch internalMatch,
                                                                                              boolean isDormient) {
         ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
 
-        RuleImpl rule = agendaItem.getRule();
+        RuleImpl rule = internalMatch.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
-        _activation.setTuple( writeTuple( context, agendaItem, isDormient ) );
-        _activation.setSalience( agendaItem.getSalience() );
-        _activation.setIsActivated( agendaItem.isQueued() );
-        _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
+        _activation.setTuple( writeTuple(context, internalMatch, isDormient));
+        _activation.setSalience(internalMatch.getSalience());
+        _activation.setIsActivated(internalMatch.isQueued());
 
-        if ( agendaItem.getActivationGroupNode() != null ) {
-            _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
+        if (internalMatch.getActivationGroupNode() != null ) {
+            _activation.setActivationGroup(internalMatch.getActivationGroupNode().getActivationGroup().getName());
         }
 
-        if ( agendaItem.getActivationFactHandle() != null ) {
-            _activation.setHandleId( agendaItem.getActivationFactHandle().getId() );
+        if (internalMatch.getActivationFactHandle() != null ) {
+            _activation.setHandleId(internalMatch.getActivationFactHandle().getId());
         }
 
-        if (agendaItem instanceof TruthMaintenanceSystemAgendaItem) {
-            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemAgendaItem)agendaItem).getLogicalDependencies();
+        if (internalMatch instanceof TruthMaintenanceSystemInternalMatch) {
+            org.drools.core.util.LinkedList<LogicalDependency<M>> list = ((TruthMaintenanceSystemInternalMatch) internalMatch).getLogicalDependencies();
             if (list != null && !list.isEmpty()) {
                 for (LogicalDependency<?> node = list.getFirst(); node != null; node = node.getNext()) {
                     _activation.addLogicalDependency(((BeliefSet) node.getJustified()).getFactHandle().getId());
@@ -723,11 +716,24 @@ public class ProtobufOutputMarshaller {
         return _activation.build();
     }
 
-    public static Tuple writeTuple( MarshallerWriteContext context, Activation activation, boolean isDormient ) {
-        org.drools.core.reteoo.Tuple tuple = activation.getTuple();
+    public static <M extends ModedAssertion<M>> ProtobufMessages.Activation writeActivation( MarshallerWriteContext context,
+                                                                                             RuleAgendaItem agendaItem) {
+        ProtobufMessages.Activation.Builder _activation = ProtobufMessages.Activation.newBuilder();
+
+        RuleImpl rule = agendaItem.getRule();
+        _activation.setPackageName( rule.getPackage() );
+        _activation.setRuleName( rule.getName() );
+        _activation.setSalience( agendaItem.getSalience() );
+        _activation.setIsActivated( agendaItem.isQueued() );
+
+        return _activation.build();
+    }
+
+    public static Tuple writeTuple(MarshallerWriteContext context, InternalMatch internalMatch, boolean isDormient) {
+        org.drools.core.reteoo.Tuple tuple = internalMatch.getTuple();
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
 
-        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) activation);
+        boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) internalMatch);
 
         if (tuple != null) {
             // tuple can be null if this is a rule network evaluation activation, instead of terminal node left tuple.

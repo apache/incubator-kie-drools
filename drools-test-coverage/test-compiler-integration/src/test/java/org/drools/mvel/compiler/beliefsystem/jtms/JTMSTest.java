@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.RuleSessionConfiguration;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystemFactory;
@@ -43,7 +44,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -96,41 +96,41 @@ public class JTMSTest {
     @Test(timeout = 10000 )
     public void testPosNegNonConflictingInsertions() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
-        		"\n" + 
-        		"import java.util.List \n" +
-        		"import org.drools.core.common.AgendaItem;" +
-        		"global java.util.List list;\n" + 
-        		"\n" + 
-        		"rule \"go1\"\n" + 
-        		"when\n" + 
-        		"    String( this == 'go1' )\n" + 
-        		"then\n" + 
-                "    insertLogical( 'neg', 'neg' );\n" +         		
-        		"end\n" + 
-        		"\n" + 
-                "rule \"go2\"\n" + 
-                "when\n" + 
-                "    String( this == 'go2' )\n" + 
-                "then\n" + 
-                "    insertLogical( 'pos' );\n" +             
-                "end\n" + 
-                "\n" +         		
-                "rule \"Positive\"\n" +
-                "when\n" + 
-                "    $n : String( this != 'go1' || == 'go2' ) \n" + 
-                "then\n" +  
-                "    final String s = '+' + $n;" +
-                "    final List l = list;" +
-                "    l.add( s );\n" +
-                "end\n" +
-                "rule \"Negative\"\n" +
-                "when\n" +
-                "    $n : String(   _.neg, this != 'go1' || == 'go2' ) \n" +
-                "then\n" +
-                "    final String s = '-' + $n; \n" +
-                "    final List l = list; \n" +
-                "    l.add( s ); \n" +
-                "end\n";
+                   "\n" +
+                   "import java.util.List \n" +
+                   "import " + InternalMatch.class.getCanonicalName() + " \n" +
+                   "global java.util.List list;\n" +
+                   "\n" +
+                   "rule \"go1\"\n" +
+                   "when\n" +
+                   "    String( this == 'go1' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'neg', 'neg' );\n" +
+                   "end\n" +
+                   "\n" +
+                   "rule \"go2\"\n" +
+                   "when\n" +
+                   "    String( this == 'go2' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'pos' );\n" +
+                   "end\n" +
+                   "\n" +
+                   "rule \"Positive\"\n" +
+                   "when\n" +
+                   "    $n : String( this != 'go1' || == 'go2' ) \n" +
+                   "then\n" +
+                   "    final String s = '+' + $n;" +
+                   "    final List l = list;" +
+                   "    l.add( s );\n" +
+                   "end\n" +
+                   "rule \"Negative\"\n" +
+                   "when\n" +
+                   "    $n : String(   _.neg, this != 'go1' || == 'go2' ) \n" +
+                   "then\n" +
+                   "    final String s = '-' + $n; \n" +
+                   "    final List l = list; \n" +
+                   "    l.add( s ); \n" +
+                   "end\n";
 
         KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
@@ -183,7 +183,7 @@ public class JTMSTest {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
                    "import java.util.List \n" +
-                   "import org.drools.core.common.AgendaItem;" +
+                   "import " + InternalMatch.class.getCanonicalName() + " \n" +
                    "global java.util.List list;\n" +
                    "\n" +
                    "rule \"go1\"\n" +
@@ -231,7 +231,7 @@ public class JTMSTest {
                    "    final List l = list; \n" +
                    "    l.add( s ); \n" +
                    "end\n" +
-                "";
+                   "";
 
         KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
@@ -273,8 +273,8 @@ public class JTMSTest {
                 "\n" + 
                 "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.core.common.AgendaItem;" +
-                "import org.drools.mvel.compiler.Person;" +
+                "import " + InternalMatch.class.getCanonicalName() + ";\n" +
+                "import org.drools.mvel.compiler.Person;\n" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1\"\n" + 
@@ -369,7 +369,7 @@ public class JTMSTest {
                 "\n" + 
                 "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
-                "import org.drools.core.common.AgendaItem;" +
+                "import " + InternalMatch.class.getCanonicalName() + ";\n" +
                 "import org.drools.mvel.compiler.Person;" +
                 "global java.util.List list;\n" + 
                 "\n" +
@@ -466,7 +466,7 @@ public class JTMSTest {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import java.util.List \n" +
-                "import org.drools.core.common.AgendaItem;" +
+                "import " + InternalMatch.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" + 
                 "\n" + 
                 "rule \"go1_1\"\n" + 

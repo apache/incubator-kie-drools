@@ -885,7 +885,7 @@ The following table lists the names and supported values of the attributes that 
 |Value
 
 |`salience`
-|An integer defining the priority of the rule. Rules with a higher salience value are given higher priority when ordered in the activation queue.
+|An integer defining the priority of the rule. Rules with a higher salience value are given higher priority when ordered in the internalMatch queue.
 
 Example: `salience 10`
 
@@ -910,7 +910,7 @@ Example: `date-expires "4-Oct-2018"`
 Example: `no-loop true`
 
 |`activation-group`
-|A string identifying an activation (or XOR) group to which you want to assign the rule. In activation groups, only one rule can be activated. The first rule to fire will cancel all pending activations of all rules in the activation group.
+|A string identifying an internalMatch (or XOR) group to which you want to assign the rule. In internalMatch groups, only one rule can be activated. The first rule to fire will cancel all pending internalMatches of all rules in the internalMatch group.
 
 Example: `activation-group "GroupName"`
 
@@ -937,7 +937,7 @@ Example: `calendars "* * 0-7,18-23 ? * *"`  (exclude non-business hours)
 Example: `auto-focus true`
 
 |`lock-on-active`
-|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When the option is selected, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the activation of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
+|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When the option is selected, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the internalMatch of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
 
 Example: `lock-on-active true`
 
@@ -1062,7 +1062,7 @@ timer (int: 30s 1h; start=3-JAN-2020, end=4-JAN-2020, repeat-limit=50)
 
 In this example, the rule is scheduled for every hour, after a delay of 30 seconds each hour, beginning on 3 January 2020 and ending either on 4 January 2020 or when the cycle repeats 50 times.
 
-If the system is paused (for example, the session is serialized and then later deserialized), the rule is scheduled only one time to recover from missing activations regardless of how many activations were missed during the pause, and then the rule is subsequently scheduled again to continue in sync with the timer setting.
+If the system is paused (for example, the session is serialized and then later deserialized), the rule is scheduled only one time to recover from missing internalMatches regardless of how many internalMatches were missed during the pause, and then the rule is subsequently scheduled again to continue in sync with the timer setting.
 
 The `calendar` attribute in DRL rules is a http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling a rule and supports the following format:
 
@@ -1963,7 +1963,7 @@ pensioner : ( /persons[ sex == "f", age > 60 ] or /persons[ sex == "m", age > 65
 
 The behavior of the `or` condition element is different from the connective `||` operator for constraints and restrictions in field constraints. The {RULE_ENGINE} does not directly interpret the `or` element but uses logical transformations to rewrite a rule with `or` as a number of sub-rules. This process ultimately results in a rule that has a single `or` as the root node and one sub-rule for each of its condition elements. Each sub-rule is activated and executed like any normal rule, with no special behavior or interaction between the sub-rules.
 
-Therefore, consider the `or` condition element a shortcut for generating two or more similar rules that, in turn, can create multiple activations when two or more terms of the disjunction are true.
+Therefore, consider the `or` condition element a shortcut for generating two or more similar rules that, in turn, can create multiple internalMatches when two or more terms of the disjunction are true.
 --
 
 `exists`::
@@ -2536,7 +2536,7 @@ end
 
 This example rule uses two actions: the usual default action and another action named `giveDiscount`. The `giveDiscount` action is activated in the condition with the keyword `do` when a customer older than 60 years old is found in the KIE base, regardless of whether or not the customer owns a car.
 
-You can configure the activation of a named consequence with an additional condition, such as the `if` statement in the following example. The condition in the `if` statement is always evaluated on the pattern that immediately precedes it.
+You can configure the internalMatch of a named consequence with an additional condition, such as the `if` statement in the following example. The condition in the `if` statement is always evaluated on the pattern that immediately precedes it.
 
 .Consolidated example rule with an additional condition
 [source]
@@ -3003,7 +3003,7 @@ Using `from` with `lock-on-active` rule attribute can result in rules not being 
 
 * Avoid using the `from` element when you can insert all facts into the working memory of the {RULE_ENGINE} or use nested object references in your constraint expressions.
 * Place the variable used in the `modify()` block as the last sentence in your rule condition.
-* Avoid using the `lock-on-active` rule attribute when you can explicitly manage how rules within the same ruleflow group place activations on one another.
+* Avoid using the `lock-on-active` rule attribute when you can explicitly manage how rules within the same ruleflow group place internalMatches on one another.
 ====
 
 The pattern that contains a `from` clause cannot be followed by another pattern starting with a parenthesis. The reason for this restriction is that the DRL parser reads the `from` expression as `"from $l (String() or Number())"` and it cannot differentiate this expression from a function call. The simplest workaround to this is to wrap the `from` clause in parentheses, as shown in the following example:

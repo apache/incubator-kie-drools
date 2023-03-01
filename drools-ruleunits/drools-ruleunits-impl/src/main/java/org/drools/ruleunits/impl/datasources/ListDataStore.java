@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.ruleunits.api.DataHandle;
 import org.drools.ruleunits.api.DataProcessor;
@@ -101,14 +101,14 @@ public class ListDataStore<T> extends AbstractDataSource<T> implements  Iterable
     }
 
     @Override
-    public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
-        update(fh.getDataHandle(), obj, mask, modifiedClass, activation);
+    public void update(RuleUnitInternalFactHandle fh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
+        update(fh.getDataHandle(), obj, mask, modifiedClass, internalMatch);
     }
 
     @Override
-    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, Activation activation) {
+    public void update(DataHandle dh, Object obj, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
         switchObjectOnDataHandle(dh, (T) obj);
-        entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, activation));
+        entryPointSubscribers.forEach(s -> s.update(dh, obj, mask, modifiedClass, internalMatch));
         subscribers.forEach(s -> s.update(dh, obj));
     }
 

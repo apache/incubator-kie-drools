@@ -22,7 +22,7 @@ import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
 
 public class AlphaTerminalNode extends LeftInputAdapterNode {
@@ -72,8 +72,8 @@ public class AlphaTerminalNode extends LeftInputAdapterNode {
                 if ( context.getModificationMask().intersects( rtn.getLeftInferredMask() ) ) {
                     leftTuple.setPropagationContext( context );
                     PhreakRuleTerminalNode.doLeftTupleUpdate( rtn, executor, activationsManager, leftTuple );
-                    if (leftTuple instanceof Activation ) {
-                        ((Activation) leftTuple).setActive( true );
+                    if (leftTuple instanceof InternalMatch) {
+                        ((InternalMatch) leftTuple).setActive(true);
                     }
                 }
             } else {

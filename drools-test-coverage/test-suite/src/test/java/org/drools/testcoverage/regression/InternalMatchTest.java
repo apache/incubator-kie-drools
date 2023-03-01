@@ -37,9 +37,9 @@ import java.util.List;
 import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 import static org.mockito.Mockito.*;
 
-public class ActivationTest extends KieSessionTest {
+public class InternalMatchTest extends KieSessionTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActivationTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalMatchTest.class);
 
     private static final String DRL =
             "package org.drools;\n" +
@@ -62,8 +62,8 @@ public class ActivationTest extends KieSessionTest {
             "        LOGGER.debug(\"noop\");\n" +
             "end\n";
 
-    public ActivationTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                          final KieSessionTestConfiguration kieSessionTestConfiguration) {
+    public InternalMatchTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
+                             final KieSessionTestConfiguration kieSessionTestConfiguration) {
         super(kieBaseTestConfiguration, kieSessionTestConfiguration);
     }
 

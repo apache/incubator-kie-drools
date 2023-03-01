@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -45,7 +44,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.InternalActivationGroup;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.common.PropagationContext;
@@ -194,7 +193,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup ) {
+    public InternalMatch createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup) {
         return getPartitionedAgendaForNode(ruleAgendaItem.getTerminalNode()).createAgendaItem( rtnLeftTuple, salience, context, ruleAgendaItem, agendaGroup );
     }
 
@@ -324,8 +323,8 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         return false;
     }
 
-    public void handleException(Activation activation, Exception e) {
-        agendas[0].handleException( activation, e );
+    public void handleException(InternalMatch internalMatch, Exception e) {
+        agendas[0].handleException(internalMatch, e);
     }
 
     @Override
@@ -423,18 +422,13 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void cancelActivation( Activation activation ) {
+    public void cancelActivation( InternalMatch internalMatch) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.cancelActivation -> TODO" );
     }
 
     @Override
     public boolean isDeclarativeAgenda() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.isDeclarativeAgenda -> TODO" );
-    }
-
-    @Override
-    public boolean isRuleInstanceAgendaItem( String ruleflowGroupName, String ruleName, String processInstanceId ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.isRuleInstanceAgendaItem -> TODO" );
     }
 
     @Override
@@ -490,7 +484,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void stageLeftTuple( RuleAgendaItem ruleAgendaItem, AgendaItem justified ) {
+    public void stageLeftTuple( RuleAgendaItem ruleAgendaItem, InternalMatch justified) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.stageLeftTuple -> TODO" );
     }
 
@@ -515,7 +509,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void addItemToActivationGroup( AgendaItem item ) {
+    public void addItemToActivationGroup( InternalMatch item) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addItemToActivationGroup -> TODO" );
     }
 

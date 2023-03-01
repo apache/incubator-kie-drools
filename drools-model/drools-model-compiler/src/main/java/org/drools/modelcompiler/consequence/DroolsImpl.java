@@ -17,13 +17,13 @@
 package org.drools.modelcompiler.consequence;
 
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.model.BitMask;
 import org.drools.model.Channel;
@@ -57,7 +57,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public void insert(Object object, boolean dynamic) {
-        TerminalNode terminalNode = (( AgendaItem )getMatch()).getTerminalNode();
+        TerminalNode terminalNode = ((InternalMatch)getMatch()).getTerminalNode();
         ((InternalWorkingMemoryEntryPoint)reteEvaluator.getDefaultEntryPoint()).insert(object, dynamic, getRule(), terminalNode);
     }
 

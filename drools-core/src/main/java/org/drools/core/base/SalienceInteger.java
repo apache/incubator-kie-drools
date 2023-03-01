@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.Salience;
 import org.kie.api.definition.rule.Rule;
 
@@ -51,7 +51,7 @@ public class SalienceInteger
         out.writeInt(value);
     }
 
-    public int getValue(final Activation activation,
+    public int getValue(final InternalMatch internalMatch,
                         final Rule rule,
                         final ReteEvaluator reteEvaluator) {
         return this.value;

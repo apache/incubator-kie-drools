@@ -24,12 +24,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.common.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
@@ -45,6 +44,8 @@ public class SerializableActivation
     private PropagationContext                propgationContext;
     private boolean                           active;
 
+    private int                               salience;
+
     public SerializableActivation() {
         
     }
@@ -52,7 +53,7 @@ public class SerializableActivation
     public SerializableActivation(Match activation) {
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
-        this.propgationContext = ((Activation)activation).getPropagationContext();
+        this.propgationContext = ((InternalMatch)activation).getPropagationContext();
         if ( activation instanceof RuleTerminalNodeLeftTuple) {
             declarations = ((org.drools.core.reteoo.RuleTerminalNode)((RuleTerminalNodeLeftTuple)activation).getTuple().getTupleSink()).getAllDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
@@ -60,14 +61,27 @@ public class SerializableActivation
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
         }
-        this.active = ((Activation)activation).isQueued();
+        this.active = ((InternalMatch)activation).isQueued();
+        this.salience = activation.getSalience();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        rule = (Rule) in.readObject();
+        declarations = (Declaration[]) in.readObject();
+        factHandles = (List<? extends FactHandle>) in.readObject();
+        propgationContext = (PropagationContext) in.readObject();
+        active = in.readBoolean();
+        salience = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(rule);
+        out.writeObject(declarations);
+        out.writeObject(factHandles);
+        out.writeObject(propgationContext);
+        out.writeBoolean(active);
+        out.writeInt(salience);
     }
 
     public Rule getRule() {
@@ -105,5 +119,10 @@ public class SerializableActivation
     
     public boolean isActive() {
         return active;
-    }        
+    }
+
+    @Override
+    public int getSalience() {
+        return salience;
+    }
 }

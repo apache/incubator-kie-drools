@@ -15,21 +15,15 @@
 
 package org.drools.core.common;
 
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 /**
  * A filter interface for agenda activations
  */
-public interface ActivationsFilter {
+public interface ActivationsFilter extends AgendaFilter {
 
-    /**
-     * Returns true if a new activation should be created for the given propagation
-     * or false otherwise
-     */
-    boolean accept(Activation activation,
-                   ReteEvaluator reteEvaluator,
-                   TerminalNode rtn );
+    boolean accept(RuleAgendaItem activation);
 
     void fireRNEAs(InternalWorkingMemory wm);
 }

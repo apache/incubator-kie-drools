@@ -25,7 +25,7 @@ import java.util.function.Function;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.base.ObjectType;
 import org.kie.api.definition.rule.Query;
 
@@ -84,7 +84,7 @@ public class QueryImpl extends RuleImpl implements Query {
         return false;
     }
 
-    public boolean processAbduction(Activation resultLeftTuple, DroolsQuery dquery, Object[] objects, ReteEvaluator reteEvaluator) {
+    public boolean processAbduction(InternalMatch resultLeftTuple, DroolsQuery dquery, Object[] objects, ReteEvaluator reteEvaluator) {
         return true;
     }
 

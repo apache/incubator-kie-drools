@@ -40,9 +40,11 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
@@ -53,7 +55,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.accessor.CompiledInvoker;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.Consequence;
 import org.drools.core.rule.constraint.Constraint;
 import org.drools.core.test.model.DroolsTestCase;
@@ -189,13 +191,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         final LeftTuple tuple = new MockTuple( new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, Collections.emptyList()) )  );
-        final Activation activation = new MockActivation( rule,
-                                                          0,
-                                                          rule.getLhs(),
-                                                          tuple );
+        final InternalMatch internalMatch = new MockInternalMatch(rule,
+                                                                  0,
+                                                                  rule.getLhs(),
+                                                                  tuple );
 
         DefaultKnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
-        knowledgeHelper.setActivation( activation );
+        knowledgeHelper.setActivation(internalMatch);
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
@@ -214,7 +216,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         rule = pkg.getRule( "rule-1" );
 
         knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
-        knowledgeHelper.setActivation( activation );
+        knowledgeHelper.setActivation(internalMatch);
 
         rule.getConsequence().evaluate( knowledgeHelper,
                                         ((StatefulKnowledgeSessionImpl)workingMemory) );
@@ -268,13 +270,13 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         final LeftTuple tuple = new MockTuple( new HashMap() );
         tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, Collections.emptyList()) )  );
-        final Activation activation = new MockActivation( newRule,
-                                                          0,
-                                                          newRule.getLhs(),
-                                                          tuple );
+        final InternalMatch internalMatch = new MockInternalMatch(newRule,
+                                                                  0,
+                                                                  newRule.getLhs(),
+                                                                  tuple );
 
         final DefaultKnowledgeHelper knowledgeHelper = new DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory) );
-        knowledgeHelper.setActivation( activation );
+        knowledgeHelper.setActivation(internalMatch);
 
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            ((StatefulKnowledgeSessionImpl)workingMemory) );
@@ -1288,17 +1290,17 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertThat(fieldsBean2.get(2).getType()).isEqualTo(String.class);
     }
 
-    class MockActivation implements Activation {
+    class MockInternalMatch implements InternalMatch {
 
         private RuleImpl               rule;
         private int                salience;
         private final GroupElement subrule;
         private LeftTuple tuple;
 
-        public MockActivation(final RuleImpl rule,
-                              int salience,
-                              final GroupElement subrule,
-                              final LeftTuple tuple) {
+        public MockInternalMatch(final RuleImpl rule,
+                                 int salience,
+                                 final GroupElement subrule,
+                                 final LeftTuple tuple) {
             this.rule = rule;
             this.salience = salience;
             this.tuple = tuple;
@@ -1344,10 +1346,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         }
 
         public void setActivationGroupNode( final ActivationGroupNode activationGroupNode ) {
-        }
-
-        public GroupElement getSubRule() {
-            return this.subrule;
         }
 
         public InternalAgendaGroup getAgendaGroup() {
@@ -1407,6 +1405,51 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         @Override
         public void dequeue() {
         }
+
+        @Override
+        public int getQueueIndex() {
+            return 0;
+        }
+
+        @Override
+        public void setQueueIndex(int index) {
+
+        }
+
+        @Override
+        public RuleAgendaItem getRuleAgendaItem() {
+            return null;
+        }
+
+        @Override
+        public void setSalience(int salience) {
+
+        }
+
+        @Override
+        public void setActivationFactHandle(InternalFactHandle factHandle) {
+
+        }
+
+        @Override
+        public TerminalNode getTerminalNode() {
+            return null;
+        }
+
+        @Override
+        public String toExternalForm() {
+            return null;
+        }
+
+        @Override
+        public Runnable getCallback() {
+            return null;
+        }
+
+        @Override
+        public void setCallback(Runnable callback) {
+
+        }
     }
 
     class MockTuple
@@ -1434,7 +1477,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return false;
         }
 
-        public void setActivation( final Activation activation ) {
+        public void setActivation( final InternalMatch internalMatch) {
         }
 
         public long getRecency() {

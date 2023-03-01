@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Lists;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 // DROOLS-4866
-public class MarshalledActivationSortTest {
+public class MarshalledInternalMatchSortTest {
     private static final String TEST_DATA =
             "ExcChFV:[623, 564, 565]\n" +
             "ExcChFV:[623, 564, 565]\n" +
@@ -69,10 +69,10 @@ public class MarshalledActivationSortTest {
 
     @Test
     public void test() throws IOException {
-        List<Activation> as = Lists.newArrayList();
+        List<InternalMatch> as = Lists.newArrayList();
         for (String text : TEST_DATA.split( "\\n" )) {
             ActivationEntry line = parseLine(text);
-            Activation a = createActivation(line);
+            InternalMatch a = createActivation(line);
             as.add(a);
         }
         as.sort( ProtobufOutputMarshaller.ActivationsSorter.INSTANCE );
@@ -97,8 +97,8 @@ public class MarshalledActivationSortTest {
         }
     }
 
-    private Activation createActivation(final ActivationEntry line) {
-        Activation a = mock(Activation.class);
+    private InternalMatch createActivation(final ActivationEntry line) {
+        InternalMatch a = mock(InternalMatch.class);
         RuleImpl rule = mock(RuleImpl.class);
         when(rule.getName()).thenReturn(line.ruleName);
         when(a.getRule()).thenReturn(rule);

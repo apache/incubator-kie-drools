@@ -27,7 +27,7 @@ import org.drools.core.impl.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.ObjectFilter;
@@ -141,7 +141,7 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public void update( FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation ) {
+    public void update( FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, InternalMatch internalMatch) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 

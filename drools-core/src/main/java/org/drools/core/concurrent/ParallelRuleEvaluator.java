@@ -26,7 +26,6 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.rule.consequence.Activation;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
@@ -64,8 +63,7 @@ public class ParallelRuleEvaluator extends AbstractRuleEvaluator implements Rule
         this.fireCount = fireCount;
         this.fireLimit = fireLimit;
 
-        for ( Activation activation : group.getActivations() ) {
-            RuleAgendaItem item = (RuleAgendaItem) activation;
+        for ( RuleAgendaItem item : group.getActivations() ) {
             int index = item.getPartition().getParallelEvaluationSlot();
             RuleEvaluatorCallable evaluator = evaluators[index];
             evaluator.enqueue( item );

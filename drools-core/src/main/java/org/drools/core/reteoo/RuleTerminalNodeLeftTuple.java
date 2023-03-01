@@ -24,18 +24,17 @@ import java.util.Objects;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.consequence.Consequence;
-import org.drools.core.common.PropagationContext;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaItem {
+public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements InternalMatch {
     private static final long serialVersionUID = 540l;
     /**
      * The salience
@@ -45,14 +44,17 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
      * The activation number
      */
     private           long                                           activationNumber;
+
+    private           int                                            queueIndex;
+
     private           boolean                                        queued;
     private transient InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             activationFactHandle;
-    private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
+
     protected         RuleAgendaItem                                 ruleAgendaItem;
 
     private Runnable callback;
@@ -118,6 +120,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         setPropagationContext(pctx);
         this.salience = salience;
         this.activationNumber = activationNumber;
+        this.queueIndex = -1;
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
@@ -193,11 +196,16 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         }
     }
 
+    public void setQueueIndex(final int queueIndex) {
+        this.queueIndex = queueIndex;
+    }
+
+    public int getQueueIndex() {
+        return this.queueIndex;
+    }
+
     public void dequeue() {
-        if (this.agendaGroup != null) {
-            this.agendaGroup.remove(this);
-        }
-        setQueued(false);
+        ruleAgendaItem.getRuleExecutor().removeLeftTuple(this);
     }
 
     public void remove() {
@@ -223,10 +231,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public void setActivationNode(final ActivationNode activationNode) {
         this.activationNode = activationNode;
-    }
-
-    public GroupElement getSubRule() {
-        return getTerminalNode().getSubRule();
     }
 
     public TerminalNode getTerminalNode() {
@@ -266,14 +270,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
         return Collections.unmodifiableList(declarations);
     }
 
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public void cancel() {
-        this.canceled = true;
-    }
-
     public boolean isMatched() {
         return matched;
     }
@@ -288,10 +284,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements AgendaIt
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isRuleAgendaItem() {
-        return false;
     }
 
     public boolean hasBlockers() {

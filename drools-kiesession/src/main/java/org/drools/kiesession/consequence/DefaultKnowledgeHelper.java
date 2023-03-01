@@ -27,7 +27,6 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.Mode;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -41,7 +40,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.process.AbstractProcessContext;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.util.bitmask.BitMask;
@@ -65,7 +64,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     private static final long                         serialVersionUID = 510l;
 
-    protected Activation activation;
+    protected InternalMatch internalMatch;
     private Tuple tuple;
 
     protected ReteEvaluator reteEvaluator;
@@ -79,28 +78,28 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        activation = (Activation) in.readObject();
+        internalMatch = (InternalMatch) in.readObject();
         tuple = (LeftTuple) in.readObject();
         reteEvaluator = (ReteEvaluator) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( activation );
+        out.writeObject(internalMatch);
         out.writeObject( tuple );
         out.writeObject(reteEvaluator);
     }
 
-    public void setActivation(final Activation activation) {
-        this.activation = activation;
-        this.tuple = activation.getTuple();
+    public void setActivation(final InternalMatch internalMatch) {
+        this.internalMatch = internalMatch;
+        this.tuple = internalMatch.getTuple();
     }
 
-    public Activation getActivation() {
-        return activation;
+    public InternalMatch getActivation() {
+        return internalMatch;
     }
 
     public void reset() {
-        this.activation = null;
+        this.internalMatch = null;
         this.tuple = null;
     }
 
@@ -122,7 +121,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     public InternalFactHandle insert(final Object object, final boolean dynamic) {
         return (InternalFactHandle) ((InternalWorkingMemoryEntryPoint) this.reteEvaluator.getDefaultEntryPoint())
-                .insert( object, dynamic, this.activation.getRule(), this.activation.getTuple().getTupleSink() );
+                .insert(object, dynamic, this.internalMatch.getRule(), this.internalMatch.getTuple().getTupleSink());
     }
 
     @Override
@@ -162,7 +161,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public void cancelMatch(Match act) {
-        AgendaItem match = ( AgendaItem ) act;
+        InternalMatch match = (InternalMatch) act;
         ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match, reteEvaluator);
     }
 
@@ -200,7 +199,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
                                   newObject,
                                   onlyTraitBitSetMask(),
                                   newObject.getClass(),
-                                  this.activation );
+                                  this.internalMatch);
     }
 
     public void update(final FactHandle handle) {
@@ -214,9 +213,9 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
                                                                       ((InternalFactHandle)handle).getObject(),
                                                                       mask,
                                                                       modifiedClass,
-                                                                      this.activation );
+                                                                      this.internalMatch);
         if ( h.isTraitOrTraitable() ) {
-            toStatefulKnowledgeSession().updateTraits( h, mask, modifiedClass, this.activation );
+            toStatefulKnowledgeSession().updateTraits( h, mask, modifiedClass, this.internalMatch);
         }
     }
 
@@ -256,13 +255,13 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         }
 
         ((InternalFactHandle) handle).getEntryPoint(reteEvaluator).delete(handle,
-                                                             this.activation.getRule(),
-                                                             this.activation.getTuple().getTupleSink(),
+                                                             this.internalMatch.getRule(),
+                                                             this.internalMatch.getTuple().getTupleSink(),
                                                              fhState);
     }
 
     public RuleImpl getRule() {
-        return this.activation.getRule();
+        return this.internalMatch.getRule();
     }
 
     public Tuple getTuple() {
@@ -288,8 +287,8 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
         throw new UnsupportedOperationException("Operation not supported when using a lightweight session");
     }
 
-    public Activation getMatch() {
-        return this.activation;
+    public InternalMatch getMatch() {
+        return this.internalMatch;
     }
 
     public void setFocus(final String focus) {
@@ -301,7 +300,7 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return ((AgendaItem)this.activation).getTerminalNode().getSubRule().getOuterDeclarations().get( identifier );
+        return this.internalMatch.getTerminalNode().getSubRule().getOuterDeclarations().get(identifier);
     }
 
     public void halt() {
@@ -425,15 +424,15 @@ public class DefaultKnowledgeHelper implements KnowledgeHelper, Externalizable {
 
     @Override
     public <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K, X> core, Class<T> trait ) {
-        return toStatefulKnowledgeSession().shed( this.activation, core, trait );
+        return toStatefulKnowledgeSession().shed(this.internalMatch, core, trait);
     }
 
     private <T, K> T don( K core, Collection<Class<? extends Thing>> traits, boolean b, Mode... modes ) {
-        return toStatefulKnowledgeSession().don( this.activation, core, traits, b, modes );
+        return toStatefulKnowledgeSession().don(this.internalMatch, core, traits, b, modes);
     }
 
     private <T, K> T don( K core, Class<T> trait, boolean b, Mode... modes ) {
-        return toStatefulKnowledgeSession().don( this.activation, core, trait, b, modes );
+        return toStatefulKnowledgeSession().don(this.internalMatch, core, trait, b, modes);
     }
 
     public ClassLoader getProjectClassLoader() {

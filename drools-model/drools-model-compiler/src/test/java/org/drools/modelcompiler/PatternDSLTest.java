@@ -31,7 +31,7 @@ import org.drools.core.definitions.rule.impl.QueryImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.DSL;
 import org.drools.model.Global;
 import org.drools.model.Index;
@@ -1057,8 +1057,8 @@ public class PatternDSLTest {
                 // Consequence
                 D.on( var_$countOfPersons, var_results )
                         .execute( (drools, i, results) -> {
-                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
-                            results.add(i + ":" + activation.getObjectsDeep());
+                            InternalMatch internalMatch = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            results.add(i + ":" + internalMatch.getObjectsDeep());
 
                         } ) );
 
@@ -1114,8 +1114,8 @@ public class PatternDSLTest {
                 D.on( var_$countOfPersons )
                         .execute( (drools, i) -> {
                             System.out.println(i);
-                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
-                            System.out.println(activation.getObjectsDeep());
+                            InternalMatch internalMatch = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            System.out.println(internalMatch.getObjectsDeep());
                         } ) );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
