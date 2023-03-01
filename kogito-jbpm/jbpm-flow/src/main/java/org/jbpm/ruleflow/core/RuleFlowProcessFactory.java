@@ -39,7 +39,7 @@ import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
-import org.jbpm.workflow.core.WorkflowInputModelValidator;
+import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -136,8 +136,13 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         return this;
     }
 
-    public RuleFlowProcessFactory validator(WorkflowInputModelValidator validator) {
-        getRuleFlowProcess().setValidator(validator);
+    public RuleFlowProcessFactory outputValidator(WorkflowModelValidator validator) {
+        getRuleFlowProcess().setOutputValidator(validator);
+        return this;
+    }
+
+    public RuleFlowProcessFactory inputValidator(WorkflowModelValidator validator) {
+        getRuleFlowProcess().setInputValidator(validator);
         return this;
     }
 

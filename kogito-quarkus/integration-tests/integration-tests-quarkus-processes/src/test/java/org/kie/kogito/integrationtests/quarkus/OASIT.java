@@ -50,8 +50,6 @@ class OASIT {
 
         //Will be fixed by https://issues.redhat.com/browse/KOGITO-5734
         assertThat(result.getMessages()).containsExactly(
-                "attribute components.schemas.MultiinstancetaskprocessModel.items is missing",
-                "attribute components.schemas.MultiinstancetaskprocessModel.items is missing",
                 "attribute components.schemas.MultiinstancetaskprocessModelInput.items is missing",
                 "attribute components.schemas.MultiinstancetaskprocessModelInput.items is missing",
                 "attribute components.schemas.MultiinstancetaskprocessModelOutput.items is missing",

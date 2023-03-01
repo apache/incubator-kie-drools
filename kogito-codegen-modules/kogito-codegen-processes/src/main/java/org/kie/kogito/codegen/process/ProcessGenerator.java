@@ -558,6 +558,10 @@ public class ProcessGenerator {
         return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
     }
 
+    public KogitoWorkflowProcess getProcess() {
+        return process;
+    }
+
     public String processId() {
         return process.getId();
     }

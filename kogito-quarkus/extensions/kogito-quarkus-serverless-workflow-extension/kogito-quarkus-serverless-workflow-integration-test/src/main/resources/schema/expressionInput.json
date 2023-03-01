@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "Expression",
-    "description": "Schema for expression test",
+    "description": "Input schema for expression test",
     "type": "object",
     "properties": {
         "numbers": {

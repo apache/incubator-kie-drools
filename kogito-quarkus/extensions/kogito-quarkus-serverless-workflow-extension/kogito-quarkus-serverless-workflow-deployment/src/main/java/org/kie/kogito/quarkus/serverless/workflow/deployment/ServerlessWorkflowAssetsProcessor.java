@@ -15,18 +15,17 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.core.io.CollectedResourceProducer;
+import org.kie.kogito.codegen.process.ProcessContainerGenerator;
+import org.kie.kogito.codegen.process.ProcessGenerator;
 import org.kie.kogito.event.process.NodeInstanceEventBody;
 import org.kie.kogito.event.process.ProcessDataEvent;
 import org.kie.kogito.event.process.ProcessErrorEventBody;
@@ -37,17 +36,16 @@ import org.kie.kogito.event.process.VariableInstanceEventBody;
 import org.kie.kogito.process.expr.ExpressionHandler;
 import org.kie.kogito.quarkus.common.deployment.KogitoAddonsPreGeneratedSourcesBuildItem;
 import org.kie.kogito.quarkus.common.deployment.KogitoBuildContextBuildItem;
-import org.kie.kogito.quarkus.serverless.workflow.WorkflowCodeGenUtils;
+import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoProcessContainerGeneratorBuildItem;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGeneratedFile;
 import org.kie.kogito.quarkus.serverless.workflow.WorkflowHandlerGenerator;
+import org.kie.kogito.quarkus.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
 import org.kie.kogito.quarkus.serverless.workflow.openapi.WorkflowOpenApiHandlerGenerator;
 import org.kie.kogito.quarkus.serverless.workflow.rpc.WorkflowRPCHandlerGenerator;
 import org.kie.kogito.quarkus.workflow.deployment.WorkflowProcessor;
-import org.kie.kogito.serverless.workflow.openapi.ServerlessWorkflowOASFilter;
 import org.kie.kogito.serverless.workflow.parser.FunctionNamespace;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandler;
 import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaGenerator;
-import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaUtil;
 import org.kie.kogito.serverless.workflow.rpc.FileDescriptorHolder;
 
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -59,7 +57,6 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ServiceProviderBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 import io.quarkus.smallrye.openapi.deployment.spi.AddToOpenAPIDefinitionBuildItem;
-import io.serverlessworkflow.api.Workflow;
 
 /**
  * Main class of the Kogito Serverless Workflow extension
@@ -98,29 +95,10 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
     }
 
     @BuildStep
-    void addOpenAPIModelSchema(KogitoBuildContextBuildItem contextBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
-        Collection<ServerlessWorkflowOASFilter.SchemaInfo> inputModelSchemaInfos = getWorkflows(contextBuildItem.getKogitoBuildContext())
-                .map(ServerlessWorkflowAssetsProcessor::workflowToSchemaInfo)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(inputModelSchemaInfos)));
-    }
-
-    private static ServerlessWorkflowOASFilter.SchemaInfo workflowToSchemaInfo(Workflow workflow) {
-        return OpenApiModelSchemaGenerator.generateOpenAPIModelSchema(workflow)
-                .map(openAPI -> new ServerlessWorkflowOASFilter.SchemaInfo(workflow.getId(), openAPI, OpenApiModelSchemaUtil.getInputModelRef(workflow.getId())))
-                .orElse(null);
-    }
-
-    private static Stream<Workflow> getWorkflows(KogitoBuildContext context) {
-        Path[] paths = context.getAppPaths().getPaths();
-
-        Stream<Path> workflowFiles = CollectedResourceProducer.fromPaths(context.ignoreHiddenFiles(), paths).stream()
-                .map(collectedResource -> collectedResource.resource().getSourcePath())
-                .map(Paths::get);
-
-        return WorkflowCodeGenUtils.getWorkflows(workflowFiles);
+    void addOpenAPIModelSchema(List<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
+        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
+                .map(ProcessContainerGenerator::getProcesses).flatMap(Collection::stream).map(ProcessGenerator::getProcess)
+                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema).flatMap(Optional::stream).collect(Collectors.toList()))));
     }
 
     @BuildStep

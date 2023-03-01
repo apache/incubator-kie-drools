@@ -25,9 +25,11 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, MappableToModel<JsonNodeModelOutput> {
 
@@ -38,8 +40,18 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
     public JsonNodeModel() {
     }
 
-    public JsonNodeModel(JsonNode workflowdata) {
-        this.workflowdata = workflowdata;
+    public JsonNodeModel(Object workflowdata) {
+        this(null, workflowdata);
+    }
+
+    public JsonNodeModel(String id, Object workflowdata) {
+        this.id = id;
+        if (workflowdata instanceof JsonNode) {
+            this.workflowdata = (JsonNode) workflowdata;
+        } else {
+            ObjectMapper mapper = ObjectMapperFactory.listenerAware();
+            this.workflowdata = workflowdata == null ? mapper.createObjectNode() : mapper.convertValue(workflowdata, JsonNode.class);
+        }
     }
 
     public String getId() {
@@ -95,5 +107,18 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
 
     private static Map<String, Object> mutableMap(Map<String, Object> map) {
         return map instanceof HashMap ? map : new HashMap<>(map);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (id != null) {
+            sb.append("id=").append(id).append(", ");
+        }
+        sb.append("workflowdata=" + workflowdata);
+        if (!additionalProperties.isEmpty()) {
+            sb.append(", additionalProperties=").append(additionalProperties);
+        }
+        return sb.toString();
     }
 }

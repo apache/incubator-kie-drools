@@ -104,7 +104,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class ProcessGenerationIT extends AbstractCodegenIT {
 
-    private static final Collection<String> IGNORED_PROCESS_META = Arrays.asList("Definitions", "BPMN.Connections", "BPMN.Associations", "ItemDefinitions", Metadata.DATA_INPUT_SCHEMA_REF);
+    private static final Collection<String> IGNORED_PROCESS_META =
+            Arrays.asList("Definitions", "BPMN.Connections", "BPMN.Associations", "ItemDefinitions");
     private static final Path BASE_PATH = Paths.get("src/test/resources");
 
     static Stream<String> processesProvider() throws IOException {

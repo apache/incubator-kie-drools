@@ -110,15 +110,15 @@ public class $Type$Resource {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
-    public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
-        return processService.update(process, id, resource).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public $Type$Output updateModel_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$Input resource) {
+        return processService.update(process, id, resource.toModel()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
     
     @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
-    public $Type$Output updateModelPartial_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$ resource) {
-        return processService.updatePartial(process, id, resource).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public $Type$Output updateModelPartial_$name$(@PathVariable("id") String id, @RequestBody(required = false) $Type$Input resource) {
+        return processService.updatePartial(process, id, resource.toModel()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -158,8 +158,10 @@ public class ProcessVisitor extends AbstractVisitor {
                 .addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VISIBILITY,
                         new StringLiteralExpr(getOrDefault(((KogitoWorkflowProcess) process).getVisibility(), KogitoWorkflowProcess.PUBLIC_VISIBILITY))));
 
-        ((org.jbpm.workflow.core.WorkflowProcess) process).getValidator().ifPresent(
-                v -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "validator", ExpressionUtils.getLiteralExpr(v))));
+        ((org.jbpm.workflow.core.WorkflowProcess) process).getInputValidator().ifPresent(
+                v -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "inputValidator", ExpressionUtils.getLiteralExpr(v))));
+        ((org.jbpm.workflow.core.WorkflowProcess) process).getOutputValidator().ifPresent(
+                v -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "outputValidator", ExpressionUtils.getLiteralExpr(v))));
 
         visitCompensationScope(process, body);
         visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);

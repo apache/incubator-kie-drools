@@ -16,88 +16,106 @@
 
 package org.kie.kogito.serverless.workflow.parser.schema;
 
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.Operation;
+import org.eclipse.microprofile.openapi.models.PathItem;
+import org.eclipse.microprofile.openapi.models.media.Content;
+import org.eclipse.microprofile.openapi.models.media.MediaType;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.everit.json.schema.loader.SchemaClient;
-import org.everit.json.schema.loader.SchemaLoader;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
-import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
+import org.jbpm.workflow.core.WorkflowModelValidator;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.serverless.workflow.parser.SwaggerSchemaProvider;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.serverlessworkflow.api.Workflow;
+import io.smallrye.openapi.api.util.MergeUtil;
 
 public final class OpenApiModelSchemaGenerator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpenApiModelSchemaGenerator.class);
 
     private OpenApiModelSchemaGenerator() {
     }
 
-    private static Optional<Schema> generateInputModel(Workflow workflow) {
-        if (workflow.getDataInputSchema() == null ||
-                workflow.getDataInputSchema().getSchema() == null ||
-                workflow.getDataInputSchema().getSchema().isEmpty()) {
-            return Optional.empty();
-        }
-        try {
-            final URI inputSchemaURI = new URI(workflow.getDataInputSchema().getSchema());
-            return fromJsonSchemaToOpenApiSchema(workflow, inputSchemaURI.toString(), "");
-        } catch (URISyntaxException e) {
-            LOGGER.warn("Invalid Data Input Schema for workflow {}. Only valid URIs are supported at this time.", workflow.getId());
-            return Optional.empty();
-        }
+    private static final Schema ID_SCHEMA;
+    private static final String INPUT_SUFFIX = "_input";
+    private static final String OUTPUT_SUFFIX = "_output";
+
+    static {
+        ID_SCHEMA = OASFactory.createSchema();
+        ID_SCHEMA.setType(SchemaType.STRING);
+        ID_SCHEMA.setDescription("Process instance id");
     }
 
-    /**
-     * Converts a given JSON Schema URI to OpenAPI Schema definition.
-     * <p/>
-     * It will try to load the file into bytes, load all the schema inheritance and provide the caller
-     * with a reference to an OpenAPI Schema object.
-     *
-     * @param workflow the workflow
-     * @param jsonSchemaURI the given JSON Schema URI
-     * @param authRef the Authentication Reference information to fetch the JSON Schema URI if needed
-     * @return The @{@link Schema} object
-     */
-    private static Optional<Schema> fromJsonSchemaToOpenApiSchema(Workflow workflow, String jsonSchemaURI, String authRef) {
-        if (jsonSchemaURI != null) {
-            final Optional<byte[]> bytes = ServerlessWorkflowUtils.loadResourceFile(workflow, Optional.empty(), jsonSchemaURI, authRef);
-            if (bytes.isPresent()) {
-                // SchemaLoader will load all the references from other files into the schema
-                final JSONObject rawSchema = new JSONObject(new JSONTokener(new String(bytes.get())));
-                final SchemaLoader schemaLoader = SchemaLoader.builder()
-                        .schemaJson(rawSchema)
-                        .resolutionScope(jsonSchemaURI)
-                        .schemaClient(SchemaClient.classPathAwareClient())
-                        .build();
-                try {
-                    final ObjectMapper objectMapper = ObjectMapperFactory.get();
-                    // the workflowdata input model now has inherited from the given JSON Schema
-                    return Optional.of(objectMapper.readValue(schemaLoader.load().build().toString(), JsonSchemaImpl.class));
-                } catch (JsonProcessingException e) {
-                    throw new UncheckedIOException("Error deserializing JSON Schema " + jsonSchemaURI + " for workflow " + workflow.getId(), e);
-                }
+    public static Optional<OpenAPI> generateOpenAPIModelSchema(KogitoWorkflowProcess workflow) {
+        if (workflow instanceof WorkflowProcess) {
+            WorkflowProcess workflowProcess = (WorkflowProcess) workflow;
+            Optional<SwaggerSchemaProvider> inputSchemaSupplier = getSchemaSupplier(workflowProcess.getInputValidator());
+            Optional<SwaggerSchemaProvider> outputSchemaSupplier = getSchemaSupplier(workflowProcess.getOutputValidator());
+            if (inputSchemaSupplier.isPresent() || outputSchemaSupplier.isPresent()) {
+                OpenAPI openAPI = OASFactory.createOpenAPI().openapi(workflow.getId() + '_' + "workflowmodelschema").components(OASFactory.createComponents());
+                inputSchemaSupplier.ifPresent(v -> openAPI.getComponents().addSchema(getInputSchemaName(workflow.getId()), v.getSchema()));
+                outputSchemaSupplier.ifPresent(v -> openAPI.getComponents().addSchema(getOutputSchemaName(workflow.getId()),
+                        OASFactory.createSchema().addProperty("workflowdata", v.getSchema()).addProperty("id", ID_SCHEMA)));
+                return Optional.of(openAPI);
             }
         }
         return Optional.empty();
     }
 
-    public static Optional<OpenAPI> generateOpenAPIModelSchema(Workflow workflow) {
-        return generateInputModel(workflow).map(inputModel -> OASFactory.createOpenAPI()
-                .components(OASFactory.createComponents().addSchema(workflow.getId(), inputModel))
-                .openapi(workflow.getId() + '_' + "workflowmodelschema"));
+    public static void mergeSchemas(OpenAPI targetSchema, Collection<OpenAPI> srcSchemas) {
+        srcSchemas.forEach(srcSchema -> MergeUtil.merge(targetSchema, srcSchema));
+        for (PathItem pathItem : targetSchema.getPaths().getPathItems().values()) {
+            processInputOperation(targetSchema, pathItem.getPOST());
+            processInputOperation(targetSchema, pathItem.getPUT());
+            processInputOperation(targetSchema, pathItem.getPATCH());
+            processOutputOperation(targetSchema, pathItem.getGET());
+        }
     }
 
+    private static Optional<SwaggerSchemaProvider> getSchemaSupplier(Optional<WorkflowModelValidator> validator) {
+        return validator.filter(SwaggerSchemaProvider.class::isInstance).map(SwaggerSchemaProvider.class::cast);
+    }
+
+    private static String getInputSchemaName(String id) {
+        return id + INPUT_SUFFIX;
+    }
+
+    private static String getOutputSchemaName(String id) {
+        return id + OUTPUT_SUFFIX;
+    }
+
+    private static Optional<Schema> getSchemaRef(String id, OpenAPI openAPI) {
+        return Optional.ofNullable(openAPI.getComponents().getSchemas().get(id));
+    }
+
+    private static void processInputOperation(OpenAPI openAPI, Operation operation) {
+        if (operation != null && operation.getRequestBody() != null) {
+            List<String> tags = operation.getTags();
+            if (tags != null) {
+                for (String tag : tags) {
+                    getSchemaRef(getInputSchemaName(tag), openAPI).ifPresent(schema -> getMediaTypes(operation.getRequestBody().getContent()).forEach(mediaType -> mediaType.setSchema(schema)));
+                }
+            }
+        }
+    }
+
+    private static void processOutputOperation(OpenAPI openAPI, Operation operation) {
+        if (operation != null && operation.getResponses() != null && operation.getResponses().getAPIResponses() != null) {
+            List<String> tags = operation.getTags();
+            if (tags != null) {
+                for (String tag : tags) {
+                    getSchemaRef(getOutputSchemaName(tag), openAPI).ifPresent(schema -> operation.getResponses().getAPIResponses().values().stream()
+                            .flatMap(response -> getMediaTypes(response.getContent()).stream()).forEach(mediaType -> mediaType.setSchema(schema)));
+                }
+            }
+        }
+    }
+
+    private static Collection<MediaType> getMediaTypes(Content content) {
+        return content != null && content.getMediaTypes() != null ? content.getMediaTypes().values() : List.of();
+    }
 }

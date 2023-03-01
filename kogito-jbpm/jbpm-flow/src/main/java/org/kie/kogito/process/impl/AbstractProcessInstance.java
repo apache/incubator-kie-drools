@@ -118,7 +118,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         org.kie.api.definition.process.Process processDefinition = process.get();
         if (processDefinition instanceof WorkflowProcess) {
-            ((WorkflowProcess) processDefinition).getValidator().ifPresent(v -> v.validate(map));
+            ((WorkflowProcess) processDefinition).getInputValidator().ifPresent(v -> v.validate(map));
         }
         String processId = processDefinition.getId();
         syncProcessInstance((WorkflowProcessInstance) ((CorrelationAwareProcessRuntime) rt).createProcessInstance(processId, correlationKey, map));
@@ -575,6 +575,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void removeOnFinish() {
+        ((WorkflowProcess) process.get()).getOutputValidator().ifPresent(v -> v.validate(processInstance.getVariables()));
         if (processInstance.getState() != KogitoProcessInstance.STATE_ACTIVE && processInstance.getState() != KogitoProcessInstance.STATE_ERROR) {
             removeCompletionListener();
             syncProcessInstance(processInstance);

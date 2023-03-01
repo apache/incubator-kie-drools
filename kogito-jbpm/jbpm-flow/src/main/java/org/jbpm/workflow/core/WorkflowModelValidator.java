@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.parser.schema;
+package org.jbpm.workflow.core;
 
-public final class OpenApiModelSchemaUtil {
+import java.io.Serializable;
+import java.util.Map;
 
-    private OpenApiModelSchemaUtil() {
-    }
+public interface WorkflowModelValidator extends Serializable {
 
     /**
-     * Path to save the partial OpenAPI file with the additional model provided by the Workflow definition
-     *
-     * @see <a href="https://github.com/eclipse/microprofile-open-api/blob/master/spec/src/main/asciidoc/microprofile-openapi-spec.asciidoc#location-and-formats">MicroProfile OpenAPI Specification -
-     *      Location And Formats</a>
+     * Validates the input model
+     * 
+     * @param model the input model as a map
+     * @throws IllegalArgumentException if the validation failed
      */
-    public static String getInputModelRef(String workflowId) {
-        return "#/components/schemas/" + workflowId;
-    }
+    void validate(Map<String, Object> model);
 }

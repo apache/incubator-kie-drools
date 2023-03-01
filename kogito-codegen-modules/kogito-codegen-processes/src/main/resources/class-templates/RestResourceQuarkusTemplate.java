@@ -121,8 +121,8 @@ public class $Type$Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
-    public $Type$Output updateModel_$name$(@PathParam("id") String id, $Type$ resource) {
-        return processService.update(process, id, resource).orElseThrow(NotFoundException::new);
+    public $Type$Output updateModel_$name$(@PathParam("id") String id, $Type$Input resource) {
+        return processService.update(process, id, resource.toModel()).orElseThrow(NotFoundException::new);
     }
     
     @PATCH
@@ -130,8 +130,8 @@ public class $Type$Resource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
-    public $Type$Output updateModelPartial_$name$(@PathParam("id") String id, $Type$ resource) {
-        return processService.updatePartial(process, id, resource).orElseThrow(NotFoundException::new);
+    public $Type$Output updateModelPartial_$name$(@PathParam("id") String id, $Type$Input resource) {
+        return processService.updatePartial(process, id, resource.toModel()).orElseThrow(NotFoundException::new);
     }
 
     @GET

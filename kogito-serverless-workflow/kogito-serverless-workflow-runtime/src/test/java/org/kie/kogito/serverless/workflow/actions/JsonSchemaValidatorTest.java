@@ -33,13 +33,13 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-public class DataInputSchemaValidatorTest {
+public class JsonSchemaValidatorTest {
 
-    private static DataInputSchemaValidator validator;
+    private static JsonSchemaValidator validator;
 
     @BeforeAll
     static void init() {
-        validator = new DataInputSchemaValidator("expression.json", true);
+        validator = new JsonSchemaValidator("expression.json", true);
     }
 
     @Test

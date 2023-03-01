@@ -28,7 +28,7 @@ import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
-import org.jbpm.workflow.core.WorkflowInputModelValidator;
+import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -49,7 +49,8 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
 
     private boolean autoComplete = false;
     private boolean dynamic = false;
-    private WorkflowInputModelValidator validator;
+    private WorkflowModelValidator inputValidator;
+    private WorkflowModelValidator outputValidator;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
 
     private transient BiFunction<String, ProcessInstance, String> expressionEvaluator = (expression, p) -> {
@@ -217,12 +218,22 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     }
 
     @Override
-    public Optional<WorkflowInputModelValidator> getValidator() {
-        return Optional.ofNullable(validator);
+    public Optional<WorkflowModelValidator> getInputValidator() {
+        return Optional.ofNullable(inputValidator);
     }
 
     @Override
-    public void setValidator(WorkflowInputModelValidator validator) {
-        this.validator = validator;
+    public void setInputValidator(WorkflowModelValidator inputValidator) {
+        this.inputValidator = inputValidator;
+    }
+
+    @Override
+    public Optional<WorkflowModelValidator> getOutputValidator() {
+        return Optional.ofNullable(outputValidator);
+    }
+
+    @Override
+    public void setOutputValidator(WorkflowModelValidator outputValidator) {
+        this.outputValidator = outputValidator;
     }
 }

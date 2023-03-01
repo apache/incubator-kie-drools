@@ -28,17 +28,18 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandler;
 import org.kie.kogito.serverless.workflow.parser.handlers.StateHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.handlers.validation.WorkflowValidator;
-import org.kie.kogito.serverless.workflow.parser.schema.OpenApiModelSchemaUtil;
-import org.kie.kogito.serverless.workflow.suppliers.DataInputSchemaValidatorSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.JsonSchemaValidatorSupplier;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -97,7 +98,9 @@ public class ServerlessWorkflowParser {
                 .type(KogitoWorkflowProcess.SW_TYPE);
         ParserContext parserContext =
                 new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));
-        dataInputSchema(factory, parserContext);
+
+        modelValidator(parserContext, Optional.ofNullable(workflow.getDataInputSchema())).ifPresent(factory::inputValidator);
+        modelValidator(parserContext, ServerlessWorkflowUtils.getExtension(workflow, OutputSchema.class).map(OutputSchema::getOutputSchema)).ifPresent(factory::outputValidator);
         loadConstants(factory, parserContext);
         Collection<StateHandler<?>> handlers =
                 workflow.getStates().stream().map(state -> StateHandlerFactory.getStateHandler(state, workflow, parserContext))
@@ -124,27 +127,15 @@ public class ServerlessWorkflowParser {
         if (!tags.isEmpty()) {
             factory.metaData(Metadata.TAGS, tags);
         }
-
-        if (workflowHasDataInputSchema()) {
-            factory.metaData(Metadata.DATA_INPUT_SCHEMA_REF, OpenApiModelSchemaUtil.getInputModelRef(workflow.getId()));
-        }
-
         return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
     }
 
-    private boolean workflowHasDataInputSchema() {
-        return workflow.getDataInputSchema() != null &&
-                workflow.getDataInputSchema().getSchema() != null &&
-                !workflow.getDataInputSchema().getSchema().isEmpty();
-    }
-
-    private void dataInputSchema(RuleFlowProcessFactory factory, ParserContext parserContext) {
-        DataInputSchema inputSchema = workflow.getDataInputSchema();
-        if (inputSchema != null) {
+    private Optional<WorkflowModelValidator> modelValidator(ParserContext parserContext, Optional<DataInputSchema> schema) {
+        return schema.map(s -> {
             // TODO when all uris included auth ref, include authref
-            processResourceFile(workflow, parserContext, inputSchema.getSchema());
-            factory.validator(new DataInputSchemaValidatorSupplier(inputSchema.getSchema(), inputSchema.isFailOnValidationErrors()));
-        }
+            processResourceFile(workflow, parserContext, s.getSchema());
+            return new JsonSchemaValidatorSupplier(s.getSchema(), s.isFailOnValidationErrors());
+        });
     }
 
     private static Collection<Tag> getTags(Workflow workflow) {

@@ -13,7 +13,12 @@
       "vasco": "txakurra"
     }
   },
-  "dataInputSchema" : "schema/expression.json",
+  "dataInputSchema" : "schema/expressionInput.json",
+  "extensions" : [ {
+      "extensionid": "workflow-output-schema",
+      "outputSchema": "schema/expressionOutput.json"
+     }
+  ],
   "start": "squareState",
   "functions": [
     {

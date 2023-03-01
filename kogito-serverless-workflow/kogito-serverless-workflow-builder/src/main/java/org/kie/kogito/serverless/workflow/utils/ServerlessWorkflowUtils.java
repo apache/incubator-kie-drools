@@ -33,6 +33,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.serverless.workflow.extensions.FunctionNamespaces;
+import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
 import org.kie.kogito.serverless.workflow.extensions.URIDefinitions;
 import org.kie.kogito.serverless.workflow.io.URIContentLoaderFactory;
 import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
@@ -89,6 +90,7 @@ public class ServerlessWorkflowUtils {
         ExtensionDeserializer deserializer = objectMapper.getWorkflowModule().getExtensionDeserializer();
         deserializer.addExtension(URIDefinitions.URI_DEFINITIONS, URIDefinitions.class);
         deserializer.addExtension(FunctionNamespaces.FUNCTION_NAMESPACES, FunctionNamespaces.class);
+        deserializer.addExtension(OutputSchema.OUTPUT_SCHEMA, OutputSchema.class);
         return objectMapper.readValue(workflowFile, Workflow.class);
     }
 

@@ -21,6 +21,7 @@ import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -45,7 +46,7 @@ class ExpressionRestIT {
     }
 
     @Test
-    void testExpressionValidation() {
+    void testExpressionInputValidation() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -55,5 +56,18 @@ class ExpressionRestIT {
                 .statusCode(is(400))
                 .body("message", notNullValue())
                 .body("id", nullValue());
+    }
+
+    @Test
+    void testExpressionOutputValidation() {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body("{\"workflowdata\":{\"numbers\":[{\"x\":2, \"y\": 1},{\"x\":4, \"y\": 3}]}}").when()
+                .post("/invalidOutputExpression")
+                .then()
+                .statusCode(is(400))
+                .body("message", containsString("required key [message] not found"))
+                .body("id", notNullValue());
     }
 }

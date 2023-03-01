@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Expression",
+    "description": "Output schema for expression test",
+    "type": "object",
+    "properties": {
+        "result": {
+            "type" : "number",
+            "description": "Maximum value on x"
+        },
+        "message" : {
+             "type": "string",
+             "description" : "arbitrary message"
+        }
+    },
+    "required": ["result", "message"]
+}

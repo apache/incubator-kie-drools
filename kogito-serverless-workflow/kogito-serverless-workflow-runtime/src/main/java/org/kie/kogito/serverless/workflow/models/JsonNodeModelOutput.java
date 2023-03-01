@@ -21,12 +21,10 @@ import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class JsonNodeModelOutput implements Model, MapInput, MapInputId, MapOutput, MappableToModel<JsonNodeModel> {
 
     private String id;
-    private JsonNode workflowdata;
+    private Object workflowdata;
 
     public JsonNodeModelOutput() {
     }
@@ -35,17 +33,17 @@ public class JsonNodeModelOutput implements Model, MapInput, MapInputId, MapOutp
         return id;
     }
 
-    public JsonNodeModelOutput(String id, JsonNode workflowdata) {
+    public JsonNodeModelOutput(String id, Object workflowdata) {
         this.id = id;
         this.workflowdata = workflowdata;
     }
 
-    public JsonNode getWorkflowdata() {
+    public Object getWorkflowdata() {
         return workflowdata;
     }
 
     @Override
     public JsonNodeModel toModel() {
-        return new JsonNodeModel(workflowdata);
+        return new JsonNodeModel(id, workflowdata);
     }
 }

@@ -30,7 +30,6 @@ import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -41,7 +40,6 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
-import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -215,7 +213,6 @@ public class ModelMetaData {
                             new StringLiteralExpr(varName)))));
 
             applyValidation(fd, tags);
-            applyOpenApiSchemaForJsonNodeModel(fd);
             applyOpenApiSchemaAnnotation(fd);
 
             fd.createGetter();
@@ -239,23 +236,6 @@ public class ModelMetaData {
             if (tags != null && tags.contains(Variable.REQUIRED_TAG)) {
                 fd.addAnnotation("javax.validation.constraints.NotNull");
             }
-        }
-    }
-
-    /**
-     * The JsonNode class can't be parsed by the OpenApi parser.
-     * In essence, JsonNode should be represented by a generic JSON node: `{}`.
-     * The Swagger parser will handle a Java Object class as this generic Json node.
-     * This method will apply the `Schema(class=Object.class)` annotation if the model type os a JsonNode type.
-     *
-     * @see <a href="https://github.com/smallrye/smallrye-open-api/issues/1048">Jackson's JsonNode class is being incorrectly rendered in the spec file</a>
-     */
-    private void applyOpenApiSchemaForJsonNodeModel(final FieldDeclaration modelFieldDeclaration) {
-        if (this.modelSchemaRef == null &&
-                this.supportsOpenApiGeneration &&
-                JsonNode.class.getCanonicalName().equals(modelFieldDeclaration.getElementType().asString())) {
-            modelFieldDeclaration.addAndGetAnnotation(Schema.class).addPair("implementation",
-                    new ClassExpr().setType(Object.class.getCanonicalName()));
         }
     }
 

@@ -69,7 +69,6 @@ public class Metadata {
     public static final String ASYNC_WAITING = "ASYNC_WAITING";
     public static final String DATA_ONLY = "DataOnly";
     public static final String TAGS = "Tags";
-    public static final String DATA_INPUT_SCHEMA_REF = "dataInputScheme";
     public static final String CORRELATION_ATTRIBUTES = "CorrelationAttributes";
     public static final String CONSTANTS = "Constants";
     public static final String EVAL_VARIABLE = "evalVariable";
