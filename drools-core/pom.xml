@@ -239,17 +239,32 @@
                 <filter>
                   <artifact>it.unimi.dsi:fastutil</artifact>
                   <includes>
+                    <include>it/unimi/dsi/fastutil/Arrays**</include>
+                    <include>it/unimi/dsi/fastutil/BidirectionalIterator**</include>
+                    <include>it/unimi/dsi/fastutil/BigArrays**</include>
                     <include>it/unimi/dsi/fastutil/Function**</include>
                     <include>it/unimi/dsi/fastutil/Hash**</include>
+                    <include>it/unimi/dsi/fastutil/Pair**</include>
+                    <include>it/unimi/dsi/fastutil/Size64**</include>
+                    <include>it/unimi/dsi/fastutil/Stack**</include>
                     <include>it/unimi/dsi/fastutil/objects/AbstractObjectCollection**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObjectIterator**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObjectList**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObjectSet**</include>
+                    <include>it/unimi/dsi/fastutil/objects/AbstractObjectSpliterator**</include>
                     <include>it/unimi/dsi/fastutil/objects/AbstractObject2Object**</include>
+                    <include>it/unimi/dsi/fastutil/objects/BidirectionalIterator**</include>
                     <include>it/unimi/dsi/fastutil/objects/Object2ObjectMap**</include>
                     <include>it/unimi/dsi/fastutil/objects/Object2ObjectFunction**</include>
                     <include>it/unimi/dsi/fastutil/objects/Object2ObjectOpenCustomHashMap**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectArrays**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectArrayList**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectBidirectionalIterator**</include>
                     <include>it/unimi/dsi/fastutil/objects/ObjectCollection**</include>
                     <include>it/unimi/dsi/fastutil/objects/ObjectSet**</include>
                     <include>it/unimi/dsi/fastutil/objects/ObjectIterable**</include>
                     <include>it/unimi/dsi/fastutil/objects/ObjectIterator**</include>
+                    <include>it/unimi/dsi/fastutil/objects/ObjectList**</include>
                     <include>it/unimi/dsi/fastutil/objects/ObjectSpliterator**</include>
                   </includes>
                 </filter>
