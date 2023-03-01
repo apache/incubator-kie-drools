@@ -39,7 +39,7 @@ import io.vertx.core.json.jackson.DatabindCodec;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
 
 @ApplicationScoped
 public class VertxJobsService extends RestJobsService {

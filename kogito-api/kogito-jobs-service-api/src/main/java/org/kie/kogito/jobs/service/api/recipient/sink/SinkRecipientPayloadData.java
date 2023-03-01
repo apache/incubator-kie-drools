@@ -16,31 +16,39 @@
 
 package org.kie.kogito.jobs.service.api.recipient.sink;
 
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.DiscriminatorMapping;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.media.SchemaProperty;
 import org.kie.kogito.jobs.service.api.PayloadData;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import io.cloudevents.CloudEvent;
+import static org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientPayloadData.BINARY;
+import static org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientPayloadData.JSON;
+import static org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientPayloadData.TYPE;
 
-public class SinkRecipientPayloadData extends PayloadData<CloudEvent> {
+@Schema(discriminatorProperty = TYPE,
+        properties = { @SchemaProperty(name = TYPE, type = SchemaType.STRING) },
+        requiredProperties = { TYPE },
+        discriminatorMapping = {
+                @DiscriminatorMapping(value = BINARY, schema = SinkRecipientBinaryPayloadData.class),
+                @DiscriminatorMapping(value = JSON, schema = SinkRecipientJsonPayloadData.class)
+        })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = TYPE)
+@JsonSubTypes({
+        @JsonSubTypes.Type(name = BINARY, value = SinkRecipientBinaryPayloadData.class),
+        @JsonSubTypes.Type(name = JSON, value = SinkRecipientJsonPayloadData.class)
 
-    @JsonProperty("data")
-    private CloudEvent event;
+})
+public abstract class SinkRecipientPayloadData<T> extends PayloadData<T> {
 
-    public SinkRecipientPayloadData() {
+    static final String TYPE = "type";
+    static final String BINARY = "binary";
+    static final String JSON = "json";
+
+    protected SinkRecipientPayloadData() {
         // Marshalling constructor.
-    }
-
-    private SinkRecipientPayloadData(CloudEvent event) {
-        this.event = event;
-    }
-
-    @Override
-    public CloudEvent getData() {
-        return event;
-    }
-
-    public static SinkRecipientPayloadData from(CloudEvent event) {
-        return new SinkRecipientPayloadData(event);
     }
 }

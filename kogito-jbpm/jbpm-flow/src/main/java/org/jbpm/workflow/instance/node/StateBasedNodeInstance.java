@@ -274,7 +274,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     private void triggerTimer(TimerInstance timerInstance) {
         for (Map.Entry<Timer, DroolsAction> entry : getEventBasedNode().getTimers().entrySet()) {
             if (entry.getKey().getId() == timerInstance.getTimerId()) {
-                if (timerInstance.getRepeatLimit() == 0) {
+                if (timerInstance.getRepeatLimit() <= 0) {
                     timerInstances.remove(timerInstance.getId());
                 }
                 executeAction((Action) entry.getValue().getMetaData("Action"));

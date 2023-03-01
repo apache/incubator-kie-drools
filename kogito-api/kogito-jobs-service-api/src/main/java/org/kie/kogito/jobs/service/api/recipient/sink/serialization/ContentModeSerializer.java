@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.management.quarkus;
+package org.kie.kogito.jobs.service.api.recipient.sink.serialization;
 
-import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 
-import io.quarkus.jackson.ObjectMapperCustomizer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
+public class ContentModeSerializer extends JsonSerializer<SinkRecipient.ContentMode> {
 
-@ApplicationScoped
-public class AddonObjectMapperCustomizer implements ObjectMapperCustomizer {
     @Override
-    public void customize(ObjectMapper objectMapper) {
-        registerDescriptors(objectMapper);
+    public void serialize(SinkRecipient.ContentMode contentMode, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeString(contentMode.toString());
     }
 }

@@ -34,6 +34,7 @@ import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+import org.kie.kogito.jobs.service.api.serlialization.DeserializationException;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;

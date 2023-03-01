@@ -20,8 +20,8 @@ import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.DEFAULT_OBJECT_MAPPER;
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.DEFAULT_OBJECT_MAPPER;
+import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
 
 public class JobCloudEventSerializer {
 

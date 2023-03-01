@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

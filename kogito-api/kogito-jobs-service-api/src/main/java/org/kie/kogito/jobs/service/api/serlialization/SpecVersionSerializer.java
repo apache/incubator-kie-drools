@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.jobs.service.api.event.serialization;
+package org.kie.kogito.jobs.service.api.serlialization;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
 import io.cloudevents.SpecVersion;
 
-public class SpecVersionDeserializer extends JsonDeserializer<SpecVersion> {
+public class SpecVersionSerializer extends JsonSerializer<SpecVersion> {
 
     @Override
-    public SpecVersion deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        return SpecVersion.parse(jsonParser.getText());
+    public void serialize(SpecVersion specVersion, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeString(specVersion.toString());
     }
 }

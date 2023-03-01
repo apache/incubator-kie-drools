@@ -20,8 +20,8 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 
-import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer;
-import org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.serlialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.serlialization.SpecVersionSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

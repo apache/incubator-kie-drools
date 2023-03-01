@@ -178,7 +178,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         Map<String, Object> notification = timers.get(timerInstance.getId());
         boolean result = notification != null;
         if (result) {
-            if (timerInstance.getRepeatLimit() == 0) {
+            if (timerInstance.getRepeatLimit() <= 0) {
                 timers.remove(timerInstance.getId());
             }
             publisher.accept(notification);
