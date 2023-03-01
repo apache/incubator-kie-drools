@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>job-http-recipient-deployment</artifactId>
-  <name>Job Http Recipient - Deployment</name>
+  <name>Kogito Apps :: Jobs Service :: Job Http Recipient - Deployment</name>
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

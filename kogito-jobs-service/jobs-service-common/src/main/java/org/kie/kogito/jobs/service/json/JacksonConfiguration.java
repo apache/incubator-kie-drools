@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils;
+import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

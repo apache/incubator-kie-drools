@@ -1,0 +1,5 @@
+name: Job Sink Recipient extension
+description: Handle the delivery of cloud events to a knative sink based on the information from the job recipient.
+metadata:
+  keywords:
+    - Sink, SinkRecipient

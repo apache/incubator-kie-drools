@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.kie.kogito.jobs.service.api.Job;
-import org.kie.kogito.jobs.service.api.event.serialization.SerializationUtils;
+import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 import org.kie.kogito.jobs.service.resource.RestApiConstants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

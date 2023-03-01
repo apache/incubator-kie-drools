@@ -9,7 +9,7 @@
   </parent>
   <artifactId>job-http-recipient-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Job Http Recipient - Parent</name>
+  <name>Kogito Apps :: Jobs Service :: Job Http Recipient - Parent</name>
 
   <modules>
     <module>runtime</module>

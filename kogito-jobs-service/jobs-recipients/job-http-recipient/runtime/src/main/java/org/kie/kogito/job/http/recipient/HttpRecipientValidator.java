@@ -15,7 +15,8 @@
  */
 package org.kie.kogito.job.http.recipient;
 
-import java.util.Optional;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -23,26 +24,30 @@ import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.validator.RecipientValidator;
+import org.kie.kogito.jobs.service.validator.ValidationException;
 
 @ApplicationScoped
 public class HttpRecipientValidator implements RecipientValidator {
 
     @Override
     public boolean accept(Recipient<?> recipient) {
-        return HttpRecipient.class.isInstance(recipient);
+        return recipient instanceof HttpRecipient;
     }
 
     @Override
     public boolean validate(Recipient<?> recipient) {
-        HttpRecipient httpRecipient = Optional.ofNullable(recipient)
-                .filter(HttpRecipient.class::isInstance)
-                .map(HttpRecipient.class::cast)
-                .orElseThrow(() -> new IllegalArgumentException());
-
-        if (StringUtils.isBlank(httpRecipient.getUrl())) {
-            throw new IllegalArgumentException();
+        if (!(recipient instanceof HttpRecipient)) {
+            throw new IllegalArgumentException("Recipient must be a non-null instance of: " + HttpRecipient.class);
         }
-
+        HttpRecipient<?> httpRecipient = (HttpRecipient<?>) recipient;
+        if (StringUtils.isBlank(httpRecipient.getUrl())) {
+            throw new IllegalArgumentException("HttpRecipient url must have a non empty value.");
+        }
+        try {
+            new URL(httpRecipient.getUrl());
+        } catch (MalformedURLException e) {
+            throw new ValidationException("HttpRecipient must have a valid url.", e);
+        }
         return true;
     }
 }

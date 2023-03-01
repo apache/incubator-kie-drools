@@ -33,7 +33,24 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+          <artifactId>job-recipient-common-http</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>job-recipient-common-http</artifactId>
+          <version>${project.version}</version>
+          <type>test-jar</type>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>job-http-recipient</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>job-sink-recipient</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

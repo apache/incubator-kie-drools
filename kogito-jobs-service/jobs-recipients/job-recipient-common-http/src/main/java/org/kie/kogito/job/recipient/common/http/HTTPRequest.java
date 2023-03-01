@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.job.http.recipient;
+package org.kie.kogito.job.recipient.common.http;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 
-public class HTTPRequestCallback {
+public class HTTPRequest {
 
     public enum HTTPMethod {
         GET,
@@ -34,13 +33,13 @@ public class HTTPRequestCallback {
         TRACE
     }
 
-    private String url;
-    private HTTPMethod method;
-    private Map<String, String> headers;
-    private Map<String, String> queryParams;
-    private Optional<Object> body;
+    private final String url;
+    private final HTTPMethod method;
+    private final Map<String, String> headers;
+    private final Map<String, String> queryParams;
+    private final Object body;
 
-    public HTTPRequestCallback(String url, HTTPMethod method, Map<String, String> headers, Optional<Object> body, Map<String, String> queryParams) {
+    private HTTPRequest(String url, HTTPMethod method, Map<String, String> headers, Object body, Map<String, String> queryParams) {
         this.url = url;
         this.method = method;
         this.headers = headers;
@@ -60,7 +59,7 @@ public class HTTPRequestCallback {
         return headers;
     }
 
-    public Optional<Object> getBody() {
+    public Object getBody() {
         return body;
     }
 
@@ -73,24 +72,25 @@ public class HTTPRequestCallback {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof HTTPRequestCallback)) {
+        if (!(o instanceof HTTPRequest)) {
             return false;
         }
-        HTTPRequestCallback that = (HTTPRequestCallback) o;
+        HTTPRequest that = (HTTPRequest) o;
         return Objects.equals(getUrl(), that.getUrl()) &&
                 getMethod() == that.getMethod() &&
                 Objects.equals(getHeaders(), that.getHeaders()) &&
+                Objects.equals(getQueryParams(), that.getQueryParams()) &&
                 Objects.equals(getBody(), that.getBody());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUrl(), getMethod(), getHeaders(), getBody());
+        return Objects.hash(getUrl(), getMethod(), getHeaders(), getQueryParams(), getBody());
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", HTTPRequestCallback.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", HTTPRequest.class.getSimpleName() + "[", "]")
                 .add("url='" + url + "'")
                 .add("method=" + method)
                 .add("headers=" + headers)
@@ -108,7 +108,7 @@ public class HTTPRequestCallback {
         private String url;
         private HTTPMethod method;
         private Map<String, String> headers = new HashMap<>();
-        private Optional<Object> body = Optional.empty();
+        private Object body;
         private Map<String, String> queryParams = new HashMap<>();
 
         public Builder url(String url) {
@@ -131,8 +131,13 @@ public class HTTPRequestCallback {
             return this;
         }
 
+        public Builder addHeader(String name, String value) {
+            headers.put(name, value);
+            return this;
+        }
+
         public Builder body(Object body) {
-            this.body = Optional.ofNullable(body);
+            this.body = body;
             return this;
         }
 
@@ -146,8 +151,8 @@ public class HTTPRequestCallback {
             return this;
         }
 
-        public HTTPRequestCallback build() {
-            return new HTTPRequestCallback(url, method, headers, body, queryParams);
+        public HTTPRequest build() {
+            return new HTTPRequest(url, method, headers, body, queryParams);
         }
     }
 }

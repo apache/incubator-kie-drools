@@ -22,8 +22,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.kie.kogito.job.http.recipient.HTTPRequestCallback.HTTPMethod;
 import org.kie.kogito.job.http.recipient.HttpJobExecutor;
+import org.kie.kogito.job.recipient.common.http.HTTPRequest.HTTPMethod;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
@@ -36,7 +36,7 @@ import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTestResource(HttpRecipientResourceMock.class)
-public class JobHttpRecipientTest {
+class JobHttpRecipientTest {
 
     // Start unit test with your extension loaded
     @RegisterExtension
@@ -50,7 +50,7 @@ public class JobHttpRecipientTest {
     String mockServiceUrl;
 
     @Test
-    public void httpExecutorTest() {
+    void httpExecutorTest() {
         testRequest(HTTPMethod.DELETE);
         testRequest(HTTPMethod.GET);
         testRequest(HTTPMethod.POST);
@@ -59,7 +59,7 @@ public class JobHttpRecipientTest {
     }
 
     private void testRequest(HTTPMethod method) {
-        HttpRecipient httpRecipient = HttpRecipient.builder()
+        HttpRecipient<?> httpRecipient = HttpRecipient.builder()
                 .forStringPayload()
                 .method(method.name())
                 .url(mockServiceUrl)

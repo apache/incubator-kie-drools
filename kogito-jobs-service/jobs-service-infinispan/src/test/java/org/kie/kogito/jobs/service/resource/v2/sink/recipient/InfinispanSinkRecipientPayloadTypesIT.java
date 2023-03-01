@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.job.http.recipient.converters;
 
-import org.kie.kogito.job.http.recipient.HTTPRequestCallback;
+package org.kie.kogito.jobs.service.resource.v2.sink.recipient;
 
-import io.vertx.core.http.HttpMethod;
+import org.kie.kogito.jobs.service.resource.v2.ExternalResourcesMock;
 
-public class HttpConverters {
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
-    public static HttpMethod convertHttpMethod(HTTPRequestCallback.HTTPMethod method) {
-        return HttpMethod.valueOf(method.name());
-    }
+@QuarkusTest
+@QuarkusTestResource(ExternalResourcesMock.class)
+class InfinispanSinkRecipientPayloadTypesIT extends BaseSinkRecipientPayloadTypesIT {
 }

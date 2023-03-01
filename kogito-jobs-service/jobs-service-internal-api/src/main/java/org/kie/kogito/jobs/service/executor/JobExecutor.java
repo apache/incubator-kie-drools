@@ -15,8 +15,6 @@
  */
 package org.kie.kogito.jobs.service.executor;
 
-import java.util.Optional;
-
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
@@ -28,11 +26,7 @@ public interface JobExecutor {
     Uni<JobExecutionResponse> execute(JobDetails job);
 
     default boolean accept(JobDetails job) {
-        return Optional.ofNullable(job)
-                .map(JobDetails::getRecipient)
-                .map(org.kie.kogito.jobs.service.model.Recipient::getRecipient)
-                .filter(recipient -> type().isAssignableFrom(recipient.getClass()))
-                .isPresent();
+        return type().isAssignableFrom(job.getRecipient().getRecipient().getClass());
     }
 
     Class<? extends Recipient> type();

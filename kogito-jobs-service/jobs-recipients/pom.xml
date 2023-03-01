@@ -8,11 +8,13 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>jobs-recipients</artifactId>
-    <name>Kogito Apps :: Jobs :: Recipients</name>
-    <description>Jobs Recipients Parent</description>
+    <name>Kogito Apps :: Jobs Service :: Jobs Recipients</name>
+    <description>Jobs Service Recipients Parent</description>
     <packaging>pom</packaging>
 
     <modules>
+        <module>job-recipient-common-http</module>
         <module>job-http-recipient</module>
+        <module>job-sink-recipient</module>
     </modules>
 </project>

@@ -23,6 +23,7 @@ import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.Retry;
 import org.kie.kogito.jobs.service.api.Schedule;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -34,7 +35,14 @@ import org.kie.kogito.timer.impl.PointInTimeTrigger;
 
 public class JobDetailsAdapter {
 
+    private JobDetailsAdapter() {
+    }
+
     public static class StatusAdapter {
+
+        private StatusAdapter() {
+        }
+
         public static Job.State toState(JobStatus status) {
             if (Objects.isNull(status)) {
                 return Job.State.SCHEDULED;
@@ -77,6 +85,10 @@ public class JobDetailsAdapter {
     }
 
     public static class ScheduleAdapter {
+
+        private ScheduleAdapter() {
+        }
+
         public static Schedule toSchedule(Trigger trigger) {
 
             if (trigger instanceof IntervalTrigger) {
@@ -109,12 +121,13 @@ public class JobDetailsAdapter {
     }
 
     public static class RecipientAdapter {
+
+        private RecipientAdapter() {
+        }
+
         public static Recipient<?> toRecipient(JobDetails jobDetails) {
-            if (!(jobDetails.getRecipient().getRecipient() instanceof HttpRecipient)) {
-                throw new NotImplementedException("Only HTTPRecipient is supported");
-            }
-            Recipient<?> recipient = jobDetails.getRecipient().getRecipient();
-            return recipient;
+            checkIsSupported(jobDetails.getRecipient().getRecipient());
+            return jobDetails.getRecipient().getRecipient();
         }
 
         public static <T> T payload(Recipient<?> recipient) {
@@ -122,14 +135,22 @@ public class JobDetailsAdapter {
         }
 
         public static org.kie.kogito.jobs.service.model.Recipient from(Recipient<?> recipient) {
-            if (!(recipient instanceof HttpRecipient)) {
-                throw new NotImplementedException("Only HTTPRecipient is supported");
-            }
+            checkIsSupported(recipient);
             return new RecipientInstance(recipient);
+        }
+
+        static void checkIsSupported(Recipient<?> recipient) {
+            if (!(recipient instanceof HttpRecipient) && !(recipient instanceof SinkRecipient)) {
+                throw new NotImplementedException("Only HttpRecipient and SinkRecipient are supported");
+            }
         }
     }
 
     public static class RetryAdapter {
+
+        private RetryAdapter() {
+        }
+
         public static Retry toRetry(JobDetails jobDetails) {
             return null;
         }

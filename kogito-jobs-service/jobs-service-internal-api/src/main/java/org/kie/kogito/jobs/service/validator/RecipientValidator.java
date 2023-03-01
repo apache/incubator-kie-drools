@@ -18,7 +18,7 @@ package org.kie.kogito.jobs.service.validator;
 import org.kie.kogito.jobs.service.api.Recipient;
 
 public interface RecipientValidator {
-    boolean accept(org.kie.kogito.jobs.service.api.Recipient<?> recipient);
+    boolean accept(Recipient<?> recipient);
 
-    boolean validate(org.kie.kogito.jobs.service.api.Recipient<?> recipient);
+    boolean validate(Recipient<?> recipient);
 }
