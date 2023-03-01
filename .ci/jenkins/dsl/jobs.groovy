@@ -149,17 +149,23 @@ KogitoJobUtils.createAllEnvironmentsPerRepoPRJobs(this) { jobFolder -> getMultij
 createSetupBranchJob()
 
 // Nightly jobs
-KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true)
+Closure addFullProfileJobParamsGetter = { script ->
+    def jobParams = JobParamsUtils.DEFAULT_PARAMS_GETTER(script)
+    jobParams.env.put('BUILD_MVN_OPTS_CURRENT', '-Dfull')
+    return jobParams
+}
+
+KogitoJobUtils.createNightlyBuildChainBuildAndDeployJobForCurrentRepo(this, '', true, addFullProfileJobParamsGetter)
 
 // Environment nightlies
-setupSpecificBuildChainNightlyJob('native')
+setupSpecificBuildChainNightlyJob('native', addFullProfileJobParamsGetter)
 
 // Jobs with integration branch
-setupQuarkusIntegrationJob('quarkus-main')
-setupQuarkusIntegrationJob('quarkus-branch')
+setupQuarkusIntegrationJob('quarkus-main', addFullProfileJobParamsGetter)
+setupQuarkusIntegrationJob('quarkus-branch', addFullProfileJobParamsGetter)
 setupQuarkusIntegrationJob('quarkus-lts')
 setupQuarkusIntegrationJob('native-lts')
-setupQuarkusIntegrationJob('quarkus-3')
+setupQuarkusIntegrationJob('quarkus-3', addFullProfileJobParamsGetter)
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
@@ -175,12 +181,12 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'drools', [
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupQuarkusIntegrationJob(String envName) {
-    KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true)
+void setupQuarkusIntegrationJob(String envName, Closure defaultJobParamsGetter = JobParamsUtils.DEFAULT_PARAMS_GETTER) {
+    KogitoJobUtils.createNightlyBuildChainIntegrationJob(this, envName, Utils.getRepoName(this), true, defaultJobParamsGetter)
 }
 
-void setupSpecificBuildChainNightlyJob(String envName) {
-    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true)
+void setupSpecificBuildChainNightlyJob(String envName, Closure defaultJobParamsGetter = JobParamsUtils.DEFAULT_PARAMS_GETTER) {
+    KogitoJobUtils.createNightlyBuildChainBuildAndTestJobForCurrentRepo(this, envName, true, defaultJobParamsGetter)
 }
 
 void createSetupBranchJob() {
