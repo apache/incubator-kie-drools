@@ -55,6 +55,7 @@ public class DataIndexInMemoryContainer extends GenericContainer<DataIndexInMemo
         withImagePullPolicy(LATEST.equalsIgnoreCase(dockerImageName.getVersionPart()) ? PullPolicy.alwaysPull() : PullPolicy.defaultPolicy());
         withEnv("KOGITO_DATAINDEX_GATEWAY_URL", "host.testcontainers.internal");
         withEnv("KOGITO_DATA_INDEX_VERTX_GRAPHQL_UI_PATH", "/q/graphql-ui");
+        withEnv("KOGITO_DATA_INDEX_QUARKUS_PROFILE", "http-events-support");
     }
 
     @Override
