@@ -16,6 +16,9 @@
 
 package org.kie.kogito.index.addon.api;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -81,7 +84,22 @@ public class KogitoAddonRuntimeClientImpl implements KogitoRuntimeClient {
 
     @Override
     public CompletableFuture<String> getProcessInstanceSourceFileContent(String serviceURL, ProcessInstance processInstance) {
-        return CompletableFuture.supplyAsync(() -> sourceFilesProvider.getProcessSourceFile(processInstance.getProcessId()).get());
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return sourceFilesProvider.getProcessSourceFile(processInstance.getProcessId())
+                        .map(sourceFile -> {
+                            try {
+                                return sourceFile.readContents();
+                            } catch (IOException e) {
+                                throw new UncheckedIOException(e);
+                            }
+                        })
+                        .map(String::new)
+                        .orElseThrow(() -> new FileNotFoundException("Source file not found for the specified process ID: " + processInstance.getProcessId()));
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
     }
 
     @Override
