@@ -39,7 +39,9 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 @NotThreadSafe
 public class KogitoDevServiceTest {
 
-    private static Duration TIMEOUT = Duration.ofMinutes(1);
+    private static final Duration TIMEOUT = Duration.ofMinutes(1);
+    private static final String DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY = "data-index-ephemeral.image";
+    private static final String DATA_INDEX_EPHEMERAL_IMAGE_DEFAULT_VALUE = "use-default-image";
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
@@ -53,7 +55,7 @@ public class KogitoDevServiceTest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addClass(CalculationService.class)
                     .addClass(Order.class)
-                    .addAsResource(new StringAsset("quarkus.http.port=" + httpPort + "\n" + "quarkus.kogito.devservices.port=" + dataIndexHttpPort), "application.properties")
+                    .addAsResource(new StringAsset(getApplicationPropertiesContent()), "application.properties")
                     .addAsResource("orderItems.bpmn")
                     .addAsResource("orders.bpmn"));
 
@@ -100,5 +102,19 @@ public class KogitoDevServiceTest {
                         .body("data.ProcessInstances[0].id", is(processId))
                         .body("data.ProcessInstances[0].processId", is("demo.orders"))
                         .body("data.ProcessInstances[0].processName", is("orders")));
+    }
+
+    private static String getApplicationPropertiesContent() {
+        return "quarkus.http.port=" + httpPort + "\n"
+                + "quarkus.kogito.devservices.port=" + dataIndexHttpPort + "\n"
+                + getKogitoDevServicesImageName();
+    }
+
+    private static String getKogitoDevServicesImageName() {
+        String imageName = System.getProperty(DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY);
+        if (imageName == null || imageName.isEmpty() || DATA_INDEX_EPHEMERAL_IMAGE_DEFAULT_VALUE.equals(imageName)) {
+            return "";
+        }
+        return "quarkus.kogito.devservices.image-name=" + imageName;
     }
 }
