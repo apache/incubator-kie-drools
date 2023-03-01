@@ -42,12 +42,12 @@ class SourceFileCodegenBindListenerImplTest {
 
         String processId = "a_process";
 
-        SourceFileCodegenBindEvent event = new SourceFileCodegenBindEvent(processId, eventSourceFile, "");
+        SourceFileCodegenBindEvent event = new SourceFileCodegenBindEvent(processId, eventSourceFile);
 
         FakeSourceFilesRecorder sourceFilesRecorder = new FakeSourceFilesRecorder();
 
         new SourceFileProcessBindListenerImpl(resourcePaths, sourceFilesRecorder).onSourceFileCodegenBind(event);
 
-        assertThat(sourceFilesRecorder.containsRecordFor(processId, new SourceFile(expectedSourceFile, ""))).isTrue();
+        assertThat(sourceFilesRecorder.containsRecordFor(processId, new SourceFile(expectedSourceFile))).isTrue();
     }
 }

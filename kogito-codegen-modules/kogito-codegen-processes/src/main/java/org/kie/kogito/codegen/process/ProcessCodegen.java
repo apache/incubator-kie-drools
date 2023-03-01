@@ -18,7 +18,6 @@ package org.kie.kogito.codegen.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -159,14 +158,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private static void notifySourceFileCodegenBindListeners(KogitoBuildContext context, Resource resource, Collection<Process> processes) {
         context.getSourceFileCodegenBindNotifier()
-                .ifPresent(notifier -> processes.forEach(p -> {
-                    String sourcePath = resource.getSourcePath();
-                    try {
-                        notifier.notify(new SourceFileCodegenBindEvent(p.getId(), sourcePath, new String(resource.getInputStream().readAllBytes())));
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                }));
+                .ifPresent(notifier -> processes.forEach(p -> notifier.notify(new SourceFileCodegenBindEvent(p.getId(), resource.getSourcePath()))));
     }
 
     private static void handleValidation() {

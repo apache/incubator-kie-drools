@@ -40,7 +40,7 @@ public interface SourceFilesProvider {
      * Returns the source file for the given processId.
      *
      * @param processId the process identifier
-     * @return the source file content.
+     * @return the source file.
      */
-    Optional<String> getProcessSourceFile(String processId);
+    Optional<SourceFile> getProcessSourceFile(String processId);
 }

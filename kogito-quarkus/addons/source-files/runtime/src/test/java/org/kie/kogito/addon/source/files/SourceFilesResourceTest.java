@@ -61,7 +61,7 @@ class SourceFilesResourceTest {
 
     @Test
     void getValidSourceFileByProcessIdTest() {
-        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of("valid definition content"));
+        when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of(new SourceFile("petstore.sw.json")));
         assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }

@@ -16,9 +16,9 @@
 package org.kie.kogito.addon.source.files;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public final class SourceFilesResource {
     public Response getSourceFileByUri(@QueryParam("uri") String uri) {
         return sourceFilesProvider.getSourceFilesByUri(uri)
                 .map(sourceFile -> {
-                    try (InputStream file = new ByteArrayInputStream(sourceFile.getContents().getBytes())) {
+                    try (InputStream file = new ByteArrayInputStream(sourceFile.readContents())) {
                         return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
                                 .header("Content-Disposition", "inline; filename=\"" + java.nio.file.Path.of(sourceFile.getUri()).getFileName() + "\"")
                                 .build();
@@ -67,12 +67,14 @@ public final class SourceFilesResource {
     @Path("{processId}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getSourceFileByProcessId(@PathParam("processId") String processId) {
-        Optional<String> processSourceFileContent = sourceFilesProvider.getProcessSourceFile(processId);
-        if (processSourceFileContent.isPresent()) {
-            return Response.ok(processSourceFileContent.get()).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        return sourceFilesProvider.getProcessSourceFile(processId)
+                .map(sourceFile -> {
+                    try {
+                        return Response.ok(sourceFile.readContents()).build();
+                    } catch (IOException e) {
+                        return EXCEPTIONS_HANDLER.mapException(e);
+                    }
+                }).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
 
     @Inject

@@ -50,9 +50,9 @@ abstract class SourceFileCodegenBindListenerImpl implements SourceFileCodegenBin
                 .filter(sourceFilePath::startsWith)
                 .findFirst()
                 .ifPresentOrElse(resourcePath -> {
-                    SourceFile sourceFile = new SourceFile(resolveSourceFilePath(sourceFilePath, resourcePath), event.getFileContents());
+                    SourceFile sourceFile = new SourceFile(resolveSourceFilePath(sourceFilePath, resourcePath));
                     sourceFilesRecorder.addSourceFile(event.getSourceFileId(), sourceFile);
-                }, () -> sourceFilesRecorder.addSourceFile(event.getSourceFileId(), new SourceFile(event.getUri(), event.getFileContents())));
+                }, () -> sourceFilesRecorder.addSourceFile(event.getSourceFileId(), new SourceFile(event.getUri())));
     }
 
     private String resolveSourceFilePath(Path sourceFilePath, Path locationPath) {

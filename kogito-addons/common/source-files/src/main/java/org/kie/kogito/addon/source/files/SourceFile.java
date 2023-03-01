@@ -15,15 +15,15 @@
  */
 package org.kie.kogito.addon.source.files;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public final class SourceFile {
 
     // Serialization requires it not read-only
     private String uri;
-
-    // Serialization requires it not read-only
-    private String contents;
 
     public SourceFile() {
         // Needed for serialization
@@ -34,11 +34,9 @@ public final class SourceFile {
      * Ex.: {@code new SourceFile("path/to/file.txt")} will create a SourceFile with URI {@code path/to/file.txt}.
      *
      * @param uri the URI of the source file
-     * @param contents the contents of the source file
      */
-    public SourceFile(String uri, String contents) {
+    public SourceFile(String uri) {
         this.uri = Objects.requireNonNull(uri);
-        this.contents = Objects.requireNonNull(contents);
     }
 
     // Needed for serialization
@@ -46,17 +44,18 @@ public final class SourceFile {
         this.uri = uri;
     }
 
-    // Needed for serialization
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
     public String getUri() {
         return uri;
     }
 
-    public String getContents() {
-        return contents;
+    public byte[] readContents() throws IOException {
+        try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(getUri())) {
+            if (inputStream == null) {
+                throw new FileNotFoundException(getUri() + " could not be found.");
+            }
+
+            return inputStream.readAllBytes();
+        }
     }
 
     @Override
@@ -68,19 +67,18 @@ public final class SourceFile {
             return false;
         }
         SourceFile that = (SourceFile) o;
-        return uri.equals(that.uri) && contents.equals(that.contents);
+        return uri.equals(that.uri);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uri, contents);
+        return Objects.hash(uri);
     }
 
     @Override
     public String toString() {
         return "SourceFile{" +
                 "uri='" + uri + '\'' +
-                ", contents='" + contents + '\'' +
                 '}';
     }
 }
