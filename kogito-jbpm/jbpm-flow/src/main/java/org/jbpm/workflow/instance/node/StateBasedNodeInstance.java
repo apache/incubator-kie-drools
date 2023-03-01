@@ -18,7 +18,6 @@ package org.jbpm.workflow.instance.node;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,13 +25,11 @@ import java.util.Optional;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.DroolsAction;
@@ -41,7 +38,6 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.rule.Match;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -269,7 +265,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             handleSLAViolation();
         } else if (type.equals(getActivationType()) && event instanceof MatchCreatedEvent) {
             String name = ((MatchCreatedEvent) event).getMatch().getRule().getName();
-            if (checkProcessInstance((Activation) ((MatchCreatedEvent) event).getMatch())) {
+            if (checkProcessInstance((InternalMatch) ((MatchCreatedEvent) event).getMatch())) {
                 ((MatchCreatedEvent) event).getKieRuntime().signalEvent(name, null);
             }
         }
@@ -391,33 +387,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         getProcessInstance().removeEventListener(getActivationType(), this, true);
     }
 
-    protected boolean checkProcessInstance(Activation activation) {
-        final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
-        for (Iterator<?> it = declarations.values().iterator(); it.hasNext();) {
-            Declaration declaration = (Declaration) it.next();
-            if ("processInstance".equals(declaration.getIdentifier())
-                    || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
-                Object value = declaration.getValue(
-                        ((ReteEvaluator) getProcessInstance().getKnowledgeRuntime()),
-                        activation.getTuple().get(declaration).getObject());
-                if (value instanceof ProcessInstance) {
-                    return ((ProcessInstance) value).getStringId().equals(getProcessInstance().getStringId());
-                }
-            }
-        }
-        return true;
-    }
-
-    protected boolean checkDeclarationMatch(Match match, String matchVariable) {
-        if (matchVariable == null) {
-            // no extra check is needed
-            return true;
-        }
-
-        Object dec = match.getDeclarationIds().contains("$" + matchVariable) ? match.getDeclarationValue("$" + matchVariable) : match.getDeclarationValue(matchVariable);
-        Object var = getVariable(matchVariable);
-
-        return var.equals(dec);
+    protected boolean checkProcessInstance(InternalMatch match) {
+        ReteEvaluator workingMemory = (ReteEvaluator) getProcessInstance().getKnowledgeRuntime();
+        return match.checkProcessInstance(workingMemory, getProcessInstance().getStringId());
     }
 
     public Map<String, String> extractTimerEventInformation() {

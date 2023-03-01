@@ -16,7 +16,7 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.rule.consequence.Activation;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -148,7 +148,7 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
                 String constraintName = getActivationEventType() + "-"
                         + connection.getTo().getId() + "-" + connection.getToType();
                 if (constraintName.equals(event.getMatch().getRule().getName())
-                        && checkProcessInstance((Activation) event.getMatch())) {
+                        && checkProcessInstance((InternalMatch) event.getMatch())) {
                     selected = connection;
                 }
             }
