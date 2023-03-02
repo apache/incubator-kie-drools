@@ -6,6 +6,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.SynchronizedPropagationList;
 
 public class ReliablePropagationList extends SynchronizedPropagationList implements Serializable {
+
     public ReliablePropagationList(ReteEvaluator reteEvaluator) {
         super(reteEvaluator);
     }

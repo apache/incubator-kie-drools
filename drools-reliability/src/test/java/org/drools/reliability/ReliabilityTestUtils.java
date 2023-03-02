@@ -38,4 +38,9 @@ public class ReliabilityTestUtils {
             throw new UncheckedIOException(e);
         }
     }
+
+    public static void failover() {
+        CacheManager.INSTANCE.restart();
+        ReliableRuntimeComponentFactoryImpl.resetCounter();
+    }
 }

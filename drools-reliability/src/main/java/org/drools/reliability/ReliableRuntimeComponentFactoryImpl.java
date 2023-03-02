@@ -71,6 +71,11 @@ public class ReliableRuntimeComponentFactoryImpl extends RuntimeComponentFactory
         return agendaFactory;
     }
 
+    // test purpose to simulate fail-over
+    static void resetCounter() {
+        RELIABLE_SESSIONS_COUNTER.set(0);
+    }
+
     @Override
     public int servicePriority() {
         return 1;
