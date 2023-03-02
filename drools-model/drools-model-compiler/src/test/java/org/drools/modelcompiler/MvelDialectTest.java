@@ -21,20 +21,27 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.assertj.core.api.Assertions;
+import org.drools.core.WorkingMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.slf4j.Logger;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1540,5 +1547,56 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals(20, p.getAge());
         assertEquals(0, p.getAddresses().size());
         assertEquals(1, fired);
+    }
+
+    @Test
+    public void drools_workingMemory_setGlobal() {
+        // DROOLS-7338
+        String str = "package com.example.reproducer\n" +
+                     "import " + Logger.class.getCanonicalName() + ";\n" +
+                     "global Logger logger;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "  then\n" +
+                     "    drools.workingMemory.setGlobal(\"logger\", org.slf4j.LoggerFactory.getLogger(getClass()));\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.fireAllRules();
+
+        Object logger = ksession.getGlobal("logger");
+        assertThat(logger).isInstanceOf(Logger.class);
+    }
+
+    @Test
+    public void drools_fieldAccess() {
+        String str = "package com.example.reproducer\n" +
+                     "global java.util.Map results;\n" +
+                     "rule R\n" +
+                     "  dialect \"mvel\"\n" +
+                     "  when\n" +
+                     "  then\n" +
+                     "    results.put(\"workingMemory\", drools.workingMemory);\n" +
+                     "    results.put(\"rule\", drools.rule);\n" +
+                     "    results.put(\"match\", drools.match);\n" +
+                     "    results.put(\"tuple\", drools.tuple);\n" +
+                     "    results.put(\"knowledgeRuntime\", drools.knowledgeRuntime);\n" +
+                     "    results.put(\"kieRuntime\", drools.kieRuntime);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        Map<String, Object> results = new HashMap<>();
+        ksession.setGlobal("results", results);
+
+        ksession.fireAllRules();
+
+        assertThat(results.get("workingMemory")).isInstanceOf(WorkingMemory.class);
+        assertThat(results.get("rule")).isInstanceOf(Rule.class);
+        assertThat(results.get("match")).isInstanceOf(Match.class);
+        assertThat(results.get("tuple")).isInstanceOf(Tuple.class);
+        assertThat(results.get("knowledgeRuntime")).isInstanceOf(KieRuntime.class);
+        assertThat(results.get("kieRuntime")).isInstanceOf(KieRuntime.class);
     }
 }
