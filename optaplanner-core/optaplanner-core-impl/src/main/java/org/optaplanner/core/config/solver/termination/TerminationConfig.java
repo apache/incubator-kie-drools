@@ -39,6 +39,10 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 })
 public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
+    /**
+     * @deprecated A custom terminationClass is deprecated and will be removed in a future major version of OptaPlanner.
+     */
+    @Deprecated(forRemoval = true)
     private Class<? extends Termination> terminationClass = null;
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
@@ -71,10 +75,18 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     @XmlElement(name = "termination")
     private List<TerminationConfig> terminationConfigList = null;
 
+    /**
+     * @deprecated A custom terminationClass is deprecated and will be removed in a future major version of OptaPlanner.
+     */
+    @Deprecated(forRemoval = true)
     public Class<? extends Termination> getTerminationClass() {
         return terminationClass;
     }
 
+    /**
+     * @deprecated A custom terminationClass is deprecated and will be removed in a future major version of OptaPlanner.
+     */
+    @Deprecated(forRemoval = true)
     public void setTerminationClass(Class<? extends Termination> terminationClass) {
         this.terminationClass = terminationClass;
     }
@@ -243,6 +255,10 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     // With methods
     // ************************************************************************
 
+    /**
+     * @deprecated A custom terminationClass is deprecated and will be removed in a future major version of OptaPlanner.
+     */
+    @Deprecated(forRemoval = true)
     public TerminationConfig withTerminationClass(Class<? extends Termination> terminationClass) {
         this.terminationClass = terminationClass;
         return this;
