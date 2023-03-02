@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>efesto-compilation-manager</artifactId>
-    <version>8.35.0.Final</version>
+    <version>8.35.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>efesto-compilation-manager-core</artifactId>
