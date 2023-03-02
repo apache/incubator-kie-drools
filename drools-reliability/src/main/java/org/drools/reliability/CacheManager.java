@@ -31,18 +31,25 @@ public enum CacheManager implements AutoCloseable {
 
     INSTANCE;
 
-    private final DefaultCacheManager cacheManager;
-    private final Configuration cacheConfiguration;
+    public static final String SESSION_CACHE_PREFIX = "session_";
+    public static final String DELIMITER = "_";
+
+    private DefaultCacheManager cacheManager;
+    private Configuration cacheConfiguration;
 
     public static final String CACHE_DIR = "tmp/cache";
 
     CacheManager() {
+        initCacheManager();
+    }
+
+    private void initCacheManager() {
         // Set up a clustered Cache Manager.
         GlobalConfigurationBuilder global = new GlobalConfigurationBuilder();
         global.serialization()
                 .marshaller(new JavaSerializationMarshaller())
                 .allowList()
-                .addRegexps("org.drools.");
+                .addRegexps("org.drools."); // TODO: need to be configurable
         global.transport().defaultTransport();
 
         // Initialize the default Cache Manager.
@@ -63,7 +70,7 @@ public enum CacheManager implements AutoCloseable {
     }
 
     public <k, V> Cache<k, V> getOrCreateCacheForSession(ReteEvaluator reteEvaluator, String cacheName) {
-        String cacheId = getSessionIdentifier(reteEvaluator) + "_" + cacheName;
+        String cacheId = SESSION_CACHE_PREFIX + getSessionIdentifier(reteEvaluator) + DELIMITER + cacheName;
         // Obtain a volatile cache.
         return cacheManager.administration().withFlags(CacheContainerAdmin.AdminFlag.VOLATILE).getOrCreateCache(cacheId, cacheConfiguration);
     }
@@ -82,10 +89,34 @@ public enum CacheManager implements AutoCloseable {
         cacheManager.stop();
     }
 
+    // test purpose to simulate fail-over
+    void restart() {
+        // JVM crashed
+        cacheManager.stop();
+        cacheManager = null;
+        cacheConfiguration = null;
+
+        // Reboot
+        initCacheManager();
+    }
+
     public void removeCache(String cacheName){
         if (cacheManager.cacheExists(cacheName)) {
             cacheManager.removeCache(cacheName);
         }
     }
 
+    public void removeCachesBySessionId(String sessionId) {
+        cacheManager.getCacheNames()
+                .stream()
+                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX + sessionId + DELIMITER))
+                .forEach(this::removeCache);
+    }
+
+    public void removeAllSessionCaches() {
+        cacheManager.getCacheNames()
+                .stream()
+                .filter(cacheName -> cacheName.startsWith(SESSION_CACHE_PREFIX))
+                .forEach(this::removeCache);
+    }
 }
