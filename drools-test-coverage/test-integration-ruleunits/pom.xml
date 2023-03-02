@@ -14,7 +14,7 @@
   <parent>
     <artifactId>drools-test-coverage-parent</artifactId>
     <groupId>org.drools.testcoverage</groupId>
-    <version>8.35.0.Final</version>
+    <version>8.35.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
