@@ -217,7 +217,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         this.propagationList = createPropagationList();
     }
 
-    private PropagationList createPropagationList() {
+    protected PropagationList createPropagationList() {
         if (!workingMemory.getRuleSessionConfiguration().isThreadSafe()) {
             return new ThreadUnsafePropagationList( workingMemory );
         }

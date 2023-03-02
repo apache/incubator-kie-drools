@@ -36,6 +36,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
+import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.internal.conf.CompositeConfiguration;
@@ -51,6 +52,8 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
     private ClockType                      clockType;
 
     private TimerJobFactoryType            timerJobFactoryType;
+
+    private PersistedSessionOption persistedSessionOption;
 
     private ExecutableRunner runner;
 
@@ -109,6 +112,10 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
                 setKeepReference(((KeepReferenceOption)option).isKeepReference());
                 break;
             }
+            case PersistedSessionOption.PROPERTY_NAME: {
+                setPersistedSessionOption( (PersistedSessionOption) option );
+                break;
+            }
             default:
                 compConfig.setOption(option);
         }
@@ -125,6 +132,9 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
             }
             case KeepReferenceOption.PROPERTY_NAME: {
                 return (T) (isKeepReference() ? KeepReferenceOption.YES : KeepReferenceOption.NO);
+            }
+            case PersistedSessionOption.PROPERTY_NAME: {
+                return (T) getPersistedSessionOption();
             }
             default:
                 return compConfig.getOption(option);
@@ -190,6 +200,14 @@ public class SessionConfiguration extends BaseConfiguration<KieSessionOption, Si
 
     public boolean isKeepReference() {
         return this.keepReference;
+    }
+
+    public PersistedSessionOption getPersistedSessionOption() {
+        return this.persistedSessionOption;
+    }
+
+    private void setPersistedSessionOption(PersistedSessionOption persistedSessionOption){
+        this.persistedSessionOption = persistedSessionOption;
     }
 
     public ClockType getClockType() {
