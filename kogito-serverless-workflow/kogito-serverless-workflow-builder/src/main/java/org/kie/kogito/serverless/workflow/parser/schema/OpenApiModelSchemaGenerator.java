@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow.parser.schema;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.microprofile.openapi.OASFactory;
@@ -68,11 +69,16 @@ public final class OpenApiModelSchemaGenerator {
 
     public static void mergeSchemas(OpenAPI targetSchema, Collection<OpenAPI> srcSchemas) {
         srcSchemas.forEach(srcSchema -> MergeUtil.merge(targetSchema, srcSchema));
-        for (PathItem pathItem : targetSchema.getPaths().getPathItems().values()) {
-            processInputOperation(targetSchema, pathItem.getPOST());
-            processInputOperation(targetSchema, pathItem.getPUT());
-            processInputOperation(targetSchema, pathItem.getPATCH());
-            processOutputOperation(targetSchema, pathItem.getGET());
+        // see https://github.com/eclipse/microprofile-open-api/issues/558
+        if (targetSchema.getComponents() != null && targetSchema.getComponents().getSchemas() != null
+                && targetSchema.getPaths() != null && targetSchema.getPaths().getPathItems() != null) {
+            Map<String, Schema> schemas = targetSchema.getComponents().getSchemas();
+            for (PathItem pathItem : targetSchema.getPaths().getPathItems().values()) {
+                processInputOperation(schemas, pathItem.getPOST());
+                processInputOperation(schemas, pathItem.getPUT());
+                processInputOperation(schemas, pathItem.getPATCH());
+                processOutputOperation(schemas, pathItem.getGET());
+            }
         }
     }
 
@@ -88,28 +94,30 @@ public final class OpenApiModelSchemaGenerator {
         return id + OUTPUT_SUFFIX;
     }
 
-    private static Optional<Schema> getSchemaRef(String id, OpenAPI openAPI) {
-        return Optional.ofNullable(openAPI.getComponents().getSchemas().get(id));
-    }
-
-    private static void processInputOperation(OpenAPI openAPI, Operation operation) {
+    private static void processInputOperation(Map<String, Schema> schemas, Operation operation) {
         if (operation != null && operation.getRequestBody() != null) {
             List<String> tags = operation.getTags();
             if (tags != null) {
                 for (String tag : tags) {
-                    getSchemaRef(getInputSchemaName(tag), openAPI).ifPresent(schema -> getMediaTypes(operation.getRequestBody().getContent()).forEach(mediaType -> mediaType.setSchema(schema)));
+                    Schema schema = schemas.get(getInputSchemaName(tag));
+                    if (schema != null) {
+                        getMediaTypes(operation.getRequestBody().getContent()).forEach(mediaType -> mediaType.setSchema(schema));
+                    }
                 }
             }
         }
     }
 
-    private static void processOutputOperation(OpenAPI openAPI, Operation operation) {
+    private static void processOutputOperation(Map<String, Schema> schemas, Operation operation) {
         if (operation != null && operation.getResponses() != null && operation.getResponses().getAPIResponses() != null) {
             List<String> tags = operation.getTags();
             if (tags != null) {
                 for (String tag : tags) {
-                    getSchemaRef(getOutputSchemaName(tag), openAPI).ifPresent(schema -> operation.getResponses().getAPIResponses().values().stream()
-                            .flatMap(response -> getMediaTypes(response.getContent()).stream()).forEach(mediaType -> mediaType.setSchema(schema)));
+                    Schema schema = schemas.get(getOutputSchemaName(tag));
+                    if (schema != null) {
+                        operation.getResponses().getAPIResponses().values().stream()
+                                .flatMap(response -> getMediaTypes(response.getContent()).stream()).forEach(mediaType -> mediaType.setSchema(schema));
+                    }
                 }
             }
         }

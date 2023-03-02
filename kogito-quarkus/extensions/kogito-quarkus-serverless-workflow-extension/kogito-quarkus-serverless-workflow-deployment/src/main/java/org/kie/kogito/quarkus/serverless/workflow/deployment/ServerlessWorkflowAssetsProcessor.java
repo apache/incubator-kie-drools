@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.drools.codegen.common.GeneratedFile;
+import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.jboss.jandex.IndexView;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.process.ProcessContainerGenerator;
@@ -96,9 +97,12 @@ public class ServerlessWorkflowAssetsProcessor extends WorkflowProcessor {
 
     @BuildStep
     void addOpenAPIModelSchema(List<KogitoProcessContainerGeneratorBuildItem> processBuildItem, BuildProducer<AddToOpenAPIDefinitionBuildItem> openAPIProducer) {
-        openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
+        List<OpenAPI> schemas = processBuildItem.stream().flatMap(it -> it.getProcessContainerGenerators().stream())
                 .map(ProcessContainerGenerator::getProcesses).flatMap(Collection::stream).map(ProcessGenerator::getProcess)
-                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema).flatMap(Optional::stream).collect(Collectors.toList()))));
+                .map(OpenApiModelSchemaGenerator::generateOpenAPIModelSchema).flatMap(Optional::stream).collect(Collectors.toList());
+        if (!schemas.isEmpty()) {
+            openAPIProducer.produce(new AddToOpenAPIDefinitionBuildItem(new ServerlessWorkflowOASFilter(schemas)));
+        }
     }
 
     @BuildStep
