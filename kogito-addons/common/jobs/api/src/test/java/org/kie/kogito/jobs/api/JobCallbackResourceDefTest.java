@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 
@@ -38,11 +37,11 @@ class JobCallbackResourceDefTest {
     private static final Integer PRIORITY = 0;
     private static final String NODE_INSTANCE_ID = "NODE_INSTANCE_ID";
     private static final ExpirationTime EXPIRATION_TIME = ExactExpirationTime.of("2020-03-21T10:15:30+01:00");
-    private static final TimerJobId JOB_ID = new TimerJobId(1L);
+    private static final String JOB_ID = "JOB_ID";
     private static final String CALLBACK = "CALLBACK";
 
     private static final String EXPECTED_CALLBACK_URI = SERVICE_URI + "/management/jobs/" + PROCESS_ID
-            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + JOB_ID.encode();
+            + "/instances/" + PROCESS_INSTANCE_ID + "/timers/" + JOB_ID;
 
     @Test
     void buildCallbackURI() {
@@ -54,7 +53,7 @@ class JobCallbackResourceDefTest {
     void buildCallbackPatternJob() {
         org.kie.kogito.jobs.service.api.Job job = JobCallbackResourceDef.buildCallbackPatternJob(mockProcessInstanceJobDescription(), CALLBACK);
         assertThat(job).isNotNull();
-        assertThat(job.getId()).isEqualTo(JOB_ID.encode());
+        assertThat(job.getId()).isEqualTo(JOB_ID);
         assertThat(job.getRecipient())
                 .isNotNull()
                 .isInstanceOf(HttpRecipient.class);
@@ -77,12 +76,15 @@ class JobCallbackResourceDefTest {
     }
 
     private ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
-        return ProcessInstanceJobDescription.of(JOB_ID,
-                EXPIRATION_TIME,
-                PRIORITY,
-                PROCESS_INSTANCE_ID,
-                ROOT_PROCESS_INSTANCE_ID, PROCESS_ID,
-                ROOT_PROCESS_ID,
-                NODE_INSTANCE_ID);
+        return ProcessInstanceJobDescription.builder()
+                .timerId(JOB_ID)
+                .expirationTime(EXPIRATION_TIME)
+                .priority(PRIORITY)
+                .processInstanceId(PROCESS_INSTANCE_ID)
+                .rootProcessInstanceId(ROOT_PROCESS_INSTANCE_ID)
+                .processId(PROCESS_ID)
+                .rootProcessId(ROOT_PROCESS_ID)
+                .nodeInstanceId(NODE_INSTANCE_ID)
+                .build();
     }
 }

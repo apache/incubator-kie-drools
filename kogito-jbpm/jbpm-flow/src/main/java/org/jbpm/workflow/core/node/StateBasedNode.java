@@ -59,15 +59,6 @@ public class StateBasedNode extends ExtendedNodeImpl {
         if (timers == null) {
             timers = new HashMap<>();
         }
-        if (timer.getId() == 0) {
-            long id = 0;
-            for (Timer t : timers.keySet()) {
-                if (t.getId() > id) {
-                    id = t.getId();
-                }
-            }
-            timer.setId(++id);
-        }
         timers.put(timer, action);
     }
 

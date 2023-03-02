@@ -282,7 +282,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getStringId();
         addCompletionEventListener();
-        ((MutableProcessInstances<T>) process.instances()).create(id, this);
+        addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).create(id, this));
         KogitoProcessInstance kogitoProcessInstance = getProcessRuntime().getKogitoProcessRuntime().startProcessInstance(this.id, trigger);
         if (kogitoProcessInstance.getState() != STATE_ABORTED && kogitoProcessInstance.getState() != STATE_COMPLETED) {
             addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.jobs;
+package org.jbpm.test.util;
 
-public interface JobId<T, P> {
+import org.kie.api.event.process.ProcessStartedEvent;
 
-    JobId<T, P> decode(String value);
+public class ProcessStartedCountDownProcessEventListener extends DefaultCountDownProcessEventListener {
 
-    T correlationId();
+    public ProcessStartedCountDownProcessEventListener() {
+        super(1);
+    }
 
-    String encode();
+    public ProcessStartedCountDownProcessEventListener(int threads) {
+        super(threads);
+    }
 
-    String signal();
+    @Override
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        countDown();
+    }
 
-    P payload(Object... parameters);
 }

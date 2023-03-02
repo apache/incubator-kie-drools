@@ -18,12 +18,11 @@ package org.kie.kogito.services.jobs.impl;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.kogito.jobs.JobId;
-import org.kie.kogito.jobs.JobIdResolver;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Signal;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.timer.TimerInstance;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
 public class TriggerJobCommand {
@@ -33,6 +32,7 @@ public class TriggerJobCommand {
     private Integer limit;
     private Process<?> process;
     private UnitOfWorkManager uom;
+    public static final String SIGNAL = "timerTriggered";
 
     public TriggerJobCommand(String processInstanceId, String timerId, Integer limit, Process<?> process, UnitOfWorkManager uom) {
         this.processInstanceId = processInstanceId;
@@ -46,8 +46,7 @@ public class TriggerJobCommand {
         return UnitOfWorkExecutor.executeInUnitOfWork(uom, () -> {
             Optional<? extends ProcessInstance<?>> processInstanceFound = process.instances().findById(processInstanceId);
             return processInstanceFound.map(processInstance -> {
-                JobId jobId = JobIdResolver.resolve(timerId);
-                processInstance.send(new JobSignal(jobId.signal(), jobId.payload(limit)));
+                processInstance.send(new JobSignal(SIGNAL, TimerInstance.with(timerId, limit)));
                 return true;
             }).orElse(false);
         });

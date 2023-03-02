@@ -29,6 +29,8 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
+
 public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
 
     private static final long serialVersionUID = 7095736653568661510L;
@@ -58,11 +60,11 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
         if (triggerTime == null) {
             triggerTime = new Date();
         }
-        if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-") || type.equals("timerTriggered")) {
+        if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-") || type.equals(TIMER_TRIGGERED_EVENT)) {
             // start it only if it was not already started - meaning there are node instances
             if (this.getNodeInstances().isEmpty()) {
                 StartNode startNode = getCompositeNode().findStartNode();
-                if (resolveVariables(((EventSubProcessNode) getEventBasedNode()).getEvents()).contains(type) || type.equals("timerTriggered")) {
+                if (resolveVariables(((EventSubProcessNode) getEventBasedNode()).getEvents()).contains(type) || type.equals(TIMER_TRIGGERED_EVENT)) {
                     NodeInstance nodeInstance = getNodeInstance(startNode);
                     ((StartNodeInstance) nodeInstance).signalEvent(type, event);
                 }

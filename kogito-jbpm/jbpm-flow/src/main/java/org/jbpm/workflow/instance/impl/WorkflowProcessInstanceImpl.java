@@ -80,8 +80,8 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.jobs.DurationExpirationTime;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
@@ -103,6 +103,7 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.IS_FOR_COMPENSATION;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.ACTIVE;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.AVAILABLE;
 import static org.kie.kogito.process.flexible.ItemDescription.Status.COMPLETED;
@@ -558,15 +559,22 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     private TimerInstance createDurationTimer(long duration) {
         TimerInstance timerInstance = new TimerInstance();
-        timerInstance.setTimerId(-1);
+        timerInstance.setId(UUID.randomUUID().toString());
         timerInstance.setDelay(duration);
         timerInstance.setPeriod(0);
         return timerInstance;
     }
 
     private TimerInstance registerTimer(TimerInstance timerInstance) {
-        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.of(new TimerJobId(-1L), DurationExpirationTime.after(timerInstance.getDelay()), getStringId(), getProcessId());
-        timerInstance.setId((InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService().scheduleProcessInstanceJob(description)));
+        ProcessInstanceJobDescription description =
+                ProcessInstanceJobDescription.builder()
+                        .timerId(timerInstance.getId())
+                        .expirationTime(DurationExpirationTime.after(timerInstance.getDelay()))
+                        .processInstanceId(getStringId())
+                        .processId(getProcessId())
+                        .build();
+        JobsService jobsService = InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService();
+        jobsService.scheduleProcessInstanceJob(description);
         return timerInstance;
     }
 
@@ -619,7 +627,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 return;
             }
 
-            if ("timerTriggered".equals(type)) {
+            if (TIMER_TRIGGERED_EVENT.equals(type)) {
                 TimerInstance timer = (TimerInstance) event;
                 if (timer.getId().equals(slaTimerId)) {
                     handleSLAViolation();
@@ -848,7 +856,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                     if (timerProperties != null) {
                         properties.putAll(timerProperties);
                         eventType = "timer";
-                        eventName = "timerTriggered";
+                        eventName = TIMER_TRIGGERED_EVENT;
                     }
 
                     eventDesciptions.add(new BaseEventDescription(eventName, (String) n.getMetaData().get(UNIQUE_ID), n.getName(), eventType, null, getStringId(), dataType, properties));
@@ -865,7 +873,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         Map<String, String> timerProperties = ((StateBasedNodeInstance) ni).extractTimerEventInformation();
                         if (timerProperties != null) {
 
-                            eventDesciptions.add(new BaseEventDescription("timerTriggered", (String) startNode.getMetaData().get("UniqueId"), startNode.getName(), "timer", ni.getStringId(),
+                            eventDesciptions.add(new BaseEventDescription(TIMER_TRIGGERED_EVENT, (String) startNode.getMetaData().get("UniqueId"), startNode.getName(), "timer", ni.getStringId(),
                                     getStringId(), null, timerProperties));
 
                         }

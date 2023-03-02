@@ -18,6 +18,7 @@ package org.kie.kogito.codegen.tests;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
@@ -31,12 +32,14 @@ import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.abort;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertEmpty;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertSize;
 import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 public class TimerEventIT extends AbstractCodegenIT {
 
@@ -235,10 +238,13 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         Process<? extends Model> p = app.get(Processes.class).processById("defaultPackage.TimerProcess");
         // activate to schedule timers
-        p.activate();
+        activate(app, p);
 
         boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
+
+        await().atMost(TIME_OUT, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 1));
 
         ProcessInstance<?> processInstance = getFirst(p.instances());
         assertThat(processInstance).isNotNull();
@@ -251,6 +257,13 @@ public class TimerEventIT extends AbstractCodegenIT {
         assertEmpty(p.instances());
     }
 
+    private static void activate(Application app, Process<? extends Model> p) {
+        UnitOfWorkExecutor.executeInUnitOfWork(app.unitOfWorkManager(), () -> {
+            p.activate();
+            return null;
+        });
+    }
+
     @Test
     void testStartTimerEventTimeCycle() throws Exception {
         Application app = generateCodeProcessesOnly("timer/StartTimerCycle.bpmn2");
@@ -261,12 +274,13 @@ public class TimerEventIT extends AbstractCodegenIT {
 
         Process<? extends Model> p = app.get(Processes.class).processById("defaultPackage.TimerProcess");
         // activate to schedule timers
-        p.activate();
+        activate(app, p);
 
         boolean completed = listener.waitTillCompleted(TIME_OUT);
         assertThat(completed).isTrue();
 
-        assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2);
+        await().atMost(TIME_OUT, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> assertSize(p.instances(), ProcessInstanceReadMode.MUTABLE, 2));
 
         ProcessInstance<?> processInstance = getFirst(p.instances());
         assertThat(processInstance).isNotNull();

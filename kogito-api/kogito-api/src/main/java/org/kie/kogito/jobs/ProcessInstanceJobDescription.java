@@ -15,9 +15,6 @@
  */
 package org.kie.kogito.jobs;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import static java.util.Objects.requireNonNull;
 
 public class ProcessInstanceJobDescription implements JobDescription {
@@ -25,18 +22,15 @@ public class ProcessInstanceJobDescription implements JobDescription {
     public static final Integer DEFAULT_PRIORITY = 5;
 
     private final String id;
-
     private final ExpirationTime expirationTime;
-
     private final Integer priority;
-
     private final String processInstanceId;
     private final String rootProcessInstanceId;
     private final String processId;
     private final String rootProcessId;
     private final String nodeInstanceId;
 
-    private ProcessInstanceJobDescription(JobId timerId,
+    public ProcessInstanceJobDescription(String timerId,
             ExpirationTime expirationTime,
             Integer priority,
             String processInstanceId,
@@ -44,10 +38,7 @@ public class ProcessInstanceJobDescription implements JobDescription {
             String processId,
             String rootProcessId,
             String nodeInstanceId) {
-        this.id = Optional.ofNullable(timerId)
-                .map(JobId::encode)
-                .orElse(UUID.randomUUID().toString());
-
+        this.id = requireNonNull(timerId);
         this.expirationTime = requireNonNull(expirationTime);
         this.priority = requireNonNull(priority);
         this.processInstanceId = requireNonNull(processInstanceId);
@@ -55,44 +46,6 @@ public class ProcessInstanceJobDescription implements JobDescription {
         this.processId = processId;
         this.rootProcessId = rootProcessId;
         this.nodeInstanceId = nodeInstanceId;
-    }
-
-    public static ProcessInstanceJobDescription of(ExpirationTime expirationTime,
-            String processInstanceId,
-            String processId) {
-        return of(null, expirationTime, processInstanceId, processId);
-    }
-
-    public static ProcessInstanceJobDescription of(JobId timerId,
-            ExpirationTime expirationTime,
-            String processInstanceId,
-            String processId) {
-        return of(timerId, expirationTime, processInstanceId, null, processId, null, null);
-    }
-
-    //timer
-    public static ProcessInstanceJobDescription of(JobId timerId,
-            ExpirationTime expirationTime,
-            String processInstanceId,
-            String rootProcessInstanceId,
-            String processId,
-            String rootProcessId,
-            String nodeInstanceId) {
-        return of(timerId, expirationTime, DEFAULT_PRIORITY, processInstanceId, rootProcessInstanceId, processId,
-                rootProcessId, nodeInstanceId);
-    }
-
-    public static ProcessInstanceJobDescription of(JobId timerId,
-            ExpirationTime expirationTime,
-            Integer priority,
-            String processInstanceId,
-            String rootProcessInstanceId,
-            String processId,
-            String rootProcessId,
-            String nodeInstanceId) {
-
-        return new ProcessInstanceJobDescription(timerId, expirationTime, priority, processInstanceId,
-                rootProcessInstanceId, processId, rootProcessId, nodeInstanceId);
     }
 
     @Override
@@ -128,6 +81,10 @@ public class ProcessInstanceJobDescription implements JobDescription {
 
     public String nodeInstanceId() {
         return nodeInstanceId;
+    }
+
+    public static ProcessInstanceJobDescriptionBuilder builder() {
+        return new ProcessInstanceJobDescriptionBuilder();
     }
 
     @Override

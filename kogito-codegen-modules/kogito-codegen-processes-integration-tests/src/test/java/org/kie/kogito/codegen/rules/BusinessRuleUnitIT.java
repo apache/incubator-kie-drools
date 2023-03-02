@@ -142,13 +142,13 @@ public class BusinessRuleUnitIT extends AbstractRulesCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(m);
         processInstance.start();
+        uow.end();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(1).containsKey("person");
         assertThat(result.toMap().get("person")).isNotNull().hasFieldOrPropertyWithValue("adult", true);
 
-        uow.end();
         assertThat(startedProcesses).hasSize(1);
     }
 

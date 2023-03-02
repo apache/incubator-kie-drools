@@ -265,11 +265,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         if (timers != null && !timers.isEmpty()) {
             xmlDump.append("      <timers>" + EOL);
             List<Timer> timerList = new ArrayList<>(timers.keySet());
-            Collections.sort(timerList, new Comparator<Timer>() {
-                public int compare(Timer o1, Timer o2) {
-                    return (int) (o2.getId() - o1.getId());
-                }
-            });
+            Collections.sort(timerList, Comparator.comparing(Timer::getId));
             for (Timer timer : timerList) {
                 xmlDump.append("        <timer id=\"" + timer.getId() + "\" ");
                 if (timer.getDelay() != null) {

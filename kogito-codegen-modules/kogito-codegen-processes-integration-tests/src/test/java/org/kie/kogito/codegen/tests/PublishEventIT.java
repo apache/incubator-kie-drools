@@ -112,11 +112,11 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         ProcessInstance<?> processInstance = p.createInstance(p.createModel());
         processInstance.start();
+        uow.end();
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();
         assertThat(result.toMap()).hasSize(2).containsKeys("counter", "counter2");
-        uow.end();
 
         List<DataEvent<?>> events = publisher.extract();
 

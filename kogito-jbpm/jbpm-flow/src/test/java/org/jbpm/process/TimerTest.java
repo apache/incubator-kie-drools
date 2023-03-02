@@ -21,7 +21,6 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
@@ -35,6 +34,7 @@ import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
 public class TimerTest extends AbstractBaseTest {
 
@@ -49,7 +49,6 @@ public class TimerTest extends AbstractBaseTest {
     }
 
     @Test
-    @Disabled
     public void testTimer() {
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
 
@@ -57,7 +56,7 @@ public class TimerTest extends AbstractBaseTest {
             private static final long serialVersionUID = 510l;
 
             public void signalEvent(String type, Object event) {
-                if ("timerTriggered".equals(type)) {
+                if (TIMER_TRIGGERED_EVENT.equals(type)) {
                     TimerInstance timer = (TimerInstance) event;
                     logger.info("Timer {} triggered", timer.getId());
                     counter++;
@@ -72,7 +71,12 @@ public class TimerTest extends AbstractBaseTest {
         new Thread(() -> kruntime.getKieSession().fireUntilHalt()).start();
         JobsService jobService = new LegacyInMemoryJobService(kruntime, new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
 
-        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.of(ExactExpirationTime.now(), processInstance.getStringId(), "test");
+        ProcessInstanceJobDescription desc = ProcessInstanceJobDescription.builder()
+                .expirationTime(ExactExpirationTime.now())
+                .processInstanceId(processInstance.getStringId())
+                .processId("test")
+                .timerId("timer1")
+                .build();
         String jobId = jobService.scheduleProcessInstanceJob(desc);
 
         try {
@@ -83,7 +87,12 @@ public class TimerTest extends AbstractBaseTest {
         assertThat(counter).isEqualTo(1);
 
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(DurationExpirationTime.after(500), processInstance.getStringId(), "test");
+        desc = ProcessInstanceJobDescription.builder()
+                .expirationTime(DurationExpirationTime.after(500))
+                .processInstanceId(processInstance.getStringId())
+                .processId("test")
+                .timerId("timer2")
+                .build();
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertThat(counter).isZero();
         try {
@@ -94,7 +103,12 @@ public class TimerTest extends AbstractBaseTest {
         assertThat(counter).isEqualTo(1);
 
         counter = 0;
-        desc = ProcessInstanceJobDescription.of(DurationExpirationTime.repeat(500, 300L), processInstance.getStringId(), "test");
+        desc = ProcessInstanceJobDescription.builder()
+                .expirationTime(DurationExpirationTime.repeat(500, 300L))
+                .processInstanceId(processInstance.getStringId())
+                .processId("test")
+                .timerId("timer3")
+                .build();
         jobId = jobService.scheduleProcessInstanceJob(desc);
         assertThat(counter).isZero();
         try {

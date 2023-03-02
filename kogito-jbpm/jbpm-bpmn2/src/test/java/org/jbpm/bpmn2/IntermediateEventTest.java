@@ -58,6 +58,7 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -411,7 +412,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
         assertThat(eventDescriptions)
                 .hasSize(2)
-                .extracting("event").contains("Yes", "timerTriggered");
+                .extracting("event").contains("Yes", TIMER_TRIGGERED_EVENT);
         assertThat(eventDescriptions)
                 .extracting("eventType").contains("signal", "timer");
         assertThat(eventDescriptions).filteredOn(i -> i.getDataType() != null)
@@ -830,7 +831,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
         assertThat(eventDescriptions)
                 .hasSize(2)
-                .extracting("event").contains("workItemCompleted", "timerTriggered");
+                .extracting("event").contains("workItemCompleted", TIMER_TRIGGERED_EVENT);
         assertThat(eventDescriptions)
                 .extracting("eventType").contains("workItem", "timer");
         assertThat(eventDescriptions)
@@ -876,7 +877,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
         assertThat(eventDescriptions)
                 .hasSize(2)
-                .extracting("event").contains("workItemCompleted", "timerTriggered");
+                .extracting("event").contains("workItemCompleted", TIMER_TRIGGERED_EVENT);
         assertThat(eventDescriptions)
                 .extracting("eventType").contains("workItem", "timer");
         assertThat(eventDescriptions)
@@ -1066,7 +1067,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Set<EventDescription<?>> eventDescriptions = processInstance.getEventDescriptions();
         assertThat(eventDescriptions)
                 .hasSize(2)
-                .extracting("event").contains("workItemCompleted", "timerTriggered");
+                .extracting("event").contains("workItemCompleted", TIMER_TRIGGERED_EVENT);
         assertThat(eventDescriptions)
                 .extracting("eventType").contains("workItem", "timer");
         assertThat(eventDescriptions)

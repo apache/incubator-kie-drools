@@ -16,6 +16,8 @@
 package org.jbpm.process.core.timer;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 
@@ -26,18 +28,22 @@ public class Timer implements Serializable {
     public static final int TIME_CYCLE = 2;
     public static final int TIME_DATE = 3;
 
-    private long id;
+    private final String id;
     private String delay;
     private String period;
     private String date;
     private int timeType;
 
-    public long getId() {
-        return id;
+    public Timer() {
+        this(UUID.randomUUID().toString());
     }
 
-    public void setId(long id) {
+    public Timer(String id) {
         this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDelay() {
@@ -104,4 +110,21 @@ public class Timer implements Serializable {
         this.timeType = timeType;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Timer)) {
+            return false;
+        }
+        Timer timer = (Timer) o;
+        return timeType == timer.timeType && Objects.equals(id, timer.id) && Objects.equals(delay, timer.delay) && Objects.equals(period,
+                timer.period) && Objects.equals(date, timer.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, delay, period, date, timeType);
+    }
 }

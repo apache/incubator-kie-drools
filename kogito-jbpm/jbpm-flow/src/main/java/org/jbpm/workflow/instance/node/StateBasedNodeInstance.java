@@ -46,16 +46,14 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
-import org.kie.kogito.jobs.JobId;
-import org.kie.kogito.jobs.JobIdResolver;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, KogitoEventListener {
 
@@ -84,14 +82,17 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             JobsService jobService = ((KogitoProcessRuntime.Provider) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getKogitoProcessRuntime().getJobsService();
             for (Timer timer : timers.keySet()) {
                 ProcessInstanceJobDescription jobDescription =
-                        ProcessInstanceJobDescription.of(new TimerJobId(timer.getId()),
-                                createTimerInstance(timer),
-                                getProcessInstance().getStringId(),
-                                getProcessInstance().getRootProcessInstanceId(),
-                                getProcessInstance().getProcessId(),
-                                getProcessInstance().getRootProcessId(),
-                                Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null));
-                timerInstances.add(jobService.scheduleProcessInstanceJob(jobDescription));
+                        ProcessInstanceJobDescription.builder()
+                                .timerId(timer.getId())
+                                .expirationTime(createTimerInstance(timer))
+                                .processInstanceId(getProcessInstance().getStringId())
+                                .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
+                                .processId(getProcessInstance().getProcessId())
+                                .rootProcessId(getProcessInstance().getRootProcessId())
+                                .nodeInstanceId(Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null))
+                                .build();
+                String jobId = jobService.scheduleProcessInstanceJob(jobDescription);
+                timerInstances.add(jobId);
             }
         }
 
@@ -254,7 +255,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
     @Override
     public void signalEvent(String type, Object event) {
-        if ("timerTriggered".equals(type)) {
+        if (TIMER_TRIGGERED_EVENT.equals(type)) {
             TimerInstance timerInstance = (TimerInstance) event;
             if (timerInstances != null && timerInstances.contains(timerInstance.getId())) {
                 triggerTimer(timerInstance);
@@ -273,8 +274,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
     private void triggerTimer(TimerInstance timerInstance) {
         for (Map.Entry<Timer, DroolsAction> entry : getEventBasedNode().getTimers().entrySet()) {
-            if (entry.getKey().getId() == timerInstance.getTimerId()) {
-                if (timerInstance.getRepeatLimit() <= 0) {
+            if (Objects.equals(entry.getKey().getId(), timerInstance.getId())) {
+                if (timerInstance.getRepeatLimit() == 0) {
                     timerInstances.remove(timerInstance.getId());
                 }
                 executeAction((Action) entry.getValue().getMetaData("Action"));
@@ -285,7 +286,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 
     @Override
     public String[] getEventTypes() {
-        return new String[] { "timerTriggered", getActivationType() };
+        return new String[] { TIMER_TRIGGERED_EVENT, getActivationType() };
     }
 
     public void triggerCompleted() {
@@ -303,14 +304,14 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
 
     protected void addTimerListener() {
-        getProcessInstance().addEventListener("timerTriggered", this, false);
+        getProcessInstance().addEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().addEventListener("timer", this, true);
         getProcessInstance().addEventListener("slaViolation:" + getStringId(), this, true);
     }
 
     @Override
     public void removeEventListeners() {
-        getProcessInstance().removeEventListener("timerTriggered", this, false);
+        getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().removeEventListener("timer", this, true);
         getProcessInstance().removeEventListener("slaViolation:" + getStringId(), this, true);
     }
@@ -395,10 +396,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     public Map<String, String> extractTimerEventInformation() {
         if (getTimerInstances() != null) {
             for (String id : getTimerInstances()) {
-                JobId jobId = JobIdResolver.resolve(id).decode(id);
-
                 for (Timer entry : getEventBasedNode().getTimers().keySet()) {
-                    if (Objects.equals(entry.getId(), jobId.correlationId())) {
+                    if (Objects.equals(entry.getId(), id)) {
                         Map<String, String> properties = new HashMap<>();
                         properties.put("TimerID", id);
                         properties.put("Delay", entry.getDelay());

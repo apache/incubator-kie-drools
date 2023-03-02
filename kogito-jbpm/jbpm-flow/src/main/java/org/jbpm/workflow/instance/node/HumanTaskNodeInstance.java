@@ -38,10 +38,11 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.TimerJobId;
 import org.kie.kogito.process.workitem.HumanTaskWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.timer.TimerInstance;
+
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
@@ -57,7 +58,6 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
     private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
     private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
-    private static final String TIMER_TRIGGERED = "timerTriggered";
     private static final String WORK_ITEM_TRANSITION = "workItemTransition";
 
     private transient SwimlaneContextInstance swimlaneContextInstance;
@@ -128,14 +128,14 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
             ProcessInstance pi = getProcessInstance();
             for (DeadlineInfo<T> deadline : deadlines) {
                 for (ScheduleInfo info : deadline.getScheduleInfo()) {
-                    timers.put(getJobsService().scheduleProcessInstanceJob(ProcessInstanceJobDescription.of(
-                            new TimerJobId(-1L),
-                            DeadlineHelper.getExpirationTime(info),
-                            pi.getStringId(),
-                            pi.getRootProcessInstanceId(),
-                            pi.getProcessId(),
-                            pi.getRootProcessId(),
-                            getStringId())), deadline.getNotification());
+                    timers.put(getJobsService().scheduleProcessInstanceJob(ProcessInstanceJobDescription.builder()
+                            .generateTimerId()
+                            .expirationTime(DeadlineHelper.getExpirationTime(info))
+                            .processInstanceId(pi.getStringId())
+                            .rootProcessInstanceId(pi.getRootProcessInstanceId())
+                            .processId(pi.getProcessId())
+                            .rootProcessId(pi.getRootProcessId())
+                            .nodeInstanceId(getStringId()).build()), deadline.getNotification());
                 }
             }
         }
@@ -148,7 +148,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
                 cancelTimers(notStartedDeadlines);
                 cancelTimers(notStartedReassignments);
                 break;
-            case TIMER_TRIGGERED:
+            case TIMER_TRIGGERED_EVENT:
                 if (!sendNotification((TimerInstance) event)) {
                     super.signalEvent(type, event);
                 }
@@ -199,14 +199,14 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     @Override
     protected void addWorkItemListener() {
         super.addWorkItemListener();
-        getProcessInstance().addEventListener(TIMER_TRIGGERED, this, false);
+        getProcessInstance().addEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().addEventListener(WORK_ITEM_TRANSITION, this, false);
     }
 
     @Override
     protected void removeWorkItemListener() {
         super.removeWorkItemListener();
-        getProcessInstance().removeEventListener(TIMER_TRIGGERED, this, false);
+        getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().removeEventListener(WORK_ITEM_TRANSITION, this, false);
     }
 

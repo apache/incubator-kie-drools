@@ -43,6 +43,7 @@ import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.timer.TimerInstance;
 
 import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
 /**
  * Runtime counterpart of an event node.
@@ -54,7 +55,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
 
     @Override
     public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
-        if ("timerTriggered".equals(type)) {
+        if (TIMER_TRIGGERED_EVENT.equals(type)) {
             TimerInstance timerInstance = (TimerInstance) event;
             if (timerInstance.getId().equals(slaTimerId)) {
                 handleSLAViolation();
@@ -120,13 +121,13 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Kogit
 
     protected void addTimerListener() {
 
-        getProcessInstance().addEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        getProcessInstance().addEventListener(TIMER_TRIGGERED_EVENT, new VariableExternalEventListener(TIMER_TRIGGERED_EVENT), false);
         getProcessInstance().addEventListener("timer", new VariableExternalEventListener("timer"), true);
         getProcessInstance().addEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
 
     public void removeTimerListeners() {
-        getProcessInstance().removeEventListener("timerTriggered", new VariableExternalEventListener("timerTriggered"), false);
+        getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, new VariableExternalEventListener(TIMER_TRIGGERED_EVENT), false);
         getProcessInstance().removeEventListener("timer", new VariableExternalEventListener("timer"), true);
         getProcessInstance().removeEventListener("slaViolation:" + getStringId(), new VariableExternalEventListener("slaViolation"), true);
     }
