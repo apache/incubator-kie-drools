@@ -28,6 +28,7 @@ import org.kie.api.runtime.conf.PersistedSessionOption;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.reliability.ReliabilityTestUtils.failover;
 
 @ExtendWith(BeforeAllMethodExtension.class)
 class ReliabilityTest {
@@ -82,16 +83,11 @@ class ReliabilityTest {
         }
     }
 
-    private KieSession getKieSession(String basicRule, PersistedSessionOption option) {
-        KieBase kbase = new KieHelper().addContent(basicRule, ResourceType.DRL).build();
+    private KieSession getKieSession(String drl, PersistedSessionOption option) {
+        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
         KieSessionConfiguration conf = KieServices.get().newKieSessionConfiguration();
         conf.setOption(option);
         return kbase.newKieSession(conf, null);
-    }
-
-    private void failover() {
-        CacheManager.INSTANCE.restart();
-        ReliableRuntimeComponentFactoryImpl.resetCounter();
     }
 
     @Test
