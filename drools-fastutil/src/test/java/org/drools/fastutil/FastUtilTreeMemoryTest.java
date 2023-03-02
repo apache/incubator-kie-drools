@@ -1,4 +1,4 @@
-package org.drools.core.util;
+package org.drools.fastutil;
 
 import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
@@ -9,8 +9,9 @@ import org.drools.core.reteoo.JoinNodeLeftTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.ReadAccessor;
 import org.drools.core.rule.accessor.TupleValueExtractor;
-import org.drools.core.util.index.FastUtilTreeMemory;
-import org.drools.core.util.index.FastUtilTreeMemory.TreeFastIterator;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.core.util.FastIterator;
+import org.drools.fastutil.FastUtilTreeMemory.TreeFastIterator;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.junit.Test;
 

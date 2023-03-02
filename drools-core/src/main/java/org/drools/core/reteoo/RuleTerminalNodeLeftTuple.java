@@ -160,10 +160,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements Internal
         return this.salience;
     }
 
-    public void setSalience(int salience) {
-        this.salience = salience;
-    }
-
     public InternalFactHandle getActivationFactHandle() {
         return activationFactHandle;
     }

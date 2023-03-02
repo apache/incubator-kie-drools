@@ -16,12 +16,11 @@
 
 package org.drools.tms;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import it.unimi.dsi.fastutil.Hash.Strategy;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.beliefsystem.Mode;
 import org.drools.core.common.ClassAwareObjectStore;
@@ -29,12 +28,11 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PropagationContext;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.AbstractHashTable;
+import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.util.LinkedList;
 import org.drools.tms.agenda.TruthMaintenanceSystemInternalMatch;
 import org.drools.tms.beliefsystem.BeliefSet;
@@ -42,56 +40,67 @@ import org.drools.tms.beliefsystem.BeliefSystem;
 import org.drools.tms.beliefsystem.BeliefSystemMode;
 import org.drools.tms.beliefsystem.ModedAssertion;
 import org.drools.tms.beliefsystem.jtms.JTMSBeliefSetImpl;
+import org.drools.tms.util.CustomKeyTransformerHashMap;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
-    private InternalWorkingMemoryEntryPoint ep;
+    private final InternalWorkingMemoryEntryPoint ep;
 
-    private ObjectTypeConfigurationRegistry typeConfReg;
+    private final ObjectTypeConfigurationRegistry typeConfReg;
 
-    private Map equalityKeyMap;
+    private final Map<EqualityKey, EqualityKey> equalityKeyMap;
 
-    private BeliefSystem defaultBeliefSystem;
+    private final BeliefSystem defaultBeliefSystem;
 
-    private AssertBehaviour assertBehaviour;
-
-    public TruthMaintenanceSystemImpl() {}
+    private final AssertBehaviour assertBehaviour;
 
     public TruthMaintenanceSystemImpl(InternalWorkingMemoryEntryPoint ep) {
         this.ep = ep;
 
-        assertBehaviour = ep.getKnowledgeBase().getRuleBaseConfiguration().getAssertBehaviour();
+        this.assertBehaviour = ep.getKnowledgeBase().getRuleBaseConfiguration().getAssertBehaviour();
 
-        typeConfReg = ep.getObjectTypeConfigurationRegistry();
+        this.typeConfReg = ep.getObjectTypeConfigurationRegistry();
 
-        this.equalityKeyMap = new Object2ObjectOpenCustomHashMap(EqualityKeyStrategy.getInstance()) ;;
+        this.equalityKeyMap = new CustomKeyTransformerHashMap<>(EqualityKeyPlaceholder::transformEqualityKey);
 
-        defaultBeliefSystem = BeliefSystemFactory.createBeliefSystem(ep.getReteEvaluator().getRuleSessionConfiguration().getBeliefSystemType(), ep, this);
+        this.defaultBeliefSystem = BeliefSystemFactory.createBeliefSystem(ep.getReteEvaluator().getRuleSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
-    public static class EqualityKeyStrategy implements Strategy {
-        private static EqualityKeyStrategy instance = new EqualityKeyStrategy();
+    private static class EqualityKeyPlaceholder {
+        private static final EqualityKeyPlaceholder INSTANCE = new EqualityKeyPlaceholder();
 
-        public static EqualityKeyStrategy getInstance() {
-            return instance;
+        private Object object;
+
+        public EqualityKeyPlaceholder withObject(Object object) {
+            this.object = object;
+            return this;
+        }
+
+        private static Object transformEqualityKey(Object o) {
+            return o instanceof EqualityKey ? o : EqualityKeyPlaceholder.INSTANCE.withObject(o);
         }
 
         @Override
-        public int hashCode(Object o) {
-            return AbstractHashTable.rehash(o.hashCode());
+        public int hashCode() {
+            return object.hashCode();
         }
 
         @Override
-        public boolean equals(Object a, Object b) {
+        public boolean equals(Object other) {
             // notice it switches it to always use b, the EqualityKey.
-            return (a == null || b == null ) ? (a == b) : (a == b) || b.equals( a );
+            return this == other || other.equals( object );
         }
     }
 
     @Override
-    public Map getEqualityKeyMap() {
-        return this.equalityKeyMap;
+    public int getEqualityKeysSize() {
+        return equalityKeyMap.size();
+    }
+
+    @Override
+    public Collection<EqualityKey> getEqualityKeys() {
+        return equalityKeyMap.values();
     }
 
     @Override
@@ -161,7 +170,7 @@ public class TruthMaintenanceSystemImpl implements TruthMaintenanceSystem {
 
     @Override
     public EqualityKey get(final Object object) {
-        EqualityKey key = (EqualityKey) this.equalityKeyMap.get( object );
+        EqualityKey key = this.equalityKeyMap.get( object );
 
         if ( key == null && assertBehaviour == AssertBehaviour.EQUALITY ) {
             // Edge case: another object X, equivalent (equals+hashcode) to "object" Y

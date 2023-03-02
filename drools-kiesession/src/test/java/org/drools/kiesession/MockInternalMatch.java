@@ -161,11 +161,6 @@ public class MockInternalMatch implements InternalMatch {
     }
 
     @Override
-    public void setSalience(int salience) {
-
-    }
-
-    @Override
     public void setActivationFactHandle(InternalFactHandle factHandle) {
 
     }

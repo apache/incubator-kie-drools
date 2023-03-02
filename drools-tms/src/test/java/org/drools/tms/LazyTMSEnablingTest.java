@@ -58,13 +58,13 @@ public class LazyTMSEnablingTest {
 
         ksession.insert(fact1);
 
-        assertThat(tms.getEqualityKeyMap().size()).as("Shouldn't have anything, since no logical insert was performed.").isEqualTo(0);
+        assertThat(tms.getEqualityKeysSize()).as("Shouldn't have anything, since no logical insert was performed.").isEqualTo(0);
 
         final String fact2 = "logical";
 
         TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem(ksession).insert( fact2, null, new TMSMockInternalMatch());
 
-        assertThat(tms.getEqualityKeyMap().size()).as("Now that a logical insert was done, it should have an element.").isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).as("Now that a logical insert was done, it should have an element.").isEqualTo(1);
 
         // Make sure the internals are fine.
         ObjectTypeConf typeConf = ksession.getObjectTypeConfigurationRegistry()

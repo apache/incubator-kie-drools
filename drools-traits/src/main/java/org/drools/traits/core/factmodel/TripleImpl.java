@@ -17,7 +17,7 @@ package org.drools.traits.core.factmodel;
 
 import org.drools.core.util.Entry;
 
-public class TripleImpl implements Triple {
+public class TripleImpl extends AbstractTriple {
     private Entry next;
     
     private Object instance;
@@ -81,42 +81,6 @@ public class TripleImpl implements Triple {
 
     public void setValue(Object value) {
         this.value = value;
-    }
-
-    public int hash;
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((instance == null) ? 0 : instance.hashCode());
-        result = prime * result + ((property == null) ? 0 : property.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
-    }
-
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        TripleImpl other = (TripleImpl) obj;
-
-        if ( instance == null ) {
-            if ( other.instance != null ) return false;
-        } else if ( ! this.instance.equals( other.instance ) )
-            return false;
-
-        if ( property == null ) {
-            if ( other.property != null ) return false;
-        } else if ( !property.equals( other.property ) )
-            return false;
-
-        if ( value == null ) {
-            if ( other.value != null ) return false;
-        } else if ( !value.equals( other.value ) )
-            return false;
-
-        return true;
     }
 
     public String toString() {

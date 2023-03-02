@@ -20,16 +20,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import it.unimi.dsi.fastutil.Hash.Strategy;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.drools.core.util.Entry;
 import org.kie.api.runtime.rule.Variable;
 
@@ -45,12 +42,11 @@ public class TripleStore implements Externalizable {
 
     public TripleStore() {
         super();
-        map = new Object2ObjectOpenCustomHashMap(TripleKeyComparator.getInstance());
+        map = new HashMap<>();
     }
 
-    public TripleStore(final int capacity,
-                       final float loadFactor) {
-        map = new Object2ObjectOpenCustomHashMap<Triple, Triple>(capacity, loadFactor, TripleKeyComparator.getInstance());
+    public TripleStore(final int capacity, final float loadFactor) {
+        map = new HashMap<>(capacity, loadFactor);
     }
 
     @Override
@@ -117,7 +113,7 @@ public class TripleStore implements Externalizable {
         Triple tx;
         while (iter.hasNext()) {
             tx = iter.next();
-            if (TripleKeyComparator.getInstance().equals(triple, tx)) {
+            if (AbstractTriple.equals(triple, tx)) {
                 list.add(tx);
             }
         }
@@ -149,72 +145,7 @@ public class TripleStore implements Externalizable {
     }
 
 
-    public static class TripleKeyComparator implements Strategy, Serializable {
-        private static TripleKeyComparator INSTANCE = new TripleKeyComparator();
-
-        public static TripleKeyComparator getInstance() {
-            return INSTANCE;
-        }
-
-        @Override
-        public int hashCode(Object object) {
-            Triple t = (Triple) object;
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + t.getInstance().hashCode();
-            result = prime * result + t.getProperty().hashCode();
-
-
-            if (t instanceof TripleImpl) {
-                ((TripleImpl)t).hash = result;
-            }
-
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object object1,
-                              Object object2) {
-            if (object1 == null || object2 == null ) {
-                return object1 == object2;
-            }
-
-            Triple t1 = (Triple) object1;
-            Triple t2 = (Triple) object2;
-
-            if (t1.getInstance() != Variable.v) {
-                if (t1.getInstance() == null) {
-                    return false;
-                } else if (t1.getInstance() instanceof String) {
-                    if (!t1.getInstance().equals(t2.getInstance())) {
-                        return false;
-                    }
-                } else if (t1.getInstance() != t2.getInstance()) {
-                    return false;
-                }
-            }
-
-            if (t1.getProperty() != Variable.v && !t1.getProperty().equals(t2.getProperty())) {
-                return false;
-            }
-            if (t1.getValue() != Variable.v) {
-                if (t1.getValue() == null) {
-                    return t2.getValue() == null;
-                } else {
-                    return t1.getValue().equals(t2.getValue());
-                }
-            }
-
-            if (t1.getClass() == TripleCollector.class) {
-                ((TripleCollector)t1).list.add(t2);
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    public class TripleCollector implements Triple {
+    public class TripleCollector extends AbstractTriple {
         List<Triple> list;
 
         private Triple triple;

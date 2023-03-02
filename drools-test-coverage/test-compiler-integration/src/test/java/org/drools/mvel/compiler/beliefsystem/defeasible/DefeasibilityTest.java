@@ -18,7 +18,6 @@ package org.drools.mvel.compiler.beliefsystem.defeasible;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.ClassObjectFilter;
@@ -45,7 +44,6 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,9 +123,7 @@ public class DefeasibilityTest {
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Dtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "D" );
 
-
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 2, DefeasibilityStatus.DEFINITELY );
@@ -152,8 +148,7 @@ public class DefeasibilityTest {
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFINITELY );
@@ -178,9 +173,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 3, DefeasibilityStatus.UNDECIDABLY );
@@ -202,9 +195,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFEATEDLY );
@@ -229,9 +220,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 2, DefeasibilityStatus.DEFEATEDLY );
@@ -261,9 +250,7 @@ public class DefeasibilityTest {
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Atype = kSession.getKieBase().getFactType( "org.drools.defeasible", "A" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFINITELY );
@@ -274,12 +261,10 @@ public class DefeasibilityTest {
             }
         }
 
-        kSession.retract( h );
+        kSession.delete( h );
         kSession.fireAllRules();
 
-        keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFEASIBLY );
@@ -301,9 +286,7 @@ public class DefeasibilityTest {
         FactType Ctype = kSession.getKieBase().getFactType( "org.drools.defeasible", "C" );
         FactType Atype = kSession.getKieBase().getFactType( "org.drools.defeasible", "A" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFINITELY );
@@ -314,12 +297,10 @@ public class DefeasibilityTest {
             }
         }
 
-        kSession.retract( h );
+        kSession.delete( h );
         kSession.fireAllRules();
 
-        keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Ctype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFINITELY );
@@ -343,8 +324,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFEATEDLY );
@@ -364,9 +344,7 @@ public class DefeasibilityTest {
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
 
-        keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 3, DefeasibilityStatus.DEFEASIBLY );
@@ -393,9 +371,7 @@ public class DefeasibilityTest {
 
         assertThat(kSession.getObjects().size()).isEqualTo(3); // A, A, B, X, GO
 
-        keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFEATEDLY );
@@ -418,9 +394,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Object fact = key.getFactHandle().getObject();
             Class factClass = fact.getClass();
             if ( factClass == Xtype.getFactClass() ) {
@@ -463,9 +437,7 @@ public class DefeasibilityTest {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
         FactType Xtype = kSession.getKieBase().getFactType( "org.drools.defeasible", "X" );
 
-        Map<EqualityKey, EqualityKey> keys = tms.getEqualityKeyMap();
-        for ( EqualityKey key : keys.values() ) {
-
+        for ( EqualityKey key : tms.getEqualityKeys() ) {
             Class factClass = key.getFactHandle().getObject().getClass();
             if ( factClass == Xtype.getFactClass() ) {
                 checkStatus( key, 1, DefeasibilityStatus.DEFEASIBLY );

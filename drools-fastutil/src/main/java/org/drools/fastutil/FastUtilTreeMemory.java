@@ -1,4 +1,20 @@
-package org.drools.core.util.index;
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.fastutil;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
@@ -10,7 +26,10 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.index.AbstractTupleIndexTree;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.core.util.index.TupleIndexRBTree;
+import org.drools.core.util.index.TupleList;
 
 public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleMemory {
 
@@ -52,7 +71,7 @@ public class FastUtilTreeMemory extends AbstractTupleIndexTree implements TupleM
         }
     }
 
-    public FastUtilTreeMemory(IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index, boolean left) {
+    public FastUtilTreeMemory(ConstraintType constraintType, AbstractHashTable.FieldIndex index, boolean left) {
         this.index = index;
         this.constraintType = constraintType;
         this.left = left;

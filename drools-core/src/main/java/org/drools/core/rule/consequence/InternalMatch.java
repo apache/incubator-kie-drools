@@ -114,8 +114,6 @@ public interface InternalMatch extends Serializable, QueueEntry, Match {
 
     void setActive(boolean active);
 
-    void setSalience(int salience);
-
     void setActivationFactHandle(InternalFactHandle factHandle);
 
     RuleAgendaItem getRuleAgendaItem();

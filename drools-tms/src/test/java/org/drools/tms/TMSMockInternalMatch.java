@@ -65,11 +65,6 @@ public class TMSMockInternalMatch extends MockInternalMatch implements TruthMain
     }
 
     @Override
-    public void setSalience(int salience) {
-
-    }
-
-    @Override
     public void setActivationFactHandle(InternalFactHandle factHandle) {
 
     }
