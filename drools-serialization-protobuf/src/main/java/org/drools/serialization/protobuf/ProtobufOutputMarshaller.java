@@ -458,12 +458,11 @@ public class ProtobufOutputMarshaller {
                                                     EntryPoint wmep,
                                                     ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((NamedEntryPoint) wmep);
-        Map<EqualityKey, EqualityKey> justifiedMap = tms.getEqualityKeyMap();
 
-        if ( !justifiedMap.isEmpty() ) {
-            EqualityKey[] keys = new EqualityKey[justifiedMap.size()];
+        if ( tms.getEqualityKeysSize() != 0 ) {
+            EqualityKey[] keys = new EqualityKey[tms.getEqualityKeysSize()];
             int i = 0;
-            for (EqualityKey key : justifiedMap.values()) {
+            for (EqualityKey key : tms.getEqualityKeys()) {
                 keys[i++] = key;
             }
 

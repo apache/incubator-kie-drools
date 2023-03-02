@@ -66,7 +66,7 @@ public class ReteooWorkingMemoryTest {
 
         FactHandle fz = tms.insert( string, null, new MockInternalMatch());
 
-        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
 
         EqualityKey key = tms.get( string );
         assertThat(key.getFactHandle()).isSameAs(fz);
@@ -74,21 +74,21 @@ public class ReteooWorkingMemoryTest {
 
         ksession.update( fd, string );
 
-        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
         key = tms.get( string );
         assertThat(key.getFactHandle()).isSameAs(fz);
         assertThat(key.size()).isEqualTo(2);
 
         ksession.retract( fd );
 
-        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
         key = tms.get( string );
 
         fd = ksession.insert( string );
 
-        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
 
-        assertThat(tms.getEqualityKeyMap().size()).isEqualTo(1);
+        assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
         key = tms.get( string );
         assertThat(key.getFactHandle()).isSameAs(fd);
         assertThat(key.size()).isEqualTo(1);

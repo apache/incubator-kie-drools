@@ -193,6 +193,7 @@
         <module>drools-engine-classic</module>
         <module>drools-impact-analysis</module>
         <module>drools-retediagram</module>
+        <module>drools-fastutil</module>
         <module>efesto</module>
         <module>kie-drl</module>
         <module>kie-dmn</module>

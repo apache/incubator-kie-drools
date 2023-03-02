@@ -9,7 +9,7 @@ import org.drools.core.rule.constraint.BetaNodeFieldConstraint;
 import org.drools.core.util.AbstractHashTable;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
-class IndexSpec {
+public class IndexSpec {
     private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
     private AbstractHashTable.FieldIndex[] indexes;
 
@@ -17,15 +17,15 @@ class IndexSpec {
         init(nodeType, constraints, config);
     }
 
-    IndexUtil.ConstraintType getConstraintType() {
+    public IndexUtil.ConstraintType getConstraintType() {
         return constraintType;
     }
 
-    AbstractHashTable.FieldIndex[] getIndexes() {
+    public AbstractHashTable.FieldIndex[] getIndexes() {
         return indexes;
     }
 
-    AbstractHashTable.FieldIndex getIndex(int pos) {
+    public AbstractHashTable.FieldIndex getIndex(int pos) {
         return indexes[pos];
     }
 

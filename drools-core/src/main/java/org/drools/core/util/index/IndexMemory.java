@@ -1,5 +1,7 @@
 package org.drools.core.util.index;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.drools.core.reteoo.TupleMemory;
 
 public class IndexMemory {
@@ -21,7 +23,11 @@ public class IndexMemory {
 
         Factory createFactory() {
             if (this == FASTUTIL) {
-                return new FastUtilEqualityMemoryFactory();
+                try {
+                    return (Factory) Class.forName("org.drools.fastutil.FastUtilIndexMemory.FastUtilEqualityMemoryFactory").getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                    throw new RuntimeException("You're trying to use fastutil indexes without having imported them. Please add the module org.drools:drools-fastutil to your classpath.", e);
+                }
             }
             return new InternalEqualityMemoryFactory();
         }
@@ -39,7 +45,11 @@ public class IndexMemory {
 
         Factory createFactory() {
             if (this == FASTUTIL) {
-                return new FastUtilComparisonMemoryFactory();
+                try {
+                    return (Factory) Class.forName("org.drools.fastutil.FastUtilIndexMemory.FastUtilComparisonMemoryFactory").getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                    throw new RuntimeException("You're trying to use fastutil indexes without having imported them. Please add the module org.drools:drools-fastutil to your classpath.", e);
+                }
             }
             return new InternalComparisonMemoryFactory();
         }
@@ -80,7 +90,7 @@ public class IndexMemory {
         return ComparisonMemoryFactoryHolder.INSTANCE.createMemory(indexSpec, isLeft);
     }
 
-    interface Factory {
+    public interface Factory {
         TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft);
     }
 
@@ -108,27 +118,11 @@ public class IndexMemory {
         }
     }
 
-    static class FastUtilEqualityMemoryFactory implements IndexMemory.Factory {
-
-        @Override
-        public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
-            return new FastUtilHashTupleMemory(indexSpec.getIndexes(), isLeft);
-        }
-    }
-
     static class InternalComparisonMemoryFactory implements IndexMemory.Factory {
 
         @Override
         public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
             return new TupleIndexRBTree(indexSpec.getConstraintType(), indexSpec.getIndex(0), isLeft);
-        }
-    }
-
-    static class FastUtilComparisonMemoryFactory implements IndexMemory.Factory {
-
-        @Override
-        public TupleMemory createMemory(IndexSpec indexSpec, boolean isLeft) {
-            return new FastUtilTreeMemory(indexSpec.getConstraintType(), indexSpec.getIndex(0), isLeft);
         }
     }
 }

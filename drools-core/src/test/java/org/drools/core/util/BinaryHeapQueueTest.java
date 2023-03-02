@@ -336,11 +336,6 @@ public class BinaryHeapQueueTest {
         }
 
         @Override
-        public void setSalience(int salience) {
-
-        }
-
-        @Override
         public void setActivationFactHandle(InternalFactHandle factHandle) {
 
         }

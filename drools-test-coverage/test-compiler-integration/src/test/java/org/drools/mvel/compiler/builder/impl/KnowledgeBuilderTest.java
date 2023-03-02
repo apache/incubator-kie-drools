@@ -1421,10 +1421,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        @Override
-        public void setSalience(int salience) {
-
-        }
 
         @Override
         public void setActivationFactHandle(InternalFactHandle factHandle) {

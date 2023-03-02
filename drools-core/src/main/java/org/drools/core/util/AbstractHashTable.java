@@ -159,7 +159,7 @@ public abstract class AbstractHashTable
         return this.size == 0;
     }
     
-    public static int rehash(int hash) {
+    private static int rehash(int hash) {
         hash ^= (hash >>> 20) ^ (hash >>> 12);
         return hash ^ (hash >>> 7) ^ (hash >>> 4);
     }     
@@ -175,7 +175,7 @@ public abstract class AbstractHashTable
         Iterator it = newIterator();
         boolean isFirst = true;
         for (TupleList entry = ( TupleList ) it.next(); entry != null; entry = ( TupleList ) it.next() ) {
-            sbuilder.append( entry.toString() );
+            sbuilder.append( entry );
             if ( !isFirst ) {
                 sbuilder.append( ", " );
             }
@@ -249,11 +249,11 @@ public abstract class AbstractHashTable
 
         private static final long    serialVersionUID = 510l;
 
-        private FieldIndex           index;
+        private FieldIndex index;
 
-        private int                  startResult;
+        private int startResult;
 
-        private SingleHashEntry hashEntry = new SingleHashEntry();
+        private final SingleHashEntry hashEntry = new SingleHashEntry();
 
         public SingleIndex() {
 
@@ -344,7 +344,7 @@ public abstract class AbstractHashTable
 
         private int startResult;
 
-        private DoubleHashEntry hashEntry = new DoubleHashEntry();
+        private final DoubleHashEntry hashEntry = new DoubleHashEntry();
 
         public DoubleCompositeIndex() {
 
@@ -399,9 +399,9 @@ public abstract class AbstractHashTable
         private FieldIndex index2;
         private FieldIndex index3;
 
-        private int             startResult;
+        private int startResult;
 
-        private TripleHashEntry hashEntry = new TripleHashEntry();
+        private final TripleHashEntry hashEntry = new TripleHashEntry();
 
         public TripleCompositeIndex() {
 

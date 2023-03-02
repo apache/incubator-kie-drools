@@ -4206,7 +4206,7 @@ public class CepEspTest extends AbstractCepEspTest {
             ksession.fireAllRules();
 
             assertThat(ksession.getObjects().size()).isEqualTo(0);
-            assertThat(TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((ReteEvaluator) ksession).getEqualityKeyMap().size()).isEqualTo(0);
+            assertThat(TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem((ReteEvaluator) ksession).getEqualityKeysSize()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }

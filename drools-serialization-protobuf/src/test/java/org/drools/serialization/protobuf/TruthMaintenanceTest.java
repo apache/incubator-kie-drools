@@ -398,7 +398,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             assertThat(list.size()).as("Only sensor is there").isEqualTo(1);
 
             TruthMaintenanceSystem tms =  TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) ksession );
-            assertThat(tms.getEqualityKeyMap().isEmpty()).isTrue();
+            assertThat(tms.getEqualityKeysSize()).isEqualTo(0);
         } finally {
             ksession.dispose();
         }

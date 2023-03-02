@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.function.BiFunction;
 
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -32,7 +32,9 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 public interface TruthMaintenanceSystem {
 
-    Map<EqualityKey, EqualityKey> getEqualityKeyMap();
+    int getEqualityKeysSize();
+
+    Collection<EqualityKey> getEqualityKeys();
 
     void put(final EqualityKey key);
     EqualityKey get(Object object);
