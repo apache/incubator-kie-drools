@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.job.http.recipient.deployment;
 
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.job.http.recipient.HttpJobExecutor;
 import org.kie.kogito.job.http.recipient.HttpRecipientValidator;
-import org.kie.kogito.job.http.recipient.JobHttpRecipientConfiguration;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -25,44 +26,49 @@ import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientPayloadData;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.AdditionalIndexedClassesBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class JobHttpRecipientProcessor {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
-    private static final String FEATURE = "job-http-recipient";
+class JobHttpRecipientProcessorTest {
 
-    /**
-     * Http Recipient configuration
-     */
-    JobHttpRecipientConfiguration configuration;
+    private final JobHttpRecipientProcessor processor = new JobHttpRecipientProcessor();
 
-    @BuildStep
-    FeatureBuildItem feature() {
-        return new FeatureBuildItem(FEATURE);
+    @Test
+    void feature() {
+        assertThat(processor.feature().getName()).isEqualTo("job-http-recipient");
     }
 
-    @BuildStep
-    AdditionalBeanBuildItem additionalBeans() {
-        return new AdditionalBeanBuildItem(HttpJobExecutor.class, HttpRecipientValidator.class);
+    @Test
+    void additionalBeans() {
+        AdditionalBeanBuildItem additionalBeans = processor.additionalBeans();
+        assertThat(additionalBeans.getBeanClasses()).containsExactlyInAnyOrder(
+                HttpJobExecutor.class.getName(),
+                HttpRecipientValidator.class.getName());
     }
 
-    @BuildStep
-    void contributeClassesToIndex(BuildProducer<AdditionalIndexedClassesBuildItem> additionalIndexedClasses) {
-        // Ensure HttpRecipient related classes that represents Schema components, and that are not referenced directly
-        // in the Jobs Service JAX-RS resources, are present in the index so that they can be picked up by the OpenAPI
-        // annotations scanning. Otherwise, they won't be part of the generated OpenAPI document.
-        additionalIndexedClasses.produce(new AdditionalIndexedClassesBuildItem(
+    @Test
+    @SuppressWarnings("unchecked")
+    void contributeClassesToIndex() {
+        BuildProducer<AdditionalIndexedClassesBuildItem> producer = Mockito.mock(BuildProducer.class);
+        ArgumentCaptor<AdditionalIndexedClassesBuildItem> captor = ArgumentCaptor.forClass(AdditionalIndexedClassesBuildItem.class);
+        processor.contributeClassesToIndex(producer);
+        verify(producer).produce(captor.capture());
+        AdditionalIndexedClassesBuildItem buildItem = captor.getValue();
+        assertThat(buildItem).isNotNull();
+        assertThat(buildItem.getClassesToIndex()).containsExactlyInAnyOrder(
                 HttpRecipient.class.getName(),
                 HttpRecipientPayloadData.class.getName(),
                 HttpRecipientStringPayloadData.class.getName(),
                 HttpRecipientBinaryPayloadData.class.getName(),
                 HttpRecipientJsonPayloadData.class.getName(),
                 CronSchedule.class.getName(),
-                TimerSchedule.class.getName()));
+                TimerSchedule.class.getName());
     }
 }

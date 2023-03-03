@@ -16,7 +16,7 @@
 
 package org.kie.kogito.job.sink.recipient.deployment;
 
-import org.kie.kogito.job.sink.recipient.JobSinkRecipientConfiguration;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.job.sink.recipient.SinkJobExecutor;
 import org.kie.kogito.job.sink.recipient.SinkRecipientValidator;
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
@@ -25,43 +25,48 @@ import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientJsonPayloadDa
 import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientPayloadData;
 import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
-import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.AdditionalIndexedClassesBuildItem;
-import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class JobSinkRecipientProcessor {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
-    private static final String FEATURE = "job-sink-recipient";
+class JobSinkRecipientProcessorTest {
 
-    /**
-     * Sink Recipient configuration
-     */
-    JobSinkRecipientConfiguration configuration;
+    private final JobSinkRecipientProcessor processor = new JobSinkRecipientProcessor();
 
-    @BuildStep
-    FeatureBuildItem feature() {
-        return new FeatureBuildItem(FEATURE);
+    @Test
+    void feature() {
+        assertThat(processor.feature().getName()).isEqualTo("job-sink-recipient");
     }
 
-    @BuildStep
-    AdditionalBeanBuildItem additionalBeans() {
-        return new AdditionalBeanBuildItem(SinkJobExecutor.class, SinkRecipientValidator.class);
+    @Test
+    void additionalBeans() {
+        AdditionalBeanBuildItem additionalBeans = processor.additionalBeans();
+        assertThat(additionalBeans.getBeanClasses()).containsExactlyInAnyOrder(
+                SinkJobExecutor.class.getName(),
+                SinkRecipientValidator.class.getName());
     }
 
-    @BuildStep
-    void contributeClassesToIndex(BuildProducer<AdditionalIndexedClassesBuildItem> additionalIndexedClasses) {
-        // Ensure SinkRecipient related classes that represents Schema components, and that are not referenced directly
-        // in the Jobs Service JAX-RS resources, are present in the index so that they can be picked up by the OpenAPI
-        // annotations scanning. Otherwise, they won't be part of the generated OpenAPI document.
-        additionalIndexedClasses.produce(new AdditionalIndexedClassesBuildItem(
+    @Test
+    @SuppressWarnings("unchecked")
+    void contributeClassesToIndex() {
+        BuildProducer<AdditionalIndexedClassesBuildItem> producer = Mockito.mock(BuildProducer.class);
+        ArgumentCaptor<AdditionalIndexedClassesBuildItem> captor = ArgumentCaptor.forClass(AdditionalIndexedClassesBuildItem.class);
+        processor.contributeClassesToIndex(producer);
+        verify(producer).produce(captor.capture());
+        AdditionalIndexedClassesBuildItem buildItem = captor.getValue();
+        assertThat(buildItem).isNotNull();
+        assertThat(buildItem.getClassesToIndex()).containsExactlyInAnyOrder(
                 SinkRecipient.class.getName(),
                 SinkRecipientPayloadData.class.getName(),
                 SinkRecipientBinaryPayloadData.class.getName(),
                 SinkRecipientJsonPayloadData.class.getName(),
                 CronSchedule.class.getName(),
-                TimerSchedule.class.getName()));
+                TimerSchedule.class.getName());
     }
 }
