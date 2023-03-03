@@ -1,0 +1,33 @@
+name: Drools Docs
+
+on:
+  pull_request:
+    paths:
+      - 'drools-docs/**'
+      - '.github/workflows/drools-docs-pr.yml'
+
+jobs:
+  drools-build:
+    concurrency:
+      group: pr-drools_docs_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
+      cancel-in-progress: true
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        java-version: [11]
+        maven-version: ['3.8.7']
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} / Java-${{ matrix.java-version }} / Maven-${{ matrix.maven-version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
+          cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+          allow-snapshots: true
+      - name: Build with Maven
+        run: mvn -B clean install --file drools-docs/pom.xml
