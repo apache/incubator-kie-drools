@@ -54,6 +54,7 @@ public class HttpRecipient<T extends HttpRecipientPayloadData<?>> extends Recipi
     @Schema(description = "Http query parameters to send with the request.")
     private Map<String, String> queryParams;
     @JsonProperty("payload")
+    @Schema(ref = "#/components/schemas/HttpRecipientPayloadData")
     private T payload;
 
     public HttpRecipient() {

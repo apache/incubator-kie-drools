@@ -27,7 +27,7 @@ import static org.kie.kogito.jobs.service.api.Job.RETRY_PROPERTY;
 import static org.kie.kogito.jobs.service.api.Job.SCHEDULE_PROPERTY;
 import static org.kie.kogito.jobs.service.api.Job.STATE_PROPERTY;
 
-@Schema(description = "Defines a job that can be managed by the jobs service.",
+@Schema(name = "JobV2", description = "Defines a job that can be managed by the jobs service.",
         requiredProperties = { SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
 @JsonPropertyOrder({ ID_PROPERTY, CORRELATION_ID_PROPERTY, STATE_PROPERTY, SCHEDULE_PROPERTY, RETRY_PROPERTY, RECIPIENT_PROPERTY })
 public class Job {

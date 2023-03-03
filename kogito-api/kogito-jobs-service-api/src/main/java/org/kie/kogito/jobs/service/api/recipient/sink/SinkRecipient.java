@@ -68,6 +68,7 @@ public class SinkRecipient<T extends SinkRecipientPayloadData<?>> extends Recipi
 
     public static final SpecVersion SPEC_VERSION = SpecVersion.V1;
 
+    @Schema(enumeration = { "binary", "structured" })
     public enum ContentMode {
         BINARY("binary"),
         STRUCTURED("structured");
@@ -129,6 +130,7 @@ public class SinkRecipient<T extends SinkRecipientPayloadData<?>> extends Recipi
     private Map<String, Object> ceExtensions;
 
     @JsonProperty("payload")
+    @Schema(ref = "#/components/schemas/SinkRecipientPayloadData")
     private T payload;
 
     public SinkRecipient() {
