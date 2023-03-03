@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
-ci="${CI:-false}
+ci="${CI:-false}"
 
 quarkus_version=${QUARKUS_VERSION:-3.0.0.Alpha3}
 quarkus_file="${script_dir_path}/quarkus3.yml"
