@@ -64,6 +64,10 @@ pipeline {
                         checkoutRepo()
                         mergeAndPush(getDeployPrLink())
                         tagLatest()
+                        if(githubscm.isReleaseExist(getGitTag())) {
+                            githubscm.deleteRelease(getGitTag())
+                        }
+                        githubscm.createRelease(getGitTag(), getBuildBranch())
                     }
                 }
             }
