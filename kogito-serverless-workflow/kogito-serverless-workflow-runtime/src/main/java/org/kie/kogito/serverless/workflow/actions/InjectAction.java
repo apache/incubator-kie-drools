@@ -19,6 +19,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,7 +40,7 @@ public class InjectAction implements Action {
 
     private static JsonNode readObject(String json) {
         try {
-            return ObjectMapperFactory.get().readTree(json);
+            return ObjectMapperFactory.listenerAware().readTree(json);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
@@ -47,6 +48,6 @@ public class InjectAction implements Action {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        MergeUtils.merge(node, getWorkflowData(context));
+        context.setVariable(SWFConstants.DEFAULT_WORKFLOW_VAR, MergeUtils.merge(node, getWorkflowData(context)));
     }
 }

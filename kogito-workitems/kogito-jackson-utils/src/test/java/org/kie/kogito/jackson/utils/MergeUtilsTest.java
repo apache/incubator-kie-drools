@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,6 +56,11 @@ public class MergeUtilsTest {
     void testTargetObjectSrcArray() {
         assertThat(JsonObjectUtils.toJavaValue(MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(1).add(2).add(3), ObjectMapperFactory.get().createObjectNode(), false)))
                 .isEqualTo(Collections.singletonMap("response", Arrays.asList(1, 2, 3)));
+    }
+
+    @Test
+    void testTargetStringSrcObject() {
+        assertThat(JsonObjectUtils.toJavaValue(MergeUtils.merge(ObjectMapperFactory.get().createObjectNode(), new TextNode("pepe")))).isEqualTo(Collections.singletonMap("_target", "pepe"));
     }
 
     @Test

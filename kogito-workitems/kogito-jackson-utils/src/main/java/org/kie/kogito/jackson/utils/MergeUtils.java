@@ -46,6 +46,8 @@ public class MergeUtils {
             if (src.isArray()) {
                 ArrayNode srcArray = (ArrayNode) src;
                 insert(srcArray, target, getExistingNodes(srcArray));
+            } else if (src.isObject()) {
+                ((ObjectNode) src).set("_target", target);
             }
             return src;
         }
