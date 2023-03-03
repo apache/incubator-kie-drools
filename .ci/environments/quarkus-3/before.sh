@@ -6,35 +6,19 @@ mvn_cmd="mvn ${BUILD_MVN_OPTS:-} ${BUILD_MVN_OPTS_QUARKUS_UPDATE:-}"
 
 quarkus_version=${QUARKUS_VERSION:-3.0.0.Alpha3}
 quarkus_file="${script_dir_path}/quarkus3.yml"
-
-mavenLocalOldRepo=${MAVEN_LOCAL_OLD_ARTIFACTS_REPO:-'/tmp/kogito/quarkus-3/maven'}
-
-set +e
-echo "Retrieve project version"
-project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
-if [ "$?" != '0' ]; then
-    echo "Cannot retrieve project version"
-    exit 1
-fi
-set -e
+project_version='quarkus-3-SNAPSHOT'
 
 echo "Update project with Quarkus version ${quarkus_version}"
 
 set -x
 
-# Make sure artifacts are updated locally
-${mvn_cmd} clean install \
-    -pl jpmml-migration-recipe \
-    -Dquickly \
-    -Dmaven.repo.local=${mavenLocalOldRepo}
+sed -i "s|{QUARKUS_VERSION}|${quarkus_version}|g" "${quarkus_file}"
 
-# Update Quarkus version in project
-${mvn_cmd} versions:set-property \
-    -pl :drools-build-parent \
-    -Dproperty=version.io.quarkus \
-    -DnewVersion=${quarkus_version} \
-    -DgenerateBackupPoms=false \
-    -Dmaven.wagon.http.ssl.insecure=true
+# Change version
+${mvn_cmd} -e -N -Dfull -DnewVersion=${project_version} -DallowSnapshots=true -DgenerateBackupPoms=false versions:set
+
+# Make sure artifacts are updated locally
+${mvn_cmd} clean install -Dquickly
 
 # Launch Quarkus 3 Openrewrite
 ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.36.0:run \
@@ -42,7 +26,7 @@ ${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.36.0:run \
     -DactiveRecipes=io.quarkus.openrewrite.Quarkus3 \
     -Drewrite.recipeArtifactCoordinates=org.kie:jpmml-migration-recipe:"${project_version}" \
     -Denforcer.skip \
-    -Dmaven.repo.local=${mavenLocalOldRepo} \
+    -fae \
     -Dexclusions=**/target \
     -DplainTextMasks=**/kmodule.xml
 
