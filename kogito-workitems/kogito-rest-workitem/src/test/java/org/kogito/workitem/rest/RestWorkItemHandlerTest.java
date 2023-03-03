@@ -162,8 +162,8 @@ public class RestWorkItemHandlerTest {
     @Test
     public void testGetRestTaskHandler() {
         parameters.put("id", 26);
-        parameters.put("name", "pepe");
-        parameters.put(RestWorkItemHandler.URL, "http://localhost:8080/results/{id}/names/{name}");
+        parameters.put("name", "kogito is whitespace friendly");
+        parameters.put(RestWorkItemHandler.URL, "http://localhost:8080/results/{id}?name={name}");
         parameters.put(RestWorkItemHandler.METHOD, "GET");
         parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
 

@@ -15,6 +15,8 @@
  */
 package org.kogito.workitem.rest.pathresolvers;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +42,7 @@ public class DefaultPathParamResolver implements PathParamResolver {
                 throw new IllegalArgumentException("missing parameter " + key);
             }
             toRemove.add(key);
-            sb.replace(start, end + 1, value.toString());
+            sb.replace(start, end + 1, URLEncoder.encode(value.toString(), Charset.defaultCharset()));
             start = sb.indexOf("{");
         }
         parameters.keySet().removeAll(toRemove);

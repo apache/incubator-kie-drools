@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -60,6 +59,7 @@ import io.vertx.mutiny.ext.web.client.HttpRequest;
 import io.vertx.mutiny.ext.web.client.HttpResponse;
 import io.vertx.mutiny.ext.web.client.WebClient;
 
+import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassListParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
@@ -125,16 +125,35 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         logger.debug("Filtered parameters are {}", parameters);
         // create request
         endPoint = pathParamResolver.apply(endPoint, parameters);
-        Optional<URL> url = getUrl(endPoint);
-        String host = url.map(java.net.URL::getHost).orElse(hostProp);
-        if (host == null) {
+
+        String host = null;
+        int port = -1;
+        String path = null;
+        try {
+            URL uri = new URL(endPoint);
+            host = uri.getHost();
+            port = uri.getPort();
+            path = uri.getPath();
+            String query = uri.getQuery();
+            if (!isEmpty(path) && !isEmpty(query)) {
+                path += "?" + query;
+            }
+        } catch (MalformedURLException ex) {
+            logger.warn("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
+        }
+        if (isEmpty(host)) {
+            logger.info("Host not specified, using default {}", hostProp);
             host = hostProp;
         }
-        int port = url.map(java.net.URL::getPort).orElse(portProp);
-        if (port < 0) {
+        if (port == -1) {
             port = portProp;
+            logger.info("Port not specified, using default {}", portProp);
         }
-        String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
+        if (isEmpty(path)) {
+            path = endPoint;
+            logger.info("Path is empty, using whole endpoint {}", endPoint);
+        }
+        logger.debug("Invoking request with host {} port {} and endpoint {}", host, port, path);
         HttpRequest<Buffer> request = client.request(method, port, host, path);
         requestDecorators.forEach(d -> d.decorate(workItem, parameters, request));
         authDecorators.forEach(d -> d.decorate(workItem, parameters, request));
@@ -142,20 +161,9 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         HttpResponse<Buffer> response = method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT) ? request.sendJsonAndAwait(bodyBuilder.apply(parameters)) : request.sendAndAwait();
         int statusCode = response.statusCode();
         if (statusCode < 200 || statusCode >= 300) {
-            throw new WorkItemExecutionException(Integer.toString(statusCode), response.statusMessage());
+            throw new WorkItemExecutionException(Integer.toString(statusCode), "Request for endpoint " + endPoint + " failed with message: " + response.statusMessage());
         }
         manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));
-    }
-
-    private Optional<URL> getUrl(String endPoint) {
-        return Optional.ofNullable(endPoint)
-                .map(spec -> {
-                    try {
-                        return new URL(spec);
-                    } catch (MalformedURLException e) {
-                        return null;
-                    }
-                });
     }
 
     private Class<?> getTargetInfo(KogitoWorkItem workItem) {
@@ -163,7 +171,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (varName != null) {
             return getType(workItem.getProcessInstance(), varName);
         }
-        logger.warn("no out mapping for {}", RESULT);
+        logger.info("no out mapping for {}", RESULT);
         return null;
     }
 
@@ -174,7 +182,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (variable != null) {
             return variable.getType().getObjectClass();
         } else {
-            logger.warn("Cannot find definition for variable {}", varName);
+            logger.info("Cannot find definition for variable {}", varName);
             return null;
         }
     }
