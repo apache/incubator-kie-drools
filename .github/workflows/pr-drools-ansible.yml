@@ -45,3 +45,4 @@ jobs:
           definition-file: https://raw.githubusercontent.com/ginxo/drools-ansible-rulebook-integration/BXMSPROD-1980/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+          starting-project: kiegroup/drools-ansible-rulebook-integration
