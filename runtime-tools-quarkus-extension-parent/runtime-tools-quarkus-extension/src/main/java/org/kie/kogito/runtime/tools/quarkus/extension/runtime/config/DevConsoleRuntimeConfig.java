@@ -26,12 +26,6 @@ import io.quarkus.runtime.annotations.ConfigRoot;
 public class DevConsoleRuntimeConfig {
 
     /**
-     * Configuration for Runtime Tools DevConsole services. It should keep data-index url to initialize DataIndexClient accordingly
-     */
-    @ConfigItem(name = "data-index")
-    public DataIndexConfig dataIndexConfig;
-
-    /**
      * Mocked users data for the task inbox screen.
      */
     @ConfigItem(name = "users")
