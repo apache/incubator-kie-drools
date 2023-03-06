@@ -23,11 +23,8 @@ tags:
   - jakarta
 recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
-      key: quarkus.platform.version
-      newValue: 3.0.0.Alpha3
-  - org.openrewrite.maven.ChangePropertyValue:
-      key: quarkus.version
-      newValue: 3.0.0.Alpha3
+      key: version.io.quarkus
+      newValue: {QUARKUS_VERSION}
   - org.openrewrite.java.migrate.JavaxMigrationToJakarta
   - org.kie.openrewrite.recipe.jpmml.JPMMLRecipe
 ---
