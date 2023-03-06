@@ -37,7 +37,7 @@ ${mvn_cmd} versions:set-property \
     -Dmaven.wagon.http.ssl.insecure=true
 
 # Launch Quarkus 3 Openrewrite
-${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.36.0:run \
+${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.41.1:run \
     -Drewrite.configLocation="${quarkus_file}" \
     -DactiveRecipes=io.quarkus.openrewrite.Quarkus3 \
     -Drewrite.recipeArtifactCoordinates=org.kie:jpmml-migration-recipe:"${project_version}" \
