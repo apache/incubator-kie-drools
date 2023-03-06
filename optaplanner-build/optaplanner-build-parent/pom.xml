@@ -60,7 +60,7 @@
     -->
     <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
-    <version.pitest.plugin>1.11.3</version.pitest.plugin>
+    <version.pitest.plugin>1.11.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.22</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
