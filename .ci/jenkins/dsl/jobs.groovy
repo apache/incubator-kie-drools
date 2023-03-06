@@ -87,6 +87,8 @@ setupNightlyQuarkusIntegrationJob('quarkus-branch')
 setupNightlyQuarkusIntegrationJob('quarkus-lts')
 setupNightlyQuarkusIntegrationJob('native-lts')
 
+setupNightlyQuarkusIntegrationJob('quarkus-3')
+
 // Release jobs
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
