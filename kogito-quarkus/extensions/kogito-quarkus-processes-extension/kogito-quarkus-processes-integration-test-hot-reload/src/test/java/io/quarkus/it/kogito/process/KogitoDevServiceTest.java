@@ -40,7 +40,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 public class KogitoDevServiceTest {
 
     private static final Duration TIMEOUT = Duration.ofMinutes(1);
-    private static final String DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY = "data-index-ephemeral.image";
+    private static final String DATA_INDEX_EPHEMERAL_IMAGE_PROPERTY = "data-index-ephemeral.image.test";
     private static final String DATA_INDEX_EPHEMERAL_IMAGE_DEFAULT_VALUE = "use-default-image";
 
     static {

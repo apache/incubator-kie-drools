@@ -16,7 +16,7 @@
     <properties>
         <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5831 -->
         <quarkus.test.list.include>false</quarkus.test.list.include>
-        <data-index-ephemeral.image>use-default-image</data-index-ephemeral.image>
+        <data-index-ephemeral.image.test>use-default-image</data-index-ephemeral.image.test>
     </properties>
 
     <dependencyManagement>
