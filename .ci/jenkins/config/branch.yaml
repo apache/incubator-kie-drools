@@ -2,6 +2,9 @@ environments:
   default:
     env_vars:
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
+    ids:
+    - default
+    - prod
   native:
     env_vars:
       NATIVE: true
