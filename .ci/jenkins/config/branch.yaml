@@ -35,7 +35,6 @@ environments:
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.13'
-      QUARKUS_VERSION: 2.16.999-SNAPSHOT
       BUILD_MVN_OPTS: -Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral
     ids:
     - quarkus
