@@ -832,7 +832,7 @@ public class DefaultAgenda implements Externalizable, InternalAgenda {
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             executionStateMachine.internalHalt();
         }
 

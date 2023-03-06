@@ -50,7 +50,6 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.index.IndexUtil;
-import org.kie.api.KieBaseConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +97,7 @@ public abstract class BetaNode extends LeftTupleSource
 
     private boolean rightInputIsPassive;
 
-    private KieBaseConfiguration config;
+    private boolean indexable;
 
     // ------------------------------------------------------------
     // Constructors
@@ -139,9 +138,9 @@ public abstract class BetaNode extends LeftTupleSource
 
         setStreamMode( context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent() );
 
-        hashcode = calculateHashCode();
+        this.hashcode = calculateHashCode();
 
-        config = context.getRuleBase().getConfiguration();
+        this.indexable = this.constraints.getConstraints().length > 0 && IndexUtil.isIndexable(this.constraints.getConstraints()[0], getType(), context.getRuleBase().getConfiguration());
     }
 
     private ObjectTypeNode getObjectTypeNode(BuildContext context) {
@@ -229,7 +228,7 @@ public abstract class BetaNode extends LeftTupleSource
         BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
         if ( betaCconstraints.length > 0 ) {
             BetaNodeFieldConstraint c = betaCconstraints[0];
-            if ( IndexUtil.isIndexable(c, getType(), config) && ((IndexableConstraint) c).isUnification() ) {
+            if ( indexable && ((IndexableConstraint) c).isUnification() ) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
                     setConstraints( new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints ) );
                 } else if ( this.constraints instanceof DoubleBetaConstraints ) {

@@ -28,7 +28,6 @@ import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ArrayQueue;
-import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 
@@ -120,7 +119,7 @@ public class AgendaGroupQueueImpl
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             ((InternalAgenda) reteEvaluator.getActivationsManager()).clearAndCancelAgendaGroup(this.name);
         }
     }
@@ -138,7 +137,7 @@ public class AgendaGroupQueueImpl
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             ((InternalAgenda) reteEvaluator.getActivationsManager()).setFocus(this.name);
         }
 
@@ -284,7 +283,7 @@ public class AgendaGroupQueueImpl
             this.ruleFlowGroup = (InternalRuleFlowGroup) context.getWorkingMemory().getAgenda().getRuleFlowGroup( context.readUTF() );
         }
 
-        public void execute(ReteEvaluator reteEvaluator) {
+        public void internalExecute(ReteEvaluator reteEvaluator) {
             // check whether ruleflow group is still empty first
             if ( this.ruleFlowGroup.isEmpty() ) {
                 // deactivate ruleflow group

@@ -71,7 +71,7 @@ public class WorkingMemoryReteExpireAction
         this.node = (ObjectTypeNode) context.getSinks().get(nodeId);
     }
 
-    public void execute(ReteEvaluator reteEvaluator) {
+    public void internalExecute(ReteEvaluator reteEvaluator) {
         if (!factHandle.isValid()) {
             return;
         }
@@ -127,7 +127,7 @@ public class WorkingMemoryReteExpireAction
         }
 
         @Override
-        public void execute( ReteEvaluator reteEvaluator ) {
+        public void internalExecute(ReteEvaluator reteEvaluator ) {
             if (!factHandle.isValid()) {
                 return;
             }

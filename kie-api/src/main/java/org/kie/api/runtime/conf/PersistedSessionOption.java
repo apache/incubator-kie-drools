@@ -24,6 +24,10 @@ import java.util.Objects;
  */
 public class PersistedSessionOption implements SingleValueKieSessionOption {
 
+    public enum Strategy {
+        FULL, STORES_ONLY
+    }
+
     /**
      * The property name for the clock type configuration
      */
@@ -31,20 +35,39 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
 
     private final long sessionId;
 
+    private final Strategy strategy;
+
     private PersistedSessionOption() {
         this(-1L);
     }
 
     private PersistedSessionOption(long sessionId) {
+        this(sessionId, Strategy.FULL);
+    }
+
+    private PersistedSessionOption(Strategy strategy) {
+        this(-1, strategy);
+    }
+
+    private PersistedSessionOption(long sessionId, Strategy strategy) {
         this.sessionId = sessionId;
+        this.strategy = strategy;
     }
 
     public static PersistedSessionOption newSession() {
         return new PersistedSessionOption();
     }
 
+    public static PersistedSessionOption newSession(Strategy strategy) {
+        return new PersistedSessionOption(strategy);
+    }
+
     public static PersistedSessionOption fromSession(long sessionId) {
         return new PersistedSessionOption(sessionId);
+    }
+
+    public static PersistedSessionOption fromSession(long sessionId, Strategy strategy) {
+        return new PersistedSessionOption(sessionId, strategy);
     }
 
     /**
@@ -56,6 +79,10 @@ public class PersistedSessionOption implements SingleValueKieSessionOption {
 
     public long getSessionId() {
         return sessionId;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
     }
 
     public boolean isNewSession() {
